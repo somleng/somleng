@@ -11,6 +11,7 @@ gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
 gem 'sidekiq'
+gem 'sinatra', :require => false
 
 group :production do
   gem 'rails_12factor'

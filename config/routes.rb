@@ -1,4 +1,19 @@
 Rails.application.routes.draw do
+
+  if Rails.application.secrets[:active_job_queue_adapter] == "sidekiq"
+    require "sidekiq/web"
+
+    if Rails.env.production?
+      if (sidekiq_username = Rails.application.secrets[:sidekiq_web_http_basic_username]) && (sidekiq_password = Rails.application.secrets[:sidekiq_web_http_basic_password])
+        Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
+          username == sidekiq_username && password == sidekiq_password
+        end
+      end
+    end
+
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
   root :to => redirect('https://github.com/dwilkie/twilreapi')
 
   namespace "api", :defaults => { :format => "json" } do

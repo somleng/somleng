@@ -22,6 +22,14 @@
     "ACTIVE_JOB_OUTBOUND_CALL_QUEUE": {
       "description": "The name of the queue to enqueue outbound calls",
       "value": "outbound_call_queue"
+    },
+    "SIDEKIQ_WEB_HTTP_BASIC_USERNAME": {
+      "description": "The HTTP Basic username for authentication for Sidekiq's Web Interface (only applicable if your using Sidekiq)",
+      "value": "sidekiq_user_change_me"
+    },
+    "SIDEKIQ_WEB_HTTP_BASIC_PASSWORD": {
+      "description": "The HTTP Basic password for authentication for Sidekiq's Web Interface (only applicable if your using Sidekiq)",
+      "value": "sidekiq_password_change_me"
     }
   },
   "addons": [
