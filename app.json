@@ -4,6 +4,6 @@
   "website": "https://twilreapi.herokuapp.com",
   "repository": "https://github.com/dwilkie/twilreapi",
   "scripts": {
-    "postdeploy": "bundle exec rake db:seed"
+    "postdeploy": "bundle exec rake db:schema:load && bundle exec rake db:seed"
   }
 }
