@@ -58,6 +58,10 @@ class PhoneCall < ActiveRecord::Base
     Rails.application.routes.url_helpers.api_twilio_account_call_path(account, id)
   end
 
+  def enqueue_outbound_call!
+    OutboundCallJob.perform_later(to_json)
+  end
+
   private
 
   def set_defaults

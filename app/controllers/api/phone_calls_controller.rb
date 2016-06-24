@@ -1,4 +1,9 @@
 class Api::PhoneCallsController < Api::BaseController
+  def create
+    super
+    resource.enqueue_outbound_call! if resource.persisted?
+  end
+
   private
 
   def association_chain

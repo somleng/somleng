@@ -39,6 +39,8 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
     end
 
     context "valid request" do
+      include ActiveJob::TestHelper
+
       let(:params) {
         {
           "Url"=>"https://rapidpro.ngrok.com/handle/33/",
@@ -51,10 +53,12 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
       }
 
       let(:phone_call) { account.phone_calls.last! }
+      let(:enqueued_job) { enqueued_jobs.first }
 
       def assert_valid_request!
         expect(response.code).to eq("201")
         expect(response.body).to eq(phone_call.to_json)
+        expect(enqueued_job[:job]).to eq(OutboundCallJob)
       end
 
       it { assert_valid_request! }

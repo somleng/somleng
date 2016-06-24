@@ -10,6 +10,7 @@ gem 'puma'
 gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
+gem 'sidekiq'
 
 group :production do
   gem 'rails_12factor'

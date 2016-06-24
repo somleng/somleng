@@ -71,4 +71,22 @@ describe PhoneCall do
     subject { create(factory) }
     it { expect(subject.uri).to eq("/api/2010-04-01/Accounts/#{subject.account_sid}/Calls/#{subject.sid}") }
   end
+
+  describe "#enqueue_outbound_call!" do
+    include ActiveJob::TestHelper
+
+    subject { create(factory) }
+    let(:enqueued_job) { enqueued_jobs.first }
+
+    before do
+      subject.enqueue_outbound_call!
+    end
+
+    def assert_enqueued!
+      expect(enqueued_job[:job]).to eq(OutboundCallJob)
+      expect(enqueued_job[:args]).to match_array([subject.to_json])
+    end
+
+    it { assert_enqueued! }
+  end
 end
