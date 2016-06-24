@@ -7,5 +7,6 @@ before_script:
 - psql -c 'create database twilreapi_test;' -U postgres
 - psql -U postgres -c "create extension pgcrypto"
 deploy:
+  provider: heroku
   api_key:
     secure: EFtBFGD8V+WyX3KcecZWuX3i/GOMAJUTcpkLEOyx4NfsAAMDT0wBnlEDGXJhpOsHc8dG8R42Wjmw8rfYXBL+t+lJIHEq9dd0XeWzUL82w+tWY4Iq6uHlmc1/TCdU7VcD++zmycsMmYx+F0H7A5BhGj4b6LN3pCdK231vRL/PoxqqeFJ5ThiN/LJyh2g1sHUDMfcKKgy5lFVq9HKIJYHE2KeY/liGG/PEPFCWmheyrNJXejyXCpQ1DC0nrfuBiyEnQ6X5/pqS3SiIGKUSY5EVLJoyzLY7StBYzxJ7dFtqJXBtoFRsxNIcnwemTVhJTAlTvFhlbsrG61L+Mdh7zQpS8W6OUvlNAqFMN9qZEgb5P32EKtVfqlF1rfbtKOQD+SHg8IDj2DV8vZwQ0uQ7uRkHSPBwNUENTrsp5fx2PRvuY6XK583gmXlKZ6eIB933MzJesOjmpGs4ehiHgZABNgSLkXo8XsqFrqjS5Hnrc+eMMFnWtbRomIKXBEjWZQXbr9z0dHT9oPMwkXjB5X2iVXLBfnW0Y0mT1KUa9TrEhs+tphHjP/xMASKs3yshHGzUf71xSD0RgpHH0KWn+9gHay9bj25mxSO2qhYTnoc1cdflWqVVEjYx+VJuq7jOJk0ZUwdV9+DUyR5vQQ4ETgcnlFvhooWuPDCTvA9LLYAagIKNr5g=
