@@ -5,6 +5,7 @@ module Doorkeeper
         def from_basic_user_password_authorization(request)
           pattern = /^Basic /i
           header  = request.authorization
+
           if match?(header, pattern)
             user  = token_from_basic_header(header, pattern)
             password = password_from_basic_header(header, pattern)

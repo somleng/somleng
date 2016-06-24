@@ -64,18 +64,25 @@ ActiveRecord::Schema.define(version: 20160622045632) do
 
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
-  create_table "outgoing_calls", id: :uuid, default: "gen_random_uuid()", force: :cascade do |t|
-    t.uuid     "account_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "phone_calls", id: :uuid, default: "gen_random_uuid()", force: :cascade do |t|
+    t.uuid     "account_id",             null: false
+    t.string   "to",                     null: false
+    t.string   "from",                   null: false
+    t.string   "voice_url",              null: false
+    t.string   "voice_method",           null: false
+    t.string   "status",                 null: false
+    t.string   "status_callback_url"
+    t.string   "status_callback_method"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  add_index "outgoing_calls", ["account_id"], name: "index_outgoing_calls_on_account_id", using: :btree
+  add_index "phone_calls", ["account_id"], name: "index_phone_calls_on_account_id", using: :btree
 
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "accounts", column: "owner_id"
-  add_foreign_key "outgoing_calls", "accounts"
+  add_foreign_key "phone_calls", "accounts"
 end

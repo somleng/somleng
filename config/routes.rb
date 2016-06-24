@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
-  namespace "api" do
+  namespace "api", :defaults => { :format => "json" } do
     resources :accounts, :only => [] do
-      resources :outgoing_calls, :only => :create
+      resources :phone_calls, :only => [:create, :show]
     end
-  end
 
-  post "/2010-04-01/Accounts/:account_id/Calls", :to => "api/outgoing_calls#create", :as => :twilio_api_account_calls
+    post "/2010-04-01/Accounts/:account_id/Calls", :to => "phone_calls#create", :as => :twilio_account_calls
+    get "/2010-04-01/Accounts/:account_id/Calls/:id", :to => "phone_calls#show", :as => :twilio_account_call
+  end
 end
