@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.3.0"
+ruby(File.read(".ruby-version").strip) if File.exist?(".ruby-version")
 
 gem 'rails', '4.2.6'
 gem 'pg'
