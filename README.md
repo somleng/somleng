@@ -22,5 +22,19 @@ You can seed the database multiple times without generating multiple accounts.
 
 ### Calls
 
-* Create
-* Show
+#### Make a Call
+
+```
+$ curl -XPOST https://your-app-name.herokuapp.com/api/2010-04-01/Accounts/{AccountSID}/Calls.json \
+    -d "Url=http://demo.twilio.com/docs/voice.xml" \
+    -d "To=%2B85512345678" \
+    -d "From=%2B85512345679" \
+    -u 'your_account_sid:your_auth_token'
+```
+
+#### Retrieve a Call
+
+```
+$ curl https://your-app-name.herokuapp.com/api/2010-04-01/Accounts/{AccountSID}/Calls/{CallSID}.json \
+    -u 'your_account_sid:your_auth_token'
+```
