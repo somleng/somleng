@@ -5,5 +5,18 @@
   "repository": "https://github.com/dwilkie/twilreapi",
   "scripts": {
     "postdeploy": "bundle exec rake db:schema:load && bundle exec rake db:seed"
-  }
+  },
+  "env": {
+    "SECRET_KEY_BASE": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "WEB_CONCURRENCY": {
+      "description": "The number of processes to run.",
+      "value": "5"
+    }
+  },
+  "addons": [
+    "heroku-redis:hobby-dev"
+  ]
 }
