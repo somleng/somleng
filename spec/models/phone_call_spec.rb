@@ -73,6 +73,7 @@ describe PhoneCall do
   end
 
   describe "#enqueue_outbound_call!" do
+    include Twilreapi::SpecHelpers::EnvHelpers
     include ActiveJob::TestHelper
 
     subject { create(factory) }
@@ -83,7 +84,6 @@ describe PhoneCall do
     end
 
     def assert_enqueued!
-      expect(enqueued_job[:job]).to eq(OutboundCallJob)
       expect(enqueued_job[:args]).to match_array([subject.to_json])
     end
 

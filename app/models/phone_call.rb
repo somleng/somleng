@@ -59,7 +59,7 @@ class PhoneCall < ActiveRecord::Base
   end
 
   def enqueue_outbound_call!
-    OutboundCallJob.perform_later(to_json)
+    JobAdapter.new(:outbound_call_worker).perform_later(to_json)
   end
 
   private
