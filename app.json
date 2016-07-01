@@ -21,7 +21,7 @@
     },
     "ACTIVE_JOB_SIDEKIQ_OUTBOUND_CALL_WORKER_CLASS": {
       "description": "Required (if using Sidekiq). The name of the sidekiq worker class for enqueuing outbound calls. This class needs to be the same as defined in your Sidekiq worker dyno. Only applicable if your using Sidekiq.",
-      "value": "OutboundCallWorker"
+      "value": "Twireapi::Sidekiq::OutboundCallWorker"
     },
     "ACTIVE_JOB_SIDEKIQ_OUTBOUND_CALL_WORKER_QUEUE": {
       "description": "Optional. The name of the sidekiq queue to enqueue outbound calls. If not specified it will default to 'default'. Only applicable if your using Sidekiq",

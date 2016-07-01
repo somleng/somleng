@@ -35,7 +35,27 @@ class JobAdapter
   end
 
   def sidekiq_worker_class
-    (Object.const_defined?(class_name) && Object.const_get(class_name)) || Object.const_set(class_name, Class.new { include Sidekiq::Worker })
+    safe_define_class(class_name, Class.new { include Sidekiq::Worker })
+  end
+
+  def safe_define_class(name, klass)
+    name_parts = name.split("::").reject(&:empty?)
+    worker_const_name = name_parts.pop
+    parent_const = nil
+    module_parts = []
+    name_parts.each do |name_part|
+      module_parts << name_part
+      parent_const = safe_define_const(module_parts, Module.new, parent_const)
+    end
+    module_parts << worker_const_name
+    safe_define_const(module_parts, Class.new { include Sidekiq::Worker }, parent_const)
+  end
+
+  def safe_define_const(parts, klass, parent_const)
+    parent_const ||= Object
+    name = parts.last
+    path = parts.join("::")
+    (parent_const.const_defined?(path) && parent_const.const_get(path)) || parent_const.const_set(name, klass)
   end
 
   def queue_name

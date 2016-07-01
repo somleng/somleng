@@ -18,7 +18,7 @@ describe JobAdapter do
     end
 
     context "sidekiq is configured" do
-      let(:sidekiq_worker_class_name) { "SidekiqMyWorker" }
+      let(:sidekiq_worker_class_name) { "Twilreapi::Sidekiq::MyWorker" }
       let(:sidekiq_worker_queue) { "sidekiq_my_worker_queue" }
 
       def setup_scenario
