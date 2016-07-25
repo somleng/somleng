@@ -1,6 +1,6 @@
 module Twilreapi::SpecHelpers::RequestHelpers
   def do_request(method, path, body = {}, headers = {})
-    send(method, path, body, authorization_headers.merge(headers))
+    public_send(method, path, :params => body, :headers => authorization_headers.merge(headers))
   end
 
   def authorization_headers

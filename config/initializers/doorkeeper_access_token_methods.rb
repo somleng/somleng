@@ -20,6 +20,10 @@ module Doorkeeper
           token, password = decode_basic_credentials(encoded_header)
           password
         end
+
+        def decode_basic_credentials(encoded_header)
+          Base64.decode64(encoded_header).split(/:/, 2)
+        end
       end
     end
   end

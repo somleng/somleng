@@ -31,7 +31,7 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
 
         def assert_unauthorized!
           super
-          expect(response.headers).to include({"WWW-Authenticate" => "Basic realm=\"Twilio API\"" })
+          expect(response.headers["WWW-Authenticate"]).to eq("Basic realm=\"Twilio API\"")
         end
 
         it { assert_unauthorized! }

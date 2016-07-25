@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   if Rails.application.secrets[:active_job_queue_adapter] == "sidekiq"
     require "sidekiq/web"
 

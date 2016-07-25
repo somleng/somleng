@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby(File.read(".ruby-version").strip) if File.exist?(".ruby-version")
 
-gem 'rails', '4.2.6'
+gem 'rails', '5.0.0'
 gem 'pg'
 gem "responders"
 gem 'doorkeeper'
