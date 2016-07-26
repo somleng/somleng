@@ -11,7 +11,8 @@ gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
 gem 'sidekiq'
-gem 'sinatra', :require => false
+gem 'sinatra', :github => "sinatra/sinatra", :require => false
+gem 'rack-protection', :github => "sinatra/rack-protection", :require => false
 
 group :production do
   gem 'rails_12factor'
