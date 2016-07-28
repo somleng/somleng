@@ -25,7 +25,7 @@
     },
     "ACTIVE_JOB_SIDEKIQ_OUTBOUND_CALL_WORKER_QUEUE": {
       "description": "Optional. The name of the sidekiq queue to enqueue outbound calls. If not specified it will default to 'default'. Only applicable if your using Sidekiq",
-      "value": "outbound_call_queue"
+      "value": "outbound_calls_queue"
     },
     "SIDEKIQ_WEB_HTTP_BASIC_USERNAME": {
       "description": "Optional. The HTTP Basic username for authentication for Sidekiq's Web Interface. Only applicable if your using Sidekiq",
