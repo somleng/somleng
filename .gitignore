@@ -13,4 +13,4 @@
 /tmp
 
 vendor/ruby
-remove_focus
+remove_focus.rb
