@@ -4,6 +4,20 @@
 
 Twireapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest) written in Rails. You can use Twireapi to swap out Twilio from your application and enqueue calls, send SMS etc using [Adhearsion](http://adhearsion.com/), [FreeSwitch](https://freeswitch.org/) or [Asterisk](http://www.asterisk.org/).
 
+## Installation
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+Note check the output of `bin/setup` and note down the Account SID and Auth Token. To reseed the database run `bin/rails db:seed`
+
+## Running Locally
+
+Start the web server using foreman. Note this will read the environment variables from [.env](https://github.com/dwilkie/twilreapi-sidekiq/blob/master/.env)
+
+```
+$ bundle exec foreman start web
+```
+
 ## Deployment
 
 To get started quickly we recommend deploying to Heroku.
