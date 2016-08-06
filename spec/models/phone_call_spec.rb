@@ -67,6 +67,12 @@ describe PhoneCall do
     it { expect(json.keys).to match_array(["sid", "to", "from", "date_created", "date_updated", "account_sid", "uri", "status"]) }
   end
 
+  describe "#to_internal_json" do
+    subject { create(factory) }
+    let(:json) { JSON.parse(subject.to_internal_json) }
+    it { expect(json.keys).to match_array(["destination_host", "number_to_dial", "voice_url", "voice_method", "status_callback_url", "status_callback_method"]) }
+  end
+
   describe "#uri" do
     subject { create(factory) }
     it { expect(subject.uri).to eq("/api/2010-04-01/Accounts/#{subject.account_sid}/Calls/#{subject.sid}") }
@@ -84,7 +90,7 @@ describe PhoneCall do
     end
 
     def assert_enqueued!
-      expect(enqueued_job[:args]).to match_array([subject.to_json])
+      expect(enqueued_job[:args]).to match_array([subject.to_internal_json])
     end
 
     it { assert_enqueued! }

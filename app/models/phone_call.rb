@@ -46,6 +46,10 @@ class PhoneCall < ActiveRecord::Base
     )
   end
 
+  def to_internal_json
+    to_json(:only => [:voice_url, :voice_method, :status_callback_url, :status_callback_method], :methods => [:destination_host, :number_to_dial])
+  end
+
   def date_created
     created_at.rfc2822
   end
@@ -59,7 +63,13 @@ class PhoneCall < ActiveRecord::Base
   end
 
   def enqueue_outbound_call!
-    JobAdapter.new(:outbound_call_worker).perform_later(to_json)
+    JobAdapter.new(:outbound_call_worker).perform_later(to_internal_json)
+  end
+
+  def destination_host
+  end
+
+  def number_to_dial
   end
 
   private
