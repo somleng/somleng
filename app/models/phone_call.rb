@@ -17,7 +17,7 @@ class PhoneCall < ActiveRecord::Base
   alias_attribute :"From", :from
   alias_attribute :"Url", :voice_url
   alias_attribute :"Method", :voice_method
-  alias_attribute :"StatusCallbackUrl", :status_callback_url
+  alias_attribute :"StatusCallback", :status_callback_url
   alias_attribute :"StatusCallbackMethod", :status_callback_method
 
   delegate :sid, :to => :account, :prefix => true

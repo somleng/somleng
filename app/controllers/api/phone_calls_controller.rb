@@ -11,6 +11,6 @@ class Api::PhoneCallsController < Api::BaseController
   end
 
   def permitted_params
-    params.permit("To", "From", "Url", "Method", "StatusCallbackUrl", "StatusCallbackMethod")
+    params.permit("To", "From", "Url", "Method", "StatusCallback", "StatusCallbackMethod")
   end
 end
