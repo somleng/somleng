@@ -46,6 +46,38 @@ After deployment seed the database to generate an `Account SID` and `Auth Token`
 
 You can seed the database multiple times without generating multiple accounts.
 
+### Elastic Beanstalk
+
+#### Create a new environment
+
+Launch a new environment using the ruby (Puma) platform.
+
+```
+$ eb create
+```
+
+#### Configure the deploy options
+
+Configure your deployment settings in [option_settings.config](https://github.com/dwilkie/twilreapi/blob/master/.ebextensions/01_option_settings.config)
+
+#### Deploy the application
+
+```
+$ eb deploy
+```
+
+#### Running rake tasks
+
+```
+$ cd /var/app/current
+$ sudo su
+$ bundle exec rake <task>
+```
+
+#### Connecting to RDS
+
+Follow [this guide](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.RDS.html?icmpid=docs_elasticbeanstalk_console)
+
 ## REST API Reference
 
 ### Calls
@@ -53,7 +85,7 @@ You can seed the database multiple times without generating multiple accounts.
 #### Make a Call
 
 ```
-$ curl -XPOST https://your-app-name.herokuapp.com/api/2010-04-01/Accounts/{AccountSID}/Calls.json \
+$ curl -XPOST https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls.json \
     -d "Url=http://demo.twilio.com/docs/voice.xml" \
     -d "To=%2B85512345678" \
     -d "From=%2B85512345679" \
