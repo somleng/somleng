@@ -11,9 +11,10 @@ gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
 
+# Use shoryuken as queue adapter
 gem 'shoryuken'
 
-# Sidekiq configuration
+# Use Sidekiq as queue adapter
 #gem 'sidekiq'
 #gem 'sinatra', :github => "sinatra/sinatra", :require => false
 #gem 'rack-protection', :github => "sinatra/rack-protection", :require => false

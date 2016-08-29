@@ -17,29 +17,62 @@ describe JobAdapter do
       subject.perform_later(*args)
     end
 
-    if defined?(Sidekiq)
-      context "sidekiq is configured" do
-        let(:sidekiq_worker_class_name) { "Twilreapi::Sidekiq::MyWorker" }
-        let(:sidekiq_worker_queue) { "sidekiq_my_worker_queue" }
+    context "queue adapter is configured" do
+      let(:worker_queue) { "#{queue_adapter}_#{job_name}_queue" }
 
-        def setup_scenario
-          super
-          stub_env(
-            :active_job_queue_adapter => "sidekiq",
-            :active_job_sidekiq_my_worker_class => sidekiq_worker_class_name,
-            :active_job_sidekiq_my_worker_queue => sidekiq_worker_queue
-          )
+      def env
+        {
+          :"active_job_queue_adapter" => queue_adapter,
+          :"active_job_#{queue_adapter}_#{job_name}_queue" => worker_queue
+        }
+      end
+
+      def setup_scenario
+        super
+        stub_env(env)
+      end
+
+      if defined?(Sidekiq)
+        context "sidekiq" do
+          let(:queue_adapter) { "sidekiq" }
+          let(:worker_class_name) { "Twilreapi::Sidekiq::MyWorker" }
+
+          def env
+            super.merge(:"active_job_#{queue_adapter}_#{job_name}_class" => worker_class_name)
+          end
+
+          def assert_enqueued!
+            worker_class = worker_class_name.constantize
+            enqueued_job = worker_class.jobs.first
+            expect(enqueued_job["queue"]).to eq(worker_queue)
+            expect(enqueued_job["class"]).to eq(worker_class_name)
+            expect(enqueued_job["args"]).to match_array(args)
+          end
+
+          it { assert_enqueued! }
         end
+      end
 
-        def assert_enqueued!
-          sidekiq_worker_class = sidekiq_worker_class_name.constantize
-          enqueued_job = sidekiq_worker_class.jobs.first
-          expect(enqueued_job["queue"]).to eq(sidekiq_worker_queue)
-          expect(enqueued_job["class"]).to eq(sidekiq_worker_class_name)
-          expect(enqueued_job["args"]).to match_array(args)
+      if defined?(Shoryuken)
+        context "shoryuken" do
+          let(:queue_adapter) { "shoryuken" }
+          let(:sqs_queue) { double('other queue') }
+
+          def create_assertions!
+            allow(Shoryuken::Client).to receive(:queues).with(worker_queue).and_return(sqs_queue)
+            expect(sqs_queue).to receive(:send_message).with(*args)
+          end
+
+          def setup_scenario
+            create_assertions!
+            super
+          end
+
+          def assert_enqueued!
+          end
+
+          it { assert_enqueued! }
         end
-
-        it { assert_enqueued! }
       end
     end
 

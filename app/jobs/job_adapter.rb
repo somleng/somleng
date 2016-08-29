@@ -8,7 +8,7 @@ class JobAdapter
   end
 
   def self.configuration(*keys)
-    Rails.application.secrets["active_job_#{keys.compact.join('_')}"]
+    ENV["active_job_#{keys.compact.join('_')}".upcase]
   end
 
   def self.queue_adapter
@@ -34,6 +34,10 @@ class JobAdapter
     )
   end
 
+  def perform_later_shoryuken(*args)
+    Shoryuken::Client.queues(queue_name).send_message(*args)
+  end
+
   def sidekiq_worker_class
     safe_define_class(class_name, Class.new { include Sidekiq::Worker })
   end
@@ -48,7 +52,7 @@ class JobAdapter
       parent_const = safe_define_const(module_parts, Module.new, parent_const)
     end
     module_parts << worker_const_name
-    safe_define_const(module_parts, Class.new { include Sidekiq::Worker }, parent_const)
+    safe_define_const(module_parts, klass, parent_const)
   end
 
   def safe_define_const(parts, klass, parent_const)
