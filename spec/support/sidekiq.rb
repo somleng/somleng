@@ -1,1 +1,3 @@
-require 'sidekiq/testing'
+if defined?(Sidekiq)
+  require 'sidekiq/testing'
+end

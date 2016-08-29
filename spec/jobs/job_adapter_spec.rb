@@ -17,28 +17,30 @@ describe JobAdapter do
       subject.perform_later(*args)
     end
 
-    context "sidekiq is configured" do
-      let(:sidekiq_worker_class_name) { "Twilreapi::Sidekiq::MyWorker" }
-      let(:sidekiq_worker_queue) { "sidekiq_my_worker_queue" }
+    if defined?(Sidekiq)
+      context "sidekiq is configured" do
+        let(:sidekiq_worker_class_name) { "Twilreapi::Sidekiq::MyWorker" }
+        let(:sidekiq_worker_queue) { "sidekiq_my_worker_queue" }
 
-      def setup_scenario
-        super
-        stub_env(
-          :active_job_queue_adapter => "sidekiq",
-          :active_job_sidekiq_my_worker_class => sidekiq_worker_class_name,
-          :active_job_sidekiq_my_worker_queue => sidekiq_worker_queue
-        )
+        def setup_scenario
+          super
+          stub_env(
+            :active_job_queue_adapter => "sidekiq",
+            :active_job_sidekiq_my_worker_class => sidekiq_worker_class_name,
+            :active_job_sidekiq_my_worker_queue => sidekiq_worker_queue
+          )
+        end
+
+        def assert_enqueued!
+          sidekiq_worker_class = sidekiq_worker_class_name.constantize
+          enqueued_job = sidekiq_worker_class.jobs.first
+          expect(enqueued_job["queue"]).to eq(sidekiq_worker_queue)
+          expect(enqueued_job["class"]).to eq(sidekiq_worker_class_name)
+          expect(enqueued_job["args"]).to match_array(args)
+        end
+
+        it { assert_enqueued! }
       end
-
-      def assert_enqueued!
-        sidekiq_worker_class = sidekiq_worker_class_name.constantize
-        enqueued_job = sidekiq_worker_class.jobs.first
-        expect(enqueued_job["queue"]).to eq(sidekiq_worker_queue)
-        expect(enqueued_job["class"]).to eq(sidekiq_worker_class_name)
-        expect(enqueued_job["args"]).to match_array(args)
-      end
-
-      it { assert_enqueued! }
     end
 
     context "no queue adapter is configured" do

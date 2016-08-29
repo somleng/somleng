@@ -10,9 +10,13 @@ gem 'puma'
 gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
-gem 'sidekiq'
-gem 'sinatra', :github => "sinatra/sinatra", :require => false
-gem 'rack-protection', :github => "sinatra/rack-protection", :require => false
+
+gem 'shoryuken'
+
+# Sidekiq configuration
+#gem 'sidekiq'
+#gem 'sinatra', :github => "sinatra/sinatra", :require => false
+#gem 'rack-protection', :github => "sinatra/rack-protection", :require => false
 
 group :production do
   gem 'rails_12factor'
