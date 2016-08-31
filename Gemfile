@@ -11,8 +11,12 @@ gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
 
+# Use active_elastic_job as queue adapter and excute jobs in this application
+gem 'active_elastic_job', :github => "tawan/active-elastic-job"
+gem 'twilreapi-worker',   :github => "dwilkie/twilreapi-worker", :require => ["twilreapi/worker", "twilreapi/worker/active_job/outbound_call_job"]
+
 # Use shoryuken as queue adapter
-gem 'shoryuken'
+# gem 'shoryuken'
 
 # Use Sidekiq as queue adapter
 #gem 'sidekiq'

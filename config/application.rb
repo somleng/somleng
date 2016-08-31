@@ -14,5 +14,11 @@ module Twilreapi
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+
+    require_relative "../app/jobs/job_adapter"
+
+    if JobAdapter.use_active_job?
+      config.active_job.queue_adapter = JobAdapter.queue_adapter.to_sym
+    end
   end
 end
