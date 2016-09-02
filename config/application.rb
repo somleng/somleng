@@ -2,7 +2,7 @@ require_relative 'boot'
 
 require "active_model/railtie"
 require "active_job/railtie"
-require "active_record/railtie" if ENV["RAILS_SKIP_CONNECT_ACTIVE_RECORD"].to_i != 1
+require "active_record/railtie"
 require "action_controller/railtie"
 
 # Require the gems listed in Gemfile, including any gems
