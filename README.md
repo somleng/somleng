@@ -10,11 +10,13 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 Note check the output of `bin/setup` and note down the Account SID and Auth Token. To reseed the database run `bin/rails db:seed`
 
-## Configuration
+## Usage
+
+### Configuration
 
 Configuration is done using environment variables. See [.env](https://github.com/dwilkie/twilreapi/blob/master/.env)
 
-## Running Locally
+### Running Locally
 
 Start the web server using foreman. Note this will read the environment variables from [.env](https://github.com/dwilkie/twilreapi/blob/master/.env)
 
@@ -22,19 +24,23 @@ Start the web server using foreman. Note this will read the environment variable
 $ bundle exec foreman start web
 ```
 
-## Queues
+### Background Processing
 
 Twilreapi is queue agnostic. By default it will enqueue jobs using ActiveJob. The following background processing libraries are also supported and can be configured using [environment variables.](https://github.com/dwilkie/twilreapi/blob/master/.env)
 
-* [twilreapi-sidekiq](https://github.com/dwilkie/twilreapi-sidekiq)
+* [active-elastic-job](https://github.com/tawan/active-elastic-job) (Default. Recommended for AWS deployment)
+* [twilreapi-sidekiq](https://github.com/dwilkie/twilreapi-sidekiq) (Recommended for Heroku deployment)
+* [shoryuken](https://github.com/phstc/shoryuken)
 
-## Outbound Calls
+### Outbound Calls
 
 In order to trigger outbound calls you can connect Twilreapi to [Somleng](https://github.com/dwilkie/somleng).
 
 ## Deployment
 
-To get started quickly we recommend deploying to Heroku.
+### Heroku
+
+For testing we recommend deploying to Heroku. In order for Twilreapi to run on Heroku you need to configure [twilreapi-sidekiq](https://github.com/dwilkie/twilreapi-sidekiq) to handle the background processing. In the [Gemfile](https://github.com/tawan/active-elastic-job/blob/master/Gemfile) ensure that Sidekiq is installed, then use the Deploy button below. See [twilreapi-sidekiq](https://github.com/dwilkie/twilreapi-sidekiq) for more info on how to process jobs and connect to [Somleng](https://github.com/dwilkie/somleng) for outbound calls.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
