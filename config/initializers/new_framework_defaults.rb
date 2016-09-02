@@ -17,7 +17,7 @@ Rails.application.config.action_controller.forgery_protection_origin_check = fal
 ActiveSupport.to_time_preserves_timezone = false
 
 # Require `belongs_to` associations by default. Previous versions had false.
-if ENV["RAILS_SKIP_CONNECT_ACTIVE_RECORD"].to_i != 1
+if defined?(ActiveRecord)
   Rails.application.config.active_record.belongs_to_required_by_default = false
 end
 
