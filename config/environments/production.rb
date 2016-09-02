@@ -81,6 +81,8 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  # Do not dump schema after migrations.
-  config.active_record.dump_schema_after_migration = false
+  if ENV["RAILS_SKIP_CONNECT_ACTIVE_RECORD"].to_i != 1
+    # Do not dump schema after migrations.
+    config.active_record.dump_schema_after_migration = false
+  end
 end
