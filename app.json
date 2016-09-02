@@ -13,7 +13,8 @@
     },
     "WEB_CONCURRENCY": {
       "description": "The number of processes to run.",
-      "value": "5"
+      "value": "5",
+      "required": false
     },
     "ACTIVE_JOB_QUEUE_ADAPTER": {
       "description": "The queue adapter to use with ActiveJob. If no job adapter is specified it will default to ActiveJob's default queue",
@@ -44,7 +45,7 @@
       "description": "Set to 1 to force SSL. Defaults to 0.",
       "value": "1",
       "required": false
-    },
+    }
   },
   "addons": [
     "heroku-redis:hobby-dev"
