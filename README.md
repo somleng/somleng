@@ -123,6 +123,7 @@ $ [ec2-user@private_ip_of_web_env ~]$ ssh <private_ip_of_worker_env>
 
 ```
 $ curl -XPOST https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls.json \
+    -d "Method=GET" \
     -d "Url=http://demo.twilio.com/docs/voice.xml" \
     -d "To=%2B85512345678" \
     -d "From=%2B85512345679" \
