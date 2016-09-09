@@ -1,4 +1,4 @@
-class PhoneCall < ActiveRecord::Base
+class PhoneCall < ApplicationRecord
   DEFAULT_URL_METHOD = "POST"
   ALLOWED_URL_METHODS = [DEFAULT_URL_METHOD, "GET"]
 
