@@ -2,7 +2,6 @@ class PhoneCall < ApplicationRecord
   DEFAULT_URL_METHOD = "POST"
   ALLOWED_URL_METHODS = [DEFAULT_URL_METHOD, "GET"]
 
-
   belongs_to :account
   validates :from, :voice_url, :status, :presence => true
   validates :to, :presence => true, :phony_plausible => true
@@ -21,6 +20,7 @@ class PhoneCall < ApplicationRecord
   alias_attribute :"StatusCallbackMethod", :status_callback_method
 
   delegate :sid, :to => :account, :prefix => true
+  delegate :routing_instructions, :to => :active_call_router
 
   include AASM
 
@@ -47,7 +47,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def to_internal_json
-    to_json(:only => [:voice_url, :voice_method, :status_callback_url, :status_callback_method], :methods => [:destination_host, :number_to_dial])
+    to_json(:only => [:voice_url, :voice_method, :status_callback_url, :status_callback_method, :to], :methods => [:routing_instructions])
   end
 
   def date_created
@@ -66,13 +66,11 @@ class PhoneCall < ApplicationRecord
     JobAdapter.new(:outbound_call_worker).perform_later(to_internal_json)
   end
 
-  def destination_host
-  end
-
-  def number_to_dial
-  end
-
   private
+
+  def active_call_router
+    @active_call_router ||= ActiveCallRouter.instance(from, to)
+  end
 
   def set_defaults
     self.voice_method ||= DEFAULT_URL_METHOD

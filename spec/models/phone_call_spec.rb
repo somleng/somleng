@@ -70,7 +70,7 @@ describe PhoneCall do
   describe "#to_internal_json" do
     subject { create(factory) }
     let(:json) { JSON.parse(subject.to_internal_json) }
-    it { expect(json.keys).to match_array(["destination_host", "number_to_dial", "voice_url", "voice_method", "status_callback_url", "status_callback_method"]) }
+    it { expect(json.keys).to match_array(["voice_url", "voice_method", "status_callback_url", "status_callback_method", "to", "routing_instructions"]) }
   end
 
   describe "#uri" do
