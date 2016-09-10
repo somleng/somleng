@@ -6,6 +6,7 @@ class PhoneCall < ApplicationRecord
   validates :from, :voice_url, :status, :presence => true
   validates :to, :presence => true, :phony_plausible => true
   validates :voice_method, :presence => true, :inclusion => { :in => ALLOWED_URL_METHODS }
+  validates :somleng_call_id, :uniqueness => true, :strict => true, :allow_nil => true
 
   phony_normalize :to
 
@@ -30,10 +31,19 @@ class PhoneCall < ApplicationRecord
     state :ringing
     state :answered
     state :completed
+    state :canceled
 
     event :initiate do
-      transitions :from => :queued, :to => :initiated
+      transitions :from => :queued, :to => :initiated, :guard => :somleng_call_id?
     end
+
+    event :cancel do
+      transitions :from => :queued, :to => :canceled
+    end
+  end
+
+  def initiate_or_cancel!
+    somleng_call_id? ? initiate! : cancel!
   end
 
   def serializable_hash(options = nil)

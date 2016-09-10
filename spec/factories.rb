@@ -1,4 +1,8 @@
 FactoryGirl.define do
+  sequence :somleng_call_id do |n|
+    "#{n}"
+  end
+
   factory :account do |n|
     trait :with_access_token do
       after(:build) do |account|
@@ -39,6 +43,14 @@ FactoryGirl.define do
 
     trait :from_account_with_access_token do
       association :account, :factory => [:account, :with_access_token]
+    end
+
+    trait :with_somleng_call_id do
+      somleng_call_id { generate(:somleng_call_id) }
+    end
+
+    trait :queued do
+      status "queued"
     end
 
     trait :with_optional_attributes do

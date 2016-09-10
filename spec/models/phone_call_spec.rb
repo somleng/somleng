@@ -17,6 +17,11 @@ describe PhoneCall do
       it { is_expected.to validate_presence_of(:voice_method) }
     end
 
+    describe "#somleng_call_id" do
+      subject { create(factory) }
+      it { is_expected.to validate_uniqueness_of(:somleng_call_id).allow_nil.strict }
+    end
+
     it { is_expected.to validate_inclusion_of(:voice_method).in_array(["POST", "GET"]) }
     it { is_expected.to allow_value("+85512345676").for(:to) }
   end
@@ -76,6 +81,22 @@ describe PhoneCall do
   describe "#uri" do
     subject { create(factory) }
     it { expect(subject.uri).to eq("/api/2010-04-01/Accounts/#{subject.account_sid}/Calls/#{subject.sid}") }
+  end
+
+  describe "#initate_or_cancel!" do
+    before do
+      subject.initiate_or_cancel!
+    end
+
+    context "given there's a somleng_call_id" do
+      subject { create(:phone_call, :queued, :with_somleng_call_id) }
+      it { is_expected.to be_initiated }
+    end
+
+    context "given there is no somleng_call_id" do
+      subject { create(:phone_call, :queued) }
+      it { is_expected.to be_canceled }
+    end
   end
 
   describe "#enqueue_outbound_call!" do
