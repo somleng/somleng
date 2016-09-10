@@ -68,7 +68,7 @@ describe PhoneCall do
   end
 
   describe "#to_somleng_json" do
-    subject { create(factory) }
+    subject { create(factory, :with_optional_attributes) }
     let(:json) { JSON.parse(subject.to_somleng_json) }
     it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to", "routing_instructions"]) }
   end

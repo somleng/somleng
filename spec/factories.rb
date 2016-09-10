@@ -28,6 +28,25 @@ FactoryGirl.define do
     trait :with_denormalized_voice_method do
       voice_method "get"
     end
+
+    trait :with_status_callback_url do
+      status_callback_url "https://rapidpro.ngrok.com/handle/33/"
+    end
+
+    trait :with_status_callback_method do
+      status_callback_method "POST"
+    end
+
+    trait :from_account_with_access_token do
+      association :account, :factory => [:account, :with_access_token]
+    end
+
+    trait :with_optional_attributes do
+      from_account_with_access_token
+      with_normalized_voice_method
+      with_status_callback_url
+      with_status_callback_method
+    end
   end
 
   factory :access_token, :class => Doorkeeper::AccessToken
