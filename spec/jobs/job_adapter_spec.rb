@@ -1,13 +1,17 @@
 require 'rails_helper'
 
 describe JobAdapter do
-  let(:job_name) { "my_worker" }
+  let(:job_name) { "outbound_call_worker" }
   subject { described_class.new(job_name) }
 
   describe "#perform_later(*args)" do
     include Twilreapi::SpecHelpers::EnvHelpers
+    include ActiveJob::TestHelper
 
     let(:args) { ["foo", "bar", 1] }
+    let(:enqueued_job) { enqueued_jobs.first }
+    let(:active_job_use_active_job) { "0" }
+    let(:worker_queue) { "default" }
 
     def setup_scenario
     end
@@ -17,13 +21,20 @@ describe JobAdapter do
       subject.perform_later(*args)
     end
 
+    def assert_active_job_enqueued!
+      expect(enqueued_job[:job]).to eq(OutboundCallJob)
+      expect(enqueued_job[:args]).to match_array(args)
+      expect(enqueued_job[:queue]).to eq(worker_queue)
+    end
+
     context "queue adapter is configured" do
       let(:worker_queue) { "#{active_job_queue_adapter}_#{job_name}_queue" }
 
       def env
         {
           :"active_job_queue_adapter" => active_job_queue_adapter,
-          :"active_job_#{active_job_queue_adapter}_#{job_name}_queue" => worker_queue
+          :"active_job_#{active_job_queue_adapter}_#{job_name}_queue" => worker_queue,
+          :"active_job_use_active_job" => active_job_use_active_job
         }
       end
 
@@ -77,60 +88,16 @@ describe JobAdapter do
 
       if defined?(ActiveElasticJob)
         context "active_elastic_job" do
-          include ActiveJob::TestHelper
-
-          let(:job_name) { "outbound_call_worker" }
           let(:active_job_queue_adapter) { "active_elastic_job" }
-          let(:enqueued_job) { enqueued_jobs.first }
+          let(:active_job_use_active_job) { "1" }
 
-          def assert_enqueued!
-            expect(enqueued_job[:job]).to eq(Twilreapi::Worker::ActiveJob::OutboundCallJob)
-            expect(enqueued_job[:args]).to match_array(args)
-            expect(enqueued_job[:queue]).to eq(worker_queue)
-          end
-
-          it { assert_enqueued! }
+          it { assert_active_job_enqueued! }
         end
       end
     end
 
     context "no queue adapter is configured" do
-      include ActiveJob::TestHelper
-      let(:enqueued_job) { enqueued_jobs.first }
-
-      def assert_enqueued!
-        expect(enqueued_job[:job]).to be <= ActiveJob::Base
-        expect(enqueued_job[:args]).to match_array(args)
-      end
-
-      context "no worker class is configured" do
-        it { assert_enqueued! }
-      end
-
-      context "a worker class is configured" do
-        let(:active_job_class_name) { "FooJob" }
-
-        def setup_scenario
-          super
-          stub_env(:active_job_my_worker_class => active_job_class_name)
-        end
-
-        context "and an ActiveJob is defined" do
-          let(:active_job_class) { Object.const_set(active_job_class_name, Class.new(ActiveJob::Base)) }
-
-          def setup_scenario
-            super
-            active_job_class
-          end
-
-          def assert_enqueued!
-            super
-            expect(enqueued_job[:job]).to eq(active_job_class)
-          end
-
-          it { assert_enqueued! }
-        end
-      end
+      it { assert_active_job_enqueued! }
     end
   end
 end

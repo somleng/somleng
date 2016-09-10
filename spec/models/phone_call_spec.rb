@@ -67,10 +67,10 @@ describe PhoneCall do
     it { expect(json.keys).to match_array(["sid", "to", "from", "date_created", "date_updated", "account_sid", "uri", "status"]) }
   end
 
-  describe "#to_internal_json" do
+  describe "#to_somleng_json", :focus do
     subject { create(factory) }
-    let(:json) { JSON.parse(subject.to_internal_json) }
-    it { expect(json.keys).to match_array(["voice_url", "voice_method", "status_callback_url", "status_callback_method", "to", "routing_instructions"]) }
+    let(:json) { JSON.parse(subject.to_somleng_json) }
+    it { expect(json.keys).to match_array(["sid", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to", "routing_instructions"]) }
   end
 
   describe "#uri" do
@@ -90,7 +90,7 @@ describe PhoneCall do
     end
 
     def assert_enqueued!
-      expect(enqueued_job[:args]).to match_array([subject.to_internal_json])
+      expect(enqueued_job[:args]).to match_array([subject.to_json])
     end
 
     it { assert_enqueued! }

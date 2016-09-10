@@ -1,18 +1,15 @@
 require 'rails_helper'
 
-describe ActiveCallRouter do
+describe ActiveCallRouterAdapter do
   let(:source) { "8557771" }
   let(:destination) { "85512345678" }
+  let(:args) { [source, destination] }
 
-  subject { described_class.instance(source, destination) }
+  subject { described_class.instance(*args) }
 
   context "by default" do
-    describe ".instance(source, destination)" do
-      it { expect(subject.class).to eq(ActiveCallRouter) }
-    end
-
-    describe "#routing_instructions" do
-      it { expect(subject.routing_instructions).to eq("destination" => destination) }
+    describe ".instance(*args)" do
+      it { expect(subject.class).to eq(Twilreapi::ActiveCallRouter::Base) }
     end
   end
 
@@ -31,7 +28,7 @@ describe ActiveCallRouter do
 
     context "if the custom call router class is not defined" do
       describe ".instance(source, destination)" do
-        it { expect(subject.class).to eq(ActiveCallRouter) }
+        it { expect(subject.class).to eq(Twilreapi::ActiveCallRouter::Base) }
       end
     end
 
@@ -56,7 +53,7 @@ describe ActiveCallRouter do
         custom_call_router_class
       end
 
-      describe ".instance(source, destination)" do
+      describe ".instance(*args)" do
         it { expect(subject.class).to eq(custom_call_router_class) }
       end
 

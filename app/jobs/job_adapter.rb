@@ -20,15 +20,18 @@ class JobAdapter
   end
 
   def perform_later(*args)
-    if queue_adapter
-      send("perform_later_#{queue_adapter}", *args)
-    else
-      active_job_class = (class_name && Object.const_defined?(class_name)) ? class_name.constantize : ActiveJob::Base
-      active_job_class.perform_later(*args)
-    end
+    passthrough? ? send("perform_later_#{queue_adapter}", *args) : perform_later_active_job(*args)
+  end
+
+  def passthrough?
+    !use_active_job? && queue_adapter
   end
 
   private
+
+  def perform_later_active_job(*args)
+    active_job_worker_class.set(:queue => queue_name).perform_later(*args)
+  end
 
   def perform_later_sidekiq(*args)
     Sidekiq::Client.enqueue_to(
@@ -42,14 +45,10 @@ class JobAdapter
     Shoryuken::Client.queues(queue_name).send_message(*args)
   end
 
-  def perform_later_active_elastic_job(*args)
-    active_elastic_job_worker_class.set(:queue => queue_name).perform_later(*args)
-  end
-
-  def active_elastic_job_worker_class
+  def active_job_worker_class
     case job_name.to_sym
     when :outbound_call_worker
-      Twilreapi::Worker::ActiveJob::OutboundCallJob
+      OutboundCallJob
     end
   end
 

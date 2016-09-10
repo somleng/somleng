@@ -1,6 +1,20 @@
 GIT
+  remote: git://github.com/dwilkie/twilreapi-active_call_router-pin_cambodia.git
+  revision: a39852939754688fa822d1282c48cc67b14c64cf
+  specs:
+    twilreapi-active_call_router-pin_cambodia (0.1.0)
+      torasup
+      twilreapi-active_call_router
+
+GIT
+  remote: git://github.com/dwilkie/twilreapi-active_call_router.git
+  revision: 6791b200ce56f7fdc20f840eae0473b1ce260f9e
+  specs:
+    twilreapi-active_call_router (0.1.0)
+
+GIT
   remote: git://github.com/dwilkie/twilreapi-worker.git
-  revision: f7519ec13289cd11ba29ba83f69cccba192f94bc
+  revision: 3d88d2719d5b3768c0e99079cba3be4c46deb3d1
   specs:
     twilreapi-worker (0.1.0)
 
@@ -63,6 +77,11 @@ GEM
     builder (3.2.2)
     coderay (1.1.1)
     concurrent-ruby (1.0.2)
+    countries (1.2.5)
+      currencies (~> 0.4.2)
+      i18n_data (~> 0.7.0)
+    currencies (0.4.2)
+    deep_merge (1.1.1)
     diff-lcs (1.2.5)
     doorkeeper (4.2.0)
       railties (>= 4.2)
@@ -77,6 +96,7 @@ GEM
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     i18n (0.7.0)
+    i18n_data (0.7.0)
     jmespath (1.3.1)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -166,6 +186,10 @@ GEM
       sprockets (>= 3.0.0)
     thor (0.19.1)
     thread_safe (0.3.5)
+    torasup (0.0.15)
+      countries (>= 1.1.0)
+      deep_merge
+      phony (>= 2.14.14)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     websocket-driver (0.6.4)
@@ -191,6 +215,8 @@ DEPENDENCIES
   responders
   rspec-rails
   shoulda-matchers
+  twilreapi-active_call_router!
+  twilreapi-active_call_router-pin_cambodia!
   twilreapi-worker!
 
 RUBY VERSION

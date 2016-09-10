@@ -59,7 +59,7 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
         expect(response.code).to eq("201")
         expect(response.body).to eq(phone_call.to_json)
         expect(phone_call.status_callback_url).to be_present
-        expect(enqueued_job[:args]).to match_array([phone_call.to_internal_json])
+        expect(enqueued_job[:args]).to match_array([phone_call.to_json])
       end
 
       it { assert_valid_request! }

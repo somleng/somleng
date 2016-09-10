@@ -46,8 +46,13 @@ class PhoneCall < ApplicationRecord
     )
   end
 
-  def to_internal_json
-    to_json(:only => [:voice_url, :voice_method, :status_callback_url, :status_callback_method, :to], :methods => [:routing_instructions])
+  def to_somleng_json
+    to_json(
+      :only => [
+        :voice_url, :voice_method, :status_callback_url, :status_callback_method, :to, :from
+      ],
+      :methods => [:sid, :routing_instructions]
+    )
   end
 
   def date_created
@@ -63,13 +68,17 @@ class PhoneCall < ApplicationRecord
   end
 
   def enqueue_outbound_call!
-    JobAdapter.new(:outbound_call_worker).perform_later(to_internal_json)
+    job_adapter.perform_later(job_adapter.passthrough? ? to_somleng_json : to_json)
   end
 
   private
 
+  def job_adapter
+    @job_adapter ||= JobAdapter.new(:outbound_call_worker)
+  end
+
   def active_call_router
-    @active_call_router ||= ActiveCallRouter.instance(from, to)
+    @active_call_router ||= ActiveCallRouterAdapter.instance(from, to)
   end
 
   def set_defaults
