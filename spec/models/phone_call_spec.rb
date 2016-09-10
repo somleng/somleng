@@ -67,10 +67,10 @@ describe PhoneCall do
     it { expect(json.keys).to match_array(["sid", "to", "from", "date_created", "date_updated", "account_sid", "uri", "status"]) }
   end
 
-  describe "#to_somleng_json", :focus do
+  describe "#to_somleng_json" do
     subject { create(factory) }
     let(:json) { JSON.parse(subject.to_somleng_json) }
-    it { expect(json.keys).to match_array(["sid", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to", "routing_instructions"]) }
+    it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to", "routing_instructions"]) }
   end
 
   describe "#uri" do

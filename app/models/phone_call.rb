@@ -19,7 +19,7 @@ class PhoneCall < ApplicationRecord
   alias_attribute :"StatusCallback", :status_callback_url
   alias_attribute :"StatusCallbackMethod", :status_callback_method
 
-  delegate :sid, :to => :account, :prefix => true
+  delegate :sid, :auth_token, :to => :account, :prefix => true
   delegate :routing_instructions, :to => :active_call_router
 
   include AASM
@@ -51,7 +51,7 @@ class PhoneCall < ApplicationRecord
       :only => [
         :voice_url, :voice_method, :status_callback_url, :status_callback_method, :to, :from
       ],
-      :methods => [:sid, :routing_instructions]
+      :methods => [:sid, :account_sid, :account_auth_token, :routing_instructions]
     )
   end
 
