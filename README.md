@@ -1,8 +1,8 @@
-# Twireapi /twi-reap-i/ (Twilio Rest API)
+# Twilreapi /twil-reap-i/ (Twilio Rest API)
 
 [![Build Status](https://travis-ci.org/dwilkie/twilreapi.svg?branch=master)](https://travis-ci.org/dwilkie/twilreapi)
 
-Twireapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest) written in Rails. You can use Twireapi as a drop-in replacement for Twilio and enqueue calls, send SMS etc.
+Twilreapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest) written in Rails. You can use Twilreapi as a drop-in replacement for Twilio and enqueue calls, send SMS etc.
 
 ## Installation
 
