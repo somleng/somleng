@@ -89,14 +89,30 @@ describe PhoneCall do
     end
 
     context "given there's a somleng_call_id" do
-      subject { create(:phone_call, :queued, :with_somleng_call_id) }
+      subject { create(factory, :queued, :with_somleng_call_id) }
       it { is_expected.to be_initiated }
     end
 
     context "given there is no somleng_call_id" do
-      subject { create(:phone_call, :queued) }
+      subject { create(factory, :queued) }
       it { is_expected.to be_canceled }
     end
+  end
+
+  describe "#initiate_outbound_call!" do
+    subject { create(factory, :queued) }
+    let(:outbound_call_id) { generate(:somleng_call_id) }
+    let(:outbound_call_job) { instance_double(Twilreapi::Worker::Job::OutboundCallJob, :perform => outbound_call_id) }
+
+    def assert_call_initiated!
+      allow(Twilreapi::Worker::Job::OutboundCallJob).to receive(:new).and_return(outbound_call_job)
+      expect(outbound_call_job).to receive(:perform).with(subject.to_somleng_json)
+      subject.initiate_outbound_call!
+      expect(subject.somleng_call_id).to eq(outbound_call_id)
+      is_expected.to be_initiated
+    end
+
+    it { assert_call_initiated! }
   end
 
   describe "#enqueue_outbound_call!" do
@@ -111,7 +127,7 @@ describe PhoneCall do
     end
 
     def assert_enqueued!
-      expect(enqueued_job[:args]).to match_array([subject.to_json])
+      expect(enqueued_job[:args]).to match_array([subject.id])
     end
 
     it { assert_enqueued! }

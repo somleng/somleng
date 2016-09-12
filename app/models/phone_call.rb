@@ -1,3 +1,5 @@
+require "twilreapi/worker/job/outbound_call_job"
+
 class PhoneCall < ApplicationRecord
   DEFAULT_URL_METHOD = "POST"
   ALLOWED_URL_METHODS = [DEFAULT_URL_METHOD, "GET"]
@@ -78,7 +80,13 @@ class PhoneCall < ApplicationRecord
   end
 
   def enqueue_outbound_call!
-    job_adapter.perform_later(job_adapter.passthrough? ? to_somleng_json : to_json)
+    job_adapter.perform_later(job_adapter.passthrough? ? to_somleng_json : id)
+  end
+
+  def initiate_outbound_call!
+    outbound_call_id = Twilreapi::Worker::Job::OutboundCallJob.new.perform(to_somleng_json)
+    self.somleng_call_id = outbound_call_id
+    initiate_or_cancel!
   end
 
   private
