@@ -134,7 +134,16 @@ $ curl -XPOST https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls.
 #### Retrieve a Call
 
 ```
-$ curl https://your-app-name.herokuapp.com/api/2010-04-01/Accounts/{AccountSID}/Calls/{CallSID}.json \
+$ curl https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls/{CallSID}.json \
+    -u 'your_account_sid:your_auth_token'
+```
+
+### Incoming Phone Numbers
+
+#### Retrieve an Incoming Phone Number
+
+```
+$ curl https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/IncomingPhoneNumbers/{IncomingPhoneNumberSID}.json \
     -u 'your_account_sid:your_auth_token'
 ```
 

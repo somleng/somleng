@@ -9,6 +9,15 @@ class IncomingPhoneNumber < ApplicationRecord
 
   phony_normalize :phone_number
 
+  def serializable_hash(options = nil)
+    options ||= {}
+    super(
+      {
+        :only => [:phone_number]
+      }.merge(options)
+    )
+  end
+
   def uri
     Rails.application.routes.url_helpers.api_twilio_account_incoming_phone_number_path(account, id)
   end
