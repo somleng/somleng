@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160910102537) do
+ActiveRecord::Schema.define(version: 20160916070036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,19 @@ ActiveRecord::Schema.define(version: 20160910102537) do
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid     "account_id",             null: false
+    t.string   "phone_number",           null: false
+    t.string   "voice_url",              null: false
+    t.string   "voice_method",           null: false
+    t.string   "status_callback_url"
+    t.string   "status_callback_method"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.index ["account_id"], name: "index_incoming_phone_numbers_on_account_id", using: :btree
+    t.index ["phone_number"], name: "index_incoming_phone_numbers_on_phone_number", unique: true, using: :btree
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -76,6 +89,7 @@ ActiveRecord::Schema.define(version: 20160910102537) do
     t.index ["somleng_call_id"], name: "index_phone_calls_on_somleng_call_id", unique: true, using: :btree
   end
 
+  add_foreign_key "incoming_phone_numbers", "accounts"
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"
