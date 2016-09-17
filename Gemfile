@@ -11,6 +11,8 @@ gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
 
+gem 'bitmask_attributes', :github => "numerex/bitmask_attributes"
+
 gem 'twilreapi-active_call_router', :github => "dwilkie/twilreapi-active_call_router"
 gem 'twilreapi-active_call_router-pin_cambodia', :github => "dwilkie/twilreapi-active_call_router-pin_cambodia"
 

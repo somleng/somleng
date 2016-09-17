@@ -1,4 +1,4 @@
-class Api::IncomingPhoneNumbersController < Api::BaseController
+class Api::IncomingPhoneNumbersController < Api::PublicController
   private
 
   def association_chain

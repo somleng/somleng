@@ -29,12 +29,22 @@ FactoryGirl.define do
         account.access_token ||= build(:access_token, :resource_owner_id => account.id)
       end
     end
+
+    trait :has_permission_to_create_phone_calls do
+      permissions [:create_phone_calls]
+    end
   end
 
   factory :incoming_phone_number do
     account
     phone_number { generate(:phone_number) }
     voice_url "https://rapidpro.ngrok.com/handle/33/"
+
+    trait :with_optional_attributes do
+      with_normalized_voice_method
+      with_status_callback_url
+      with_status_callback_method
+    end
   end
 
   factory :phone_call do
@@ -60,6 +70,14 @@ FactoryGirl.define do
       with_normalized_voice_method
       with_status_callback_url
       with_status_callback_method
+    end
+
+    trait :incoming do
+      incoming true
+      with_somleng_call_id
+
+      incoming_phone_number
+      to { incoming_phone_number.phone_number }
     end
   end
 

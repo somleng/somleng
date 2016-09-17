@@ -8,7 +8,11 @@ module Twilreapi::SpecHelpers::RequestHelpers
   end
 
   def account
-    @account ||= create(:account, :with_access_token)
+    @account ||= create(:account, *account_traits.keys)
+  end
+
+  def account_traits
+    {:with_access_token => nil}
   end
 
   def http_basic_auth_user
@@ -22,4 +26,8 @@ module Twilreapi::SpecHelpers::RequestHelpers
   def account_sid
     account.sid
   end
+end
+
+RSpec.configure do |config|
+  config.include ::Twilreapi::SpecHelpers::RequestHelpers, :type => :request
 end

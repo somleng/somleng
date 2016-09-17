@@ -1,0 +1,73 @@
+require 'rails_helper'
+
+describe "'/api/admin/phone_calls/'" do
+  describe "POST '/'" do
+    let(:params) { {} }
+
+    def setup_scenario
+    end
+
+    def post_phone_call
+      do_request(:post, api_admin_phone_calls_path, params)
+    end
+
+    before do
+      setup_scenario
+      post_phone_call
+    end
+
+    context "unauthorized request" do
+      def assert_unauthorized!
+        expect(response.code).to eq("401")
+      end
+
+      context "incorrect permissions" do
+        it { assert_unauthorized! }
+      end
+    end
+
+    context "authorized request" do
+      let(:to) { generate(:phone_number) }
+      let(:somleng_call_id) { generate(:somleng_call_id) }
+      let(:from) { "2442" }
+
+      let(:params) {
+        {
+          "To" => to,
+          "From" => from,
+          "SomlengSid" => somleng_call_id
+        }
+      }
+
+      def account_traits
+        super.merge(:has_permission_to_create_phone_calls => 1)
+      end
+
+      context "invalid request" do
+        def assert_invalid_request!
+          expect(response.code).to eq("422")
+        end
+
+        it { assert_invalid_request! }
+      end
+
+      context "valid request" do
+        let(:incoming_phone_number) { create(:incoming_phone_number, :with_optional_attributes, :phone_number => to) }
+        let(:parsed_response) { JSON.parse(response.body) }
+        let(:phone_call) { PhoneCall.find(parsed_response["sid"]) }
+
+        def setup_scenario
+          incoming_phone_number
+        end
+
+        def assert_valid_request!
+          expect(response.code).to eq("201")
+          expect(phone_call.from).to eq(from)
+          expect(response.body).to eq(phone_call.to_internal_inbound_call_json)
+        end
+
+        it { assert_valid_request! }
+      end
+    end
+  end
+end

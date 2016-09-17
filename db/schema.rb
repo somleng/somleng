@@ -10,15 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160916070036) do
+ActiveRecord::Schema.define(version: 20160917092553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pgcrypto"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "permissions", null: false
   end
 
   create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -74,18 +75,20 @@ ActiveRecord::Schema.define(version: 20160916070036) do
   end
 
   create_table "phone_calls", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid     "account_id",             null: false
-    t.string   "to",                     null: false
-    t.string   "from",                   null: false
-    t.string   "voice_url",              null: false
-    t.string   "voice_method",           null: false
-    t.string   "status",                 null: false
+    t.uuid     "account_id",               null: false
+    t.string   "to",                       null: false
+    t.string   "from",                     null: false
+    t.string   "voice_url",                null: false
+    t.string   "voice_method",             null: false
+    t.string   "status",                   null: false
     t.string   "status_callback_url"
     t.string   "status_callback_method"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.string   "somleng_call_id"
+    t.uuid     "incoming_phone_number_id"
     t.index ["account_id"], name: "index_phone_calls_on_account_id", using: :btree
+    t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id", using: :btree
     t.index ["somleng_call_id"], name: "index_phone_calls_on_somleng_call_id", unique: true, using: :btree
   end
 
@@ -96,4 +99,5 @@ ActiveRecord::Schema.define(version: 20160916070036) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "accounts", column: "owner_id"
   add_foreign_key "phone_calls", "accounts"
+  add_foreign_key "phone_calls", "incoming_phone_numbers"
 end

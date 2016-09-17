@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
-  include Twilreapi::SpecHelpers::RequestHelpers
-
   # https://www.twilio.com/docs/api/rest/making-calls
   describe "POST '/'" do
     let(:params) { {} }

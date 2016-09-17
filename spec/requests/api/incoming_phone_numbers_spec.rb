@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe "'/api/2010-04-01/Accounts/{AccountSid}/IncomingPhoneNumbers'" do
-  include Twilreapi::SpecHelpers::RequestHelpers
-
   # https://www.twilio.com/docs/api/rest/call#instance-get
   describe "GET '/{IncomingPhoneNumberSid}'" do
     let(:incoming_phone_number) { create(:incoming_phone_number, :account => account) }

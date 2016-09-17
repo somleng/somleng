@@ -19,6 +19,13 @@ GIT
     twilreapi-worker (0.1.0)
 
 GIT
+  remote: git://github.com/numerex/bitmask_attributes.git
+  revision: 0bb0d9993aa6cb3114daa0c118c2bc70a032847c
+  specs:
+    bitmask_attributes (1.0.0)
+      activerecord (>= 3.1)
+
+GIT
   remote: git://github.com/tawan/active-elastic-job.git
   revision: 96d992ac54d5971c66f10030bfd517adcd061f84
   specs:
@@ -202,6 +209,7 @@ PLATFORMS
 DEPENDENCIES
   aasm
   active_elastic_job!
+  bitmask_attributes!
   doorkeeper
   factory_girl_rails
   foreman

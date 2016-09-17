@@ -2,6 +2,8 @@ class IncomingPhoneNumber < ApplicationRecord
   include TwilioApiResource
   include TwilioUrlLogic
 
+  has_many :phone_calls
+
   validates :phone_number,
             :uniqueness => {:case_sensitive => false, :strict => true},
             :phony_plausible => true,

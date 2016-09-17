@@ -2,10 +2,11 @@ class Api::BaseController < ApplicationController
   protect_from_forgery :with => :null_session
 
   respond_to :json
-  before_action :request_basic_auth, :doorkeeper_authorize!, :authorize_account!
+  before_action :request_basic_auth, :doorkeeper_authorize!
 
   def create
     build_resource
+    setup_resource
     resource.save
     respond_with_resource
   end
@@ -17,12 +18,15 @@ class Api::BaseController < ApplicationController
 
   private
 
+  def setup_resource
+  end
+
   def resource
     @resource
   end
 
   def build_resource
-    @resource = association_chain.build(permitted_params)
+    @resource = association_chain.new(permitted_params)
   end
 
   def find_resource
@@ -41,8 +45,12 @@ class Api::BaseController < ApplicationController
     head(:unauthorized)
   end
 
+  def account_id
+    params[:account_id]
+  end
+
   def authorize_account!
-    deny_access! if current_account != Account.find_by_id(params[:account_id])
+    deny_access! if current_account != Account.find_by_id(account_id)
   end
 
   def current_account

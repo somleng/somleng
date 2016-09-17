@@ -5,4 +5,8 @@ shared_examples_for "twilio_api_resource" do
   describe "associations" do
     it { is_expected.to belong_to(:account) }
   end
+
+  describe "validations" do
+    it { is_expected.to validate_presence_of(:account) }
+  end
 end

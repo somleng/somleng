@@ -9,10 +9,8 @@ describe IncomingPhoneNumber do
     let(:phone_number_attribute) { :phone_number }
   end
 
-  describe "#to_json" do
-    subject { create(factory) }
-    let(:json) { JSON.parse(subject.to_json) }
-    it { expect(json.keys).to include("phone_number") }
+  describe "associations" do
+    it { is_expected.to have_many(:phone_calls) }
   end
 
   describe "validations" do
@@ -23,5 +21,11 @@ describe IncomingPhoneNumber do
         it { is_expected.to validate_uniqueness_of(:phone_number).strict.case_insensitive }
       end
     end
+  end
+
+  describe "#to_json" do
+    subject { create(factory) }
+    let(:json) { JSON.parse(subject.to_json) }
+    it { expect(json.keys).to include("phone_number") }
   end
 end
