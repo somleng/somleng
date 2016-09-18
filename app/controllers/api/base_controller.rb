@@ -7,7 +7,7 @@ class Api::BaseController < ApplicationController
   def create
     build_resource
     setup_resource
-    resource.save
+    save_resource
     respond_with_resource
   end
 
@@ -19,6 +19,10 @@ class Api::BaseController < ApplicationController
   private
 
   def setup_resource
+  end
+
+  def save_resource
+    resource.save
   end
 
   def resource
@@ -33,24 +37,12 @@ class Api::BaseController < ApplicationController
     @resource = association_chain.find(params[:id])
   end
 
-  def respond_with_resource
-    respond_with(:api, current_account, resource)
-  end
-
   def request_basic_auth
     request_http_basic_authentication("Twilio API") if !request.authorization
   end
 
   def deny_access!
     head(:unauthorized)
-  end
-
-  def account_id
-    params[:account_id]
-  end
-
-  def authorize_account!
-    deny_access! if current_account != Account.find_by_id(account_id)
   end
 
   def current_account

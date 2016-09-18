@@ -5,20 +5,18 @@ class PhoneCall < ApplicationRecord
   include TwilioUrlLogic
 
   belongs_to :incoming_phone_number
+  before_validation :normalize_phone_numbers
 
   validates :from, :status, :presence => true
   validates :to, :presence => true, :phony_plausible => true
   validates :somleng_call_id, :uniqueness => true, :strict => true, :allow_nil => true
-  validates :somleng_call_id, :incoming_phone_number, :presence => true, :if => :incoming?
+  validates :somleng_call_id, :incoming_phone_number, :presence => true, :if => :inbound?
+
+  attr_accessor :inbound
 
   alias_attribute :"To", :to
   alias_attribute :"From", :from
   alias_attribute :"SomlengSid", :somleng_call_id
-
-  attr_accessor :incoming
-
-  phony_normalize :to
-  before_validation :setup_incoming_call, :only => :create
 
   delegate :auth_token, :to => :account, :prefix => true
   delegate :routing_instructions, :to => :active_call_router
@@ -74,10 +72,6 @@ class PhoneCall < ApplicationRecord
     )
   end
 
-  def incoming?
-    !!incoming
-  end
-
   def uri
     Rails.application.routes.url_helpers.api_twilio_account_call_path(account, id)
   end
@@ -92,7 +86,29 @@ class PhoneCall < ApplicationRecord
     initiate_or_cancel!
   end
 
+  def initiate_inbound_call
+    self.inbound = true
+    normalize_phone_numbers
+    if self.incoming_phone_number = IncomingPhoneNumber.find_by_phone_number(to)
+      self.account = incoming_phone_number_account
+      self.voice_url = incoming_phone_number_voice_url
+      self.voice_method = incoming_phone_number_voice_method
+      self.status_callback_url = incoming_phone_number_status_callback_url
+      self.status_callback_method = incoming_phone_number_status_callback_method
+      initiate
+    end
+    save
+  end
+
   private
+
+  def inbound?
+    !!inbound
+  end
+
+  def normalize_phone_numbers
+    self.to = PhonyRails.normalize_number(to)
+  end
 
   def internal_json_methods
     {
@@ -111,17 +127,6 @@ class PhoneCall < ApplicationRecord
       :to => nil,
       :from => nil
     }
-  end
-
-  def setup_incoming_call
-    if incoming? && self.incoming_phone_number = IncomingPhoneNumber.find_by_phone_number(to)
-      self.account = incoming_phone_number_account
-      self.voice_url = incoming_phone_number_voice_url
-      self.voice_method = incoming_phone_number_voice_method
-      self.status_callback_url = incoming_phone_number_status_callback_url
-      self.status_callback_method = incoming_phone_number_status_callback_method
-      initiate
-    end
   end
 
   def job_adapter

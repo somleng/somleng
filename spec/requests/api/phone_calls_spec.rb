@@ -10,10 +10,6 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
     end
 
     context "unauthorized request" do
-      def assert_unauthorized!
-        expect(response.code).to eq("401")
-      end
-
       context "wrong AuthToken" do
         let(:http_basic_auth_password) { "wrong" }
         it { assert_unauthorized! }

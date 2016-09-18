@@ -7,12 +7,20 @@ module Twilreapi::SpecHelpers::RequestHelpers
     {"HTTP_AUTHORIZATION" => ActionController::HttpAuthentication::Basic.encode_credentials(http_basic_auth_user, http_basic_auth_password)}
   end
 
+  def assert_unauthorized!
+    expect(response.code).to eq("401")
+  end
+
   def account
-    @account ||= create(:account, *account_traits.keys)
+    @account ||= create(:account, *account_traits.keys, account_params)
   end
 
   def account_traits
     {:with_access_token => nil}
+  end
+
+  def account_params
+    {}
   end
 
   def http_basic_auth_user

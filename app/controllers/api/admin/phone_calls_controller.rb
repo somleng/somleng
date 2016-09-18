@@ -1,16 +1,18 @@
 class Api::Admin::PhoneCallsController < Api::Admin::BaseController
+  self.responder = Api::Admin::PhoneCallsResponder
+
   private
 
+  def permission_name
+    :manage_inbound_phone_calls
+  end
+
   def association_chain
-    resource_class
-  end
-
-  def setup_resource
-    resource.incoming = true
-  end
-
-  def resource_class
     PhoneCall
+  end
+
+  def save_resource
+    resource.initiate_inbound_call
   end
 
   def permitted_params

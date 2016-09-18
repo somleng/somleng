@@ -24,87 +24,33 @@ describe PhoneCall do
       end
     end
 
-    context "for incoming calls" do
-      subject { build(factory, :incoming) }
+    context "for inbound calls" do
+      subject { build(factory, :inbound) }
       it { is_expected.to validate_presence_of(:somleng_call_id) }
       it { is_expected.to validate_presence_of(:incoming_phone_number) }
     end
   end
 
-  describe "creating" do
-    def setup_scenario
+  describe "json" do
+    let(:json) { JSON.parse(subject.public_send(json_method)) }
+
+    describe "#to_json" do
+      let(:json_method) { :to_json }
+      subject { create(factory) }
+      it { expect(json.keys).to include("to", "from", "status") }
     end
 
-    before do
-      setup_scenario
-      subject.save
+    describe "#to_internal_outbound_call_json" do
+      subject { create(factory, :with_optional_attributes) }
+      let(:json_method) { :to_internal_outbound_call_json }
+      it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to", "routing_instructions"]) }
     end
 
-    context "incoming calls" do
-      let(:phone_number) { generate(:phone_number) }
-      let(:somleng_call_id) { generate(:somleng_call_id) }
-      subject { build(factory, :incoming, :to => phone_number, :somleng_call_id => somleng_call_id) }
-
-      context "given no matching incoming phone number" do
-        def assert_errors!
-          is_expected.not_to be_persisted
-          expect(subject.errors).not_to be_empty
-        end
-
-        it { assert_errors! }
-      end
-
-      context "given an matching incoming phone number" do
-        let(:incoming_phone_number) { create(:incoming_phone_number, :phone_number => phone_number) }
-
-        def setup_scenario
-          incoming_phone_number
-        end
-
-        def assert_created!
-          is_expected.to be_persisted
-          expect(subject.voice_url).to eq(incoming_phone_number.voice_url)
-          expect(subject.voice_method).to eq(incoming_phone_number.voice_method)
-          expect(subject.status_callback_url).to eq(incoming_phone_number.status_callback_url)
-          expect(subject.status_callback_method).to eq(incoming_phone_number.status_callback_method)
-          expect(subject.somleng_call_id).to eq(somleng_call_id)
-          expect(subject.account).to eq(incoming_phone_number.account)
-          expect(subject.incoming_phone_number).to eq(incoming_phone_number)
-          is_expected.to be_initiated
-        end
-
-        it { assert_created! }
-      end
+    describe "#to_internal_inbound_call_json" do
+      subject { create(factory, :inbound) }
+      let(:json_method) { :to_internal_inbound_call_json }
+      it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to"]) }
     end
-  end
-
-  describe "#incoming?" do
-    context "for incoming phone calls" do
-      subject { build(factory, :incoming) }
-      it { is_expected.to be_incoming }
-    end
-
-    context "for outgoing phone calls" do
-      it { is_expected.not_to be_incoming }
-    end
-  end
-
-  describe "#to_json" do
-    subject { create(factory) }
-    let(:json) { JSON.parse(subject.to_json) }
-    it { expect(json.keys).to include("to", "from", "status") }
-  end
-
-  describe "#to_internal_outbound_call_json" do
-    subject { create(factory, :with_optional_attributes) }
-    let(:json) { JSON.parse(subject.to_internal_outbound_call_json) }
-    it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to", "routing_instructions"]) }
-  end
-
-  describe "#to_internal_inbound_call_json" do
-    subject { create(factory, :incoming) }
-    let(:json) { JSON.parse(subject.to_internal_inbound_call_json) }
-    it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to"]) }
   end
 
   describe "#uri" do
@@ -142,6 +88,53 @@ describe PhoneCall do
     end
 
     it { assert_call_initiated! }
+  end
+
+  describe "#initiate_inbound_call" do
+    let(:phone_number) { generate(:phone_number) }
+    let(:somleng_call_id) { generate(:somleng_call_id) }
+
+    subject { build(factory, :to => phone_number, :somleng_call_id => somleng_call_id) }
+
+    def setup_scenario
+    end
+
+    before do
+      setup_scenario
+      subject.initiate_inbound_call
+    end
+
+    context "given no matching incoming phone number" do
+      def assert_errors!
+        is_expected.not_to be_persisted
+        expect(subject.errors).not_to be_empty
+      end
+
+      it { assert_errors! }
+    end
+
+    context "given an matching incoming phone number" do
+      let(:incoming_phone_number) { create(:incoming_phone_number, :phone_number => phone_number) }
+
+      def setup_scenario
+        super
+        incoming_phone_number
+      end
+
+      def assert_created!
+        is_expected.to be_persisted
+        expect(subject.voice_url).to eq(incoming_phone_number.voice_url)
+        expect(subject.voice_method).to eq(incoming_phone_number.voice_method)
+        expect(subject.status_callback_url).to eq(incoming_phone_number.status_callback_url)
+        expect(subject.status_callback_method).to eq(incoming_phone_number.status_callback_method)
+        expect(subject.somleng_call_id).to eq(somleng_call_id)
+        expect(subject.account).to eq(incoming_phone_number.account)
+        expect(subject.incoming_phone_number).to eq(incoming_phone_number)
+        is_expected.to be_initiated
+      end
+
+      it { assert_created! }
+    end
   end
 
   describe "#enqueue_outbound_call!" do

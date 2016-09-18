@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe "'/api/admin/phone_calls/'" do
+  def account_params
+    super.merge(:permissions => [:manage_inbound_phone_calls])
+  end
+
   describe "POST '/'" do
     let(:params) { {} }
 
@@ -17,13 +21,11 @@ describe "'/api/admin/phone_calls/'" do
     end
 
     context "unauthorized request" do
-      def assert_unauthorized!
-        expect(response.code).to eq("401")
+      def account_params
+        super.merge(:permissions => [])
       end
 
-      context "incorrect permissions" do
-        it { assert_unauthorized! }
-      end
+      it { assert_unauthorized! }
     end
 
     context "authorized request" do
@@ -38,10 +40,6 @@ describe "'/api/admin/phone_calls/'" do
           "SomlengSid" => somleng_call_id
         }
       }
-
-      def account_traits
-        super.merge(:has_permission_to_create_phone_calls => 1)
-      end
 
       context "invalid request" do
         def assert_invalid_request!
@@ -68,6 +66,35 @@ describe "'/api/admin/phone_calls/'" do
 
         it { assert_valid_request! }
       end
+    end
+  end
+
+  describe "GET '/{CallSid}'" do
+    let(:phone_call) { create(:phone_call) }
+
+    def get_phone_call
+      do_request(:get, api_admin_phone_call_path(phone_call))
+    end
+
+    before do
+      get_phone_call
+    end
+
+    context "unauthorized request" do
+      def account_params
+        super.merge(:permissions => [])
+      end
+
+      it { assert_unauthorized! }
+    end
+
+    context "valid request" do
+      def assert_valid_request!
+        expect(response.code).to eq("200")
+        expect(response.body).to eq(phone_call.to_internal_inbound_call_json)
+      end
+
+      it { assert_valid_request! }
     end
   end
 end

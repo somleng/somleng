@@ -3,11 +3,11 @@ class Api::Admin::BaseController < Api::BaseController
 
   private
 
-  def authorize_admin!
-    deny_access! if !current_account.has_permission_to?(current_action, resource_class)
+  def respond_with_resource
+    respond_with(:api, :admin, resource)
   end
 
-  def current_action
-    params[:action]
+  def authorize_admin!
+    deny_access! if !current_account.permissions?(permission_name)
   end
 end

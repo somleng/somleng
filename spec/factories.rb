@@ -29,10 +29,6 @@ FactoryGirl.define do
         account.access_token ||= build(:access_token, :resource_owner_id => account.id)
       end
     end
-
-    trait :has_permission_to_create_phone_calls do
-      permissions [:create_phone_calls]
-    end
   end
 
   factory :incoming_phone_number do
@@ -72,12 +68,11 @@ FactoryGirl.define do
       with_status_callback_method
     end
 
-    trait :incoming do
-      incoming true
-      with_somleng_call_id
-
+    trait :inbound do
+      inbound true
       incoming_phone_number
       to { incoming_phone_number.phone_number }
+      with_somleng_call_id
     end
   end
 

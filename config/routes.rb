@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     get "/2010-04-01/Accounts/:account_id/IncomingPhoneNumbers/:id", :to => "incoming_phone_numbers#show", :as => :twilio_account_incoming_phone_number
 
     namespace :admin do
-      resources :phone_calls, :only => [:create]
+      resources :phone_calls, :only => [:create, :show]
     end
   end
 end
