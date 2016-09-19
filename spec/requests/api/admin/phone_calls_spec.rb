@@ -30,14 +30,14 @@ describe "'/api/admin/phone_calls/'" do
 
     context "authorized request" do
       let(:to) { generate(:phone_number) }
-      let(:somleng_call_id) { generate(:somleng_call_id) }
+      let(:external_id) { generate(:external_id) }
       let(:from) { "2442" }
 
       let(:params) {
         {
           "To" => to,
           "From" => from,
-          "SomlengSid" => somleng_call_id
+          "ExternalSid" => external_id
         }
       }
 

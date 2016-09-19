@@ -16,6 +16,6 @@ class Api::Admin::PhoneCallsController < Api::Admin::BaseController
   end
 
   def permitted_params
-    params.permit("To", "From", "SomlengSid")
+    params.permit("To", "From", "ExternalSid")
   end
 end

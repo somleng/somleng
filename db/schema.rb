@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160917092553) do
+ActiveRecord::Schema.define(version: 20160919033645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,11 +85,11 @@ ActiveRecord::Schema.define(version: 20160917092553) do
     t.string   "status_callback_method"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
-    t.string   "somleng_call_id"
+    t.string   "external_id"
     t.uuid     "incoming_phone_number_id"
     t.index ["account_id"], name: "index_phone_calls_on_account_id", using: :btree
+    t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true, using: :btree
     t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id", using: :btree
-    t.index ["somleng_call_id"], name: "index_phone_calls_on_somleng_call_id", unique: true, using: :btree
   end
 
   add_foreign_key "incoming_phone_numbers", "accounts"

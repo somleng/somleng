@@ -19,14 +19,14 @@ describe PhoneCall do
     context "persisted" do
       subject { create(factory) }
 
-      context "#somleng_call_id" do
-        it { is_expected.to validate_uniqueness_of(:somleng_call_id).allow_nil.strict }
+      context "#external_id" do
+        it { is_expected.to validate_uniqueness_of(:external_id).allow_nil.strict }
       end
     end
 
     context "for inbound calls" do
       subject { build(factory, :inbound) }
-      it { is_expected.to validate_presence_of(:somleng_call_id) }
+      it { is_expected.to validate_presence_of(:external_id) }
       it { is_expected.to validate_presence_of(:incoming_phone_number) }
     end
   end
@@ -63,12 +63,12 @@ describe PhoneCall do
       subject.initiate_or_cancel!
     end
 
-    context "given there's a somleng_call_id" do
-      subject { create(factory, :queued, :with_somleng_call_id) }
+    context "given there's a external_id" do
+      subject { create(factory, :queued, :with_external_id) }
       it { is_expected.to be_initiated }
     end
 
-    context "given there is no somleng_call_id" do
+    context "given there is no external_id" do
       subject { create(factory, :queued) }
       it { is_expected.to be_canceled }
     end
@@ -76,14 +76,14 @@ describe PhoneCall do
 
   describe "#initiate_outbound_call!" do
     subject { create(factory, :queued) }
-    let(:outbound_call_id) { generate(:somleng_call_id) }
+    let(:outbound_call_id) { generate(:external_id) }
     let(:outbound_call_job) { instance_double(Twilreapi::Worker::Job::OutboundCallJob, :perform => outbound_call_id) }
 
     def assert_call_initiated!
       allow(Twilreapi::Worker::Job::OutboundCallJob).to receive(:new).and_return(outbound_call_job)
       expect(outbound_call_job).to receive(:perform).with(subject.to_internal_outbound_call_json)
       subject.initiate_outbound_call!
-      expect(subject.somleng_call_id).to eq(outbound_call_id)
+      expect(subject.external_id).to eq(outbound_call_id)
       is_expected.to be_initiated
     end
 
@@ -92,9 +92,9 @@ describe PhoneCall do
 
   describe "#initiate_inbound_call" do
     let(:phone_number) { generate(:phone_number) }
-    let(:somleng_call_id) { generate(:somleng_call_id) }
+    let(:external_id) { generate(:external_id) }
 
-    subject { build(factory, :to => phone_number, :somleng_call_id => somleng_call_id) }
+    subject { build(factory, :to => phone_number, :external_id => external_id) }
 
     def setup_scenario
     end
@@ -127,7 +127,7 @@ describe PhoneCall do
         expect(subject.voice_method).to eq(incoming_phone_number.voice_method)
         expect(subject.status_callback_url).to eq(incoming_phone_number.status_callback_url)
         expect(subject.status_callback_method).to eq(incoming_phone_number.status_callback_method)
-        expect(subject.somleng_call_id).to eq(somleng_call_id)
+        expect(subject.external_id).to eq(external_id)
         expect(subject.account).to eq(incoming_phone_number.account)
         expect(subject.incoming_phone_number).to eq(incoming_phone_number)
         is_expected.to be_initiated

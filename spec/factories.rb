@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  sequence :somleng_call_id do |n|
+  sequence :external_id do |n|
     "#{n}"
   end
 
@@ -53,8 +53,8 @@ FactoryGirl.define do
       association :account, :factory => [:account, :with_access_token]
     end
 
-    trait :with_somleng_call_id do
-      somleng_call_id { generate(:somleng_call_id) }
+    trait :with_external_id do
+      external_id { generate(:external_id) }
     end
 
     trait :queued do
@@ -72,7 +72,7 @@ FactoryGirl.define do
       inbound true
       incoming_phone_number
       to { incoming_phone_number.phone_number }
-      with_somleng_call_id
+      with_external_id
     end
   end
 

@@ -9,14 +9,14 @@ class PhoneCall < ApplicationRecord
 
   validates :from, :status, :presence => true
   validates :to, :presence => true, :phony_plausible => true
-  validates :somleng_call_id, :uniqueness => true, :strict => true, :allow_nil => true
-  validates :somleng_call_id, :incoming_phone_number, :presence => true, :if => :inbound?
+  validates :external_id, :uniqueness => true, :strict => true, :allow_nil => true
+  validates :external_id, :incoming_phone_number, :presence => true, :if => :inbound?
 
   attr_accessor :inbound
 
   alias_attribute :"To", :to
   alias_attribute :"From", :from
-  alias_attribute :"SomlengSid", :somleng_call_id
+  alias_attribute :"ExternalSid", :external_id
 
   delegate :auth_token, :to => :account, :prefix => true
   delegate :routing_instructions, :to => :active_call_router
@@ -37,7 +37,7 @@ class PhoneCall < ApplicationRecord
     state :canceled
 
     event :initiate do
-      transitions :from => :queued, :to => :initiated, :guard => :somleng_call_id?
+      transitions :from => :queued, :to => :initiated, :guard => :external_id?
     end
 
     event :cancel do
@@ -46,7 +46,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def initiate_or_cancel!
-    somleng_call_id? ? initiate! : cancel!
+    external_id? ? initiate! : cancel!
   end
 
   def serializable_hash(options = nil)
@@ -77,12 +77,12 @@ class PhoneCall < ApplicationRecord
   end
 
   def enqueue_outbound_call!
-    job_adapter.perform_later(job_adapter.passthrough? ? to_somleng_json : id)
+    job_adapter.perform_later(job_adapter.passthrough? ? to_internal_outbound_call_json : id)
   end
 
   def initiate_outbound_call!
     outbound_call_id = Twilreapi::Worker::Job::OutboundCallJob.new.perform(to_internal_outbound_call_json)
-    self.somleng_call_id = outbound_call_id
+    self.external_id = outbound_call_id
     initiate_or_cancel!
   end
 
