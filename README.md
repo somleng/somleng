@@ -8,7 +8,15 @@ Twilreapi is an Open Source implementation of [Twilio's REST API](https://www.tw
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-Note check the output of `bin/setup` and note down the Account SID and Auth Token. To reseed the database run `bin/rails db:seed`
+Check the output of `bin/setup` and note down the Account SID and Auth Token.
+
+### Seeding the Database
+
+To seed the database run `bin/rails db:seed`. To create an admin account set `CREATE_ADMIN_ACCOUNT=1` and specify the admin account permissions with `ADMIN_ACCOUNT_PERMISSIONS`. E.g.
+
+```
+$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions bin/rails db:seed
+```
 
 ## Usage
 
