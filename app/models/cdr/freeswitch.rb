@@ -7,7 +7,7 @@ class CDR::Freeswitch
   end
 
   def uuid
-    cdr["core-uuid"]
+    variables["uuid"]
   end
 
   def to_file

@@ -4,7 +4,7 @@ describe CDR::Freeswitch do
   subject { build(:freeswitch_cdr) }
 
   describe "#uuid" do
-    it { expect(subject.uuid).to eq("1a6030e0-edbf-4cab-b8a0-feb649b76498") }
+    it { expect(subject.uuid).to eq("1b17f1e5-becb-4daa-8cb8-1ec822dd4297") }
   end
 
   describe "#direction" do
@@ -27,7 +27,7 @@ describe CDR::Freeswitch do
     def assert_file!
       content_type, filename, file = subject.to_file
       expect(content_type).to eq("application/json")
-      expect(filename).to eq("a_1a6030e0-edbf-4cab-b8a0-feb649b76498.cdr.json")
+      expect(filename).to eq("a_1b17f1e5-becb-4daa-8cb8-1ec822dd4297.cdr.json")
       expect(file.read).to eq(subject.raw_cdr)
     end
     it { assert_file! }
