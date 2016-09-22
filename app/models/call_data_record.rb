@@ -27,8 +27,7 @@ class CallDataRecord < ApplicationRecord
     self.direction = cdr.direction
     self.duration_sec = cdr.duration_sec
     self.bill_sec = cdr.bill_sec
-    save
-    logger.debug("CDR: #{self}, Errors: #{errors}") if errors.any?
+    save!
   end
 
   private
