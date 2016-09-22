@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
     namespace :admin do
       resources :phone_calls, :only => [:create, :show]
+      resources :call_data_records, :only => [:create, :show]
     end
   end
 end

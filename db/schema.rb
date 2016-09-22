@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160919033645) do
+ActiveRecord::Schema.define(version: 20160920080754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,21 @@ ActiveRecord::Schema.define(version: 20160919033645) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.integer  "permissions", null: false
+  end
+
+  create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid     "phone_call_id",     null: false
+    t.string   "file_id",           null: false
+    t.string   "file_filename",     null: false
+    t.integer  "file_size",         null: false
+    t.string   "file_content_type", null: false
+    t.integer  "bill_sec",          null: false
+    t.integer  "duration_sec",      null: false
+    t.string   "direction",         null: false
+    t.string   "hangup_cause",      null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id", using: :btree
   end
 
   create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -92,6 +107,7 @@ ActiveRecord::Schema.define(version: 20160919033645) do
     t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id", using: :btree
   end
 
+  add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "incoming_phone_numbers", "accounts"
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

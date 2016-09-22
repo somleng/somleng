@@ -5,6 +5,8 @@ class PhoneCall < ApplicationRecord
   include TwilioUrlLogic
 
   belongs_to :incoming_phone_number
+  has_one    :call_data_record
+
   before_validation :normalize_phone_numbers
 
   validates :from, :status, :presence => true

@@ -49,6 +49,8 @@ class JobAdapter
     case job_name.to_sym
     when :outbound_call_worker
       OutboundCallJob
+    when :call_data_record_worker
+      CallDataRecordJob
     end
   end
 

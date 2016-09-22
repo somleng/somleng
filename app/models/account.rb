@@ -5,7 +5,12 @@ class Account < ApplicationRecord
   has_many :phone_calls
   has_many :incoming_phone_numbers
 
-  bitmask :permissions, :as => [:manage_inbound_phone_calls], :null => false
+  bitmask :permissions,
+          :as => [
+            :manage_inbound_phone_calls,
+            :manage_call_data_records
+          ],
+          :null => false
 
   alias_attribute :sid, :id
   before_validation :set_default_permissions_bitmask, :on => :create

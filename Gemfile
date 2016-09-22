@@ -11,6 +11,11 @@ gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
 
+gem 'refile', :github => "refile/refile", :require => "refile/rails"
+gem "refile-s3", :github => "refile/refile-s3"
+# Needed for Refile
+gem 'sinatra', :github => "sinatra/sinatra"
+
 gem 'bitmask_attributes', :github => "numerex/bitmask_attributes"
 
 gem 'twilreapi-active_call_router', :github => "dwilkie/twilreapi-active_call_router"

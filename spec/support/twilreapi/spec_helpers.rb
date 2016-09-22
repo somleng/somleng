@@ -5,3 +5,4 @@ end
 
 require_relative 'spec_helpers/env_helpers'
 require_relative 'spec_helpers/request_helpers'
+require_relative 'spec_helpers/model_helpers'

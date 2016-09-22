@@ -23,6 +23,34 @@ FactoryGirl.define do
     status_callback_method "POST"
   end
 
+  factory :freeswitch_cdr, :class => CDR::Freeswitch do
+    skip_create
+    initialize_with { new(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json")) }
+  end
+
+  factory :call_data_record do
+    transient do
+      cdr { build(:freeswitch_cdr) }
+    end
+
+    after(:build) do |call_data_record, evaluator|
+      call_data_record.phone_call ||= build(:phone_call, :external_id => evaluator.cdr.uuid)
+    end
+
+    duration_sec { cdr.duration_sec }
+    bill_sec { cdr.bill_sec }
+    direction { cdr.direction }
+    hangup_cause { cdr.hangup_cause }
+
+    file do
+      Refile::FileDouble.new(
+        cdr.raw_cdr,
+        cdr.send(:filename),
+        :content_type => cdr.send(:content_type)
+      )
+    end
+  end
+
   factory :account do |n|
     trait :with_access_token do
       after(:build) do |account|

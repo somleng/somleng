@@ -11,6 +11,7 @@ describe PhoneCall do
 
   describe "associations" do
     it { is_expected.to belong_to(:incoming_phone_number) }
+    it { is_expected.to have_one(:call_data_record) }
   end
 
   describe "validations" do
@@ -138,7 +139,6 @@ describe PhoneCall do
   end
 
   describe "#enqueue_outbound_call!" do
-    include Twilreapi::SpecHelpers::EnvHelpers
     include ActiveJob::TestHelper
 
     subject { create(factory) }

@@ -18,7 +18,7 @@ if ENV["CREATE_ADMIN_ACCOUNT"].to_i == 1
 
     admin_account_access_token = admin_account.access_token || admin_account.create_access_token!
 
-    puts "Admin Account SID:         #{admin_account.sid}"
-    puts "Admin Account Auth Token:  #{admin_account.auth_token}"
+    puts "Admin Account SID:        #{admin_account.sid}"
+    puts "Admin Account Auth Token: #{admin_account.auth_token}"
   end
 end
