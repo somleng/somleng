@@ -38,7 +38,16 @@ describe PhoneCall do
     describe "#to_json" do
       let(:json_method) { :to_json }
       subject { create(factory) }
-      it { expect(json.keys).to include("to", "from", "status") }
+
+      let(:twilio_json_keys) do
+        ["parent_call_sid", "to", "to_formatted", "from", "from_formatted", "phone_number_sid", "status", "start_time", "end_time", "duration", "price", "price_unit", "direction", "answered_by", "annotation", "forwarded_from", "group_sid", "caller_name", "subresource_uris"]
+      end
+
+      def assert_valid_json!
+        expect(json.keys).to include(*twilio_json_keys)
+      end
+
+      it { assert_valid_json! }
     end
 
     describe "#to_internal_outbound_call_json" do
@@ -153,5 +162,156 @@ describe PhoneCall do
     end
 
     it { assert_enqueued! }
+  end
+
+  describe "#annotation" do
+    # deprecated
+    it { expect(subject.annotation).to eq(nil) }
+  end
+
+  describe "#answered_by" do
+    it { expect(subject.answered_by).to eq(nil) }
+  end
+
+  describe "#caller_name" do
+    it { expect(subject.caller_name).to eq(nil) }
+  end
+
+  describe "#direction" do
+    def assert_inbound!
+      expect(subject.direction).to eq("inbound")
+    end
+
+    def assert_outbound!
+      expect(subject.direction).to eq("outbound-api")
+    end
+
+    context "with cdr" do
+      subject { create(factory, :call_data_record => call_data_record) }
+      let(:call_data_record) { build(:call_data_record, direction) }
+
+      before do
+        call_data_record
+      end
+
+      context "inbound calls" do
+        let(:direction) { :inbound }
+        it { assert_inbound! }
+      end
+
+      context "for outbound calls" do
+        let(:direction) { :outbound }
+        it { assert_outbound! }
+      end
+    end
+
+    context "without cdr" do
+      context "for inbound calls" do
+        subject { create(factory, :inbound) }
+        it { assert_inbound! }
+      end
+
+      context "for outbound calls" do
+        it { assert_outbound! }
+      end
+    end
+  end
+
+  describe "#duration" do
+    context "with cdr" do
+      let(:bill_sec) { "15" }
+      let(:call_data_record) { build(:call_data_record, :bill_sec => bill_sec) }
+      subject { create(factory, :call_data_record => call_data_record) }
+
+      it { expect(subject.duration).to eq(bill_sec) }
+    end
+
+    context "without cdr" do
+      it { expect(subject.duration).to eq(nil) }
+    end
+  end
+
+  describe "#end_time" do
+    context "with cdr" do
+      let(:end_time) { Time.new("2015", "9", "30", "23", "05", "12") }
+      let(:call_data_record) { build(:call_data_record, :end_time => end_time) }
+      subject { create(factory, :call_data_record => call_data_record) }
+
+      it { expect(subject.end_time).to eq("Wed, 30 Sep 2015 16:05:12 +0000") }
+    end
+
+    context "without cdr" do
+      it { expect(subject.end_time).to eq(nil) }
+    end
+  end
+
+  describe "#forwarded_from" do
+    it { expect(subject.forwarded_from).to eq(nil) }
+  end
+
+  describe "#from_formatted" do
+    let(:from) { "85512345678" }
+    subject { create(factory, :from => from) }
+    it { expect(subject.from_formatted).to eq("+855 12 345 678") }
+  end
+
+  describe "#group_sid" do
+    # deprecated
+    it { expect(subject.group_sid).to eq(nil) }
+  end
+
+  describe "#parent_call_sid" do
+    it { expect(subject.parent_call_sid).to eq(nil) }
+  end
+
+  describe "#phone_number_sid" do
+    context "for inbound calls" do
+      subject { create(factory, :inbound) }
+      it { expect(subject.phone_number_sid).to eq(subject.incoming_phone_number_sid) }
+    end
+
+    context "for outbound calls" do
+      it { expect(subject.phone_number_sid).to eq(nil) }
+    end
+  end
+
+  describe "#price" do
+    it { expect(subject.price).to eq(nil) }
+  end
+
+  describe "#price_unit" do
+    # deprecated
+    it { expect(subject.price_unit).to eq(nil) }
+  end
+
+  describe "#start_time" do
+    context "with cdr" do
+      let(:call_data_record) { build(:call_data_record, :answer_time => answer_time) }
+      subject { create(factory, :call_data_record => call_data_record) }
+
+      context "call not answered" do
+        let(:answer_time) { nil }
+        it { expect(subject.start_time).to eq(nil) }
+      end
+
+      context "call answered" do
+        let(:answer_time) { Time.new("2015", "9", "30", "23", "05", "12") }
+        it { expect(subject.start_time).to eq("Wed, 30 Sep 2015 16:05:12 +0000") }
+      end
+    end
+
+    context "without cdr" do
+      it { expect(subject.start_time).to eq(nil) }
+    end
+  end
+
+  describe "#subresource_uris" do
+    it { expect(subject.subresource_uris).to eq({}) }
+  end
+
+  describe "#to_formatted" do
+    let(:to) { "85510987654" }
+    subject { create(factory, :to => to) }
+    it { expect(subject.to_formatted).to eq("+855 10 987 654") }
   end
 end

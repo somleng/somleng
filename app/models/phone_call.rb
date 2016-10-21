@@ -1,6 +1,11 @@
 require "twilreapi/worker/job/outbound_call_job"
 
 class PhoneCall < ApplicationRecord
+  TWILIO_CALL_DIRECTIONS = {
+    "inbound" => "inbound",
+    "outbound" => "outbound-api"
+  }
+
   include TwilioApiResource
   include TwilioUrlLogic
 
@@ -25,8 +30,16 @@ class PhoneCall < ApplicationRecord
 
   delegate :voice_url, :voice_method,
            :status_callback_url, :status_callback_method,
-           :account,
+           :account, :sid,
            :to => :incoming_phone_number, :prefix => true, :allow_nil => true
+
+  delegate :bill_sec,
+           :direction,
+           :answer_time,
+           :end_time,
+           :to => :call_data_record,
+           :prefix => true,
+           :allow_nil => true
 
   include AASM
 
@@ -49,15 +62,6 @@ class PhoneCall < ApplicationRecord
 
   def initiate_or_cancel!
     external_id? ? initiate! : cancel!
-  end
-
-  def serializable_hash(options = nil)
-    options ||= {}
-    super(
-      {
-        :only => [:to, :from, :status]
-      }.merge(options)
-    )
   end
 
   def to_internal_outbound_call_json
@@ -102,6 +106,62 @@ class PhoneCall < ApplicationRecord
     save
   end
 
+  def annotation
+  end
+
+  def answered_by
+  end
+
+  def caller_name
+  end
+
+  def direction
+    TWILIO_CALL_DIRECTIONS[call_data_record_direction || (incoming_phone_number.present? && "inbound") || "outbound"]
+  end
+
+  def duration
+    call_data_record_bill_sec.to_s.presence
+  end
+
+  def end_time
+    call_data_record_end_time && call_data_record_end_time.rfc2822
+  end
+
+  def forwarded_from
+  end
+
+  def from_formatted
+    format_number(from)
+  end
+
+  def group_sid
+  end
+
+  def parent_call_sid
+  end
+
+  def phone_number_sid
+    incoming_phone_number_sid
+  end
+
+  def price
+  end
+
+  def price_unit
+  end
+
+  def start_time
+    call_data_record_answer_time && call_data_record_answer_time.rfc2822
+  end
+
+  def subresource_uris
+    {}
+  end
+
+  def to_formatted
+    format_number(to)
+  end
+
   private
 
   def inbound?
@@ -110,6 +170,35 @@ class PhoneCall < ApplicationRecord
 
   def normalize_phone_numbers
     self.to = PhonyRails.normalize_number(to)
+  end
+
+  def json_attributes
+    super.merge(
+      :to => nil,
+      :from => nil,
+      :status => nil
+    )
+  end
+
+  def json_methods
+    super.merge(
+      :annotation => nil,
+      :answered_by => nil,
+      :caller_name => nil,
+      :direction => nil,
+      :duration => nil,
+      :end_time => nil,
+      :forwarded_from => nil,
+      :from_formatted => nil,
+      :group_sid => nil,
+      :parent_call_sid => nil,
+      :phone_number_sid => nil,
+      :price => nil,
+      :price_unit => nil,
+      :start_time => nil,
+      :subresource_uris => nil,
+      :to_formatted => nil
+    )
   end
 
   def internal_json_methods
@@ -129,6 +218,10 @@ class PhoneCall < ApplicationRecord
       :to => nil,
       :from => nil
     }
+  end
+
+  def format_number(number)
+    number && Phony.format(Phony.normalize(number), :format => :international)
   end
 
   def job_adapter

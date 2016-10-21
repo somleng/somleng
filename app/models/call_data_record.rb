@@ -13,7 +13,7 @@ class CallDataRecord < ApplicationRecord
             :numericality => { :greater_than_or_equal_to => 0 }
 
   validates :direction, :presence => true, :inclusion => { :in => DIRECTIONS }
-  validates :hangup_cause, :presence => true
+  validates :hangup_cause, :start_time, :end_time, :presence => true
 
   def enqueue_process!(cdr)
     job_adapter.perform_later(cdr)
@@ -27,10 +27,18 @@ class CallDataRecord < ApplicationRecord
     self.direction = cdr.direction
     self.duration_sec = cdr.duration_sec
     self.bill_sec = cdr.bill_sec
+    self.start_time = parse_epoch(cdr.start_epoch)
+    self.end_time = parse_epoch(cdr.end_epoch)
+    self.answer_time = parse_epoch(cdr.answer_epoch)
     save
   end
 
   private
+
+  def parse_epoch(epoch)
+    epoch = epoch.to_i
+    Time.at(epoch) if epoch > 0
+  end
 
   def job_adapter
     @job_adapter ||= JobAdapter.new(:call_data_record_worker)

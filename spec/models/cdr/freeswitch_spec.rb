@@ -23,6 +23,18 @@ describe CDR::Freeswitch do
     it { expect(subject.hangup_cause).to eq("ORIGINATOR_CANCEL") }
   end
 
+  describe "#start_epoch" do
+    it { expect(subject.start_epoch).to eq("1474362923") }
+  end
+
+  describe "#end_epoch" do
+    it { expect(subject.end_epoch).to eq("1474362924") }
+  end
+
+  describe "#answer_epoch" do
+    it { expect(subject.answer_epoch).to eq("0") }
+  end
+
   describe "#to_file" do
     def assert_file!
       content_type, filename, file = subject.to_file

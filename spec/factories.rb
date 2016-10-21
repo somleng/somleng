@@ -37,10 +37,20 @@ FactoryGirl.define do
       call_data_record.phone_call ||= build(:phone_call, :external_id => evaluator.cdr.uuid)
     end
 
+    trait :inbound do
+      direction "inbound"
+    end
+
+    trait :outbound do
+      direction "outbound"
+    end
+
     duration_sec { cdr.duration_sec }
     bill_sec { cdr.bill_sec }
     direction { cdr.direction }
     hangup_cause { cdr.hangup_cause }
+    start_time { Time.at(cdr.start_epoch.to_i) }
+    end_time { Time.at(cdr.end_epoch.to_i) }
 
     file do
       Refile::FileDouble.new(

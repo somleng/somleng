@@ -21,6 +21,8 @@ describe CallDataRecord do
     it { is_expected.to validate_presence_of(:direction) }
     it { is_expected.to validate_inclusion_of(:direction).in_array(["inbound", "outbound"]) }
     it { is_expected.to validate_presence_of(:hangup_cause) }
+    it { is_expected.to validate_presence_of(:start_time) }
+    it { is_expected.to validate_presence_of(:end_time) }
   end
 
   describe "#enqueue_process!(cdr)" do
@@ -76,6 +78,9 @@ describe CallDataRecord do
         expect(subject.direction).to eq(freeswitch_cdr.direction)
         expect(subject.bill_sec).to eq(freeswitch_cdr.bill_sec.to_i)
         expect(subject.duration_sec).to eq(freeswitch_cdr.duration_sec.to_i)
+        expect(subject.start_time).to eq(Time.at(freeswitch_cdr.start_epoch.to_i))
+        expect(subject.end_time).to eq(Time.at(freeswitch_cdr.end_epoch.to_i))
+        expect(subject.answer_time).to eq(nil)
       end
 
       it { assert_cdr_processed! }

@@ -30,6 +30,18 @@ class CDR::Freeswitch
     variables["hangup_cause"]
   end
 
+  def start_epoch
+    variables["start_epoch"]
+  end
+
+  def end_epoch
+    variables["end_epoch"]
+  end
+
+  def answer_epoch
+    variables["answer_epoch"]
+  end
+
   private
 
   def filename
