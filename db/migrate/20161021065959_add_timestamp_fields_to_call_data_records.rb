@@ -1,6 +1,6 @@
 class AddTimestampFieldsToCallDataRecords < ActiveRecord::Migration[5.0]
   def parse_epoch(variables, key)
-    epoch = variables["key"].to_i
+    epoch = variables[key].to_i
     Time.at(epoch) if epoch > 0
   end
 
