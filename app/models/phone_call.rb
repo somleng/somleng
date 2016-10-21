@@ -124,7 +124,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def end_time
-    call_data_record_end_time && call_data_record_end_time.rfc2822
+    call_data_record_answer_time && call_data_record_end_time.rfc2822
   end
 
   def forwarded_from

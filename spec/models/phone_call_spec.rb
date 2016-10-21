@@ -234,10 +234,18 @@ describe PhoneCall do
   describe "#end_time" do
     context "with cdr" do
       let(:end_time) { Time.utc("2015", "9", "30", "23", "05", "12") }
-      let(:call_data_record) { build(:call_data_record, :end_time => end_time) }
+      let(:call_data_record) { build(:call_data_record, :end_time => end_time, :answer_time => answer_time) }
       subject { create(factory, :call_data_record => call_data_record) }
 
-      it { expect(subject.end_time).to eq("Wed, 30 Sep 2015 23:05:12 +0000") }
+      context "call not answered" do
+        let(:answer_time) { nil }
+        it { expect(subject.end_time).to eq(nil) }
+      end
+
+      context "call answered" do
+        let(:answer_time) { Time.utc("2015", "9", "30", "23", "04", "12") }
+        it { expect(subject.end_time).to eq("Wed, 30 Sep 2015 23:05:12 +0000") }
+      end
     end
 
     context "without cdr" do
