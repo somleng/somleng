@@ -30,6 +30,7 @@ class CallDataRecord < ApplicationRecord
     self.start_time = parse_epoch(cdr.start_epoch)
     self.end_time = parse_epoch(cdr.end_epoch)
     self.answer_time = parse_epoch(cdr.answer_epoch)
+    self.sip_term_status = cdr.sip_term_status
     save
   end
 

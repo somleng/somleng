@@ -81,6 +81,7 @@ describe CallDataRecord do
         expect(subject.start_time).to eq(Time.at(freeswitch_cdr.start_epoch.to_i))
         expect(subject.end_time).to eq(Time.at(freeswitch_cdr.end_epoch.to_i))
         expect(subject.answer_time).to eq(nil)
+        expect(subject.sip_term_status).to eq(freeswitch_cdr.sip_term_status)
       end
 
       it { assert_cdr_processed! }

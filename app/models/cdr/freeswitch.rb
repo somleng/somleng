@@ -42,6 +42,10 @@ class CDR::Freeswitch
     variables["answer_epoch"]
   end
 
+  def sip_term_status
+    variables["sip_term_status"]
+  end
+
   private
 
   def filename

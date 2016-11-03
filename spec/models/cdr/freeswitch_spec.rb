@@ -35,6 +35,10 @@ describe CDR::Freeswitch do
     it { expect(subject.answer_epoch).to eq("0") }
   end
 
+  describe "#sip_term_status" do
+    it { expect(subject.sip_term_status).to eq("487") }
+  end
+
   describe "#to_file" do
     def assert_file!
       content_type, filename, file = subject.to_file
