@@ -19,6 +19,10 @@ class Account < ApplicationRecord
     access_token && access_token.token
   end
 
+  def build_usage_record(params = {})
+    Usage::Record.new(params.merge("account" => self))
+  end
+
   private
 
   def set_default_permissions_bitmask

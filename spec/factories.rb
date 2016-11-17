@@ -28,6 +28,14 @@ FactoryGirl.define do
     initialize_with { new(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json")) }
   end
 
+  factory :usage_record, :class => Usage::Record do
+    skip_create
+    account
+    category "calls"
+    start_date "2012-09-01"
+    end_date "2012-09-30"
+  end
+
   factory :call_data_record do
     transient do
       cdr { build(:freeswitch_cdr) }
