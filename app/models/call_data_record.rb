@@ -1,5 +1,8 @@
 class CallDataRecord < ApplicationRecord
-  DIRECTIONS = ["inbound", "outbound"]
+  INBOUND_DIRECTION  = "inbound"
+  OUTBOUND_DIRECTION = "outbound"
+
+  DIRECTIONS = [INBOUND_DIRECTION, OUTBOUND_DIRECTION]
 
   attachment :file, :content_type => ["application/json"]
 
@@ -32,6 +35,38 @@ class CallDataRecord < ApplicationRecord
     self.answer_time = parse_epoch(cdr.answer_epoch)
     self.sip_term_status = cdr.sip_term_status
     save
+  end
+
+  def self.outbound
+    where(:direction => OUTBOUND_DIRECTION)
+  end
+
+  def self.billable
+    where(self.arel_table[:bill_sec].gt(0))
+  end
+
+  def self.between_dates(start_date, end_date)
+    on_or_after_date(start_date).on_or_before_date(end_date)
+  end
+
+  def self.on_or_after_date(date)
+    date ? where(self.arel_table[:start_time].gteq(date)) : all
+  end
+
+  def self.on_or_before_date(date)
+    date ? where(self.arel_table[:start_time].lteq(date)) : all
+  end
+
+  def self.bill_minutes
+    bill_minutes_scope.sum(bill_minutes_sum)
+  end
+
+  def self.bill_minutes_scope
+    billable
+  end
+
+  def self.bill_minutes_sum
+    "((#{self.table_name}.bill_sec - 1) / 60) + 1"
   end
 
   private

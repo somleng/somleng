@@ -19,8 +19,8 @@ class Account < ApplicationRecord
     access_token && access_token.token
   end
 
-  def build_usage_record(params = {})
-    Usage::Record.new(params.merge("account" => self))
+  def build_usage_record_collection(params = {})
+    Usage::Record::Collection.new(params.merge("account" => self))
   end
 
   private

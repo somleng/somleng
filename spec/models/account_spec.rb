@@ -17,12 +17,12 @@ describe Account do
     end
   end
 
-  describe "#build_usage_record(params = {})" do
+  describe "#build_usage_record_collection(params = {})" do
     let(:params) { {} }
-    let(:usage_record) { subject.build_usage_record(params) }
+    let(:usage_record_collection) { subject.build_usage_record_collection(params) }
 
     def assert_usage_record!
-      expect(usage_record.account).to eq(subject)
+      expect(usage_record_collection.account).to eq(subject)
     end
 
     it { assert_usage_record! }

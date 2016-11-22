@@ -60,6 +60,18 @@ class PhoneCall < ApplicationRecord
     end
   end
 
+  def self.billable
+    joins(:call_data_record).merge(CallDataRecord.billable)
+  end
+
+  def self.between_dates(*args)
+    joins(:call_data_record).merge(CallDataRecord.between_dates(*args))
+  end
+
+  def self.bill_minutes
+    joins(:call_data_record).merge(CallDataRecord.bill_minutes_scope).sum(CallDataRecord.bill_minutes_sum)
+  end
+
   def initiate_or_cancel!
     external_id? ? initiate! : cancel!
   end

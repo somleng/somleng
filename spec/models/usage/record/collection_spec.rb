@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe Usage::Record do
-  let(:factory) { :usage_record }
+describe Usage::Record::Collection do
+  let(:factory) { :usage_record_collection }
 
   describe "#initialize" do
     let(:attributes) { attributes_for(factory) }
@@ -25,5 +25,19 @@ describe Usage::Record do
     end
 
     it { assert_initialized! }
+  end
+
+  describe "#to_json" do
+    subject { create(factory) }
+    let(:json) { JSON.parse(subject.to_json) }
+
+    def assert_json!
+      expect(json).to have_key("usage_records")
+      usage_records = json["usage_records"]
+      calls_usage = usage_records[0]
+      expect(calls_usage)["category"].to eq("calls")
+    end
+
+    it { assert_json! }
   end
 end

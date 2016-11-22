@@ -9,7 +9,7 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Usage/Records'" do
     context "valid request" do
       def assert_valid_request!
         expect(response.code).to eq("200")
-        expect(JSON.parse(response.body).keys).to match_array(JSON.parse(Usage::Record.new.to_json).keys)
+        expect(JSON.parse(response.body).keys).to match_array(JSON.parse(Usage::Record::Collection.new.to_json).keys)
       end
 
       it { assert_valid_request! }

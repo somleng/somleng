@@ -2,7 +2,7 @@ class Api::Usage::RecordsController < Api::Usage::BaseController
   private
 
   def find_resource
-    @resource = current_account.build_usage_record(permitted_params)
+    @resource = current_account.build_usage_record_collection(permitted_params)
   end
 
   def permitted_params
