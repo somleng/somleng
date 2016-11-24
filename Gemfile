@@ -10,6 +10,7 @@ gem 'puma'
 gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
+gem 'money-rails'
 
 gem 'refile', :github => "refile/refile", :require => "refile/rails"
 gem "refile-s3", :github => "refile/refile-s3"
@@ -18,7 +19,11 @@ gem 'sinatra', :github => "sinatra/sinatra"
 
 gem 'bitmask_attributes', :github => "numerex/bitmask_attributes"
 
+# Replace with your custom call routing logic
 gem 'twilreapi-active_call_router', :github => "dwilkie/twilreapi-active_call_router"
+
+# Replace with your custom billing logic
+gem 'twilreapi-active_biller', :github => "dwilkie/twilreapi-active_biller"
 
 # Use active_elastic_job as queue adapter and excute jobs in this application
 gem 'active_elastic_job', :github => "tawan/active-elastic-job"

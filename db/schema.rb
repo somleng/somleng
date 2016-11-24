@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103060826) do
+ActiveRecord::Schema.define(version: 20161124024706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,8 @@ ActiveRecord::Schema.define(version: 20161103060826) do
     t.datetime "end_time",          null: false
     t.datetime "answer_time"
     t.string   "sip_term_status"
+    t.integer  "price_microunits",  null: false
+    t.string   "price_currency",    null: false
     t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id", using: :btree
   end
 

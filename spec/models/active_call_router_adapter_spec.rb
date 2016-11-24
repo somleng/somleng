@@ -27,7 +27,7 @@ describe ActiveCallRouterAdapter do
     end
 
     context "if the custom call router class is not defined" do
-      describe ".instance(source, destination)" do
+      describe ".instance(*args)" do
         it { expect(subject.class).to eq(Twilreapi::ActiveCallRouter::Base) }
       end
     end

@@ -34,7 +34,7 @@ class Usage::Record::Calls < Usage::Record::Base
   end
 
   def price
-    phone_calls.sum(:price)
+    phone_calls.total_price_in_usd.to_s
   end
 
   private

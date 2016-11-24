@@ -54,4 +54,20 @@ describe Usage::Record::Calls do
 
     it { assert_usage! }
   end
+
+  describe "#price" do
+    subject { build(factory, :account => account) }
+    let(:account) { create(:account) }
+
+    before do
+      create(:call_data_record, :billable, :account => account, :price => Money.new(8750, "USD6"))
+      create(:call_data_record, :billable, :account => account, :price => Money.new(31000, "USD6"))
+    end
+
+    def assert_price!
+      expect(subject.price).to eq("0.04")
+    end
+
+    it { assert_price! }
+  end
 end

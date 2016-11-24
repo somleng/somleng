@@ -61,15 +61,23 @@ class PhoneCall < ApplicationRecord
   end
 
   def self.billable
-    joins(:call_data_record).merge(CallDataRecord.billable)
+    cdr_query.billable
   end
 
   def self.between_dates(*args)
-    joins(:call_data_record).merge(CallDataRecord.between_dates(*args))
+    cdr_query.between_dates(*args)
   end
 
   def self.bill_minutes
-    joins(:call_data_record).merge(CallDataRecord.bill_minutes_scope).sum(CallDataRecord.bill_minutes_sum)
+    cdr_query.bill_minutes
+  end
+
+  def self.total_price_in_usd
+    cdr_query.total_price_in_usd
+  end
+
+  def self.cdr_query
+    CallDataRecord::Query.new(joins(:call_data_record), CallDataRecord)
   end
 
   def initiate_or_cancel!
