@@ -77,7 +77,11 @@ class PhoneCall < ApplicationRecord
   end
 
   def self.cdr_query
-    CallDataRecord::Query.new(joins(:call_data_record), CallDataRecord)
+    CallDataRecord::Query.new(:scope => joins(:call_data_record))
+  end
+
+  def self.execute_cdr_query
+    joins(:call_data_record).merge(CallDataRecord)
   end
 
   def initiate_or_cancel!

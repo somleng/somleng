@@ -30,8 +30,24 @@ describe CallDataRecord do
   end
 
   describe "queries" do
+    describe ".bill_minutes" do
+      before do
+        create(:call_data_record, :bill_sec => 60)
+        create(:call_data_record, :bill_sec => 61)
+        create(:call_data_record, :bill_sec => 0)
+        create(:call_data_record, :bill_sec => 1)
+      end
+
+      it { expect(described_class.bill_minutes).to eq(4) }
+    end
+
     describe ".total_price_in_usd" do
-      pending
+      before do
+        create(:call_data_record, :price => Money.new(8750, "USD6"))
+        create(:call_data_record, :price => Money.new(31000, "USD6"))
+      end
+
+      it { expect(described_class.total_price_in_usd).to eq(Money.new(4, "USD")) }
     end
 
     describe ".billable" do
@@ -43,17 +59,6 @@ describe CallDataRecord do
       end
 
       it { expect(described_class.billable).to match_array([billable_cdr]) }
-    end
-
-    describe ".bill_minutes" do
-      before do
-        create(:call_data_record, :bill_sec => 60)
-        create(:call_data_record, :bill_sec => 61)
-        create(:call_data_record, :bill_sec => 0)
-        create(:call_data_record, :bill_sec => 1)
-      end
-
-      it { expect(described_class.bill_minutes).to eq(4) }
     end
 
     describe ".between_dates(start_date, end_date)" do

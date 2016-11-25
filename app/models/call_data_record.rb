@@ -46,35 +46,46 @@ class CallDataRecord < ApplicationRecord
   end
 
   class Query
-    attr_accessor :scope, :active_record_class, :arel_table
+    attr_accessor :scope, :arel_table
 
-    def initialize(scope, active_record_class)
-      self.scope = scope
-      self.active_record_class = active_record_class
-      self.arel_table = active_record_class.arel_table
+    def initialize(options = {})
+      self.scope = options[:scope] || CallDataRecord.all
+      self.arel_table = CallDataRecord.arel_table
     end
 
-    def total_price_in_usd
-      total_price_in_money.exchange_to("USD")
-    end
-
-    def bill_minutes
-      scope.billable.sum("((bill_sec - 1) / 60) + 1")
-    end
+    # Scopes
 
     def outbound
-      scope.where(:direction => OUTBOUND_DIRECTION)
+      scope.merge(CallDataRecord.where(:direction => OUTBOUND_DIRECTION))
     end
 
     def billable
-      scope.where(arel_table[:bill_sec].gt(0))
+      scope.merge(CallDataRecord.where(arel_table[:bill_sec].gt(0)))
     end
 
     def between_dates(start_date, end_date)
       scope.merge(on_or_after_date(start_date)).merge(on_or_before_date(end_date))
     end
 
+    # Aggregate functions
+
+    def bill_minutes
+      scope.billable.sum("((\"#{CallDataRecord.table_name}\".\"bill_sec\" - 1) / 60) + 1")
+    end
+
+    def total_price_in_usd
+      total_price_in_money.exchange_to("USD")
+    end
+
     private
+
+    def on_or_after_date(date)
+      date ? CallDataRecord.where(arel_table[:start_time].gteq(date)) : CallDataRecord.all
+    end
+
+    def on_or_before_date(date)
+      date ? CallDataRecord.where(arel_table[:start_time].lteq(date)) : CallDataRecord.all
+    end
 
     def total_price_in_microunits
       scope.sum(:price_microunits)
@@ -82,14 +93,6 @@ class CallDataRecord < ApplicationRecord
 
     def total_price_in_money
       Money.new(total_price_in_microunits, DEFAULT_PRICE_STORE_CURRENCY)
-    end
-
-    def on_or_after_date(date)
-      date ? active_record_class.where(arel_table[:start_time].gteq(date)) : active_record_class.all
-    end
-
-    def on_or_before_date(date)
-      date ? active_record_class.where(arel_table[:start_time].lteq(date)) : active_record_class.all
     end
   end
 
@@ -114,7 +117,7 @@ class CallDataRecord < ApplicationRecord
   end
 
   def self.query
-    Query.new(all, self)
+    Query.new
   end
 
   private
