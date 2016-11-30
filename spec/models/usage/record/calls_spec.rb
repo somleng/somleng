@@ -2,12 +2,9 @@ require 'rails_helper'
 
 describe Usage::Record::Calls do
   let(:factory) { :calls_usage_record }
+  let(:asserted_category) { "calls" }
 
   include_examples "usage_record"
-
-  describe ".category" do
-    it { expect(described_class.category).to eq("calls") }
-  end
 
   describe ".description" do
     it { expect(described_class.description).to eq("Voice Minutes") }

@@ -32,8 +32,8 @@ FactoryGirl.define do
     skip_create
     account
     category "calls"
-    start_date "2012-09-01"
-    end_date "2012-09-30"
+    start_date { Date.new(2015, 9, 30) }
+    end_date { Date.new(2015, 10, 31) }
   end
 
   factory :calls_usage_record, :class => Usage::Record::Calls do

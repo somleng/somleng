@@ -84,6 +84,12 @@ describe CallDataRecord do
 
         expect(
           described_class.between_dates(
+            "2015-09-30", "2015-09-30"
+          )
+        ).to match_array([cdr])
+
+        expect(
+          described_class.between_dates(
             Date.new(2015, 9, 30), nil
           )
         ).to match_array([cdr])
