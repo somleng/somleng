@@ -226,6 +226,8 @@ GEM
     slop (3.6.0)
     spring (2.0.0)
       activesupport (>= 4.2)
+    spring-commands-rspec (1.0.4)
+      spring (>= 0.9.1)
     sprockets (3.7.0)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -270,6 +272,7 @@ DEPENDENCIES
   shoulda-matchers
   sinatra!
   spring
+  spring-commands-rspec
   twilreapi-active_biller!
   twilreapi-active_call_router!
   twilreapi-worker!

@@ -42,13 +42,14 @@ group :production do
 end
 
 group :development, :test do
-  gem 'spring'
   gem 'pry'
   gem 'rspec-rails'
 end
 
 group :development do
   gem 'foreman'
+  gem 'spring'
+  gem 'spring-commands-rspec'
 end
 
 group :test do
