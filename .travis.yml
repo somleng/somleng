@@ -3,6 +3,8 @@ services:
 - postgresql
 addons:
   postgresql: '9.4'
+before_install:
+- bundle config github.https true
 before_script:
 - psql -c 'create database twilreapi_test;' -U postgres
 - psql -U postgres -c "create extension pgcrypto"
