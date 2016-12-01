@@ -19,10 +19,10 @@ gem 'sinatra', :github => "sinatra/sinatra"
 
 gem 'bitmask_attributes', :github => "numerex/bitmask_attributes"
 
-# Replace with your custom call routing logic
+# Add your custom call routing logic
 gem 'twilreapi-active_call_router', :github => "dwilkie/twilreapi-active_call_router"
 
-# Replace with your custom billing logic
+# Add your custom billing logic
 gem 'twilreapi-active_biller', :github => "dwilkie/twilreapi-active_biller"
 
 # Use active_elastic_job as queue adapter and excute jobs in this application
