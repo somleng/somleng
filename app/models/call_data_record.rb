@@ -41,7 +41,7 @@ class CallDataRecord < ApplicationRecord
     self.end_time = parse_epoch(cdr.end_epoch)
     self.answer_time = parse_epoch(cdr.answer_epoch)
     self.sip_term_status = cdr.sip_term_status
-    self.price = calculate_price(cdr)
+    self.price = calculate_price
     save
   end
 
@@ -122,8 +122,8 @@ class CallDataRecord < ApplicationRecord
 
   private
 
-  def calculate_price(cdr)
-    active_biller.options = {:cdr => cdr}
+  def calculate_price
+    active_biller.options = {:call_data_record => self}
     self.price = Money.new(active_biller.calculate_price_in_micro_units, DEFAULT_PRICE_STORE_CURRENCY)
   end
 
