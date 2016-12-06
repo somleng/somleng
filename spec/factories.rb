@@ -42,6 +42,7 @@ FactoryGirl.define do
 
     factory :calls_usage_record, :class => Usage::Record::Calls
     factory :calls_inbound_usage_record, :class => Usage::Record::CallsInbound
+    factory :calls_outbound_usage_record, :class => Usage::Record::CallsOutbound
   end
 
   factory :call_data_record do

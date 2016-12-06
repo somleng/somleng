@@ -80,6 +80,10 @@ class PhoneCall < ApplicationRecord
     cdr_query.inbound
   end
 
+  def self.outbound
+    cdr_query.outbound
+  end
+
   def self.cdr_query
     CallDataRecord::Query.new(:scope => joins(:call_data_record))
   end
