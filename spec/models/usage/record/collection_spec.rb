@@ -29,7 +29,7 @@ describe Usage::Record::Collection do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:account) }
-    it { is_expected.to validate_inclusion_of(:category).in_array(["calls"]) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(["calls", "calls-inbound"]) }
     it { is_expected.to allow_value("2016-09-30").for(:start_date) }
     it { is_expected.not_to allow_value("2016-09-31").for(:start_date) }
     it { is_expected.not_to allow_value("foobarbz").for(:start_date) }
@@ -117,7 +117,9 @@ describe Usage::Record::Collection do
       expect(json.keys).to match_array(json_keys)
       usage_records = json["usage_records"]
       calls_usage = usage_records[0]
+      calls_inbound_usage = usage_records[1]
       expect(calls_usage["category"]).to eq("calls")
+      expect(calls_inbound_usage["category"]).to eq("calls-inbound")
     end
 
     it { assert_json! }

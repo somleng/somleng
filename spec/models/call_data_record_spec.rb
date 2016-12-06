@@ -120,6 +120,17 @@ describe CallDataRecord do
 
       it { expect(described_class.outbound).to match_array([outbound_cdr]) }
     end
+
+    describe ".inbound" do
+      let(:inbound_cdr) { create(:call_data_record, :inbound) }
+
+      before do
+        inbound_cdr
+        create(:call_data_record, :outbound)
+      end
+
+      it { expect(described_class.inbound).to match_array([inbound_cdr]) }
+    end
   end
 
   describe "#enqueue_process!(cdr)" do

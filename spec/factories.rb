@@ -36,9 +36,12 @@ FactoryGirl.define do
     end_date { Date.new(2015, 10, 31) }
   end
 
-  factory :calls_usage_record, :class => Usage::Record::Calls do
+  factory :base_usage_record, :class => Usage::Record::Base do
     skip_create
     account
+
+    factory :calls_usage_record, :class => Usage::Record::Calls
+    factory :calls_inbound_usage_record, :class => Usage::Record::CallsInbound
   end
 
   factory :call_data_record do

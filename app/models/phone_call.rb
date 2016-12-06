@@ -76,6 +76,10 @@ class PhoneCall < ApplicationRecord
     cdr_query.total_price_in_usd
   end
 
+  def self.inbound
+    cdr_query.inbound
+  end
+
   def self.cdr_query
     CallDataRecord::Query.new(:scope => joins(:call_data_record))
   end

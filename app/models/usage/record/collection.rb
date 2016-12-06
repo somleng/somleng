@@ -6,7 +6,7 @@ class Usage::Record::Collection
   include TwilioJson
 
   CATEGORIES = [
-    "calls"
+    "calls", "calls-inbound"
   ]
 
   DEFAULT_PAGE_SIZE = 50
@@ -46,12 +46,19 @@ class Usage::Record::Collection
 
   def usage_records
     [
-      usage_record_calls
+      usage_record_calls,
+      usage_record_calls_inbound
     ]
   end
 
   def usage_record_calls
     @usage_record_calls ||= Usage::Record::Calls.new(
+      :account => account, :start_date => start_date, :end_date => end_date
+    )
+  end
+
+  def usage_record_calls_inbound
+    @usage_record_calls_inbound ||= Usage::Record::CallsInbound.new(
       :account => account, :start_date => start_date, :end_date => end_date
     )
   end

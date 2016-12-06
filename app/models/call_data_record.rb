@@ -55,6 +55,10 @@ class CallDataRecord < ApplicationRecord
 
     # Scopes
 
+    def inbound
+      scope.merge(CallDataRecord.where(:direction => INBOUND_DIRECTION))
+    end
+
     def outbound
       scope.merge(CallDataRecord.where(:direction => OUTBOUND_DIRECTION))
     end
@@ -98,6 +102,10 @@ class CallDataRecord < ApplicationRecord
 
   def self.outbound
     query.outbound
+  end
+
+  def self.inbound
+    query.inbound
   end
 
   def self.billable
