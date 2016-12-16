@@ -39,6 +39,14 @@ describe CDR::Freeswitch do
     it { expect(subject.sip_term_status).to eq("487") }
   end
 
+  describe "#sip_invite_failure_status" do
+    it { expect(subject.sip_invite_failure_status).to eq("487") }
+  end
+
+  describe "#sip_invite_failure_phrase" do
+    it { expect(subject.sip_invite_failure_phrase).to eq("Internal Server Error") }
+  end
+
   describe "#to_file" do
     def assert_file!
       content_type, filename, file = subject.to_file

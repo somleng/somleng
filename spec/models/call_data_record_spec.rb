@@ -190,6 +190,8 @@ describe CallDataRecord do
         expect(subject.end_time).to eq(Time.at(freeswitch_cdr.end_epoch.to_i))
         expect(subject.answer_time).to eq(nil)
         expect(subject.sip_term_status).to eq(freeswitch_cdr.sip_term_status)
+        expect(subject.sip_invite_failure_status).to eq(freeswitch_cdr.sip_invite_failure_status)
+        expect(subject.sip_invite_failure_phrase).to eq(freeswitch_cdr.sip_invite_failure_phrase)
         expect(subject.price).to eq(0)
       end
 

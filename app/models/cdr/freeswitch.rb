@@ -46,6 +46,14 @@ class CDR::Freeswitch
     variables["sip_term_status"]
   end
 
+  def sip_invite_failure_status
+    variables["sip_invite_failure_status"]
+  end
+
+  def sip_invite_failure_phrase
+    URI.unescape(variables["sip_invite_failure_phrase"].to_s).presence
+  end
+
   private
 
   def filename

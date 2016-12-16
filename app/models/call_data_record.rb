@@ -41,6 +41,8 @@ class CallDataRecord < ApplicationRecord
     self.end_time = parse_epoch(cdr.end_epoch)
     self.answer_time = parse_epoch(cdr.answer_epoch)
     self.sip_term_status = cdr.sip_term_status
+    self.sip_invite_failure_status = cdr.sip_invite_failure_status
+    self.sip_invite_failure_phrase = cdr.sip_invite_failure_phrase
     self.price = calculate_price
     save
   end
