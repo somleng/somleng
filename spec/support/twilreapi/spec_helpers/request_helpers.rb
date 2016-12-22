@@ -9,6 +9,19 @@ module Twilreapi::SpecHelpers::RequestHelpers
 
   def assert_unauthorized!
     expect(response.code).to eq("401")
+    expect(response.body).to be_present
+  end
+
+  def assert_not_found!
+    expect(response.code).to eq("404")
+    expect(response.body).to be_present
+    expect(JSON.parse(response.body)["status"]).to eq(404)
+  end
+
+  def assert_invalid_request!
+    expect(response.code).to eq("422")
+    expect(response.body).to be_present
+    expect(JSON.parse(response.body)["status"]).to eq(422)
   end
 
   def account

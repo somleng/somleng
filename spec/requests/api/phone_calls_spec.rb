@@ -17,7 +17,7 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
 
       context "wrong AccountSid" do
         let(:account_sid) { "wrong" }
-        it { assert_unauthorized! }
+        it { assert_not_found! }
       end
 
       context "no authorization" do
@@ -57,6 +57,10 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
       end
 
       it { assert_valid_request! }
+    end
+
+    context "invalid request" do
+      it { assert_invalid_request! }
     end
   end
 

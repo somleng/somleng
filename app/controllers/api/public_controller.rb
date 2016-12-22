@@ -4,7 +4,7 @@ class Api::PublicController < Api::BaseController
   private
 
   def authorize_account!
-    deny_access! if current_account != Account.find_by_id(params[:account_id])
+    deny_access! if current_account != Account.find(params[:account_id])
   end
 
   def respond_with_resource

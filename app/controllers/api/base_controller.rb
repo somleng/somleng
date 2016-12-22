@@ -1,6 +1,8 @@
 class Api::BaseController < ApplicationController
+  self.responder = Api::BaseResponder
   protect_from_forgery :with => :null_session
 
+  rescue_from ActiveRecord::RecordNotFound, :with => :not_found!
   respond_to :json
   before_action :request_basic_auth, :doorkeeper_authorize!
 
@@ -17,6 +19,18 @@ class Api::BaseController < ApplicationController
   end
 
   private
+
+  def doorkeeper_unauthorized_render_options(error = nil)
+    { :json => twilio_unauthorized_error }
+  end
+
+  def twilio_unauthorized_error(options = {})
+    Twilio::ApiError::Unauthorized.new(options).to_hash
+  end
+
+  def twilio_not_found_error(options = {})
+    Twilio::ApiError::NotFound.new({:request_url => request.original_fullpath}.merge(options))
+  end
 
   def setup_resource
   end
@@ -41,8 +55,12 @@ class Api::BaseController < ApplicationController
     request_http_basic_authentication("Twilio API") if !request.authorization
   end
 
-  def deny_access!
-    head(:unauthorized)
+  def not_found!
+    render(:json => twilio_not_found_error, :status => :not_found)
+  end
+
+  def deny_access!(options = {})
+    render(:json => twilio_unauthorized_error(options), :status => :unauthorized)
   end
 
   def current_account
