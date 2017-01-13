@@ -25,8 +25,13 @@ describe PhoneCall do
       end
     end
 
+    context "for outbound calls" do
+      it { is_expected.not_to allow_value("855970001294").for(:to) }
+    end
+
     context "for inbound calls" do
       subject { build(factory, :inbound) }
+      it { is_expected.to allow_value("855970001294").for(:to) }
       it { is_expected.to validate_presence_of(:external_id) }
       it { is_expected.to validate_presence_of(:incoming_phone_number) }
     end
@@ -143,7 +148,14 @@ describe PhoneCall do
         is_expected.to be_initiated
       end
 
-      it { assert_created! }
+      context "standard incoming phone number" do
+        it { assert_created! }
+      end
+
+      context "non-standard incoming phone number (https://github.com/dwilkie/twilreapi/issues/17)" do
+        let(:phone_number) { "+855970001294" }
+        it { assert_created! }
+      end
     end
   end
 

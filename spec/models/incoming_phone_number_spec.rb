@@ -5,7 +5,7 @@ describe IncomingPhoneNumber do
 
   it_behaves_like "twilio_api_resource"
   it_behaves_like "twilio_url_logic"
-  it_behaves_like "phone_number_attribute" do
+  it_behaves_like "phone_number_attribute", :validate_format => false do
     let(:phone_number_attribute) { :phone_number }
   end
 

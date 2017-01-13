@@ -15,7 +15,8 @@ class PhoneCall < ApplicationRecord
   before_validation :normalize_phone_numbers
 
   validates :from, :status, :presence => true
-  validates :to, :presence => true, :phony_plausible => true
+  validates :to,
+            :presence => true, :phony_plausible => { :unless => :inbound? }
   validates :external_id, :uniqueness => true, :strict => true, :allow_nil => true
   validates :external_id, :incoming_phone_number, :presence => true, :if => :inbound?
 

@@ -6,7 +6,6 @@ class IncomingPhoneNumber < ApplicationRecord
 
   validates :phone_number,
             :uniqueness => {:case_sensitive => false, :strict => true},
-            :phony_plausible => true,
             :presence => true
 
   phony_normalize :phone_number
