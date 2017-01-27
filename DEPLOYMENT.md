@@ -1,19 +1,5 @@
 # Deployment
 
-## Heroku
-
-For testing we recommend deploying to Heroku. In order for Twilreapi to run on Heroku you need to configure [twilreapi-sidekiq](https://github.com/dwilkie/twilreapi-sidekiq) to handle the background processing. In the [Gemfile](https://github.com/tawan/active-elastic-job/blob/master/Gemfile) ensure that Sidekiq is installed, then use the Deploy button below. See [twilreapi-sidekiq](https://github.com/dwilkie/twilreapi-sidekiq) for more info on how to process jobs and connect to [Somleng](https://github.com/dwilkie/somleng) for outbound calls.
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-After deployment seed the database to generate an `Account SID` and `Auth Token` and note down the values.
-
-```
-  $ heroku run rake db:seed
-```
-
-You can seed the database multiple times without generating multiple accounts.
-
 ## AWS Elastic Beanstalk
 
 ### Set up a VPC
