@@ -46,7 +46,7 @@ In order to trigger outbound calls you can connect Twilreapi to [Somleng](https:
 
 ## Deployment
 
-See [DEPLOYMENT](https://github.com/dwilkie/twilreapi/blob/master/DEPLOYMENT.md)
+See [DEPLOYMENT](https://github.com/dwilkie/twilreapi/blob/master/docs/DEPLOYMENT.md)
 
 ## REST API Reference
 

@@ -4,10 +4,7 @@
 
 ### Set up a VPC
 
-1. Allocate an elastic IP address which will be used for your NAT gateway for your private subnet.
-2. Create a new VPC using the wizard with a public and private subnet. Assign the elastic IP that you created above for the NAT Gateway.
-3. Add an additional public and private subnet in a different availability zone. (In total you should have 4 subnets in your VPC. 1 private, and 1 public for each availability zone.
-4. Connect both of your public subnets to the internet gateway, and both of your private subnets to the NAT Gateway.
+See [Setup AWS VPC with public and private subnets](https://github.com/dwilkie/twilreapi/blob/master/docs/AWS_VPC_SETUP.md)
 
 ### Create a new web application environment
 
