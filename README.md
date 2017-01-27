@@ -77,6 +77,12 @@ Launch a new web application environment using the ruby (Puma) platform. When pr
 $ eb create --vpc
 ```
 
+Set the following ENV Variables:
+
+```
+$ eb setenv SECRET_KEY_BASE=`bundle exec rails secret`
+```
+
 ##### Configure background queuing with SQS
 
 In order to queue jobs to SQS, support for [active_elastic_job](https://github.com/tawan/active-elastic-job) is built in. Follow the [README](https://github.com/tawan/active-elastic-job). Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOUND_CALL_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment. See below.
