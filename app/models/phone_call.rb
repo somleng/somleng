@@ -262,6 +262,6 @@ class PhoneCall < ApplicationRecord
   end
 
   def active_call_router
-    @active_call_router ||= ActiveCallRouterAdapter.instance(from, to)
+    @active_call_router ||= ActiveCallRouterAdapter.instance(:phone_call => self)
   end
 end

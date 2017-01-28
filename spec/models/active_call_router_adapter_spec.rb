@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ActiveCallRouterAdapter do
   let(:source) { "8557771" }
   let(:destination) { "85512345678" }
-  let(:args) { [source, destination] }
+  let(:args) { [{:phone_call => "phone_call"}] }
 
   subject { described_class.instance(*args) }
 
@@ -37,7 +37,7 @@ describe ActiveCallRouterAdapter do
 
       let(:klass) do
         Class.new do
-          def initialize(source, destination)
+          def initialize(options = {})
           end
 
           def routing_instructions

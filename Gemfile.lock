@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/dwilkie/twilreapi-active_call_router.git
-  revision: 0ed059e71766a1d427ebae8e9545c5b28cf0d686
+  revision: 1b285a08fcc0710e8a0c6cf39bd6925327395f47
   specs:
     twilreapi-active_call_router (0.1.0)
 
@@ -42,7 +42,7 @@ GIT
 
 GIT
   remote: git://github.com/sinatra/sinatra.git
-  revision: 63e81bc539b36778c6bd50a303750ab52ee2b2fb
+  revision: 6835f4e21cf0f6c1e9a18a5106363b679a9d7e22
   specs:
     rack-protection (2.0.0.beta2)
       rack
@@ -102,29 +102,29 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (7.1.4)
-    aws-sdk (2.6.32)
-      aws-sdk-resources (= 2.6.32)
-    aws-sdk-core (2.6.32)
+    aws-sdk (2.7.3)
+      aws-sdk-resources (= 2.7.3)
+    aws-sdk-core (2.7.3)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.6.32)
-      aws-sdk-core (= 2.6.32)
+    aws-sdk-resources (2.7.3)
+      aws-sdk-core (= 2.7.3)
     aws-sigv4 (1.0.0)
-    builder (3.2.2)
+    builder (3.2.3)
     coderay (1.1.1)
-    concurrent-ruby (1.0.2)
-    diff-lcs (1.2.5)
+    concurrent-ruby (1.0.4)
+    diff-lcs (1.3)
     domain_name (0.5.20161129)
       unf (>= 0.0.5, < 1.0.0)
     doorkeeper (4.2.0)
       railties (>= 4.2)
     erubis (2.7.0)
-    factory_girl (4.7.0)
+    factory_girl (4.8.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.7.0)
-      factory_girl (~> 4.7.0)
+    factory_girl_rails (4.8.0)
+      factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    foreman (0.82.0)
+    foreman (0.83.0)
       thor (~> 0.19.1)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
@@ -140,23 +140,23 @@ GEM
     mime-types (2.99.3)
     mini_portile2 (2.1.0)
     minitest (5.10.1)
-    monetize (1.4.0)
-      money (~> 6.7)
-    money (6.7.1)
+    monetize (1.6.0)
+      money (~> 6.8)
+    money (6.8.1)
       i18n (>= 0.6.4, <= 0.7.0)
       sixarm_ruby_unaccent (>= 1.1.1, < 2)
-    money-rails (1.7.0)
+    money-rails (1.8.0)
       activesupport (>= 3.0)
-      monetize (~> 1.4.0)
-      money (~> 6.7)
+      monetize (~> 1.6.0)
+      money (~> 6.8.1)
       railties (>= 3.0)
     mustermann (1.0.0.beta2)
     netrc (0.11.0)
     nio4r (1.2.1)
-    nokogiri (1.6.8.1)
+    nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
     pg (0.19.0)
-    phony (2.15.36)
+    phony (2.15.40)
     phony_rails (0.14.4)
       activesupport (>= 3.0)
       phony (~> 2.15)
@@ -164,7 +164,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    puma (3.6.2)
+    puma (3.7.0)
     rack (2.0.1)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -180,9 +180,9 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 5.0.0.1)
       sprockets-rails (>= 2.0.0)
-    rails-dom-testing (2.0.1)
+    rails-dom-testing (2.0.2)
       activesupport (>= 4.2.0, < 6.0)
-      nokogiri (~> 1.6.0)
+      nokogiri (~> 1.6)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
     rails_12factor (0.0.3)
@@ -196,7 +196,7 @@ GEM
       method_source
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (11.3.0)
+    rake (12.0.0)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
     rest-client (1.8.0)
@@ -224,11 +224,11 @@ GEM
       activesupport (>= 4.0.0)
     sixarm_ruby_unaccent (1.1.1)
     slop (3.6.0)
-    spring (2.0.0)
+    spring (2.0.1)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
-    sprockets (3.7.0)
+    sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.0)
@@ -237,13 +237,13 @@ GEM
       sprockets (>= 3.0.0)
     thor (0.19.4)
     thread_safe (0.3.5)
-    tilt (2.0.5)
+    tilt (2.0.6)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
-    websocket-driver (0.6.4)
+    websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
 
@@ -278,4 +278,4 @@ DEPENDENCIES
   twilreapi-worker!
 
 BUNDLED WITH
-   1.13.6
+   1.13.7
