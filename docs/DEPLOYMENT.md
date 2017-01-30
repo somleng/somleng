@@ -21,16 +21,32 @@ Set the following ENV Variables:
 $ eb setenv SECRET_KEY_BASE=`bundle exec rails secret`
 ```
 
-#### Configure background queuing with SQS
+#### Connecting to RDS
 
-In order to queue jobs to SQS, support for [active_elastic_job](https://github.com/tawan/active-elastic-job) is built in. Follow the [README](https://github.com/tawan/active-elastic-job). Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOUND_CALL_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment. See below.
+Follow [this guide](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.RDS.html?icmpid=docs_elasticbeanstalk_console)
+
+This needs to be done on both the web and worker environments.
+
+#### Background Processing
+
+In order to queue jobs to SQS, support for [active_elastic_job](https://github.com/tawan/active-elastic-job) is built in. Follow the [README](https://github.com/tawan/active-elastic-job).
+
+To use [Active Elastic Job](https://github.com/tawan/active-elastic-job) set the following ENV Variables in your web environment: `ACTIVE_JOB_USE_ACTIVE_JOB=1 ACTIVE_JOB_QUEUE_ADAPTER=active_elastic_job AWS_REGION=<your-aws-region>`
+
+##### Processing Outbound Calls
+
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOUND_CALL_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment.
+
+##### Processing CDRs
+
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOUND_CALL_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment.
 
 ### Create a new worker environment
 
 Launch a new worker environment using the ruby (Puma) platform. When prompted for the VPC, enter the VPC you created above. When prompted for EC2 subnets, enter the PRIVATE subnets (separated by a comma for both availability zones). Enter the same for your ELB subnets (note there is no ELB for Worker environments so this setting will be ignored)
 
 ```
-$ eb create --vpc --tier worker
+$ eb create --vpc --tier worker -i t2.nano --profile <profile-name>
 ```
 
 #### Configure the queue
@@ -50,12 +66,6 @@ $ cd /var/app/current
 $ sudo su
 $ bundle exec rake <task>
 ```
-
-### Connecting to RDS
-
-Follow [this guide](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.RDS.html?icmpid=docs_elasticbeanstalk_console)
-
-This needs to be done on both the web and worker environments.
 
 ### SSH to the worker environment
 
