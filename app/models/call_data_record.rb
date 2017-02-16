@@ -85,12 +85,16 @@ class CallDataRecord < ApplicationRecord
 
     private
 
+    def cast_as_date(column_name)
+      Arel::Nodes::NamedFunction.new('CAST', [arel_table[column_name].as('DATE')])
+    end
+
     def on_or_after_date(date)
-      date ? CallDataRecord.where(arel_table[:start_time].gteq(date)) : CallDataRecord.all
+      date ? CallDataRecord.where(cast_as_date(:start_time).gteq(date)) : CallDataRecord.all
     end
 
     def on_or_before_date(date)
-      date ? CallDataRecord.where(arel_table[:start_time].lteq(date)) : CallDataRecord.all
+      date ? CallDataRecord.where(cast_as_date(:start_time).lteq(date)) : CallDataRecord.all
     end
 
     def total_price_in_microunits

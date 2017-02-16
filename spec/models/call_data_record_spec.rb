@@ -62,7 +62,7 @@ describe CallDataRecord do
     end
 
     describe ".between_dates(start_date, end_date)" do
-      let(:start_time) { Time.utc("2015", "9", "30", "0", "0", "0") }
+      let(:start_time) { Time.utc("2015", "9", "30", "23", "33", "46") }
       let(:cdr) { create(:call_data_record, :start_time => start_time) }
 
       before do
