@@ -60,25 +60,9 @@ I followed [this article](http://blog.cbeer.info/2016/autoscaling-elasticbeansta
 1. Create two CloudWatch alarms for each SQS queue using the AWS CloudWatch console using the metric `ApproximateNumberOfMessagesVisible`. One alarm should be for scaling up, and the other for scaling down.
 2. Attach the alarm to the AutoScaling group which was created by Elastic Beanstalk for the worker environment.
 
-### Deployment
+### CI Deployment
 
-Since there are multiple environments for your application, it's highly recommended that you deploy using Travis CI instead of manually through the CLI.
-
-To setup deployment via travis to Elastic Beanstalk do the following:
-
-1. Add a new user for travis using the AWS IAM dashboard
-2. Add the user to a new group called `ci`
-3. Add the following Managed Policies to the `ci` group:
-  * AmazonS3FullAccess
-  * AWSElasticBeanstalkFullAccess
-4. Add a new bucket for travis to put the application versions. Put it in the correct region for your application.
-5. Configure `.travis.yml` to deploy to AWS Elastic Beanstalk for each environment, making sure to encrypt your AWS credentials. See [this example](https://github.com/dwilkie/twilreapi/blob/app.somleng.org/.travis.yml) for a working example.
-
-Once you're all setup you can deploy with:
-
-```
-$ git push origin <branch-name>
-```
+See [CI DEPLOYMENT](https://github.com/dwilkie/twilreapi/blob/master/docs/CI_DEPLOYMENT.md)
 
 ### SSH to the worker environment
 
