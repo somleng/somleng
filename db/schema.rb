@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161216094707) do
+ActiveRecord::Schema.define(version: 20170404052005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,14 +46,15 @@ ActiveRecord::Schema.define(version: 20161216094707) do
   end
 
   create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid     "account_id",             null: false
-    t.string   "phone_number",           null: false
-    t.string   "voice_url",              null: false
-    t.string   "voice_method",           null: false
+    t.uuid     "account_id",                  null: false
+    t.string   "phone_number",                null: false
+    t.string   "voice_url",                   null: false
+    t.string   "voice_method",                null: false
     t.string   "status_callback_url"
     t.string   "status_callback_method"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "twilio_request_phone_number"
     t.index ["account_id"], name: "index_incoming_phone_numbers_on_account_id", using: :btree
     t.index ["phone_number"], name: "index_incoming_phone_numbers_on_phone_number", unique: true, using: :btree
   end

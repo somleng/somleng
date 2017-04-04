@@ -14,7 +14,7 @@ class IncomingPhoneNumber < ApplicationRecord
     options ||= {}
     super(
       {
-        :only => [:phone_number]
+        :only => [:phone_number, :twilio_request_phone_number]
       }.merge(options)
     )
   end

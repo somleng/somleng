@@ -26,6 +26,12 @@ describe IncomingPhoneNumber do
   describe "#to_json" do
     subject { create(factory) }
     let(:json) { JSON.parse(subject.to_json) }
-    it { expect(json.keys).to include("phone_number") }
+
+    def assert_json!
+      expect(json.keys).to include("phone_number")
+      expect(json.keys).to include("twilio_request_phone_number")
+    end
+
+    it { assert_json! }
   end
 end
