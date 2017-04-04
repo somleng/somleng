@@ -64,7 +64,7 @@ describe PhoneCall do
     describe "#to_internal_inbound_call_json" do
       subject { create(factory, :inbound) }
       let(:json_method) { :to_internal_inbound_call_json }
-      it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to"]) }
+      it { expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "status_callback_url", "status_callback_method", "from", "to", "twilio_request_to"]) }
     end
   end
 
@@ -129,7 +129,14 @@ describe PhoneCall do
     end
 
     context "given an matching incoming phone number" do
-      let(:incoming_phone_number) { create(:incoming_phone_number, :phone_number => phone_number) }
+      let(:twilio_incoming_phone_number) { "12345678" }
+      let(:incoming_phone_number) {
+        create(
+          :incoming_phone_number,
+          :with_twilio_request_phone_number,
+          :phone_number => phone_number
+        )
+      }
 
       def setup_scenario
         super
@@ -145,6 +152,7 @@ describe PhoneCall do
         expect(subject.external_id).to eq(external_id)
         expect(subject.account).to eq(incoming_phone_number.account)
         expect(subject.incoming_phone_number).to eq(incoming_phone_number)
+        expect(subject.twilio_request_to).to eq(incoming_phone_number.twilio_request_phone_number)
         is_expected.to be_initiated
       end
 

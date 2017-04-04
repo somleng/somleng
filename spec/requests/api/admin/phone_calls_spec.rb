@@ -54,6 +54,7 @@ describe "'/api/admin/phone_calls/'" do
         let(:parsed_response) { JSON.parse(response.body) }
         let(:phone_call) { PhoneCall.find(parsed_response["sid"]) }
 
+
         def setup_scenario
           incoming_phone_number
         end
@@ -61,7 +62,7 @@ describe "'/api/admin/phone_calls/'" do
         def assert_valid_request!
           expect(response.code).to eq("201")
           expect(phone_call.from).to eq(from)
-          expect(response.body).to eq(phone_call.to_internal_inbound_call_json)
+          expect(parsed_response.keys).to match_array(JSON.parse(phone_call.to_internal_inbound_call_json).keys)
         end
 
         it { assert_valid_request! }

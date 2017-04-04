@@ -110,6 +110,11 @@ FactoryGirl.define do
       with_normalized_voice_method
       with_status_callback_url
       with_status_callback_method
+      with_twilio_request_phone_number
+    end
+
+    trait :with_twilio_request_phone_number do
+      twilio_request_phone_number "123456789"
     end
   end
 
