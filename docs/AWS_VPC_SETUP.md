@@ -48,11 +48,12 @@ A NAT Gateway allows instances on your private subnets to access the Internet, w
 
 Add a route table for your *public* subnets with the following rules:
 
-Destination: `10.0.0.0/16`
-Target     : `local`      # This should be already set
+| Destination   | Target       |
+| ------------- |------------- |
+| `10.0.0.0/16` | local        |
+| `0.0.0.0/0`   | `igw-abcdef` |
 
-Destination: `0.0.0.0/0`
-Target     : `igw-abcdef` # ID of your internet gateway
+Where `igw-abcdef` is the ID of your Internet Gateway.
 
 Associate your *public* subnets with the route table. Note this will remove them from the main route table (this is ok).
 
@@ -60,10 +61,11 @@ Associate your *public* subnets with the route table. Note this will remove them
 
 Add a new route table for your *private* subnets or use the existing main route table with the following rules:
 
-Destination: `10.0.0.0/16`
-Target     : `local`      # This should be already set
+| Destination   | Target       |
+| ------------- |------------- |
+| `10.0.0.0/16` | local        |
+| `0.0.0.0/0`   | `nat-abcdef` |
 
-Destination: `0.0.0.0/0`
-Target     : `nat-abcdef` # ID of your NAT gateway
+Where `nat-abcdef` is the ID of your NAT Gateway.
 
 Make sure that your private subnets are associated with this route table.
