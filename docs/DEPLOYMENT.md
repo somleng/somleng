@@ -8,11 +8,11 @@ See [Setup AWS VPC with public and private subnets](https://github.com/dwilkie/t
 
 ### Create a new web application environment
 
-Launch a new web application environment using the ruby (Puma) platform. When prompted for the VPC, enter the VPC you created above. When prompted for EC2 subnets, enter the PUBLIC subnets (separated by a comma) for both availability zones. Enter the same for your ELB subnets.
+Launch a new web application environment using the ruby (Puma) platform. When prompted for the VPC, enter the VPC you created above. When prompted if you want to associate a public IP Address select No. When prompted for EC2 subnets, enter your *private* subnets. When prompted for your ELB subnets enter your *public* subnets. This will set up your environment similar to what is shown in [this diagram](http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Scenario2.html).
 
 ```
 $ eb platform select --profile <profile-name>
-$ eb create --vpc --profile <profile-name>
+$ eb create --vpc -r <region> --profile <profile-name>
 ```
 
 Set the following ENV Variables:
@@ -20,6 +20,12 @@ Set the following ENV Variables:
 ```
 $ eb setenv SECRET_KEY_BASE=`bundle exec rails secret`
 ```
+
+### Create a Bastion Host (optional)
+
+Since the EC2 Instances are launched in the private subnets, you cannot access them from the Internet. Follow [this guide](https://github.com/dwilkie/twilreapi/blob/master/docs/AWS_BASTION_HOST.md) to setup a Bastion Host in order to connect to your instances on the private subnet.
+
+Note although not officially recommended, if you're also [setting up FreeSWITCH](https://github.com/dwilkie/freeswitch-config) on a public subnet you could also use this instance as the Bastion Host.
 
 #### Connecting to RDS
 
