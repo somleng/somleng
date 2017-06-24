@@ -24,7 +24,7 @@ $ eb create --vpc -r <region> --profile <profile-name>
 Set the following ENV Variables:
 
 ```
-$ eb setenv SECRET_KEY_BASE=`bundle exec rails secret`
+SECRET_KEY_BASE=`bundle exec rails secret`
 ```
 
 #### Connecting to RDS
@@ -94,13 +94,26 @@ To use [Active Elastic Job](https://github.com/tawan/active-elastic-job) set the
 
 ##### Processing Outbound Calls
 
-Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOUND_CALL_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment.
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOUND_CALL_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment (see below).
 
 ##### Processing CDRs
 
-Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_CALL_DATA_RECORD_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment.
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_CALL_DATA_RECORD_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment (see below).
 
-### Create a new worker environment
+Create an IAM user which has access to S3 and a bucket in which to store the CDRs. Then set the following ENV variables in your web environment:
+
+```
+CDR_STORAGE=s3
+AWS_S3_REFILE_BUCKET=bucket-to-store-cdrs
+AWS_REGION=region
+AWS_S3_REFILE_STORE_PREFIX=store
+AWS_ACCESS_KEY_ID=access-key-id-of-user-who-as-access-to-bucket
+AWS_SECRET_ACCESS_KEY=secret-access-key-id-of-user-who-as-access-to-bucket
+```
+
+### Create worker environments
+
+Create a worker environment for Processing Outbound Calls (twilreapi-outbound-call-processor) and another for Processing CDRs (twilreapi-cdr-processor).
 
 Launch a new worker environment using the ruby (Puma) platform. When prompted for the VPC, enter the VPC you created above. When prompted for EC2 subnets, enter the *private* subnets (separated by a comma for both availability zones). Enter the same for your ELB subnets (note there is no ELB for Worker environments so this setting will be ignored)
 
@@ -108,14 +121,23 @@ Launch a new worker environment using the ruby (Puma) platform. When prompted fo
 $ eb create --vpc --tier worker -i t2.nano --profile <profile-name>
 ```
 
-#### Setup the worker environment
+#### Setup worker environments
 
 Ensure you set `DATABASE_URL` and `SECRET_KEY_BASE` to the same values as you specified for the web environment. In addition specify the following variables:
 
 ```
 RAILS_SKIP_ASSET_COMPILATION=true
 RAILS_SKIP_MIGRATIONS=true
+PROCESS_ACTIVE_ELASTIC_JOBS=true
 ```
+
+For the worker environment that processes outbound calls set the following variables:
+
+```
+TWILREAPI_WORKER_JOB_OUTBOUND_CALL_JOB_DRB_URL=druby://somleng-host-url:9050
+```
+
+For the worker environment that processes CDRs set the S3 storage configuration variables to the [same values](#processing-cdrs) as you set in the web environment
 
 #### Configure the SQS queue
 
