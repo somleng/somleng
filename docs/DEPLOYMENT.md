@@ -6,6 +6,12 @@
 
 See [Setup AWS VPC with public and private subnets](https://github.com/dwilkie/twilreapi/blob/master/docs/AWS_VPC_SETUP.md)
 
+### Create a Bastion Host (optional)
+
+Since the EC2 Instances are launched in the private subnets, you cannot access them from the Internet. Follow [this guide](https://github.com/dwilkie/twilreapi/blob/master/docs/AWS_BASTION_HOST.md) to setup a Bastion Host in order to connect to your instances on the private subnet.
+
+Note although not officially recommended, if you're also [setting up FreeSWITCH](https://github.com/dwilkie/freeswitch-config) on a public subnet you could also use this instance as the Bastion Host.
+
 ### Create a new web application environment
 
 Launch a new web application environment using the ruby (Puma) platform. When prompted for the VPC, enter the VPC you created above. When prompted if you want to associate a public IP Address select No. When prompted for EC2 subnets, enter your *private* subnets. When prompted for your ELB subnets enter your *public* subnets. This will set up your environment similar to what is shown in [this diagram](http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Scenario2.html).
@@ -21,19 +27,66 @@ Set the following ENV Variables:
 $ eb setenv SECRET_KEY_BASE=`bundle exec rails secret`
 ```
 
-### Create a Bastion Host (optional)
-
-Since the EC2 Instances are launched in the private subnets, you cannot access them from the Internet. Follow [this guide](https://github.com/dwilkie/twilreapi/blob/master/docs/AWS_BASTION_HOST.md) to setup a Bastion Host in order to connect to your instances on the private subnet.
-
-Note although not officially recommended, if you're also [setting up FreeSWITCH](https://github.com/dwilkie/freeswitch-config) on a public subnet you could also use this instance as the Bastion Host.
-
 #### Connecting to RDS
 
 Follow [this guide](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.RDS.html?icmpid=docs_elasticbeanstalk_console)
 
 This needs to be done on both the web and worker environments.
 
-#### Background Processing
+#### Setting up the Database
+
+##### Set the DATABASE_URL
+
+```
+$ eb setenv -e <environment-name> --profile <profile-name> DATABASE_URL=postgres://database-endpoint
+```
+
+##### SSH into instance through Bastion Host
+
+```
+$ eb ssh <environment-name> --profile <profile-name> -e "ssh -A"
+```
+
+##### SSH into Twilreapi instance
+
+```
+$ ssh <ip-of-twilreapi-instance>
+```
+
+CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions bin/rails db:seed
+
+##### Move into source code directory and su to root
+
+```
+$ cd /var/app/current
+$ sudo su
+```
+
+##### Load the database schema
+
+```
+$ bundle exec rake db:schema:load
+```
+
+##### Setup an admin account for managing inbound phone calls
+
+```
+$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_inbound_phone_calls bundle exec rake db:seed
+```
+
+##### Setup an admin account for managing Call Data Records
+
+```
+$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_call_data_records bundle exec rake db:seed
+```
+
+##### Setup a user account
+
+```
+$ bundle exec rake db:seed
+```
+
+#### Setup Background Processing
 
 In order to queue jobs to SQS, support for [active_elastic_job](https://github.com/tawan/active-elastic-job) is built in. Follow the [README](https://github.com/tawan/active-elastic-job).
 
@@ -45,14 +98,23 @@ Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOU
 
 ##### Processing CDRs
 
-Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_OUTBOUND_CALL_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment.
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_CALL_DATA_RECORD_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment.
 
 ### Create a new worker environment
 
-Launch a new worker environment using the ruby (Puma) platform. When prompted for the VPC, enter the VPC you created above. When prompted for EC2 subnets, enter the PRIVATE subnets (separated by a comma for both availability zones). Enter the same for your ELB subnets (note there is no ELB for Worker environments so this setting will be ignored)
+Launch a new worker environment using the ruby (Puma) platform. When prompted for the VPC, enter the VPC you created above. When prompted for EC2 subnets, enter the *private* subnets (separated by a comma for both availability zones). Enter the same for your ELB subnets (note there is no ELB for Worker environments so this setting will be ignored)
 
 ```
 $ eb create --vpc --tier worker -i t2.nano --profile <profile-name>
+```
+
+#### Setup the worker environment
+
+Ensure you set `DATABASE_URL` and `SECRET_KEY_BASE` to the same values as you specified for the web environment. In addition specify the following variables:
+
+```
+RAILS_SKIP_ASSET_COMPILATION=true
+RAILS_SKIP_MIGRATIONS=true
 ```
 
 #### Configure the SQS queue
