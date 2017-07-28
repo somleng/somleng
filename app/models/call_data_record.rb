@@ -25,6 +25,10 @@ class CallDataRecord < ApplicationRecord
              :greater_than_or_equal_to => 0,
            }
 
+  attr_accessor :event
+
+  delegate :answered?, :not_answered?, :busy?, :to => :event
+
   def enqueue_process!(cdr)
     job_adapter.perform_later(cdr)
   end
@@ -134,7 +138,18 @@ class CallDataRecord < ApplicationRecord
     Query.new
   end
 
+  def event
+    @event ||= build_event
+  end
+
   private
+
+  def build_event
+    event = PhoneCallEvent.new
+    event.sip_term_status = sip_term_status
+    event.answer_time = answer_time
+    event
+  end
 
   def calculate_price
     active_biller.options = {:call_data_record => self}

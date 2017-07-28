@@ -66,4 +66,8 @@ class Api::BaseController < ApplicationController
   def current_account
     @current_account ||= Account.find(doorkeeper_token && doorkeeper_token.resource_owner_id)
   end
+
+  def respond_with_options
+    {}
+  end
 end

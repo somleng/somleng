@@ -6,6 +6,18 @@ class PhoneCall < ApplicationRecord
     "outbound" => "outbound-api"
   }
 
+  TWILIO_CALL_STATUS_MAPPINGS = {
+    "queued" => "queued",
+    "initiated" => "queued",
+    "ringing" => "ringing",
+    "answered" => "in-progress",
+    "busy" => "busy",
+    "failed" => "failed",
+    "not_answered" => "no-answer",
+    "completed" => "completed",
+    "canceled" => "canceled"
+  }
+
   include TwilioApiResource
   include TwilioUrlLogic
 
@@ -20,7 +32,7 @@ class PhoneCall < ApplicationRecord
   validates :external_id, :uniqueness => true, :strict => true, :allow_nil => true
   validates :external_id, :incoming_phone_number, :presence => true, :if => :inbound?
 
-  attr_accessor :inbound, :twilio_request_to
+  attr_accessor :inbound, :twilio_request_to, :event
 
   alias_attribute :"To", :to
   alias_attribute :"From", :from
@@ -39,7 +51,15 @@ class PhoneCall < ApplicationRecord
            :direction,
            :answer_time,
            :end_time,
+           :answered?,
+           :not_answered?,
+           :busy?,
            :to => :call_data_record,
+           :prefix => true,
+           :allow_nil => true
+
+  delegate :answered?, :not_answered?, :busy?,
+           :to => :event,
            :prefix => true,
            :allow_nil => true
 
@@ -50,6 +70,9 @@ class PhoneCall < ApplicationRecord
     state :initiated
     state :ringing
     state :answered
+    state :busy
+    state :failed
+    state :not_answered
     state :completed
     state :canceled
 
@@ -59,6 +82,34 @@ class PhoneCall < ApplicationRecord
 
     event :cancel do
       transitions :from => :queued, :to => :canceled
+    end
+
+    event :ring do
+      transitions :from => :initiated, :to => :ringing
+    end
+
+    event :answer do
+      transitions :from => [:initiated, :ringing], :to => :answered
+    end
+
+    event :complete do
+      transitions :from => :answered,
+                  :to => :completed
+
+      transitions :from => [:initiated, :ringing],
+                  :to => :completed,
+                  :if => :phone_call_event_answered?
+
+      transitions :from => [:initiated, :ringing],
+                  :to => :not_answered,
+                  :if => :phone_call_event_not_answered?
+
+      transitions :from => [:initiated, :ringing],
+                  :to => :busy,
+                  :if => :phone_call_event_busy?
+
+      transitions :from => [:initiated, :ringing],
+                  :to => :failed
     end
   end
 
@@ -197,7 +248,23 @@ class PhoneCall < ApplicationRecord
     format_number(to)
   end
 
+  def twilio_status
+    TWILIO_CALL_STATUS_MAPPINGS[status]
+  end
+
   private
+
+  def phone_call_event_answered?
+    event_answered? || call_data_record_answered?
+  end
+
+  def phone_call_event_not_answered?
+    event_not_answered? || call_data_record_not_answered?
+  end
+
+  def phone_call_event_busy?
+    event_busy? || call_data_record_busy?
+  end
 
   def inbound?
     !!inbound
@@ -265,5 +332,16 @@ class PhoneCall < ApplicationRecord
 
   def active_call_router
     @active_call_router ||= ActiveCallRouterAdapter.instance(:phone_call => self)
+  end
+
+  def read_attribute_for_serialization(key)
+    method_to_serialize = attributes_for_serialization[key]
+    method_to_serialize && send(method_to_serialize) || super
+  end
+
+  def attributes_for_serialization
+    {
+      "status" => :twilio_status
+    }
   end
 end

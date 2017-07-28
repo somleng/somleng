@@ -4,7 +4,11 @@ class Api::Admin::BaseController < Api::BaseController
   private
 
   def respond_with_resource
-    respond_with(:api, :admin, resource)
+    respond_with(:api, :admin, respond_resource, respond_with_options)
+  end
+
+  def respond_resource
+    resource
   end
 
   def authorize_admin!

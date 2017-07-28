@@ -8,7 +8,8 @@ class Account < ApplicationRecord
   bitmask :permissions,
           :as => [
             :manage_inbound_phone_calls,
-            :manage_call_data_records
+            :manage_call_data_records,
+            :manage_phone_call_events,
           ],
           :null => false
 

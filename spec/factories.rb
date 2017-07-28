@@ -45,6 +45,34 @@ FactoryGirl.define do
     factory :calls_outbound_usage_record, :class => Usage::Record::CallsOutbound
   end
 
+  factory :phone_call_event_base, :class => PhoneCallEvent::Base do
+    association :phone_call, :factory => [:phone_call, :initiated]
+
+    factory :phone_call_event_ringing, :class => PhoneCallEvent::Ringing, :aliases => [:phone_call_event] do
+    end
+
+    factory :phone_call_event_answered, :class => PhoneCallEvent::Answered do
+    end
+
+    factory :phone_call_event_completed, :class => PhoneCallEvent::Completed do
+      trait :busy do
+        sip_term_status "486"
+      end
+
+      trait :not_answered do
+        sip_term_status "480"
+      end
+
+      trait :failed do
+        sip_term_status "404"
+      end
+
+      trait :answered do
+        answer_epoch "1"
+      end
+    end
+  end
+
   factory :call_data_record do
     transient do
       cdr { build(:freeswitch_cdr) }
@@ -74,6 +102,18 @@ FactoryGirl.define do
     trait :not_billable do
       bill_sec 0
       answer_time nil
+    end
+
+    trait :event_answered do
+      billable
+    end
+
+    trait :event_not_answered do
+      sip_term_status "480"
+    end
+
+    trait :event_busy do
+      sip_term_status "486"
     end
 
     duration_sec { cdr.duration_sec }
@@ -134,6 +174,38 @@ FactoryGirl.define do
 
     trait :queued do
       status "queued"
+    end
+
+    trait :initiated do
+      status "initiated"
+    end
+
+    trait :answered do
+      status "answered"
+    end
+
+    trait :not_answered do
+      status "not_answered"
+    end
+
+    trait :ringing do
+      status "ringing"
+    end
+
+    trait :canceled do
+      status "canceled"
+    end
+
+    trait :failed do
+      status "failed"
+    end
+
+    trait :completed do
+      status "completed"
+    end
+
+    trait :busy do
+      status "busy"
     end
 
     trait :with_optional_attributes do

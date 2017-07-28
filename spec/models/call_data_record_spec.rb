@@ -133,6 +133,25 @@ describe CallDataRecord do
     end
   end
 
+  describe "#event" do
+    subject { build(factory, event_trait) }
+
+    describe "#busy?" do
+      let(:event_trait) { :event_busy }
+      it { is_expected.to be_busy }
+    end
+
+    describe "#answered?" do
+      let(:event_trait) { :event_answered }
+      it { is_expected.to be_answered }
+    end
+
+    describe "#not_answered?" do
+      let(:event_trait) { :event_not_answered }
+      it { is_expected.to be_not_answered }
+    end
+  end
+
   describe "#enqueue_process!(cdr)" do
     include ActiveJob::TestHelper
 
