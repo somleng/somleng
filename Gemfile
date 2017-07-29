@@ -11,6 +11,7 @@ gem 'aasm'
 gem 'phony_rails'
 gem 'phony'
 gem 'money-rails'
+gem 'wisper', :github => "krisleech/wisper"
 
 gem 'refile', :github => "refile/refile", :require => "refile/rails"
 gem "refile-s3", :github => "refile/refile-s3"
@@ -56,6 +57,7 @@ group :test do
   gem 'factory_girl_rails'
   gem 'shoulda-matchers'
   gem "simplecov", :require => false
-  gem "codeclimate-test-reporter", "~> 1.0.0"
+  gem 'wisper-rspec'
+  gem 'codeclimate-test-reporter', "~> 1.0.0"
 end
 

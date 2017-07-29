@@ -27,7 +27,7 @@ class CallDataRecord < ApplicationRecord
 
   attr_accessor :event
 
-  delegate :answered?, :not_answered?, :busy?, :to => :event
+  delegate :answered?, :not_answered?, :busy?, :to => :completed_event
 
   def enqueue_process!(cdr)
     job_adapter.perform_later(cdr)
@@ -138,17 +138,17 @@ class CallDataRecord < ApplicationRecord
     Query.new
   end
 
-  def event
-    @event ||= build_event
+  def completed_event
+    @completed_event ||= build_completed_event
   end
 
   private
 
-  def build_event
-    event = PhoneCallEvent.new
-    event.sip_term_status = sip_term_status
-    event.answer_time = answer_time
-    event
+  def build_completed_event
+    completed_event = PhoneCallEvent::Completed.new
+    completed_event.sip_term_status = sip_term_status
+    completed_event.answer_time = answer_time
+    completed_event
   end
 
   def calculate_price

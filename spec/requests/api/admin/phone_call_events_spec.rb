@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe "'/api/admin/phone_calls/:phone_call_id/phone_call_events'" do
-  let(:phone_call) { create(:phone_call) }
+  let(:phone_call) { create(:phone_call, :initiated) }
 
   def account_params
     super.merge(:permissions => [:manage_phone_call_events])
@@ -89,9 +89,14 @@ describe "'/api/admin/phone_calls/:phone_call_id/phone_call_events'" do
         let(:answer_epoch) { "1" }
         let(:sip_term_status) { "480" }
 
+        let(:response_json) { JSON.parse(response.body) }
+
         def assert_valid_request!
           expect(response.code).to eq("201")
-          expect(JSON.parse(response.body)).to have_key("phone_call")
+          expect(response_json).to have_key("phone_call")
+          expect(response_json["params"]["answer_epoch"]).to eq(answer_epoch)
+          expect(response_json["params"]["sip_term_status"]).to eq(sip_term_status)
+          expect(response_json["phone_call"]["status"]).to eq("completed")
         end
 
         it { assert_valid_request! }

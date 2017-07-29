@@ -133,7 +133,7 @@ describe CallDataRecord do
     end
   end
 
-  describe "#event" do
+  describe "#completed_event" do
     subject { build(factory, event_trait) }
 
     describe "#busy?" do

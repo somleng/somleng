@@ -23,6 +23,7 @@ class PhoneCall < ApplicationRecord
 
   belongs_to :incoming_phone_number
   has_one    :call_data_record
+  has_many   :phone_call_events, :class_name => "PhoneCallEvent::Base"
 
   before_validation :normalize_phone_numbers
 
@@ -32,7 +33,7 @@ class PhoneCall < ApplicationRecord
   validates :external_id, :uniqueness => true, :strict => true, :allow_nil => true
   validates :external_id, :incoming_phone_number, :presence => true, :if => :inbound?
 
-  attr_accessor :inbound, :twilio_request_to, :event
+  attr_accessor :inbound, :twilio_request_to, :completed_event
 
   alias_attribute :"To", :to
   alias_attribute :"From", :from
@@ -59,7 +60,7 @@ class PhoneCall < ApplicationRecord
            :allow_nil => true
 
   delegate :answered?, :not_answered?, :busy?,
-           :to => :event,
+           :to => :completed_event,
            :prefix => true,
            :allow_nil => true
 
@@ -255,15 +256,15 @@ class PhoneCall < ApplicationRecord
   private
 
   def phone_call_event_answered?
-    event_answered? || call_data_record_answered?
+    completed_event_answered? || call_data_record_answered?
   end
 
   def phone_call_event_not_answered?
-    event_not_answered? || call_data_record_not_answered?
+    completed_event_not_answered? || call_data_record_not_answered?
   end
 
   def phone_call_event_busy?
-    event_busy? || call_data_record_busy?
+    completed_event_busy? || call_data_record_busy?
   end
 
   def inbound?

@@ -12,6 +12,7 @@ describe PhoneCall do
   describe "associations" do
     it { is_expected.to belong_to(:incoming_phone_number) }
     it { is_expected.to have_one(:call_data_record) }
+    it { is_expected.to have_many(:phone_call_events) }
   end
 
   describe "validations" do
@@ -111,11 +112,11 @@ describe PhoneCall do
       end
 
       def subject_attributes
-        super.merge(:event => phone_call_event)
+        super.merge(:completed_event => phone_call_event)
       end
 
       let(:event) { :complete }
-      let(:phone_call_event) { build(:phone_call_event, *phone_call_event_traits.keys) }
+      let(:phone_call_event) { build(:phone_call_event_completed, *phone_call_event_traits.keys) }
 
       def assert_transitions!
         is_expected.to transition_from(subject.status).to(asserted_next_status).on_event(event)

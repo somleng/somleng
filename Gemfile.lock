@@ -17,6 +17,12 @@ GIT
     twilreapi-worker (0.1.0)
 
 GIT
+  remote: git://github.com/krisleech/wisper.git
+  revision: 7e605f5731dad38a40828c1cf57937d35be8a984
+  specs:
+    wisper (2.0.0)
+
+GIT
   remote: git://github.com/numerex/bitmask_attributes.git
   revision: 0bb0d9993aa6cb3114daa0c118c2bc70a032847c
   specs:
@@ -255,6 +261,7 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
+    wisper-rspec (0.0.3)
 
 PLATFORMS
   ruby
@@ -287,6 +294,8 @@ DEPENDENCIES
   twilreapi-active_biller!
   twilreapi-active_call_router!
   twilreapi-worker!
+  wisper!
+  wisper-rspec
 
 BUNDLED WITH
    1.13.7
