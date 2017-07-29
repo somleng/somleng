@@ -111,6 +111,18 @@ class PhoneCall < ApplicationRecord
 
       transitions :from => [:initiated, :ringing],
                   :to => :failed
+
+      transitions :from => :not_answered,
+                  :to => :not_answered
+
+      transitions :from => :busy,
+                  :to => :busy
+
+      transitions :from => :failed,
+                  :to => :failed
+
+      transitions :from => :completed,
+                  :to => :completed
     end
   end
 

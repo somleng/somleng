@@ -5,6 +5,8 @@ class CallDataRecord < ApplicationRecord
 
   DIRECTIONS = [INBOUND_DIRECTION, OUTBOUND_DIRECTION]
 
+  include Wisper::Publisher
+
   attachment :file, :content_type => ["application/json"]
 
   belongs_to :phone_call
@@ -24,6 +26,8 @@ class CallDataRecord < ApplicationRecord
            :numericality => {
              :greater_than_or_equal_to => 0,
            }
+
+  after_commit   :publish_created, :on => :create
 
   attr_accessor :event
 
@@ -167,5 +171,9 @@ class CallDataRecord < ApplicationRecord
 
   def job_adapter
     @job_adapter ||= JobAdapter.new(:call_data_record_worker)
+  end
+
+  def publish_created
+    broadcast(:call_data_record_created, self)
   end
 end

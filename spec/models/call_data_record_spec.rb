@@ -29,6 +29,16 @@ describe CallDataRecord do
     it { is_expected.to monetize(:price) }
   end
 
+  describe "events" do
+    subject { create(factory) }
+
+    context "create" do
+      it("should broadcast") {
+        assert_broadcasted!(:call_data_record_created) { subject }
+      }
+    end
+  end
+
   describe "queries" do
     describe ".bill_minutes" do
       before do

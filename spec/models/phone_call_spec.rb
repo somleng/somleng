@@ -105,40 +105,51 @@ describe PhoneCall do
     end
 
     describe "#complete" do
-      def phone_call_event_traits
-        {
-          phone_call_event_trait => nil
-        }
-      end
-
-      def subject_attributes
-        super.merge(:completed_event => phone_call_event)
-      end
-
       let(:event) { :complete }
-      let(:phone_call_event) { build(:phone_call_event_completed, *phone_call_event_traits.keys) }
 
       def assert_transitions!
         is_expected.to transition_from(subject.status).to(asserted_next_status).on_event(event)
       end
 
-      # phone_call_event_trait => asserted status
-      asserted_state_transitions = {
-        :not_answered => :not_answered,
-        :busy => :busy,
-        :answered => :completed,
-        :failed => :failed
-      }
+      context "with completed_event" do
+        let(:phone_call_event) { build(:phone_call_event_completed, *phone_call_event_traits.keys) }
 
-      [:initiated, :ringing].each do |current_status_trait|
-        asserted_state_transitions.each do |phone_call_event_trait, asserted_next_status|
-          context "self.status => '#{current_status_trait}', self.event_#{phone_call_event_trait}? => true" do
-            let(:phone_call_event_trait) { phone_call_event_trait }
-            let(:current_status_trait) { current_status_trait }
-            let(:asserted_next_status) { asserted_next_status }
+        def phone_call_event_traits
+          {
+            phone_call_event_trait => nil
+          }
+        end
 
-            it { assert_transitions! }
+        def subject_attributes
+          super.merge(:completed_event => phone_call_event)
+        end
+
+        # phone_call_event_trait => asserted status
+        asserted_state_transitions = {
+          :not_answered => :not_answered,
+          :busy => :busy,
+          :answered => :completed,
+          :failed => :failed
+        }
+
+        [:initiated, :ringing].each do |current_status_trait|
+          asserted_state_transitions.each do |phone_call_event_trait, asserted_next_status|
+            context "self.status => '#{current_status_trait}', self.event_#{phone_call_event_trait}? => true" do
+              let(:phone_call_event_trait) { phone_call_event_trait }
+              let(:current_status_trait) { current_status_trait }
+              let(:asserted_next_status) { asserted_next_status }
+
+              it { assert_transitions! }
+            end
           end
+        end
+      end
+
+      [:not_answered, :busy, :failed, :completed].each do |current_status_trait|
+        context "self.status => '#{current_status_trait}'" do
+          let(:current_status_trait) { current_status_trait }
+          let(:asserted_next_status) { subject.status }
+          it { assert_transitions! }
         end
       end
     end
