@@ -4,7 +4,9 @@
 #
 # Once upgraded flip defaults one by one to migrate to the new default.
 #
-# Read the Rails 5.0 release notes for more info on each option.
+# Read the Guide for Upgrading Ruby on Rails for more info on each option.
+
+Rails.application.config.raise_on_unfiltered_parameters = true
 
 # Enable per-form CSRF tokens. Previous versions had false.
 Rails.application.config.action_controller.per_form_csrf_tokens = false
