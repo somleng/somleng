@@ -37,7 +37,7 @@ describe "'/api/admin/call_data_records'" do
     context "authorized request" do
       let(:params) { freeswitch_cdr.raw_cdr }
       let(:enqueued_job) { enqueued_jobs.first }
-      let(:freeswitch_cdr) { build(:freeswitch_cdr) }
+      let(:freeswitch_cdr) { build(:freeswitch_cdr, :busy) }
       let(:phone_call) { create(:phone_call, :initiated, :external_id => freeswitch_cdr.uuid) }
 
       def setup_scenario
@@ -47,7 +47,7 @@ describe "'/api/admin/call_data_records'" do
 
       def assert_valid_request!
         expect(response.code).to eq("201")
-        expect(phone_call.reload).to be_not_answered # from CDR
+        expect(phone_call.reload).to be_busy
       end
 
       it { assert_valid_request! }

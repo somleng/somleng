@@ -29,16 +29,6 @@ describe CallDataRecord do
     it { is_expected.to monetize(:price) }
   end
 
-  describe "events" do
-    subject { create(factory) }
-
-    context "create" do
-      it("should broadcast") {
-        assert_broadcasted!(:call_data_record_created) { subject }
-      }
-    end
-  end
-
   describe "queries" do
     describe ".bill_minutes" do
       before do
@@ -159,72 +149,6 @@ describe CallDataRecord do
     describe "#not_answered?" do
       let(:event_trait) { :event_not_answered }
       it { is_expected.to be_not_answered }
-    end
-  end
-
-  describe "#enqueue_process!(cdr)" do
-    include ActiveJob::TestHelper
-
-    let(:cdr) { {"some" => "cdr_params"}.to_json }
-
-    subject { described_class.new }
-    let(:enqueued_job) { enqueued_jobs.first }
-
-    before do
-      subject.enqueue_process!(cdr)
-    end
-
-    def assert_enqueued!
-      expect(enqueued_job[:args]).to match_array([cdr])
-    end
-
-    it { assert_enqueued! }
-  end
-
-  describe "#process(cdr)" do
-    let(:freeswitch_cdr) { build(:freeswitch_cdr) }
-    let(:cdr) { freeswitch_cdr.raw_cdr }
-    let(:subject) { described_class.new }
-
-    def setup_scenario
-    end
-
-    before do
-      setup_scenario
-      subject.process(cdr)
-    end
-
-    context "phone call not found" do
-      def assert_cdr_processed!
-        expect(subject).not_to be_persisted
-      end
-
-      it { assert_cdr_processed! }
-    end
-
-    context "phone call found" do
-      let(:phone_call) { create(:phone_call, :external_id => freeswitch_cdr.uuid) }
-
-      def setup_scenario
-        phone_call
-      end
-
-      def assert_cdr_processed!
-        expect(subject).to be_persisted
-        expect(subject.phone_call).to eq(phone_call)
-        expect(subject.direction).to eq(freeswitch_cdr.direction)
-        expect(subject.bill_sec).to eq(freeswitch_cdr.bill_sec.to_i)
-        expect(subject.duration_sec).to eq(freeswitch_cdr.duration_sec.to_i)
-        expect(subject.start_time).to eq(Time.at(freeswitch_cdr.start_epoch.to_i))
-        expect(subject.end_time).to eq(Time.at(freeswitch_cdr.end_epoch.to_i))
-        expect(subject.answer_time).to eq(nil)
-        expect(subject.sip_term_status).to eq(freeswitch_cdr.sip_term_status)
-        expect(subject.sip_invite_failure_status).to eq(freeswitch_cdr.sip_invite_failure_status)
-        expect(subject.sip_invite_failure_phrase).to eq(freeswitch_cdr.sip_invite_failure_phrase)
-        expect(subject.price).to eq(0)
-      end
-
-      it { assert_cdr_processed! }
     end
   end
 end

@@ -5,8 +5,6 @@ class CallDataRecord < ApplicationRecord
 
   DIRECTIONS = [INBOUND_DIRECTION, OUTBOUND_DIRECTION]
 
-  include Wisper::Publisher
-
   attachment :file, :content_type => ["application/json"]
 
   belongs_to :phone_call
@@ -27,33 +25,7 @@ class CallDataRecord < ApplicationRecord
              :greater_than_or_equal_to => 0,
            }
 
-  after_commit   :publish_created, :on => :create
-
-  attr_accessor :event
-
   delegate :answered?, :not_answered?, :busy?, :to => :completed_event
-
-  def enqueue_process!(cdr)
-    job_adapter.perform_later(cdr)
-  end
-
-  def process(raw_cdr)
-    cdr = CDR::Freeswitch.new(raw_cdr)
-    self.phone_call = PhoneCall.find_by_external_id(cdr.uuid)
-    self.file_content_type, self.file_filename, self.file = cdr.to_file
-    self.hangup_cause = cdr.hangup_cause
-    self.direction = cdr.direction
-    self.duration_sec = cdr.duration_sec
-    self.bill_sec = cdr.bill_sec
-    self.start_time = parse_epoch(cdr.start_epoch)
-    self.end_time = parse_epoch(cdr.end_epoch)
-    self.answer_time = parse_epoch(cdr.answer_epoch)
-    self.sip_term_status = cdr.sip_term_status
-    self.sip_invite_failure_status = cdr.sip_invite_failure_status
-    self.sip_invite_failure_phrase = cdr.sip_invite_failure_phrase
-    self.price = calculate_price
-    save
-  end
 
   class Query
     attr_accessor :scope, :arel_table
@@ -153,27 +125,5 @@ class CallDataRecord < ApplicationRecord
     completed_event.sip_term_status = sip_term_status
     completed_event.answer_time = answer_time
     completed_event
-  end
-
-  def calculate_price
-    active_biller.options = {:call_data_record => self}
-    self.price = Money.new(active_biller.calculate_price_in_micro_units, DEFAULT_PRICE_STORE_CURRENCY)
-  end
-
-  def active_biller
-    @active_biller ||= ActiveBillerAdapter.instance
-  end
-
-  def parse_epoch(epoch)
-    epoch = epoch.to_i
-    Time.at(epoch) if epoch > 0
-  end
-
-  def job_adapter
-    @job_adapter ||= JobAdapter.new(:call_data_record_worker)
-  end
-
-  def publish_created
-    broadcast(:call_data_record_created, self)
   end
 end

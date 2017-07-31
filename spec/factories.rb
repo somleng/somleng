@@ -24,8 +24,22 @@ FactoryGirl.define do
   end
 
   factory :freeswitch_cdr, :class => CDR::Freeswitch do
+    transient do
+      transient_cdr { {"variables" => {}} }
+      sip_term_status nil
+    end
+
+    trait :busy do
+      sip_term_status "486"
+    end
+
     skip_create
-    initialize_with { new(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json")) }
+    initialize_with {
+      transient_cdr["variables"].merge!("sip_term_status" => sip_term_status) if sip_term_status
+      cdr_json = JSON.parse(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json"))
+      cdr_json.deep_merge!(transient_cdr)
+      new(cdr_json.to_json)
+    }
   end
 
   factory :usage_record_collection, :class => Usage::Record::Collection do

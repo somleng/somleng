@@ -1,5 +1,46 @@
 class CallDataRecordJob < ActiveJob::Base
-  def perform(cdr)
-    CallDataRecord.new.process(cdr)
+  def perform(raw_cdr)
+    call_data_record = CallDataRecord.new
+    process_cdr(call_data_record, raw_cdr)
+    if call_data_record.save
+      call_data_record.phone_call.complete!
+    end
+    call_data_record
+  end
+
+  private
+
+  def process_cdr(call_data_record, raw_cdr)
+    freeswitch_cdr = CDR::Freeswitch.new(raw_cdr)
+    call_data_record.phone_call = PhoneCall.find_by_external_id(freeswitch_cdr.uuid)
+    call_data_record.file_content_type, call_data_record.file_filename, call_data_record.file = freeswitch_cdr.to_file
+    call_data_record.hangup_cause = freeswitch_cdr.hangup_cause
+    call_data_record.direction = freeswitch_cdr.direction
+    call_data_record.duration_sec = freeswitch_cdr.duration_sec
+    call_data_record.bill_sec = freeswitch_cdr.bill_sec
+    call_data_record.start_time = parse_epoch(freeswitch_cdr.start_epoch)
+    call_data_record.end_time = parse_epoch(freeswitch_cdr.end_epoch)
+    call_data_record.answer_time = parse_epoch(freeswitch_cdr.answer_epoch)
+    call_data_record.sip_term_status = freeswitch_cdr.sip_term_status
+    call_data_record.sip_invite_failure_status = freeswitch_cdr.sip_invite_failure_status
+    call_data_record.sip_invite_failure_phrase = freeswitch_cdr.sip_invite_failure_phrase
+    call_data_record.price = calculate_price(call_data_record)
+  end
+
+  def parse_epoch(epoch)
+    epoch = epoch.to_i
+    Time.at(epoch) if epoch > 0
+  end
+
+  def calculate_price(call_data_record)
+    active_biller.options = {:call_data_record => call_data_record}
+    call_data_record.price = Money.new(
+      active_biller.calculate_price_in_micro_units,
+      CallDataRecord::DEFAULT_PRICE_STORE_CURRENCY
+    )
+  end
+
+  def active_biller
+    @active_biller ||= ActiveBillerAdapter.instance
   end
 end
