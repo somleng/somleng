@@ -132,13 +132,6 @@ describe CallDataRecord do
     end
   end
 
-  describe "#inbound?" do
-    context "for inbound call" do
-      subject { build(factory, :inbound) }
-      it { is_expected.to be_inbound }
-    end
-  end
-
   describe "#completed_event" do
     subject { build(factory, event_trait) }
 

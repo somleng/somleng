@@ -229,8 +229,8 @@ FactoryGirl.define do
       with_status_callback_method
     end
 
-    trait :inbound do
-      inbound true
+    trait :initiating_inbound_call do
+      initiating_inbound_call true
       incoming_phone_number
       to { incoming_phone_number.phone_number }
       with_external_id

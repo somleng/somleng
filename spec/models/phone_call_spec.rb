@@ -33,20 +33,10 @@ describe PhoneCall do
     end
 
     context "for inbound calls" do
-      subject { build(factory, :inbound) }
+      subject { build(factory, :initiating_inbound_call) }
       it { is_expected.to allow_value("855970001294").for(:to) }
       it { is_expected.to validate_presence_of(:external_id) }
       it { is_expected.to validate_presence_of(:incoming_phone_number) }
-
-      context "with a cdr" do
-        subject {
-          phone_call = create(:phone_call);
-          call_data_record = create(:call_data_record, :inbound, :phone_call => phone_call)
-          phone_call
-        }
-
-        it { is_expected.to allow_value("855970001294").for(:to) }
-      end
     end
   end
 
@@ -207,7 +197,7 @@ describe PhoneCall do
     end
 
     describe "#to_internal_inbound_call_json" do
-      subject { create(factory, :inbound) }
+      subject { create(factory, :initiating_inbound_call) }
       let(:json_method) { :to_internal_inbound_call_json }
 
       def assert_valid_json!
@@ -400,7 +390,7 @@ describe PhoneCall do
 
     context "without cdr" do
       context "for inbound calls" do
-        subject { create(factory, :inbound) }
+        subject { create(factory, :initiating_inbound_call) }
         it { assert_inbound! }
       end
 
@@ -467,7 +457,7 @@ describe PhoneCall do
 
   describe "#phone_number_sid" do
     context "for inbound calls" do
-      subject { create(factory, :inbound) }
+      subject { create(factory, :initiating_inbound_call) }
       it { expect(subject.phone_number_sid).to eq(subject.incoming_phone_number_sid) }
     end
 
