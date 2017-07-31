@@ -24,6 +24,8 @@ describe PhoneCall do
       context "#external_id" do
         it { is_expected.to validate_uniqueness_of(:external_id).allow_nil.strict }
       end
+
+      it { is_expected.to allow_value("855970001294").for(:to) }
     end
 
     context "for outbound calls" do
