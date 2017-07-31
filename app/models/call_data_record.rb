@@ -118,6 +118,10 @@ class CallDataRecord < ApplicationRecord
     @completed_event ||= build_completed_event
   end
 
+  def inbound?
+    direction == INBOUND_DIRECTION
+  end
+
   private
 
   def build_completed_event

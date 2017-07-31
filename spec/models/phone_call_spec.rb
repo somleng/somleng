@@ -35,6 +35,16 @@ describe PhoneCall do
       it { is_expected.to allow_value("855970001294").for(:to) }
       it { is_expected.to validate_presence_of(:external_id) }
       it { is_expected.to validate_presence_of(:incoming_phone_number) }
+
+      context "with a cdr" do
+        subject {
+          phone_call = create(:phone_call);
+          call_data_record = create(:call_data_record, :inbound, :phone_call => phone_call)
+          phone_call
+        }
+
+        it { is_expected.to allow_value("855970001294").for(:to) }
+      end
     end
   end
 

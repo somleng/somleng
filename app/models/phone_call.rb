@@ -284,7 +284,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def inbound?
-    !!inbound
+    (call_data_record && call_data_record.persisted? && call_data_record.inbound?) || !!inbound
   end
 
   def normalize_phone_numbers
