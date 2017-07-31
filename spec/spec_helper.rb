@@ -1,4 +1,4 @@
-if ENV["START_SIMPLE_COV"]
+if ENV["START_SIMPLECOV"].to_i == 1
   require 'simplecov'
   SimpleCov.start
 end

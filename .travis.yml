@@ -1,13 +1,15 @@
 language: ruby
 services:
-- postgresql
+  - postgresql
+env:
+  - START_SIMPLECOV=1
 addons:
   postgresql: '9.4'
   code_climate:
     repo_token:
       secure: "uSDvlBKPuuQBX6exm2qWQCo5mjm0XmggJWc9NaqAkdkwKd8D7nKZBr7QwZ19bXHipqFIoWieMzPMD+9U6OxVmimhH8ADZyubDm6NJNxqrOX5Uy1rFfD1pIGocNYYPk/2wHu1H14Bx6J/7xm0ckKMmyA6YuqEskAXVCwKk2zGZJXAN2uambdvI/XLczssHHv72i6pflDkf1kc4zPlpjUaMA1ZuIsCibCh+WQ7W/jXXgutBSrKij8G0XRAv0GUYX/2p0hwKFtrvFBZ74JOjokdTykRwey85DnJIOhLmhbensge0E1/9f0hm7Z7mMNGNJwW11cuCHOExSkO+JBSRWmzYmqCj1jqJpBSFWpcv53ya8XglgcJ+BBOzgH5zqVe1LZ2hn6t5w++J5wpbxfG6SnzB3tYaBhpb1heP4KcnfOgfkUvivXbNQfYmKzjpZ6WJAfs4tTAnVhCq1e3Ipb3bHbo3tZcSKl2EcHBcatTSblam5a1aKxNzJT6c7DOH6VvjSE/KHTn0iLg+hPE09+NSHESz/psuL5dA21VN0CCL879SEf/7PyyPVwTcJO1bQf8zAM5ZdW7CnslIZ2HsuALcKNkVT2PjToeFGcrO/udy9li2Bx5gBFYnVCjO/2Agx0Kg1/JcfMauohCIqlPUlkp1fiJqjyWvLI56tKud21XwKZJeI0="
 before_script:
-- psql -c 'create database twilreapi_test;' -U postgres
-- psql -U postgres -c "create extension pgcrypto"
+  - psql -c 'create database twilreapi_test;' -U postgres
+  - psql -U postgres -c "create extension pgcrypto"
 after_success:
-- bundle exec codeclimate-test-reporter
+  - bundle exec codeclimate-test-reporter
