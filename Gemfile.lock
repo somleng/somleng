@@ -1,36 +1,36 @@
 GIT
-  remote: git://github.com/dwilkie/twilreapi-active_biller.git
+  remote: https://github.com/dwilkie/twilreapi-active_biller.git
   revision: c6eb88e30657f7ac148de5b67082b99feaf8dfe1
   specs:
     twilreapi-active_biller (0.1.0)
 
 GIT
-  remote: git://github.com/dwilkie/twilreapi-active_call_router.git
+  remote: https://github.com/dwilkie/twilreapi-active_call_router.git
   revision: 8088a962ca73d5a1a66350f91ae436ee7ae5ffa9
   specs:
     twilreapi-active_call_router (0.1.0)
 
 GIT
-  remote: git://github.com/dwilkie/twilreapi-worker.git
+  remote: https://github.com/dwilkie/twilreapi-worker.git
   revision: 3d88d2719d5b3768c0e99079cba3be4c46deb3d1
   specs:
     twilreapi-worker (0.1.0)
 
 GIT
-  remote: git://github.com/krisleech/wisper.git
+  remote: https://github.com/krisleech/wisper.git
   revision: 7e605f5731dad38a40828c1cf57937d35be8a984
   specs:
     wisper (2.0.0)
 
 GIT
-  remote: git://github.com/numerex/bitmask_attributes.git
+  remote: https://github.com/numerex/bitmask_attributes.git
   revision: 0bb0d9993aa6cb3114daa0c118c2bc70a032847c
   specs:
     bitmask_attributes (1.0.0)
       activerecord (>= 3.1)
 
 GIT
-  remote: git://github.com/refile/refile-s3.git
+  remote: https://github.com/refile/refile-s3.git
   revision: 78a74b60a597dd1174b0599be919689d41d5f118
   specs:
     refile-s3 (0.2.0)
@@ -38,7 +38,7 @@ GIT
       refile (~> 0.6.0)
 
 GIT
-  remote: git://github.com/refile/refile.git
+  remote: https://github.com/refile/refile.git
   revision: 4e82923a551b3acce1190562cb2037dd7df9577b
   specs:
     refile (0.6.2)
@@ -47,7 +47,7 @@ GIT
       sinatra (>= 1.4.5)
 
 GIT
-  remote: git://github.com/sinatra/sinatra.git
+  remote: https://github.com/sinatra/sinatra.git
   revision: b8935900461766894c70f4c768a514bb868f391b
   specs:
     rack-protection (2.0.0)
@@ -59,7 +59,7 @@ GIT
       tilt (~> 2.0)
 
 GIT
-  remote: git://github.com/tawan/active-elastic-job.git
+  remote: https://github.com/tawan/active-elastic-job.git
   revision: 9c748eae1077a90a0f803a02cc7b08d4f12bd3d3
   specs:
     active_elastic_job (2.0.0)
@@ -298,4 +298,4 @@ DEPENDENCIES
   wisper-rspec
 
 BUNDLED WITH
-   1.13.7
+   1.15.3
