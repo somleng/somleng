@@ -5,9 +5,7 @@ class PhoneCallEvent::Base < ApplicationRecord
 
   belongs_to :phone_call
 
-  validates :phone_call, :presence => true
   validates :type, :presence => true
-
   store_accessor :params, :sip_term_status, :answer_epoch
 
   after_commit   :publish_created, :on => :create

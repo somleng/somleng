@@ -82,9 +82,9 @@ en:
         server_error: 'The authorization server encountered an unexpected condition which prevented it from fulfilling the request.'
         temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.'
 
-        #configuration error messages
+        # Configuration error messages
         credential_flow_not_configured: 'Resource Owner Password Credentials flow failed due to Doorkeeper.configure.resource_owner_from_credentials being unconfigured.'
-        resource_owner_authenticator_not_configured: 'Resource Owner find failed due to Doorkeeper.configure.resource_owner_authenticator being unconfiged.'
+        resource_owner_authenticator_not_configured: 'Resource Owner find failed due to Doorkeeper.configure.resource_owner_authenticator being unconfigured.'
 
         # Access grant errors
         unsupported_response_type: 'The authorization server does not support this response type.'

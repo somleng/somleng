@@ -9,7 +9,7 @@ class CallDataRecord < ApplicationRecord
 
   belongs_to :phone_call
 
-  validates :phone_call, :file, :presence => true
+  validates :file, :presence => true
 
   validates :duration_sec,
             :bill_sec,

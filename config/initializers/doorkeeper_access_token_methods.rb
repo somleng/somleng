@@ -1,7 +1,7 @@
 module Doorkeeper
   module OAuth
     class Token
-      module Methods
+      class << self
         def from_basic_user_password_authorization(request)
           pattern = /^Basic /i
           header  = request.authorization

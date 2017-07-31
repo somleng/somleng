@@ -21,7 +21,7 @@ class PhoneCall < ApplicationRecord
   include TwilioApiResource
   include TwilioUrlLogic
 
-  belongs_to :incoming_phone_number
+  belongs_to :incoming_phone_number, :optional => true
   has_one    :call_data_record
   has_many   :phone_call_events, :class_name => "PhoneCallEvent::Base"
 
@@ -78,7 +78,7 @@ class PhoneCall < ApplicationRecord
     state :canceled
 
     event :initiate do
-      transitions :from => :queued, :to => :initiated, :guard => :external_id?
+      transitions :from => :queued, :to => :initiated, :guard => :has_external_id?
     end
 
     event :cancel do
@@ -266,6 +266,10 @@ class PhoneCall < ApplicationRecord
   end
 
   private
+
+  def has_external_id?
+    external_id?
+  end
 
   def phone_call_event_answered?
     completed_event_answered? || call_data_record_answered?

@@ -6,7 +6,6 @@ module TwilioApiResource
 
   included do
     belongs_to :account
-    validates :account, :presence => true
 
     alias_attribute :sid, :id
     delegate :sid, :to => :account, :prefix => true

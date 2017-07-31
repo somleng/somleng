@@ -12,7 +12,6 @@ describe CallDataRecord do
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:phone_call) }
     it { is_expected.to validate_presence_of(:file) }
     it { is_expected.to validate_presence_of(:duration_sec) }
     it { is_expected.to validate_numericality_of(:duration_sec).is_greater_than_or_equal_to(0) }

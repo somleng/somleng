@@ -5,7 +5,6 @@ shared_examples_for "phone_call_event" do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:type) }
-    it { is_expected.to validate_presence_of(:phone_call) }
   end
 
   describe "factory" do
