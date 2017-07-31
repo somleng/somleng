@@ -1,14 +1,21 @@
 class CallDataRecordJob < ActiveJob::Base
+  LISTENERS = [CallDataRecordObserver]
+
   def perform(raw_cdr)
+    subscribe_listeners
     call_data_record = CallDataRecord.new
     process_cdr(call_data_record, raw_cdr)
-    if call_data_record.save
-      call_data_record.phone_call.complete!
-    end
+    call_data_record.save
     call_data_record
   end
 
   private
+
+  def subscribe_listeners
+    LISTENERS.each do |listener|
+      Wisper.subscribe(listener.new)
+    end
+  end
 
   def process_cdr(call_data_record, raw_cdr)
     freeswitch_cdr = CDR::Freeswitch.new(raw_cdr)

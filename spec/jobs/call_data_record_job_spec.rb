@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe CallDataRecordJob do
   describe "#perform(cdr)" do
-    let(:freeswitch_cdr) { build(:freeswitch_cdr, :busy) }
+    let(:freeswitch_cdr) { build(:freeswitch_cdr) }
     let(:raw_cdr) { freeswitch_cdr.raw_cdr }
     let(:call_data_record) { subject.perform(raw_cdr) }
 
@@ -43,7 +43,6 @@ describe CallDataRecordJob do
         expect(call_data_record.sip_invite_failure_status).to eq(freeswitch_cdr.sip_invite_failure_status)
         expect(call_data_record.sip_invite_failure_phrase).to eq(freeswitch_cdr.sip_invite_failure_phrase)
         expect(call_data_record.price).to eq(0)
-        expect(call_data_record.phone_call).to be_busy
       end
 
       it { assert_cdr_processed! }

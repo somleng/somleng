@@ -109,6 +109,20 @@ describe PhoneCall do
     describe "#complete" do
       let(:event) { :complete }
 
+      context "can complete" do
+        subject { create(factory, :can_complete) }
+        it("should broadcast") {
+          assert_broadcasted!(:phone_call_completed) { subject.complete! }
+        }
+      end
+
+      context "already completed" do
+        subject { create(factory, :already_completed) }
+        it("should not broadcast") {
+          assert_not_broadcasted!(:phone_call_completed) { subject.complete! }
+        }
+      end
+
       def assert_transitions!
         is_expected.to transition_from(subject.status).to(asserted_next_status).on_event(event)
       end
@@ -151,6 +165,11 @@ describe PhoneCall do
         context "self.status => '#{current_status_trait}'" do
           let(:current_status_trait) { current_status_trait }
           let(:asserted_next_status) { subject.status }
+
+          def assert_transitions!
+            is_expected.not_to transition_from(current_status_trait).to(asserted_next_status).on_event(event)
+          end
+
           it { assert_transitions! }
         end
       end

@@ -222,6 +222,14 @@ FactoryGirl.define do
       status "busy"
     end
 
+    trait :can_complete do
+      answered
+    end
+
+    trait :already_completed do
+      failed
+    end
+
     trait :with_optional_attributes do
       from_account_with_access_token
       with_normalized_voice_method

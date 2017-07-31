@@ -1,6 +1,8 @@
 require "twilreapi/worker/job/outbound_call_job"
 
 class PhoneCall < ApplicationRecord
+  include Wisper::Publisher
+
   TWILIO_CALL_DIRECTIONS = {
     "inbound" => "inbound",
     "outbound" => "outbound-api"
@@ -69,7 +71,7 @@ class PhoneCall < ApplicationRecord
 
   include AASM
 
-  aasm :column => :status do
+  aasm :column => :status, :whiny_transitions => false do
     state :queued, :initial => true
     state :initiated
     state :ringing
@@ -96,7 +98,7 @@ class PhoneCall < ApplicationRecord
       transitions :from => [:initiated, :ringing], :to => :answered
     end
 
-    event :complete do
+    event :complete, :after_commit => :publish_completed do
       transitions :from => :answered,
                   :to => :completed
 
@@ -114,18 +116,6 @@ class PhoneCall < ApplicationRecord
 
       transitions :from => [:initiated, :ringing],
                   :to => :failed
-
-      transitions :from => :not_answered,
-                  :to => :not_answered
-
-      transitions :from => :busy,
-                  :to => :busy
-
-      transitions :from => :failed,
-                  :to => :failed
-
-      transitions :from => :completed,
-                  :to => :completed
     end
   end
 
@@ -269,6 +259,10 @@ class PhoneCall < ApplicationRecord
   end
 
   private
+
+  def publish_completed
+    broadcast(:phone_call_completed, self)
+  end
 
   def has_external_id?
     external_id?

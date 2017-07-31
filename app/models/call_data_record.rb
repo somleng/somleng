@@ -1,4 +1,6 @@
 class CallDataRecord < ApplicationRecord
+  include Wisper::Publisher
+
   INBOUND_DIRECTION  = "inbound"
   OUTBOUND_DIRECTION = "outbound"
   DEFAULT_PRICE_STORE_CURRENCY = "USD6"
@@ -24,6 +26,8 @@ class CallDataRecord < ApplicationRecord
            :numericality => {
              :greater_than_or_equal_to => 0,
            }
+
+  after_commit   :publish_created, :on => :create
 
   delegate :answered?, :not_answered?, :busy?, :to => :completed_event
 
@@ -119,6 +123,10 @@ class CallDataRecord < ApplicationRecord
   end
 
   private
+
+  def publish_created
+    broadcast(:call_data_record_created, self)
+  end
 
   def build_completed_event
     completed_event = PhoneCallEvent::Completed.new

@@ -24,6 +24,15 @@ describe CallDataRecord do
     it { is_expected.to validate_presence_of(:end_time) }
   end
 
+  describe "events" do
+    subject { create(factory) }
+    context "create" do
+      it("should broadcast") {
+        assert_broadcasted!(:call_data_record_created) { subject }
+      }
+    end
+  end
+
   describe "price" do
     it { is_expected.to monetize(:price) }
   end
