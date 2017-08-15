@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe "'/api/admin/phone_calls/:phone_call_id/phone_call_events'" do
-  let(:phone_call) { create(:phone_call, :initiated) }
+describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
+  let(:phone_call) { create(:phone_call, :initiated, :with_external_id) }
 
   def account_params
     super.merge(:permissions => [:manage_phone_call_events])
@@ -47,7 +47,7 @@ describe "'/api/admin/phone_calls/:phone_call_id/phone_call_events'" do
     let(:params) { {} }
 
     def post_phone_call_event
-      do_request(:post, api_admin_phone_call_phone_call_events_path(phone_call), params)
+      do_request(:post, api_admin_phone_call_phone_call_events_path(phone_call.external_id), params)
     end
 
     def setup_scenario

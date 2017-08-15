@@ -35,7 +35,11 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
   end
 
   def phone_call
-    PhoneCall.find(params[:phone_call_id])
+    @phone_call ||= by_uuid(:id).or(by_uuid(:external_id)).first!
+  end
+
+  def by_uuid(field)
+    PhoneCall.where(field => params[:phone_call_id])
   end
 
   def respond_with_options
