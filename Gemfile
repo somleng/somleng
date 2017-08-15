@@ -9,7 +9,7 @@ end
 
 gem 'rails', '5.1.2'
 gem 'pg'
-gem "responders"
+gem 'responders'
 gem 'doorkeeper'
 gem 'puma'
 gem 'aasm'
@@ -18,6 +18,7 @@ gem 'phony'
 gem 'money-rails'
 gem 'wisper', :github => "krisleech/wisper"
 gem 'validate_url', :github => "perfectline/validates_url"
+gem 'somleng-twilio_http_client', :github => "dwilkie/somleng-twilio_http_client"
 
 gem 'refile', :github => "refile/refile", :require => "refile/rails"
 gem "refile-s3", :github => "refile/refile-s3"
@@ -60,6 +61,7 @@ group :development do
 end
 
 group :test do
+  gem 'webmock'
   gem 'factory_girl_rails'
   gem 'shoulda-matchers'
   gem "simplecov", :require => false

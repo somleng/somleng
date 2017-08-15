@@ -1,14 +1,20 @@
 require 'rails_helper'
 
 describe PhoneCallEvent::AnsweredObserver do
-  include Twilreapi::SpecHelpers::ObserverHelpers::PhoneCallEvent::ObserverExamples
+  let(:phone_call) { create(:phone_call, :initiated) }
+  let(:phone_call_event) { create(:phone_call_event_answered, :phone_call => phone_call) }
 
-  let(:phone_call_event_type) { PhoneCallEvent::Answered }
-  let(:asserted_phone_call_event) { :answer! }
-
-  def trigger_event!
+  def setup_scenario
     subject.phone_call_event_answered_created(phone_call_event)
   end
 
-  include_examples("phone_call_event_observer")
+  before do
+    setup_scenario
+  end
+
+  def assert_observed!
+    expect(phone_call).to be_answered
+  end
+
+  it { assert_observed! }
 end

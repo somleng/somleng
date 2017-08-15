@@ -33,8 +33,6 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
     end
 
     context "valid request" do
-      include ActiveJob::TestHelper
-
       let(:params) {
         {
           "Url"=>"https://rapidpro.ngrok.com/handle/33/",

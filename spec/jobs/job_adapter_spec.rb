@@ -6,7 +6,6 @@ describe JobAdapter do
 
   describe "#perform_later(*args)" do
     include Twilreapi::SpecHelpers::EnvHelpers
-    include ActiveJob::TestHelper
 
     let(:args) { ["foo", "bar", 1] }
     let(:enqueued_job) { enqueued_jobs.first }

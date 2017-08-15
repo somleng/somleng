@@ -350,8 +350,6 @@ describe PhoneCall do
   end
 
   describe "#enqueue_outbound_call!" do
-    include ActiveJob::TestHelper
-
     subject { create(factory) }
     let(:enqueued_job) { enqueued_jobs.first }
 

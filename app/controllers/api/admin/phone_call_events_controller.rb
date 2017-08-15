@@ -50,7 +50,7 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
 
   def subscribe_listeners
     (event_type_settings["listeners"] || []).each do |event_type_listener|
-      Wisper.subscribe(event_type_listener.new)
+      resource.subscribe(event_type_listener.new)
     end
   end
 

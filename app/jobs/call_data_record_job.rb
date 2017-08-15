@@ -1,23 +1,25 @@
 class CallDataRecordJob < ActiveJob::Base
-  LISTENERS = [CallDataRecordObserver]
+  attr_accessor :raw_cdr, :call_data_record
 
   def perform(raw_cdr)
+    self.raw_cdr = raw_cdr
     subscribe_listeners
-    call_data_record = CallDataRecord.new
-    process_cdr(call_data_record, raw_cdr)
+    process_raw_cdr
     call_data_record.save
     call_data_record
   end
 
   private
 
-  def subscribe_listeners
-    LISTENERS.each do |listener|
-      Wisper.subscribe(listener.new)
-    end
+  def call_data_record
+    @call_data_record ||= CallDataRecord.new
   end
 
-  def process_cdr(call_data_record, raw_cdr)
+  def subscribe_listeners
+    call_data_record.subscribe(CallDataRecordObserver.new)
+  end
+
+  def process_raw_cdr
     freeswitch_cdr = CDR::Freeswitch.new(raw_cdr)
     call_data_record.phone_call = PhoneCall.find_by_external_id(freeswitch_cdr.uuid)
     call_data_record.file_content_type, call_data_record.file_filename, call_data_record.file = freeswitch_cdr.to_file

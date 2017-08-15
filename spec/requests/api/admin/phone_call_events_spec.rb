@@ -1,7 +1,15 @@
 require 'rails_helper'
 
 describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
-  let(:phone_call) { create(:phone_call, :initiated, :with_external_id) }
+  let(:phone_call) {
+    create(
+      :phone_call,
+      :initiated,
+      :with_external_id,
+      :with_status_callback_url,
+      :from_account_with_access_token
+    )
+  }
 
   def account_params
     super.merge(:permissions => [:manage_phone_call_events])
@@ -47,7 +55,11 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
     let(:params) { {} }
 
     def post_phone_call_event
-      do_request(:post, api_admin_phone_call_phone_call_events_path(phone_call.external_id), params)
+      do_request(
+        :post,
+        api_admin_phone_call_phone_call_events_path(phone_call.external_id),
+        params
+     )
     end
 
     def setup_scenario
@@ -91,12 +103,24 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
 
         let(:response_json) { JSON.parse(response.body) }
 
+        def setup_scenario
+          stub_request(:post, phone_call.status_callback_url)
+          super
+        end
+
+        def post_phone_call_event
+          perform_enqueued_jobs { super }
+        end
+
         def assert_valid_request!
           expect(response.code).to eq("201")
           expect(response_json).to have_key("phone_call")
           expect(response_json["params"]["answer_epoch"]).to eq(answer_epoch)
           expect(response_json["params"]["sip_term_status"]).to eq(sip_term_status)
           expect(response_json["phone_call"]["status"]).to eq("completed")
+          expect(WebMock).to have_requested(
+            :post, phone_call.status_callback_url
+          )
         end
 
         it { assert_valid_request! }

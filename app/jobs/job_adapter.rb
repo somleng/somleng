@@ -51,6 +51,8 @@ class JobAdapter
       OutboundCallJob
     when :call_data_record_worker
       CallDataRecordJob
+    when :status_callback_notifier_worker
+      StatusCallbackNotifierJob
     end
   end
 
