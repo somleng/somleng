@@ -458,9 +458,17 @@ describe PhoneCall do
   end
 
   describe "#from_formatted" do
-    let(:from) { "85512345678" }
     subject { create(factory, :from => from) }
-    it { expect(subject.from_formatted).to eq("+855 12 345 678") }
+
+    context "international formatted number" do
+      let(:from) { "85512345678" }
+      it { expect(subject.from_formatted).to eq("+855 12 345 678") }
+    end
+
+    context "non-standard number (https://github.com/dwilkie/twilreapi/issues/25)" do
+      let(:from) { "+0887883050" }
+      it { expect(subject.from_formatted).to eq(from) }
+    end
   end
 
   describe "#group_sid" do
@@ -518,8 +526,11 @@ describe PhoneCall do
   end
 
   describe "#to_formatted" do
-    let(:to) { "85510987654" }
     subject { create(factory, :to => to) }
-    it { expect(subject.to_formatted).to eq("+855 10 987 654") }
+
+    context "international formatted number" do
+      let(:to) { "85510987654" }
+      it { expect(subject.to_formatted).to eq("+855 10 987 654") }
+    end
   end
 end

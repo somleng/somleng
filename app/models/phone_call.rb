@@ -337,7 +337,12 @@ class PhoneCall < ApplicationRecord
   end
 
   def format_number(number)
-    number && Phony.format(Phony.normalize(number), :format => :international)
+    normalized_number = safe_phony_normalize(number)
+    (normalized_number && Phony.format(normalized_number, :format => :international)) || number
+  end
+
+  def safe_phony_normalize(number)
+    Phony.normalize(number) rescue nil
   end
 
   def job_adapter
