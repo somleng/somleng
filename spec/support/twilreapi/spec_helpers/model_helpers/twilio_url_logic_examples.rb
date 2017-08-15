@@ -1,10 +1,20 @@
 shared_examples_for "twilio_url_logic" do
   describe "url validations" do
     it { is_expected.to validate_presence_of(:voice_url) }
+
+    [:voice_url, :status_callback_url].each do |url_attribute|
+      it { is_expected.to allow_value("http://my-project.com").for(url_attribute) }
+      it { is_expected.to allow_value("https://my-project.com").for(url_attribute) }
+      it { is_expected.not_to allow_value("ftp://my-project.com").for(url_attribute) }
+      it { is_expected.not_to allow_value("ftp://my-project.com").for(url_attribute) }
+      it { is_expected.not_to allow_value("http://localhost").for(url_attribute) }
+    end
   end
 
   describe "method validations" do
-    it { is_expected.to validate_inclusion_of(:voice_method).in_array(["POST", "GET"]) }
+    [:voice_method, :status_callback_method].each do |url_attribute|
+      it { is_expected.to validate_inclusion_of(url_attribute).in_array(["POST", "GET"]) }
+    end
 
     context "persisted" do
       subject { create(factory) }
@@ -20,17 +30,26 @@ shared_examples_for "twilio_url_logic" do
 
     def assert_defaults!
       expect(subject.voice_method).to eq("POST")
+      expect(subject.status_callback_method).to eq(nil)
     end
 
     it { assert_defaults! }
   end
 
   describe "method normalization" do
-    subject { create(factory, :with_denormalized_voice_method) }
-    let(:asserted_normalized_attributes) { attributes_for(factory, :with_normalized_voice_method) }
+    let(:denormalized_http_method) { "post" }
+
+    subject {
+      create(
+        factory,
+        :voice_method => denormalized_http_method,
+        :status_callback_method => denormalized_http_method
+      )
+    }
 
     def assert_normalization!
-      expect(subject.voice_method).to eq(asserted_normalized_attributes[:voice_method])
+      expect(subject.voice_method).to eq("POST")
+      expect(subject.status_callback_method).to eq("POST")
     end
 
     it { assert_normalization! }

@@ -5,10 +5,24 @@ module TwilioUrlLogic
   ALLOWED_URL_METHODS = [DEFAULT_URL_METHOD, "GET"]
 
   included do
-    validates :voice_url, :presence => true
-    validates :voice_method, :presence => true, :inclusion => { :in => ALLOWED_URL_METHODS }
+    validates :voice_url, :voice_method, :presence => true
 
-    before_validation :set_default_url_methods, :normalize_url_methods, :on => :create
+    validates :voice_url,
+              :status_callback_url,
+              :url => {
+                :no_local => true, :allow_nil => true
+              }
+
+    validates :voice_method,
+              :status_callback_method,
+              :inclusion => {
+                :in => ALLOWED_URL_METHODS,
+                :allow_nil => true
+              }
+
+    before_validation :set_default_url_methods,
+                      :normalize_url_methods,
+                      :on => :create
 
     alias_attribute :"Url", :voice_url
     alias_attribute :"Method", :voice_method
@@ -24,5 +38,6 @@ module TwilioUrlLogic
 
   def normalize_url_methods
     self.voice_method.upcase! if voice_method?
+    self.status_callback_method.upcase! if status_callback_method?
   end
 end

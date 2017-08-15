@@ -7,20 +7,16 @@ FactoryGirl.define do
     n.to_s
   end
 
-  trait :with_normalized_voice_method do
-    voice_method "GET"
-  end
-
-  trait :with_denormalized_voice_method do
-    voice_method "get"
-  end
-
   trait :with_status_callback_url do
     status_callback_url "https://rapidpro.ngrok.com/handle/33/"
   end
 
   trait :with_status_callback_method do
     status_callback_method "POST"
+  end
+
+  trait :with_voice_method do
+    status_callback_method "GET"
   end
 
   factory :freeswitch_cdr, :class => CDR::Freeswitch do
@@ -161,7 +157,7 @@ FactoryGirl.define do
     voice_url "https://rapidpro.ngrok.com/handle/33/"
 
     trait :with_optional_attributes do
-      with_normalized_voice_method
+      with_voice_method
       with_status_callback_url
       with_status_callback_method
       with_twilio_request_phone_number
@@ -232,7 +228,7 @@ FactoryGirl.define do
 
     trait :with_optional_attributes do
       from_account_with_access_token
-      with_normalized_voice_method
+      with_voice_method
       with_status_callback_url
       with_status_callback_method
     end

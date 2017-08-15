@@ -30,6 +30,14 @@ GIT
       activerecord (>= 3.1)
 
 GIT
+  remote: https://github.com/perfectline/validates_url.git
+  revision: 0844e2528378d37d28d8a24c80ab82cce2b5e772
+  specs:
+    validate_url (1.0.2)
+      activemodel (>= 3.0.0)
+      addressable
+
+GIT
   remote: https://github.com/refile/refile-s3.git
   revision: 78a74b60a597dd1174b0599be919689d41d5f118
   specs:
@@ -108,6 +116,8 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.5.1)
+      public_suffix (~> 2.0, >= 2.0.2)
     arel (8.0.0)
     aws-sdk (2.10.19)
       aws-sdk-resources (= 2.10.19)
@@ -174,6 +184,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    public_suffix (2.0.5)
     puma (3.9.1)
     rack (2.0.3)
     rack-test (0.6.3)
@@ -294,6 +305,7 @@ DEPENDENCIES
   twilreapi-active_biller!
   twilreapi-active_call_router!
   twilreapi-worker!
+  validate_url!
   wisper!
   wisper-rspec
 

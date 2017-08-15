@@ -17,6 +17,7 @@ gem 'phony_rails'
 gem 'phony'
 gem 'money-rails'
 gem 'wisper', :github => "krisleech/wisper"
+gem 'validate_url', :github => "perfectline/validates_url"
 
 gem 'refile', :github => "refile/refile", :require => "refile/rails"
 gem "refile-s3", :github => "refile/refile-s3"
