@@ -63,7 +63,7 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: b8935900461766894c70f4c768a514bb868f391b
+  revision: 7c6c03be899e5dd5b26c0b31a588f4e2ad6e824c
   specs:
     rack-protection (2.0.0)
       rack
@@ -84,7 +84,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (4.12.1)
+    aasm (4.12.2)
       concurrent-ruby (~> 1.0)
     actioncable (5.1.2)
       actionpack (= 5.1.2)
@@ -126,13 +126,13 @@ GEM
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
     arel (8.0.0)
-    aws-sdk (2.10.19)
-      aws-sdk-resources (= 2.10.19)
-    aws-sdk-core (2.10.19)
+    aws-sdk (2.10.27)
+      aws-sdk-resources (= 2.10.27)
+    aws-sdk-core (2.10.27)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.10.19)
-      aws-sdk-core (= 2.10.19)
+    aws-sdk-resources (2.10.27)
+      aws-sdk-core (= 2.10.27)
     aws-sigv4 (1.0.1)
     builder (3.2.3)
     codeclimate-test-reporter (1.0.8)
@@ -246,7 +246,7 @@ GEM
     rspec-mocks (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.6.0)
-    rspec-rails (3.6.0)
+    rspec-rails (3.6.1)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
@@ -262,7 +262,7 @@ GEM
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.1)
+    simplecov-html (0.10.2)
     slop (3.6.0)
     spring (2.0.2)
       activesupport (>= 4.2)
