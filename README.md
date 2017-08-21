@@ -1,7 +1,8 @@
 # Twilreapi /twil-reap-i/ (Twilio Rest API)
 
-[![Build Status](https://travis-ci.org/dwilkie/twilreapi.svg?branch=master)](https://travis-ci.org/dwilkie/twilreapi)
-[![Test Coverage](https://codeclimate.com/github/dwilkie/twilreapi/badges/coverage.svg)](https://codeclimate.com/github/dwilkie/twilreapi/coverage)
+[![Build Status](https://travis-ci.org/somleng/twilreapi.svg?branch=master)](https://travis-ci.org/somleng/twilreapi)
+[![Test Coverage](https://codeclimate.com/github/somleng/twilreapi/badges/coverage.svg)](https://codeclimate.com/github/somleng/twilreapi/coverage)
+[![Code Climate](https://codeclimate.com/github/somleng/twilreapi/badges/gpa.svg)](https://codeclimate.com/github/somleng/twilreapi)
 
 Twilreapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest) written in Rails. You can use Twilreapi as a drop-in replacement for Twilio and enqueue calls, send SMS etc.
 
@@ -23,11 +24,11 @@ $ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permi
 
 ### Configuration
 
-Configuration is done using environment variables. See [.env](https://github.com/dwilkie/twilreapi/blob/master/.env)
+Configuration is done using environment variables. See [.env](https://github.com/somleng/twilreapi/blob/master/.env)
 
 ### Running Locally
 
-Start the web server using foreman. Note this will read the environment variables from [.env](https://github.com/dwilkie/twilreapi/blob/master/.env)
+Start the web server using foreman. Note this will read the environment variables from [.env](https://github.com/somleng/twilreapi/blob/master/.env)
 
 ```
 $ bundle exec foreman start web
@@ -35,19 +36,19 @@ $ bundle exec foreman start web
 
 ### Background Processing
 
-Twilreapi is queue agnostic. By default it will enqueue jobs using ActiveJob. The following background processing libraries are also supported and can be configured using [environment variables.](https://github.com/dwilkie/twilreapi/blob/master/.env)
+Twilreapi is queue agnostic. By default it will enqueue jobs using ActiveJob. The following background processing libraries are also supported and can be configured using [environment variables.](https://github.com/somleng/twilreapi/blob/master/.env)
 
 * [active-elastic-job](https://github.com/tawan/active-elastic-job) (Default. Recommended for AWS deployment)
-* [twilreapi-sidekiq](https://github.com/dwilkie/twilreapi-sidekiq) (Recommended for Heroku deployment)
+* [twilreapi-sidekiq](https://github.com/somleng/twilreapi-sidekiq) (Recommended for Heroku deployment)
 * [shoryuken](https://github.com/phstc/shoryuken)
 
 ### Outbound Calls
 
-In order to trigger outbound calls you can connect Twilreapi to [Somleng](https://github.com/dwilkie/somleng).
+In order to trigger outbound calls you can connect Twilreapi to [Somleng](https://github.com/somleng/somleng).
 
 ## Deployment
 
-See [DEPLOYMENT](https://github.com/dwilkie/twilreapi/blob/master/docs/DEPLOYMENT.md)
+See [DEPLOYMENT](https://github.com/somleng/twilreapi/blob/master/docs/DEPLOYMENT.md)
 
 ## REST API Reference
 

@@ -4,13 +4,13 @@
 
 ### Set up a VPC
 
-See [Setup AWS VPC with public and private subnets](https://github.com/dwilkie/twilreapi/blob/master/docs/AWS_VPC_SETUP.md)
+See [Setup AWS VPC with public and private subnets](https://github.com/somleng/twilreapi/blob/master/docs/AWS_VPC_SETUP.md)
 
 ### Create a Bastion Host (optional)
 
-Since the EC2 Instances are launched in the private subnets, you cannot access them from the Internet. Follow [this guide](https://github.com/dwilkie/twilreapi/blob/master/docs/AWS_BASTION_HOST.md) to setup a Bastion Host in order to connect to your instances on the private subnet.
+Since the EC2 Instances are launched in the private subnets, you cannot access them from the Internet. Follow [this guide](https://github.com/somleng/twilreapi/blob/master/docs/AWS_BASTION_HOST.md) to setup a Bastion Host in order to connect to your instances on the private subnet.
 
-Note although not officially recommended, if you're also [setting up FreeSWITCH](https://github.com/dwilkie/freeswitch-config) on a public subnet you could also use this instance as the Bastion Host.
+Note although not officially recommended, if you're also [setting up FreeSWITCH](https://github.com/somleng/freeswitch-config) on a public subnet you could also use this instance as the Bastion Host.
 
 ### Create a new web application environment
 
@@ -162,7 +162,7 @@ I followed [this article](http://blog.cbeer.info/2016/autoscaling-elasticbeansta
 
 ### CI Deployment
 
-See [CI DEPLOYMENT](https://github.com/dwilkie/twilreapi/blob/master/docs/CI_DEPLOYMENT.md)
+See [CI DEPLOYMENT](https://github.com/somleng/twilreapi/blob/master/docs/CI_DEPLOYMENT.md)
 
 ### SSH to the worker environment
 

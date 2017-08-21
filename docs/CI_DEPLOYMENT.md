@@ -14,7 +14,7 @@ To setup deployment via [Travis](https://travis-ci.org/) to Elastic Beanstalk do
     * AWSElasticBeanstalkFullAccess
 
 4. Add a new bucket for travis to put the application versions. Put it in the correct region for your application.
-5. Configure `.travis.yml` to deploy to AWS Elastic Beanstalk for each environment. Making sure to encrypt your AWS credentials. See [this example](https://github.com/dwilkie/twilreapi/blob/app.somleng.org/.travis.yml). To encrypt your AWS credentials use the the travis cli and copy and paste the values into `.travis.yml`:
+5. Configure `.travis.yml` to deploy to AWS Elastic Beanstalk for each environment. Making sure to encrypt your AWS credentials. See [this example](https://github.com/somleng/twilreapi/blob/app.somleng.org/.travis.yml). To encrypt your AWS credentials use the the travis cli and copy and paste the values into `.travis.yml`:
 
     * `$ travis encrypt <AWS_ACCESS_KEY_ID>`
     * `$ travis encrypt <AWS_SECRET_ACCESS_KEY>`
@@ -29,4 +29,4 @@ $ git push origin <branch-name>
 
 When deploying Docker to Elastic Beanstalk you should wait for the build to finish on [Dockerhub](https://hub.docker.com) before triggering the CI deployment, because Elastic Beanstalk will pull the latest build from Dockerhub when deploying.
 
-To set this up you can use [dockerhub2ci](https://github.com/dwilkie/dockerhub2ci). See the [README](https://github.com/dwilkie/dockerhub2ci) for installation instructions.
+To set this up you can use [dockerhub2ci](https://github.com/somleng/dockerhub2ci). See the [README](https://github.com/somleng/dockerhub2ci) for installation instructions.
