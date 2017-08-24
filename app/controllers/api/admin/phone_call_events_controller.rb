@@ -11,6 +11,10 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
     "completed" => {
       "event_type" => PhoneCallEvent::Completed,
       "listeners" => [PhoneCallEvent::CompletedObserver]
+    },
+    "recording_completed" => {
+      "event_type" => PhoneCallEvent::RecordingCompleted,
+      "listeners" => [PhoneCallEvent::RecordingCompletedObserver]
     }
   }
 
@@ -42,10 +46,12 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
     PhoneCall.where(field => params[:phone_call_id])
   end
 
-  def respond_with_options
-    super.merge(
-      :location => Proc.new { api_admin_phone_call_phone_call_events_path(phone_call, resource) }
-    )
+  def respond_with_create_resource
+    if resource.errors.empty?
+      head(:created, :location => api_admin_phone_call_phone_call_event_path(phone_call, resource))
+    else
+      super
+    end
   end
 
   def subscribe_listeners
@@ -57,7 +63,10 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
   def permitted_params
     params.permit(
       :sip_term_status,
-      :answer_epoch
+      :answer_epoch,
+      :recording_size,
+      :recording_duration,
+      :recording_uri
     )
   end
 end

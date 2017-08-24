@@ -64,6 +64,9 @@ FactoryGirl.define do
     factory :phone_call_event_answered, :class => PhoneCallEvent::Answered do
     end
 
+    factory :phone_call_event_recording_completed, :class => PhoneCallEvent::RecordingCompleted do
+    end
+
     factory :phone_call_event_completed, :class => PhoneCallEvent::Completed do
       trait :busy do
         sip_term_status "486"

@@ -6,8 +6,6 @@ class PhoneCallEvent::Base < ApplicationRecord
   belongs_to :phone_call
 
   validates :type, :presence => true
-  store_accessor :params, :sip_term_status, :answer_epoch
-
   after_commit   :publish_created, :on => :create
 
   def serializable_hash(options = nil)

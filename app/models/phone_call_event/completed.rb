@@ -7,6 +7,8 @@ class PhoneCallEvent::Completed < PhoneCallEvent::Base
     "486"
   ]
 
+  store_accessor :params, :sip_term_status, :answer_epoch
+
   attr_accessor :answer_time
 
   def answered?

@@ -53,6 +53,8 @@ class JobAdapter
       CallDataRecordJob
     when :status_callback_notifier_worker
       StatusCallbackNotifierJob
+    when :recording_processor_worker
+      RecordingProcessorJob
     end
   end
 

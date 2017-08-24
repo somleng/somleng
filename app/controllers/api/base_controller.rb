@@ -10,15 +10,23 @@ class Api::BaseController < ApplicationController
     build_resource
     setup_resource
     save_resource
-    respond_with_resource
+    respond_with_create_resource
   end
 
   def show
     find_resource
-    respond_with_resource
+    respond_with_show_resource
   end
 
   private
+
+  def respond_with_create_resource
+    respond_with_resource
+  end
+
+  def respond_with_show_resource
+    respond_with_resource
+  end
 
   def doorkeeper_unauthorized_render_options(error = nil)
     { :json => twilio_unauthorized_error }
