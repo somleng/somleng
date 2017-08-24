@@ -121,6 +121,10 @@ AWS_SECRET_ACCESS_KEY=secret-access-key-id-of-user-who-as-access-to-bucket
 
 Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_STATUS_CALLBACK_NOTIFIER_WORKER_QUEUE` in your web *and* worker environments. The queue name will be generated when you create the worker environment (see below). Note that you also need to set this environment variable in both your web and CDR processor worker environment since the job will be when a phone call is completed which could be due to a phone call event or a CDR.
 
+##### Processing Recordings
+
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_RECORDING_PROCESSOR_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment (see below).
+
 ### Create worker environments
 
 Create a worker environment for Processing Outbound Calls (twilreapi-outbound-call-processor) and another for Processing CDRs (twilreapi-cdr-processor).
