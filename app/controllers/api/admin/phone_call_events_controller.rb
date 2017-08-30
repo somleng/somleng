@@ -12,6 +12,10 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
       "event_type" => PhoneCallEvent::Completed,
       "listeners" => [PhoneCallEvent::CompletedObserver]
     },
+    "recording_started" => {
+      "event_type" => PhoneCallEvent::RecordingStarted,
+      "listeners" => [PhoneCallEvent::RecordingStartedObserver]
+    },
     "recording_completed" => {
       "event_type" => PhoneCallEvent::RecordingCompleted,
       "listeners" => [PhoneCallEvent::RecordingCompletedObserver]
@@ -61,12 +65,6 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
   end
 
   def permitted_params
-    params.permit(
-      :sip_term_status,
-      :answer_epoch,
-      :recording_size,
-      :recording_duration,
-      :recording_uri
-    )
+    params.permit(:params => {})
   end
 end

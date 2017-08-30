@@ -52,8 +52,12 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
   end
 
   describe "POST '/'" do
-    def params
+    def event_params
       {}
+    end
+
+    def params
+      {:params => event_params}
     end
 
     def post_phone_call_event
@@ -104,13 +108,31 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
           expect(response.headers["Location"]).to eq(api_admin_phone_call_phone_call_event_path(phone_call, created_event))
         end
 
+        context "recording_started" do
+          let(:event_type) { "recording_started" }
+          let("recording_status_callback") { "https://somleng.example.com/recording_status_callback" }
+
+          def event_params
+            super.merge(
+              "recordingStatusCallback" => recording_status_callback
+            )
+          end
+
+          def assert_valid_request!
+            super
+            expect(created_event.params["recordingStatusCallback"]).to eq(recording_status_callback)
+          end
+
+          it { assert_valid_request! }
+        end
+
         context "recording_completed" do
           let(:event_type) { "recording_completed" }
           let(:recording_duration) { "8999" }
           let(:recording_size) { "0" }
           let(:recording_uri) { "file:///var/lib/freeswitch/recordings/1dff035b-10d6-419d-9c60-643b651ef096-2.wav" }
 
-          def params
+          def event_params
             super.merge(
               :recording_duration => recording_duration,
               :recording_size => recording_size,
@@ -132,6 +154,13 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
           let(:event_type) { "completed" }
           let(:answer_epoch) { "1" }
           let(:sip_term_status) { "480" }
+
+          def event_params
+            super.merge(
+              :answer_epoch => answer_epoch,
+              :sip_term_status => sip_term_status
+            )
+          end
 
           def params
             super.merge(

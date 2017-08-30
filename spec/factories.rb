@@ -64,6 +64,9 @@ FactoryGirl.define do
     factory :phone_call_event_answered, :class => PhoneCallEvent::Answered do
     end
 
+    factory :phone_call_event_recording_started, :class => PhoneCallEvent::RecordingStarted do
+    end
+
     factory :phone_call_event_recording_completed, :class => PhoneCallEvent::RecordingCompleted do
     end
 
