@@ -55,6 +55,8 @@ class JobAdapter
       StatusCallbackNotifierJob
     when :recording_processor_worker
       RecordingProcessorJob
+    when :aws_sns_message_processor_worker
+      AwsSnsMessageProcessorJob
     end
   end
 

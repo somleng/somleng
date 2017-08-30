@@ -10,6 +10,7 @@ class Account < ApplicationRecord
             :manage_inbound_phone_calls,
             :manage_call_data_records,
             :manage_phone_call_events,
+            :manage_aws_sns_messages,
           ],
           :null => false
 

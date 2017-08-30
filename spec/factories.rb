@@ -55,6 +55,16 @@ FactoryGirl.define do
     factory :calls_outbound_usage_record, :class => Usage::Record::CallsOutbound
   end
 
+  factory :aws_sns_message_base, :class => AwsSnsMessage::Base do
+    aws_sns_message_id { SecureRandom.uuid }
+
+    factory :aws_sns_message_subscription_confirmation, :class => AwsSnsMessage::SubscriptionConfirmation do
+    end
+
+    factory :aws_sns_message_notification, :class => AwsSnsMessage::Notification do
+    end
+  end
+
   factory :phone_call_event_base, :class => PhoneCallEvent::Base do
     association :phone_call, :factory => [:phone_call, :initiated]
 

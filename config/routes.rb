@@ -37,6 +37,7 @@ Rails.application.routes.draw do
         resources :phone_call_events, :only => [:create, :show]
       end
       resources :call_data_records, :only => [:create]
+      resources :aws_sns_messages, :only => [:create]
     end
   end
 end
