@@ -86,6 +86,12 @@ $ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_phone_call_events bund
 $ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_call_data_records bundle exec rake db:seed
 ```
 
+##### Setup an admin account for managing AWS SNS Messages
+
+```
+$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_aws_sns_messages bundle exec rake db:seed
+```
+
 ##### Setup a user account
 
 ```
@@ -124,6 +130,10 @@ Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_STATUS
 ##### Processing Recordings
 
 Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_RECORDING_PROCESSOR_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment (see below).
+
+##### Processing AWS SES Messages
+
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_AWS_SNS_MESSAGE_PROCESSOR_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment (see below).
 
 ### Create worker environments
 
