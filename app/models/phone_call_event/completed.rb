@@ -23,9 +23,7 @@ class PhoneCallEvent::Completed < PhoneCallEvent::Base
     BUSY_SIP_TERM_STATUSES.include?(sip_term_status)
   end
 
-  private
-
-  def phone_call_event_name
+  def self.to_event_name
     :phone_call_event_completed
   end
 end

@@ -1,29 +1,24 @@
 class AwsSnsMessageProcessorJob < ActiveJob::Base
   MESSAGE_TYPES = {
-    "SubscriptionConfirmation" => {
-      "type" => AwsSnsMessage::SubscriptionConfirmation,
-      "listeners" => []
-    },
-    "Notification" => {
-      "type" => AwsSnsMessage::Notification,
-      "listeners" => []
-    }
+    "SubscriptionConfirmation" => AwsSnsMessage::SubscriptionConfirmation,
+    "Notification" => AwsSnsMessage::Notification
   }
 
   def perform(headers, json_payload)
     message = message_type(headers["HTTP_X_AMZ_SNS_MESSAGE_TYPE"]).new(:headers => headers)
     message.aws_sns_message_id = headers["HTTP_X_AMZ_SNS_MESSAGE_ID"]
     message.payload = JSON.parse(json_payload)
+    subscribe_listeners(message)
     message.save
   end
 
   private
 
-  def message_type(type_header)
-    message_type_settings(type_header)["type"] || AwsSnsMessage::Base
+  def subscribe_listeners(message)
+    message.subscribe(AwsSnsMessage::NotificationObserver.new)
   end
 
-  def message_type_settings(type)
-    MESSAGE_TYPES[type] || {}
+  def message_type(type_header)
+    MESSAGE_TYPES[type_header] || AwsSnsMessage::Base
   end
 end

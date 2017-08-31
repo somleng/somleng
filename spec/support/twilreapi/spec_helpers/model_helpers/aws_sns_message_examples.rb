@@ -13,4 +13,6 @@ shared_examples_for "aws_sns_message" do
     subject { create(factory) }
     it { is_expected.to be_valid }
   end
+
+  include_examples("event_publisher")
 end

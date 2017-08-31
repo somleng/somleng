@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe PhoneCallEvent::Completed do
   let(:factory) { :phone_call_event_completed }
-  let(:asserted_phone_call_event_name) { :phone_call_event_completed }
+  let(:asserted_event_name) { :phone_call_event_completed }
   include_examples("phone_call_event")
 
   describe "#answered?" do

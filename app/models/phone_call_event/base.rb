@@ -1,12 +1,10 @@
 class PhoneCallEvent::Base < ApplicationRecord
   self.table_name = :phone_call_events
 
-  include Wisper::Publisher
-
+  include EventPublisher
   belongs_to :phone_call
 
   validates :type, :presence => true
-  after_commit   :publish_created, :on => :create
 
   def serializable_hash(options = nil)
     options ||= {}
@@ -19,14 +17,6 @@ class PhoneCallEvent::Base < ApplicationRecord
   end
 
   private
-
-  def publish_created
-    broadcast(broadcast_event_name(:created), self)
-  end
-
-  def broadcast_event_name(event_type)
-    [phone_call_event_name, event_type].join("_")
-  end
 
   def json_attributes
     {
