@@ -7,7 +7,6 @@ class Api::Admin::AwsSnsMessagesController < Api::Admin::BaseController
   ]
 
   def create
-    logger.info(request.env)
     job_adapter.perform_later(permitted_headers, request.raw_post)
     head(:created)
   end
