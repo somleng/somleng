@@ -1,4 +1,8 @@
 shared_examples_for "aws_sns_message" do
+  describe "associations" do
+    it { is_expected.to belong_to(:recording) }
+  end
+
   describe "validations" do
     it { is_expected.to validate_presence_of(:type) }
     it { is_expected.to validate_presence_of(:aws_sns_message_id) }

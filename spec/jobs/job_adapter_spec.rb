@@ -5,8 +5,6 @@ describe JobAdapter do
   subject { described_class.new(job_name) }
 
   describe "#perform_later(*args)" do
-    include Twilreapi::SpecHelpers::EnvHelpers
-
     let(:args) { ["foo", "bar", 1] }
     let(:enqueued_job) { enqueued_jobs.first }
     let(:active_job_use_active_job) { "0" }

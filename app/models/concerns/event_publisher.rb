@@ -14,10 +14,18 @@ module EventPublisher
     end
   end
 
+  def received
+    publish_received
+  end
+
   private
 
   def publish_created
     broadcast(broadcast_event_name(:created), self)
+  end
+
+  def publish_received
+    broadcast(broadcast_event_name(:received), self)
   end
 
   def broadcast_event_name(event_type)

@@ -39,6 +39,7 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
   def setup_resource
     subscribe_listeners
     resource.phone_call = phone_call
+    resource.received
     resource
   end
 

@@ -2,7 +2,9 @@ class PhoneCallEvent::Base < ApplicationRecord
   self.table_name = :phone_call_events
 
   include EventPublisher
+
   belongs_to :phone_call
+  belongs_to :recording, :optional => true
 
   validates :type, :presence => true
 

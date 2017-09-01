@@ -14,8 +14,6 @@ describe ActiveCallRouterAdapter do
   end
 
   context "configuring a custom call router" do
-    include Twilreapi::SpecHelpers::EnvHelpers
-
     let(:custom_call_router_class_name) { "Twilreapi::ActiveCallRouter::MyCallRouter" }
 
     def setup_scenario

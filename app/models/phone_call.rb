@@ -24,8 +24,11 @@ class PhoneCall < ApplicationRecord
   include TwilioUrlLogic
 
   belongs_to :incoming_phone_number, :optional => true
+  belongs_to :recording, :optional => true
+
   has_one    :call_data_record
   has_many   :phone_call_events, :class_name => "PhoneCallEvent::Base"
+  has_many   :recordings
 
   before_validation :normalize_phone_numbers
 

@@ -9,6 +9,7 @@ class AwsSnsMessageProcessorJob < ActiveJob::Base
     message.aws_sns_message_id = headers["HTTP_X_AMZ_SNS_MESSAGE_ID"]
     message.payload = JSON.parse(json_payload)
     subscribe_listeners(message)
+    message.received
     message.save
   end
 

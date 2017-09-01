@@ -121,6 +121,10 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
           def assert_valid_request!
             super
             expect(created_event.params["recordingStatusCallback"]).to eq(recording_status_callback)
+            expect(created_event.recording).to be_present
+            phone_call.reload
+            expect(phone_call.recordings).to be_present
+            expect(phone_call.recording).to be_present
           end
 
           it { assert_valid_request! }

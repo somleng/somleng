@@ -6,7 +6,10 @@ module Twilreapi::SpecHelpers::EnvHelpers
 
     env.each do |key, value|
       allow(ENV).to receive(:[]).with(key.to_s.upcase).and_return(value)
-      allow(ENV).to receive(:[]).with(key.to_s.upcase).and_return(value)
     end
   end
+end
+
+RSpec.configure do |config|
+  config.include(Twilreapi::SpecHelpers::EnvHelpers)
 end

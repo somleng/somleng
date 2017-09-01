@@ -1,6 +1,8 @@
 class AwsSnsMessage::Base < ApplicationRecord
   self.table_name = :aws_sns_messages
 
+  belongs_to :recording, :optional => true
+
   include EventPublisher
 
   validates :type,

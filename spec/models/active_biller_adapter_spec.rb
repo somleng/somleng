@@ -12,8 +12,6 @@ describe ActiveBillerAdapter do
   end
 
   context "configuring a custom biller" do
-    include Twilreapi::SpecHelpers::EnvHelpers
-
     let(:custom_biller_class_name) { "Twilreapi::ActiveBiller::MyBiller" }
 
     def setup_scenario

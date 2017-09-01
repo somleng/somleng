@@ -1,12 +1,35 @@
 class AwsSnsMessage::NotificationObserver < AwsSnsMessage::BaseObserver
+  S3_EVENT_SOURCE = "aws:s3"
+  S3_OBJECT_CREATED_PUT = "ObjectCreated:Put"
+
   attr_accessor :json_payload_message
 
+  def aws_sns_message_notification_received(aws_sns_message)
+    setup_observer(aws_sns_message)
+    aws_sns_message.recording = recording if s3_object_created_notification?
+  end
+
   def aws_sns_message_notification_created(aws_sns_message)
+    setup_observer(aws_sns_message)
+    JobAdapter.new(:recording_processor_worker).perform_later(
+      aws_sns_message.recording_id, s3_bucket_name, s3_object_key
+    ) if aws_sns_message.recording_id?
+  end
+
+  private
+
+  def recording
+    @recording ||= Recording.find_by_original_file_id(UUIDFilename.uuid_from_uri(s3_object_key))
+  end
+
+  def setup_observer(aws_sns_message)
     self.aws_sns_message = aws_sns_message
     self.json_payload_message = payload_message_to_hash
   end
 
-  private
+  def s3_object_created_notification?
+    s3_object_created_put? && s3_bucket_name && s3_object_key
+  end
 
   def payload_message_to_hash
     JSON.parse(aws_sns_message.payload_message) rescue {}
@@ -18,6 +41,18 @@ class AwsSnsMessage::NotificationObserver < AwsSnsMessage::BaseObserver
 
   def json_payload_message_record
     json_payload_message_records[0] || {}
+  end
+
+  def event_name
+    json_payload_message_record["eventName"]
+  end
+
+  def event_source
+    json_payload_message_record["eventSource"]
+  end
+
+  def s3_object_created_put?
+    event_source == S3_EVENT_SOURCE && event_name == S3_OBJECT_CREATED_PUT
   end
 
   def s3_record

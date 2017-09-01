@@ -1,6 +1,7 @@
 shared_examples_for "phone_call_event" do
   describe "associations" do
     it { is_expected.to belong_to(:phone_call) }
+    it { is_expected.to belong_to(:recording) }
   end
 
   describe "validations" do
