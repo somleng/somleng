@@ -19,7 +19,11 @@ class AwsSnsMessage::NotificationObserver < AwsSnsMessage::BaseObserver
   private
 
   def recording
-    @recording ||= Recording.find_by_original_file_id(UUIDFilename.uuid_from_uri(s3_object_key))
+    @recording ||= Recording.waiting_for_file.where.not(
+      :original_file_id => nil
+    ).where(
+      :original_file_id => UUIDFilename.uuid_from_uri(s3_object_key)
+    ).first
   end
 
   def setup_observer(aws_sns_message)

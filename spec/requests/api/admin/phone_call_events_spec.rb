@@ -108,50 +108,73 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
           expect(response.headers["Location"]).to eq(api_admin_phone_call_phone_call_event_path(phone_call, created_event))
         end
 
-        context "recording_started" do
-          let(:event_type) { "recording_started" }
-          let("recording_status_callback") { "https://somleng.example.com/recording_status_callback" }
-
-          def event_params
-            super.merge(
-              "recordingStatusCallback" => recording_status_callback
-            )
-          end
+        context "recording" do
+          let(:recording) { created_event.recording }
 
           def assert_valid_request!
             super
-            expect(created_event.params["recordingStatusCallback"]).to eq(recording_status_callback)
-            expect(created_event.recording).to be_present
-            phone_call.reload
-            expect(phone_call.recordings).to be_present
-            expect(phone_call.recording).to be_present
+            expect(recording).to be_present
           end
 
-          it { assert_valid_request! }
-        end
+          context "recording_started" do
+            let(:event_type) { "recording_started" }
+            let("recording_status_callback") { "https://somleng.example.com/recording_status_callback" }
 
-        context "recording_completed" do
-          let(:event_type) { "recording_completed" }
-          let(:recording_duration) { "8999" }
-          let(:recording_size) { "0" }
-          let(:recording_uri) { "file:///var/lib/freeswitch/recordings/1dff035b-10d6-419d-9c60-643b651ef096-2.wav" }
+            def event_params
+              super.merge(
+                "recordingStatusCallback" => recording_status_callback
+              )
+            end
 
-          def event_params
-            super.merge(
-              :recording_duration => recording_duration,
-              :recording_size => recording_size,
-              :recording_uri => recording_uri
-            )
+            def assert_valid_request!
+              super
+              expect(created_event.params).to eq(event_params)
+              expect(recording.twiml_instructions).to eq(event_params)
+              expect(recording.currently_recording_phone_call).to eq(phone_call)
+              expect(phone_call.recordings).to match_array([recording])
+            end
+
+            it { assert_valid_request! }
           end
 
-          def assert_valid_request!
-            super
-            expect(created_event.recording_duration).to eq(recording_duration)
-            expect(created_event.recording_size).to eq(recording_size)
-            expect(created_event.recording_uri).to eq(recording_uri)
-          end
+          context "recording_completed" do
+            let(:current_recording) {
+              create(
+                :recording, :currently_recording_phone_call => phone_call
+              )
+            }
 
-          it { assert_valid_request! }
+            let(:event_type) { "recording_completed" }
+            let(:recording_duration) { "8999" }
+            let(:recording_size) { "0" }
+            let(:file_id) { "1dff035b-10d6-419d-9c60-643b651ef096" }
+            let(:recording_uri) { "file:///var/lib/freeswitch/recordings/#{file_id}-2.wav" }
+
+            def event_params
+              super.merge(
+                "recording_duration" => recording_duration,
+                "recording_size" => recording_size,
+                "recording_uri" => recording_uri
+              )
+            end
+
+            def setup_scenario
+              current_recording
+              super
+            end
+
+            def assert_valid_request!
+              super
+              expect(created_event.params).to eq(event_params)
+              expect(created_event.recording).to eq(current_recording)
+              current_recording.reload
+              expect(current_recording.params).to eq(event_params)
+              expect(current_recording.duration).to eq(recording_duration.to_i)
+              expect(current_recording.original_file_id).to eq(file_id)
+            end
+
+            it { assert_valid_request! }
+          end
         end
 
         context "completed" do
@@ -161,15 +184,8 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
 
           def event_params
             super.merge(
-              :answer_epoch => answer_epoch,
-              :sip_term_status => sip_term_status
-            )
-          end
-
-          def params
-            super.merge(
-              :answer_epoch => answer_epoch,
-              :sip_term_status => sip_term_status
+              "answer_epoch" => answer_epoch,
+              "sip_term_status" => sip_term_status
             )
           end
 

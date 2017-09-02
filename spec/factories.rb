@@ -88,8 +88,16 @@ FactoryGirl.define do
   factory :recording do
     association :phone_call
 
+    trait :initiated do
+      status "initiated"
+    end
+
     trait :waiting_for_file do
       status "waiting_for_file"
+    end
+
+    trait :processing do
+      status "processing"
     end
   end
 

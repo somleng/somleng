@@ -84,13 +84,20 @@ describe "'/api/admin/aws_sns_messages'" do
         let(:asserted_sns_message_type) { AwsSnsMessage::Notification }
 
         let(:original_file_id) { SecureRandom.uuid }
-        let(:recording) { create(:recording, :original_file_id => original_file_id ) }
+
+        let(:recording) {
+          create(
+            :recording,
+            :waiting_for_file,
+            :original_file_id => original_file_id
+          )
+        }
+
         let(:sns_message_s3_object_id) { "recordings/#{original_file_id}-2.wav" }
 
         let(:content_type) { "audio/x-wav" }
-
         let(:recording_file) {
-          Refile::FileDouble.new("dummy", "logo.png", :content_type => content_type)
+          Refile::FileDouble.new("dummy", "logo.wav", :content_type => content_type)
         }
 
         def setup_scenario
@@ -115,10 +122,12 @@ describe "'/api/admin/aws_sns_messages'" do
         end
 
         def assert_valid_request!
+          super
           recording.reload
           expect(recording.file.read).to eq(recording_file.read)
           expect(recording.file_content_type).to eq(content_type)
           expect(recording.file_filename).to eq(File.basename(sns_message_s3_object_id))
+          expect(recording).to be_completed
         end
 
         it { assert_valid_request! }

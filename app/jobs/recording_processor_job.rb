@@ -1,17 +1,18 @@
 class RecordingProcessorJob < ActiveJob::Base
   def perform(recording_id, bucket_name, object_key)
     recording = Recording.find(recording_id)
+    recording.process!
+
     response = s3_client.get_object(
-      {
-        :bucket => bucket_name,
-        :key => object_key,
-      }
+      :bucket => bucket_name,
+      :key => object_key
     )
 
     recording.file_content_type = response.content_type
     recording.file_filename = File.basename(object_key)
     recording.file = response.body
-    recording.save
+    recording.complete
+    recording.save!
   end
 
   private

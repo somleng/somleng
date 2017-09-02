@@ -26,5 +26,9 @@ class Recording < ApplicationRecord
     event :process do
       transitions :from => :waiting_for_file, :to => :processing
     end
+
+    event :complete do
+      transitions :from => :processing, :to => :completed
+    end
   end
 end

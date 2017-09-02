@@ -6,11 +6,23 @@ describe AwsSnsMessage::NotificationObserver do
   let(:original_file_id) { SecureRandom.uuid }
   let(:s3_object_id) { "recordings/#{original_file_id}-2.wav" }
 
+  def recording_factory_traits
+    {
+      :waiting_for_file => nil
+    }
+  end
+
+  def recording_factory_attributes
+    {
+      :original_file_id => original_file_id
+    }
+  end
+
   let(:recording) {
     create(
       :recording,
-      :waiting_for_file,
-      :original_file_id => original_file_id
+      *recording_factory_traits.keys,
+      recording_factory_attributes
     )
   }
 
@@ -19,9 +31,6 @@ describe AwsSnsMessage::NotificationObserver do
       :sns_message_s3_object_id => s3_object_id,
       :sns_message_s3_bucket_name => s3_bucket_name
     }
-  end
-
-  def setup_scenario
   end
 
   before do
@@ -67,6 +76,27 @@ describe AwsSnsMessage::NotificationObserver do
       context "aws:s3 ObjectCreated:Put event" do
         let(:sns_message_event_name) { "ObjectCreated:Put" }
         let(:asserted_recording) { recording }
+
+        context "s3_object_id is not a uuid" do
+          let(:original_file_id) { nil }
+          let(:s3_object_id) { "abc" }
+          let(:asserted_recording) { nil }
+
+          it { assert_observed! }
+        end
+
+        context "current recording is not waiting_for_file" do
+          let(:asserted_recording) { nil }
+
+          def recording_factory_traits
+            {
+              :initiated => true
+            }
+          end
+
+          it { assert_observed! }
+        end
+
         it { assert_observed! }
       end
 
