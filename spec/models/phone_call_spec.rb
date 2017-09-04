@@ -10,6 +10,7 @@ describe PhoneCall do
   end
 
   describe "associations" do
+    it { is_expected.to belong_to(:account) }
     it { is_expected.to belong_to(:incoming_phone_number) }
     it { is_expected.to belong_to(:recording) }
     it { is_expected.to have_one(:call_data_record) }

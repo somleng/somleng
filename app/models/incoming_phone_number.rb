@@ -2,6 +2,7 @@ class IncomingPhoneNumber < ApplicationRecord
   include TwilioApiResource
   include TwilioUrlLogic
 
+  belongs_to :account
   has_many :phone_calls
 
   validates :phone_number,
@@ -9,6 +10,8 @@ class IncomingPhoneNumber < ApplicationRecord
             :presence => true
 
   phony_normalize :phone_number
+
+  delegate :sid, :to => :account, :prefix => true
 
   def serializable_hash(options = nil)
     options ||= {}

@@ -99,6 +99,20 @@ FactoryGirl.define do
     trait :processing do
       status "processing"
     end
+
+    trait :completed do
+      status "completed"
+    end
+
+    trait :with_wav_file do
+      file {
+        Refile::FileDouble.new(
+          "dummy",
+          "recording.wav",
+          :content_type => "audio/x-wav"
+        )
+      }
+    end
   end
 
   factory :phone_call_event_base, :class => PhoneCallEvent::Base do

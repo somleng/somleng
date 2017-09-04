@@ -23,6 +23,7 @@ class PhoneCall < ApplicationRecord
   include TwilioApiResource
   include TwilioUrlLogic
 
+  belongs_to :account
   belongs_to :incoming_phone_number, :optional => true
   belongs_to :recording, :optional => true
 
@@ -71,6 +72,8 @@ class PhoneCall < ApplicationRecord
            :to => :completed_event,
            :prefix => true,
            :allow_nil => true
+
+  delegate :sid, :to => :account, :prefix => true
 
   include AASM
 

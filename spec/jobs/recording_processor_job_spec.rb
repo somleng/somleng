@@ -6,9 +6,11 @@ describe RecordingProcessorJob do
     let(:asserted_file_filename) { "object-key.wav" }
     let(:object_key) { "/recordings/#{asserted_file_filename}" }
 
-    let(:content_type) { "audio/x-wav" }
     let(:recording_file) {
-      Refile::FileDouble.new("dummy", "logo.wav", :content_type => content_type)
+      attributes_for(
+        :recording,
+        :with_wav_file
+      )[:file]
     }
 
     def stub_aws_client_responses
@@ -17,7 +19,7 @@ describe RecordingProcessorJob do
           :stub_responses => {
             :get_object => {
               :body => recording_file,
-              :content_type => content_type
+              :content_type => recording_file.content_type
             }
           }
         )
@@ -53,7 +55,7 @@ describe RecordingProcessorJob do
       def assert_performed!
         recording.reload
         expect(recording.file.read).to eq(recording_file.read)
-        expect(recording.file_content_type).to eq(content_type)
+        expect(recording.file_content_type).to eq(recording_file.content_type)
         expect(recording.file_filename).to eq(asserted_file_filename)
         expect(recording).to be_completed
       end
