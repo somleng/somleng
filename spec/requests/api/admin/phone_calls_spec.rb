@@ -61,6 +61,7 @@ describe "'/api/admin/phone_calls/'" do
 
         def assert_valid_request!
           expect(response.code).to eq("201")
+          expect(response.headers["Location"]).to eq(api_admin_phone_call_url(phone_call))
           expect(phone_call.from).to eq(from)
           expect(parsed_response.keys).to match_array(JSON.parse(phone_call.to_internal_inbound_call_json).keys)
         end

@@ -3,6 +3,10 @@ class Api::Admin::PhoneCallsController < Api::Admin::BaseController
 
   private
 
+  def resource_location
+    api_admin_phone_call_url(resource)
+  end
+
   def permission_name
     :manage_inbound_phone_calls
   end
