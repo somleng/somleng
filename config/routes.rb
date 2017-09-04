@@ -33,7 +33,7 @@ Rails.application.routes.draw do
 
     get("/2010-04-01/Accounts/:account_id/Recordings/:id", :to => "recordings#show", :as => :twilio_account_recording, :defaults => {:format => "wav"})
 
-    get("/2010-04-01/Accounts/:account_id/Calls/:phone_call_id/Recordings", :to => "recordings#index", :as => :twilio_account_phone_call_recordings)
+    get("/2010-04-01/Accounts/:account_id/Calls/:phone_call_id/Recordings", :to => "recordings#index", :as => :twilio_account_call_recordings)
 
     get "/2010-04-01/Accounts/:account_id/IncomingPhoneNumbers/:id", :to => "incoming_phone_numbers#show", :as => :twilio_account_incoming_phone_number
 

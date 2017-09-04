@@ -253,7 +253,9 @@ class PhoneCall < ApplicationRecord
   end
 
   def subresource_uris
-    {}
+    uris = {}
+    uris.merge!("recordings" => Rails.application.routes.url_helpers.api_twilio_account_call_recordings_path(account_id, id)) if recordings.any?
+    uris
   end
 
   def to_formatted

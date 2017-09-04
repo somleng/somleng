@@ -135,7 +135,7 @@ describe "Recordings" do
     let(:reference_phone_call) { phone_call }
 
     def setup_scenario
-      do_request(:get, api_twilio_account_phone_call_recordings_path(account_sid, reference_phone_call.id))
+      do_request(:get, api_twilio_account_call_recordings_path(account_sid, reference_phone_call.id))
     end
 
     context "unauthorized requests" do
