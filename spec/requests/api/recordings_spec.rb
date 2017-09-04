@@ -104,6 +104,19 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Recordings/{RecordingSid}'" do
       end
 
       it { assert_successful! }
+
+      context "without specifying HTTP Basic Auth" do
+        # From: https://www.twilio.com/docs/api/rest/recording#instance
+
+        # Because these URLs are useful to many external applications,
+        # they are public and do not require HTTP Basic Auth to access.
+
+        def authorization_headers
+          {}
+        end
+
+        it { assert_successful! }
+      end
     end
   end
 end

@@ -22,6 +22,6 @@ ActionController::Renderers.add(:wav) do |object, options = {}|
       }.merge(options)
     )
   else
-    head(:not_found)
+    raise ActiveRecord::RecordNotFound
   end
 end
