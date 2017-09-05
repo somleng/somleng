@@ -45,6 +45,7 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
     context "valid request" do
       def assert_valid_request!
         expect(response.code).to eq("200")
+        expect(response.body).to eq(phone_call_event.to_json)
       end
 
       it { assert_valid_request! }

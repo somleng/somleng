@@ -14,10 +14,13 @@ shared_examples_for "phone_call_event" do
   end
 
   describe "#to_json" do
-    subject { create(factory) }
+    let(:phone_call) { create(:phone_call) }
+    let(:recording) { create(:recording, :phone_call => phone_call) }
     let(:json) { JSON.parse(subject.to_json) }
 
-    let(:asserted_json_keys) { ["created_at", "id", "params", "updated_at", "phone_call"] }
+    subject { create(factory, :phone_call => phone_call, :recording => recording) }
+
+    let(:asserted_json_keys) { ["created_at", "id", "params", "updated_at", "phone_call", "recording"] }
 
     def assert_json!
       expect(json.keys).to match_array(asserted_json_keys)

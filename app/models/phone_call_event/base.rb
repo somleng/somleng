@@ -13,7 +13,7 @@ class PhoneCallEvent::Base < ApplicationRecord
     super(
       {
         :only => json_attributes.keys,
-        :include => [:phone_call]
+        :include => [:phone_call, :recording]
       }.merge(options)
     )
   end
