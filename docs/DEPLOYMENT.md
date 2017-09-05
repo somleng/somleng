@@ -123,9 +123,9 @@ AWS_ACCESS_KEY_ID=access-key-id-of-user-who-as-access-to-bucket
 AWS_SECRET_ACCESS_KEY=secret-access-key-id-of-user-who-as-access-to-bucket
 ```
 
-##### Processing Status Callback Notifications
+##### Sending Status Callback Notifications
 
-Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_STATUS_CALLBACK_NOTIFIER_WORKER_QUEUE` in your web *and* worker environments. The queue name will be generated when you create the worker environment (see below). Note that you also need to set this environment variable in both your web and CDR processor worker environment since the job will be when a phone call is completed which could be due to a phone call event or a CDR.
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_STATUS_CALLBACK_NOTIFIER_WORKER_QUEUE` in your web *and* worker environments. The queue name will be generated when you create the worker environment (see below). Note that you need to set this environment variable in both your web and CDR processor worker environment since the job will be when a phone call is completed which could be due to a phone call event or a CDR.
 
 ##### Processing Recordings
 
@@ -134,6 +134,12 @@ Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_RECORD
 ##### Processing AWS SES Messages
 
 Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_AWS_SNS_MESSAGE_PROCESSOR_WORKER_QUEUE` in your web environment. The queue name will be generated when you create the worker environment (see below).
+
+##### Sending Recording Status Callback Notifications
+
+RecordingStatusCallbackNotifierJob recording_status_callback_notifier_worker
+
+Set the SQS queue name in the ENV variable `ACTIVE_JOB_ACTIVE_ELASTIC_JOB_RECORDING_STATUS_CALLBACK_NOTIFIER_WORKER_QUEUE` in your *Process Recordings worker environment*. The queue name will be generated when you create the worker environment (see below).
 
 ### Create worker environments
 
@@ -162,6 +168,15 @@ TWILREAPI_WORKER_JOB_OUTBOUND_CALL_JOB_DRB_URL=druby://somleng-host-url:9050
 ```
 
 For the worker environment that processes CDRs set the S3 storage configuration variables to the [same values](#processing-cdrs) as you set in the web environment
+
+For the worker environment that sends Recording Status Callback Notifications set either (or both) of the following environment variables:
+
+```
+RECORDING_URL_HOST=cdn.hostname.org
+APPLICATION_HOST=somleng.hostname.org
+```
+
+`RECORDING_URL_HOST` takes precedence over `APPLICATION_HOST`. `RECORDING_URL_HOST` is used to determine the full URL of the recording when sent as a Recording Status Callback Notification. This is useful if you're using a CDN to deliver recordings. If `RECORDING_URL_HOST` is not set `APPLICATION_HOST` is used instead. If neither are set the relative path to the recording is returned instead.
 
 #### Configure the SQS queue
 
