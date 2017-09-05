@@ -159,7 +159,7 @@ describe "Recordings" do
         it { assert_successful! }
       end
 
-      context "specifyng a phone call without recordings" do
+      context "specifying a phone call without recordings" do
         let(:phone_call_with_no_recordings) { create(:phone_call, :account => account) }
         let(:reference_phone_call) { phone_call_with_no_recordings }
         let(:asserted_resources) { [] }

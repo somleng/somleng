@@ -85,10 +85,14 @@ describe "'/api/admin/aws_sns_messages'" do
 
         let(:original_file_id) { SecureRandom.uuid }
 
+        let(:phone_call) { create(:phone_call, :from_account_with_access_token) }
+
         let(:recording) {
           create(
             :recording,
             :waiting_for_file,
+            :with_status_callback_url,
+            :phone_call => phone_call,
             :original_file_id => original_file_id
           )
         }
@@ -114,6 +118,7 @@ describe "'/api/admin/aws_sns_messages'" do
               }
             )
           )
+          stub_request(:post, recording.status_callback_url)
           super
         end
 
@@ -130,6 +135,9 @@ describe "'/api/admin/aws_sns_messages'" do
           expect(recording.file_content_type).to eq(recording_file.content_type)
           expect(recording.file_filename).to eq(File.basename(sns_message_s3_object_id))
           expect(recording).to be_completed
+          expect(WebMock).to have_requested(
+            :post, recording.status_callback_url
+          )
         end
 
         it { assert_valid_request! }

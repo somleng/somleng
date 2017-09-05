@@ -9,19 +9,35 @@ class Recording < ApplicationRecord
   TWIML_SOURCE = "RecordVerb"
 
   include TwilioApiResource
+  include Wisper::Publisher
 
   belongs_to :phone_call
   has_many :phone_call_events,      :class_name => "PhoneCallEvent::Base"
   has_many :aws_sns_notifications,  :class_name => "AwsSnsMessage::Notification"
   has_one  :currently_recording_phone_call, :class_name => "PhoneCall"
 
+  after_commit :publish_status_change
+
   validates :status, :presence => true
   validates :original_file_id, :uniqueness => true
+
+  validates :status_callback_url,
+            :url => {
+              :no_local => true, :allow_nil => true,
+              :if => :validate_status_callback_url?
+            }
 
   attachment :file, :content_type => ["audio/wav", "audio/x-wav"]
 
   delegate :account, :to => :phone_call
+
+  delegate :auth_token,
+           :to => :account,
+           :prefix => true
+
   delegate :account_sid, :to => :phone_call
+
+  attr_accessor :validate_status_callback_url
 
   include AASM
 
@@ -50,8 +66,25 @@ class Recording < ApplicationRecord
     TWILIO_STATUS_MAPPINGS[status]
   end
 
+  def status_callback_url
+    twiml_instructions["recordingStatusCallback"]
+  end
+
+  def status_callback_method
+    twiml_instructions["recordingStatusCallbackMethod"]
+  end
+
+  def validate_status_callback_url?
+    !!validate_status_callback_url
+  end
+
   def uri
-    Rails.application.routes.url_helpers.api_twilio_account_recording_path(account, id)
+    path_or_url(:path)
+  end
+
+  def url
+    host = ENV["RECORDING_URL_HOST"] || ENV["APPLICATION_HOST"]
+    path_or_url(host ? :url : :path, :host => host)
   end
 
   def to_wav
@@ -81,6 +114,14 @@ class Recording < ApplicationRecord
   end
 
   private
+
+  def publish_status_change
+    broadcast(:"recording_#{previous_changes[:status].last}", self) if previous_changes.key?(:status) && previous_changes[:status].first != previous_changes[:status].last
+  end
+
+  def path_or_url(type, options = {})
+    Rails.application.routes.url_helpers.send("api_twilio_account_recording_#{type}", account, id, {:protocol => "https"}.merge(options))
+  end
 
   def json_attributes
     super.merge(

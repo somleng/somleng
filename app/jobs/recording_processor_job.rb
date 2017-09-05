@@ -1,6 +1,8 @@
 class RecordingProcessorJob < ActiveJob::Base
   def perform(recording_id, bucket_name, object_key)
     recording = Recording.find(recording_id)
+    recording.subscribe(RecordingObserver.new)
+
     recording.process!
 
     response = s3_client.get_object(

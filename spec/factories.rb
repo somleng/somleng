@@ -86,6 +86,11 @@ FactoryGirl.define do
   end
 
   factory :recording do
+    transient do
+      status_callback_url nil
+      status_callback_method nil
+    end
+
     association :phone_call
 
     trait :initiated do
@@ -104,6 +109,10 @@ FactoryGirl.define do
       status "completed"
     end
 
+    trait :can_complete do
+      processing
+    end
+
     trait :with_wav_file do
       file {
         Refile::FileDouble.new(
@@ -113,6 +122,13 @@ FactoryGirl.define do
         )
       }
     end
+
+    twiml_instructions {
+      twiml_instructions = {}
+      twiml_instructions.merge!("recordingStatusCallback" => status_callback_url) if status_callback_url
+      twiml_instructions.merge!("recordingStatusCallbackMethod" => status_callback_method) if status_callback_method
+      twiml_instructions
+    }
   end
 
   factory :phone_call_event_base, :class => PhoneCallEvent::Base do
