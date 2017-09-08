@@ -105,7 +105,7 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
 
         def assert_valid_request!
           expect(response.code).to eq("201")
-          expect(response.body).to be_empty
+          expect(response.body).to eq(created_event.to_json)
           expect(response.headers["Location"]).to eq(api_admin_phone_call_phone_call_event_path(phone_call, created_event))
         end
 

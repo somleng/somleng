@@ -51,12 +51,8 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
     PhoneCall.where(field => params[:phone_call_id])
   end
 
-  def respond_with_create_resource
-    if resource.errors.empty?
-      head(:created, :location => api_admin_phone_call_phone_call_event_path(phone_call, resource))
-    else
-      super
-    end
+  def resource_location
+    api_admin_phone_call_phone_call_event_path(phone_call, resource)
   end
 
   def subscribe_listeners

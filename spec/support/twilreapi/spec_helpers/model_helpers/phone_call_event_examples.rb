@@ -20,7 +20,7 @@ shared_examples_for "phone_call_event" do
 
     subject { create(factory, :phone_call => phone_call, :recording => recording) }
 
-    let(:asserted_json_keys) { ["created_at", "id", "params", "updated_at", "phone_call", "recording"] }
+    let(:asserted_json_keys) { ["recording_url"] }
 
     def assert_json!
       expect(json.keys).to match_array(asserted_json_keys)

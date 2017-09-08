@@ -8,12 +8,14 @@ class PhoneCallEvent::Base < ApplicationRecord
 
   validates :type, :presence => true
 
+  delegate :url, :to => :recording, :prefix => true, :allow_nil => true
+
   def serializable_hash(options = nil)
     options ||= {}
     super(
       {
         :only => json_attributes.keys,
-        :include => [:phone_call, :recording]
+        :methods => json_methods.keys,
       }.merge(options)
     )
   end
@@ -21,11 +23,12 @@ class PhoneCallEvent::Base < ApplicationRecord
   private
 
   def json_attributes
+    {}
+  end
+
+  def json_methods
     {
-      :id => nil,
-      :params => nil,
-      :updated_at => nil,
-      :created_at => nil
+      :recording_url => nil
     }
   end
 end
