@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: https://github.com/dwilkie/twilreapi-active_call_router.git
-  revision: 8088a962ca73d5a1a66350f91ae436ee7ae5ffa9
+  revision: 75481c791fc78489b51b276043fcedc4be9b3415
   specs:
     twilreapi-active_call_router (0.1.0)
 
@@ -330,4 +330,4 @@ DEPENDENCIES
   wisper-rspec
 
 BUNDLED WITH
-   1.15.3
+   1.16.0.pre.2

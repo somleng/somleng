@@ -223,7 +223,7 @@ describe PhoneCall do
       let(:json_method) { :to_internal_inbound_call_json }
 
       def assert_valid_json!
-        expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "from", "to", "twilio_request_to", "api_version", "direction"])
+        expect(json.keys).to match_array(["sid", "account_sid", "account_auth_token", "voice_url", "voice_method", "from", "to", "twilio_request_to", "twilio_request_from", "api_version", "direction"])
       end
 
       it { assert_valid_json! }
@@ -338,6 +338,7 @@ describe PhoneCall do
         expect(subject.account).to eq(incoming_phone_number.account)
         expect(subject.incoming_phone_number).to eq(incoming_phone_number)
         expect(subject.twilio_request_to).to eq(incoming_phone_number.twilio_request_phone_number)
+        expect(subject.twilio_request_from).to eq(nil)
         is_expected.to be_initiated
       end
 

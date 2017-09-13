@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170901065806) do
+ActiveRecord::Schema.define(version: 20170913034234) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,6 +135,9 @@ ActiveRecord::Schema.define(version: 20170901065806) do
     t.string "external_id"
     t.uuid "incoming_phone_number_id"
     t.uuid "recording_id"
+    t.json "variables", default: {}, null: false
+    t.string "twilio_request_to"
+    t.string "twilio_request_from"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
     t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id"

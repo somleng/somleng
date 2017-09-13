@@ -94,7 +94,6 @@ describe "'/api/admin/phone_calls/:phone_call_external_id/phone_call_events'" do
       end
 
       context "valid requests" do
-        let(:response_json) { JSON.parse(response.body) }
         let(:created_event) { phone_call.phone_call_events.last! }
 
         def params

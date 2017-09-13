@@ -5,18 +5,21 @@ describe "'/api/admin/phone_calls/'" do
     super.merge(:permissions => [:manage_inbound_phone_calls])
   end
 
+  def setup_scenario
+  end
+
+  before do
+    setup_scenario
+  end
+
   describe "POST '/'" do
     let(:params) { {} }
-
-    def setup_scenario
-    end
 
     def post_phone_call
       do_request(:post, api_admin_phone_calls_path, params)
     end
 
-    before do
-      setup_scenario
+    def setup_scenario
       post_phone_call
     end
 
@@ -33,11 +36,18 @@ describe "'/api/admin/phone_calls/'" do
       let(:external_id) { generate(:external_id) }
       let(:from) { "2442" }
 
+      let(:variables) {
+        {
+          "sip_from_host" => "103.9.189.2"
+        }
+      }
+
       let(:params) {
         {
           "To" => to,
           "From" => from,
-          "ExternalSid" => external_id
+          "ExternalSid" => external_id,
+          "Variables" => variables
         }
       }
 
@@ -52,18 +62,19 @@ describe "'/api/admin/phone_calls/'" do
       context "valid request" do
         let(:incoming_phone_number) { create(:incoming_phone_number, :with_optional_attributes, :phone_number => to) }
         let(:parsed_response) { JSON.parse(response.body) }
-        let(:phone_call) { PhoneCall.find(parsed_response["sid"]) }
-
+        let(:created_phone_call) { PhoneCall.find(parsed_response["sid"]) }
 
         def setup_scenario
           incoming_phone_number
+          super
         end
 
         def assert_valid_request!
           expect(response.code).to eq("201")
-          expect(response.headers["Location"]).to eq(api_admin_phone_call_url(phone_call))
-          expect(phone_call.from).to eq(from)
-          expect(parsed_response.keys).to match_array(JSON.parse(phone_call.to_internal_inbound_call_json).keys)
+          expect(response.headers["Location"]).to eq(api_admin_phone_call_url(created_phone_call))
+          expect(created_phone_call.from).to eq(from)
+          expect(created_phone_call.variables).to eq(variables)
+          expect(parsed_response.keys).to match_array(JSON.parse(created_phone_call.to_internal_inbound_call_json).keys)
         end
 
         it { assert_valid_request! }
@@ -78,7 +89,7 @@ describe "'/api/admin/phone_calls/'" do
       do_request(:get, api_admin_phone_call_path(phone_call))
     end
 
-    before do
+    def setup_scenario
       get_phone_call
     end
 
