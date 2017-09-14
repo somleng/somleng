@@ -25,7 +25,10 @@ Set the following ENV Variables:
 
 ```
 SECRET_KEY_BASE=`bundle exec rails secret`
+RAILS_MAX_THREADS=32
 ```
+
+Note `RAILS_MAX_THREADS=32` comes from the default configuration for puma on Elastic Beanstalk. The setting is in `/opt/elasticbeanstalk/support/conf/pumaconf.rb`
 
 #### Connecting to RDS
 
@@ -159,6 +162,7 @@ Ensure you set `DATABASE_URL` and `SECRET_KEY_BASE` to the same values as you sp
 RAILS_SKIP_ASSET_COMPILATION=true
 RAILS_SKIP_MIGRATIONS=true
 PROCESS_ACTIVE_ELASTIC_JOBS=true
+RAILS_MAX_THREADS=32
 ```
 
 For the worker environment that processes outbound calls set the following variables:
