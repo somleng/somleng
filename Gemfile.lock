@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/dwilkie/somleng-twilio_http_client.git
-  revision: 3c24b438d6cea4cb5a457d0943fd13c224dc5069
+  revision: 8467bb125f6635827674ed57b3c66b8918672474
   specs:
     somleng-twilio_http_client (0.1.0)
       httparty
