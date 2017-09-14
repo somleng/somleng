@@ -42,7 +42,7 @@ class PhoneCall < ApplicationRecord
   validates :external_id, :uniqueness => true, :strict => true, :allow_nil => true
   validates :external_id, :incoming_phone_number, :presence => true, :if => :initiating_inbound_call?
 
-  attr_accessor :initiating_inbound_call, :completed_event
+  attr_accessor :initiating_inbound_call, :completed_event, :twilio_request_to
 
   alias_attribute :"To", :to
   alias_attribute :"From", :from
@@ -171,11 +171,10 @@ class PhoneCall < ApplicationRecord
 
   def to_internal_inbound_call_json
     to_json(
-      :only => internal_json_attributes.merge(
-        :twilio_request_to => nil,
-        :twilio_request_from => nil
-      ).keys,
-      :methods => internal_json_methods.keys
+      :only => internal_json_attributes.keys,
+      :methods => internal_json_methods.merge(
+        :twilio_request_to => nil
+      ).keys
     )
   end
 
@@ -203,7 +202,6 @@ class PhoneCall < ApplicationRecord
       self.status_callback_url = incoming_phone_number_status_callback_url
       self.status_callback_method = incoming_phone_number_status_callback_method
       self.twilio_request_to = incoming_phone_number_twilio_request_phone_number
-      self.twilio_request_from = active_call_router.normalize_from
       initiate
     end
     save
