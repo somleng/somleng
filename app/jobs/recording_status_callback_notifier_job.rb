@@ -1,5 +1,3 @@
-require "somleng/twilio_http_client/request"
-
 class RecordingStatusCallbackNotifierJob < ActiveJob::Base
   DEFAULT_STATUS_CALLBACK_METHOD = "POST"
 
@@ -14,11 +12,15 @@ class RecordingStatusCallbackNotifierJob < ActiveJob::Base
     recording.validate_status_callback_url = true
     recording.valid?
     if recording.errors[:status_callback_url].empty?
-      http_request.execute!
+      twilio_http_request.execute!(http_request)
     end
   end
 
   private
+
+  def twilio_http_request
+    @twilio_http_request ||= TwilioHttpClientRequest.new
+  end
 
   def http_request
     @http_request ||= Somleng::TwilioHttpClient::Request.new(

@@ -1,5 +1,3 @@
-require "somleng/twilio_http_client/request"
-
 class StatusCallbackNotifierJob < ActiveJob::Base
   DEFAULT_STATUS_CALLBACK_METHOD = "POST"
 
@@ -7,10 +5,14 @@ class StatusCallbackNotifierJob < ActiveJob::Base
 
   def perform(phone_call_id)
     self.phone_call = PhoneCall.find(phone_call_id)
-    http_request.execute!
+    twilio_http_request.execute!(http_request)
   end
 
   private
+
+  def twilio_http_request
+    @twilio_http_request ||= TwilioHttpClientRequest.new
+  end
 
   def http_request
     @http_request ||= Somleng::TwilioHttpClient::Request.new(
