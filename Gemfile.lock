@@ -13,9 +13,9 @@ GIT
 
 GIT
   remote: https://github.com/dwilkie/twilreapi-active_call_router.git
-  revision: 75481c791fc78489b51b276043fcedc4be9b3415
+  revision: 2ef37bd943a006e6112509f36a0be7af230c26f3
   specs:
-    twilreapi-active_call_router (0.1.0)
+    twilreapi-active_call_router (0.2.0)
 
 GIT
   remote: https://github.com/dwilkie/twilreapi-worker.git
