@@ -345,7 +345,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def normalize_from
-    normalized_from = active_call_router.normalize_from
+    normalized_from = PhonyRails.normalize_number(active_call_router.normalize_from)
     self.from = normalized_from if normalized_from
   end
 
