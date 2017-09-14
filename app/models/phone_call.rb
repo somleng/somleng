@@ -195,6 +195,7 @@ class PhoneCall < ApplicationRecord
   def initiate_inbound_call
     self.initiating_inbound_call = true
     normalize_phone_numbers
+    normalize_from
     if self.incoming_phone_number = IncomingPhoneNumber.find_by_phone_number(to)
       self.account = incoming_phone_number_account
       self.voice_url = incoming_phone_number_voice_url
@@ -295,10 +296,6 @@ class PhoneCall < ApplicationRecord
     !!initiating_inbound_call
   end
 
-  def normalize_phone_numbers
-    self.to = PhonyRails.normalize_number(to)
-  end
-
   def json_attributes
     super.merge(
       :to => nil,
@@ -345,6 +342,15 @@ class PhoneCall < ApplicationRecord
       :to => nil,
       :from => nil
     }
+  end
+
+  def normalize_from
+    normalized_from = active_call_router.normalize_from
+    self.from = normalized_from if normalized_from
+  end
+
+  def normalize_phone_numbers
+    self.to = PhonyRails.normalize_number(to)
   end
 
   def format_number(number)

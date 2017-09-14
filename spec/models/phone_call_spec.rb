@@ -293,8 +293,9 @@ describe PhoneCall do
   describe "#initiate_inbound_call" do
     let(:phone_number) { generate(:phone_number) }
     let(:external_id) { generate(:external_id) }
+    let(:from) { "+0973234567" }
 
-    subject { build(factory, :to => phone_number, :external_id => external_id) }
+    subject { build(factory, :from => from, :to => phone_number, :external_id => external_id) }
 
     def setup_scenario
     end
@@ -338,6 +339,7 @@ describe PhoneCall do
         expect(subject.account).to eq(incoming_phone_number.account)
         expect(subject.incoming_phone_number).to eq(incoming_phone_number)
         expect(subject.twilio_request_to).to eq(incoming_phone_number.twilio_request_phone_number)
+        expect(subject.from).to eq(from)
         is_expected.to be_initiated
       end
 
