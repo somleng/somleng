@@ -30,6 +30,10 @@ RAILS_MAX_THREADS=32
 
 Note `RAILS_MAX_THREADS=32` comes from the default configuration for puma on Elastic Beanstalk. The setting is in `/opt/elasticbeanstalk/support/conf/pumaconf.rb`
 
+#### Apply Application Version Lifecycle Policy
+
+Follow [this guide](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-lifecycle.html) to apply an application version lifecycle policy to avoid hitting the limit of stored application versions.
+
 #### Connecting to RDS
 
 Follow [this guide](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.RDS.html?icmpid=docs_elasticbeanstalk_console)
