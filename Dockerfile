@@ -1,14 +1,10 @@
 FROM ruby:latest
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
 
-RUN apt-get update \
-&& apt-get install -y --no-install-recommends \
-postgresql-client \
-&& rm -rf /var/lib/apt/lists/*
-
+RUN mkdir /usr/src/app
 WORKDIR /usr/src/app
-COPY Gemfile* ./
-RUN bundle install
-COPY . .
 
-EXPOSE 3000
-CMD ["rails", "server", "-b", "0.0.0.0"]
+ADD Gemfile /usr/src/app/Gemfile
+ADD Gemfile.lock /usr/src/app/Gemfile.lock
+RUN bundle install
+ADD . /usr/src/app
