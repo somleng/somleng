@@ -13,7 +13,7 @@ $ sudo docker-compose pull
 ### Create the database
 
 ```
-$ sudo docker-compose run web  /bin/bash -c './bin/rails db:create && ./bin/rails db:schema:load'
+$ sudo docker-compose run somleng_twilreapi_web /bin/bash -c './bin/rails db:create && ./bin/rails db:schema:load'
 ```
 
 ### Seed the database
@@ -21,7 +21,7 @@ $ sudo docker-compose run web  /bin/bash -c './bin/rails db:create && ./bin/rail
 Run the following command and note down the output. This will create a user account and an admin account with all possible permissions. For a production environment it's recommended that you create individual admin users for each specific task. See the [deployment guide](https://github.com/somleng/twilreapi/blob/master/docs/DEPLOYMENT.md) for specific instructions.
 
 ```
-$ sudo docker-compose run -e CREATE_ADMIN_ACCOUNT=1 -e ADMIN_ACCOUNT_PERMISSIONS=all web /bin/bash -c './bin/rails db:seed'
+$ sudo docker-compose run -e CREATE_ADMIN_ACCOUNT=1 -e ADMIN_ACCOUNT_PERMISSIONS=all somleng_twilreapi_web /bin/bash -c './bin/rails db:seed'
 ```
 
 ## Boot the server
