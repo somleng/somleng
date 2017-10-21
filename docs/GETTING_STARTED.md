@@ -1,8 +1,8 @@
 # Getting Started
 
-This is the getting started guide for Somleng's REST API. Follow instructions below to get Somleng's REST API up and running on your local machine. If you want to get things up and running quickly see the [getting started guide for Somleng](https://github.com/somleng/somleng-project/blob/master/docs/GETTING_STARTED.md).
+This is the getting started guide for Somleng's REST API. Follow instructions below to get Somleng's REST API up and running on your local machine. If you want to get the full Somleng stack up and running see the [getting started guide for Somleng](https://github.com/somleng/somleng-project/blob/master/docs/GETTING_STARTED.md).
 
-## Pull the latest image
+## Pull the latest images
 
 ```
 $ sudo docker-compose pull
@@ -13,7 +13,7 @@ $ sudo docker-compose pull
 ### Create the database
 
 ```
-$ sudo docker-compose run somleng_twilreapi_web /bin/bash -c './bin/rails db:create && ./bin/rails db:schema:load'
+$ sudo docker-compose run web /bin/bash -c './bin/rails db:create && ./bin/rails db:schema:load'
 ```
 
 ### Seed the database
@@ -21,7 +21,7 @@ $ sudo docker-compose run somleng_twilreapi_web /bin/bash -c './bin/rails db:cre
 Run the following command and note down the output. This will create a user account and an admin account with all possible permissions. For a production environment it's recommended that you create individual admin users for each specific task. See the [deployment guide](https://github.com/somleng/twilreapi/blob/master/docs/DEPLOYMENT.md) for specific instructions.
 
 ```
-$ sudo docker-compose run -e CREATE_ADMIN_ACCOUNT=1 -e ADMIN_ACCOUNT_PERMISSIONS=all somleng_twilreapi_web /bin/bash -c './bin/rails db:seed'
+$ sudo docker-compose run -e CREATE_ADMIN_ACCOUNT=1 -e ADMIN_ACCOUNT_PERMISSIONS=all web /bin/bash -c './bin/rails db:seed'
 ```
 
 ## Boot the server
