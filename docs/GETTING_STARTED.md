@@ -11,15 +11,14 @@ $ sudo docker-compose pull
 ## Setup the database
 
 ```
-$ sudo docker-compose run web /bin/bash -c './bin/rails db:create && ./bin/rails db:schema:load'
+$ sudo docker-compose run web /bin/bash -c './bin/rails db:setup'
 ```
 
 ### Get an Account SID and Auth Token
 
 ```
-$ IFS=: read ACCOUNT_SID AUTH_TOKEN <<< "$(sudo docker-compose run -e FORMAT=basicauth -e OUTPUT=user web /bin/bash -c './bin/rails db:seed')"
-$ echo $ACCOUNT_SID
-$ echo $AUTH_TOKEN
+$ IFS=: read ACCOUNT_SID AUTH_TOKEN <<< $(sudo docker-compose run -e FORMAT=basicauth web /bin/bash -c './bin/rails db:seed')
+$ echo "Account SID: $ACCOUNT_SID" && echo "Auth Token: $AUTH_TOKEN"
 ```
 
 ## Boot the server

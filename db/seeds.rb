@@ -26,7 +26,7 @@ end
 
 if output_user?
   if basicauth_format?
-    puts "#{account.sid}:#{account.auth_token}"
+    print "#{account.sid}:#{account.auth_token}"
   else
     puts "User Account SID:         #{account.sid}"
     puts "User Account Auth Token:  #{account.auth_token}"
@@ -58,7 +58,7 @@ if ENV["CREATE_ADMIN_ACCOUNT"].to_i == 1
 
     if output_admin?
       if basicauth_format?
-        puts "#{admin_account.sid}:#{admin_account.auth_token}"
+        print "#{admin_account.sid}:#{admin_account.auth_token}"
       else
         puts "Admin Account SID:        #{admin_account.sid}"
         puts "Admin Account Auth Token: #{admin_account.auth_token}"
