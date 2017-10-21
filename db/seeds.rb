@@ -1,8 +1,37 @@
 account = Account.without_permissions.first_or_create!
 access_token = account.access_token || account.create_access_token!
 
-puts "User Account SID:         #{account.sid}"
-puts "User Account Auth Token:  #{account.auth_token}"
+@format = ENV["FORMAT"] || "human"
+@output = ENV["OUTPUT"] || "all"
+
+def human_format?
+  @format == "human"
+end
+
+def basicauth_format?
+  @format == "basicauth"
+end
+
+def output_all?
+  @output == "all"
+end
+
+def output_user?
+  @output == "user" || output_all?
+end
+
+def output_admin?
+  @output == "admin" || output_all?
+end
+
+if output_user?
+  if basicauth_format?
+    puts "#{account.sid}:#{account.auth_token}"
+  else
+    puts "User Account SID:         #{account.sid}"
+    puts "User Account Auth Token:  #{account.auth_token}"
+  end
+end
 
 if ENV["CREATE_ADMIN_ACCOUNT"].to_i == 1
   if !(raw_account_permissions = ENV["ADMIN_ACCOUNT_PERMISSIONS"])
@@ -27,7 +56,13 @@ if ENV["CREATE_ADMIN_ACCOUNT"].to_i == 1
 
     admin_account_access_token = admin_account.access_token || admin_account.create_access_token!
 
-    puts "Admin Account SID:        #{admin_account.sid}"
-    puts "Admin Account Auth Token: #{admin_account.auth_token}"
+    if output_admin?
+      if basicauth_format?
+        puts "#{admin_account.sid}:#{admin_account.auth_token}"
+      else
+        puts "Admin Account SID:        #{admin_account.sid}"
+        puts "Admin Account Auth Token: #{admin_account.auth_token}"
+      end
+    end
   end
 end

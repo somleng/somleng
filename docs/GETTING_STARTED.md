@@ -10,18 +10,16 @@ $ sudo docker-compose pull
 
 ## Setup the database
 
-### Create the database
-
 ```
 $ sudo docker-compose run web /bin/bash -c './bin/rails db:create && ./bin/rails db:schema:load'
 ```
 
-### Seed the database
-
-Run the following command and note down the output. This will create a user account and an admin account with all possible permissions. For a production environment it's recommended that you create individual admin users for each specific task. See the [deployment guide](https://github.com/somleng/twilreapi/blob/master/docs/DEPLOYMENT.md) for specific instructions.
+### Get an Account SID and Auth Token
 
 ```
-$ sudo docker-compose run -e CREATE_ADMIN_ACCOUNT=1 -e ADMIN_ACCOUNT_PERMISSIONS=all web /bin/bash -c './bin/rails db:seed'
+$ IFS=: read ACCOUNT_SID AUTH_TOKEN <<< "$(sudo docker-compose run -e FORMAT=basicauth -e OUTPUT=user web /bin/bash -c './bin/rails db:seed')"
+$ echo $ACCOUNT_SID
+$ echo $AUTH_TOKEN
 ```
 
 ## Boot the server
