@@ -18,6 +18,21 @@ class Account < ApplicationRecord
   alias_attribute :sid, :id
   before_validation :set_default_permissions_bitmask, :on => :create
 
+  include AASM
+
+  aasm :column => :status do
+    state :enabled, :initial => true
+    state :disabled
+
+    event :enable do
+      transitions :from => :disabled, :to => :enabled
+    end
+
+    event :disable do
+      transitions :from => :enabled, :to => :disabled
+    end
+  end
+
   def auth_token
     access_token && access_token.token
   end

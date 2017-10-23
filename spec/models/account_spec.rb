@@ -18,6 +18,34 @@ describe Account do
     end
   end
 
+  describe "state_machine" do
+    def subject_attributes
+      {:status => current_status}
+    end
+
+    subject { create(factory, subject_attributes) }
+
+    context "state is 'enabled'" do
+      let(:current_status) { :enabled }
+
+      def assert_transitions!
+        is_expected.to transition_from(:enabled).to(:disabled).on_event(:disable)
+      end
+
+      it { assert_transitions! }
+    end
+
+    context "state is 'disabled'" do
+      let(:current_status) { :disabled }
+
+      def assert_transitions!
+        is_expected.to transition_from(:disabled).to(:enabled).on_event(:enable)
+      end
+
+      it { assert_transitions! }
+    end
+  end
+
   describe "#build_usage_record_collection(params = {})" do
     let(:params) { {} }
     let(:usage_record_collection) { subject.build_usage_record_collection(params) }

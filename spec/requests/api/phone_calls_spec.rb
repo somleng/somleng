@@ -30,6 +30,11 @@ describe "'/api/2010-04-01/Accounts/{AccountSid}/Calls'" do
 
         it { assert_unauthorized! }
       end
+
+      context "account is disabled" do
+        let(:account) { create(:account, :status => "disabled") }
+        it { assert_unauthorized! }
+      end
     end
 
     context "valid request" do

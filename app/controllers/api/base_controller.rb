@@ -97,6 +97,6 @@ class Api::BaseController < ApplicationController
   end
 
   def current_account
-    @current_account ||= Account.find(doorkeeper_token && doorkeeper_token.resource_owner_id)
+    @current_account ||= Account.enabled.find(doorkeeper_token && doorkeeper_token.resource_owner_id)
   end
 end
