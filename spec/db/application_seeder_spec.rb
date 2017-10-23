@@ -58,7 +58,7 @@ describe ApplicationSeeder do
 
         it { assert_seed! }
 
-        context "specifying FORMAT=basic_auth" do
+        context "FORMAT=basic_auth" do
           def asserted_outputs
             [/^#{account.sid}\:[\da-f]+$/]
           end
@@ -69,10 +69,37 @@ describe ApplicationSeeder do
 
           it { assert_seed! }
         end
+
+        context "INCOMING_PHONE_NUMBER='{\"phone_number\":\"1234\",\"voice_url\":\"http://demo.twilio.com/docs/voice.xml\"}'" do
+          let(:incoming_phone_number) {
+            {
+              "phone_number" => "1234",
+              "voice_url" => "http://demo.twilio.com/docs/voice.xml"
+            }
+          }
+
+          def asserted_outputs
+            [/Incoming Phone Number/]
+          end
+
+          def env
+            super.merge("INCOMING_PHONE_NUMBER" => incoming_phone_number.to_json)
+          end
+
+          def assert_seed!
+            super
+            expect(
+              account.incoming_phone_numbers.where(
+                :phone_number => incoming_phone_number["phone_number"]
+              )
+            ).to be_present
+          end
+
+          it { assert_seed! }
+        end
       end
 
-      context "specifying ADMIN_ACCOUNT_PERMISSIONS=manage_inbound_phone_calls,manage_phone_call_events" do
-
+      context "ADMIN_ACCOUNT_PERMISSIONS=manage_inbound_phone_calls,manage_phone_call_events" do
         def env
           super.merge("ADMIN_ACCOUNT_PERMISSIONS" => "manage_inbound_phone_calls,manage_phone_call_events")
         end
@@ -88,7 +115,7 @@ describe ApplicationSeeder do
 
         it { assert_seed! }
 
-        context "specifying FORMAT=basic_auth OUTPUT=admin" do
+        context "FORMAT=basic_auth OUTPUT=admin" do
           let(:account) {
             create(
               :account,

@@ -7,18 +7,23 @@ class ApplicationSeeder
   OUTPUTS = {
     :all => "all",
     :user => "user",
-    :admin => "admin"
+    :admin => "admin",
+    :incoming_phone_number => "incoming_phone_number"
   }
 
   DEFAULT_FORMAT = :human
   DEFAULT_OUTPUT = :all
 
-  attr_accessor :format, :output, :admin_account_permissions
+  attr_accessor :format,
+                :output,
+                :admin_account_permissions,
+                :incoming_phone_number
 
   def initialize(options = {})
     self.format = options[:format]
     self.output = options[:output]
     self.admin_account_permissions = options[:admin_account_permissions]
+    self.incoming_phone_number = options[:incoming_phone_number]
   end
 
   def seed!
@@ -31,6 +36,11 @@ class ApplicationSeeder
       admin_account = create_admin_account!
       account_access_token = create_access_token!(admin_account)
       print_account_info(admin_account, "Admin") if output_admin?
+    end
+
+    if create_incoming_phone_number?
+      incoming_phone_number = create_incoming_phone_number!(user_account)
+      print("Incoming Phone Number:    #{incoming_phone_number.phone_number}\n") if output_incoming_phone_number?
     end
   end
 
@@ -46,7 +56,21 @@ class ApplicationSeeder
     @admin_account_permissions ||= ENV["ADMIN_ACCOUNT_PERMISSIONS"]
   end
 
+  def incoming_phone_number
+    @incoming_phone_number ||= JSON.parse(ENV["INCOMING_PHONE_NUMBER"] || "{}")
+  end
+
   private
+
+  def create_incoming_phone_number!(account)
+    account.incoming_phone_numbers.where(
+      :phone_number => incoming_phone_number["phone_number"]
+    ).first_or_create!(incoming_phone_number)
+  end
+
+  def create_incoming_phone_number?
+    incoming_phone_number.present?
+  end
 
   def sanitize_account_permissions(raw_permissions)
     permissions = raw_permissions.split(",").map(&:to_sym)
@@ -113,5 +137,9 @@ class ApplicationSeeder
 
   def output_admin?
     output == OUTPUTS[:admin] || output_all?
+  end
+
+  def output_incoming_phone_number?
+    output == OUTPUTS[:incoming_phone_number] || output_all?
   end
 end
