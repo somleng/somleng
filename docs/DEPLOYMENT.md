@@ -60,7 +60,7 @@ $ eb ssh <environment-name> --profile <profile-name> -e "ssh -A"
 $ ssh <ip-of-twilreapi-instance>
 ```
 
-CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions bin/rails db:seed
+ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions bin/rails db:seed
 
 ##### Move into source code directory and su to root
 
@@ -78,25 +78,25 @@ $ bundle exec rake db:schema:load
 ##### Setup an admin account for managing Inbound Phone Calls
 
 ```
-$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_inbound_phone_calls bundle exec rake db:seed
+$ ADMIN_ACCOUNT_PERMISSIONS=manage_inbound_phone_calls bundle exec rake db:seed
 ```
 
 ##### Setup an admin account for managing Phone Call Events
 
 ```
-$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_phone_call_events bundle exec rake db:seed
+$ ADMIN_ACCOUNT_PERMISSIONS=manage_phone_call_events bundle exec rake db:seed
 ```
 
 ##### Setup an admin account for managing Call Data Records
 
 ```
-$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_call_data_records bundle exec rake db:seed
+$ ADMIN_ACCOUNT_PERMISSIONS=manage_call_data_records bundle exec rake db:seed
 ```
 
 ##### Setup an admin account for managing AWS SNS Messages
 
 ```
-$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=manage_aws_sns_messages bundle exec rake db:seed
+$ ADMIN_ACCOUNT_PERMISSIONS=manage_aws_sns_messages bundle exec rake db:seed
 ```
 
 ##### Setup a user account
