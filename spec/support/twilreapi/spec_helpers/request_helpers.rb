@@ -8,8 +8,8 @@ module Twilreapi::SpecHelpers::RequestHelpers
   end
 
   def assert_unauthorized!
-    expect(response.code).to eq("401")
     expect(response.body).to be_present
+    expect(response.code).to eq("401")
   end
 
   def assert_not_found!

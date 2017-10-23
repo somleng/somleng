@@ -23,12 +23,32 @@ describe "'/api/admin/phone_calls/'" do
       post_phone_call
     end
 
-    context "unauthorized request" do
+    context "wrong AuthToken" do
+      let(:http_basic_auth_password) { "wrong" }
+      it { assert_unauthorized! }
+    end
+
+    context "account with no permissions" do
       def account_params
         super.merge(:permissions => [])
       end
 
-      it { assert_unauthorized! }
+      context "unauthorized request" do
+        it { assert_unauthorized! }
+      end
+
+      context "NO_ADMIN_AUTH=1" do
+        def env
+          {"NO_ADMIN_AUTH" => "1"}
+        end
+
+        def setup_scenario
+          stub_env(env)
+          super
+        end
+
+        it { assert_invalid_request! }
+      end
     end
 
     context "authorized request" do
