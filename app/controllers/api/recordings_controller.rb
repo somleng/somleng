@@ -3,7 +3,7 @@ class Api::RecordingsController < Api::PublicController
   respond_to :wav, :only => :show
 
   skip_before_action :request_basic_auth,
-                     :doorkeeper_authorize!,
+                     :api_authorize!,
                      :authorize_account!,
                      :only => :show
   private

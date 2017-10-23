@@ -14,10 +14,10 @@ Check the output of `bin/setup` and note down the Account SID and Auth Token.
 
 ### Seeding the Database
 
-To seed the database run `bin/rails db:seed`. To create an admin account set `CREATE_ADMIN_ACCOUNT=1` and specify the admin account permissions with `ADMIN_ACCOUNT_PERMISSIONS`. E.g.
+To seed the database run `./bin/rails db:seed`. To create an admin account specify the admin account permissions with `ADMIN_ACCOUNT_PERMISSIONS`. E.g.
 
 ```
-$ CREATE_ADMIN_ACCOUNT=1 ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions bin/rails db:seed
+$ ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions ./bin/rails db:seed
 ```
 
 ## Usage

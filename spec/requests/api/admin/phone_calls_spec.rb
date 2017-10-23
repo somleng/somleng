@@ -38,6 +38,8 @@ describe "'/api/admin/phone_calls/'" do
       end
 
       context "NO_ADMIN_AUTH=1" do
+        let(:authorization_headers) { {} }
+
         def env
           {"NO_ADMIN_AUTH" => "1"}
         end
@@ -47,7 +49,21 @@ describe "'/api/admin/phone_calls/'" do
           super
         end
 
+        def assert_invalid_request!
+          super
+          expect(response.headers).not_to have_key("WWW-Authenticate")
+        end
+
         it { assert_invalid_request! }
+
+        context "production" do
+          def setup_scenario
+            allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+            super
+          end
+
+          it { assert_unauthorized! }
+        end
       end
     end
 

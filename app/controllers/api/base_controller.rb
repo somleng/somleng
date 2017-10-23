@@ -4,7 +4,7 @@ class Api::BaseController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found!
   respond_to :json
-  before_action :request_basic_auth, :doorkeeper_authorize!
+  before_action :request_basic_auth, :api_authorize!
 
   def create
     build_resource
@@ -24,6 +24,10 @@ class Api::BaseController < ApplicationController
   end
 
   private
+
+  def api_authorize!
+    doorkeeper_authorize!
+  end
 
   def respond_with_create_resource
     respond_with(resource, respond_with_create_resource_options)
