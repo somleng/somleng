@@ -25,7 +25,10 @@ class StatusCallbackNotifierJob < ActiveJob::Base
       :call_sid => phone_call.sid,
       :call_direction => phone_call.direction,
       :call_status => phone_call.twilio_status,
-      :api_version => phone_call.api_version
+      :api_version => phone_call.api_version,
+      :body => {
+        "CallDuration" => phone_call.duration.to_i
+      }
     )
   end
 end
