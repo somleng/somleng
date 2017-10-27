@@ -9,6 +9,7 @@ services:
       - RAILS_ENV=development
       - DB_HOST=db
       - DB_USERNAME=postgres
+      - NO_ADMIN_AUTH=1
     ports:
       - "3000:3000"
     depends_on:
