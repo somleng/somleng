@@ -189,7 +189,7 @@ GEM
     nokogiri (1.8.0)
       mini_portile2 (~> 2.2.0)
     pg (0.21.0)
-    phony (2.15.47)
+    phony (2.15.49)
     phony_rails (0.14.6)
       activesupport (>= 3.0)
       phony (> 2.15)
@@ -330,4 +330,4 @@ DEPENDENCIES
   wisper-rspec
 
 BUNDLED WITH
-   1.16.0.pre.2
+   1.16.0.pre.3
