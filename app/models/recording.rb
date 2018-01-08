@@ -19,7 +19,7 @@ class Recording < ApplicationRecord
   after_commit :publish_status_change
 
   validates :status, :presence => true
-  validates :original_file_id, :uniqueness => true
+  validates :original_file_id, :uniqueness => {:allow_nil => true}
 
   validates :status_callback_url,
             :url => {

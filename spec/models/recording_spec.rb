@@ -16,8 +16,8 @@ RSpec.describe Recording do
     it { is_expected.to validate_presence_of(:status) }
 
     context "persisted" do
-      subject { create(factory) }
-      it { is_expected.to validate_uniqueness_of(:original_file_id).case_insensitive }
+      subject { create(factory, :original_file_id => SecureRandom.uuid) }
+      it { is_expected.to validate_uniqueness_of(:original_file_id).case_insensitive.allow_nil }
     end
 
     context "#validate_status_callback_url" do
