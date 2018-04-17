@@ -39,7 +39,7 @@ describe ActiveCallRouterAdapter do
     end
 
     def setup_custom_call_router(class_name)
-      stub_env(active_call_router_class_name: class_name)
+      stub_secrets(active_call_router_class_name: class_name)
       Object.send(:remove_const, class_name.to_sym) if Object.const_defined?(class_name.to_sym)
     end
   end
