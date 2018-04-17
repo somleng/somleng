@@ -264,6 +264,14 @@ class PhoneCall < ApplicationRecord
     TWILIO_CALL_STATUS_MAPPINGS[status]
   end
 
+  def active_call_router
+    @active_call_router ||= ActiveCallRouterAdapter.instance(
+      phone_call: self,
+      **active_call_router_options(:default_active_call_router_options),
+      **active_call_router_options(:active_call_router_options)
+    )
+  end
+
   private
 
   def publish_completed
@@ -358,8 +366,12 @@ class PhoneCall < ApplicationRecord
     nil
   end
 
-  def active_call_router
-    @active_call_router ||= ActiveCallRouterAdapter.instance(phone_call: self)
+  def active_call_router_options(key)
+    Hash[
+      Rails.application.secrets[key].to_s.split(';').map do |e|
+        e.split('=')
+      end
+    ].symbolize_keys
   end
 
   def read_attribute_for_serialization(key)

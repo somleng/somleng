@@ -276,6 +276,19 @@ describe PhoneCall do
     end
   end
 
+  describe '#active_call_router' do
+    it 'returns the active call router with custom options' do
+      stub_secrets(
+        default_active_call_router_options: 'foo=bar;bar=baz',
+        active_call_router_options: 'baz=bar'
+      )
+
+      expect(subject.active_call_router.options.fetch(:foo)).to(eq('bar'))
+      expect(subject.active_call_router.options.fetch(:bar)).to(eq('baz'))
+      expect(subject.active_call_router.options.fetch(:baz)).to(eq('bar'))
+    end
+  end
+
   describe '#initiate_outbound_call!' do
     subject { create(factory, :queued) }
     let(:outbound_call_id) { generate(:external_id) }
