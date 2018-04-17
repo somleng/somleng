@@ -188,6 +188,7 @@ GEM
     nio4r (2.1.0)
     nokogiri (1.8.0)
       mini_portile2 (~> 2.2.0)
+    okcomputer (1.17.2)
     pg (0.21.0)
     phony (2.15.49)
     phony_rails (0.14.6)
@@ -304,6 +305,7 @@ DEPENDENCIES
   factory_girl_rails
   foreman
   money-rails
+  okcomputer
   pg
   phony
   phony_rails
@@ -330,4 +332,4 @@ DEPENDENCIES
   wisper-rspec
 
 BUNDLED WITH
-   1.16.0.pre.3
+   1.16.1
