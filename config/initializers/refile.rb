@@ -1,16 +1,14 @@
-if ENV["CDR_STORAGE"] == "s3" && Rails.env.production?
-  require "refile/s3"
+# frozen_string_literal: true
+
+if Rails.env.production?
+  require 'refile/s3'
 
   aws = {
-    :access_key_id => ENV["AWS_ACCESS_KEY_ID"],
-    :secret_access_key => ENV["AWS_SECRET_ACCESS_KEY"],
-    :region => ENV["AWS_REGION"],
-    :bucket => ENV["AWS_S3_REFILE_BUCKET"]
+    access_key_id: Rails.application.secrets.fetch(:aws_access_key_id),
+    secret_access_key: Rails.application.secrets.fetch(:aws_secret_access_key),
+    region: Rails.application.secrets.fetch(:aws_region),
+    bucket: Rails.application.secrets.fetch(:uploads_bucket)
   }
 
-  if max_size = ENV["AWS_S3_REFILE_MAX_FILE_SIZE_MB"]
-    aws.merge!(:max_size => max_size.to_i.megabytes)
-  end
-
-  Refile.store = Refile::S3.new(:prefix => ENV["AWS_S3_REFILE_STORE_PREFIX"], **aws)
+  Refile.store = Refile::S3.new(prefix: 'store', **aws)
 end
