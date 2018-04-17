@@ -1,61 +1,44 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ActiveBillerAdapter do
-  let(:args) { [{}] }
-
-  subject { described_class.instance(*args) }
-
-  context "by default" do
-    describe ".instance(*args)" do
-      it { expect(subject.class).to eq(Twilreapi::ActiveBiller::Base) }
-    end
-  end
-
-  context "configuring a custom biller" do
-    let(:custom_biller_class_name) { "Twilreapi::ActiveBiller::MyBiller" }
-
-    def setup_scenario
-      stub_env(:active_biller_class_name => custom_biller_class_name)
+  describe '.instance(*args)' do
+    it "returns the default biller class" do
+      expect(
+        described_class.instance.class
+      ).to eq(Twilreapi::ActiveBiller::Base)
     end
 
-    before do
-      setup_scenario
+    it 'returns the default biller class if no custom biller is defined' do
+      setup_custom_biller('MyBiller')
+      expect(described_class.instance.class).to eq(Twilreapi::ActiveBiller::Base)
     end
 
-    context "if the custom biller class is not defined" do
-      describe ".instance(*args)" do
-        it { expect(subject.class).to eq(Twilreapi::ActiveBiller::Base) }
-      end
-    end
+    it 'returns the custom biller class if defined', :focus do
+      custom_biller_class_name = 'MyBiller'
+      setup_custom_biller(custom_biller_class_name)
 
-    context "if the custom biller class is defined" do
-      let(:meta_programming_helper) { MetaProgrammingHelper.new }
+      klass = Class.new do
+        def initialize(options = {}); end
 
-      let(:klass) do
-        Class.new do
-          def initialize(options = {})
-          end
-
-          def calculate_price_in_micro_units
-            100
-          end
+        def calculate_price_in_micro_units
+          100
         end
       end
 
-      let(:custom_biller_class) { meta_programming_helper.safe_define_class(custom_biller_class_name, klass) }
+      custom_biller_class = MetaProgrammingHelper.new.safe_define_class(
+        custom_biller_class_name, klass
+      )
 
-      def setup_scenario
-        super
-        custom_biller_class
-      end
+      instance = described_class.instance
+      expect(instance.class).to eq(custom_biller_class)
+      expect(instance.calculate_price_in_micro_units).to eq(100)
+    end
 
-      describe ".instance(*args)" do
-        it { expect(subject.class).to eq(custom_biller_class) }
-      end
-
-      describe "#calculate_price_in_micro_units" do
-        it { expect(subject.calculate_price_in_micro_units).to eq(100) }
-      end
+    def setup_custom_biller(class_name)
+      stub_env(active_biller_class_name: class_name)
+      Object.send(:remove_const, class_name.to_sym) if Object.const_defined?(class_name.to_sym)
     end
   end
 end

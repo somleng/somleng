@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ActiveBillerAdapter
   def self.configuration(*keys)
     ENV["active_biller_#{keys.compact.join('_')}".upcase]
@@ -8,6 +10,9 @@ class ActiveBillerAdapter
   end
 
   def self.instance(*args)
-    (class_name && Object.const_defined?(class_name) && class_name.constantize.new(*args)) || Twilreapi::ActiveBiller::Base.new(*args)
+    default_class = Twilreapi::ActiveBiller::Base
+    return default_class.new(*args) unless class_name
+    return default_class.new(*args) unless Object.const_defined?(class_name)
+    class_name.constantize.new(*args)
   end
 end

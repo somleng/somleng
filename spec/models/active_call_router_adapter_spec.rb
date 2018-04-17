@@ -1,63 +1,46 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ActiveCallRouterAdapter do
-  let(:source) { "8557771" }
-  let(:destination) { "85512345678" }
-  let(:args) { [{:phone_call => "phone_call"}] }
-
-  subject { described_class.instance(*args) }
-
-  context "by default" do
-    describe ".instance(*args)" do
-      it { expect(subject.class).to eq(Twilreapi::ActiveCallRouter::Base) }
-    end
-  end
-
-  context "configuring a custom call router" do
-    let(:custom_call_router_class_name) { "Twilreapi::ActiveCallRouter::MyCallRouter" }
-
-    def setup_scenario
-      stub_env(:active_call_router_class_name => custom_call_router_class_name)
+  describe '.instance(*args)' do
+    it 'returns the default call router adapter' do
+      expect(
+        described_class.instance.class
+      ).to eq(Twilreapi::ActiveCallRouter::Base)
     end
 
-    before do
-      setup_scenario
+    it 'returns the default class if no custom call router is defined' do
+      setup_custom_call_router('MyCallRouter')
+      expect(
+        described_class.instance.class
+      ).to eq(Twilreapi::ActiveCallRouter::Base)
     end
 
-    context "if the custom call router class is not defined" do
-      describe ".instance(*args)" do
-        it { expect(subject.class).to eq(Twilreapi::ActiveCallRouter::Base) }
-      end
-    end
+    it 'returns the custom call router if defined', :focus do
+      custom_call_router_class_name = 'MyCallRouter'
+      setup_custom_call_router(custom_call_router_class_name)
 
-    context "if the custom call router class is defined" do
-      let(:meta_programming_helper) { MetaProgrammingHelper.new }
+      klass = Class.new do
+        def initialize(options = {}); end
 
-      let(:klass) do
-        Class.new do
-          def initialize(options = {})
-          end
-
-          def routing_instructions
-            {"foo" => "bar"}
-          end
+        def routing_instructions
+          { 'foo' => 'bar' }
         end
       end
 
-      let(:custom_call_router_class) { meta_programming_helper.safe_define_class(custom_call_router_class_name, klass) }
+      custom_call_router_class = MetaProgrammingHelper.new.safe_define_class(
+        custom_call_router_class_name, klass
+      )
 
-      def setup_scenario
-        super
-        custom_call_router_class
-      end
+      instance = described_class.instance
+      expect(instance.class).to eq(custom_call_router_class)
+      expect(instance.routing_instructions).to eq('foo' => 'bar')
+    end
 
-      describe ".instance(*args)" do
-        it { expect(subject.class).to eq(custom_call_router_class) }
-      end
-
-      describe "#routing_instructions" do
-        it { expect(subject.routing_instructions).to eq("foo" => "bar") }
-      end
+    def setup_custom_call_router(class_name)
+      stub_env(active_call_router_class_name: class_name)
+      Object.send(:remove_const, class_name.to_sym) if Object.const_defined?(class_name.to_sym)
     end
   end
 end
