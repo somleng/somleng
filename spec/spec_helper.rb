@@ -94,4 +94,10 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  if config.files_to_run.one?
+    config.formatter = ENV["RSPEC_FORMATTER"] || 'doc'
+  else
+    config.formatter = 'progress'
+  end
 end
