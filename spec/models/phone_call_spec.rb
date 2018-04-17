@@ -209,15 +209,17 @@ describe PhoneCall do
       end
     end
 
-    describe '#to_internal_outbound_call_json' do
-      subject { create(factory, :with_optional_attributes) }
-      let(:json_method) { :to_internal_outbound_call_json }
-
-      def assert_valid_json!
-        expect(json.keys).to match_array(%w[sid account_sid account_auth_token voice_url voice_method from to routing_instructions api_version direction])
+    describe '#to_internal_outbound_call_json', :focus do
+      it "returns json for an outbound call" do
+        phone_call = create(:phone_call, :with_optional_attributes)
+        expect(
+          JSON.parse(
+            phone_call.to_internal_outbound_call_json
+          ).keys
+        ).to match_array(
+          %w[sid account_sid account_auth_token voice_url voice_method from to routing_instructions api_version direction]
+        )
       end
-
-      it { assert_valid_json! }
     end
 
     describe '#to_internal_inbound_call_json' do
@@ -287,22 +289,6 @@ describe PhoneCall do
       expect(subject.active_call_router.options.fetch(:bar)).to(eq('baz'))
       expect(subject.active_call_router.options.fetch(:baz)).to(eq('bar'))
     end
-  end
-
-  describe '#initiate_outbound_call!' do
-    subject { create(factory, :queued) }
-    let(:outbound_call_id) { generate(:external_id) }
-    let(:outbound_call_job) { instance_double(Twilreapi::Worker::Job::OutboundCallJob, perform: outbound_call_id) }
-
-    def assert_call_initiated!
-      allow(Twilreapi::Worker::Job::OutboundCallJob).to receive(:new).and_return(outbound_call_job)
-      expect(outbound_call_job).to receive(:perform).with(subject.to_internal_outbound_call_json)
-      subject.initiate_outbound_call!
-      expect(subject.external_id).to eq(outbound_call_id)
-      is_expected.to be_initiated
-    end
-
-    it { assert_call_initiated! }
   end
 
   describe '#initiate_inbound_call' do

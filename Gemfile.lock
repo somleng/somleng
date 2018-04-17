@@ -18,12 +18,6 @@ GIT
     twilreapi-active_call_router (0.2.0)
 
 GIT
-  remote: https://github.com/dwilkie/twilreapi-worker.git
-  revision: c97116e218d694d4a1beefb41e6429071af6feb1
-  specs:
-    twilreapi-worker (0.1.0)
-
-GIT
   remote: https://github.com/krisleech/wisper.git
   revision: 6da75b59b23a68a5f8d771030d53dacedc862907
   specs:
@@ -333,7 +327,6 @@ DEPENDENCIES
   spring-commands-rspec
   twilreapi-active_biller!
   twilreapi-active_call_router!
-  twilreapi-worker!
   validate_url!
   webmock
   wisper!

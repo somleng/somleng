@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'twilreapi/worker/job/outbound_call_job'
-
 class PhoneCall < ApplicationRecord
   include Wisper::Publisher
 
@@ -186,12 +184,6 @@ class PhoneCall < ApplicationRecord
 
   def enqueue_outbound_call!
     OutboundCallJob.perform_later(id)
-  end
-
-  def initiate_outbound_call!
-    outbound_call_id = Twilreapi::Worker::Job::OutboundCallJob.new.perform(to_internal_outbound_call_json)
-    self.external_id = outbound_call_id
-    initiate_or_cancel!
   end
 
   def initiate_inbound_call
