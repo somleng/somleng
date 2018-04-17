@@ -20,10 +20,6 @@ module Twilreapi
 
     config.active_support.escape_html_entities_in_json = false
 
-    require_relative "../app/jobs/job_adapter"
-
-    if JobAdapter.use_active_job?
-      config.active_job.queue_adapter = JobAdapter.queue_adapter.to_sym
-    end
+    config.active_job.queue_adapter = :active_elastic_job
   end
 end

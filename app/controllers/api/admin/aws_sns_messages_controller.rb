@@ -7,15 +7,11 @@ class Api::Admin::AwsSnsMessagesController < Api::Admin::BaseController
   ]
 
   def create
-    job_adapter.perform_later(permitted_headers, request.raw_post)
+    AwsSnsMessageProcessorJob.perform_later(permitted_headers, request.raw_post)
     head(:created)
   end
 
   private
-
-  def job_adapter
-    @job_adapter ||= JobAdapter.new(:aws_sns_message_processor_worker)
-  end
 
   def permission_name
     :manage_aws_sns_messages

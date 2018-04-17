@@ -185,7 +185,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def enqueue_outbound_call!
-    job_adapter.perform_later(job_adapter.passthrough? ? to_internal_outbound_call_json : id)
+    OutboundCallJob.perform_later(id)
   end
 
   def initiate_outbound_call!
@@ -356,10 +356,6 @@ class PhoneCall < ApplicationRecord
     Phony.normalize(number)
   rescue StandardError
     nil
-  end
-
-  def job_adapter
-    @job_adapter ||= JobAdapter.new(:outbound_call_worker)
   end
 
   def active_call_router

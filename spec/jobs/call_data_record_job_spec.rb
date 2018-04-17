@@ -48,4 +48,6 @@ describe CallDataRecordJob do
       it { assert_cdr_processed! }
     end
   end
+
+  include_examples "aws_sqs_queue_url"
 end

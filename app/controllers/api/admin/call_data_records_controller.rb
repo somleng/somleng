@@ -7,11 +7,7 @@ class Api::Admin::CallDataRecordsController < Api::Admin::BaseController
   private
 
   def enqueue_process!(cdr)
-    job_adapter.perform_later(cdr)
-  end
-
-  def job_adapter
-    @job_adapter ||= JobAdapter.new(:call_data_record_worker)
+    CallDataRecordJob.perform_later(cdr)
   end
 
   def permission_name

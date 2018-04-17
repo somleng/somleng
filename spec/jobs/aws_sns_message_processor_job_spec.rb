@@ -56,4 +56,6 @@ describe AwsSnsMessageProcessorJob do
       it { assert_performed! }
     end
   end
+
+  include_examples "aws_sqs_queue_url"
 end

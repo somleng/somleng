@@ -1,5 +1,7 @@
-class CallDataRecordJob < ActiveJob::Base
-  attr_accessor :raw_cdr, :call_data_record
+# frozen_string_literal: true
+
+class CallDataRecordJob < ApplicationJob
+  attr_accessor :raw_cdr
 
   def perform(raw_cdr)
     self.raw_cdr = raw_cdr
@@ -42,7 +44,7 @@ class CallDataRecordJob < ActiveJob::Base
   end
 
   def calculate_price(call_data_record)
-    active_biller.options = {:call_data_record => call_data_record}
+    active_biller.options = { call_data_record: call_data_record }
     call_data_record.price = Money.new(
       active_biller.calculate_price_in_micro_units,
       CallDataRecord::DEFAULT_PRICE_STORE_CURRENCY

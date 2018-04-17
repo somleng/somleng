@@ -1,4 +1,6 @@
-class RecordingProcessorJob < ActiveJob::Base
+# frozen_string_literal: true
+
+class RecordingProcessorJob < ApplicationJob
   def perform(recording_id, bucket_name, object_key)
     recording = Recording.find(recording_id)
     recording.subscribe(RecordingObserver.new)
@@ -6,8 +8,8 @@ class RecordingProcessorJob < ActiveJob::Base
     recording.process!
 
     response = s3_client.get_object(
-      :bucket => bucket_name,
-      :key => object_key
+      bucket: bucket_name,
+      key: object_key
     )
 
     recording.file_content_type = response.content_type

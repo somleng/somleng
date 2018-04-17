@@ -65,4 +65,6 @@ describe StatusCallbackNotifierJob do
       it { assert_perform! }
     end
   end
+
+  include_examples "aws_sqs_queue_url"
 end

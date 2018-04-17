@@ -11,7 +11,7 @@ class AwsSnsMessage::NotificationObserver < AwsSnsMessage::BaseObserver
 
   def aws_sns_message_notification_created(aws_sns_message)
     setup_observer(aws_sns_message)
-    JobAdapter.new(:recording_processor_worker).perform_later(
+    RecordingProcessorJob.perform_later(
       aws_sns_message.recording_id, s3_bucket_name, s3_object_key
     ) if aws_sns_message.recording_id?
   end
