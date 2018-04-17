@@ -17,7 +17,7 @@ gem 'pg'
 gem 'phony'
 gem 'phony_rails'
 gem 'puma'
-gem 'rails', '5.1.3'
+gem 'rails', '5.1.6'
 gem 'responders'
 gem 'somleng-twilio_http_client', github: 'dwilkie/somleng-twilio_http_client'
 gem 'validate_url', github: 'perfectline/validates_url'
@@ -65,8 +65,8 @@ end
 
 group :test do
   gem 'codeclimate-test-reporter', '~> 1.0.0'
-  gem 'factory_girl_rails'
-  gem 'shoulda-matchers'
+  gem 'factory_bot_rails'
+  gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
   gem 'simplecov', require: false
   gem 'webmock'
   gem 'wisper-rspec'

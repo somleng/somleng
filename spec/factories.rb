@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence :external_id do |n|
     "#{n}"
   end
@@ -325,4 +325,3 @@ FactoryGirl.define do
 
   factory :access_token, :class => Doorkeeper::AccessToken
 end
-

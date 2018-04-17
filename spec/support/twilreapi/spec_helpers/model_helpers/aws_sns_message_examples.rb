@@ -1,22 +1,24 @@
-shared_examples_for "aws_sns_message" do
-  describe "associations" do
-    it { is_expected.to belong_to(:recording) }
+# frozen_string_literal: true
+
+shared_examples_for 'aws_sns_message' do
+  describe 'associations' do
+    it { is_expected.to belong_to(:recording).optional }
   end
 
-  describe "validations" do
+  describe 'validations' do
     it { is_expected.to validate_presence_of(:type) }
     it { is_expected.to validate_presence_of(:aws_sns_message_id) }
 
-    context "persisted" do
+    context 'persisted' do
       subject { create(factory) }
       it { is_expected.to validate_uniqueness_of(:aws_sns_message_id).case_insensitive }
     end
   end
 
-  describe "factory" do
+  describe 'factory' do
     subject { create(factory) }
     it { is_expected.to be_valid }
   end
 
-  include_examples("event_publisher")
+  include_examples('event_publisher')
 end

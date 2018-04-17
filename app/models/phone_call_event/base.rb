@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 class PhoneCallEvent::Base < ApplicationRecord
   self.table_name = :phone_call_events
 
   include EventPublisher
 
   belongs_to :phone_call
-  belongs_to :recording, :optional => true
+  belongs_to :recording, optional: true
 
-  validates :type, :presence => true
+  validates :type, presence: true
 
-  delegate :url, :to => :recording, :prefix => true, :allow_nil => true
+  delegate :url, to: :recording, prefix: true, allow_nil: true
 
   def serializable_hash(options = nil)
     options ||= {}
     super(
       {
-        :only => json_attributes.keys,
-        :methods => json_methods.keys,
+        only: json_attributes.keys,
+        methods: json_methods.keys
       }.merge(options)
     )
   end
@@ -28,7 +30,7 @@ class PhoneCallEvent::Base < ApplicationRecord
 
   def json_methods
     {
-      :recording_url => nil
+      recording_url: nil
     }
   end
 end

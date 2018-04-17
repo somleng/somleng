@@ -1,62 +1,64 @@
-require "twilreapi/worker/job/outbound_call_job"
+# frozen_string_literal: true
+
+require 'twilreapi/worker/job/outbound_call_job'
 
 class PhoneCall < ApplicationRecord
   include Wisper::Publisher
 
   TWILIO_CALL_DIRECTIONS = {
-    "inbound" => "inbound",
-    "outbound" => "outbound-api"
-  }
+    'inbound' => 'inbound',
+    'outbound' => 'outbound-api'
+  }.freeze
 
   TWILIO_CALL_STATUS_MAPPINGS = {
-    "queued" => "queued",
-    "initiated" => "queued",
-    "ringing" => "ringing",
-    "answered" => "in-progress",
-    "busy" => "busy",
-    "failed" => "failed",
-    "not_answered" => "no-answer",
-    "completed" => "completed",
-    "canceled" => "canceled"
-  }
+    'queued' => 'queued',
+    'initiated' => 'queued',
+    'ringing' => 'ringing',
+    'answered' => 'in-progress',
+    'busy' => 'busy',
+    'failed' => 'failed',
+    'not_answered' => 'no-answer',
+    'completed' => 'completed',
+    'canceled' => 'canceled'
+  }.freeze
 
   include TwilioApiResource
   include TwilioUrlLogic
 
   belongs_to :account
-  belongs_to :incoming_phone_number, :optional => true
-  belongs_to :recording, :optional => true
+  belongs_to :incoming_phone_number, optional: true
+  belongs_to :recording, optional: true
 
   has_one    :call_data_record
-  has_many   :phone_call_events, :class_name => "PhoneCallEvent::Base"
+  has_many   :phone_call_events, class_name: 'PhoneCallEvent::Base'
   has_many   :recordings
 
   before_validation :normalize_phone_numbers
 
-  validates :from, :status, :presence => true
+  validates :from, :status, presence: true
 
   validates :to,
-            :presence => true,
-            :phony_plausible => { :unless => :initiating_inbound_call?, :on => :create }
+            presence: true,
+            phony_plausible: { unless: :initiating_inbound_call?, on: :create }
 
-  validates :external_id, :uniqueness => true, :strict => true, :allow_nil => true
-  validates :external_id, :incoming_phone_number, :presence => true, :if => :initiating_inbound_call?
+  validates :external_id, uniqueness: true, strict: true, allow_nil: true
+  validates :external_id, :incoming_phone_number, presence: true, if: :initiating_inbound_call?
 
   attr_accessor :initiating_inbound_call, :completed_event, :twilio_request_to
 
-  alias_attribute :"To", :to
-  alias_attribute :"From", :from
-  alias_attribute :"ExternalSid", :external_id
-  alias_attribute :"Variables", :variables
+  alias_attribute :To, :to
+  alias_attribute :From, :from
+  alias_attribute :ExternalSid, :external_id
+  alias_attribute :Variables, :variables
 
-  delegate :auth_token, :to => :account, :prefix => true
-  delegate :routing_instructions, :to => :active_call_router
+  delegate :auth_token, to: :account, prefix: true
+  delegate :routing_instructions, to: :active_call_router
 
   delegate :voice_url, :voice_method,
            :status_callback_url, :status_callback_method,
            :account, :sid,
            :twilio_request_phone_number,
-           :to => :incoming_phone_number, :prefix => true, :allow_nil => true
+           to: :incoming_phone_number, prefix: true, allow_nil: true
 
   delegate :bill_sec,
            :direction,
@@ -65,21 +67,21 @@ class PhoneCall < ApplicationRecord
            :answered?,
            :not_answered?,
            :busy?,
-           :to => :call_data_record,
-           :prefix => true,
-           :allow_nil => true
+           to: :call_data_record,
+           prefix: true,
+           allow_nil: true
 
   delegate :answered?, :not_answered?, :busy?,
-           :to => :completed_event,
-           :prefix => true,
-           :allow_nil => true
+           to: :completed_event,
+           prefix: true,
+           allow_nil: true
 
-  delegate :sid, :to => :account, :prefix => true
+  delegate :sid, to: :account, prefix: true
 
   include AASM
 
-  aasm :column => :status, :whiny_transitions => false do
-    state :queued, :initial => true
+  aasm column: :status, whiny_transitions: false do
+    state :queued, initial: true
     state :initiated
     state :ringing
     state :answered
@@ -90,39 +92,39 @@ class PhoneCall < ApplicationRecord
     state :canceled
 
     event :initiate do
-      transitions :from => :queued, :to => :initiated, :guard => :has_external_id?
+      transitions from: :queued, to: :initiated, guard: :has_external_id?
     end
 
     event :cancel do
-      transitions :from => :queued, :to => :canceled
+      transitions from: :queued, to: :canceled
     end
 
     event :ring do
-      transitions :from => :initiated, :to => :ringing
+      transitions from: :initiated, to: :ringing
     end
 
     event :answer do
-      transitions :from => [:initiated, :ringing], :to => :answered
+      transitions from: %i[initiated ringing], to: :answered
     end
 
-    event :complete, :after_commit => :publish_completed do
-      transitions :from => :answered,
-                  :to => :completed
+    event :complete, after_commit: :publish_completed do
+      transitions from: :answered,
+                  to: :completed
 
-      transitions :from => [:initiated, :ringing],
-                  :to => :completed,
-                  :if => :phone_call_event_answered?
+      transitions from: %i[initiated ringing],
+                  to: :completed,
+                  if: :phone_call_event_answered?
 
-      transitions :from => [:initiated, :ringing],
-                  :to => :not_answered,
-                  :if => :phone_call_event_not_answered?
+      transitions from: %i[initiated ringing],
+                  to: :not_answered,
+                  if: :phone_call_event_not_answered?
 
-      transitions :from => [:initiated, :ringing],
-                  :to => :busy,
-                  :if => :phone_call_event_busy?
+      transitions from: %i[initiated ringing],
+                  to: :busy,
+                  if: :phone_call_event_busy?
 
-      transitions :from => [:initiated, :ringing],
-                  :to => :failed
+      transitions from: %i[initiated ringing],
+                  to: :failed
     end
   end
 
@@ -151,7 +153,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def self.cdr_query
-    CallDataRecord::Query.new(:scope => joins(:call_data_record))
+    CallDataRecord::Query.new(scope: joins(:call_data_record))
   end
 
   def self.execute_cdr_query
@@ -164,16 +166,16 @@ class PhoneCall < ApplicationRecord
 
   def to_internal_outbound_call_json
     to_json(
-      :only => internal_json_attributes.keys,
-      :methods => internal_json_methods.merge(:routing_instructions => nil).keys
+      only: internal_json_attributes.keys,
+      methods: internal_json_methods.merge(routing_instructions: nil).keys
     )
   end
 
   def to_internal_inbound_call_json
     to_json(
-      :only => internal_json_attributes.keys,
-      :methods => internal_json_methods.merge(
-        :twilio_request_to => nil
+      only: internal_json_attributes.keys,
+      methods: internal_json_methods.merge(
+        twilio_request_to: nil
       ).keys
     )
   end
@@ -208,17 +210,14 @@ class PhoneCall < ApplicationRecord
     save
   end
 
-  def annotation
-  end
+  def annotation; end
 
-  def answered_by
-  end
+  def answered_by; end
 
-  def caller_name
-  end
+  def caller_name; end
 
   def direction
-    TWILIO_CALL_DIRECTIONS[call_data_record_direction || (incoming_phone_number.present? && "inbound") || "outbound"]
+    TWILIO_CALL_DIRECTIONS[call_data_record_direction || (incoming_phone_number.present? && 'inbound') || 'outbound']
   end
 
   def duration
@@ -229,36 +228,31 @@ class PhoneCall < ApplicationRecord
     call_data_record_answer_time && call_data_record_end_time.rfc2822
   end
 
-  def forwarded_from
-  end
+  def forwarded_from; end
 
   def from_formatted
     format_number(from)
   end
 
-  def group_sid
-  end
+  def group_sid; end
 
-  def parent_call_sid
-  end
+  def parent_call_sid; end
 
   def phone_number_sid
     incoming_phone_number_sid
   end
 
-  def price
-  end
+  def price; end
 
-  def price_unit
-  end
+  def price_unit; end
 
   def start_time
-    call_data_record_answer_time && call_data_record_answer_time.rfc2822
+    call_data_record_answer_time&.rfc2822
   end
 
   def subresource_uris
     uris = {}
-    uris.merge!("recordings" => Rails.application.routes.url_helpers.api_twilio_account_call_recordings_path(account_id, id)) if recordings.any?
+    uris['recordings'] = Rails.application.routes.url_helpers.api_twilio_account_call_recordings_path(account_id, id) if recordings.any?
     uris
   end
 
@@ -298,49 +292,49 @@ class PhoneCall < ApplicationRecord
 
   def json_attributes
     super.merge(
-      :to => nil,
-      :from => nil,
-      :status => nil
+      to: nil,
+      from: nil,
+      status: nil
     )
   end
 
   def json_methods
     super.merge(
-      :annotation => nil,
-      :answered_by => nil,
-      :caller_name => nil,
-      :direction => nil,
-      :duration => nil,
-      :end_time => nil,
-      :forwarded_from => nil,
-      :from_formatted => nil,
-      :group_sid => nil,
-      :parent_call_sid => nil,
-      :phone_number_sid => nil,
-      :price => nil,
-      :price_unit => nil,
-      :start_time => nil,
-      :subresource_uris => nil,
-      :to_formatted => nil
+      annotation: nil,
+      answered_by: nil,
+      caller_name: nil,
+      direction: nil,
+      duration: nil,
+      end_time: nil,
+      forwarded_from: nil,
+      from_formatted: nil,
+      group_sid: nil,
+      parent_call_sid: nil,
+      phone_number_sid: nil,
+      price: nil,
+      price_unit: nil,
+      start_time: nil,
+      subresource_uris: nil,
+      to_formatted: nil
     )
   end
 
   def internal_json_methods
     {
-      :sid => nil,
-      :account_sid => nil,
-      :account_auth_token => nil,
-      :direction => nil,
-      :api_version => nil
+      sid: nil,
+      account_sid: nil,
+      account_auth_token: nil,
+      direction: nil,
+      api_version: nil
     }
   end
 
   def internal_json_attributes
     {
-      :voice_url => nil,
-      :voice_method => nil,
-      :to => nil,
-      :from => nil
+      voice_url: nil,
+      voice_method: nil,
+      to: nil,
+      from: nil
     }
   end
 
@@ -355,11 +349,13 @@ class PhoneCall < ApplicationRecord
 
   def format_number(number)
     normalized_number = safe_phony_normalize(number)
-    (normalized_number && Phony.format(normalized_number, :format => :international)) || number
+    (normalized_number && Phony.format(normalized_number, format: :international)) || number
   end
 
   def safe_phony_normalize(number)
-    Phony.normalize(number) rescue nil
+    Phony.normalize(number)
+  rescue StandardError
+    nil
   end
 
   def job_adapter
@@ -367,7 +363,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def active_call_router
-    @active_call_router ||= ActiveCallRouterAdapter.instance(:phone_call => self)
+    @active_call_router ||= ActiveCallRouterAdapter.instance(phone_call: self)
   end
 
   def read_attribute_for_serialization(key)
@@ -377,7 +373,7 @@ class PhoneCall < ApplicationRecord
 
   def attributes_for_serialization
     {
-      "status" => :twilio_status
+      'status' => :twilio_status
     }
   end
 end

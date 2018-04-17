@@ -1,26 +1,28 @@
-shared_examples_for "phone_call_event" do
-  describe "associations" do
+# frozen_string_literal: true
+
+shared_examples_for 'phone_call_event' do
+  describe 'associations' do
     it { is_expected.to belong_to(:phone_call) }
-    it { is_expected.to belong_to(:recording) }
+    it { is_expected.to belong_to(:recording).optional }
   end
 
-  describe "validations" do
+  describe 'validations' do
     it { is_expected.to validate_presence_of(:type) }
   end
 
-  describe "factory" do
+  describe 'factory' do
     subject { create(factory) }
     it { is_expected.to be_valid }
   end
 
-  describe "#to_json" do
+  describe '#to_json' do
     let(:phone_call) { create(:phone_call) }
-    let(:recording) { create(:recording, :phone_call => phone_call) }
+    let(:recording) { create(:recording, phone_call: phone_call) }
     let(:json) { JSON.parse(subject.to_json) }
 
-    subject { create(factory, :phone_call => phone_call, :recording => recording) }
+    subject { create(factory, phone_call: phone_call, recording: recording) }
 
-    let(:asserted_json_keys) { ["recording_url"] }
+    let(:asserted_json_keys) { ['recording_url'] }
 
     def assert_json!
       expect(json.keys).to match_array(asserted_json_keys)
@@ -29,5 +31,5 @@ shared_examples_for "phone_call_event" do
     it { assert_json! }
   end
 
-  include_examples("event_publisher")
+  include_examples('event_publisher')
 end
