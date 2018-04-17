@@ -5,6 +5,8 @@ require 'rails_helper'
 describe ActiveCallRouterAdapter do
   describe '.instance(*args)' do
     it 'returns the default call router adapter' do
+      setup_custom_call_router(nil)
+
       expect(
         described_class.instance.class
       ).to eq(Twilreapi::ActiveCallRouter::Base)
@@ -17,7 +19,7 @@ describe ActiveCallRouterAdapter do
       ).to eq(Twilreapi::ActiveCallRouter::Base)
     end
 
-    it 'returns the custom call router if defined', :focus do
+    it 'returns the custom call router if defined' do
       custom_call_router_class_name = 'MyCallRouter'
       setup_custom_call_router(custom_call_router_class_name)
 
@@ -40,7 +42,9 @@ describe ActiveCallRouterAdapter do
 
     def setup_custom_call_router(class_name)
       stub_secrets(active_call_router_class_name: class_name)
-      Object.send(:remove_const, class_name.to_sym) if Object.const_defined?(class_name.to_sym)
+      if class_name && Object.const_defined?(class_name.to_sym)
+        Object.send(:remove_const, class_name.to_sym)
+      end
     end
   end
 end

@@ -5,6 +5,8 @@ require 'rails_helper'
 describe ActiveBillerAdapter do
   describe '.instance(*args)' do
     it "returns the default biller class" do
+      setup_custom_biller(nil)
+
       expect(
         described_class.instance.class
       ).to eq(Twilreapi::ActiveBiller::Base)
@@ -12,10 +14,11 @@ describe ActiveBillerAdapter do
 
     it 'returns the default biller class if no custom biller is defined' do
       setup_custom_biller('MyBiller')
+
       expect(described_class.instance.class).to eq(Twilreapi::ActiveBiller::Base)
     end
 
-    it 'returns the custom biller class if defined', :focus do
+    it 'returns the custom biller class if defined' do
       custom_biller_class_name = 'MyBiller'
       setup_custom_biller(custom_biller_class_name)
 
@@ -38,7 +41,9 @@ describe ActiveBillerAdapter do
 
     def setup_custom_biller(class_name)
       stub_secrets(active_biller_class_name: class_name)
-      Object.send(:remove_const, class_name.to_sym) if Object.const_defined?(class_name.to_sym)
+      if class_name && Object.const_defined?(class_name.to_sym)
+        Object.send(:remove_const, class_name.to_sym)
+      end
     end
   end
 end

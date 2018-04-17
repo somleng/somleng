@@ -8,11 +8,11 @@ module Twilreapi::SpecHelpers::EnvHelpers
     secrets.each do |key, value|
       allow(
         Rails.application.secrets
-      ).to receive(:[]).with(key).and_return(value.to_s)
+      ).to receive(:[]).with(key).and_return(value.present? && value.to_s)
 
       allow(
         Rails.application.secrets
-      ).to receive(:fetch).with(key).and_return(value.to_s)
+      ).to receive(:fetch).with(key).and_return(value.present? && value.to_s)
     end
   end
 
