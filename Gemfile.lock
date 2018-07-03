@@ -301,7 +301,7 @@ GEM
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
-    wisper-rspec (1.0.1)
+    wisper-rspec (1.1.0)
 
 PLATFORMS
   ruby
