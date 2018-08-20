@@ -56,7 +56,7 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: 9590706ec6691520970c67b929776fd97d3c9ddd
+  revision: b801c6b76b89eb071e2b01700273054bbe8aae05
   specs:
     rack-protection (2.0.3)
       rack
@@ -196,7 +196,7 @@ GEM
       money (~> 6.11.0)
       railties (>= 3.0)
     multi_xml (0.6.0)
-    mustermann (1.0.2)
+    mustermann (1.0.3)
     netrc (0.11.0)
     nio4r (2.3.1)
     nokogiri (1.8.4)
