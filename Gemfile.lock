@@ -203,7 +203,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     okcomputer (1.17.2)
     pg (1.1.0)
-    phony (2.16.4)
+    phony (2.16.5)
     phony_rails (0.14.7)
       activesupport (>= 3.0)
       phony (> 2.15)
