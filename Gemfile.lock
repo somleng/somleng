@@ -204,7 +204,7 @@ GEM
     okcomputer (1.17.2)
     pg (1.1.2)
     phony (2.16.5)
-    phony_rails (0.14.7)
+    phony_rails (0.14.9)
       activesupport (>= 3.0)
       phony (> 2.15)
     pry (0.11.3)
