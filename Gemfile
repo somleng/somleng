@@ -1,72 +1,51 @@
 # frozen_string_literal: true
 
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-ruby(File.read('.ruby-version').strip) if ENV['GEMFILE_LOAD_RUBY_VERSION'].to_i == 1 && File.exist?('.ruby-version')
+ruby(File.read(".ruby-version").strip)
 
-git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
-  "https://github.com/#{repo_name}.git"
-end
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem 'aasm'
-gem 'doorkeeper'
-gem 'money-rails'
-gem 'okcomputer'
-gem 'pg'
-gem 'phony'
-gem 'phony_rails'
-gem 'puma'
-gem 'rails', '5.2.0'
-gem 'responders'
-gem 'somleng-twilio_http_client', github: 'dwilkie/somleng-twilio_http_client'
-gem 'validate_url', github: 'perfectline/validates_url'
-gem 'wisper', github: 'krisleech/wisper'
+gem "aasm"
+gem "active_elastic_job", github: "samnang/active-elastic-job", branch: "upgrade_to_aws_sdk_3"
+gem "bitmask_attributes", github: "numerex/bitmask_attributes"
+gem "doorkeeper"
+gem "money-rails"
+gem "okcomputer"
+gem "pg"
+gem "phony"
+gem "phony_rails"
+gem "puma"
+gem "rails", "5.2.1"
+gem "refile", github: "refile/refile", require: "refile/rails"
+gem "refile-s3", github: "refile/refile-s3"
+gem "responders"
+gem "sinatra", github: "sinatra/sinatra"
+gem "somleng-twilio_http_client", github: "dwilkie/somleng-twilio_http_client"
+gem "twilreapi-active_biller", github: "dwilkie/twilreapi-active_biller"
+gem "twilreapi-active_call_router", github: "dwilkie/twilreapi-active_call_router"
+gem "validate_url", github: "perfectline/validates_url"
+gem "wisper", github: "krisleech/wisper"
 
-gem 'refile', github: 'refile/refile', require: 'refile/rails'
-gem 'refile-s3', github: 'refile/refile-s3'
-# Needed for Refile
-gem 'sinatra', github: 'sinatra/sinatra'
-
-gem 'bitmask_attributes', github: 'numerex/bitmask_attributes'
-
-# Add your custom call routing logic
-gem 'twilreapi-active_call_router', github: 'dwilkie/twilreapi-active_call_router'
-
-# Add your custom billing logic
-gem 'twilreapi-active_biller', github: 'dwilkie/twilreapi-active_biller'
-
-# Use active_elastic_job as queue adapter and excute jobs in this application
-gem 'active_elastic_job', github: 'tawan/active-elastic-job'
-
-# Use shoryuken as queue adapter
-# gem 'shoryuken'
-
-# Use Sidekiq as queue adapter
-# gem 'sidekiq'
-# gem 'sinatra', :github => "sinatra/sinatra", :require => false
-# gem 'rack-protection', :github => "sinatra/rack-protection", :require => false
-
-group :production do
-  gem 'rails_12factor'
-end
+# Reduces boot times through caching; required in config/boot.rb
+gem "bootsnap", require: false
 
 group :development, :test do
-  gem 'pry'
-  gem 'rspec-rails'
+  gem "pry"
+  gem "rspec-rails"
+  gem "rubocop"
+  gem "rubocop-rspec"
 end
 
 group :development do
-  gem 'foreman'
-  gem 'spring'
-  gem 'spring-commands-rspec'
+  gem "spring"
+  gem "spring-commands-rspec"
 end
 
 group :test do
-  gem 'codeclimate-test-reporter', '~> 1.0.0'
-  gem 'factory_bot_rails'
-  gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
-  gem 'simplecov', require: false
-  gem 'webmock'
-  gem 'wisper-rspec'
+  gem "factory_bot_rails"
+  gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers"
+  gem "simplecov", require: false
+  gem "webmock"
+  gem "wisper-rspec"
 end
