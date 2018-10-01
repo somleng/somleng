@@ -1,19 +1,23 @@
 language: ruby
-sudo: false
-cache:
-  bundler: true
-services:
-  - postgresql
+cache: bundler
+addons:
+  postgresql: '10'
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
 env:
   global:
-    - START_SIMPLECOV=1
-addons:
-  postgresql: '9.6'
-  code_climate:
-    repo_token:
-      secure: "ixvE5zOUySIHsUCLWjuoDqikwjW9yHERucrouHRw6TMLZHdMw2dLtHoANOJblSNvQ/RY+w1qNEX7wUgKbjoy7MfxZauNSFzoiCBejrsSyXSGtopIdUZilRyPP8OPS2f4RBlTf5pNX1iFay1UEM+o38NyOW68LTaQahJ9pUjGDsljdqQcZJSX6NxZ3HiY4shyetzeA3zlC+31GG02hd44zsvh05oRJrlT0wAa6PrzmAc0hHWWDhCCe/yN+JQyM5Ac+vFq7/uDUkrpj4dWKauZfpxk7kdU+QmtSEW+qeC65C9kCRxWqSKlqfhPs8WZjy//gQ5dk1Y7asq+fwvoBU9j90XI+31++TX8HB7Yb2U3wYleLJIE9bYIsnwFAv0gp5KuX65Zaw64xEvH6wmiDXDFYmktiFInUz4skk26zjB/7n3wCrVPD5ZbzXIzD0STb+BHwoRkMdYjfCuUmG1YpOOHZiOt8kaiE2413GuvD8C5UYoyltJzkPHAcwf2f6rqa1+trRn+1GwlppICQodgkMHE3Gv5QVy0Lm+7l+7qQ2zOvqWU2UjjYKeFR17MFgZ+xZ6bP6rkm8pl5OleT6p1fpJzclSEn5SMxM0xQgu5Uw5gtHIB82bJkzuACaecpGo0HkC/JJ9/MJ9FZspiFLGttGq1cdbCK37iw50ynB4GN05U2Y0="
+    - AWS_REGION=ap-southeast-1
+    - PGPORT=5433
+    - CC_TEST_REPORTER_ID=0d3f29fe1c737e27dcc5b679ddf2af93ddcbe3cf42f4b78cfe3324ba9270b545
+before_install:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - gem install bundler
 before_script:
-  - psql -c 'create database twilreapi_test;' -U postgres
+  - psql -c 'create database twilreapi_test;' -U travis
   - psql -U postgres -c "create extension pgcrypto"
+  - ./cc-test-reporter before-build
 after_success:
-  - bundle exec codeclimate-test-reporter
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
