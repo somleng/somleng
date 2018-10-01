@@ -1,23 +1,4 @@
 GIT
-  remote: https://github.com/dwilkie/somleng-twilio_http_client.git
-  revision: db84fa5cda98038565997ee70f1b80a92ab3e743
-  specs:
-    somleng-twilio_http_client (0.1.1)
-      httparty
-
-GIT
-  remote: https://github.com/dwilkie/twilreapi-active_biller.git
-  revision: 3ec28f081bb278a6d925e5e921b791709439948d
-  specs:
-    twilreapi-active_biller (0.1.0)
-
-GIT
-  remote: https://github.com/dwilkie/twilreapi-active_call_router.git
-  revision: 2ef37bd943a006e6112509f36a0be7af230c26f3
-  specs:
-    twilreapi-active_call_router (0.2.0)
-
-GIT
   remote: https://github.com/krisleech/wisper.git
   revision: a73b72b17e5665614f83fffd471bab65c6670e43
   specs:
@@ -74,6 +55,26 @@ GIT
       rack (~> 2.0)
       rack-protection (= 2.0.4)
       tilt (~> 2.0)
+
+GIT
+  remote: https://github.com/somleng/somleng-twilio_http_client.git
+  revision: db84fa5cda98038565997ee70f1b80a92ab3e743
+  specs:
+    somleng-twilio_http_client (0.1.1)
+      httparty
+
+GIT
+  remote: https://github.com/somleng/twilreapi-active_biller.git
+  revision: 3ec28f081bb278a6d925e5e921b791709439948d
+  specs:
+    twilreapi-active_biller (0.1.0)
+
+GIT
+  remote: https://github.com/somleng/twilreapi-active_call_router.git
+  revision: 02dbfab751f8cc6f9d831da022f4c4144a938f05
+  specs:
+    twilreapi-active_call_router (0.2.5)
+      torasup
 
 GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
@@ -159,9 +160,15 @@ GEM
       url
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
+    countries (2.1.4)
+      i18n_data (~> 0.8.0)
+      money (~> 6.9)
+      sixarm_ruby_unaccent (~> 1.1)
+      unicode_utils (~> 1.4)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
+    deep_merge (1.2.1)
     diff-lcs (1.3)
     docile (1.3.1)
     domain_name (0.5.20180417)
@@ -183,6 +190,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
+    i18n_data (0.8.0)
     jaro_winkler (1.5.1)
     jmespath (1.4.0)
     json (2.1.0)
@@ -302,6 +310,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    sixarm_ruby_unaccent (1.2.0)
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
@@ -316,12 +325,17 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.8)
+    torasup (0.2.1)
+      countries (>= 1.1.0)
+      deep_merge
+      phony (>= 2.15.47)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
     unicode-display_width (1.4.0)
+    unicode_utils (1.4.0)
     url (0.3.2)
     webmock (3.4.2)
       addressable (>= 2.3.6)
