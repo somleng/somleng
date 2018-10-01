@@ -11,6 +11,7 @@ env:
     - AWS_REGION=ap-southeast-1
     - PGPORT=5433
     - CC_TEST_REPORTER_ID=0d3f29fe1c737e27dcc5b679ddf2af93ddcbe3cf42f4b78cfe3324ba9270b545
+    - CODECOV_TOKEN="2aaec902-1e35-4664-aa6c-6f1ace7bb77d"
 before_install:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter

@@ -43,6 +43,7 @@ group :development do
 end
 
 group :test do
+  gem "codecov", require: false
   gem "factory_bot_rails"
   gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers"
   gem "simplecov", require: false
