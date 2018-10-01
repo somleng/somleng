@@ -71,7 +71,7 @@ GIT
 
 GIT
   remote: https://github.com/somleng/twilreapi-active_call_router.git
-  revision: 02dbfab751f8cc6f9d831da022f4c4144a938f05
+  revision: d3a41a2ba9c4167096fffcb78dd8bac2c0ae3e70
   specs:
     twilreapi-active_call_router (0.2.5)
       torasup
