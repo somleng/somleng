@@ -7,6 +7,8 @@ class Account < ApplicationRecord
   has_many :incoming_phone_numbers
   has_many :recordings, through: :phone_calls, source: :recordings
 
+  store_accessor :settings, :source_matcher
+
   bitmask :permissions,
           as: %i[
             manage_inbound_phone_calls
