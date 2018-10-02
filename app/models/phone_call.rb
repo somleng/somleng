@@ -256,7 +256,8 @@ class PhoneCall < ApplicationRecord
 
   def active_call_router
     @active_call_router ||= Twilreapi::ActiveCallRouter::CallRouter.new(
-      source: from, destination: to, **active_call_router_options
+      source: from,
+      destination: to
     )
   end
 
@@ -352,14 +353,6 @@ class PhoneCall < ApplicationRecord
     Phony.normalize(number)
   rescue StandardError
     nil
-  end
-
-  def active_call_router_options
-    Hash[
-      Rails.application.secrets[:active_call_router_options].to_s.split(";").map do |e|
-        e.split("=")
-      end
-    ].symbolize_keys
   end
 
   def read_attribute_for_serialization(key)
