@@ -258,7 +258,7 @@ class PhoneCall < ApplicationRecord
     @active_call_router ||= Twilreapi::ActiveCallRouter::CallRouter.new(
       source: from,
       destination: to,
-      source_matcher: account.source_matcher
+      source_matcher: account&.source_matcher
     )
   end
 
