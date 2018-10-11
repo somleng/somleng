@@ -218,7 +218,7 @@ GEM
       ast (~> 2.4.0)
     pg (1.1.3)
     phony (2.16.5)
-    phony_rails (0.14.9)
+    phony_rails (0.14.10)
       activesupport (>= 3.0)
       phony (> 2.15)
     powerpack (0.1.2)
