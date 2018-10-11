@@ -1,7 +1,8 @@
 class AppConfig
-  def self.read(key)
-    credentials = Rails.application.credentials
-    env_credentials = credentials[Rails.env.to_sym] || {}
-    ENV[key.to_s.upcase] || env_credentials[key] || credentials[key]
+  def self.fetch(key)
+    config = ENV[key.to_s.upcase] || Rails.application.credentials[key.to_sym]
+    raise("Missing configuration '#{key.to_s.upcase}'") if config.blank? && !block_given? && Rails.env.production?
+    config = yield if config.blank? && block_given?
+    config || key.to_s
   end
 end

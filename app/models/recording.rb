@@ -85,7 +85,7 @@ class Recording < ApplicationRecord
   end
 
   def url
-    path_or_url(:url, host: AppConfig.read(:default_url_host))
+    path_or_url(:url, host: AppConfig.fetch(:default_url_host))
   end
 
   def to_wav

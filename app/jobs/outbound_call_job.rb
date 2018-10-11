@@ -19,6 +19,6 @@ class OutboundCallJob < ApplicationJob
   end
 
   def drb_uri
-    AppConfig.read(:outbound_call_drb_uri)
+    AppConfig.fetch(:outbound_call_drb_uri)
   end
 end
