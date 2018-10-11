@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CallDataRecordJob < ApplicationJob
   attr_accessor :raw_cdr
 
@@ -35,23 +33,11 @@ class CallDataRecordJob < ApplicationJob
     call_data_record.sip_term_status = freeswitch_cdr.sip_term_status
     call_data_record.sip_invite_failure_status = freeswitch_cdr.sip_invite_failure_status
     call_data_record.sip_invite_failure_phrase = freeswitch_cdr.sip_invite_failure_phrase
-    call_data_record.price = calculate_price(call_data_record)
+    call_data_record.price = 0
   end
 
   def parse_epoch(epoch)
     epoch = epoch.to_i
     Time.at(epoch) if epoch > 0
-  end
-
-  def calculate_price(call_data_record)
-    active_biller.options = { call_data_record: call_data_record }
-    call_data_record.price = Money.new(
-      active_biller.calculate_price_in_micro_units,
-      CallDataRecord::DEFAULT_PRICE_STORE_CURRENCY
-    )
-  end
-
-  def active_biller
-    @active_biller ||= ActiveBillerAdapter.instance
   end
 end

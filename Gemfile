@@ -23,7 +23,6 @@ gem "responders"
 gem "sinatra", github: "sinatra/sinatra"
 gem "somleng-twilio_http_client", github: "somleng/somleng-twilio_http_client"
 gem "torasup"
-gem "twilreapi-active_biller", github: "somleng/twilreapi-active_biller"
 gem "validate_url", github: "perfectline/validates_url"
 gem "wisper", github: "krisleech/wisper"
 

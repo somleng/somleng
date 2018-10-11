@@ -5,15 +5,15 @@ class CallRouter
                 :trunk_prefix, :trunk_prefix_replacement, :source_matcher
 
   def initialize(options = {})
-    self.source = fetch_option(options, :source, fetch_env: false)
-    self.destination = fetch_option(options, :destination, fetch_env: false)
-    self.trunk_prefix = fetch_option(options, :trunk_prefix) { DEFAULT_TRUNK_PREFIX }
-    self.trunk_prefix_replacement = fetch_option(options, :trunk_prefix_replacement)
-    self.source_matcher = fetch_option(options, :source_matcher)
+    self.source = options.fetch(:source) { nil }
+    self.destination = options.fetch(:destination) { nil }
+    self.trunk_prefix = options.fetch(:trunk_prefix) { DEFAULT_TRUNK_PREFIX }
+    self.trunk_prefix_replacement = options.fetch(:trunk_prefix_replacement) { nil }
+    self.source_matcher = options.fetch(:source_matcher) { nil }
   end
 
   def normalized_source
-    return source if source.nil? || trunk_prefix_replacement.nil?
+    return source if source.blank? || trunk_prefix_replacement.blank?
 
     source.sub(/\A((\+)?#{trunk_prefix})/, "\\2#{trunk_prefix_replacement}")
   end
@@ -26,19 +26,19 @@ class CallRouter
       normalized_destination
     ).operator.gateways || {}
 
-    default_gateway = fetch_gateway_config(destination_gateways, :default)
+    default_gateway = destination_gateways.fetch("default") { nil }
     source_lookup = modified_source
     gateway_config = destination_gateways.fetch(source_lookup) { default_gateway || {} }
-    gateway_host = fetch_gateway_config(gateway_config, :host)
+    gateway_host = gateway_config.fetch("host") { nil }
     address = normalized_destination
 
-    if fetch_gateway_config(gateway_config, :prefix) == false
+    if gateway_config.fetch("prefix") { nil } == false
       address = Phony.format(address, format: :national, spaces: "")
     end
 
     dial_string_path = "external/#{address}@#{gateway_host}" if gateway_host
 
-    routing_instructions["source"] = fetch_gateway_config(gateway_config, :caller_id) || source_lookup
+    routing_instructions["source"] = gateway_config.fetch("caller_id") { source_lookup }
     routing_instructions["destination"] = normalized_destination
 
     if dial_string_path
@@ -52,17 +52,9 @@ class CallRouter
 
   private
 
-  def fetch_option(hash, key, fetch_env: true)
-    hash.fetch(key) { fetch_env && ENV.fetch("TWILREAPI_ACTIVE_CALL_ROUTER_#{key.to_s.upcase}") { yield if block_given? } }
-  end
-
   def modified_source
-    return source if source.nil? || source_matcher.nil?
+    return source if source.blank? || source_matcher.blank?
 
     source.match(Regexp.new(source_matcher))[1]
-  end
-
-  def fetch_gateway_config(config, key)
-    config.fetch(key.to_s) { nil }
   end
 end
