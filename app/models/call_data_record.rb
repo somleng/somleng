@@ -1,35 +1,35 @@
 class CallDataRecord < ApplicationRecord
   include Wisper::Publisher
 
-  INBOUND_DIRECTION  = "inbound"
-  OUTBOUND_DIRECTION = "outbound"
-  DEFAULT_PRICE_STORE_CURRENCY = "USD6"
+  INBOUND_DIRECTION  = "inbound".freeze
+  OUTBOUND_DIRECTION = "outbound".freeze
+  DEFAULT_PRICE_STORE_CURRENCY = "USD6".freeze
 
-  DIRECTIONS = [INBOUND_DIRECTION, OUTBOUND_DIRECTION]
+  DIRECTIONS = [INBOUND_DIRECTION, OUTBOUND_DIRECTION].freeze
 
-  attachment :file, :content_type => ["application/json"]
+  attachment :file, content_type: ["application/json"]
 
   belongs_to :phone_call
 
-  validates :file, :presence => true
+  validates :file, presence: true
 
   validates :duration_sec,
             :bill_sec,
-            :presence => true,
-            :numericality => { :greater_than_or_equal_to => 0 }
+            presence: true,
+            numericality: { greater_than_or_equal_to: 0 }
 
-  validates :direction, :presence => true, :inclusion => { :in => DIRECTIONS }
-  validates :hangup_cause, :start_time, :end_time, :presence => true
+  validates :direction, presence: true, inclusion: { in: DIRECTIONS }
+  validates :hangup_cause, :start_time, :end_time, presence: true
 
   monetize :price_microunits,
-           :as => :price,
-           :numericality => {
-             :greater_than_or_equal_to => 0,
+           as: :price,
+           numericality: {
+             greater_than_or_equal_to: 0
            }
 
-  after_commit   :publish_created, :on => :create
+  after_commit :publish_created, on: :create
 
-  delegate :answered?, :not_answered?, :busy?, :to => :completed_event
+  delegate :answered?, :not_answered?, :busy?, to: :completed_event
 
   class Query
     attr_accessor :scope, :arel_table
@@ -42,11 +42,11 @@ class CallDataRecord < ApplicationRecord
     # Scopes
 
     def inbound
-      scope.merge(CallDataRecord.where(:direction => INBOUND_DIRECTION))
+      scope.merge(CallDataRecord.where(direction: INBOUND_DIRECTION))
     end
 
     def outbound
-      scope.merge(CallDataRecord.where(:direction => OUTBOUND_DIRECTION))
+      scope.merge(CallDataRecord.where(direction: OUTBOUND_DIRECTION))
     end
 
     def billable
@@ -70,7 +70,7 @@ class CallDataRecord < ApplicationRecord
     private
 
     def cast_as_date(column_name)
-      Arel::Nodes::NamedFunction.new('CAST', [arel_table[column_name].as('DATE')])
+      Arel::Nodes::NamedFunction.new("CAST", [arel_table[column_name].as("DATE")])
     end
 
     def on_or_after_date(date)

@@ -64,12 +64,6 @@ GIT
       httparty
 
 GIT
-  remote: https://github.com/somleng/twilreapi-active_biller.git
-  revision: 3ec28f081bb278a6d925e5e921b791709439948d
-  specs:
-    twilreapi-active_biller (0.1.0)
-
-GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
   revision: e2154f9e4e789fef5011245024b9e4a4eb830ffb
   specs:
@@ -371,7 +365,6 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   torasup
-  twilreapi-active_biller!
   validate_url!
   webmock
   wisper!
