@@ -2,21 +2,21 @@
 
 class Recording < ApplicationRecord
   TWILIO_STATUS_MAPPINGS = {
-    'initiated' => 'processing',
-    'waiting_for_file' => 'processing',
-    'processing' => 'processing',
-    'completed' => 'completed'
+    "initiated" => "processing",
+    "waiting_for_file" => "processing",
+    "processing" => "processing",
+    "completed" => "completed"
   }.freeze
 
-  TWIML_SOURCE = 'RecordVerb'
+  TWIML_SOURCE = "RecordVerb"
 
   include TwilioApiResource
   include Wisper::Publisher
 
   belongs_to :phone_call
-  has_many :phone_call_events,      class_name: 'PhoneCallEvent::Base'
-  has_many :aws_sns_notifications,  class_name: 'AwsSnsMessage::Notification'
-  has_one  :currently_recording_phone_call, class_name: 'PhoneCall'
+  has_many :phone_call_events,      class_name: "PhoneCallEvent::Base"
+  has_many :aws_sns_notifications,  class_name: "AwsSnsMessage::Notification"
+  has_one  :currently_recording_phone_call, class_name: "PhoneCall"
 
   after_commit :publish_status_change
 
@@ -29,7 +29,7 @@ class Recording < ApplicationRecord
               if: :validate_status_callback_url?
             }
 
-  attachment :file, content_type: ['audio/wav', 'audio/x-wav']
+  attachment :file, content_type: ["audio/wav", "audio/x-wav"]
 
   delegate :account, to: :phone_call
 
@@ -69,11 +69,11 @@ class Recording < ApplicationRecord
   end
 
   def status_callback_url
-    twiml_instructions['recordingStatusCallback']
+    twiml_instructions["recordingStatusCallback"]
   end
 
   def status_callback_method
-    twiml_instructions['recordingStatusCallbackMethod']
+    twiml_instructions["recordingStatusCallbackMethod"]
   end
 
   def validate_status_callback_url?
@@ -85,7 +85,7 @@ class Recording < ApplicationRecord
   end
 
   def url
-    path_or_url(:url, host: Rails.application.secrets.fetch(:default_url_host))
+    path_or_url(:url, host: AppConfig.read(:default_url_host))
   end
 
   def to_wav
@@ -119,7 +119,7 @@ class Recording < ApplicationRecord
   end
 
   def path_or_url(type, options = {})
-    Rails.application.routes.url_helpers.send("api_twilio_account_recording_#{type}", account, id, { protocol: 'https' }.merge(options))
+    Rails.application.routes.url_helpers.send("api_twilio_account_recording_#{type}", account, id, { protocol: "https" }.merge(options))
   end
 
   def json_attributes
@@ -146,8 +146,8 @@ class Recording < ApplicationRecord
 
   def attributes_for_serialization
     {
-      'status' => :twilio_status,
-      'duration' => :duration_seconds
+      "status" => :twilio_status,
+      "duration" => :duration_seconds
     }
   end
 end

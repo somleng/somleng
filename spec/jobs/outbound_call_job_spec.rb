@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
-require 'rails_helper'
+require "rails_helper"
 
 describe OutboundCallJob do
-  describe '#perform(phone_call_id)' do
-    it 'initiates an outbound call' do
+  describe "#perform(phone_call_id)" do
+    it "initiates an outbound call" do
       drb_uri = "druby://example.com:9050"
-      stub_secrets(outbound_call_drb_uri: drb_uri)
+      stub_env(outbound_call_drb_uri: drb_uri)
       phone_call = create(:phone_call)
       external_id = SecureRandom.uuid
 
@@ -25,5 +23,5 @@ describe OutboundCallJob do
     end
   end
 
-  include_examples 'aws_sqs_queue_url'
+  include_examples "aws_sqs_queue_url"
 end

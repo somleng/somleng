@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 class OutboundCallJob < ApplicationJob
-  require 'drb'
+  require "drb"
 
   def perform(phone_call_id)
     phone_call = PhoneCall.find(phone_call_id)
@@ -15,11 +13,12 @@ class OutboundCallJob < ApplicationJob
   private
 
   def drb_client
-    raise('No DRB URL specified') unless drb_uri.present?
+    raise("No DRB URL specified") unless drb_uri.present?
+
     @drb_client ||= DRbObject.new_with_uri(drb_uri)
   end
 
   def drb_uri
-    Rails.application.secrets.fetch(:outbound_call_drb_uri)
+    AppConfig.read(:outbound_call_drb_uri)
   end
 end

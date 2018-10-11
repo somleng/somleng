@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe AwsSnsMessageProcessorJob do
   describe "#perform(headers, json_payload)" do
@@ -7,13 +7,13 @@ describe AwsSnsMessageProcessorJob do
     let(:sns_message_type) { "Notification" }
     let(:sns_message_id) { SecureRandom.uuid }
 
-    let(:payload) {
+    let(:payload) do
       build(
         json_payload_factory,
-        :sns_message_type => sns_message_type,
-        :sns_message_id => sns_message_id
+        sns_message_type: sns_message_type,
+        sns_message_id: sns_message_id
       ).payload
-    }
+    end
 
     let(:json_payload) { payload.to_json }
 
