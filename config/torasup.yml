@@ -1,0 +1,66 @@
+br:
+  operators:
+    mundivox:
+      prefixes: "*"
+      metadata:
+        gateways:
+          default:
+            host: "187.102.153.186"
+kh:
+  operators:
+    smart:
+      metadata:
+        gateways:
+          default:
+            host: "27.109.112.80"
+            prefix: false
+    mobitel:
+      metadata:
+        gateways:
+          default:
+            host: "103.193.204.17"
+            prefix: false
+    metfone:
+      metadata:
+        gateways:
+          default:
+            host: "175.100.32.29"
+            prefix: false
+          "1296":
+            host: "103.193.204.17"
+            prefix: false
+            caller_id: "095975802"
+sl:
+  operators:
+    africell:
+      metadata:
+        gateways:
+          default:
+            host: "freeswitch-private.internal.unicef.io"
+so:
+  operators:
+    telesom:
+      metadata:
+        gateways:
+          default:
+            host: "196.201.207.191"
+    golis:
+      metadata:
+        gateways:
+          default:
+            host: "196.201.207.191"
+    nationlink:
+      metadata:
+        gateways:
+          default:
+            host: "196.201.207.191"
+    somtel:
+      metadata:
+        gateways:
+          default:
+            host: "196.201.207.191"
+    hormuud:
+      metadata:
+        gateways:
+          default:
+            host: "196.201.207.191"

@@ -293,7 +293,7 @@ describe PhoneCall do
 
       result = phone_call.active_call_router
 
-      expect(result).to be_a(Twilreapi::ActiveCallRouter::CallRouter)
+      expect(result).to be_a(CallRouter)
       expect(result.source).to eq(phone_call.from)
       expect(result.destination).to eq(phone_call.to)
     end
