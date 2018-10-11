@@ -70,13 +70,6 @@ GIT
     twilreapi-active_biller (0.1.0)
 
 GIT
-  remote: https://github.com/somleng/twilreapi-active_call_router.git
-  revision: 3f2d64acd4612a22fec94b3f88b586d4792db5df
-  specs:
-    twilreapi-active_call_router (0.2.5)
-      torasup
-
-GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
   revision: e2154f9e4e789fef5011245024b9e4a4eb830ffb
   specs:
@@ -377,8 +370,8 @@ DEPENDENCIES
   somleng-twilio_http_client!
   spring
   spring-commands-rspec
+  torasup
   twilreapi-active_biller!
-  twilreapi-active_call_router!
   validate_url!
   webmock
   wisper!
