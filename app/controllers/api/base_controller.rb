@@ -4,7 +4,10 @@ class Api::BaseController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found!
   respond_to :json
-  before_action :request_basic_auth, :api_authorize!
+
+  before_action :request_basic_auth
+  before_action :doorkeeper_authorize!
+  before_action :authorize_account!
 
   def create
     build_resource
@@ -25,9 +28,13 @@ class Api::BaseController < ApplicationController
 
   private
 
-  def api_authorize!
-    doorkeeper_authorize!
-    deny_access! unless current_account.enabled?
+  def account_from_params
+    @account_from_params ||= Account.find(params[:account_id])
+  end
+
+  def authorize_account!
+    return deny_access! unless current_account.enabled?
+    return deny_access! unless current_account == account_from_params
   end
 
   def respond_with_create_resource

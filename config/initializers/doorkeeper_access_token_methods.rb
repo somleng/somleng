@@ -7,7 +7,7 @@ module Doorkeeper
           header  = request.authorization
 
           if match?(header, pattern)
-            user  = token_from_basic_header(header, pattern)
+            user = token_from_basic_header(header, pattern)
             password = password_from_basic_header(header, pattern)
             AccessToken.find_by(:resource_owner_id => user, :token => password) && password
           end

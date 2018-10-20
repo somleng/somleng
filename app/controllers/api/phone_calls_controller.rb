@@ -1,4 +1,4 @@
-class Api::PhoneCallsController < Api::PublicController
+class Api::PhoneCallsController < Api::BaseController
   def create
     super
     resource.enqueue_outbound_call! if resource.persisted?

@@ -4,14 +4,8 @@ module EventPublisher
   include Wisper::Publisher
 
   included do
-    after_commit   :publish_created, :on => :create
-    delegate       :to_event_name,   :to => :class
-  end
-
-  module ClassMethods
-    def to_event_name
-      to_s.underscore
-    end
+    after_commit   :publish_created, on: :create
+    delegate       :to_event_name,   to: :class
   end
 
   def received
