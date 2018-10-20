@@ -138,11 +138,6 @@ describe "Recordings" do
       do_request(:get, api_twilio_account_call_recordings_path(account_sid, reference_phone_call.id))
     end
 
-    context "unauthorized requests" do
-      let(:http_basic_auth_password) { "wrong" }
-      it { assert_unauthorized! }
-    end
-
     context "valid requests" do
       def setup_scenario
         recording

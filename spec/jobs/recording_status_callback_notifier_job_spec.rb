@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe RecordingStatusCallbackNotifierJob do
   # From: # https://www.twilio.com/docs/api/twiml/record#attributes-recording-status-callback
@@ -42,89 +42,34 @@ describe RecordingStatusCallbackNotifierJob do
   # |                   | initiated via the <Record> verb.                      |
 
   describe "#perform(recording_id)" do
+    it "notifies the recording status callback url via HTTP POST by default" do
+      recording = create(:recording, :with_status_callback_url, duration: 5000)
+      stub_request(:post, recording.status_callback_url)
+      job = described_class.new
 
-    it ""
+      job.perform(recording.id)
 
-    let(:phone_call) { create(:phone_call, :from_account_with_access_token) }
-
-    let(:recording) {
-      create(
-        :recording,
-        :with_status_callback_url,
-        recording_factory_attributes
-      )
-    }
-
-    def recording_factory_attributes
-      {
-        :phone_call => phone_call,
-        :duration => 5000
-      }
+      expect(WebMock).to have_requested(:post, recording.status_callback_url)
+      request_payload = WebMock.request_params(WebMock.requests.last)
+      expect(request_payload.fetch("AccountSid")).to eq(recording.account_sid)
+      expect(request_payload.fetch("CallSid")).to eq(recording.call_sid)
+      expect(request_payload.fetch("RecordingSid")).to eq(recording.sid)
+      expect(request_payload.fetch("RecordingUrl")).to eq(recording.url)
+      expect(request_payload.fetch("RecordingStatus")).to eq(recording.twilio_status)
+      expect(request_payload.fetch("RecordingDuration")).to eq("5")
+      expect(request_payload.fetch("RecordingChannels")).to eq(recording.channels.to_s)
+      expect(request_payload.fetch("RecordingSource")).to eq(recording.source)
     end
+  end
 
-    let(:asserted_request_method) { :post }
-    let(:asserted_request_url) { recording.status_callback_url }
-    let(:http_request_params) { WebMock.request_params(http_request) }
-    let(:http_request) { WebMock.requests.last }
+  it "notifies the recording status callback url via HTTP GET if specified" do
+    recording = create(:recording, :with_status_callback_url, status_callback_method: "GET")
+    stub_request(:get, recording.status_callback_url)
+    job = described_class.new
 
-    def setup_scenario
-      stub_request(asserted_request_method, asserted_request_url)
-      subject.perform(recording.id)
-    end
+    job.perform(recording.id)
 
-    before do
-      setup_scenario
-    end
-
-    def assert_perform!
-      expect(WebMock).to have_requested(
-        asserted_request_method, asserted_request_url
-      )
-      expect(http_request_params["AccountSid"]).to eq(recording.account_sid)
-      expect(http_request_params["CallSid"]).to eq(recording.call_sid)
-      expect(http_request_params["RecordingSid"]).to eq(recording.sid)
-      expect(http_request_params["RecordingUrl"]).to eq(recording.url)
-      expect(http_request_params["RecordingStatus"]).to eq(recording.twilio_status)
-      expect(http_request_params["RecordingDuration"]).to eq(recording.duration_seconds.to_s)
-      expect(http_request_params["RecordingChannels"]).to eq(recording.channels.to_s)
-      expect(http_request_params["RecordingSource"]).to eq(recording.source)
-    end
-
-    context "by default" do
-      it { assert_perform! }
-    end
-
-    context "recording#status_callback_method => 'GET'" do
-      def recording_factory_attributes
-        super.merge(:status_callback_method => "GET")
-      end
-
-      let(:asserted_request_method) { :get }
-      it { assert_perform! }
-    end
-
-    context "recording#status_callback_method => 'HEAD'" do
-      def recording_factory_attributes
-        super.merge(:status_callback_method => "HEAD")
-      end
-
-      let(:asserted_request_method) { :post }
-      it { assert_perform! }
-    end
-
-    context "recording#status_callback_url is not valid" do
-      def recording_factory_attributes
-        super.merge(:status_callback_url => "http://localhost:3000")
-      end
-
-      def assert_perform!
-        expect(WebMock).not_to have_requested(
-          asserted_request_method, asserted_request_url
-        )
-      end
-
-      it { assert_perform! }
-    end
+    expect(WebMock).to have_requested(:get, recording.status_callback_url)
   end
 
   include_examples "aws_sqs_queue_url"

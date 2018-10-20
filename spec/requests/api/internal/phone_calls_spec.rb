@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Internal Phone Calls API" do
   describe "POST /api/internal/phone_calls" do
-
     it "creates a phone call" do
       params = {
         "To" => generate(:phone_number),

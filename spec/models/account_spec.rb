@@ -11,7 +11,7 @@ describe Account do
     end
 
     it "transitions from disabled to enabled" do
-      account = build_stubbed(:account, :disabled)
+      account = build_stubbed(:account, :enabled)
 
       account.disable
 
