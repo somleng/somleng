@@ -8,7 +8,10 @@ module RequestHelpers
   end
 
   def build_internal_api_authorization_headers
-    build_authorization_headers("user", "password")
+    build_authorization_headers(
+      Rails.configuration.twilreapi.fetch("internal_api_http_auth_user"),
+      Rails.configuration.twilreapi.fetch("internal_api_http_auth_password")
+    )
   end
 
   def build_authorization_headers(username, password)
