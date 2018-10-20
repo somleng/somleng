@@ -1,4 +1,4 @@
-class Api::Admin::AwsSnsMessagesController < Api::Admin::BaseController
+class Api::Internal::AwsSnsMessagesController < Api::Internal::BaseController
   PERMITTED_HEADERS = %w[
     HTTP_X_AMZ_SNS_MESSAGE_TYPE
     HTTP_X_AMZ_SNS_MESSAGE_ID

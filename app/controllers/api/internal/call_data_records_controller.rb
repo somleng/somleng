@@ -1,4 +1,4 @@
-class Api::Admin::CallDataRecordsController < Api::Admin::BaseController
+class Api::Internal::CallDataRecordsController < Api::Internal::BaseController
   def create
     enqueue_process!(request.raw_post)
     head(:created)

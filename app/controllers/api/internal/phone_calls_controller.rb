@@ -1,10 +1,10 @@
-class Api::Admin::PhoneCallsController < Api::Admin::BaseController
-  self.responder = Api::Admin::PhoneCallsResponder
+class Api::Internal::PhoneCallsController < Api::Internal::BaseController
+  self.responder = Api::Internal::PhoneCallsResponder
 
   private
 
   def resource_location
-    api_admin_phone_call_url(resource)
+    api_internal_phone_call_url(resource)
   end
 
   def permission_name

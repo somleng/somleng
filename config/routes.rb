@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: redirect("https://github.com/dwilkie/twilreapi")
+  root to: redirect("https://github.com/somleng/twilreapi")
 
   namespace "api", defaults: { format: "json" } do
     resources :accounts, only: [] do
@@ -25,7 +25,7 @@ Rails.application.routes.draw do
 
     get "/2010-04-01/Accounts/:account_id/Usage/Records", to: "usage/records#show", as: :twilio_account_usage_records
 
-    namespace :admin do
+    namespace :internal do
       resources :phone_calls, only: %i[create show] do
         resources :phone_call_events, only: %i[create show]
       end

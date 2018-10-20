@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class PhoneCallEvent::Base < ApplicationRecord
   self.table_name = :phone_call_events
 
