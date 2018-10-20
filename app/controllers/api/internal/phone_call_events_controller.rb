@@ -24,10 +24,6 @@ class Api::Internal::PhoneCallEventsController < Api::Internal::BaseController
 
   private
 
-  def permission_name
-    :manage_phone_call_events
-  end
-
   def association_chain
     event_type_settings["event_type"] || PhoneCallEvent::Base
   end

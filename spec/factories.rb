@@ -223,13 +223,14 @@ FactoryBot.define do
 
   factory :account do
     enabled
+    with_access_token
 
     trait :enabled do
       state { Account::STATE_ENABLED }
     end
 
     trait :disabled do
-      state { Account::STATE_ENABLED }
+      state { Account::STATE_DISABLED }
     end
 
     trait :with_access_token do
@@ -262,48 +263,44 @@ FactoryBot.define do
     from { "2442" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
 
-    trait :from_account_with_access_token do
-      association :account, factory: %i[account with_access_token]
-    end
-
     trait :with_external_id do
       external_id { generate(:external_id) }
     end
 
     trait :queued do
-      status { "queued" }
+      status { PhoneCall::STATE_QUEUED }
     end
 
     trait :initiated do
-      status { "initiated" }
+      status { PhoneCall::STATE_INITIATED }
     end
 
     trait :answered do
-      status { "answered" }
+      status { PhoneCall::STATE_ANSWERED }
     end
 
     trait :not_answered do
-      status { "not_answered" }
+      status { PhoneCall::STATE_NOT_ANSWERED }
     end
 
     trait :ringing do
-      status { "ringing" }
+      status { PhoneCall::STATE_RINGING }
     end
 
     trait :canceled do
-      status { "canceled" }
+      status { PhoneCall::STATE_CANCELED }
     end
 
     trait :failed do
-      status { "failed" }
+      status { PhoneCall::STATE_FAILED }
     end
 
     trait :completed do
-      status { "completed" }
+      status { PhoneCall::STATE_COMPLETED }
     end
 
     trait :busy do
-      status { "busy" }
+      status { PhoneCall::STATE_BUSY }
     end
 
     trait :can_complete do
@@ -315,7 +312,6 @@ FactoryBot.define do
     end
 
     trait :with_optional_attributes do
-      from_account_with_access_token
       with_voice_method
       with_status_callback_url
       with_status_callback_method

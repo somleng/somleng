@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Call Data Records API" do
+RSpec.describe "Internal Call Data Records API" do
   describe "POST /api/internal/call_data_records" do
     it "creates a call data record" do
       freeswitch_cdr = build(:freeswitch_cdr, :busy)
@@ -18,7 +18,7 @@ RSpec.describe "Call Data Records API" do
         post(
           api_internal_call_data_records_path,
           params: freeswitch_cdr.raw_cdr,
-          headers: build_authorization_headers
+          headers: build_internal_api_authorization_headers
         )
       end
 

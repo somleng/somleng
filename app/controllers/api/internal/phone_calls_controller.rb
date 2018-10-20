@@ -7,12 +7,8 @@ class Api::Internal::PhoneCallsController < Api::Internal::BaseController
     api_internal_phone_call_url(resource)
   end
 
-  def permission_name
-    :manage_inbound_phone_calls
-  end
-
   def association_chain
-    PhoneCall
+    PhoneCall.all
   end
 
   def save_resource

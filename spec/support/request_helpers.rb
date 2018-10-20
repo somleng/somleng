@@ -48,12 +48,20 @@ module RequestHelpers
   #   account.sid
   # end
 
-  def build_authorization_headers
-    { "HTTP_AUTHORIZATION" => encode_credentials }
+  def parsed_response_body
+    JSON.parse(response.body)
   end
 
-  def encode_credentials
-    ActionController::HttpAuthentication::Basic.encode_credentials("user", "password")
+  def build_api_authorization_headers(account)
+    build_authorization_headers(account.sid, account.auth_token)
+  end
+
+  def build_internal_api_authorization_headers
+    build_authorization_headers("user", "password")
+  end
+
+  def build_authorization_headers(username, password)
+    { "HTTP_AUTHORIZATION" => ActionController::HttpAuthentication::Basic.encode_credentials(username, password) }
   end
 end
 

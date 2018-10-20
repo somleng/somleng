@@ -1,15 +1,9 @@
 require "rails_helper"
 
-describe "AWS SNS Notifications" do
+describe "Internal AWS SNS Messages API" do
   describe "POST /api/internal/aws_sns_messages" do
     # From: http://docs.aws.amazon.com/sns/latest/dg/SendMessageToHttp.html
     # From: http://docs.aws.amazon.com/sns/latest/dg/json-formats.html
-
-    it "denies unauthorized access" do
-      post(api_internal_aws_sns_messages_path)
-
-      expect(response.code).to eq("401")
-    end
 
     it "creates an AWS SNS Subscription Confirmation" do
       params = attributes_for(
@@ -84,7 +78,7 @@ describe "AWS SNS Notifications" do
     end
 
     def build_sns_headers(params)
-      build_authorization_headers.merge(
+      build_internal_api_authorization_headers.merge(
         "x-amz-sns-message-type" => params.fetch("Type"),
         "x-amz-sns-message-id" => params.fetch("MessageId"),
         "x-amz-sns-topic-arn" => params.fetch("TopicArn")

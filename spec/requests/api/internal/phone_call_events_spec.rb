@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Phone Call Events API" do
+describe "Internal Phone Call Events API" do
   describe "GET /api/internal/phone_calls/:phone_call_external_id/phone_call_events/:id" do
     it "gets a phone call event" do
       phone_call = create(:phone_call, :with_external_id)
@@ -8,7 +8,7 @@ describe "Phone Call Events API" do
 
       get(
         api_internal_phone_call_phone_call_event_path(phone_call.external_id, phone_call_event),
-        headers: build_authorization_headers
+        headers: build_internal_api_authorization_headers
       )
 
       expect(response.code).to eq("200")
@@ -25,7 +25,7 @@ describe "Phone Call Events API" do
       post(
         api_internal_phone_call_phone_call_events_path(phone_call.external_id),
         params: params,
-        headers: build_authorization_headers
+        headers: build_internal_api_authorization_headers
       )
 
       expect(response.code).to eq("201")

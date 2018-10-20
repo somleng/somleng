@@ -42,6 +42,9 @@ describe RecordingStatusCallbackNotifierJob do
   # |                   | initiated via the <Record> verb.                      |
 
   describe "#perform(recording_id)" do
+
+    it ""
+
     let(:phone_call) { create(:phone_call, :from_account_with_access_token) }
 
     let(:recording) {
