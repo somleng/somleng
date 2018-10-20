@@ -213,7 +213,7 @@ describe PhoneCall do
       end
     end
 
-    describe "#to_internal_outbound_call_json", :focus do
+    describe "#to_internal_outbound_call_json" do
       it "returns json for an outbound call" do
         phone_call = create(:phone_call, :with_optional_attributes)
         expect(

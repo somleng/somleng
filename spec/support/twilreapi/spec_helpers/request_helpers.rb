@@ -1,10 +1,10 @@
 module Twilreapi::SpecHelpers::RequestHelpers
   def do_request(method, path, body = {}, headers = {}, options = {})
-    public_send(method, path, {:params => body, :headers => authorization_headers.merge(headers)}.merge(options))
+    public_send(method, path, { params: body, headers: authorization_headers.merge(headers) }.merge(options))
   end
 
   def authorization_headers
-    {"HTTP_AUTHORIZATION" => ActionController::HttpAuthentication::Basic.encode_credentials(http_basic_auth_user, http_basic_auth_password)}
+    { "HTTP_AUTHORIZATION" => ActionController::HttpAuthentication::Basic.encode_credentials(http_basic_auth_user, http_basic_auth_password) }
   end
 
   def assert_unauthorized!
@@ -29,7 +29,7 @@ module Twilreapi::SpecHelpers::RequestHelpers
   end
 
   def account_traits
-    {:with_access_token => nil}
+    { with_access_token: nil }
   end
 
   def account_params
@@ -50,5 +50,5 @@ module Twilreapi::SpecHelpers::RequestHelpers
 end
 
 RSpec.configure do |config|
-  config.include ::Twilreapi::SpecHelpers::RequestHelpers, :type => :request
+  config.include ::Twilreapi::SpecHelpers::RequestHelpers, type: :request
 end

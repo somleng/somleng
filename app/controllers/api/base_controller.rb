@@ -1,8 +1,8 @@
 class Api::BaseController < ApplicationController
   self.responder = Api::BaseResponder
-  protect_from_forgery :with => :null_session
+  protect_from_forgery with: :null_session
 
-  rescue_from ActiveRecord::RecordNotFound, :with => :not_found!
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found!
   respond_to :json
   before_action :request_basic_auth, :api_authorize!
 
@@ -34,7 +34,7 @@ class Api::BaseController < ApplicationController
   end
 
   def respond_with_create_resource_options
-    resource.persisted? ? {:location => resource_location} : {}
+    resource.persisted? ? { location: resource_location } : {}
   end
 
   def respond_with_show_resource
@@ -49,8 +49,8 @@ class Api::BaseController < ApplicationController
     respond_with(resources)
   end
 
-  def doorkeeper_unauthorized_render_options(error = nil)
-    { :json => twilio_unauthorized_error }
+  def doorkeeper_unauthorized_render_options(_error = nil)
+    { json: twilio_unauthorized_error }
   end
 
   def twilio_unauthorized_error(options = {})
@@ -58,23 +58,16 @@ class Api::BaseController < ApplicationController
   end
 
   def twilio_not_found_error(options = {})
-    Twilio::ApiError::NotFound.new({:request_url => request.original_fullpath}.merge(options))
+    Twilio::ApiError::NotFound.new({ request_url: request.original_fullpath }.merge(options))
   end
 
-  def setup_resource
-  end
+  def setup_resource; end
 
   def save_resource
     resource.save
   end
 
-  def resource
-    @resource
-  end
-
-  def resources
-    @resources
-  end
+  attr_reader :resource, :resources
 
   def build_resource
     @resource = association_chain.new(permitted_params)
@@ -89,18 +82,18 @@ class Api::BaseController < ApplicationController
   end
 
   def request_basic_auth
-    request_http_basic_authentication("Twilio API") if !request.authorization
+    request_http_basic_authentication("Twilio API") unless request.authorization
   end
 
   def not_found!
-    render(:json => twilio_not_found_error, :status => :not_found)
+    render(json: twilio_not_found_error, status: :not_found)
   end
 
   def deny_access!(options = {})
-    render(:json => twilio_unauthorized_error(options), :status => :unauthorized)
+    render(json: twilio_unauthorized_error(options), status: :unauthorized)
   end
 
   def current_account
-    @current_account ||= Account.enabled.find(doorkeeper_token && doorkeeper_token.resource_owner_id)
+    @current_account ||= Account.enabled.find(doorkeeper_token&.resource_owner_id)
   end
 end

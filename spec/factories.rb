@@ -1,11 +1,7 @@
 FactoryBot.define do
-  sequence :external_id do |n|
-    "#{n}"
-  end
+  sequence :external_id, &:to_s
 
-  sequence :phone_number, 855972345678 do |n|
-    n.to_s
-  end
+  sequence :phone_number, 855_972_345_678, &:to_s
 
   trait :with_status_callback_url do
     status_callback_url { "https://rapidpro.ngrok.com/handle/33/" }
@@ -19,9 +15,9 @@ FactoryBot.define do
     status_callback_method { "GET" }
   end
 
-  factory :freeswitch_cdr, :class => CDR::Freeswitch do
+  factory :freeswitch_cdr, class: CDR::Freeswitch do
     transient do
-      transient_cdr { {"variables" => {}} }
+      transient_cdr { { "variables" => {} } }
       sip_term_status { nil }
     end
 
@@ -30,15 +26,15 @@ FactoryBot.define do
     end
 
     skip_create
-    initialize_with {
-      transient_cdr["variables"].merge!("sip_term_status" => sip_term_status) if sip_term_status
+    initialize_with do
+      transient_cdr["variables"]["sip_term_status"] = sip_term_status if sip_term_status
       cdr_json = JSON.parse(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json"))
       cdr_json.deep_merge!(transient_cdr)
       new(cdr_json.to_json)
-    }
+    end
   end
 
-  factory :usage_record_collection, :class => Usage::Record::Collection do
+  factory :usage_record_collection, class: Usage::Record::Collection do
     skip_create
     account
     category { "calls" }
@@ -46,20 +42,20 @@ FactoryBot.define do
     end_date { Date.new(2015, 10, 31) }
   end
 
-  factory :base_usage_record, :class => Usage::Record::Base do
+  factory :base_usage_record, class: Usage::Record::Base do
     skip_create
     account
 
-    factory :calls_usage_record, :class => Usage::Record::Calls
-    factory :calls_inbound_usage_record, :class => Usage::Record::CallsInbound
-    factory :calls_outbound_usage_record, :class => Usage::Record::CallsOutbound
+    factory :calls_usage_record, class: Usage::Record::Calls
+    factory :calls_inbound_usage_record, class: Usage::Record::CallsInbound
+    factory :calls_outbound_usage_record, class: Usage::Record::CallsOutbound
   end
 
-  factory :aws_sns_message_base, :class => AwsSnsMessage::Base do
+  factory :aws_sns_message_base, class: AwsSnsMessage::Base do
     transient do
-      raw_payload {
+      raw_payload do
         "{\n  \"Type\" : \"#{sns_message_type}\",\n  \"MessageId\" : \"#{sns_message_id}\",\n  \"TopicArn\" : \"#{sns_topic_arn}\",\n  \"Subject\" : \"#{sns_message_subject}\",\n  \"Message\" : \"{\\\"Records\\\":[{\\\"eventVersion\\\":\\\"2.0\\\",\\\"eventSource\\\":\\\"#{sns_message_event_source}\\\",\\\"awsRegion\\\":\\\"ap-southeast-1\\\",\\\"eventTime\\\":\\\"2017-08-31T06:00:05.262Z\\\",\\\"eventName\\\":\\\"#{sns_message_event_name}\\\",\\\"userIdentity\\\":{\\\"principalId\\\":\\\"AWS:AROAJ2HUUZYOOO65N2QGI:i-0d4d562bc5c622959\\\"},\\\"requestParameters\\\":{\\\"sourceIPAddress\\\":\\\"10.0.2.216\\\"},\\\"responseElements\\\":{\\\"x-amz-request-id\\\":\\\"3F8010558C5472DA\\\",\\\"x-amz-id-2\\\":\\\"F1z++xfzffWS7zYj/xoOGgAUS9ZWv5KHJ/fJqnX8XpgtTFr2FUFApnUHLSccsCXsaSN4qU1NTdg=\\\"},\\\"s3\\\":{\\\"s3SchemaVersion\\\":\\\"1.0\\\",\\\"configurationId\\\":\\\"NjlhODdjMGYtY2YyZS00NDhmLWE1MGEtMDEyYjQ4MjBmYTQ5\\\",\\\"bucket\\\":{\\\"name\\\":\\\"#{sns_message_s3_bucket_name}\\\",\\\"ownerIdentity\\\":{\\\"principalId\\\":\\\"A3ILPUDANGSUSO\\\"},\\\"arn\\\":\\\"arn:aws:s3:::#{sns_message_s3_bucket_name}\\\"},\\\"object\\\":{\\\"key\\\":\\\"#{sns_message_s3_object_id}\\\",\\\"size\\\":144684,\\\"eTag\\\":\\\"855a2e306bcf5dab77c31e9ad73237b8\\\",\\\"sequencer\\\":\\\"0059A7A5E52F0A64D3\\\"}}}]}\",\n  \"Timestamp\" : \"2017-08-31T06:00:05.362Z\",\n  \"SignatureVersion\" : \"1\",\n  \"Signature\" : \"M/ChP5IJ94aoM8RA0aojT0j/+8ssYNWmFknfApHRg4o3uxZS4ChoLiTbiB41rEP6vLpYTNFPuBaOZefURaemr91VCHoj05tTQOmd88GQnrUPpPI0UYJRJQg3GZhVfclxjcpHHSJNl6QErZ5Xg2BN8aZmR2ZadDZs1GB0b8nuRJVK4AUDD4Y21/1Kh+I13DSgCqf7OvaX2hSCf5FjOkScXcbk42/kA3rsK+3AiHp8zMvRaN51imKYkQ+ra54MnBdYzjNAPQasDcQrG56sVli26u4tl5nWpf1RQjPYj4v/8ampLMfhlWDqNcH/hqXBSRnZvytBymzWYOJVyuKWfQluGQ==\",\n  \"SigningCertURL\" : \"https://sns.ap-southeast-1.amazonaws.com/SimpleNotificationService-433026a4050d206028891664da859041.pem\",\n  \"UnsubscribeURL\" : \"https://sns.ap-southeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=#{sns_subscription_arn}:38406e55-f60b-48fd-8faf-6d41544bfab3\"\n}"
-      }
+      end
 
       sns_message_type { "" }
       sns_message_id { SecureRandom.uuid }
@@ -76,11 +72,11 @@ FactoryBot.define do
 
     payload { JSON.parse(raw_payload) }
 
-    factory :aws_sns_message_subscription_confirmation, :class => AwsSnsMessage::SubscriptionConfirmation do
+    factory :aws_sns_message_subscription_confirmation, class: AwsSnsMessage::SubscriptionConfirmation do
       sns_message_type { "SubscriptionConfirmation" }
     end
 
-    factory :aws_sns_message_notification, :class => AwsSnsMessage::Notification do
+    factory :aws_sns_message_notification, class: AwsSnsMessage::Notification do
       sns_message_type { "Notification" }
     end
   end
@@ -114,39 +110,39 @@ FactoryBot.define do
     end
 
     trait :with_wav_file do
-      file {
+      file do
         Refile::FileDouble.new(
           "dummy",
           "recording.wav",
-          :content_type => "audio/x-wav"
+          content_type: "audio/x-wav"
         )
-      }
+      end
     end
 
-    twiml_instructions {
+    twiml_instructions do
       twiml_instructions = {}
-      twiml_instructions.merge!("recordingStatusCallback" => status_callback_url) if status_callback_url
-      twiml_instructions.merge!("recordingStatusCallbackMethod" => status_callback_method) if status_callback_method
+      twiml_instructions["recordingStatusCallback"] = status_callback_url if status_callback_url
+      twiml_instructions["recordingStatusCallbackMethod"] = status_callback_method if status_callback_method
       twiml_instructions
-    }
+    end
   end
 
-  factory :phone_call_event_base, :class => PhoneCallEvent::Base do
-    association :phone_call, :factory => [:phone_call, :initiated]
+  factory :phone_call_event_base, class: PhoneCallEvent::Base do
+    association :phone_call, factory: %i[phone_call initiated]
 
-    factory :phone_call_event_ringing, :class => PhoneCallEvent::Ringing, :aliases => [:phone_call_event] do
+    factory :phone_call_event_ringing, class: PhoneCallEvent::Ringing, aliases: [:phone_call_event] do
     end
 
-    factory :phone_call_event_answered, :class => PhoneCallEvent::Answered do
+    factory :phone_call_event_answered, class: PhoneCallEvent::Answered do
     end
 
-    factory :phone_call_event_recording_started, :class => PhoneCallEvent::RecordingStarted do
+    factory :phone_call_event_recording_started, class: PhoneCallEvent::RecordingStarted do
     end
 
-    factory :phone_call_event_recording_completed, :class => PhoneCallEvent::RecordingCompleted do
+    factory :phone_call_event_recording_completed, class: PhoneCallEvent::RecordingCompleted do
     end
 
-    factory :phone_call_event_completed, :class => PhoneCallEvent::Completed do
+    factory :phone_call_event_completed, class: PhoneCallEvent::Completed do
       trait :busy do
         sip_term_status { "486" }
       end
@@ -174,7 +170,7 @@ FactoryBot.define do
 
     after(:build) do |call_data_record, evaluator|
       call_data_record.phone_call ||= build(
-        :phone_call, :account => evaluator.account, :external_id => evaluator.external_id
+        :phone_call, account: evaluator.account, external_id: evaluator.external_id
       )
     end
 
@@ -220,15 +216,25 @@ FactoryBot.define do
       Refile::FileDouble.new(
         cdr.raw_cdr,
         cdr.send(:filename),
-        :content_type => cdr.send(:content_type)
+        content_type: cdr.send(:content_type)
       )
     end
   end
 
-  factory :account do |n|
+  factory :account do
+    enabled
+
+    trait :enabled do
+      state { Account::STATE_ENABLED }
+    end
+
+    trait :disabled do
+      state { Account::STATE_ENABLED }
+    end
+
     trait :with_access_token do
       after(:build) do |account|
-        account.access_token ||= build(:access_token, :resource_owner_id => account.id)
+        account.access_token ||= build(:access_token, resource_owner_id: account.id)
       end
     end
   end
@@ -253,11 +259,11 @@ FactoryBot.define do
   factory :phone_call do
     account
     to { "+85512334667" }
-    from     { "2442" }
+    from { "2442" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
 
     trait :from_account_with_access_token do
-      association :account, :factory => [:account, :with_access_token]
+      association :account, factory: %i[account with_access_token]
     end
 
     trait :with_external_id do
@@ -323,5 +329,5 @@ FactoryBot.define do
     end
   end
 
-  factory :access_token, :class => Doorkeeper::AccessToken
+  factory :access_token, class: Doorkeeper::AccessToken
 end
