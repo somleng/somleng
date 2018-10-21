@@ -1,11 +1,12 @@
-class Api::RecordingsController < Api::PublicController
+class Api::RecordingsController < Api::BaseController
   respond_to :json
-  respond_to :wav, :only => :show
+  respond_to :wav, only: :show
 
   skip_before_action :request_basic_auth,
-                     :api_authorize!,
+                     :doorkeeper_authorize!,
                      :authorize_account!,
-                     :only => :show
+                     only: :show
+
   private
 
   def association_chain

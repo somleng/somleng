@@ -1,2 +1,2 @@
-class Api::Usage::BaseController < Api::PublicController
+class Api::Usage::BaseController < Api::BaseController
 end

@@ -4,7 +4,9 @@ class Api::Usage::RecordsController < Api::Usage::BaseController
   private
 
   def find_resource
-    @resource = current_account.build_usage_record_collection(permitted_params)
+    @resource = Usage::Record::Collection.new(
+      permitted_params.merge("account" => current_account)
+    )
     @resource.valid?
     @resource
   end
@@ -13,4 +15,3 @@ class Api::Usage::RecordsController < Api::Usage::BaseController
     params.permit("Category", "StartDate", "EndDate")
   end
 end
-

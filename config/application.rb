@@ -22,5 +22,7 @@ module Twilreapi
     config.active_support.escape_html_entities_in_json = false
 
     config.active_job.queue_adapter = :active_elastic_job
+
+    config.twilreapi = config_for(:twilreapi)
   end
 end

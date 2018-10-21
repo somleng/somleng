@@ -9,20 +9,11 @@ class Account < ApplicationRecord
 
   store_accessor :settings, :source_matcher
 
-  bitmask :permissions,
-          as: %i[
-            manage_inbound_phone_calls
-            manage_call_data_records
-            manage_phone_call_events
-            manage_aws_sns_messages
-          ],
-          null: false
-
   alias_attribute :sid, :id
 
   include AASM
 
-  aasm column: :status do
+  aasm column: :state do
     state :enabled, initial: true
     state :disabled
 
@@ -37,9 +28,5 @@ class Account < ApplicationRecord
 
   def auth_token
     access_token&.token
-  end
-
-  def build_usage_record_collection(params = {})
-    Usage::Record::Collection.new(params.merge("account" => self))
   end
 end
