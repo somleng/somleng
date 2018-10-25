@@ -1,3 +1,5 @@
+Money.locale_backend = nil
+
 MoneyRails.configure do |config|
   # See also https://github.com/RubyMoney/money-rails#configuration-parameters
 
