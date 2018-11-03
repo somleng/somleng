@@ -302,6 +302,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    squasher (0.6.1)
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
@@ -356,6 +357,7 @@ DEPENDENCIES
   somleng-twilio_http_client!
   spring
   spring-commands-rspec
+  squasher
   torasup
   validate_url!
   webmock

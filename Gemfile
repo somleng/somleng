@@ -36,6 +36,7 @@ end
 group :development do
   gem "spring"
   gem "spring-commands-rspec"
+  gem "squasher", require: false
 end
 
 group :test do
