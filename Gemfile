@@ -2,8 +2,6 @@
 
 source "https://rubygems.org"
 
-ruby(File.read(".ruby-version").strip)
-
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem "aasm"
