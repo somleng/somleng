@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 class StatusCallbackNotifierJob < ApplicationJob
-  DEFAULT_STATUS_CALLBACK_METHOD = 'POST'
+  DEFAULT_STATUS_CALLBACK_METHOD = "POST".freeze
 
   attr_accessor :phone_call
 
@@ -29,7 +27,7 @@ class StatusCallbackNotifierJob < ApplicationJob
       call_status: phone_call.twilio_status,
       api_version: phone_call.api_version,
       body: {
-        'CallDuration' => phone_call.duration.to_i
+        "CallDuration" => phone_call.duration.to_i
       }
     )
   end

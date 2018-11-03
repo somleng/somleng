@@ -1,4 +1,4 @@
-class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
+class Api::Internal::PhoneCallEventsController < Api::Internal::BaseController
   EVENT_TYPES = {
     "ringing" => {
       "event_type" => PhoneCallEvent::Ringing,
@@ -24,10 +24,6 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
 
   private
 
-  def permission_name
-    :manage_phone_call_events
-  end
-
   def association_chain
     event_type_settings["event_type"] || PhoneCallEvent::Base
   end
@@ -52,7 +48,7 @@ class Api::Admin::PhoneCallEventsController < Api::Admin::BaseController
   end
 
   def resource_location
-    api_admin_phone_call_phone_call_event_path(phone_call, resource)
+    api_internal_phone_call_phone_call_event_path(phone_call, resource)
   end
 
   def subscribe_listeners
