@@ -12,6 +12,7 @@ env:
     - PGPORT=5433
     - CC_TEST_REPORTER_ID=0d3f29fe1c737e27dcc5b679ddf2af93ddcbe3cf42f4b78cfe3324ba9270b545
     - CODECOV_TOKEN="2aaec902-1e35-4664-aa6c-6f1ace7bb77d"
+    - secure: "GCFMYTHPwgLVTzGBkGM3K7g/ryH/wJTDQL4iHsECsJBVP2AX7m9sOgZmewKddQyBWQSUdNowEe+OaTnIad8CR4YhIawT9u/PNGPX7Fbjfk91bxirq5BMivjZVk/FoNZBxDVUSzV1WqICLkvm4uSRIcV/DnRyQ915hNH814wIXr2Tu6+yDAVZjMlOsUsfsTT11mk2hE/087K6gFFHCVurMu+c6cwAB0ddokpd59dnXFBNGdbS7MuuN8P/n+m59uOJ4nzpPnTsosdmnhwaox7kgBhTnv80/ZlTRePv+EVhXYpBURbNh3n6AzfTBoOfECHTLoS1iddMhcPKCmX22PhoT1T/txNskF44wqmK2q7L9hUC6bmziZN0Oi0MQUdtLRdHOgf4yDRobGO5pNn877A2L8u7F9DGlV/uy/Y/t8cLIZCHBNzsEOYQxz88J+OpZ/5CWsxFFypKNaaYjkEx8KbIh7Fe1rIVSJoHcrZhTkjeI2GxIA/6hNoKn8m1gNbexBqSJI8fOGF2WllhBn4kUFpOkuVAFAi5gwtYZB/0UoCeh0LrLiWKcj4xQneLhg3KTpgJ9nB2hkTMF5THc/K+0/mm2hinLvYudJ8uxjJdvkoAdp3/pgLGZLZahiRRo2tmI9M7J/i4VhQ/SKwsGc98a/r+3VsygODkzZOVgjtVdbxHiE0="
 before_install:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -23,7 +24,6 @@ after_success:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 deploy:
   - provider: elasticbeanstalk
-    region: ap-southeast-1
     app: somleng-twilreapi
     env: somleng-twilreapi-webserver
     bucket_name: deploy.somleng.org
@@ -31,7 +31,6 @@ deploy:
       repo: somleng/twilreapi
       branch: master
   - provider: elasticbeanstalk
-    region: ap-southeast-1
     app: somleng-twilreapi
     env: somleng-twilreapi-worker
     bucket_name: deploy.somleng.org
@@ -39,7 +38,6 @@ deploy:
       repo: somleng/twilreapi
       branch: master
   - provider: elasticbeanstalk
-    region: ap-southeast-1
     app: somleng-twilreapi
     env: somleng-twilreapi-caller-worker
     bucket_name: deploy.somleng.org
