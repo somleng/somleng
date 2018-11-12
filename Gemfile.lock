@@ -161,6 +161,8 @@ GEM
     factory_bot_rails (4.11.1)
       factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
+    faraday (0.15.3)
+      multipart-post (>= 1.2, < 3)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     hashdiff (0.3.7)
@@ -200,6 +202,7 @@ GEM
       railties (>= 3.0)
     msgpack (1.2.4)
     multi_xml (0.6.0)
+    multipart-post (2.0.0)
     mustermann (1.0.3)
     netrc (0.11.0)
     nio4r (2.3.1)
@@ -285,6 +288,8 @@ GEM
       rubocop (>= 0.60.0)
     ruby-progressbar (1.10.0)
     safe_yaml (1.0.4)
+    sentry-raven (2.7.4)
+      faraday (>= 0.7.6, < 1.0)
     simplecov (0.16.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -351,6 +356,7 @@ DEPENDENCIES
   rspec-rails
   rubocop
   rubocop-rspec
+  sentry-raven
   shoulda-matchers!
   simplecov
   sinatra!

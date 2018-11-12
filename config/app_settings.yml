@@ -1,0 +1,25 @@
+default: &default
+  secret_key_base: "<%= Rails.application.credentials.secret_key_base %>"
+  sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
+
+production: &production
+  <<: *default
+  internal_api_http_auth_user: <%= ENV["INTERNAL_API_HTTP_AUTH_USER"] %>
+  internal_api_http_auth_password: <%= ENV["INTERNAL_API_HTTP_AUTH_PASSWORD"] %>
+  outbound_call_drb_uri: <%= ENV["OUTBOUND_CALL_DRB_URI"] %>
+  default_url_host: <%= ENV["DEFAULT_URL_HOST"] %>
+  aws_s3_access_key_id: "<%= ENV["AWS_S3_ACCESS_KEY_ID"] %>"
+  aws_s3_secret_access_key: "<%= ENV["AWS_S3_SECRET_ACCESS_KEY"] %>"
+  aws_region: <%= ENV["AWS_REGION"] %>
+  uploads_bucket: <%= ENV["UPLOADS_BUCKET"] %>
+
+development: &development
+  <<: *production
+  default_queue_url: "https://example.com/path/to/queue_name"
+  default_url_host: "https://twilreapi.somleng.org"
+  internal_api_http_auth_user: "user"
+  internal_api_http_auth_password: "secret"
+  outbound_call_drb_uri: "druby://localhost:9050"
+
+test:
+  <<: *development
