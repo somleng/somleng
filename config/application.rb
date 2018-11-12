@@ -23,6 +23,6 @@ module Twilreapi
 
     config.active_job.queue_adapter = :active_elastic_job
 
-    config.twilreapi = config_for(:twilreapi)
+    config.app_settings = config_for(:app_settings)
   end
 end
