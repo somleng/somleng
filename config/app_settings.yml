@@ -1,6 +1,6 @@
 default: &default
-  secret_key_base: "<%= Rails.application.credentials.fetch(:secret_key_base) %>"
-  sentry_dsn: "<%= Rails.application.credentials.fetch(:sentry_dsn) %>"
+  secret_key_base: "<%= Rails.application.credentials.secret_key_base %>"
+  sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
 
 production: &production
   <<: *default
