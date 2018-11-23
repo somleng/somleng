@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe CallRouter do
   describe "#normalized_source" do
@@ -100,14 +100,6 @@ describe CallRouter do
         dial_string_path: "external/0882345678@175.100.32.29"
       )
 
-      # Unknown destination
-
-      call_router.destination = "+85688234567"
-
-      result = call_router.routing_instructions
-
-      expect(result.fetch("disable_originate")).to eq("1")
-
       # Sierra Leone (Africell)
 
       call_router.source = "5555"
@@ -192,6 +184,37 @@ describe CallRouter do
         source: "5555",
         destination: "5582999489999",
         dial_string_path: "external/5582999489999@200.155.77.116"
+      )
+    end
+
+    it "returns disable_originate=1 if there if there's no default gateway" do
+      stub_app_settings(default_sip_gateway: nil)
+      call_router = described_class.new(destination: "+85688234567")
+
+      result = call_router.routing_instructions
+
+      expect(result.fetch("disable_originate")).to eq("1")
+    end
+
+    it "returns routing instructions for the default gateway" do
+      stub_app_settings(
+        default_sip_gateway: {
+          "enabled" => true,
+          "host" => "example.pstn.twilio.com",
+          "caller_id" => "+14152345678",
+          "prefix" => "+"
+        }
+      )
+
+      call_router = described_class.new(destination: "+85688234567")
+
+      result = call_router.routing_instructions
+
+      assert_routing_instructions!(
+        result,
+        source: "+14152345678",
+        destination: "85688234567",
+        dial_string_path: "external/+85688234567@example.pstn.twilio.com"
       )
     end
   end

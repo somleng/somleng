@@ -19,38 +19,46 @@ class CallRouter
   end
 
   def routing_instructions
-    routing_instructions = {}
-
     normalized_destination = Phony.normalize(destination)
+
     destination_gateways = Torasup::PhoneNumber.new(
       normalized_destination
     ).operator.gateways || {}
 
-    default_gateway = destination_gateways.fetch("default") { nil }
+    default_destination_gateway = destination_gateways["default"]
     source_lookup = modified_source
-    gateway_config = destination_gateways.fetch(source_lookup) { default_gateway || {} }
-    gateway_host = gateway_config.fetch("host") { nil }
-    address = normalized_destination
 
-    if gateway_config.fetch("prefix") { nil } == false
-      address = Phony.format(address, format: :national, spaces: "")
-    end
+    gateway_config = destination_gateways[source_lookup] || default_destination_gateway || default_gateway
+    gateway_host = gateway_config["host"]
+    prefix_config = gateway_config["prefix"]
 
-    dial_string_path = "external/#{address}@#{gateway_host}" if gateway_host
+    return { "disable_originate" => "1" } if gateway_host.blank?
 
-    routing_instructions["source"] = gateway_config.fetch("caller_id") { source_lookup }
-    routing_instructions["destination"] = normalized_destination
+    address = if prefix_config == false
+                Phony.format(normalized_destination, format: :national, spaces: "")
+              elsif prefix_config == "+"
+                Phony.format(normalized_destination, format: :+, spaces: "")
+              else
+                normalized_destination
+              end
 
-    if dial_string_path
-      routing_instructions["dial_string_path"] = dial_string_path
-    else
-      routing_instructions["disable_originate"] = "1"
-    end
-
-    routing_instructions
+    {
+      "source" => gateway_config.fetch("caller_id") { source_lookup },
+      "destination" => normalized_destination,
+      "dial_string_path" => "external/#{address}@#{gateway_host}"
+    }
   end
 
   private
+
+  def default_gateway
+    gateway_settings = Rails.configuration.app_settings["default_sip_gateway"]
+
+    return {} if gateway_settings.blank?
+    return {} if gateway_settings["enabled"].blank?
+
+    gateway_settings
+  end
 
   def modified_source
     return source if source.blank? || source_matcher.blank?

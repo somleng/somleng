@@ -1,6 +1,11 @@
 default: &default
   secret_key_base: "<%= Rails.application.credentials.secret_key_base %>"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
+  default_sip_gateway:
+    enabled: true
+    host: "<%= Rails.application.credentials.default_sip_gateway_host %>"
+    caller_id: "<%= Rails.application.credentials.default_sip_gateway_caller_id %>"
+    prefix: "+"
 
 production: &production
   <<: *default
