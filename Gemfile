@@ -24,7 +24,6 @@ gem "somleng-twilio_http_client", github: "somleng/somleng-twilio_http_client"
 gem "torasup"
 gem "validate_url", github: "perfectline/validates_url"
 gem "wisper", github: "krisleech/wisper"
-gem "immutable-struct"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
