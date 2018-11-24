@@ -7,6 +7,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem "aasm"
 gem "active_elastic_job", github: "samnang/active-elastic-job", branch: "upgrade_to_aws_sdk_3"
 gem "doorkeeper"
+gem "dry-validation"
 gem "money-rails"
 gem "okcomputer"
 gem "pg"

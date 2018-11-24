@@ -1,9 +1,11 @@
 class Api::BaseController < ApplicationController
-  self.responder = Api::BaseResponder
-  protect_from_forgery with: :null_session
+  self.responder = ApiResponder
+
+  respond_to :json
+
+  # protect_from_forgery with: :null_session
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found!
-  respond_to :json
 
   before_action :request_basic_auth
   before_action :doorkeeper_authorize!

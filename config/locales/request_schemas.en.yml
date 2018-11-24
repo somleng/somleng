@@ -1,0 +1,5 @@
+en:
+  errors:
+    phone_number?: "is invalid"
+    url?: "is invalid"
+    http_method?: "is invalid"

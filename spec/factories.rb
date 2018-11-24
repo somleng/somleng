@@ -262,6 +262,7 @@ FactoryBot.define do
     to { "+85512334667" }
     from { "2442" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
+    voice_method { "POST" }
 
     trait :with_external_id do
       external_id { generate(:external_id) }
