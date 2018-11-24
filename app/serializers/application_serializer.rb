@@ -43,17 +43,13 @@ class ApplicationSerializer < SimpleDelegator
   end
 
   def hash_for_collection
-    data = serializable.map do |record|
+    serializable.map do |record|
       self.class.new(record, options).serializable_hash
     end
+  end
 
-    {
-      has_more: false,
-      total_count: data.size,
-      object: "list",
-      url: options.fetch(:url),
-      data: data
-    }
+  def serialize_collection(data, item_serializer_class:)
+    item_serializer_class.new(data, **options)
   end
 
   def serializable_is_collection?

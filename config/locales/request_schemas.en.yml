@@ -3,3 +3,4 @@ en:
     phone_number?: "is invalid"
     url?: "is invalid"
     http_method?: "is invalid"
+    category?: "is invalid"

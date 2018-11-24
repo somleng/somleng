@@ -34,23 +34,6 @@ FactoryBot.define do
     end
   end
 
-  factory :usage_record_collection, class: Usage::Record::Collection do
-    skip_create
-    account
-    category { "calls" }
-    start_date { Date.new(2015, 9, 30) }
-    end_date { Date.new(2015, 10, 31) }
-  end
-
-  factory :base_usage_record, class: Usage::Record::Base do
-    skip_create
-    account
-
-    factory :calls_usage_record, class: Usage::Record::Calls
-    factory :calls_inbound_usage_record, class: Usage::Record::CallsInbound
-    factory :calls_outbound_usage_record, class: Usage::Record::CallsOutbound
-  end
-
   factory :aws_sns_message_base, class: AwsSnsMessage::Base do
     transient do
       raw_payload do

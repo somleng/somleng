@@ -96,38 +96,6 @@ class PhoneCall < ApplicationRecord
     end
   end
 
-  def self.billable
-    cdr_query.billable
-  end
-
-  def self.between_dates(*args)
-    cdr_query.between_dates(*args)
-  end
-
-  def self.bill_minutes
-    cdr_query.bill_minutes
-  end
-
-  def self.total_price_in_usd
-    cdr_query.total_price_in_usd
-  end
-
-  def self.inbound
-    cdr_query.inbound
-  end
-
-  def self.outbound
-    cdr_query.outbound
-  end
-
-  def self.cdr_query
-    CallDataRecord::Query.new(scope: joins(:call_data_record))
-  end
-
-  def self.execute_cdr_query
-    joins(:call_data_record).merge(CallDataRecord)
-  end
-
   def initiate_or_cancel!
     external_id? ? initiate! : cancel!
   end
