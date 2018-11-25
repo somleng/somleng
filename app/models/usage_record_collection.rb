@@ -6,9 +6,9 @@ class UsageRecordCollection
   DEFAULT_START_DATE = Date.new(2010, 3, 27) # same as Twilio
   DEFAULT_CATEGORIES = ["calls", "calls-inbound", "calls-outbound"].freeze
 
-  def initialize(options = {})
-    self.account = options.fetch(:account)
-    self.filter_params = options.fetch(:filter_params).transform_keys { |k| k.to_s.underscore.to_sym }
+  def initialize(account, filter_params)
+    self.account = account
+    self.filter_params = filter_params.transform_keys { |k| k.to_s.underscore.to_sym }
   end
 
   def usage_records

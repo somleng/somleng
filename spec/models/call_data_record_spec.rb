@@ -69,55 +69,6 @@ describe CallDataRecord do
       it { expect(described_class.billable).to match_array([billable_cdr]) }
     end
 
-    describe ".between_dates(start_date, end_date)" do
-      let(:start_time) { Time.utc("2015", "9", "30", "23", "33", "46") }
-      let(:cdr) { create(:call_data_record, :start_time => start_time) }
-
-      before do
-        cdr
-      end
-
-      def assert_between_dates!
-        expect(
-          described_class.between_dates(
-            Date.new(2015, 9, 29), Date.new(2015, 9, 29)
-          )
-        ).to match_array([])
-
-        expect(
-          described_class.between_dates(
-            Date.new(2015, 9, 30), Date.new(2015, 9, 30)
-          )
-        ).to match_array([cdr])
-
-        expect(
-          described_class.between_dates(
-            "2015-09-30", "2015-09-30"
-          )
-        ).to match_array([cdr])
-
-        expect(
-          described_class.between_dates(
-            Date.new(2015, 9, 30), nil
-          )
-        ).to match_array([cdr])
-
-        expect(
-          described_class.between_dates(
-            nil, Date.new(2015, 9, 30)
-          )
-        ).to match_array([cdr])
-
-        expect(
-          described_class.between_dates(
-            nil, nil
-          )
-        ).to match_array([cdr])
-      end
-
-      it { assert_between_dates! }
-    end
-
     describe ".outbound" do
       let(:outbound_cdr) { create(factory, :outbound) }
 
