@@ -310,4 +310,21 @@ FactoryBot.define do
   end
 
   factory :access_token, class: Doorkeeper::AccessToken
+
+  factory :usage_record_collection do
+    skip_create
+    account
+
+    transient do
+      start_date { nil }
+      end_date { nil }
+      category { nil }
+    end
+
+    filter_params { { StartDate: start_date, EndDate: end_date, Category: category }.compact }
+
+    initialize_with do
+      new(account, filter_params)
+    end
+  end
 end

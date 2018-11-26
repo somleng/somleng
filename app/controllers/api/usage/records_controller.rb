@@ -3,8 +3,7 @@ class Api::Usage::RecordsController < Api::BaseController
     schema_validation_result = UsageRecordCollectionRequestSchema.schema.call(request.params)
     if schema_validation_result.success?
       usage_record_collection = UsageRecordCollection.new(
-        filter_params: schema_validation_result.output,
-        account: current_account
+        current_account, schema_validation_result.output
       )
       respond_with(usage_record_collection)
     else

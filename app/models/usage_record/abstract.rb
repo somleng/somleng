@@ -1,19 +1,21 @@
 module UsageRecord
   class Abstract
-    attr_accessor :category, :data
-    delegate :start_date, :end_date, :account, to: :data
+    attr_accessor :category, :config
+    delegate :start_date, :end_date, :account, to: :config
 
-    def initialize(category, data)
+    def initialize(category, config)
       self.category = category
-      self.data = data
-    end
-
-    def collection
-      scope.where(account: data.account)
+      self.config = config
     end
 
     def count
       collection.count
+    end
+
+    private
+
+    def collection
+      scope.where(account: config.account)
     end
   end
 end

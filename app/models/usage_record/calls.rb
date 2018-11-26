@@ -28,7 +28,7 @@ module UsageRecord
       ).merge(
         CallDataRecord.billable
       ).merge(
-        CallDataRecord.where(start_time: (data.start_date..data.end_date))
+        CallDataRecord.where(start_time: (config.start_date..config.end_date))
       )
     end
   end
