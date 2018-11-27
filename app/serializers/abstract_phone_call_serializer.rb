@@ -9,7 +9,7 @@ class AbstractPhoneCallSerializer < ApiResourceSerializer
 
   def direction
     return INBOUND_CALL_DIRECTION if serializable.incoming_phone_number.present?
-    return CDR_CALL_DIRECTION_MAPPING.fetch(cdr.direction) if cdr.present?
+    return CDR_CALL_DIRECTION_MAPPINGS.fetch(cdr.direction) if cdr.present?
 
     OUTBOUND_CALL_DIRECTION
   end

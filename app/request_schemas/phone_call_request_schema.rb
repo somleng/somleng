@@ -11,18 +11,14 @@ class PhoneCallRequestSchema < ApplicationRequestSchema
       def url?(value)
         UrlValidator.new(url: value).valid?
       end
-
-      def http_method?(value)
-        HTTP_METHODS.include?(value)
-      end
     end
 
     required(:To, :string).filled(:str?, phone_number?: true)
     required(:From, :string).filled(:str?, format?: FROM_REGEX)
     required(:Url, :string).filled(:str?, url?: true)
-    optional(:Method, ApplicationRequestSchema::Types::HTTPMethod).filled(:str?, http_method?: true)
+    optional(:Method, ApplicationRequestSchema::Types::HTTPMethod).filled(:str?, included_in?: HTTP_METHODS)
     optional(:StatusCallback, :string).filled(:str?, url?: true)
-    optional(:StatusCallbackMethod, ApplicationRequestSchema::Types::HTTPMethod).filled(:str?, http_method?: true)
+    optional(:StatusCallbackMethod, ApplicationRequestSchema::Types::HTTPMethod).filled(:str?, included_in?: HTTP_METHODS)
   end
 
   class PhoneNumberValidator

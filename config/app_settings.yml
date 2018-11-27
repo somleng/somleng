@@ -17,6 +17,8 @@ production: &production
   aws_s3_secret_access_key: "<%= ENV["AWS_S3_SECRET_ACCESS_KEY"] %>"
   aws_region: <%= ENV["AWS_REGION"] %>
   uploads_bucket: <%= ENV["UPLOADS_BUCKET"] %>
+  default_queue_url: <%= ENV["DEFAULT_QUEUE_URL"] %>
+  outbound_call_job_queue_url: <%= ENV["OUTBOUND_CALL_JOB_QUEUE_URL"] %>
 
 development: &development
   <<: *production

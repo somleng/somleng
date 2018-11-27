@@ -1,8 +1,6 @@
 require "rails_helper"
 
-RSpec.describe StatusCallbackNotifierJob do
-  include_examples "aws_sqs_queue_url"
-
+RSpec.describe NotifyStatusCallbackUrl do
   describe "#perform(phone_call_id)" do
     it "notifies the status callback url via HTTP POST by default" do
       phone_call = create(
@@ -12,9 +10,8 @@ RSpec.describe StatusCallbackNotifierJob do
         call_data_record: build(:call_data_record, bill_sec: "15")
       )
       stub_request(:post, phone_call.status_callback_url)
-      job = described_class.new
 
-      job.perform(phone_call.id)
+      NotifyStatusCallbackUrl.call(phone_call: phone_call)
 
       expect(WebMock).to have_requested(:post, phone_call.status_callback_url)
       request_payload = WebMock.request_params(WebMock.requests.last)
@@ -29,9 +26,8 @@ RSpec.describe StatusCallbackNotifierJob do
         status_callback_method: "GET"
       )
       stub_request(:get, phone_call.status_callback_url)
-      job = described_class.new
 
-      job.perform(phone_call.id)
+      NotifyStatusCallbackUrl.call(phone_call: phone_call)
 
       expect(WebMock).to have_requested(:get, phone_call.status_callback_url)
     end

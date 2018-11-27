@@ -24,6 +24,6 @@ class CreatePhoneCall < ApplicationWorkflow
   end
 
   def enqueue_outbound_call(phone_call)
-    OutboundCallJob.perform_later(phone_call)
+    ExecuteWorkflowJob.perform_later(InitiateOutboundCall.to_s, phone_call: phone_call)
   end
 end
