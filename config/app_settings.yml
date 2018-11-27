@@ -13,18 +13,12 @@ production: &production
   internal_api_http_auth_password: <%= ENV["INTERNAL_API_HTTP_AUTH_PASSWORD"] %>
   outbound_call_drb_uri: <%= ENV["OUTBOUND_CALL_DRB_URI"] %>
   default_url_host: <%= ENV["DEFAULT_URL_HOST"] %>
-  default_queue_url: <%= ENV["DEFAULT_QUEUE_URL"] %>
-  initiate_outbound_call_queue_url: <%= ENV["INITIATE_OUTBOUND_CALL_QUEUE_URL"] %>
-  notify_status_callback_url_queue_url: <%= ENV["NOTIFY_STATUS_CALLBACK_URL_QUEUE_URL"] %>
-  aws_sns_message_processor_job_queue_url: <%= ENV["AWS_SNS_MESSAGE_PROCESSOR_JOB_QUEUE_URL"] %>
-  call_data_record_job_queue_url: <%= ENV["CALL_DATA_RECORD_JOB_QUEUE_URL"] %>
-  recording_processor_job_queue_url: <%= ENV["RECORDING_PROCESSOR_JOB_QUEUE_URL"] %>
-  recording_status_callback_notifier_job_queue_url: <%= ENV["RECORDING_STATUS_CALLBACK_NOTIFIER_JOB_QUEUE_URL"] %>
   aws_s3_access_key_id: "<%= ENV["AWS_S3_ACCESS_KEY_ID"] %>"
   aws_s3_secret_access_key: "<%= ENV["AWS_S3_SECRET_ACCESS_KEY"] %>"
   aws_region: <%= ENV["AWS_REGION"] %>
   uploads_bucket: <%= ENV["UPLOADS_BUCKET"] %>
   default_queue_url: <%= ENV["DEFAULT_QUEUE_URL"] %>
+  initiate_outbound_call_queue_url: <%= ENV["INITIATE_OUTBOUND_CALL_QUEUE_URL"] %>
 
 development: &development
   <<: *production
