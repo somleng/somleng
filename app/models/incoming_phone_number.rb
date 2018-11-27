@@ -1,5 +1,4 @@
 class IncomingPhoneNumber < ApplicationRecord
-  include TwilioApiResource
   include TwilioUrlLogic
 
   belongs_to :account

@@ -1,24 +1,34 @@
 class NotifyStatusCallbackUrl < ApplicationWorkflow
   DEFAULT_STATUS_CALLBACK_METHOD = "POST".freeze
 
-  def call
-    phone_call = options.fetch(:phone_call)
-    phone_call_attributes = PhoneCallSerializer.new(phone_call).as_json
+  attr_accessor :phone_call
 
+  def initialize(phone_call)
+    self.phone_call = phone_call
+  end
+
+  def call
+    params = PhoneCallSerializer.new(phone_call).as_json
+    send_webhook_notification!(phone_call, params)
+  end
+
+  private
+
+  def send_webhook_notification!(phone_call, params)
     TwilioHttpClientRequest.new.execute!(
       Somleng::TwilioHttpClient::Request.new(
         request_url: phone_call.status_callback_url,
         request_method: phone_call.status_callback_method || DEFAULT_STATUS_CALLBACK_METHOD,
         auth_token: phone_call.account.auth_token,
-        account_sid: phone_call_attributes.fetch("account_sid"),
-        call_from: phone_call_attributes.fetch("from"),
-        call_to: phone_call_attributes.fetch("to"),
-        call_sid: phone_call_attributes.fetch("sid"),
-        call_direction: phone_call_attributes.fetch("direction"),
-        call_status: phone_call_attributes.fetch("status"),
-        api_version: phone_call_attributes.fetch("api_version"),
+        account_sid: params.fetch("account_sid"),
+        call_from: params.fetch("from"),
+        call_to: params.fetch("to"),
+        call_sid: params.fetch("sid"),
+        call_direction: params.fetch("direction"),
+        call_status: params.fetch("status"),
+        api_version: params.fetch("api_version"),
         body: {
-          "CallDuration" => phone_call_attributes.fetch("duration")
+          "CallDuration" => params.fetch("duration")
         }
       )
     )

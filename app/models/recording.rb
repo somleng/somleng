@@ -10,7 +10,6 @@ class Recording < ApplicationRecord
 
   TWIML_SOURCE = "RecordVerb"
 
-  include TwilioApiResource
   include Wisper::Publisher
 
   belongs_to :phone_call

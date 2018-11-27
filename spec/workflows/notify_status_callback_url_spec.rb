@@ -11,7 +11,7 @@ RSpec.describe NotifyStatusCallbackUrl do
       )
       stub_request(:post, phone_call.status_callback_url)
 
-      NotifyStatusCallbackUrl.call(phone_call: phone_call)
+      NotifyStatusCallbackUrl.call(phone_call)
 
       expect(WebMock).to have_requested(:post, phone_call.status_callback_url)
       request_payload = WebMock.request_params(WebMock.requests.last)
@@ -27,7 +27,7 @@ RSpec.describe NotifyStatusCallbackUrl do
       )
       stub_request(:get, phone_call.status_callback_url)
 
-      NotifyStatusCallbackUrl.call(phone_call: phone_call)
+      NotifyStatusCallbackUrl.call(phone_call)
 
       expect(WebMock).to have_requested(:get, phone_call.status_callback_url)
     end

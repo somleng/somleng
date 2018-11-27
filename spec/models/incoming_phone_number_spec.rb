@@ -1,11 +1,10 @@
-require 'rails_helper'
+require "rails_helper"
 
 describe IncomingPhoneNumber do
   let(:factory) { :incoming_phone_number }
 
-  it_behaves_like "twilio_api_resource"
   it_behaves_like "twilio_url_logic"
-  it_behaves_like "phone_number_attribute", :validate_format => false do
+  it_behaves_like "phone_number_attribute", validate_format: false do
     let(:phone_number_attribute) { :phone_number }
   end
 
@@ -26,6 +25,7 @@ describe IncomingPhoneNumber do
 
   describe "#to_json" do
     subject { create(factory) }
+
     let(:json) { JSON.parse(subject.to_json) }
 
     def assert_json!
