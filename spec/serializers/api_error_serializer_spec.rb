@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ApiErrorSerializer do
+RSpec.describe APIErrorSerializer do
   it "serializes an API Error" do
     errors = { "To" => ["is missing"] }
 

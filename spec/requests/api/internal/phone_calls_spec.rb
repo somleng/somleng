@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Internal Phone Calls API" do
   describe "POST /api/internal/phone_calls" do
-    it "creates a phone call" do
+    fit "creates a phone call" do
       params = {
         "To" => generate(:phone_number),
         "From" => "2442",
@@ -21,6 +21,7 @@ RSpec.describe "Internal Phone Calls API" do
       )
 
       # TODO: Use JSON schema
+      p response.body
       expect(response.code).to eq("201")
       expect(JSON.parse(response.body).fetch("from")).to eq(params.fetch("From"))
     end

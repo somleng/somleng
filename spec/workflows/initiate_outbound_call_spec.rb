@@ -13,7 +13,7 @@ RSpec.describe InitiateOutboundCall do
     expect(DRbObject).to have_received(:new_with_uri).with(drb_uri)
     expect(drb_object).to have_received(
       :initiate_outbound_call!
-    ).with(InternalApiPhoneCallSerializer.new(phone_call).to_json)
+    ).with(API::Internal::PhoneCallSerializer.new(phone_call).to_json)
     expect(phone_call.reload.external_id).to eq(external_id)
     expect(phone_call).to be_initiated
   end

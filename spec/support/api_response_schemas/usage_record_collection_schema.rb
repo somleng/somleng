@@ -1,6 +1,6 @@
 require_relative "usage_record_schema"
 
-module ApiResponseSchema
+module APIResponseSchema
   UsageRecordCollectionSchema = Dry::Validation.Schema do
     required(:first_page_uri).filled(:str?)
     required(:previous_page_uri).maybe(:str?)

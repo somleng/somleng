@@ -44,8 +44,6 @@ class PhoneCall < ApplicationRecord
            prefix: true,
            allow_nil: true
 
-  delegate :sid, to: :account, prefix: true
-
   include AASM
 
   aasm column: :status, whiny_transitions: false do
@@ -60,7 +58,7 @@ class PhoneCall < ApplicationRecord
     state :canceled
 
     event :initiate do
-      transitions from: :queued, to: :initiated, guard: :has_external_id?
+      transitions from: :queued, to: :initiated, guard: :external_id?
     end
 
     event :cancel do
@@ -129,10 +127,6 @@ class PhoneCall < ApplicationRecord
 
   def publish_completed
     broadcast(:phone_call_completed, self)
-  end
-
-  def has_external_id?
-    external_id?
   end
 
   def phone_call_event_answered?

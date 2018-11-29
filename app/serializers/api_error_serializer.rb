@@ -1,4 +1,4 @@
-class ApiErrorSerializer
+class APIErrorSerializer
   attr_accessor :serializable, :status_code
 
   def initialize(serializable, options = {})

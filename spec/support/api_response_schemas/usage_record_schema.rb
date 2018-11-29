@@ -1,4 +1,4 @@
-module ApiResponseSchema
+module APIResponseSchema
   UsageRecordSchema = Dry::Validation.Schema do
     required(:category).filled(:str?)
     required(:count).filled(:str?)

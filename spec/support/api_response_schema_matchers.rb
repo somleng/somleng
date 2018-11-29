@@ -18,6 +18,6 @@ RSpec::Matchers.define :match_api_response_schema do |schema_name|
   end
 
   def resolve_schema(name)
-    "ApiResponseSchema::#{name.to_s.classify}Schema".constantize
+    "APIResponseSchema::#{name.to_s.classify}Schema".constantize
   end
 end

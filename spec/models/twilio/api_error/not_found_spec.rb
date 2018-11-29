@@ -1,17 +1,18 @@
-require 'rails_helper'
+require "rails_helper"
 
-describe Twilio::ApiError::NotFound do
+describe Twilio::APIError::NotFound do
+  subject { described_class.new(request_url: request_url) }
+
   let(:request_url) { "/some/path.json" }
-  subject { described_class.new(:request_url => request_url) }
 
-  let(:asserted_hash) {
+  let(:asserted_hash) do
     {
-      "code" => 20404,
+      "code" => 20_404,
       "more_info" => "https://www.twilio.com/docs/errors/20404",
       "message" => "The requested resource /some/path.json was not found",
       "status" => 404
     }
-  }
+  end
 
   include_examples("twilio_api_error")
 end

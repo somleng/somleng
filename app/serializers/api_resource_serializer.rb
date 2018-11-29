@@ -1,4 +1,4 @@
-class ApiResourceSerializer < ApplicationSerializer
+class APIResourceSerializer < ApplicationSerializer
   API_VERSION = "2010-04-01".freeze
 
   def account_sid

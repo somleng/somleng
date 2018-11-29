@@ -1,4 +1,4 @@
-module ApiResponseSchema
+module APIResponseSchema
   PhoneCallSchema = Dry::Validation.Schema do
     required(:account_sid).filled(:str?)
     required(:annotation).maybe(:str?)

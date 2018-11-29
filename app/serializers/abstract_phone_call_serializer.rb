@@ -1,4 +1,4 @@
-class AbstractPhoneCallSerializer < ApiResourceSerializer
+class AbstractPhoneCallSerializer < APIResourceSerializer
   INBOUND_CALL_DIRECTION = "inbound".freeze
   OUTBOUND_CALL_DIRECTION = "outbound-api".freeze
 
