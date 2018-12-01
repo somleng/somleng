@@ -6,7 +6,7 @@ class ExecuteWorkflowJob < ApplicationJob
     workflow_queue_url.present? ? self.class.parse_queue_name(workflow_queue_url) : self.class.default_queue_name
   end
 
-  def perform(workflow_name, options = {})
-    workflow_name.constantize.call(options)
+  def perform(workflow_name, *args)
+    workflow_name.constantize.call(*args)
   end
 end
