@@ -12,7 +12,7 @@ describe "Usage Records API" do
       )
 
       expect(response.code).to eq("200")
-      expect(response.body).to match_api_response_schema(:usage_record_collection)
+      expect(response.body).to match_response_schema(:"api/usage/record_collection")
       expect(JSON.parse(response.body).fetch("usage_records").size).to eq(3)
     end
 
@@ -26,7 +26,7 @@ describe "Usage Records API" do
       )
 
       expect(response.code).to eq("422")
-      expect(response.body).to match_api_response_schema(:api_error)
+      expect(response.body).to match_response_schema(:"api/error")
     end
 
     it "filters by start and end date" do
@@ -47,7 +47,7 @@ describe "Usage Records API" do
       )
 
       expect(response.code).to eq("200")
-      expect(response.body).to match_api_response_schema(:usage_record_collection)
+      expect(response.body).to match_response_schema(:"api/usage/record_collection")
       usage_record = JSON.parse(response.body).fetch("usage_records").first
       expect(usage_record.fetch("start_date")).to eq("2018-01-02")
       expect(usage_record.fetch("end_date")).to eq("2018-01-02")

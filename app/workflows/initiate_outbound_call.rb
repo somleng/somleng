@@ -11,7 +11,7 @@ class InitiateOutboundCall < ApplicationWorkflow
     call_params = API::Internal::PhoneCallSerializer.new(phone_call).to_json
     phone_call.external_id = initiate_remote_call!(call_params)
     phone_call.save!
-    phone_call.initiate_or_cancel!
+    phone_call.initiate!
   end
 
   private

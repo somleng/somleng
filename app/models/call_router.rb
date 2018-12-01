@@ -1,21 +1,10 @@
 class CallRouter
-  DEFAULT_TRUNK_PREFIX = "0".freeze
-
-  attr_accessor :source, :destination,
-                :trunk_prefix, :trunk_prefix_replacement, :source_matcher
+  attr_accessor :source, :destination, :source_matcher
 
   def initialize(options = {})
     self.source = options.fetch(:source) { nil }
     self.destination = options.fetch(:destination) { nil }
-    self.trunk_prefix = options.fetch(:trunk_prefix) { DEFAULT_TRUNK_PREFIX }
-    self.trunk_prefix_replacement = options.fetch(:trunk_prefix_replacement) { nil }
     self.source_matcher = options.fetch(:source_matcher) { nil }
-  end
-
-  def normalized_source
-    return source if source.blank? || trunk_prefix_replacement.blank?
-
-    source.sub(/\A((\+)?#{trunk_prefix})/, "\\2#{trunk_prefix_replacement}")
   end
 
   def routing_instructions

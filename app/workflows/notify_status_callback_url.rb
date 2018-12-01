@@ -8,7 +8,7 @@ class NotifyStatusCallbackUrl < ApplicationWorkflow
   end
 
   def call
-    params = PhoneCallSerializer.new(phone_call).as_json
+    params = API::PhoneCallSerializer.new(phone_call).as_json
     send_webhook_notification!(phone_call, params)
   end
 

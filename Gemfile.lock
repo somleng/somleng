@@ -1,4 +1,10 @@
 GIT
+  remote: https://github.com/alexreisner/geocoder.git
+  revision: 5a963b179d3bba8e9dbaec296c4b88b837b34182
+  specs:
+    geocoder (1.5.0)
+
+GIT
   remote: https://github.com/krisleech/wisper.git
   revision: a73b72b17e5665614f83fffd471bab65c6670e43
   specs:
@@ -367,9 +373,11 @@ DEPENDENCIES
   active_elastic_job!
   bootsnap
   codecov
+  countries
   doorkeeper
   dry-validation
   factory_bot_rails
+  geocoder!
   money-rails
   okcomputer
   pg

@@ -227,17 +227,7 @@ FactoryBot.define do
     account
     phone_number { generate(:phone_number) }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
-
-    trait :with_optional_attributes do
-      with_voice_method
-      with_status_callback_url
-      with_status_callback_method
-      with_twilio_request_phone_number
-    end
-
-    trait :with_twilio_request_phone_number do
-      twilio_request_phone_number { "123456789" }
-    end
+    voice_method { "POST" }
   end
 
   factory :phone_call do
@@ -249,6 +239,11 @@ FactoryBot.define do
 
     trait :with_external_id do
       external_id { generate(:external_id) }
+    end
+
+    trait :inbound do
+      incoming_phone_number
+      to { incoming_phone_number.phone_number }
     end
 
     trait :queued do
@@ -285,27 +280,6 @@ FactoryBot.define do
 
     trait :busy do
       status { PhoneCall::STATE_BUSY }
-    end
-
-    trait :can_complete do
-      answered
-    end
-
-    trait :already_completed do
-      failed
-    end
-
-    trait :with_optional_attributes do
-      with_voice_method
-      with_status_callback_url
-      with_status_callback_method
-    end
-
-    trait :initiating_inbound_call do
-      initiating_inbound_call { true }
-      incoming_phone_number
-      to { incoming_phone_number.phone_number }
-      with_external_id
     end
   end
 

@@ -26,7 +26,7 @@ RSpec.describe "Phone Calls API" do
       end
 
       expect(response.code).to eq("201")
-      expect(response.body).to match_api_response_schema(:phone_call)
+      expect(response.body).to match_response_schema(:"api/phone_call")
       phone_call = PhoneCall.find(JSON.parse(response.body).fetch("sid"))
       expect(phone_call).to be_initiated
       expect(phone_call.external_id).to eq(external_id)
@@ -42,7 +42,7 @@ RSpec.describe "Phone Calls API" do
       )
 
       expect(response.code).to eq("422")
-      expect(response.body).to match_api_response_schema(:api_error)
+      expect(response.body).to match_response_schema(:"api/error")
       expect(JSON.parse(response.body).fetch("status")).to eq(422)
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe "Phone Calls API" do
       )
 
       expect(response.code).to eq("200")
-      expect(response.body).to match_api_response_schema(:phone_call)
+      expect(response.body).to match_response_schema(:"api/phone_call")
     end
   end
 end

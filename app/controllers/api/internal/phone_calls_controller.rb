@@ -2,26 +2,27 @@ module API
   module Internal
     class PhoneCallsController < BaseController
       def create
-        schema_validation_result = PhoneCallRequestSchema.schema.call(request.params)
+        schema_validation_result = PhoneCallRequestSchema.call(request.params)
         if schema_validation_result.success?
-          phone_call = CreatePhoneCall.call(
-            attributes: schema_validation_result.output,
-            account: current_account
-          )
-          respond_with(phone_call, location: api_internal_phone_call_url(phone_call))
+          phone_call = InitiateInboundCall.call(schema_validation_result.output)
+          respond_with_phone_call(phone_call)
         else
           respond_with(schema_validation_result)
         end
       end
 
-      private
-
-      def association_chain
-        PhoneCall.all
+      def show
+        respond_with_phone_call(PhoneCall.find(params[:id]))
       end
 
-      def save_resource
-        resource.initiate_inbound_call
+      private
+
+      def respond_with_phone_call(phone_call)
+        respond_with(
+          phone_call,
+          location: proc { api_internal_phone_call_url(phone_call) },
+          serializer_class: PhoneCallSerializer
+        )
       end
     end
   end

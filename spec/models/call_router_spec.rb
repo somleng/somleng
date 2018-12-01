@@ -1,35 +1,6 @@
 require "rails_helper"
 
 describe CallRouter do
-  describe "#normalized_source" do
-    it "returns the normalized source" do
-      call_router = described_class.new(source: "+0972345678")
-
-      call_router.trunk_prefix_replacement = "855"
-      expect(call_router.normalized_source).to eq("+855972345678")
-
-      call_router.trunk_prefix_replacement = "856"
-      expect(call_router.normalized_source).to eq("+856972345678")
-
-      call_router.trunk_prefix = "1"
-      expect(call_router.normalized_source).to eq("+0972345678")
-
-      call_router.trunk_prefix_replacement = nil
-      expect(call_router.normalized_source).to eq("+0972345678")
-
-      call_router = described_class.new(trunk_prefix_replacement: "855")
-
-      call_router.source = "+855972345678"
-      expect(call_router.normalized_source).to eq("+855972345678")
-
-      call_router.source = "855972345678"
-      expect(call_router.normalized_source).to eq("855972345678")
-
-      call_router.source = "10972345678"
-      expect(call_router.normalized_source).to eq("10972345678")
-    end
-  end
-
   describe "#routing_instructions" do
     it "returns routing instructions" do
       call_router = described_class.new(

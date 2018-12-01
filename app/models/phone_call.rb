@@ -9,35 +9,10 @@ class PhoneCall < ApplicationRecord
   has_many   :phone_call_events, class_name: "PhoneCallEvent::Base"
   has_many   :recordings
 
-  before_validation :normalize_phone_numbers
-
-  validates :from, :status, presence: true
-
-  validates :to,
-            presence: true,
-            phony_plausible: { unless: :initiating_inbound_call?, on: :create }
-
+  validates :from, :to, presence: true
   validates :external_id, uniqueness: true, strict: true, allow_nil: true
-  validates :external_id, :incoming_phone_number, presence: true, if: :initiating_inbound_call?
 
-  attr_accessor :initiating_inbound_call, :completed_event, :twilio_request_to
-
-  delegate :voice_url, :voice_method,
-           :status_callback_url, :status_callback_method,
-           :account, :sid,
-           :twilio_request_phone_number,
-           to: :incoming_phone_number, prefix: true, allow_nil: true
-
-  delegate :bill_sec,
-           :direction,
-           :answer_time,
-           :end_time,
-           :answered?,
-           :not_answered?,
-           :busy?,
-           to: :call_data_record,
-           prefix: true,
-           allow_nil: true
+  attr_accessor :completed_event, :twilio_request_to
 
   delegate :answered?, :not_answered?, :busy?,
            to: :completed_event,
@@ -59,9 +34,6 @@ class PhoneCall < ApplicationRecord
 
     event :initiate do
       transitions from: :queued, to: :initiated, guard: :external_id?
-    end
-
-    event :cancel do
       transitions from: :queued, to: :canceled
     end
 
@@ -94,35 +66,6 @@ class PhoneCall < ApplicationRecord
     end
   end
 
-  def initiate_or_cancel!
-    external_id? ? initiate! : cancel!
-  end
-
-  def to_internal_inbound_call_json
-    to_json(
-      only: internal_json_attributes.keys,
-      methods: internal_json_methods.merge(
-        twilio_request_to: nil
-      ).keys
-    )
-  end
-
-  def initiate_inbound_call
-    self.initiating_inbound_call = true
-    normalize_phone_numbers
-    normalize_from
-    if self.incoming_phone_number = IncomingPhoneNumber.find_by_phone_number(to)
-      self.account = incoming_phone_number_account
-      self.voice_url = incoming_phone_number_voice_url
-      self.voice_method = incoming_phone_number_voice_method
-      self.status_callback_url = incoming_phone_number_status_callback_url
-      self.status_callback_method = incoming_phone_number_status_callback_method
-      self.twilio_request_to = incoming_phone_number_twilio_request_phone_number
-      initiate
-    end
-    save
-  end
-
   private
 
   def publish_completed
@@ -130,27 +73,14 @@ class PhoneCall < ApplicationRecord
   end
 
   def phone_call_event_answered?
-    completed_event_answered? || call_data_record_answered?
+    completed_event&.answered? || call_data_record&.answered?
   end
 
   def phone_call_event_not_answered?
-    completed_event_not_answered? || call_data_record_not_answered?
+    completed_event&.not_answered? || call_data_record&.not_answered?
   end
 
   def phone_call_event_busy?
-    completed_event_busy? || call_data_record_busy?
-  end
-
-  def initiating_inbound_call?
-    initiating_inbound_call.present?
-  end
-
-  def normalize_from
-    normalized_from = PhonyRails.normalize_number(active_call_router.normalized_source)
-    self.from = normalized_from if normalized_from
-  end
-
-  def normalize_phone_numbers
-    self.to = PhonyRails.normalize_number(to)
+    completed_event&.busy? || call_data_record&.busy?
   end
 end

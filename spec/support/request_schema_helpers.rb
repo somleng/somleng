@@ -1,6 +1,6 @@
 module RequestSchemaHelpers
   def validate_schema(params = {})
-    described_class.schema.call(params)
+    described_class.call(params)
   end
 end
 
