@@ -1,6 +1,5 @@
 FactoryBot.define do
-  sequence :external_id, &:to_s
-
+  sequence(:external_id) { SecureRandom.uuid }
   sequence :phone_number, 855_972_345_678, &:to_s
 
   trait :with_status_callback_url do
@@ -236,10 +235,6 @@ FactoryBot.define do
     from { "2442" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
     voice_method { "POST" }
-
-    trait :with_external_id do
-      external_id { generate(:external_id) }
-    end
 
     trait :inbound do
       incoming_phone_number

@@ -66,6 +66,10 @@ class PhoneCall < ApplicationRecord
     end
   end
 
+  def self.find_by_uuid!(uuid)
+    where(id: uuid).or(where(external_id: uuid)).first!
+  end
+
   private
 
   def publish_completed

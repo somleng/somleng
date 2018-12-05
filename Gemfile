@@ -6,8 +6,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem "aasm"
 gem "active_elastic_job", github: "samnang/active-elastic-job", branch: "upgrade_to_aws_sdk_3"
+gem "countries"
+gem "data_migrate"
 gem "doorkeeper"
 gem "dry-validation"
+gem "geocoder", github: "alexreisner/geocoder"
 gem "money-rails"
 gem "okcomputer"
 gem "pg"
@@ -24,8 +27,6 @@ gem "somleng-twilio_http_client", github: "somleng/somleng-twilio_http_client"
 gem "torasup"
 gem "validate_url", github: "perfectline/validates_url"
 gem "wisper", github: "krisleech/wisper"
-gem "geocoder", github: "alexreisner/geocoder"
-gem "countries"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false

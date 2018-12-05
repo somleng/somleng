@@ -10,6 +10,12 @@ class NotifyRecordingStatusCallbackUrl < ApplicationWorkflow
   def call
     # params = API::PhoneCallSerializer.new(phone_call).as_json
     # send_webhook_notification!(phone_call, params)
+
+    # recording.validate_status_callback_url = true
+    # recording.valid?
+    # if recording.errors[:status_callback_url].empty?
+    #   twilio_http_request.execute!(http_request)
+    # end
   end
 
   private

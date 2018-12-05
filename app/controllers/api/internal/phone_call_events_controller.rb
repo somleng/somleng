@@ -24,7 +24,33 @@ module API
         }
       }
 
+      def create
+        schema_validation_result = PhoneCallEventRequestSchema.call(request.params)
+        if schema_validation_result.success?
+          phone_call_event = CreatePhoneCallEvent.call(schema_validation_result.output)
+          respond_with_phone_call_event(phone_call_event)
+        else
+          respond_with(schema_validation_result)
+        end
+      end
+
+      def show
+        respond_with_phone_call_event(PhoneCallEvent::Base.find(params[:id]))
+      end
+
       private
+
+      def respond_with_phone_call_event(phone_call_event)
+        respond_with(
+          phone_call_event,
+          location: proc {
+            api_internal_phone_call_phone_call_event_url(
+              phone_call_event.phone_call, phone_call_event
+            )
+          },
+          serializer_class: PhoneCallEventSerializer
+        )
+      end
 
       def association_chain
         event_type_settings["event_type"] || PhoneCallEvent::Base
