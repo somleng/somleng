@@ -183,7 +183,7 @@ describe CallRouter do
         result,
         source: "5555",
         destination: "5582999489999",
-        dial_string_path: "external/5582999489999@200.155.77.116"
+        dial_string_path: "external/5582999489999@200.142.96.52"
       )
     end
 
