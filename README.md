@@ -1,8 +1,8 @@
 # Twilreapi /twil-reap-i/ (Twilio Rest API)
 
-[![Build Status](https://travis-ci.org/somleng/twilreapi.svg?branch=master)](https://travis-ci.org/somleng/twilreapi)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/1f6fa565944f2311832d/test_coverage)](https://codeclimate.com/github/somleng/twilreapi/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/1f6fa565944f2311832d/maintainability)](https://codeclimate.com/github/somleng/twilreapi/maintainability)
+[![Build Status](https://travis-ci.org/PIN-Cambodia/twilreapi.svg?branch=develop)](https://travis-ci.org/PIN-Cambodia/twilreapi)
+[![codecov](https://codecov.io/gh/PIN-Cambodia/twilreapi/branch/develop/graph/badge.svg)](https://codecov.io/gh/PIN-Cambodia/twilreapi)
+[![Maintainability](https://api.codeclimate.com/v1/badges/22b98b5943fbea4ad551/maintainability)](https://codeclimate.com/github/PIN-Cambodia/twilreapi/maintainability)
 
 Twilreapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest) written in Rails. You can use Twilreapi as a drop-in replacement for Twilio and enqueue calls, send SMS etc.
 
@@ -16,9 +16,7 @@ Check the output of `bin/setup` and note down the Account SID and Auth Token.
 
 To seed the database run `./bin/rails db:seed`. To create an admin account specify the admin account permissions with `ADMIN_ACCOUNT_PERMISSIONS`. E.g.
 
-```
-$ ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions ./bin/rails db:seed
-```
+    $ ADMIN_ACCOUNT_PERMISSIONS=comma_separated_list_of_permissions ./bin/rails db:seed
 
 ## Usage
 
@@ -30,17 +28,15 @@ Configuration is done using environment variables. See [.env](https://github.com
 
 Start the web server using foreman. Note this will read the environment variables from [.env](https://github.com/somleng/twilreapi/blob/master/.env)
 
-```
-$ bundle exec foreman start web
-```
+    $ bundle exec foreman start web
 
 ### Background Processing
 
 Twilreapi is queue agnostic. By default it will enqueue jobs using ActiveJob. The following background processing libraries are also supported and can be configured using [environment variables.](https://github.com/somleng/twilreapi/blob/master/.env)
 
-* [active-elastic-job](https://github.com/tawan/active-elastic-job) (Default. Recommended for AWS deployment)
-* [twilreapi-sidekiq](https://github.com/somleng/twilreapi-sidekiq) (Recommended for Heroku deployment)
-* [shoryuken](https://github.com/phstc/shoryuken)
+-   [active-elastic-job](https://github.com/tawan/active-elastic-job) (Default. Recommended for AWS deployment)
+-   [twilreapi-sidekiq](https://github.com/somleng/twilreapi-sidekiq) (Recommended for Heroku deployment)
+-   [shoryuken](https://github.com/phstc/shoryuken)
 
 ### Outbound Calls
 
@@ -56,30 +52,24 @@ See [DEPLOYMENT](https://github.com/somleng/twilreapi/blob/master/docs/DEPLOYMEN
 
 #### Make a Call
 
-```
-$ curl -XPOST https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls.json \
-    -d "Method=GET" \
-    -d "Url=http://demo.twilio.com/docs/voice.xml" \
-    -d "To=%2B85512345678" \
-    -d "From=%2B85512345679" \
-    -u 'your_account_sid:your_auth_token'
-```
+    $ curl -XPOST https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls.json \
+        -d "Method=GET" \
+        -d "Url=http://demo.twilio.com/docs/voice.xml" \
+        -d "To=%2B85512345678" \
+        -d "From=%2B85512345679" \
+        -u 'your_account_sid:your_auth_token'
 
 #### Retrieve a Call
 
-```
-$ curl https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls/{CallSID}.json \
-    -u 'your_account_sid:your_auth_token'
-```
+    $ curl https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/Calls/{CallSID}.json \
+        -u 'your_account_sid:your_auth_token'
 
 ### Incoming Phone Numbers
 
 #### Retrieve an Incoming Phone Number
 
-```
-$ curl https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/IncomingPhoneNumbers/{IncomingPhoneNumberSID}.json \
-    -u 'your_account_sid:your_auth_token'
-```
+    $ curl https://your-host-name/api/2010-04-01/Accounts/{AccountSID}/IncomingPhoneNumbers/{IncomingPhoneNumberSID}.json \
+        -u 'your_account_sid:your_auth_token'
 
 ## License
 
