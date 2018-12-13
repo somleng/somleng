@@ -199,7 +199,7 @@ describe CallRouter do
         result,
         source: "999999",
         destination: "855882345678",
-        dial_string_path: "external/855882345678@3.0.245.70"
+        dial_string_path: "external/855882345678@52.74.249.4"
       )
 
       # Cambodia Smart (Simulator)
@@ -212,7 +212,7 @@ describe CallRouter do
         result,
         source: "999999",
         destination: "85510234567",
-        dial_string_path: "external/85510234567@3.0.245.70"
+        dial_string_path: "external/85510234567@52.74.249.4"
       )
 
       # Cambodia Mobitel (Simulator)
@@ -225,7 +225,7 @@ describe CallRouter do
         result,
         source: "999999",
         destination: "85512234567",
-        dial_string_path: "external/85512234567@3.0.245.70"
+        dial_string_path: "external/85512234567@52.74.249.4"
       )
     end
 
