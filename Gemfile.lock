@@ -39,7 +39,7 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: 8a7da30a84e6d6e686b8db1e060e43cff3c25b4a
+  revision: 9057b70664787221512a2f751e2e5c73eab3613c
   specs:
     rack-protection (2.0.4)
       rack
