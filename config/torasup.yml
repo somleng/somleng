@@ -5,7 +5,7 @@ br:
       metadata:
         gateways:
           default:
-            host: "200.155.77.116"
+            host: "200.142.96.52"
 kh:
   operators:
     smart:
@@ -14,12 +14,16 @@ kh:
           default:
             host: "27.109.112.80"
             prefix: false
+          "999999":
+            host: "3.0.245.70"
     mobitel:
       metadata:
         gateways:
           default:
             host: "103.193.204.17"
             prefix: false
+          "999999":
+            host: "3.0.245.70"
     metfone:
       metadata:
         gateways:
@@ -30,6 +34,8 @@ kh:
             host: "103.193.204.17"
             prefix: false
             caller_id: "095975802"
+          "999999":
+            host: "3.0.245.70"
 sl:
   operators:
     africell:
