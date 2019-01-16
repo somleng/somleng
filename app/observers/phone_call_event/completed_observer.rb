@@ -1,4 +1,4 @@
-class PhoneCallEvent::CompletedObserver < PhoneCallEvent::BaseObserver
+class PhoneCallEvent::CompletedObserver < ApplicationObserver
 
   def phone_call_event_completed_created(phone_call_event)
     self.phone_call_event = phone_call_event

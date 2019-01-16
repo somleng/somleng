@@ -33,6 +33,7 @@ describe "Internal Phone Call Events API" do
 
       expect(response.code).to eq("201")
       expect(response.body).to match_response_schema(:"api/internal/phone_call_event")
+      expect(parsed_response_body.fetch("recording_url")).to be_present
     end
   end
 end

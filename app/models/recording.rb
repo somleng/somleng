@@ -13,8 +13,8 @@ class Recording < ApplicationRecord
   include Wisper::Publisher
 
   belongs_to :phone_call
-  has_many :phone_call_events,      class_name: "PhoneCallEvent::Base"
-  has_many :aws_sns_notifications,  class_name: "AwsSnsMessage::Notification"
+  has_many :phone_call_events
+  has_many :aws_sns_notifications, class_name: "AwsSnsMessage::Notification"
   has_one  :currently_recording_phone_call, class_name: "PhoneCall"
 
   after_commit :publish_status_change

@@ -109,40 +109,6 @@ FactoryBot.define do
     end
   end
 
-  factory :phone_call_event_base, class: PhoneCallEvent::Base do
-    association :phone_call, factory: %i[phone_call initiated]
-
-    factory :phone_call_event_ringing, class: PhoneCallEvent::Ringing, aliases: [:phone_call_event] do
-    end
-
-    factory :phone_call_event_answered, class: PhoneCallEvent::Answered do
-    end
-
-    factory :phone_call_event_recording_started, class: PhoneCallEvent::RecordingStarted do
-    end
-
-    factory :phone_call_event_recording_completed, class: PhoneCallEvent::RecordingCompleted do
-    end
-
-    factory :phone_call_event_completed, class: PhoneCallEvent::Completed do
-      trait :busy do
-        sip_term_status { "486" }
-      end
-
-      trait :not_answered do
-        sip_term_status { "480" }
-      end
-
-      trait :failed do
-        sip_term_status { "404" }
-      end
-
-      trait :answered do
-        answer_epoch { "1" }
-      end
-    end
-  end
-
   factory :call_data_record do
     transient do
       cdr { build(:freeswitch_cdr) }
@@ -275,6 +241,18 @@ FactoryBot.define do
 
     trait :busy do
       status { PhoneCall::STATE_BUSY }
+    end
+  end
+
+  factory :phone_call_event do
+    phone_call
+
+    trait :recording_started do
+      type { :recording_started }
+    end
+
+    trait :answered do
+      type { :answered }
     end
   end
 

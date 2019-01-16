@@ -8,6 +8,7 @@ class CreatePhoneCallEvent < ApplicationWorkflow
   def call
     event = create_phone_call_event
     handle_event(event)
+    event
   end
 
   private
@@ -16,13 +17,13 @@ class CreatePhoneCallEvent < ApplicationWorkflow
     PhoneCallEvent.create!(
       phone_call: phone_call,
       type: params.fetch(:type),
-      params: params[:params]
+      params: params.fetch(:params, {})
     )
   end
 
   def handle_event(event)
     event_handler = "Handle#{event.type.camelize}Event".constantize
-    ExecuteWorkflowJob(event_handler.to_s, event).perform_later
+    event_handler.call(event)
   rescue NameError
     Rails.logger.warn("Ignoring event. No handler for #{event.type} found")
   end

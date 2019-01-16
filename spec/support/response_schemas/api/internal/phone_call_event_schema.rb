@@ -2,7 +2,7 @@ module ResponseSchema
   module API
     module Internal
       PhoneCallEventSchema = Dry::Validation.Schema do
-        required(:recording_url).filled(:str?)
+        optional(:recording_url).maybe(:str?)
       end
     end
   end

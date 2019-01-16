@@ -1,4 +1,4 @@
-class PhoneCallEvent::RecordingCompletedObserver < PhoneCallEvent::BaseObserver
+class PhoneCallEvent::RecordingCompletedObserver < ApplicationObserver
   def phone_call_event_recording_completed_received(phone_call_event)
     self.phone_call_event = phone_call_event
     phone_call_event.recording = phone_call.recording

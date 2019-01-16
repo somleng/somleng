@@ -6,9 +6,11 @@ class HandleRecordingStartedEvent < HandlePhoneCallEvent
   private
 
   def create_recording
-    event.phone_call.recordings.create!(
+    Recording.create!(
       twiml_instructions: event.params,
-      currently_recording_phone_call: event.phone_call
+      phone_call: event.phone_call,
+      currently_recording_phone_call: event.phone_call,
+      phone_call_events: [event]
     )
   end
 end

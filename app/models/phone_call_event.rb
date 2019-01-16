@@ -3,4 +3,6 @@ class PhoneCallEvent < ApplicationRecord
 
   belongs_to :phone_call
   belongs_to :recording, optional: true
+
+  delegate :url, to: :recording, prefix: true, allow_nil: true
 end

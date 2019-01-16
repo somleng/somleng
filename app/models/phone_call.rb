@@ -6,7 +6,7 @@ class PhoneCall < ApplicationRecord
   belongs_to :recording, optional: true
 
   has_one    :call_data_record
-  has_many   :phone_call_events, class_name: "PhoneCallEvent::Base"
+  has_many   :phone_call_events
   has_many   :recordings
 
   validates :from, :to, presence: true
