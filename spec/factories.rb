@@ -14,7 +14,7 @@ FactoryBot.define do
     status_callback_method { "GET" }
   end
 
-  factory :freeswitch_cdr, class: CDR::Freeswitch do
+  factory :freeswitch_cdr do
     transient do
       transient_cdr { { "variables" => {} } }
       sip_term_status { nil }

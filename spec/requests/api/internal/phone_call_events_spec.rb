@@ -18,7 +18,7 @@ describe "Internal Phone Call Events API" do
   end
 
   describe "POST /api/internal/phone_calls/:phone_call_external_id/phone_call_events" do
-    fit "creates a phone call event" do
+    it "creates a phone call event" do
       phone_call = create(:phone_call, external_id: generate(:external_id))
 
       params = {
