@@ -1,9 +1,7 @@
 class CallDataRecord < ApplicationRecord
-  INBOUND_DIRECTION  = "inbound".freeze
-  OUTBOUND_DIRECTION = "outbound".freeze
-  DEFAULT_PRICE_STORE_CURRENCY = "USD6".freeze
+  extend Enumerize
 
-  DIRECTIONS = [INBOUND_DIRECTION, OUTBOUND_DIRECTION].freeze
+  enumerize :direction, in: %i[inbound outbound]
 
   attachment :file, content_type: ["application/json"]
 
@@ -13,11 +11,7 @@ class CallDataRecord < ApplicationRecord
 
   validates :duration_sec,
             :bill_sec,
-            presence: true,
             numericality: { greater_than_or_equal_to: 0 }
-
-  validates :direction, presence: true, inclusion: { in: DIRECTIONS }
-  validates :hangup_cause, :start_time, :end_time, presence: true
 
   monetize :price_microunits,
            as: :price,
@@ -25,14 +19,12 @@ class CallDataRecord < ApplicationRecord
              greater_than_or_equal_to: 0
            }
 
-  delegate :answered?, :not_answered?, :busy?, to: :completed_event
-
   def self.outbound
-    where(direction: OUTBOUND_DIRECTION)
+    where(direction: :outbound)
   end
 
   def self.inbound
-    where(direction: INBOUND_DIRECTION)
+    where(direction: :inbound)
   end
 
   def self.billable

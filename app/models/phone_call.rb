@@ -4,13 +4,14 @@ class PhoneCall < ApplicationRecord
   belongs_to :recording, optional: true
 
   has_one    :call_data_record
+  has_one    :completed_event, -> { completed }, class_name: "PhoneCallEvent"
   has_many   :phone_call_events
   has_many   :recordings
 
   validates :from, :to, presence: true
   validates :external_id, uniqueness: true, strict: true, allow_nil: true
 
-  attr_accessor :completed_event, :twilio_request_to
+  attr_accessor :twilio_request_to
 
   delegate :answered?, :not_answered?, :busy?,
            to: :completed_event,
@@ -71,14 +72,22 @@ class PhoneCall < ApplicationRecord
   private
 
   def phone_call_event_answered?
-    completed_event&.answered? || call_data_record&.answered?
+    phone_call_status.answered?
   end
 
   def phone_call_event_not_answered?
-    completed_event&.not_answered? || call_data_record&.not_answered?
+    phone_call_status.not_answered?
   end
 
   def phone_call_event_busy?
-    completed_event&.busy? || call_data_record&.busy?
+    phone_call_status.busy?
+  end
+
+  def phone_call_status
+    @phone_call_status ||= PhoneCallStatus.new(
+      sip_term_status: completed_event&.sip_term_status || call_data_record&.sip_term_status,
+      answer_epoch: completed_event&.answer_epoch,
+      answer_time: call_data_record&.answer_time
+    )
   end
 end

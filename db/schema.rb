@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_18_012643) do
+ActiveRecord::Schema.define(version: 2019_01_20_071630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 2018_10_18_012643) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "recording_id"
+    t.index ["phone_call_id", "type"], name: "index_phone_call_events_on_phone_call_id_and_type", unique: true
     t.index ["phone_call_id"], name: "index_phone_call_events_on_phone_call_id"
     t.index ["recording_id"], name: "index_phone_call_events_on_recording_id"
   end

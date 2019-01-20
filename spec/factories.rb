@@ -14,25 +14,6 @@ FactoryBot.define do
     status_callback_method { "GET" }
   end
 
-  factory :freeswitch_cdr do
-    transient do
-      transient_cdr { { "variables" => {} } }
-      sip_term_status { nil }
-    end
-
-    trait :busy do
-      sip_term_status { "486" }
-    end
-
-    skip_create
-    initialize_with do
-      transient_cdr["variables"]["sip_term_status"] = sip_term_status if sip_term_status
-      cdr_json = JSON.parse(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json"))
-      cdr_json.deep_merge!(transient_cdr)
-      new(cdr_json.to_json)
-    end
-  end
-
   factory :recording do
     transient do
       status_callback_url { nil }
@@ -61,16 +42,6 @@ FactoryBot.define do
       processing
     end
 
-    trait :with_wav_file do
-      file do
-        Refile::FileDouble.new(
-          "dummy",
-          "recording.wav",
-          content_type: "audio/x-wav"
-        )
-      end
-    end
-
     twiml_instructions do
       twiml_instructions = {}
       twiml_instructions["recordingStatusCallback"] = status_callback_url if status_callback_url
@@ -80,17 +51,8 @@ FactoryBot.define do
   end
 
   factory :call_data_record do
-    transient do
-      cdr { build(:freeswitch_cdr) }
-      account { build(:account) }
-      external_id { generate(:external_id) }
-    end
-
-    after(:build) do |call_data_record, evaluator|
-      call_data_record.phone_call ||= build(
-        :phone_call, account: evaluator.account, external_id: evaluator.external_id
-      )
-    end
+    phone_call
+    inbound
 
     trait :inbound do
       direction { "inbound" }
@@ -122,21 +84,14 @@ FactoryBot.define do
       sip_term_status { "486" }
     end
 
-    duration_sec { cdr.duration_sec }
-    bill_sec { cdr.bill_sec }
-    direction { cdr.direction }
-    hangup_cause { cdr.hangup_cause }
-    start_time { Time.at(cdr.start_epoch.to_i) }
-    end_time { Time.at(cdr.end_epoch.to_i) }
+    duration_sec { 25 }
+    bill_sec { 20 }
+    hangup_cause { "ORIGINATOR_CANCEL" }
+    start_time { 1.minute.ago }
+    end_time { Time.now  }
     price { Money.new(0) }
 
-    file do
-      Refile::FileDouble.new(
-        cdr.raw_cdr,
-        cdr.send(:filename),
-        content_type: cdr.send(:content_type)
-      )
-    end
+    file { Pathname(ActiveSupport::TestCase.fixture_path).join("files", "freeswitch_cdr.json").read }
   end
 
   factory :account do
@@ -222,7 +177,22 @@ FactoryBot.define do
     end
 
     trait :answered do
-      type { :answered }
+      type { :completed }
+      answer_epoch { "1" }
+    end
+
+    trait :not_answered do
+      type { :completed }
+      sip_term_status { "480" }
+    end
+
+    trait :busy do
+      type { :completed }
+      sip_term_status { "486" }
+    end
+
+    trait :completed do
+      type { :completed }
     end
   end
 

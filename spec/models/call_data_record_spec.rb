@@ -1,16 +1,6 @@
 require "rails_helper"
 
 describe CallDataRecord do
-  let(:factory) { :call_data_record }
-
-  describe "associations" do
-    it { is_expected.to belong_to(:phone_call) }
-  end
-
-  describe "factory" do
-    it { expect(create(factory)).to be_persisted }
-  end
-
   describe "validations" do
     it { is_expected.to validate_presence_of(:file) }
     it { is_expected.to validate_presence_of(:duration_sec) }
@@ -22,16 +12,6 @@ describe CallDataRecord do
     it { is_expected.to validate_presence_of(:hangup_cause) }
     it { is_expected.to validate_presence_of(:start_time) }
     it { is_expected.to validate_presence_of(:end_time) }
-  end
-
-  describe "events" do
-    subject { create(factory) }
-
-    context "create" do
-      it("broadcasts") {
-        assert_broadcasted!(:call_data_record_created) { subject }
-      }
-    end
   end
 
   describe "price" do

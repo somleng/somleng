@@ -44,16 +44,10 @@ RSpec.describe PhoneCall do
       expect(busy_call_with_cdr).to transition_from(:initiated).to(:busy).on_event(:complete)
       expect(busy_call_with_cdr).to transition_from(:ringing).to(:busy).on_event(:complete)
     end
-
-    it "broadcasts after completed" do
-      phone_call = create(:phone_call, :answered)
-
-      expect { phone_call.complete! }.to broadcast(:phone_call_completed)
-    end
   end
 
   def build_phone_call_with_completed_event(*event_traits)
-    event = build_stubbed(:phone_call_event_completed, *event_traits)
+    event = build_stubbed(:phone_call_event, *event_traits)
     build_stubbed(:phone_call, completed_event: event)
   end
 

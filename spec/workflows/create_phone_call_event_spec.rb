@@ -59,7 +59,6 @@ RSpec.describe CreatePhoneCallEvent do
 
   it "ignores unhandled events" do
     described_class.call(build_event_params(type: :foo))
-    
   end
 
   def build_event_params(type:, **options)

@@ -4,5 +4,9 @@ class PhoneCallEvent < ApplicationRecord
   belongs_to :phone_call
   belongs_to :recording, optional: true
 
-  delegate :url, to: :recording, prefix: true, allow_nil: true
+  store_accessor :params, :sip_term_status, :answer_epoch
+
+  def self.completed
+    where(type: :completed)
+  end
 end
