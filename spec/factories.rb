@@ -33,36 +33,6 @@ FactoryBot.define do
     end
   end
 
-  factory :aws_sns_message_base, class: AwsSnsMessage::Base do
-    transient do
-      raw_payload do
-        "{\n  \"Type\" : \"#{sns_message_type}\",\n  \"MessageId\" : \"#{sns_message_id}\",\n  \"TopicArn\" : \"#{sns_topic_arn}\",\n  \"Subject\" : \"#{sns_message_subject}\",\n  \"Message\" : \"{\\\"Records\\\":[{\\\"eventVersion\\\":\\\"2.0\\\",\\\"eventSource\\\":\\\"#{sns_message_event_source}\\\",\\\"awsRegion\\\":\\\"ap-southeast-1\\\",\\\"eventTime\\\":\\\"2017-08-31T06:00:05.262Z\\\",\\\"eventName\\\":\\\"#{sns_message_event_name}\\\",\\\"userIdentity\\\":{\\\"principalId\\\":\\\"AWS:AROAJ2HUUZYOOO65N2QGI:i-0d4d562bc5c622959\\\"},\\\"requestParameters\\\":{\\\"sourceIPAddress\\\":\\\"10.0.2.216\\\"},\\\"responseElements\\\":{\\\"x-amz-request-id\\\":\\\"3F8010558C5472DA\\\",\\\"x-amz-id-2\\\":\\\"F1z++xfzffWS7zYj/xoOGgAUS9ZWv5KHJ/fJqnX8XpgtTFr2FUFApnUHLSccsCXsaSN4qU1NTdg=\\\"},\\\"s3\\\":{\\\"s3SchemaVersion\\\":\\\"1.0\\\",\\\"configurationId\\\":\\\"NjlhODdjMGYtY2YyZS00NDhmLWE1MGEtMDEyYjQ4MjBmYTQ5\\\",\\\"bucket\\\":{\\\"name\\\":\\\"#{sns_message_s3_bucket_name}\\\",\\\"ownerIdentity\\\":{\\\"principalId\\\":\\\"A3ILPUDANGSUSO\\\"},\\\"arn\\\":\\\"arn:aws:s3:::#{sns_message_s3_bucket_name}\\\"},\\\"object\\\":{\\\"key\\\":\\\"#{sns_message_s3_object_id}\\\",\\\"size\\\":144684,\\\"eTag\\\":\\\"855a2e306bcf5dab77c31e9ad73237b8\\\",\\\"sequencer\\\":\\\"0059A7A5E52F0A64D3\\\"}}}]}\",\n  \"Timestamp\" : \"2017-08-31T06:00:05.362Z\",\n  \"SignatureVersion\" : \"1\",\n  \"Signature\" : \"M/ChP5IJ94aoM8RA0aojT0j/+8ssYNWmFknfApHRg4o3uxZS4ChoLiTbiB41rEP6vLpYTNFPuBaOZefURaemr91VCHoj05tTQOmd88GQnrUPpPI0UYJRJQg3GZhVfclxjcpHHSJNl6QErZ5Xg2BN8aZmR2ZadDZs1GB0b8nuRJVK4AUDD4Y21/1Kh+I13DSgCqf7OvaX2hSCf5FjOkScXcbk42/kA3rsK+3AiHp8zMvRaN51imKYkQ+ra54MnBdYzjNAPQasDcQrG56sVli26u4tl5nWpf1RQjPYj4v/8ampLMfhlWDqNcH/hqXBSRnZvytBymzWYOJVyuKWfQluGQ==\",\n  \"SigningCertURL\" : \"https://sns.ap-southeast-1.amazonaws.com/SimpleNotificationService-433026a4050d206028891664da859041.pem\",\n  \"UnsubscribeURL\" : \"https://sns.ap-southeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=#{sns_subscription_arn}:38406e55-f60b-48fd-8faf-6d41544bfab3\"\n}"
-      end
-
-      sns_message_type { "" }
-      sns_message_id { SecureRandom.uuid }
-      sns_topic_arn { "arn:aws:sns:us-west-2:123456789012:MyTopic" }
-      sns_message_subject { "My First Message" }
-      sns_message_s3_bucket_name { "bucket-name" }
-      sns_message_s3_object_id { "recordings/abcdefb2-f8be-4a06-b6ac-158c082b38ca-2.wav" }
-      sns_subscription_arn { "#{sns_topic_arn}:abcdee55-f60b-48fd-8faf-6d41544bfab3" }
-      sns_message_event_source { "aws:s3" }
-      sns_message_event_name { "ObjectCreated:Put" }
-    end
-
-    aws_sns_message_id { sns_message_id }
-
-    payload { JSON.parse(raw_payload) }
-
-    factory :aws_sns_message_subscription_confirmation, class: AwsSnsMessage::SubscriptionConfirmation do
-      sns_message_type { "SubscriptionConfirmation" }
-    end
-
-    factory :aws_sns_message_notification, class: AwsSnsMessage::Notification do
-      sns_message_type { "Notification" }
-    end
-  end
-
   factory :recording do
     transient do
       status_callback_url { nil }

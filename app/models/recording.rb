@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Recording < ApplicationRecord
   TWILIO_STATUS_MAPPINGS = {
     "initiated" => "processing",
@@ -8,25 +6,17 @@ class Recording < ApplicationRecord
     "completed" => "completed"
   }.freeze
 
-  TWIML_SOURCE = "RecordVerb"
-
-  include Wisper::Publisher
+  TWIML_SOURCE = "RecordVerb".freeze
 
   belongs_to :phone_call
   has_many :phone_call_events
   has_many :aws_sns_notifications, class_name: "AwsSnsMessage::Notification"
   has_one  :currently_recording_phone_call, class_name: "PhoneCall"
 
-  after_commit :publish_status_change
-
   validates :status, presence: true
   validates :original_file_id, uniqueness: { allow_nil: true }
 
-  validates :status_callback_url,
-            url: {
-              no_local: true, allow_nil: true,
-              if: :validate_status_callback_url?
-            }
+  validates :status_callback_url, format: URI::DEFAULT_PARSER.make_regexp, allow_nil: true
 
   attachment :file, content_type: ["audio/wav", "audio/x-wav"]
 
@@ -75,10 +65,6 @@ class Recording < ApplicationRecord
     twiml_instructions["recordingStatusCallbackMethod"]
   end
 
-  def validate_status_callback_url?
-    !!validate_status_callback_url
-  end
-
   def uri
     path_or_url(:path)
   end
@@ -112,10 +98,6 @@ class Recording < ApplicationRecord
   end
 
   private
-
-  def publish_status_change
-    broadcast(:"recording_#{previous_changes[:status].last}", self) if previous_changes.key?(:status) && previous_changes[:status].first != previous_changes[:status].last
-  end
 
   def path_or_url(type, options = {})
     Rails.application.routes.url_helpers.send("api_twilio_account_recording_#{type}", account, id, { protocol: "https" }.merge(options))

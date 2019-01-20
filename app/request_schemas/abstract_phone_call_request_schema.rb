@@ -23,6 +23,6 @@ class AbstractPhoneCallRequestSchema < ApplicationRequestSchema
 
     attr_accessor :url
 
-    validates :url, url: { no_local: true, allow_nil: true }
+    validates :url, format: URI::DEFAULT_PARSER.make_regexp
   end
 end

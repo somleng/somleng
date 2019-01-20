@@ -10,6 +10,7 @@ gem "countries"
 gem "data_migrate"
 gem "doorkeeper"
 gem "dry-validation"
+gem "enumerize"
 gem "geocoder", github: "alexreisner/geocoder"
 gem "money-rails"
 gem "okcomputer"
@@ -25,8 +26,6 @@ gem "sentry-raven"
 gem "sinatra", github: "sinatra/sinatra"
 gem "somleng-twilio_http_client", github: "somleng/somleng-twilio_http_client"
 gem "torasup"
-gem "validate_url", github: "perfectline/validates_url"
-gem "wisper", github: "krisleech/wisper"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false

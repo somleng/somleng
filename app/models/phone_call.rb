@@ -1,6 +1,4 @@
 class PhoneCall < ApplicationRecord
-  include Wisper::Publisher
-
   belongs_to :account
   belongs_to :incoming_phone_number, optional: true
   belongs_to :recording, optional: true
@@ -45,7 +43,7 @@ class PhoneCall < ApplicationRecord
       transitions from: %i[initiated ringing], to: :answered
     end
 
-    event :complete, after_commit: :publish_completed do
+    event :complete do
       transitions from: :answered,
                   to: :completed
 
@@ -71,10 +69,6 @@ class PhoneCall < ApplicationRecord
   end
 
   private
-
-  def publish_completed
-    broadcast(:phone_call_completed, self)
-  end
 
   def phone_call_event_answered?
     completed_event&.answered? || call_data_record&.answered?
