@@ -1,3 +1,5 @@
+require "somleng/twilio_http_client/request"
+
 class NotifyRecordingStatusCallbackUrl < ApplicationWorkflow
   DEFAULT_STATUS_CALLBACK_METHOD = "POST".freeze
 
@@ -8,35 +10,26 @@ class NotifyRecordingStatusCallbackUrl < ApplicationWorkflow
   end
 
   def call
-    # params = API::PhoneCallSerializer.new(phone_call).as_json
-    # send_webhook_notification!(phone_call, params)
-
-    # recording.validate_status_callback_url = true
-    # recording.valid?
-    # if recording.errors[:status_callback_url].empty?
-    #   twilio_http_request.execute!(http_request)
-    # end
+    send_webhook_notification!
   end
 
   private
 
-  def send_webhook_notification!(phone_call, params)
-    # TwilioHttpClientRequest.new.execute!(
-    #   Somleng::TwilioHttpClient::Request.new(
-    #     request_url: phone_call.status_callback_url,
-    #     request_method: phone_call.status_callback_method || DEFAULT_STATUS_CALLBACK_METHOD,
-    #     auth_token: phone_call.account.auth_token,
-    #     account_sid: params.fetch("account_sid"),
-    #     call_from: params.fetch("from"),
-    #     call_to: params.fetch("to"),
-    #     call_sid: params.fetch("sid"),
-    #     call_direction: params.fetch("direction"),
-    #     call_status: params.fetch("status"),
-    #     api_version: params.fetch("api_version"),
-    #     body: {
-    #       "CallDuration" => params.fetch("duration")
-    #     }
-    #   )
-    # )
+  def send_webhook_notification!
+    Somleng::TwilioHttpClient::Request.new(
+      request_url: recording.status_callback_url,
+      request_method: recording.status_callback_method || DEFAULT_STATUS_CALLBACK_METHOD,
+      account_sid: recording.account_sid,
+      call_sid: recording.call_sid,
+      auth_token: recording.account_auth_token,
+      body: {
+        "RecordingSid" => recording.id,
+        "RecordingUrl" => recording.url,
+        "RecordingStatus" => recording.twilio_status,
+        "RecordingDuration" => recording.duration_seconds,
+        "RecordingChannels" => recording.channels,
+        "RecordingSource" => recording.source
+      }
+    ).execute!
   end
 end
