@@ -6,11 +6,10 @@ GIT
 
 GIT
   remote: https://github.com/perfectline/validates_url.git
-  revision: ea191cfa070a1d0a80050ea73cdf222cc1bc2b68
+  revision: 469324a3fdb4664749c69d95d39e139a3279c597
   specs:
-    validate_url (1.0.2)
+    validate_url (1.0.4)
       activemodel (>= 3.0.0)
-      public_suffix (>= 2.0.0)
 
 GIT
   remote: https://github.com/refile/refile-s3.git
