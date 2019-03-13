@@ -22,7 +22,7 @@ GIT
 
 GIT
   remote: https://github.com/refile/refile.git
-  revision: 0f7a6d90e03d15d89c156b693800587e1c121dbd
+  revision: 6803d83f0764558932de6880728672326211b018
   specs:
     refile (0.6.2)
       mime-types
