@@ -12,7 +12,6 @@ class Recording < ApplicationRecord
   has_many :phone_call_events
   has_many :aws_sns_notifications, class_name: "AwsSnsMessage::Notification"
   has_one  :currently_recording_phone_call, class_name: "PhoneCall"
-  validates :status_callback_url, format: URI::DEFAULT_PARSER.make_regexp, allow_nil: true
 
   attachment :file, content_type: ["audio/wav", "audio/x-wav"]
 
@@ -23,8 +22,6 @@ class Recording < ApplicationRecord
            prefix: true
 
   delegate :account_sid, to: :phone_call
-
-  attr_accessor :validate_status_callback_url
 
   include AASM
 
