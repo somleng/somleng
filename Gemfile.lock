@@ -214,7 +214,7 @@ GEM
     parser (2.6.0.0)
       ast (~> 2.4.0)
     pg (1.1.4)
-    phony (2.17.0)
+    phony (2.17.1)
     phony_rails (0.14.11)
       activesupport (>= 3.0)
       phony (> 2.15)
