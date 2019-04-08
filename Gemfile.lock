@@ -132,7 +132,7 @@ GEM
       aws-sdk-core (~> 3, >= 3.26.0)
       aws-sigv4 (~> 1.0)
     aws-sigv4 (1.0.3)
-    bootsnap (1.4.2)
+    bootsnap (1.4.3)
       msgpack (~> 1.0)
     builder (3.2.3)
     codecov (0.1.14)
