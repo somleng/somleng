@@ -40,7 +40,7 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: 6f15fba2790ebdf4d1215cebf425dea2ea3130ea
+  revision: 7b7043cde3515afde713b4da3e54443ca831d3df
   specs:
     rack-protection (2.0.5)
       rack
@@ -224,7 +224,7 @@ GEM
     psych (3.1.0)
     public_suffix (3.0.3)
     puma (3.12.1)
-    rack (2.0.6)
+    rack (2.0.7)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.1)
