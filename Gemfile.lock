@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/perfectline/validates_url.git
-  revision: 8932d33dcdc65e27314165943421674a87c8c515
+  revision: 535d97b755a1b60224d1dfd1b2f9ca893082f23a
   specs:
     validate_url (1.0.8)
       activemodel (>= 3.0.0)
