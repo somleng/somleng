@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/krisleech/wisper.git
-  revision: a73b72b17e5665614f83fffd471bab65c6670e43
+  revision: 8773f751fa94e2c75e883c20111c852921bd70ba
   specs:
     wisper (2.0.0)
 
