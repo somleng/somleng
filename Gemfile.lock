@@ -215,7 +215,7 @@ GEM
       ast (~> 2.4.0)
     pg (1.1.4)
     phony (2.18.3)
-    phony_rails (0.14.11)
+    phony_rails (0.14.12)
       activesupport (>= 3.0)
       phony (> 2.15)
     pry (0.12.2)
