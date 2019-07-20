@@ -11,3 +11,6 @@ Metrics/LineLength:
 
 Style/Documentation:
   Enabled: false
+
+RSpec/DescribedClass:
+  Enabled: false

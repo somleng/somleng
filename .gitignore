@@ -36,4 +36,4 @@ config/secrets.yml.key
 /config/master.key
 /config/master.key.*
 
-rspec_examples.txt
+spec/examples.txt

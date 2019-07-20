@@ -21,8 +21,6 @@ class Recording < ApplicationRecord
            to: :account,
            prefix: true
 
-  delegate :account_sid, to: :phone_call
-
   include AASM
 
   aasm column: :status, whiny_transitions: false do
@@ -68,10 +66,6 @@ class Recording < ApplicationRecord
 
   def to_wav
     [file_filename, file]
-  end
-
-  def call_sid
-    phone_call_id
   end
 
   def duration_seconds

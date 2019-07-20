@@ -8,7 +8,7 @@ RSpec.describe InitiateOutboundCall do
     external_id = SecureRandom.uuid
     drb_object = stub_drb_object(initiate_outbound_call!: external_id)
 
-    described_class.call(phone_call)
+    InitiateOutboundCall.call(phone_call)
 
     expect(DRbObject).to have_received(:new_with_uri).with(drb_uri)
     expect(drb_object).to have_received(

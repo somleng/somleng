@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe NotifyRecordingStatusCallbackUrl do
+RSpec.describe NotifyRecordingStatusCallbackUrl do
   # From: # https://www.twilio.com/docs/api/twiml/record#attributes-recording-status-callback
 
   # The 'recordingStatusCallback' attribute takes a relative or absolute URL
@@ -42,17 +42,17 @@ describe NotifyRecordingStatusCallbackUrl do
   # |                   | initiated via the <Record> verb.                      |
 
   describe "#perform(recording_id)" do
-    fit "notifies the recording status callback url via HTTP POST by default" do
+    it "notifies the recording status callback url via HTTP POST by default" do
       recording = create(:recording, :with_status_callback_url, duration: 5000)
       stub_request(:post, recording.status_callback_url)
 
-      described_class.call(recording)
+      NotifyRecordingStatusCallbackUrl.call(recording)
 
       expect(WebMock).to have_requested(:post, recording.status_callback_url)
       request_payload = WebMock.request_params(WebMock.requests.last)
-      expect(request_payload.fetch("AccountSid")).to eq(recording.account_sid)
-      expect(request_payload.fetch("CallSid")).to eq(recording.call_sid)
-      expect(request_payload.fetch("RecordingSid")).to eq(recording.sid)
+      expect(request_payload.fetch("AccountSid")).to eq(recording.phone_call.account_id)
+      expect(request_payload.fetch("CallSid")).to eq(recording.phone_call_id)
+      expect(request_payload.fetch("RecordingSid")).to eq(recording.id)
       expect(request_payload.fetch("RecordingUrl")).to eq(recording.url)
       expect(request_payload.fetch("RecordingStatus")).to eq(recording.twilio_status)
       expect(request_payload.fetch("RecordingDuration")).to eq("5")
@@ -70,6 +70,4 @@ describe NotifyRecordingStatusCallbackUrl do
 
     expect(WebMock).to have_requested(:get, recording.status_callback_url)
   end
-
-  include_examples "aws_sqs_queue_url"
 end

@@ -19,7 +19,7 @@ class NotifyRecordingStatusCallbackUrl < ApplicationWorkflow
     Somleng::TwilioHttpClient::Request.new(
       request_url: recording.status_callback_url,
       request_method: recording.status_callback_method || DEFAULT_STATUS_CALLBACK_METHOD,
-      account_sid: recording.account_id,
+      account_sid: recording.phone_call.account_id,
       call_sid: recording.phone_call.id,
       auth_token: recording.account.auth_token,
       body: {
