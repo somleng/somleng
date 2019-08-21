@@ -40,14 +40,14 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: eee711bce740d38a9a91aa6028688c9a6d74b23b
+  revision: 6795b45876c71f3de18c7ae36475b928ccf7fcaa
   specs:
-    rack-protection (2.0.5)
+    rack-protection (2.0.6)
       rack
-    sinatra (2.0.5)
+    sinatra (2.0.6)
       mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.5)
+      rack-protection (= 2.0.6)
       tilt (~> 2.0)
 
 GIT
