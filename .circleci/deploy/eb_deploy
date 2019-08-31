@@ -61,7 +61,7 @@ class ElasticBeanstalkDeploy
   end
 
   def s3_client
-    @s3_client ||= Aws::S3::Client.new(http_wire_trace: true, **credentials)
+    @s3_client ||= Aws::S3::Client.new(credentials)
   end
 
   def eb_client
