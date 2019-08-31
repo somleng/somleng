@@ -174,9 +174,8 @@ RSpec.describe Recording do
     # RecordingUrl - The URL of the recorded audio.
 
     it "returns the url of the recording" do
-      stub_app_settings(default_url_host: "https://www.example.com")
       recording = create(:recording)
-      expect(recording.url).to match_recording_url(recording, host: "https://www.example.com")
+      expect(recording.url).to match_recording_url(recording, host: "https://twilreapi.somleng.org")
     end
   end
 

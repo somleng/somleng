@@ -4,6 +4,8 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+gem "rails", "6.0.0"
+
 gem "aasm"
 gem "active_elastic_job", github: "samnang/active-elastic-job", branch: "upgrade_to_aws_sdk_3"
 gem "doorkeeper"
@@ -13,7 +15,6 @@ gem "pg"
 gem "phony"
 gem "phony_rails"
 gem "puma"
-gem "rails", "5.2.3"
 gem "refile", github: "refile/refile", require: "refile/rails"
 gem "refile-s3", github: "refile/refile-s3"
 gem "responders"
