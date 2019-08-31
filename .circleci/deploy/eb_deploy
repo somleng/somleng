@@ -61,11 +61,12 @@ class ElasticBeanstalkDeploy
   end
 
   def s3_client
-    @s3_client ||= Aws::S3::Client.new
+    puts "initializing new S3 client with profile: #{profile}"
+    @s3_client ||= Aws::S3::Client.new(profile: profile)
   end
 
   def eb_client
-    puts "initializing new client with profile: #{profile}"
+    puts "initializing new EB client with profile: #{profile}"
     @eb_client ||= Aws::ElasticBeanstalk::Client.new(profile: profile)
   end
 end
