@@ -55,7 +55,7 @@ jobs:
     working_directory: ~/twilreapi
 
     executor:
-      name: build_environment
+      name: deploy_environment
 
     steps:
       - aws-cli/install
@@ -68,7 +68,11 @@ jobs:
               echo "export DEPLOY_SECRET_ACCESS_KEY='$(echo $deploy_role | jq .Credentials.SecretAccessKey | xargs)'" >> $BASH_ENV && \
               echo "export DEPLOY_SESSION_TOKEN='$(echo $deploy_role | jq .Credentials.SessionToken | xargs)'" >> $BASH_ENV
 
-      - echo "$DEPLOY_ACCESS_KEY_ID"
+        - run:
+          name: Test Assume Role
+          command: |
+              echo "$DEPLOY_ACCESS_KEY_ID"
+
       - checkout
       - install_dependencies
       - bundle_source
