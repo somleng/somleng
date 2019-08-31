@@ -75,10 +75,10 @@ jobs:
       - run:
           name: Deploy Production
           command: |
-              ./.circleci/deploy/eb_deploy create_app_version -a somleng-twilreapi -b $AWS_DEPLOY_BUCKET_NAME -c $CIRCLE_SHA1 -s $SOURCE_BUNDLE --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-worker  --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-caller-worker  --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-webserver  --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
+              ./.circleci/deploy/eb_deploy create_app_version -a somleng-twilreapi -b $AWS_DEPLOY_BUCKET_NAME -c $CIRCLE_SHA1 -s $SOURCE_BUNDLE --access-key-id "$DEPLOY_ACCESS_KEY_ID" --secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --session-token "$DEPLOY_SESSION_TOKEN"
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-worker  --access-key-id "$DEPLOY_ACCESS_KEY_ID" --secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --session-token "$DEPLOY_SESSION_TOKEN"
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-caller-worker --access-key-id "$DEPLOY_ACCESS_KEY_ID" --secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --session-token "$DEPLOY_SESSION_TOKEN"
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-webserver --access-key-id "$DEPLOY_ACCESS_KEY_ID" --secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --session-token "$DEPLOY_SESSION_TOKEN"
 
 commands:
   install_dependencies:
