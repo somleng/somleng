@@ -68,7 +68,7 @@ jobs:
               echo "export DEPLOY_SECRET_ACCESS_KEY='$(echo $deploy_role | jq .Credentials.SecretAccessKey | xargs)'" >> $BASH_ENV && \
               echo "export DEPLOY_SESSION_TOKEN='$(echo $deploy_role | jq .Credentials.SessionToken | xargs)'" >> $BASH_ENV
 
-        - run:
+      - run:
           name: Test Assume Role
           command: |
               echo "$DEPLOY_ACCESS_KEY_ID"
