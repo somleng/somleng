@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@0.1.15
+  codecov: codecov/codecov@1.0.5
 executors:
   build_environment:
     docker:
@@ -50,6 +51,9 @@ jobs:
       - run:
           name: Run Specs
           command: bundle exec rspec
+
+      - codecov/upload:
+          file: {{ coverage_report_filepath }}
 
   deploy_production:
     working_directory: ~/twilreapi
