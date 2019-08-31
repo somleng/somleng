@@ -17,7 +17,7 @@ module Twilreapi
     # the framework and any gems in your application.
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.2
+    config.load_defaults 6.0
 
     config.active_support.escape_html_entities_in_json = false
 

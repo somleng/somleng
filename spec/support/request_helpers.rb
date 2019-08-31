@@ -9,8 +9,8 @@ module RequestHelpers
 
   def build_internal_api_authorization_headers
     build_authorization_headers(
-      Rails.configuration.app_settings.fetch("internal_api_http_auth_user"),
-      Rails.configuration.app_settings.fetch("internal_api_http_auth_password")
+      Rails.configuration.app_settings.fetch(:internal_api_http_auth_user),
+      Rails.configuration.app_settings.fetch(:internal_api_http_auth_password)
     )
   end
 

@@ -83,7 +83,7 @@ describe "Recordings" do
 
           def assert_successful!
             super
-            expect(response.headers["Content-Disposition"]).to eq("inline; filename=\"#{recording.file_filename}\"")
+            expect(response.headers["Content-Disposition"]).to eq("inline; filename=\"recording.wav\"; filename*=UTF-8''recording.wav")
             expect(response.headers["Content-Type"]).to eq(recording_file.content_type)
             expect(response.body).to eq(recording_file.read)
           end
