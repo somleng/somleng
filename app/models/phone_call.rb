@@ -152,10 +152,6 @@ class PhoneCall < ApplicationRecord
     CallDataRecord::Query.new(scope: joins(:call_data_record))
   end
 
-  def self.execute_cdr_query
-    joins(:call_data_record).merge(CallDataRecord)
-  end
-
   def initiate_or_cancel!
     external_id? ? initiate! : cancel!
   end
