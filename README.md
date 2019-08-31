@@ -1,7 +1,7 @@
 # Twilreapi /twil-reap-i/ (Twilio Rest API)
 
-[![Build Status](https://travis-ci.org/somleng/twilreapi.svg?branch=master)](https://travis-ci.org/somleng/twilreapi)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/1f6fa565944f2311832d/test_coverage)](https://codeclimate.com/github/somleng/twilreapi/test_coverage)
+[![CircleCI](https://circleci.com/gh/somleng/twilreapi.svg?style=svg)](https://circleci.com/gh/somleng/twilreapi)
+[![codecov](https://codecov.io/gh/somleng/twilreapi/branch/develop/graph/badge.svg)](https://codecov.io/gh/somleng/twilreapi)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1f6fa565944f2311832d/maintainability)](https://codeclimate.com/github/somleng/twilreapi/maintainability)
 
 Twilreapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest) written in Rails. You can use Twilreapi as a drop-in replacement for Twilio and enqueue calls, send SMS etc.
