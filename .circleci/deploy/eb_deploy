@@ -65,6 +65,7 @@ class ElasticBeanstalkDeploy
   end
 
   def eb_client
+    puts "initializing new client with profile: #{profile}"
     @eb_client ||= Aws::ElasticBeanstalk::Client.new(profile: profile)
   end
 end
@@ -89,6 +90,10 @@ OptionParser.new do |opts|
 
   opts.on("-e", "--env elastic_beanstalk_env", "Elastic Beanstalk ENV") do |env|
     options[:env] = env
+  end
+
+  opts.on("-p", "--profile aws_iam_profile", "AWS IAM Profile") do |profile|
+    options[:profile] = profile
   end
 
   opts.on("-s", "--source-bundle SOURCE_BUNDLE", "Application Source Bundle") do |source_bundle|

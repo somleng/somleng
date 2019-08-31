@@ -64,15 +64,14 @@ jobs:
           name: Assume Role
           command: |
               deploy_role=$(aws sts assume-role --role-arn "$AWS_DEPLOY_ROLE_ARN" --role-session-name "Deploy") && \
-              echo "$deploy_role" && \
               echo "export DEPLOY_ACCESS_KEY_ID='$(echo $deploy_role | jq .Credentials.AccessKeyId | xargs)'" >> $BASH_ENV && \
               echo "export DEPLOY_SECRET_ACCESS_KEY='$(echo $deploy_role | jq .Credentials.SecretAccessKey | xargs)'" >> $BASH_ENV && \
               echo "export DEPLOY_SESSION_TOKEN='$(echo $deploy_role | jq .Credentials.SessionToken | xargs)'" >> $BASH_ENV
 
-      - run:
-          name: Test Assume Role
-          command: |
-              echo "$DEPLOY_ACCESS_KEY_ID"
+      - aws-cli/configure:
+          profile-name: "ci_deploy"
+          aws-access-key-id: "$DEPLOY_ACCESS_KEY_ID"
+          aws-secret-access-key: "$DEPLOY_SECRET_ACCESS_KEY"
 
       - checkout
       - install_dependencies
@@ -81,10 +80,10 @@ jobs:
       - run:
           name: Deploy Production
           command: |
-              ./.circleci/deploy/eb_deploy create_app_version -a somleng-twilreapi -b $AWS_DEPLOY_BUCKET_NAME -c $CIRCLE_SHA1 -s $SOURCE_BUNDLE
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-worker
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-caller-worker
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-webserver
+              ./.circleci/deploy/eb_deploy create_app_version -a somleng-twilreapi -b $AWS_DEPLOY_BUCKET_NAME -c $CIRCLE_SHA1 -s $SOURCE_BUNDLE -p ci_deploy
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-worker -p ci_deploy
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-caller-worker -p ci_deploy
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-webserver -p ci_deploy
 
 commands:
   install_dependencies:
@@ -93,7 +92,6 @@ commands:
           name: Install Dependencies
           command: |
             sudo apt-get install cmake
-      - upgrade_bundler
 
   upgrade_bundler:
     steps:
