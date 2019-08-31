@@ -10,7 +10,7 @@ gemfile do
 end
 
 class ElasticBeanstalkDeploy
-  attr_accessor :env, :app, :bucket, :commit_sha, :source_bundle
+  attr_accessor :env, :app, :bucket, :commit_sha, :source_bundle, :profile
 
   def initialize(options)
     self.source_bundle = Pathname(options.fetch(:source_bundle))
@@ -18,6 +18,7 @@ class ElasticBeanstalkDeploy
     self.commit_sha = options[:commit_sha]
     self.bucket = options[:bucket]
     self.env = options[:env]
+    self.profile = options.fetch(:profile, :default)
   end
 
   def create_app_version!
@@ -64,7 +65,7 @@ class ElasticBeanstalkDeploy
   end
 
   def eb_client
-    @eb_client ||= Aws::ElasticBeanstalk::Client.new
+    @eb_client ||= Aws::ElasticBeanstalk::Client.new(profile: profile)
   end
 end
 

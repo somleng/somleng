@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@0.1.15
 executors:
   build_environment:
     docker:
@@ -56,6 +58,17 @@ jobs:
       name: build_environment
 
     steps:
+      - aws-cli/install
+      - aws-cli/configure
+      - run:
+          name: Assume Role
+          command: |
+              deploy_role=$(aws sts assume-role --role-arn "$AWS_DEPLOY_ROLE_ARN" --role-session-name "Deploy" \
+              echo "export DEPLOY_ACCESS_KEY_ID='$(echo $deploy_role | jq .Credentials.AccessKeyId | xargs)'" >> $BASH_ENV && \
+              echo "export DEPLOY_SECRET_ACCESS_KEY='$(echo $deploy_role | jq .Credentials.SecretAccessKey | xargs)'" >> $BASH_ENV && \
+              echo "export DEPLOY_SESSION_TOKEN='$(echo $deploy_role | jq .Credentials.SessionToken | xargs)'" >> $BASH_ENV
+
+      - echo "$DEPLOY_ACCESS_KEY_ID"
       - checkout
       - install_dependencies
       - bundle_source
@@ -147,4 +160,4 @@ workflows:
             - build_twilreapi
           filters:
             branches:
-              only: master
+              only: upgrade_ruby_rails
