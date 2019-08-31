@@ -63,7 +63,8 @@ jobs:
       - run:
           name: Assume Role
           command: |
-              deploy_role=$(aws sts assume-role --role-arn "$AWS_DEPLOY_ROLE_ARN" --role-session-name "Deploy" \
+              deploy_role=$(aws sts assume-role --role-arn "$AWS_DEPLOY_ROLE_ARN" --role-session-name "Deploy") && \
+              echo "$deploy_role" && \
               echo "export DEPLOY_ACCESS_KEY_ID='$(echo $deploy_role | jq .Credentials.AccessKeyId | xargs)'" >> $BASH_ENV && \
               echo "export DEPLOY_SECRET_ACCESS_KEY='$(echo $deploy_role | jq .Credentials.SecretAccessKey | xargs)'" >> $BASH_ENV && \
               echo "export DEPLOY_SESSION_TOKEN='$(echo $deploy_role | jq .Credentials.SessionToken | xargs)'" >> $BASH_ENV
