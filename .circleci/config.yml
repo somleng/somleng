@@ -158,4 +158,4 @@ workflows:
             - build_twilreapi
           filters:
             branches:
-              only: upgrade_ruby_rails
+              only: master
