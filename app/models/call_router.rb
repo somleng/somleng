@@ -52,7 +52,7 @@ class CallRouter
   private
 
   def default_gateway
-    gateway_settings = Rails.configuration.app_settings["default_sip_gateway"]
+    gateway_settings = Rails.configuration.app_settings[:default_sip_gateway]
 
     return {} if gateway_settings.blank?
     return {} if gateway_settings["enabled"].blank?
