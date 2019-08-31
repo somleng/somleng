@@ -1,0 +1,153 @@
+version: 2.1
+executors:
+  build_environment:
+    docker:
+      - image: circleci/ruby:2.6
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          PGHOST: 127.0.0.1
+          PGUSER: twilreapi-test
+          RAILS_ENV: test
+      - image: postgres:latest
+        environment:
+          POSTGRES_USER: twilreapi-test
+          POSTGRES_DB: twilreapi_test
+          POSTGRES_PASSWORD: ""
+
+  deploy_environment:
+    docker:
+      - image: circleci/ruby:2.6
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+
+jobs:
+  build_twilreapi:
+    working_directory: ~/twilreapi
+    executor:
+      name: build_environment
+
+    steps:
+      - checkout
+      - install_dependencies
+
+      - bundle_install:
+          cache_name: "twilreapi-deps"
+
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run:
+          name: Setup Database
+          command: bundle exec rails db:schema:load
+
+      - run:
+          name: Run Specs
+          command: bundle exec rspec
+
+  deploy_production:
+    working_directory: ~/twilreapi
+
+    executor:
+      name: build_environment
+
+    steps:
+      - checkout
+      - install_dependencies
+      - bundle_source
+
+      - run:
+          name: Deploy Production
+          command: |
+              ./.circleci/deploy/eb_deploy create_app_version -a somleng-twilreapi -b $AWS_DEPLOY_BUCKET_NAME -c $CIRCLE_SHA1 -s $SOURCE_BUNDLE
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-worker
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-caller-worker
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-webserver
+
+commands:
+  install_dependencies:
+    steps:
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo apt-get install cmake
+      - upgrade_bundler
+
+  upgrade_bundler:
+    steps:
+      - run:
+          name: Upgrade Bundler
+          command: |
+            gem update --system
+            gem install bundler
+
+  bundle_install:
+    parameters:
+      cache_name:
+        type: string
+      bundle_install_path:
+        type: string
+        default: "."
+      cache_path:
+        type: string
+        default: "vendor/bundle"
+
+    steps:
+      - upgrade_bundler
+      - restore_cache:
+          keys:
+            - << parameters.cache_name >>-{{ checksum "Gemfile.lock" }}
+            - << parameters.cache_name >>-
+
+      - run:
+          name: Bundle Install
+          command: |
+              cd << parameters.bundle_install_path >>
+              BUNDLE_GEMFILE=Gemfile bundle install
+
+      - save_cache:
+          key: << parameters.cache_name >>-{{ checksum "Gemfile.lock" }}
+          paths:
+            - << parameters.cache_path >>
+
+  bundle_source:
+    steps:
+      - run:
+          name: "Bundle source code"
+          command: |
+              SOURCE_BUNDLE="$(git rev-parse HEAD)-$(date +%s).zip" && \
+              echo "export SOURCE_BUNDLE=$SOURCE_BUNDLE" >> $BASH_ENV && \
+              git archive -o $SOURCE_BUNDLE --format=zip HEAD
+
+workflows:
+  version: 2
+  nightly:
+    triggers:
+      - schedule:
+         cron: "0 0 * * *"
+         filters:
+           branches:
+             only:
+               - develop
+               - master
+    jobs:
+      - build_twilreapi
+
+  build-deploy:
+    jobs:
+      - build_twilreapi:
+          context: Somleng
+      - deploy_production:
+          context: Somleng
+          requires:
+            - build_twilreapi
+          filters:
+            branches:
+              only: master
+          filters:
+            branches:
+              only: master
