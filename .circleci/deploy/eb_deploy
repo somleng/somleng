@@ -10,15 +10,15 @@ gemfile do
 end
 
 class ElasticBeanstalkDeploy
-  attr_accessor :env, :app, :bucket, :commit_sha, :source_bundle, :profile
+  attr_reader :env, :app, :bucket, :commit_sha, :source_bundle, :credentials
 
   def initialize(options)
-    self.source_bundle = Pathname(options.fetch(:source_bundle))
-    self.app = options[:app]
-    self.commit_sha = options[:commit_sha]
-    self.bucket = options[:bucket]
-    self.env = options[:env]
-    self.profile = options.fetch(:profile, :default)
+    @source_bundle = Pathname(options.fetch(:source_bundle))
+    @app = options[:app]
+    @commit_sha = options[:commit_sha]
+    @bucket = options[:bucket]
+    @env = options[:env]
+    @credentials = options.slice(:aws_access_key_id, :aws_secret_access_key, :aws_session_token)
   end
 
   def create_app_version!
@@ -61,11 +61,13 @@ class ElasticBeanstalkDeploy
   end
 
   def s3_client
-    @s3_client ||= Aws::S3::Client.new(profile: profile, http_wire_trace: true, log_level: :debug)
+    p "Credentials: #{credentials}"
+    @s3_client ||= Aws::S3::Client.new(http_wire_trace: true, **credentials)
   end
 
   def eb_client
-    @eb_client ||= Aws::ElasticBeanstalk::Client.new(profile: profile)
+    p "Credentials: #{credentials}"
+    @eb_client ||= Aws::ElasticBeanstalk::Client.new(credentials)
   end
 end
 
@@ -74,6 +76,10 @@ command = ARGV[0].to_s.strip
 
 OptionParser.new do |opts|
   opts.banner = "Usage: eb_deploy -h"
+
+  opts.on("-s", "--source-bundle SOURCE_BUNDLE", "Application Source Bundle") do |source_bundle|
+    options[:source_bundle] = source_bundle
+  end
 
   opts.on("-a", "--app elastic_beanstalk_app", "Elastic Beanstalk APP") do |app|
     options[:app] = app
@@ -91,12 +97,16 @@ OptionParser.new do |opts|
     options[:env] = env
   end
 
-  opts.on("-p", "--profile aws_iam_profile", "AWS IAM Profile") do |profile|
-    options[:profile] = profile
+  opts.on("--aws-access-key-id access_key_id", "AWS Access Key ID") do |aws_access_key_id|
+    options[:aws_access_key_id] = aws_access_key_id
   end
 
-  opts.on("-s", "--source-bundle SOURCE_BUNDLE", "Application Source Bundle") do |source_bundle|
-    options[:source_bundle] = source_bundle
+  opts.on("--aws-secret-access-key secret_access_key", "AWS Secret Access Key") do |aws_secret_access_key|
+    options[:aws_secret_access_key] = aws_secret_access_key
+  end
+
+  opts.on("--aws-session-token session_token", "AWS Session Token") do |aws_session_token|
+    options[:aws_session_token] = aws_session_token
   end
 
   opts.on("-h", "--help", "Prints this help") do

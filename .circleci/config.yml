@@ -68,16 +68,6 @@ jobs:
               echo "export DEPLOY_SECRET_ACCESS_KEY='$(echo $deploy_role | jq .Credentials.SecretAccessKey | xargs)'" >> $BASH_ENV && \
               echo "export DEPLOY_SESSION_TOKEN='$(echo $deploy_role | jq .Credentials.SessionToken | xargs)'" >> $BASH_ENV
 
-      - aws-cli/configure:
-          profile-name: "ci_deploy"
-          aws-access-key-id: "DEPLOY_ACCESS_KEY_ID"
-          aws-secret-access-key: "DEPLOY_SECRET_ACCESS_KEY"
-
-      - run:
-          name: Set Session Token
-          command: |
-              aws configure set aws_session_token "$DEPLOY_SESSION_TOKEN" --profile ci_deploy
-
       - checkout
       - install_dependencies
       - bundle_source
@@ -85,10 +75,10 @@ jobs:
       - run:
           name: Deploy Production
           command: |
-              ./.circleci/deploy/eb_deploy create_app_version -a somleng-twilreapi -b $AWS_DEPLOY_BUCKET_NAME -c $CIRCLE_SHA1 -s $SOURCE_BUNDLE -p ci_deploy
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-worker -p ci_deploy
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-caller-worker -p ci_deploy
-              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-webserver -p ci_deploy
+              ./.circleci/deploy/eb_deploy create_app_version -a somleng-twilreapi -b $AWS_DEPLOY_BUCKET_NAME -c $CIRCLE_SHA1 -s $SOURCE_BUNDLE --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-worker  --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-caller-worker  --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
+              ./.circleci/deploy/eb_deploy -s $SOURCE_BUNDLE -e somleng-twilreapi-webserver  --aws-access-key-id "$DEPLOY_ACCESS_KEY_ID" --aws-secret-access-key "$DEPLOY_SECRET_ACCESS_KEY" --aws-session-token "$DEPLOY_SESSION_TOKEN"
 
 commands:
   install_dependencies:
