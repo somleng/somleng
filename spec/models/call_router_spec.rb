@@ -123,7 +123,7 @@ describe CallRouter do
         result,
         source: "5555",
         destination: "252634000613",
-        dial_string_path: "external/252634000613@196.201.207.191"
+        dial_string_path: "external/252634000613@41.78.73.242"
       )
 
       # Somalia (Golis)
@@ -135,7 +135,7 @@ describe CallRouter do
         result,
         source: "5555",
         destination: "252902345678",
-        dial_string_path: "external/252902345678@196.201.207.191"
+        dial_string_path: "external/252902345678@41.78.73.242"
       )
 
       # Somalia (NationLink)
@@ -147,7 +147,7 @@ describe CallRouter do
         result,
         source: "5555",
         destination: "252692345678",
-        dial_string_path: "external/252692345678@196.201.207.191"
+        dial_string_path: "external/252692345678@41.78.73.242"
       )
 
       # Somalia (Somtel)
@@ -159,7 +159,7 @@ describe CallRouter do
         result,
         source: "5555",
         destination: "252652345678",
-        dial_string_path: "external/252652345678@196.201.207.191"
+        dial_string_path: "external/252652345678@41.78.73.242"
       )
 
       # Somalia (Hormuud)
@@ -171,7 +171,7 @@ describe CallRouter do
         result,
         source: "5555",
         destination: "252642345678",
-        dial_string_path: "external/252642345678@196.201.207.191"
+        dial_string_path: "external/252642345678@41.78.73.242"
       )
 
       # Brazil
