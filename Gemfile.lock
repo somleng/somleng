@@ -167,7 +167,7 @@ GEM
     docile (1.3.2)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
-    doorkeeper (5.1.0)
+    doorkeeper (5.2.0)
       railties (>= 5)
     erubi (1.8.0)
     factory_bot (4.11.1)
@@ -345,7 +345,7 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
     wisper-rspec (1.1.0)
-    zeitwerk (2.1.9)
+    zeitwerk (2.1.10)
 
 PLATFORMS
   ruby
