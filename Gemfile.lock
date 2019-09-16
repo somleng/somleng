@@ -305,7 +305,7 @@ GEM
     safe_yaml (1.0.5)
     sentry-raven (2.11.1)
       faraday (>= 0.7.6, < 1.0)
-    simplecov (0.17.0)
+    simplecov (0.17.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
