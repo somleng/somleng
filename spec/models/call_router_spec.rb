@@ -100,18 +100,18 @@ describe CallRouter do
         dial_string_path: "external/0882345678@175.100.32.29"
       )
 
-      # Sierra Leone (Africell)
+      # Sierra Leone (Orange)
 
       call_router.source = "5555"
-      call_router.destination = "+23230234567"
+      call_router.destination = "+23278910143"
 
       result = call_router.routing_instructions
 
       assert_routing_instructions!(
         result,
         source: "5555",
-        destination: "23230234567",
-        dial_string_path: "external/23230234567@freeswitch-private.internal.unicef.io"
+        destination: "23278910143",
+        dial_string_path: "external/23278910143@197.215.105.30"
       )
 
       # Somalia (Telesom)

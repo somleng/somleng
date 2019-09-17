@@ -38,11 +38,11 @@ kh:
             host: "3.0.245.70"
 sl:
   operators:
-    africell:
+    orange:
       metadata:
         gateways:
           default:
-            host: "freeswitch-private.internal.unicef.io"
+            host: "197.215.105.30"
 so:
   operators:
     telesom:

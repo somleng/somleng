@@ -154,9 +154,8 @@ GEM
       url
     coderay (1.1.2)
     concurrent-ruby (1.1.5)
-    countries (2.1.4)
+    countries (3.0.0)
       i18n_data (~> 0.8.0)
-      money (~> 6.9)
       sixarm_ruby_unaccent (~> 1.1)
       unicode_utils (~> 1.4)
     crack (0.4.3)
@@ -207,7 +206,7 @@ GEM
     minitest (5.11.3)
     monetize (1.9.1)
       money (~> 6.12)
-    money (6.13.3)
+    money (6.13.4)
       i18n (>= 0.6.4, <= 2)
     money-rails (1.13.2)
       activesupport (>= 3.0)
@@ -325,10 +324,10 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
-    torasup (0.2.1)
-      countries (>= 1.1.0)
+    torasup (0.2.2)
+      countries
       deep_merge
-      phony (>= 2.15.47)
+      phony
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unf (0.1.4)
