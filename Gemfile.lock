@@ -303,7 +303,7 @@ GEM
       rubocop (>= 0.60.0)
     ruby-progressbar (1.10.1)
     safe_yaml (1.0.5)
-    sentry-raven (2.11.1)
+    sentry-raven (2.11.2)
       faraday (>= 0.7.6, < 1.0)
     simplecov (0.17.1)
       docile (~> 1.1)
