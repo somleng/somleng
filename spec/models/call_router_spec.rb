@@ -73,19 +73,6 @@ describe CallRouter do
         dial_string_path: "external/0882345678@175.100.32.29"
       )
 
-      # Cambodia (Metfone 1296)
-      call_router.source = "+85512001296"
-      call_router.destination = "+855882345678"
-
-      result = call_router.routing_instructions
-
-      assert_routing_instructions!(
-        result,
-        source: "095975802",
-        destination: "855882345678",
-        dial_string_path: "external/0882345678@103.193.204.17"
-      )
-
       # Unknown source
 
       call_router.source = "5555"

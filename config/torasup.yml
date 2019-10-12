@@ -30,10 +30,6 @@ kh:
           default:
             host: "175.100.32.29"
             prefix: false
-          "1296":
-            host: "103.193.204.17"
-            prefix: false
-            caller_id: "095975802"
           "999999":
             host: "3.0.245.70"
 sl:
