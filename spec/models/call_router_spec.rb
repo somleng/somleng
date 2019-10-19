@@ -46,7 +46,7 @@ describe CallRouter do
         result,
         source: "1294",
         destination: "85510344566",
-        dial_string_path: "external/010344566@27.109.112.80"
+        dial_string_path: "external/010344566@27.109.112.140"
       )
 
       # Cambodia (Cellcard)

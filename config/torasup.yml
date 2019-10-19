@@ -12,7 +12,7 @@ kh:
       metadata:
         gateways:
           default:
-            host: "27.109.112.80"
+            host: "27.109.112.140"
             prefix: false
           "999999":
             host: "3.0.245.70"

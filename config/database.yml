@@ -1,11 +1,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV['DB_POOL'] || ENV['RAILS_MAX_THREADS'] || 5 %>
-  url: <%= ENV['DATABASE_URL'] %>
-  host: <%= ENV['DB_HOST'] %>
-  username: <%= ENV['DB_USERNAME'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
+  pool: <%= ENV.fetch("DB_POOL") { 5 } %>
+  reaping_frequency: 10
+  host: localhost
 
 development:
   <<: *default
@@ -17,3 +15,4 @@ test:
 
 production:
   <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
