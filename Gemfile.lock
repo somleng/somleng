@@ -40,7 +40,7 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: 6ee7fc1a42e0e930eb603b9a4b67a4ff7406bfe0
+  revision: 04a02ac2b7400ab456126dbfce5519cbc200b61a
   specs:
     rack-protection (2.0.7)
       rack
@@ -323,7 +323,7 @@ GEM
     squasher (0.6.2)
     thor (0.20.3)
     thread_safe (0.3.6)
-    tilt (2.0.9)
+    tilt (2.0.10)
     torasup (0.2.2)
       countries
       deep_merge
