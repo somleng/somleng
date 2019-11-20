@@ -70,7 +70,7 @@ describe CallRouter do
         result,
         source: "1294",
         destination: "855882345678",
-        dial_string_path: "external/0882345678@175.100.32.29"
+        dial_string_path: "external/0882345678@175.100.93.13"
       )
 
       # Unknown source
@@ -84,7 +84,7 @@ describe CallRouter do
         result,
         source: "5555",
         destination: "855882345678",
-        dial_string_path: "external/0882345678@175.100.32.29"
+        dial_string_path: "external/0882345678@175.100.93.13"
       )
 
       # Sierra Leone (Orange)
