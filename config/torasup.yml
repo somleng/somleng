@@ -12,7 +12,7 @@ kh:
       metadata:
         gateways:
           default:
-            host: "27.109.112.80"
+            host: "27.109.112.140"
             prefix: false
           "999999":
             host: "3.0.245.70"
@@ -28,45 +28,41 @@ kh:
       metadata:
         gateways:
           default:
-            host: "175.100.32.29"
+            host: "175.100.93.13"
             prefix: false
-          "1296":
-            host: "103.193.204.17"
-            prefix: false
-            caller_id: "095975802"
           "999999":
             host: "3.0.245.70"
 sl:
   operators:
-    africell:
+    orange:
       metadata:
         gateways:
           default:
-            host: "freeswitch-private.internal.unicef.io"
+            host: "197.215.105.30"
 so:
   operators:
     telesom:
       metadata:
         gateways:
           default:
-            host: "196.201.207.191"
+            host: "41.78.73.242"
     golis:
       metadata:
         gateways:
           default:
-            host: "196.201.207.191"
+            host: "41.78.73.242"
     nationlink:
       metadata:
         gateways:
           default:
-            host: "196.201.207.191"
+            host: "41.78.73.242"
     somtel:
       metadata:
         gateways:
           default:
-            host: "196.201.207.191"
+            host: "41.78.73.242"
     hormuud:
       metadata:
         gateways:
           default:
-            host: "196.201.207.191"
+            host: "41.78.73.242"
