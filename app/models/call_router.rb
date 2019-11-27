@@ -5,11 +5,11 @@ class CallRouter
                 :trunk_prefix, :trunk_prefix_replacement, :source_matcher
 
   def initialize(options = {})
-    self.source = options.fetch(:source) { nil }
-    self.destination = options.fetch(:destination) { nil }
-    self.trunk_prefix = options.fetch(:trunk_prefix) { DEFAULT_TRUNK_PREFIX }
-    self.trunk_prefix_replacement = options.fetch(:trunk_prefix_replacement) { nil }
-    self.source_matcher = options.fetch(:source_matcher) { nil }
+    self.source = options[:source]
+    self.destination = options[:destination]
+    self.trunk_prefix = options.fetch(:trunk_prefix, DEFAULT_TRUNK_PREFIX)
+    self.trunk_prefix_replacement = options[:trunk_prefix_replacement]
+    self.source_matcher = options[:source_matcher]
   end
 
   def normalized_source

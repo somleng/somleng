@@ -251,14 +251,19 @@ class PhoneCall < ApplicationRecord
   end
 
   def active_call_router
-    @active_call_router ||= CallRouter.new(
-      source: from,
-      destination: to,
-      source_matcher: account&.source_matcher
-    )
+    CallRouter.new(source: from, destination: to, **call_router_options)
   end
 
   private
+
+  def call_router_options
+    return {} if account.blank?
+
+    account.settings.slice(
+      "source_matcher",
+      "trunk_prefix_replacement"
+    ).symbolize_keys
+  end
 
   def publish_completed
     broadcast(:phone_call_completed, self)
