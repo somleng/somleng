@@ -13,9 +13,11 @@ class CallRouter
   end
 
   def normalized_source
-    return source if source.blank? || trunk_prefix_replacement.blank?
+    sanitized_source = sanitize_phone_number(source)
+    return sanitized_source if source.blank? || trunk_prefix_replacement.blank?
+    return sanitized_source if sanitized_source.starts_with?(trunk_prefix_replacement)
 
-    source.sub(/\A((\+)?#{trunk_prefix})/, "\\2#{trunk_prefix_replacement}")
+    sanitized_source.sub(/\A(?:#{trunk_prefix})?/, "").prepend(trunk_prefix_replacement)
   end
 
   def routing_instructions
@@ -50,6 +52,10 @@ class CallRouter
   end
 
   private
+
+  def sanitize_phone_number(phone_number)
+    phone_number.sub(/\A\+*/, "")
+  end
 
   def default_gateway
     gateway_settings = Rails.configuration.app_settings[:default_sip_gateway]
