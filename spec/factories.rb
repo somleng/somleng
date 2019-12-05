@@ -318,13 +318,6 @@ FactoryBot.define do
       with_status_callback_url
       with_status_callback_method
     end
-
-    trait :initiating_inbound_call do
-      initiating_inbound_call { true }
-      incoming_phone_number
-      to { incoming_phone_number.phone_number }
-      with_external_id
-    end
   end
 
   factory :access_token, class: Doorkeeper::AccessToken

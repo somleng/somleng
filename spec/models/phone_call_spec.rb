@@ -22,27 +22,19 @@ describe PhoneCall do
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:from) }
+    it { is_expected.not_to allow_value("855970001294").for(:to) }
 
-    context "persisted" do
-      subject { create(factory) }
-
-      context "#external_id" do
-        it { is_expected.to validate_uniqueness_of(:external_id).allow_nil.strict }
-      end
-
-      it { is_expected.to allow_value("855970001294").for(:to) }
+    it "validates uniqueness of external id" do
+      phone_call = create(:phone_call)
+      expect(phone_call).to validate_uniqueness_of(:external_id).allow_nil.strict
     end
 
-    context "for outbound calls" do
-      it { is_expected.not_to allow_value("855970001294").for(:to) }
-    end
+    it "allows invalid to for inbound calls" do
+      incoming_phone_number = create(:incoming_phone_number)
+      phone_call = build(:phone_call, incoming_phone_number: incoming_phone_number)
 
-    context "for inbound calls" do
-      subject { build(factory, :initiating_inbound_call) }
-
-      it { is_expected.to allow_value("855970001294").for(:to) }
-      it { is_expected.to validate_presence_of(:external_id) }
-      it { is_expected.to validate_presence_of(:incoming_phone_number) }
+      expect(phone_call).to allow_value("855970001294").for(:to)
+      expect(phone_call).to validate_presence_of(:external_id)
     end
   end
 
@@ -184,58 +176,55 @@ describe PhoneCall do
     end
   end
 
-  describe "json" do
-    let(:json) { JSON.parse(subject.public_send(json_method)) }
+  describe "#to_json" do
+    it "returns json" do
+      phone_call = create(:phone_call, :not_answered)
 
-    describe "#to_json" do
-      subject { create(factory) }
+      json = JSON.parse(phone_call.to_json)
 
-      let(:json_method) { :to_json }
+      expect(json.keys).to include(
+        "parent_call_sid", "to", "to_formatted",
+        "from", "from_formatted", "phone_number_sid",
+        "status", "start_time", "end_time",
+        "duration", "price", "price_unit",
+        "direction", "answered_by", "annotation",
+        "forwarded_from", "group_sid", "caller_name",
+        "subresource_uris"
+      )
 
-      let(:twilio_json_keys) do
-        %w[parent_call_sid to to_formatted from from_formatted phone_number_sid status start_time end_time duration price price_unit direction answered_by annotation forwarded_from group_sid caller_name subresource_uris]
-      end
-
-      def assert_valid_json!
-        expect(json.keys).to include(*twilio_json_keys)
-      end
-
-      it { assert_valid_json! }
-
-      context "status" do
-        subject { create(factory, :not_answered) }
-
-        def assert_valid_json!
-          expect(json["status"]).to eq(subject.twilio_status)
-        end
-
-        it { assert_valid_json! }
-      end
+      expect(json.fetch("status")).to eq("no-answer")
     end
+  end
 
-    describe "#to_internal_outbound_call_json" do
-      it "returns json for an outbound call" do
-        phone_call = create(:phone_call, :with_optional_attributes)
-        expect(
-          JSON.parse(
-            phone_call.to_internal_outbound_call_json
-          ).keys
-        ).to match_array(
-          %w[sid account_sid account_auth_token voice_url voice_method from to routing_instructions api_version direction]
-        )
-      end
+  describe "#to_internal_outbound_call_json" do
+    it "returns json for an outbound call" do
+      phone_call = create(:phone_call, :with_optional_attributes)
+
+      json = JSON.parse(phone_call.to_internal_outbound_call_json)
+
+      expect(json.keys).to match_array(
+        %w[
+          sid account_sid account_auth_token voice_url
+          voice_method from to routing_instructions
+          api_version direction
+        ]
+      )
     end
+  end
 
-    describe "#to_internal_inbound_call_json" do
-      subject { create(factory, :initiating_inbound_call) }
+  describe "#to_internal_inbound_call_json" do
+    it "returns json for an inbound call" do
+      phone_call = create(:phone_call, :inbound)
 
-      let(:json_method) { :to_internal_inbound_call_json }
+      json = JSON.parse(phone_call.to_internal_inbound_call_json)
 
-      def assert_valid_json!
-        expect(json.keys).to match_array(%w[sid account_sid account_auth_token voice_url voice_method from to twilio_request_to api_version direction])
-      end
-
-      it { assert_valid_json! }
+      expect(json.keys).to match_array(
+        %w[
+          sid account_sid account_auth_token
+          voice_url voice_method from to twilio_request_to
+          api_version direction
+        ]
+      )
     end
   end
 
@@ -310,7 +299,8 @@ describe PhoneCall do
     end
 
     it "creates a phone call if there's a matching incoming phone number" do
-      incoming_phone_number = create(:incoming_phone_number, phone_number: "1294")
+      account = create(:account, settings: { trunk_prefix_replacement: "855" })
+      incoming_phone_number = create(:incoming_phone_number, account: account, phone_number: "1294")
       phone_call = build(:phone_call, :inbound, from: "+0973234567", to: "1294")
 
       phone_call.initiate_inbound_call
@@ -323,7 +313,9 @@ describe PhoneCall do
         voice_method: incoming_phone_number.voice_method,
         status_callback_url: incoming_phone_number.status_callback_url,
         status_callback_method: incoming_phone_number.status_callback_method,
-        account: incoming_phone_number.account
+        account: incoming_phone_number.account,
+        to: "1294",
+        from: "+855973234567"
       )
     end
   end
@@ -358,46 +350,29 @@ describe PhoneCall do
   end
 
   describe "#direction" do
-    def assert_inbound!
-      expect(subject.direction).to eq("inbound")
+    it "uses the direction of the CDR for inbound calls" do
+      call_data_record = create(:call_data_record, :inbound)
+      phone_call = create(:phone_call, call_data_record: call_data_record)
+
+      expect(phone_call.direction).to eq("inbound")
     end
 
-    def assert_outbound!
-      expect(subject.direction).to eq("outbound-api")
+    it "uses the direction of the CDR for outbound calls" do
+      call_data_record = create(:call_data_record, :outbound)
+      phone_call = create(:phone_call, call_data_record: call_data_record)
+
+      expect(phone_call.direction).to eq("outbound-api")
     end
 
-    context "with cdr" do
-      subject { create(factory, call_data_record: call_data_record) }
+    it "implies the direction for inbound calls" do
+      incoming_phone_number = create(:incoming_phone_number)
+      phone_call = create(:phone_call, :inbound, incoming_phone_number: incoming_phone_number)
 
-      let(:call_data_record) { build(:call_data_record, direction) }
-
-      before do
-        call_data_record
-      end
-
-      context "inbound calls" do
-        let(:direction) { :inbound }
-
-        it { assert_inbound! }
-      end
-
-      context "for outbound calls" do
-        let(:direction) { :outbound }
-
-        it { assert_outbound! }
-      end
+      expect(phone_call.direction).to eq("inbound")
     end
 
-    context "without cdr" do
-      context "for inbound calls" do
-        subject { create(factory, :initiating_inbound_call) }
-
-        it { assert_inbound! }
-      end
-
-      context "for outbound calls" do
-        it { assert_outbound! }
-      end
+    it "implies the direction for outbound calls" do
+      expect(create(:phone_call).direction).to eq("outbound-api")
     end
   end
 
@@ -417,27 +392,16 @@ describe PhoneCall do
   end
 
   describe "#end_time" do
-    context "with cdr" do
-      subject { create(factory, call_data_record: call_data_record) }
+    it { expect(create(:phone_call).end_time).to eq(nil) }
 
-      let(:end_time) { Time.utc("2015", "9", "30", "23", "05", "12") }
-      let(:call_data_record) { build(:call_data_record, end_time: end_time, answer_time: answer_time) }
+    it "returns the value from the CDR" do
+      call_data_record = create(
+        :call_data_record,
+        end_time: Time.utc("2015", "9", "30", "23", "05", "12"),
+      )
+      phone_call = create(:phone_call, call_data_record: call_data_record)
 
-      context "call not answered" do
-        let(:answer_time) { nil }
-
-        it { expect(subject.end_time).to eq(nil) }
-      end
-
-      context "call answered" do
-        let(:answer_time) { Time.utc("2015", "9", "30", "23", "04", "12") }
-
-        it { expect(subject.end_time).to eq("Wed, 30 Sep 2015 23:05:12 +0000") }
-      end
-    end
-
-    context "without cdr" do
-      it { expect(subject.end_time).to eq(nil) }
+      expect(phone_call.end_time).to eq("Wed, 30 Sep 2015 23:05:12 +0000")
     end
   end
 
@@ -471,14 +435,14 @@ describe PhoneCall do
   end
 
   describe "#phone_number_sid" do
-    context "for inbound calls" do
-      subject { create(factory, :initiating_inbound_call) }
-
-      it { expect(subject.phone_number_sid).to eq(subject.incoming_phone_number_sid) }
+    it "returns a value inbound calls" do
+      incoming_phone_number = create(:incoming_phone_number)
+      phone_call = create(:phone_call, :inbound, incoming_phone_number: incoming_phone_number)
+      expect(phone_call.phone_number_sid).to eq(incoming_phone_number.id)
     end
 
-    context "for outbound calls" do
-      it { expect(subject.phone_number_sid).to eq(nil) }
+    it "returns nil for outbound calls" do
+      expect(create(:phone_call).phone_number_sid).to eq(nil)
     end
   end
 
