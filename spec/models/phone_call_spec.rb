@@ -300,66 +300,31 @@ describe PhoneCall do
   end
 
   describe "#initiate_inbound_call" do
-    subject { build(factory, from: from, to: phone_number, external_id: external_id) }
+    it "is invalid when there is no matching incoming phone number" do
+      phone_call = build(:phone_call, :inbound, from: "+0973234567")
 
-    let(:phone_number) { generate(:phone_number) }
-    let(:external_id) { generate(:external_id) }
-    let(:from) { "+0973234567" }
+      phone_call.initiate_inbound_call
 
-    def setup_scenario; end
-
-    before do
-      setup_scenario
-      subject.initiate_inbound_call
+      expect(phone_call).not_to be_persisted
+      expect(phone_call.errors[:incoming_phone_number]).to be_present
     end
 
-    context "given no matching incoming phone number" do
-      def assert_errors!
-        expect(subject).not_to be_persisted
-        expect(subject.errors).not_to be_empty
-      end
+    it "creates a phone call if there's a matching incoming phone number" do
+      incoming_phone_number = create(:incoming_phone_number, phone_number: "1294")
+      phone_call = build(:phone_call, :inbound, from: "+0973234567", to: "1294")
 
-      it { assert_errors! }
-    end
+      phone_call.initiate_inbound_call
 
-    context "given an matching incoming phone number" do
-      let(:twilio_incoming_phone_number) { "12345678" }
-      let(:incoming_phone_number) do
-        create(
-          :incoming_phone_number,
-          :with_twilio_request_phone_number,
-          phone_number: phone_number
-        )
-      end
-
-      def setup_scenario
-        super
-        incoming_phone_number
-      end
-
-      def assert_created!
-        expect(subject).to be_persisted
-        expect(subject.voice_url).to eq(incoming_phone_number.voice_url)
-        expect(subject.voice_method).to eq(incoming_phone_number.voice_method)
-        expect(subject.status_callback_url).to eq(incoming_phone_number.status_callback_url)
-        expect(subject.status_callback_method).to eq(incoming_phone_number.status_callback_method)
-        expect(subject.external_id).to eq(external_id)
-        expect(subject.account).to eq(incoming_phone_number.account)
-        expect(subject.incoming_phone_number).to eq(incoming_phone_number)
-        expect(subject.twilio_request_to).to eq(incoming_phone_number.twilio_request_phone_number)
-        expect(subject.from).to eq(from)
-        expect(subject).to be_initiated
-      end
-
-      context "standard incoming phone number" do
-        it { assert_created! }
-      end
-
-      context "non-standard incoming phone number (https://github.com/dwilkie/twilreapi/issues/17)" do
-        let(:phone_number) { "+855970001294" }
-
-        it { assert_created! }
-      end
+      expect(phone_call).to have_attributes(
+        persisted?: true,
+        initiated?: true,
+        incoming_phone_number: incoming_phone_number,
+        voice_url: incoming_phone_number.voice_url,
+        voice_method: incoming_phone_number.voice_method,
+        status_callback_url: incoming_phone_number.status_callback_url,
+        status_callback_method: incoming_phone_number.status_callback_method,
+        account: incoming_phone_number.account
+      )
     end
   end
 

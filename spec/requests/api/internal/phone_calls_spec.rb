@@ -6,7 +6,7 @@ RSpec.describe "Internal Phone Calls API" do
       params = {
         "To" => generate(:phone_number),
         "From" => "2442",
-        "ExternalSid" => generate(:external_id),
+        "ExternalSid" => SecureRandom.uuid,
         "Variables" => {
           "sip_from_host" => "103.9.189.2"
         }
