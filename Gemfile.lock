@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/perfectline/validates_url.git
-  revision: 3dde8639a29492725505762cf5a86df9e14d5861
+  revision: 110ae183cf8412ade97a7ae2a16e501aacfcfc14
   specs:
     validate_url (1.0.8)
       activemodel (>= 3.0.0)
@@ -183,7 +183,7 @@ GEM
       domain_name (~> 0.5)
     httparty (0.16.2)
       multi_xml (>= 0.5.2)
-    i18n (1.7.1)
+    i18n (1.8.0)
       concurrent-ruby (~> 1.0)
     i18n_data (0.8.0)
     jaro_winkler (1.5.4)
