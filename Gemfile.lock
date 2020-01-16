@@ -222,7 +222,7 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
-    okcomputer (1.18.0)
+    okcomputer (1.18.1)
     parallel (1.19.1)
     parser (2.7.0.1)
       ast (~> 2.4.0)
