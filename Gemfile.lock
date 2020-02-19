@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/perfectline/validates_url.git
-  revision: 110ae183cf8412ade97a7ae2a16e501aacfcfc14
+  revision: 8a28b4b661602f92b4f3595b91751d0dff894a14
   specs:
     validate_url (1.0.8)
       activemodel (>= 3.0.0)
@@ -153,7 +153,7 @@ GEM
       simplecov
       url
     coderay (1.1.2)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.6)
     countries (3.0.0)
       i18n_data (~> 0.8.0)
       sixarm_ruby_unaccent (~> 1.1)
