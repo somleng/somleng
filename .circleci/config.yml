@@ -16,6 +16,7 @@ executors:
         environment:
           POSTGRES_USER: twilreapi-test
           POSTGRES_DB: twilreapi_test
+          POSTGRES_HOST_AUTH_METHOD: trust
           POSTGRES_PASSWORD: ""
 
   deploy_environment:
