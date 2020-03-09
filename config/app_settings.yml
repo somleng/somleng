@@ -14,12 +14,7 @@ production: &production
   outbound_call_drb_uri: <%= ENV["OUTBOUND_CALL_DRB_URI"] %>
   default_url_host: <%= ENV["DEFAULT_URL_HOST"] %>
   default_queue_url: <%= ENV["DEFAULT_QUEUE_URL"] %>
-  aws_sns_message_processor_job_queue_url: <%= ENV["AWS_SNS_MESSAGE_PROCESSOR_JOB_QUEUE_URL"] %>
-  call_data_record_job_queue_url: <%= ENV["CALL_DATA_RECORD_JOB_QUEUE_URL"] %>
   outbound_call_job_queue_url: <%= ENV["OUTBOUND_CALL_JOB_QUEUE_URL"] %>
-  recording_processor_job_queue_url: <%= ENV["RECORDING_PROCESSOR_JOB_QUEUE_URL"] %>
-  recording_status_callback_notifier_job_queue_url: <%= ENV["RECORDING_STATUS_CALLBACK_NOTIFIER_JOB_QUEUE_URL"] %>
-  status_callback_notifier_job_queue_url: <%= ENV["STATUS_CALLBACK_NOTIFIER_JOB_QUEUE_URL"] %>
   aws_region: <%= ENV["AWS_DEFAULT_REGION"] %>
   uploads_bucket: <%= ENV["UPLOADS_BUCKET"] %>
 
