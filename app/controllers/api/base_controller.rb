@@ -1,5 +1,4 @@
 class Api::BaseController < ApplicationController
-  self.responder = Api::BaseResponder
   protect_from_forgery with: :null_session
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found!
