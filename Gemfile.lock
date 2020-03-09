@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/dwilkie/refile-s3.git
+  revision: 8aa567bc31bc21839f7f8a20fa4135de2063af93
+  specs:
+    refile-s3 (0.2.0)
+      aws-sdk-s3 (~> 1.23)
+      refile (~> 0.7.0)
+
+GIT
   remote: https://github.com/krisleech/wisper.git
   revision: b29661a46b95801cb733918d11e8f8182a535697
   specs:
@@ -11,14 +19,6 @@ GIT
     validate_url (1.0.8)
       activemodel (>= 3.0.0)
       public_suffix
-
-GIT
-  remote: https://github.com/refile/refile-s3.git
-  revision: 765b51ded93b96cf7e7cad2353c5bc591507dbe3
-  specs:
-    refile-s3 (0.2.0)
-      aws-sdk-s3 (~> 1.23)
-      refile (~> 0.7.0)
 
 GIT
   remote: https://github.com/refile/refile.git
