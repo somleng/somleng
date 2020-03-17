@@ -319,7 +319,7 @@ GEM
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    torasup (0.2.2)
+    torasup (0.2.3)
       countries
       deep_merge
       phony
