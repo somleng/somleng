@@ -1,6 +1,8 @@
 class OutboundCallJob < ApplicationJob
   require "drb"
 
+  queue_as(aws_sqs_queue_url.split("/").last)
+
   def perform(phone_call_id)
     phone_call = PhoneCall.find(phone_call_id)
     phone_call.external_id = drb_client.initiate_outbound_call!(
