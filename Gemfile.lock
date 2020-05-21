@@ -22,7 +22,7 @@ GIT
 
 GIT
   remote: https://github.com/refile/refile.git
-  revision: e690bf5c2d83b3dfd805764d54e8f5daf14993b0
+  revision: 21686e9f8c565abb460b01263209d3b3068c6459
   specs:
     refile (0.7.0)
       mime-types
@@ -195,7 +195,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2019.1009)
+    mime-types-data (3.2020.0512)
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
