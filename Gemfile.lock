@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/perfectline/validates_url.git
-  revision: 68272b3d33e06686b53872298e7a02874840463a
+  revision: 020a6d1c9d8fc7e5a090d72e13f8f87ebb066f76
   specs:
     validate_url (1.0.11)
       activemodel (>= 3.0.0)
@@ -199,7 +199,7 @@ GEM
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.14.0)
+    minitest (5.14.1)
     monetize (1.9.4)
       money (~> 6.12)
     money (6.13.7)
