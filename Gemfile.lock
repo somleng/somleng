@@ -57,15 +57,6 @@ GIT
       httparty
 
 GIT
-  remote: https://github.com/somleng/torasup.git
-  revision: 49b705bd5741de29cf6a160a58ceba2d637e900b
-  specs:
-    torasup (0.3.0)
-      countries
-      deep_merge
-      phony
-
-GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
   revision: 2a4ef990209115378cd702183bac936e2a1a606e
   specs:
@@ -329,6 +320,10 @@ GEM
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
+    torasup (0.3.0)
+      countries
+      deep_merge
+      phony
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
@@ -376,7 +371,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   squasher
-  torasup!
+  torasup
   validate_url!
   webmock
   wisper!
