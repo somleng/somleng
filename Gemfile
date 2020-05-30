@@ -21,7 +21,7 @@ gem "responders"
 gem "sentry-raven"
 gem "sinatra", github: "sinatra/sinatra"
 gem "somleng-twilio_http_client", github: "somleng/somleng-twilio_http_client"
-gem "torasup"
+gem "torasup", github: "somleng/torasup"
 gem "validate_url", github: "perfectline/validates_url"
 gem "wisper", github: "krisleech/wisper"
 

@@ -6,6 +6,17 @@ br:
         gateways:
           default:
             host: "200.142.96.52"
+
+in:
+  operators:
+    imimobile:
+      prefixes: "*"
+      metadata:
+        name: "IMImobile"
+        gateways:
+          default:
+            host: "change-me"
+
 kh:
   operators:
     smart:
@@ -14,24 +25,21 @@ kh:
           default:
             host: "27.109.112.140"
             prefix: false
-          "999999":
-            host: "3.0.245.70"
+
     mobitel:
       metadata:
         gateways:
           default:
             host: "103.193.204.26"
             prefix: false
-          "999999":
-            host: "3.0.245.70"
+
     metfone:
       metadata:
         gateways:
           default:
             host: "175.100.93.13"
             prefix: false
-          "999999":
-            host: "3.0.245.70"
+
 sl:
   operators:
     orange:

@@ -26,7 +26,7 @@ FactoryBot.define do
     skip_create
     initialize_with do
       transient_cdr["variables"]["sip_term_status"] = sip_term_status if sip_term_status
-      cdr_json = JSON.parse(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json"))
+      cdr_json = JSON.parse(File.read(RSpec.configuration.file_fixture_path + "/freeswitch_cdr.json"))
       cdr_json.deep_merge!(transient_cdr)
       new(cdr_json.to_json)
     end

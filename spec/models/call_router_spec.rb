@@ -175,47 +175,18 @@ describe CallRouter do
         destination: "5582999489999",
         dial_string_path: "external/5582999489999@200.142.96.52"
       )
-    end
 
-    it "routes to the simulator" do
-      # Cambodia Metfone (Simulator)
-
-      call_router = CallRouter.new(source: "999999")
-      call_router.destination = "+855882345678"
+      # India
+      call_router.source = "5555"
+      call_router.destination = "+919560234567"
 
       result = call_router.routing_instructions
 
       assert_routing_instructions!(
         result,
-        source: "999999",
-        destination: "855882345678",
-        dial_string_path: "external/855882345678@3.0.245.70"
-      )
-
-      # Cambodia Smart (Simulator)
-
-      call_router.destination = "+85510234567"
-
-      result = call_router.routing_instructions
-
-      assert_routing_instructions!(
-        result,
-        source: "999999",
-        destination: "85510234567",
-        dial_string_path: "external/85510234567@3.0.245.70"
-      )
-
-      # Cambodia Mobitel (Simulator)
-
-      call_router.destination = "+85512234567"
-
-      result = call_router.routing_instructions
-
-      assert_routing_instructions!(
-        result,
-        source: "999999",
-        destination: "85512234567",
-        dial_string_path: "external/85512234567@3.0.245.70"
+        source: "5555",
+        destination: "919560234567",
+        dial_string_path: "external/919560234567@change-me"
       )
     end
 
