@@ -148,7 +148,7 @@ GEM
     bootsnap (1.4.6)
       msgpack (~> 1.0)
     builder (3.2.4)
-    codecov (0.1.17)
+    codecov (0.1.18)
       json
       simplecov
       url
@@ -184,7 +184,7 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n_data (0.10.0)
     jmespath (1.4.0)
-    json (2.3.0)
+    json (2.3.1)
     loofah (2.6.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
