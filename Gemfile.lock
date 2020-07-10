@@ -148,11 +148,12 @@ GEM
     bootsnap (1.4.6)
       msgpack (~> 1.0)
     builder (3.2.4)
-    codecov (0.1.17)
+    codecov (0.1.20)
+      colorize
       json
       simplecov
-      url
     coderay (1.1.2)
+    colorize (0.8.1)
     concurrent-ruby (1.1.6)
     countries (3.0.1)
       i18n_data (~> 0.10.0)
@@ -184,7 +185,7 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n_data (0.10.0)
     jmespath (1.4.0)
-    json (2.3.0)
+    json (2.3.1)
     loofah (2.6.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -330,7 +331,6 @@ GEM
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
     unicode_utils (1.4.0)
-    url (0.3.2)
     webmock (3.8.3)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
