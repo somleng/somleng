@@ -148,7 +148,7 @@ GEM
     bootsnap (1.4.7)
       msgpack (~> 1.0)
     builder (3.2.4)
-    codecov (0.2.2)
+    codecov (0.2.3)
       colorize
       json
       simplecov
