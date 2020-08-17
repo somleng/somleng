@@ -71,6 +71,4 @@ describe RecordingStatusCallbackNotifierJob do
 
     expect(WebMock).to have_requested(:get, recording.status_callback_url)
   end
-
-  include_examples "aws_sqs_queue_url"
 end

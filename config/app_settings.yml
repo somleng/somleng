@@ -1,6 +1,10 @@
 default: &default
   secret_key_base: "<%= Rails.application.credentials.secret_key_base %>"
-  sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
+  mailer_sender: "support@somleng.org"
+  aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default") %>
+  aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
+  aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
+  uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "uploads.somleng.org") %>
   default_sip_gateway:
     enabled: true
     host: "<%= Rails.application.credentials.default_sip_gateway_host %>"
@@ -9,22 +13,18 @@ default: &default
 
 production: &production
   <<: *default
+  default_url_host: "https://scfm.somleng.org"
+  smtp_username: <%= ENV["SMTP_USERNAME"] %>
+  smtp_password: <%= ENV["SMTP_PASSWORD"] %>
+  smtp_address: "email-smtp.us-east-1.amazonaws.com"
+  sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   internal_api_http_auth_user: <%= ENV["INTERNAL_API_HTTP_AUTH_USER"] %>
   internal_api_http_auth_password: <%= ENV["INTERNAL_API_HTTP_AUTH_PASSWORD"] %>
-  outbound_call_drb_uri: <%= ENV["OUTBOUND_CALL_DRB_URI"] %>
-  default_url_host: <%= ENV["DEFAULT_URL_HOST"] %>
-  default_queue_url: <%= ENV["DEFAULT_QUEUE_URL"] %>
-  outbound_call_job_queue_url: <%= ENV["OUTBOUND_CALL_JOB_QUEUE_URL"] %>
-  aws_region: <%= ENV["AWS_DEFAULT_REGION"] %>
-  uploads_bucket: <%= ENV["UPLOADS_BUCKET"] %>
 
 development: &development
-  <<: *production
-  default_queue_url: "https://example.com/path/to/queue_name"
-  default_url_host: "https://twilreapi.somleng.org"
-  internal_api_http_auth_user: "user"
-  internal_api_http_auth_password: "secret"
-  outbound_call_drb_uri: "druby://localhost:9050"
+  <<: *default
+  default_url_host: "http://localhost:3000"
 
 test:
   <<: *development
+  default_url_host: https://twilreapi.somleng.org

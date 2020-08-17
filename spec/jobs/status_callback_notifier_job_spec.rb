@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe StatusCallbackNotifierJob do
-  include_examples "aws_sqs_queue_url"
-
   describe "#perform(phone_call_id)" do
     it "notifies the status callback url via HTTP POST by default" do
       phone_call = create(

@@ -37,3 +37,18 @@ config/secrets.yml.key
 /config/master.key.*
 
 rspec_examples.txt
+
+.idea
+
+# terraform
+terraform.tfstate.d/
+.terraform
+terraform.tfstate
+terraform.tfstate.*
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity

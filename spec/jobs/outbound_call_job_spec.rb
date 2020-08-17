@@ -23,6 +23,4 @@ describe OutboundCallJob do
       expect(phone_call).to be_initiated
     end
   end
-
-  include_examples "aws_sqs_queue_url"
 end

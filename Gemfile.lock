@@ -29,15 +29,6 @@ GIT
       sinatra (>= 2.0.0, <= 3.0.0)
 
 GIT
-  remote: https://github.com/samnang/active-elastic-job.git
-  revision: db55463b46e9ea0a66c33d5e81d602fda9289243
-  branch: upgrade_to_aws_sdk_3
-  specs:
-    active_elastic_job (2.0.1)
-      aws-sdk-sqs (~> 1)
-      rails (>= 4.2)
-
-GIT
   remote: https://github.com/sinatra/sinatra.git
   revision: 87e48d0a1a54b26071ffb8125ec36124908fc1ba
   specs:
@@ -125,6 +116,8 @@ GEM
       zeitwerk (~> 2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    after_commit_everywhere (0.1.5)
+      activerecord (>= 4.2)
     ast (2.4.1)
     aws-eventstream (1.0.3)
     aws-partitions (1.281.0)
@@ -140,7 +133,7 @@ GEM
       aws-sdk-core (~> 3, >= 3.83.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
-    aws-sdk-sqs (1.23.1)
+    aws-sdk-sqs (1.26.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.1.1)
@@ -186,6 +179,11 @@ GEM
     i18n_data (0.10.0)
     jmespath (1.4.0)
     json (2.3.1)
+    lograge (0.11.2)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
     loofah (2.6.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -234,6 +232,8 @@ GEM
     puma (4.3.5)
       nio4r (~> 2.0)
     rack (2.2.3)
+    rack-proxy (0.6.5)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (6.0.2.1)
@@ -265,6 +265,8 @@ GEM
     rainbow (3.0.0)
     rake (13.0.1)
     regexp_parser (1.7.1)
+    request_store (1.5.0)
+      rack (>= 1.4)
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -302,8 +304,13 @@ GEM
     ruby-progressbar (1.10.1)
     ruby2_keywords (0.0.2)
     safe_yaml (1.0.5)
+    semantic_range (2.3.0)
     sentry-raven (3.0.0)
       faraday (>= 1.0)
+    shoryuken (5.0.4)
+      aws-sdk-core (>= 2)
+      concurrent-ruby
+      thor
     simplecov (0.19.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -335,6 +342,11 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    webpacker (5.2.0)
+      activesupport (>= 5.2)
+      rack-proxy (>= 0.6.1)
+      railties (>= 5.2)
+      semantic_range (>= 2.3.0)
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -346,11 +358,13 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
-  active_elastic_job!
+  after_commit_everywhere
+  aws-sdk-sqs
   bootsnap
   codecov
   doorkeeper
   factory_bot_rails
+  lograge
   money-rails
   okcomputer
   pg
@@ -366,6 +380,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   sentry-raven
+  shoryuken
   shoulda-matchers!
   simplecov
   sinatra!
@@ -376,6 +391,7 @@ DEPENDENCIES
   torasup
   validate_url!
   webmock
+  webpacker
   wisper!
   wisper-rspec
 
