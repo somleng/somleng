@@ -1,4 +1,4 @@
-module TwilioJson
+module TwilioJSON
   extend ActiveSupport::Concern
 
   API_VERSION = "2010-04-01"

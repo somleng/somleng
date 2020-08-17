@@ -14,4 +14,6 @@
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "CDR"
   inflect.acronym "UUID"
+  inflect.acronym "JSON"
+  inflect.acronym "JSONAPI"
 end

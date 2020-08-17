@@ -157,28 +157,6 @@ class PhoneCall < ApplicationRecord
     OutboundCallJob.perform_later(id)
   end
 
-  def initiate_inbound_call
-    self.incoming_phone_number = IncomingPhoneNumber.find_by_phone_number(
-      normalize_phone_number(to)
-    )
-
-    if incoming_phone_number.blank?
-      errors.add(:incoming_phone_number, :blank)
-      return false
-    end
-
-    self.account = incoming_phone_number.account
-    self.voice_url = incoming_phone_number.voice_url
-    self.voice_method = incoming_phone_number.voice_method
-    self.status_callback_url = incoming_phone_number.status_callback_url
-    self.status_callback_method = incoming_phone_number.status_callback_method
-    self.twilio_request_to = incoming_phone_number.twilio_request_phone_number
-    self.from = normalize_phone_number(active_call_router.normalized_source)
-    initiate
-
-    save
-  end
-
   def annotation; end
 
   def answered_by; end
@@ -245,10 +223,7 @@ class PhoneCall < ApplicationRecord
   def call_router_options
     return {} if account.blank?
 
-    account.settings.slice(
-      "source_matcher",
-      "trunk_prefix_replacement"
-    ).symbolize_keys
+    account.settings.slice("source_matcher").symbolize_keys
   end
 
   def publish_completed

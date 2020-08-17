@@ -21,6 +21,7 @@ module Twilreapi
 
     config.active_support.escape_html_entities_in_json = false
 
+    config.eager_load_paths << Rails.root.join("lib")
     config.app_settings = config_for(:app_settings)
     config.active_job.default_queue_name = config.app_settings.fetch(:aws_sqs_default_queue_name)
     Rails.application.routes.default_url_options[:host] = config.app_settings.fetch(:default_url_host)

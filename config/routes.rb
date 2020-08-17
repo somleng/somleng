@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root to: redirect("https://github.com/somleng/twilreapi")
 
+  namespace :services, defaults: { format: "json" } do
+    resources :inbound_phone_calls, only: :create
+  end
+
   namespace :api, defaults: { format: "json" } do
     resources :accounts, only: [] do
       resources :phone_calls, only: %i[create show] do

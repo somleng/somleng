@@ -2,7 +2,7 @@ module TwilioApiResource
   extend ActiveSupport::Concern
 
   include TwilioTimestamps
-  include TwilioJson
+  include TwilioJSON
 
   included do
     alias_attribute :sid, :id

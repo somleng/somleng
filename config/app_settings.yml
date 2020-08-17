@@ -5,6 +5,8 @@ default: &default
   aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
   uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "uploads.somleng.org") %>
+  services_user: "services"
+  services_password: "password"
   default_sip_gateway:
     enabled: true
     host: "<%= Rails.application.credentials.default_sip_gateway_host %>"
@@ -18,8 +20,7 @@ production: &production
   smtp_password: <%= ENV["SMTP_PASSWORD"] %>
   smtp_address: "email-smtp.us-east-1.amazonaws.com"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
-  internal_api_http_auth_user: <%= ENV["INTERNAL_API_HTTP_AUTH_USER"] %>
-  internal_api_http_auth_password: <%= ENV["INTERNAL_API_HTTP_AUTH_PASSWORD"] %>
+  services_password: "<%= Rails.application.credentials.services_password %>"
 
 development: &development
   <<: *default

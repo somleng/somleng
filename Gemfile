@@ -10,6 +10,7 @@ gem "aasm"
 gem "after_commit_everywhere"
 gem "aws-sdk-sqs"
 gem "doorkeeper"
+gem "dry-validation"
 gem "lograge"
 gem "money-rails"
 gem "okcomputer"
@@ -34,6 +35,7 @@ gem "bootsnap", require: false
 
 group :development, :test do
   gem "pry"
+  gem "rspec_api_documentation", github: "samnang/rspec_api_documentation"
   gem "rspec-rails"
   gem "rubocop"
   gem "rubocop-rspec"
@@ -46,10 +48,10 @@ group :development do
 end
 
 group :test do
-  gem "codecov", require: false
   gem "factory_bot_rails"
   gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers"
   gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
   gem "webmock"
   gem "wisper-rspec"
 end
