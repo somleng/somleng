@@ -1,23 +1,23 @@
 class InboundPhoneCallRequestSchema < ApplicationRequestSchema
   params do
-    required(:To).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
-    required(:From).filled(:str?)
-    required(:ExternalSid).filled(:str?)
-    optional(:Variables).maybe(:hash)
+    required(:to).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
+    required(:from).filled(:str?)
+    required(:external_id).filled(:str?)
+    optional(:variables).maybe(:hash)
   end
 
-  rule(:To) do
+  rule(:to) do
     incoming_phone_number = find_incoming_phone_number(value)
-    key("To").failure("does not exist") if incoming_phone_number.blank?
+    key("to").failure("does not exist") if incoming_phone_number.blank?
   end
 
   def output
     params = super
 
     result = {}
-    result[:to] = params.fetch(:To)
-    result[:external_id] = params.fetch(:ExternalSid)
-    result[:variables] = params.fetch(:Variables) if params.key?(:Variables)
+    result[:to] = params.fetch(:to)
+    result[:external_id] = params.fetch(:external_id)
+    result[:variables] = params.fetch(:variables) if params.key?(:variables)
 
     incoming_phone_number = find_incoming_phone_number(result.fetch(:to))
     result[:incoming_phone_number] = incoming_phone_number
@@ -26,9 +26,8 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
     result[:voice_method] = incoming_phone_number.voice_method
     result[:status_callback_url] = incoming_phone_number.status_callback_url
     result[:status_callback_method] = incoming_phone_number.status_callback_method
-    result[:twilio_request_to] = incoming_phone_number.twilio_request_phone_number
     result[:from] = normalize_from(
-      params.fetch(:From),
+      params.fetch(:from),
       incoming_phone_number.account.settings["trunk_prefix_replacement"]
     )
 

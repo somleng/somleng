@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :services, defaults: { format: "json" } do
     resources :inbound_phone_calls, only: :create
+    resources :phone_call_events, only: :create
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -25,11 +26,7 @@ Rails.application.routes.draw do
     get "/2010-04-01/Accounts/:account_id/IncomingPhoneNumbers/:id", to: "incoming_phone_numbers#show", as: :twilio_account_incoming_phone_number
 
     namespace :internal do
-      resources :phone_calls, only: %i[create show] do
-        resources :phone_call_events, only: %i[create show]
-      end
       resources :call_data_records, only: [:create]
-      resources :aws_sns_messages, only: [:create]
     end
   end
 end

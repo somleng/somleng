@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_18_012643) do
+ActiveRecord::Schema.define(version: 2020_08_19_050605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -21,18 +21,6 @@ ActiveRecord::Schema.define(version: 2018_10_18_012643) do
     t.datetime "updated_at", null: false
     t.string "state", null: false
     t.jsonb "settings", default: {}, null: false
-  end
-
-  create_table "aws_sns_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.json "headers", default: {}, null: false
-    t.json "payload", default: {}, null: false
-    t.uuid "aws_sns_message_id", null: false
-    t.string "type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "recording_id"
-    t.index ["aws_sns_message_id"], name: "index_aws_sns_messages_on_aws_sns_message_id", unique: true
-    t.index ["recording_id"], name: "index_aws_sns_messages_on_recording_id"
   end
 
   create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -67,7 +55,6 @@ ActiveRecord::Schema.define(version: 2018_10_18_012643) do
     t.string "status_callback_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "twilio_request_phone_number"
     t.index ["account_id"], name: "index_incoming_phone_numbers_on_account_id"
     t.index ["phone_number"], name: "index_incoming_phone_numbers_on_phone_number", unique: true
   end
@@ -117,9 +104,7 @@ ActiveRecord::Schema.define(version: 2018_10_18_012643) do
     t.string "type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "recording_id"
     t.index ["phone_call_id"], name: "index_phone_call_events_on_phone_call_id"
-    t.index ["recording_id"], name: "index_phone_call_events_on_recording_id"
   end
 
   create_table "phone_calls", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -143,24 +128,6 @@ ActiveRecord::Schema.define(version: 2018_10_18_012643) do
     t.index ["recording_id"], name: "index_phone_calls_on_recording_id"
   end
 
-  create_table "recordings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "phone_call_id", null: false
-    t.string "file_id"
-    t.string "file_filename"
-    t.integer "file_size"
-    t.string "file_content_type"
-    t.integer "duration"
-    t.uuid "original_file_id"
-    t.string "status", null: false
-    t.json "twiml_instructions", default: {}, null: false
-    t.json "params", default: {}, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["original_file_id"], name: "index_recordings_on_original_file_id", unique: true
-    t.index ["phone_call_id"], name: "index_recordings_on_phone_call_id"
-  end
-
-  add_foreign_key "aws_sns_messages", "recordings"
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "incoming_phone_numbers", "accounts"
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
@@ -169,9 +136,6 @@ ActiveRecord::Schema.define(version: 2018_10_18_012643) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "accounts", column: "owner_id"
   add_foreign_key "phone_call_events", "phone_calls"
-  add_foreign_key "phone_call_events", "recordings"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "incoming_phone_numbers"
-  add_foreign_key "phone_calls", "recordings"
-  add_foreign_key "recordings", "phone_calls"
 end
