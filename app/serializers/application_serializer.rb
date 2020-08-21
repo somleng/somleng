@@ -1,4 +1,6 @@
 class ApplicationSerializer
+  API_VERSION = "2010-04-01".freeze
+
   attr_reader :object, :serializer_options
 
   def initialize(object, serializer_options = {})
@@ -7,9 +9,7 @@ class ApplicationSerializer
   end
 
   def serializable_hash(_options = nil)
-    {
-      api_version: "2010-04-01"
-    }
+    {}
   end
 
   def as_json(_options = nil)

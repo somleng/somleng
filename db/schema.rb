@@ -120,12 +120,10 @@ ActiveRecord::Schema.define(version: 2020_08_19_050605) do
     t.datetime "updated_at", null: false
     t.string "external_id"
     t.uuid "incoming_phone_number_id"
-    t.uuid "recording_id"
     t.json "variables", default: {}, null: false
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
     t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id"
-    t.index ["recording_id"], name: "index_phone_calls_on_recording_id"
   end
 
   add_foreign_key "call_data_records", "phone_calls"

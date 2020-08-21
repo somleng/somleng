@@ -152,30 +152,37 @@ FactoryBot.define do
     end
 
     trait :answered do
+      with_external_id
       status { PhoneCall::STATE_ANSWERED }
     end
 
     trait :not_answered do
+      with_external_id
       status { PhoneCall::STATE_NOT_ANSWERED }
     end
 
     trait :ringing do
+      with_external_id
       status { PhoneCall::STATE_RINGING }
     end
 
     trait :canceled do
+      with_external_id
       status { PhoneCall::STATE_CANCELED }
     end
 
     trait :failed do
+      with_external_id
       status { PhoneCall::STATE_FAILED }
     end
 
     trait :completed do
+      with_external_id
       status { PhoneCall::STATE_COMPLETED }
     end
 
     trait :busy do
+      with_external_id
       status { PhoneCall::STATE_BUSY }
     end
 

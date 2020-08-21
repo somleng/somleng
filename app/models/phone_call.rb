@@ -80,7 +80,7 @@ class PhoneCall < ApplicationRecord
       transitions from: %i[initiated ringing], to: :answered
     end
 
-    event :complete, after_commit: :publish_completed do
+    event :complete do
       transitions from: :answered,
                   to: :completed
 
@@ -155,10 +155,7 @@ class PhoneCall < ApplicationRecord
   def caller_name; end
 
   def direction
-    direction_key = call_data_record&.direction
-    direction_key ||= "inbound" if incoming_phone_number.present?
-    direction_key ||= "outbound"
-    TWILIO_CALL_DIRECTIONS.fetch(direction_key)
+    incoming_phone_number.present? ? "inbound" : "outbound"
   end
 
   def duration
@@ -215,10 +212,6 @@ class PhoneCall < ApplicationRecord
     return {} if account.blank?
 
     account.settings.slice("source_matcher").symbolize_keys
-  end
-
-  def publish_completed
-    broadcast(:phone_call_completed, self)
   end
 
   def phone_call_event_answered?
