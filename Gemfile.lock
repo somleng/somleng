@@ -148,12 +148,10 @@ GEM
     bootsnap (1.4.8)
       msgpack (~> 1.0)
     builder (3.2.4)
-    codecov (0.2.7)
-      colorize
+    codecov (0.2.8)
       json
       simplecov
     coderay (1.1.2)
-    colorize (0.8.1)
     concurrent-ruby (1.1.7)
     countries (3.0.1)
       i18n_data (~> 0.10.0)
