@@ -300,7 +300,7 @@ GEM
     ruby-progressbar (1.10.1)
     ruby2_keywords (0.0.2)
     safe_yaml (1.0.5)
-    sentry-raven (3.0.3)
+    sentry-raven (3.0.4)
       faraday (>= 1.0)
     simplecov (0.19.0)
       docile (~> 1.1)
