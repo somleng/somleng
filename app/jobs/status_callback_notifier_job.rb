@@ -3,7 +3,7 @@ class StatusCallbackNotifierJob < ApplicationJob
     status_callback_url = phone_call.status_callback_url
     http_method = phone_call.status_callback_method == "GET" ? :get : :post
     serializer = StatusCallbackSerializer.new(phone_call)
-    http_client.public_send(
+    http_client.run_request(
       http_method,
       phone_call.status_callback_url,
       serializer.serializable_hash,

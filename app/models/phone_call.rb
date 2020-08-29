@@ -129,23 +129,8 @@ class PhoneCall < ApplicationRecord
     CallDataRecord::Query.new(scope: joins(:call_data_record))
   end
 
-  def initiate_or_cancel!
-    external_id? ? initiate! : cancel!
-  end
-
-  def to_internal_outbound_call_json
-    to_json(
-      only: internal_json_attributes.keys,
-      methods: internal_json_methods.merge(routing_instructions: nil).keys
-    )
-  end
-
   def uri
     Rails.application.routes.url_helpers.api_twilio_account_call_path(account, id)
-  end
-
-  def enqueue_outbound_call!
-    OutboundCallJob.perform_later(id)
   end
 
   def annotation; end

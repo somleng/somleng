@@ -1,7 +1,7 @@
 class Api::PhoneCallsController < Api::BaseController
   def create
     super
-    resource.enqueue_outbound_call! if resource.persisted?
+    OutboundCallJob.perform_later(resource) if resource.persisted?
   end
 
   private
