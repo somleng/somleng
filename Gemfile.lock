@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
-  revision: 09bbc409ee3505d6a942df5c0479279293def2d1
+  revision: 9733122ce3036372d7029d2e0cf0db315905a92a
   specs:
     shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
@@ -198,7 +198,7 @@ GEM
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.14.1)
+    minitest (5.14.2)
     monetize (1.9.4)
       money (~> 6.12)
     money (6.13.7)
