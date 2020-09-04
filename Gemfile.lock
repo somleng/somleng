@@ -148,7 +148,7 @@ GEM
     bootsnap (1.4.8)
       msgpack (~> 1.0)
     builder (3.2.4)
-    codecov (0.2.9)
+    codecov (0.2.10)
       json
       simplecov
     coderay (1.1.2)
