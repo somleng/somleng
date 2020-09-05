@@ -13,22 +13,17 @@ gem "doorkeeper"
 gem "dry-validation"
 gem "enumerize"
 gem "lograge"
-gem "money-rails"
 gem "okcomputer"
 gem "pg"
 gem "phony"
 gem "phony_rails"
 gem "puma"
-gem "refile", github: "refile/refile", require: "refile/rails"
-gem "refile-s3", github: "dwilkie/refile-s3"
 gem "responders"
 gem "sentry-raven"
 gem "shoryuken"
-gem "sinatra", github: "sinatra/sinatra"
 gem "torasup"
 gem "validate_url", github: "perfectline/validates_url"
 gem "webpacker"
-gem "wisper", github: "krisleech/wisper"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -53,5 +48,4 @@ group :test do
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
   gem "webmock"
-  gem "wisper-rspec"
 end

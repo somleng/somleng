@@ -1,5 +1,8 @@
 class OutboundCallJob < ApplicationJob
   def perform(phone_call, http_client: default_http_client)
+    routing_instructions = OutboundCallRouter.new(phone_call.to).routing_instructions
+    return phone_call.cancel! if routing_instructions.blank?
+
     response = http_client.post(
       "/calls",
       {
@@ -12,7 +15,7 @@ class OutboundCallJob < ApplicationJob
         voice_method: phone_call.voice_method,
         to: phone_call.to,
         from: phone_call.from,
-        routing_instructions: CallRouter.new(phone_call.to).routing_instructions
+        routing_instructions: routing_instructions
       }
     )
 

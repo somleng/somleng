@@ -1,17 +1,13 @@
 class CallDataRecord < ApplicationRecord
-  include Wisper::Publisher
-
   INBOUND_DIRECTION  = "inbound".freeze
   OUTBOUND_DIRECTION = "outbound".freeze
-  DEFAULT_PRICE_STORE_CURRENCY = "USD6".freeze
 
   DIRECTIONS = [INBOUND_DIRECTION, OUTBOUND_DIRECTION].freeze
 
-  attachment :file, content_type: ["application/json"]
+  has_one_attached :file
+  validates :file, presence: true
 
   belongs_to :phone_call
-
-  validates :file, presence: true
 
   validates :duration_sec,
             :bill_sec,
@@ -20,14 +16,6 @@ class CallDataRecord < ApplicationRecord
 
   validates :direction, presence: true, inclusion: { in: DIRECTIONS }
   validates :hangup_cause, :start_time, :end_time, presence: true
-
-  monetize :price_microunits,
-           as: :price,
-           numericality: {
-             greater_than_or_equal_to: 0
-           }
-
-  after_commit :publish_created, on: :create
 
   delegate :answered?, :not_answered?, :busy?, to: :completed_event
 
@@ -63,10 +51,6 @@ class CallDataRecord < ApplicationRecord
       scope.billable.sum("((\"#{CallDataRecord.table_name}\".\"bill_sec\" - 1) / 60) + 1")
     end
 
-    def total_price_in_usd
-      total_price_in_money.exchange_to("USD")
-    end
-
     private
 
     def cast_as_date(column_name)
@@ -83,10 +67,6 @@ class CallDataRecord < ApplicationRecord
 
     def total_price_in_microunits
       scope.sum(:price_microunits)
-    end
-
-    def total_price_in_money
-      Money.new(total_price_in_microunits, DEFAULT_PRICE_STORE_CURRENCY)
     end
   end
 

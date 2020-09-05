@@ -81,7 +81,6 @@ FactoryBot.define do
     hangup_cause { cdr.hangup_cause }
     start_time { Time.at(cdr.start_epoch.to_i) }
     end_time { Time.at(cdr.end_epoch.to_i) }
-    price { Money.new(0) }
 
     file do
       Refile::FileDouble.new(

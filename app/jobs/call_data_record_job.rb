@@ -22,7 +22,8 @@ class CallDataRecordJob < ApplicationJob
   def process_raw_cdr
     freeswitch_cdr = CDR::Freeswitch.new(raw_cdr)
     call_data_record.phone_call = PhoneCall.find_by_external_id(freeswitch_cdr.uuid)
-    call_data_record.file_content_type, call_data_record.file_filename, call_data_record.file = freeswitch_cdr.to_file
+    call_data_record.file_content_type, call_data_record.file_filename
+    call_data_record.file = freeswitch_cdr.to_file
     call_data_record.hangup_cause = freeswitch_cdr.hangup_cause
     call_data_record.direction = freeswitch_cdr.direction
     call_data_record.duration_sec = freeswitch_cdr.duration_sec

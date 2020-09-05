@@ -49,15 +49,6 @@ describe CallDataRecord do
       it { expect(described_class.bill_minutes).to eq(4) }
     end
 
-    describe ".total_price_in_usd" do
-      before do
-        create(:call_data_record, :price => Money.new(8750, "USD6"))
-        create(:call_data_record, :price => Money.new(31000, "USD6"))
-      end
-
-      it { expect(described_class.total_price_in_usd).to eq(Money.new(4, "USD")) }
-    end
-
     describe ".billable" do
       let(:billable_cdr) { create(:call_data_record, :billable) }
 

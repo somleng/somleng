@@ -1,6 +1,4 @@
 class PhoneCall < ApplicationRecord
-  include Wisper::Publisher
-
   TWILIO_CALL_DIRECTIONS = {
     "inbound" => "inbound",
     "outbound" => "outbound-api"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_19_050605) do
+ActiveRecord::Schema.define(version: 2020_09_05_060213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -23,12 +23,29 @@ ActiveRecord::Schema.define(version: 2020_08_19_050605) do
     t.jsonb "settings", default: {}, null: false
   end
 
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.uuid "record_id", null: false
+    t.uuid "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
   create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "phone_call_id", null: false
-    t.string "file_id", null: false
-    t.string "file_filename", null: false
-    t.integer "file_size", null: false
-    t.string "file_content_type", null: false
     t.integer "bill_sec", null: false
     t.integer "duration_sec", null: false
     t.string "direction", null: false
@@ -39,8 +56,6 @@ ActiveRecord::Schema.define(version: 2020_08_19_050605) do
     t.datetime "end_time", null: false
     t.datetime "answer_time"
     t.string "sip_term_status"
-    t.integer "price_microunits", null: false
-    t.string "price_currency", null: false
     t.string "sip_invite_failure_status"
     t.string "sip_invite_failure_phrase"
     t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id"
@@ -126,6 +141,7 @@ ActiveRecord::Schema.define(version: 2020_08_19_050605) do
     t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "incoming_phone_numbers", "accounts"
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"

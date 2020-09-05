@@ -14,6 +14,7 @@ class PhoneCallEventRequestSchema < ApplicationRequestSchema
     params = super
     result = {}
     result[:type] = params.fetch(:type)
+    result[:type] = PhoneCallStatus.new() if params.fetch(:type) == "completed"
     result[:phone_call] = find_phone_call(params.fetch(:phone_call))
     result[:params] = params.fetch(:variables) if params.key?(:variables)
     result

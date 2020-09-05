@@ -1,32 +1,10 @@
 GIT
-  remote: https://github.com/dwilkie/refile-s3.git
-  revision: 8aa567bc31bc21839f7f8a20fa4135de2063af93
-  specs:
-    refile-s3 (0.2.0)
-      aws-sdk-s3 (~> 1.23)
-      refile (~> 0.7.0)
-
-GIT
-  remote: https://github.com/krisleech/wisper.git
-  revision: 7cff5bca86cf0afa14cde20832bf4f0de6a52188
-  specs:
-    wisper (2.0.1)
-
-GIT
   remote: https://github.com/perfectline/validates_url.git
   revision: a9b56debb41cd9b73879ef598b085721215b30fe
   specs:
     validate_url (1.0.11)
       activemodel (>= 3.0.0)
       public_suffix
-
-GIT
-  remote: https://github.com/refile/refile.git
-  revision: c4ac577c6fdad92bc079a62a0e82888319daedc8
-  specs:
-    refile (0.7.0)
-      mime-types
-      sinatra (>= 2.0.0, <= 3.0.0)
 
 GIT
   remote: https://github.com/samnang/rspec_api_documentation.git
@@ -36,18 +14,6 @@ GIT
       activesupport (>= 3.0.0)
       mustache (~> 1.0, >= 0.99.4)
       rspec (~> 3.0)
-
-GIT
-  remote: https://github.com/sinatra/sinatra.git
-  revision: 87e48d0a1a54b26071ffb8125ec36124908fc1ba
-  specs:
-    rack-protection (2.1.0)
-      rack
-    sinatra (2.1.0)
-      mustermann (~> 1.0)
-      rack (~> 2.2)
-      rack-protection (= 2.1.0)
-      tilt (~> 2.0)
 
 GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
@@ -128,13 +94,6 @@ GEM
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-kms (1.29.0)
-      aws-sdk-core (~> 3, >= 3.71.0)
-      aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.60.2)
-      aws-sdk-core (~> 3, >= 3.83.0)
-      aws-sdk-kms (~> 1)
-      aws-sigv4 (~> 1.1)
     aws-sdk-sqs (1.26.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
@@ -225,27 +184,13 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mime-types (3.3.1)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2020.0512)
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.14.1)
-    monetize (1.9.4)
-      money (~> 6.12)
-    money (6.13.7)
-      i18n (>= 0.6.4, <= 2)
-    money-rails (1.13.3)
-      activesupport (>= 3.0)
-      monetize (~> 1.9.0)
-      money (~> 6.13.2)
-      railties (>= 3.0)
     msgpack (1.3.3)
     multipart-post (2.1.1)
     mustache (1.1.1)
-    mustermann (1.1.1)
-      ruby2_keywords (~> 0.0.1)
     nio4r (2.5.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
@@ -339,7 +284,6 @@ GEM
     rubocop-rspec (1.42.0)
       rubocop (>= 0.87.0)
     ruby-progressbar (1.10.1)
-    ruby2_keywords (0.0.2)
     safe_yaml (1.0.5)
     semantic_range (2.3.0)
     sentry-raven (3.0.0)
@@ -367,7 +311,6 @@ GEM
     squasher (0.6.2)
     thor (1.0.1)
     thread_safe (0.3.6)
-    tilt (2.0.10)
     torasup (0.3.0)
       countries
       deep_merge
@@ -404,7 +347,6 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   lograge
-  money-rails
   okcomputer
   pg
   phony
@@ -412,8 +354,6 @@ DEPENDENCIES
   pry
   puma
   rails (= 6.0.2.1)
-  refile!
-  refile-s3!
   responders
   rspec-rails
   rspec_api_documentation!
@@ -424,7 +364,6 @@ DEPENDENCIES
   shoulda-matchers!
   simplecov
   simplecov-lcov
-  sinatra!
   spring
   spring-commands-rspec
   squasher
@@ -432,7 +371,6 @@ DEPENDENCIES
   validate_url!
   webmock
   webpacker
-  wisper!
   wisper-rspec
 
 BUNDLED WITH

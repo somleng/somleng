@@ -39,9 +39,9 @@ class StatusCallbackSerializer < ApplicationSerializer
       "To" => object.to,
       "CallStatus" => TWILIO_CALL_STATUS_MAPPINGS.fetch(object.status),
       "ApiVersion" => ApplicationSerializer::API_VERSION,
-      "Direction" => TWILIO_CALL_DIRECTIONS.fetch(phone_call.direction),
+      "Direction" => TWILIO_CALL_DIRECTIONS.fetch(object.direction),
       "CallDuration" => object.duration,
-      "SipResponseCode" => object.sip_response_code,
+      "SipResponseCode" => object.call_data_record.sip_term_status,
       "CallbackSource" => "call-progress-events",
       "Timestamp" => Time.current.utc.rfc2822,
       "SequenceNumber" => "0"
@@ -49,7 +49,7 @@ class StatusCallbackSerializer < ApplicationSerializer
   end
 
   def twilio_signature(url:, auth_token:)
-    data = url + params.sort.join
+    data = url + serializable_hash.sort.join
     digest = OpenSSL::Digest.new("sha1")
     Base64.encode64(OpenSSL::HMAC.digest(digest, auth_token, data)).strip
   end
