@@ -23,7 +23,7 @@ RSpec.describe "Services" do
       end
 
       expect(response.code).to eq("204")
-      expect(phone_call.reload).to be_busy
+      expect(phone_call.reload).to be_not_answered
       expect(WebMock).to have_requested(
         :post, phone_call.status_callback_url
       )

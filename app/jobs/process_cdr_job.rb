@@ -2,6 +2,9 @@ class ProcessCDRJob < ApplicationJob
   def perform(cdr)
     cdr_variables = cdr.fetch("variables")
     phone_call = PhoneCall.find_by(external_id: cdr_variables.fetch("uuid"))
+
+    return if phone_call.blank?
+
     CallDataRecord.create!(
       phone_call: phone_call,
       hangup_cause: cdr_variables.fetch("hangup_cause"),
@@ -23,7 +26,7 @@ class ProcessCDRJob < ApplicationJob
       }
     )
 
-    handle_phone_call_event(phone_call)
+    update_phone_call_status(phone_call)
     notify_status_callback_url(phone_call)
   end
 

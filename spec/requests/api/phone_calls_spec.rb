@@ -5,18 +5,18 @@ RSpec.describe "Phone Calls API" do
     # https://www.twilio.com/docs/api/rest/making-calls
 
     it "creates a phone call" do
-      params = {
-        "Url" => "https://rapidpro.ngrok.com/handle/33/",
-        "Method" => "GET",
-        "To" => "+855715100860",
-        "From" => "2442",
-        "StatusCallback" => "https://rapidpro.ngrok.com/handle/33/",
-        "StatusCallbackMethod" => "GET"
-      }
+      account = create(:account)
 
       post(
-        api_twilio_account_calls_path(account_sid),
-        params: params,
+        api_phone_calls_path(account.id),
+        params: {
+          "Url" => "https://rapidpro.ngrok.com/handle/33/",
+          "Method" => "GET",
+          "To" => "+855715100860",
+          "From" => "2442",
+          "StatusCallback" => "https://rapidpro.ngrok.com/handle/33/",
+          "StatusCallbackMethod" => "GET"
+        },
         headers: build_api_authorization_headers(account)
       )
 

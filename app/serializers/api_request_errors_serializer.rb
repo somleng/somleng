@@ -1,4 +1,4 @@
-class JSONAPIRequestErrorsSerializer < ApplicationSerializer
+class APIRequestErrorsSerializer < ApplicationSerializer
   def serializable_hash(_options = nil)
     errors = object.errors
     errors.each_with_object(errors: []) do |message, result|

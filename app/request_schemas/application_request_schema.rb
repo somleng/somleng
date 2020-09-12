@@ -9,6 +9,10 @@ class ApplicationRequestSchema < Dry::Validation::Contract
     PhoneNumber = String.constructor do |string|
       PhonyRails.normalize_number(string)
     end
+
+    UppercaseString = String.constructor do |string|
+      string.upcase if string.present?
+    end
   end
 
   register_macro(:phone_number_format) do |macro:|

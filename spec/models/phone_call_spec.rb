@@ -5,12 +5,6 @@ require "rails_helper"
 describe PhoneCall do
   let(:factory) { :phone_call }
 
-  it_behaves_like "twilio_api_resource"
-  it_behaves_like "twilio_url_logic"
-  it_behaves_like "phone_number_attribute" do
-    let(:phone_number_attribute) { :to }
-  end
-
   describe "associations" do
     it { is_expected.to belong_to(:account) }
     it { is_expected.to belong_to(:incoming_phone_number).optional }

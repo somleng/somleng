@@ -1,4 +1,9 @@
 class PhoneCall < ApplicationRecord
+  extend Enumerize
+
+  enumerize :voice_method, in: %w[POST GET]
+  enumerize :status_callback_method, in: %w[POST GET]
+
   TWILIO_CALL_DIRECTIONS = {
     "inbound" => "inbound",
     "outbound" => "outbound-api"
@@ -16,16 +21,11 @@ class PhoneCall < ApplicationRecord
     "canceled" => "canceled"
   }.freeze
 
-  include TwilioApiResource
-  include TwilioUrlLogic
-
   belongs_to :account
   belongs_to :incoming_phone_number, optional: true
-  belongs_to :recording, optional: true
 
   has_one    :call_data_record
   has_many   :phone_call_events, class_name: "PhoneCallEvent::Base"
-  has_many   :recordings
 
   before_validation :normalize_data
 
@@ -38,8 +38,6 @@ class PhoneCall < ApplicationRecord
   validates :external_id, uniqueness: true, strict: true, allow_nil: true
   validates :external_id, presence: true, if: :incoming_phone_number
 
-  attr_accessor :completed_event
-
   alias_attribute :To, :to
   alias_attribute :From, :from
   alias_attribute :ExternalSid, :external_id
@@ -51,7 +49,7 @@ class PhoneCall < ApplicationRecord
 
   include AASM
 
-  aasm column: :status, whiny_transitions: false do
+  aasm column: :status do
     state :queued, initial: true
     state :initiated
     state :ringing
@@ -79,23 +77,19 @@ class PhoneCall < ApplicationRecord
     end
 
     event :complete do
-      transitions from: :answered,
-                  to: :completed
+      transitions from: %i[initiated ringing answered], to: :completed
+    end
 
-      transitions from: %i[initiated ringing],
-                  to: :completed,
-                  if: :phone_call_event_answered?
+    event :mark_as_not_answered do
+      transitions from: %i[initiated ringing], to: :not_answered
+    end
 
-      transitions from: %i[initiated ringing],
-                  to: :not_answered,
-                  if: :phone_call_event_not_answered?
+    event :mark_as_busy do
+      transitions from: %i[initiated ringing], to: :busy
+    end
 
-      transitions from: %i[initiated ringing],
-                  to: :busy,
-                  if: :phone_call_event_busy?
-
-      transitions from: %i[initiated ringing],
-                  to: :failed
+    event :fail do
+      transitions from: %i[initiated ringing], to: :failed
     end
   end
 
@@ -173,7 +167,9 @@ class PhoneCall < ApplicationRecord
 
   def subresource_uris
     uris = {}
-    uris["recordings"] = Rails.application.routes.url_helpers.api_twilio_account_call_recordings_path(account_id, id) if recordings.any?
+    if recordings.any?
+      uris["recordings"] = Rails.application.routes.url_helpers.api_twilio_account_call_recordings_path(account_id, id)
+    end
     uris
   end
 
@@ -195,18 +191,6 @@ class PhoneCall < ApplicationRecord
     return {} if account.blank?
 
     account.settings.slice("source_matcher").symbolize_keys
-  end
-
-  def phone_call_event_answered?
-    completed_event&.answered? || call_data_record&.answered?
-  end
-
-  def phone_call_event_not_answered?
-    completed_event&.not_answered? || call_data_record&.not_answered?
-  end
-
-  def phone_call_event_busy?
-    completed_event&.busy? || call_data_record&.busy?
   end
 
   def json_attributes

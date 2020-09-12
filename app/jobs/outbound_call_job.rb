@@ -16,7 +16,7 @@ class OutboundCallJob < ApplicationJob
         to: phone_call.to,
         from: phone_call.from,
         routing_instructions: routing_instructions
-      }
+      }.to_json
     )
 
     if response.success?
@@ -30,12 +30,12 @@ class OutboundCallJob < ApplicationJob
   private
 
   def default_http_client
-    @default_http_client ||= Faraday.new(url: Rails.configuration.app_settings.fetch("ahn_host")) do |conn|
+    @default_http_client ||= Faraday.new(url: Rails.configuration.app_settings.fetch(:ahn_host)) do |conn|
       conn.headers["content-type"] = "application/json"
       conn.adapter Faraday.default_adapter
       conn.basic_auth(
-        Rails.configuration.app_settings.fetch("ahn_username"),
-        Rails.configuration.app_settings.fetch("ahn_password")
+        Rails.configuration.app_settings.fetch(:ahn_username),
+        Rails.configuration.app_settings.fetch(:ahn_password)
       )
     end
   end

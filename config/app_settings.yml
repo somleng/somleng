@@ -8,7 +8,7 @@ default: &default
   services_user: "services"
   services_password: "password"
   ahn_host: "https://ahn.somleng.org"
-  ahn_user: "adhearsion"
+  ahn_username: "adhearsion"
   ahn_password: "password"
 
 production: &production

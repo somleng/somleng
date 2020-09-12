@@ -13,28 +13,8 @@ FactoryBot.define do
     status_callback_method { "GET" }
   end
 
-  factory :freeswitch_cdr, class: CDR::Freeswitch do
-    transient do
-      transient_cdr { { "variables" => {} } }
-      sip_term_status { nil }
-    end
-
-    trait :busy do
-      sip_term_status { "486" }
-    end
-
-    skip_create
-    initialize_with do
-      transient_cdr["variables"]["sip_term_status"] = sip_term_status if sip_term_status
-      cdr_json = JSON.parse(File.read(ActiveSupport::TestCase.fixture_path + "/freeswitch_cdr.json"))
-      cdr_json.deep_merge!(transient_cdr)
-      new(cdr_json.to_json)
-    end
-  end
-
   factory :call_data_record do
     transient do
-      cdr { build(:freeswitch_cdr) }
       account { build(:account) }
       external_id { SecureRandom.uuid }
     end
@@ -75,20 +55,12 @@ FactoryBot.define do
       sip_term_status { "486" }
     end
 
-    duration_sec { cdr.duration_sec }
-    bill_sec { cdr.bill_sec }
-    direction { cdr.direction }
-    hangup_cause { cdr.hangup_cause }
-    start_time { Time.at(cdr.start_epoch.to_i) }
-    end_time { Time.at(cdr.end_epoch.to_i) }
-
-    file do
-      Refile::FileDouble.new(
-        cdr.raw_cdr,
-        cdr.send(:filename),
-        content_type: cdr.send(:content_type)
-      )
-    end
+    duration_sec { 5 }
+    bill_sec { 5 }
+    direction { "outbound" }
+    hangup_cause { "ORIGINATOR_CANCEL" }
+    start_time { 10.seconds.ago }
+    end_time { 5.seconds.ago  }
   end
 
   factory :account do
