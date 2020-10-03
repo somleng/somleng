@@ -15,4 +15,10 @@ class ApplicationSerializer
   def as_json(_options = nil)
     serializable_hash.as_json
   end
+
+  private
+
+  def url_helpers
+    @url_helpers ||= Rails.application.routes.url_helpers
+  end
 end

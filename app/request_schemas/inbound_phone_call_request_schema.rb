@@ -21,6 +21,7 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
 
     incoming_phone_number = find_incoming_phone_number(result.fetch(:to))
     result[:incoming_phone_number] = incoming_phone_number
+    result[:direction] = :inbound
     result[:account] = incoming_phone_number.account
     result[:voice_url] = incoming_phone_number.voice_url
     result[:voice_method] = incoming_phone_number.voice_method

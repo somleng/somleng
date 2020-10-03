@@ -1,21 +1,4 @@
 class StatusCallbackSerializer < ApplicationSerializer
-  TWILIO_CALL_STATUS_MAPPINGS = {
-    "queued" => "queued",
-    "initiated" => "queued",
-    "ringing" => "ringing",
-    "answered" => "in-progress",
-    "busy" => "busy",
-    "failed" => "failed",
-    "not_answered" => "no-answer",
-    "completed" => "completed",
-    "canceled" => "canceled"
-  }.freeze
-
-  TWILIO_CALL_DIRECTIONS = {
-    "inbound" => "inbound",
-    "outbound" => "outbound-api"
-  }
-
   # https://www.twilio.com/docs/voice/api/call-resource#statuscallback
 
   # | Parameter     | Description                                                                                                                 |
@@ -37,10 +20,10 @@ class StatusCallbackSerializer < ApplicationSerializer
       "AccountSid" => object.account.id,
       "From" => object.from,
       "To" => object.to,
-      "CallStatus" => TWILIO_CALL_STATUS_MAPPINGS.fetch(object.status),
+      "CallStatus" => PhoneCallSerializer::TWILIO_CALL_STATUS_MAPPINGS.fetch(object.status),
       "ApiVersion" => ApplicationSerializer::API_VERSION,
-      "Direction" => TWILIO_CALL_DIRECTIONS.fetch(object.direction),
-      "CallDuration" => object.duration,
+      "Direction" => PhoneCallSerializer::TWILIO_CALL_DIRECTIONS.fetch(object.direction),
+      "CallDuration" => object.call_data_record.bill_sec.to_s,
       "SipResponseCode" => object.call_data_record.sip_term_status,
       "CallbackSource" => "call-progress-events",
       "Timestamp" => Time.current.utc.rfc2822,

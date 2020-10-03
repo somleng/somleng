@@ -7,7 +7,8 @@ RSpec.describe OutboundCallJob do
       :queued,
       to: "85516701721",
       from: "1294",
-      voice_url: "http://example.com/voice_url"
+      voice_url: "http://example.com/voice_url",
+      voice_method: "POST"
     )
     stub_request(:post, "https://ahn.somleng.org/calls").to_return(body: "{\"id\": \"123456789\"}")
 
@@ -24,7 +25,7 @@ RSpec.describe OutboundCallJob do
         api_version: "2010-04-01",
         voice_url: "http://example.com/voice_url",
         voice_method: "POST",
-        to: "+85516701721",
+        to: "85516701721",
         from: "1294",
         routing_instructions: {
           dial_string: be_present

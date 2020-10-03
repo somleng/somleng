@@ -7,5 +7,10 @@ module API
         phone_call
       end
     end
+
+    def show
+      phone_call = current_account.phone_calls.find(params[:id])
+      respond_with_resource(phone_call)
+    end
   end
 end

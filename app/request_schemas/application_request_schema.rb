@@ -7,7 +7,7 @@ class ApplicationRequestSchema < Dry::Validation::Contract
     include Dry.Types()
 
     PhoneNumber = String.constructor do |string|
-      PhonyRails.normalize_number(string)
+      Phony.normalize(string.gsub(/\D/, "")) if string.present?
     end
 
     UppercaseString = String.constructor do |string|
@@ -15,12 +15,8 @@ class ApplicationRequestSchema < Dry::Validation::Contract
     end
   end
 
-  register_macro(:phone_number_format) do |macro:|
-    if key? && !Phony.plausible?(value)
-      key.failure(
-        { text: "is invalid", code: macro.args.dig(0, :error_code) }.compact
-      )
-    end
+  register_macro(:phone_number_format) do
+    key.failure("is invalid") if key? && !Phony.plausible?(value)
   end
 
   def initialize(input_params:, options: {})

@@ -14,6 +14,8 @@ module Services
             answer_epoch: event.params["answer_epoch"],
             sip_term_status: event.params["sip_term_status"]
           )
+
+          event
         end
       end
     end

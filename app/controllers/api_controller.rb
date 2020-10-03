@@ -16,4 +16,17 @@ class APIController < ApplicationController
   def current_account
     @current_account ||= Account.find(doorkeeper_token.resource_owner_id)
   end
+
+  def deny_access!
+    render(
+      json: {
+        "code": 20003,
+        "detail": "",
+        "message": "Authenticate",
+        "more_info": "https://www.twilio.com/docs/errors/20003",
+        "status": 401
+      },
+      status: :unauthorized
+    )
+  end
 end

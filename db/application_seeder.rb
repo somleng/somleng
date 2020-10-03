@@ -4,7 +4,7 @@ class ApplicationSeeder
     account.access_token || account.create_access_token!
 
     print(
-      "Account SID:         #{account.sid}\nAuth Token:          #{account.auth_token}"
+      "Account SID:         #{account.id}\nAuth Token:          #{account.auth_token}"
     )
   end
 end

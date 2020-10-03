@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_05_060213) do
+ActiveRecord::Schema.define(version: 2020_10_03_062358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -136,6 +136,7 @@ ActiveRecord::Schema.define(version: 2020_09_05_060213) do
     t.string "external_id"
     t.uuid "incoming_phone_number_id"
     t.json "variables", default: {}, null: false
+    t.string "direction", null: false
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
     t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id"

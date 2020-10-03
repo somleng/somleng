@@ -66,14 +66,7 @@ FactoryBot.define do
   factory :account do
     enabled
     with_access_token
-
-    trait :enabled do
-      state { Account::STATE_ENABLED }
-    end
-
-    trait :disabled do
-      state { Account::STATE_DISABLED }
-    end
+    traits_for_enum :state, %w[enabled disabled]
 
     trait :with_access_token do
       after(:build) do |account|
@@ -85,6 +78,7 @@ FactoryBot.define do
   factory :incoming_phone_number do
     account
     phone_number { generate(:phone_number) }
+    voice_method { "POST" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
 
     trait :with_optional_attributes do
@@ -101,12 +95,19 @@ FactoryBot.define do
 
   factory :phone_call do
     account
-    to { "+85512334667" }
+    to { "85512334667" }
     from { "2442" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
+    voice_method { "POST" }
+    outbound
 
     trait :inbound do
       with_external_id
+      direction { :inbound }
+    end
+
+    trait :outbound do
+      direction { :outbound }
     end
 
     trait :with_external_id do

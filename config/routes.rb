@@ -8,11 +8,8 @@ Rails.application.routes.draw do
   end
 
   namespace :api, defaults: { format: "json" } do
-    post "/2010-04-01/Accounts/:account_id/Calls", to: "phone_calls#create", as: :phone_calls
-    get "/2010-04-01/Accounts/:account_id/Calls/:id", to: "phone_calls#show", as: :phone_call
-
-    namespace :internal do
-      resources :call_data_records, only: [:create]
+    scope "/2010-04-01/Accounts/:account_id", as: :account do
+      resources :phone_calls, only: %i[create show], path: "Calls"
     end
   end
 end

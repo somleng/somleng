@@ -8,7 +8,7 @@ module RequestHelpers
   end
 
   def build_api_authorization_headers(account)
-    build_authorization_headers(account.sid, account.auth_token)
+    build_authorization_headers(account.id, account.auth_token)
   end
 
   def build_authorization_headers(username, password)

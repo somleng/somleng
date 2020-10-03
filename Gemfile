@@ -16,13 +16,11 @@ gem "lograge"
 gem "okcomputer"
 gem "pg"
 gem "phony"
-gem "phony_rails"
 gem "puma"
 gem "responders"
 gem "sentry-raven"
 gem "shoryuken"
 gem "torasup"
-gem "validate_url", github: "perfectline/validates_url"
 gem "webpacker"
 
 # Reduces boot times through caching; required in config/boot.rb
