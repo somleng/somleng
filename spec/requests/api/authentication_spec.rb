@@ -23,6 +23,7 @@ RSpec.describe "API Authentication" do
     )
 
     expect(response.code).to eq("401")
+    expect(response.body).to match_api_response_schema(:api_errors)
   end
 
   it "denies access to a disabled account" do

@@ -1,12 +1,10 @@
 class APIRequestErrorsSerializer < ApplicationSerializer
   def serializable_hash(_options = nil)
-    errors = object.errors
-    errors.each_with_object(errors: []) do |message, result|
-      result[:errors] << {
-        title: message.text,
-        source: { pointer: "/" + message.path.join("/") },
-        **message.meta.slice(:code, :detail)
-      }
-    end
+    {
+      message: object.errors(full: true).to_h.values.flatten.to_sentence,
+      status: 422,
+      code: 20422,
+      more_info: "https://www.twilio.com/docs/errors/20422"
+    }
   end
 end

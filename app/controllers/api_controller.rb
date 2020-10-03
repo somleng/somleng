@@ -18,7 +18,19 @@ class APIController < ApplicationController
   end
 
   def deny_access!
-    render(
+    render(unauthorized_render_options)
+  end
+
+  def doorkeeper_unauthorized_render_options(**)
+    unauthorized_render_options
+  end
+
+  def doorkeeper_forbidden_render_options(**)
+    unauthorized_render_options
+  end
+
+  def unauthorized_render_options
+    {
       json: {
         "code": 20003,
         "detail": "",
@@ -27,6 +39,6 @@ class APIController < ApplicationController
         "status": 401
       },
       status: :unauthorized
-    )
+    }
   end
 end

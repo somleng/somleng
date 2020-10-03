@@ -23,6 +23,19 @@ RSpec.describe "Phone Calls API" do
       expect(response.code).to eq("201")
       expect(response.body).to match_api_response_schema(:phone_call)
     end
+
+    it "handles invalid requests" do
+      account = create(:account)
+
+      post(
+        api_account_phone_calls_path(account),
+        params: {},
+        headers: build_api_authorization_headers(account)
+      )
+
+      expect(response.code).to eq("422")
+      expect(response.body).to match_api_response_schema(:api_errors)
+    end
   end
 
   describe "GET '/api/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}'" do

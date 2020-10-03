@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
       resource = yield(schema.output)
       respond_with_resource(resource, options)
     else
-      respond_with_resource(schema, responder: InvalidRequestSchemaResponder, **options)
+      respond_with(schema, responder: InvalidRequestSchemaResponder, **options)
     end
   end
 
