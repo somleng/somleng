@@ -23,7 +23,7 @@ class PhoneCallRequestSchema < ApplicationRequestSchema
   def output
     params = super
 
-    result = {
+    {
       to: params.fetch(:To),
       from: params.fetch(:From),
       voice_url: params.fetch(:Url),
@@ -32,7 +32,5 @@ class PhoneCallRequestSchema < ApplicationRequestSchema
       status_callback_method: params[:SatatusCallbackMethod],
       direction: :outbound
     }
-
-    result
   end
 end
