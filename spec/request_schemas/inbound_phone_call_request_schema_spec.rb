@@ -12,6 +12,10 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
     ).to have_valid_field(:to)
 
     expect(
+      validate_request_schema(input_params: { to: "85516701721" })
+    ).not_to have_valid_field(:to)
+
+    expect(
       validate_request_schema(input_params: { to: "855719999999" })
     ).not_to have_valid_field(:to)
   end

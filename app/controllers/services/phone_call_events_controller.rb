@@ -6,7 +6,7 @@ module Services
         serializer_class: PhoneCallEventSerializer,
         location: nil
       ) do |permitted_params|
-        PhoneCallEvent.transaction do
+        ApplicationRecord.transaction do
           event = PhoneCallEvent.create!(permitted_params)
           UpdatePhoneCallStatus.call(
             event.phone_call,

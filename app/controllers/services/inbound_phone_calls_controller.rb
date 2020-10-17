@@ -6,9 +6,11 @@ module Services
         serializer_class: PhoneCallSerializer,
         location: nil
       ) do |permitted_params|
-        phone_call = PhoneCall.create!(permitted_params)
-        phone_call.initiate!
-        phone_call
+        ApplicationRecord.transaction do
+          phone_call = PhoneCall.create!(permitted_params)
+          phone_call.initiate!
+          phone_call
+        end
       end
     end
   end
