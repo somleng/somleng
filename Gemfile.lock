@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
-  revision: 64376a0bcd696ba359aa3fa26d6ac18a01820091
+  revision: 3adbbf131787e88542ae3dc06840ba7be2421a42
   specs:
     shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
@@ -338,7 +338,7 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     wisper-rspec (1.1.0)
-    zeitwerk (2.4.1)
+    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
