@@ -104,7 +104,7 @@ jobs:
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/upgrade_infrastructure'
         uses: actions/upload-artifact@v1
         with:
           name: assets
