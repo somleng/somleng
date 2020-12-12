@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require "json"
+require "shellwords"
+
+options = {
+  started_by: "ecs_run_task",
+  launch_type: "FARGATE"
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: ecs_run_task -h"
+
+  opts.on("--command COMMAND", "Command to run") do |value|
+    options[:command] = value
+  end
+
+  opts.on("--service SERVICE", "Service name") do |value|
+    options[:service] = value
+  end
+
+  opts.on("--cluster cluster", "Cluster") do |value|
+    options[:cluster] = value
+  end
+
+  opts.on("--started-by started_by", "Started by") do |value|
+    options[:started_by] = value
+  end
+
+  opts.on("--launch-type launch_type", "Launch type") do |value|
+    options[:launch_type] = value
+  end
+
+  opts.on("--task-definition task_definition", "Task definition") do |value|
+    options[:task_definition] = value
+  end
+
+  opts.on("-h", "--help", "Prints this help") do
+    puts opts
+    exit
+  end
+end.parse!
+
+describe_services_options = {
+  "services": [
+    options.fetch(:service)
+  ],
+  "cluster": options.fetch(:cluster)
+}
+network_configuration = `aws ecs describe-services --cli-input-json '#{describe_services_options.to_json}' --query 'services[0].networkConfiguration'`
+run_task_options = {
+  "startedBy": options.fetch(:started_by),
+  "cluster": options.fetch(:cluster),
+  "launchType": options.fetch(:launch_type),
+  "taskDefinition": options.fetch(:task_definition, options.fetch(:service)),
+  "networkConfiguration": JSON.parse(network_configuration),
+  "overrides": {
+    "containerOverrides": [
+      {
+        "name": "worker",
+        "command": Shellwords.split(options.fetch(:command))
+      }
+    ]
+  }
+}
+
+puts `aws ecs run-task --cli-input-json '#{run_task_options.to_json}'`
