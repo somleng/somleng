@@ -306,6 +306,8 @@ GEM
       phony
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2020.4)
+      tzinfo (>= 1.0.0)
     unicode-display_width (1.7.0)
     unicode_utils (1.4.0)
     webmock (3.8.3)
@@ -355,6 +357,7 @@ DEPENDENCIES
   spring-commands-rspec
   squasher
   torasup
+  tzinfo-data
   webmock
   webpacker
 

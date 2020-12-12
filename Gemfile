@@ -21,6 +21,7 @@ gem "responders"
 gem "sentry-raven"
 gem "shoryuken"
 gem "torasup"
+gem "tzinfo-data"
 gem "webpacker"
 
 # Reduces boot times through caching; required in config/boot.rb
