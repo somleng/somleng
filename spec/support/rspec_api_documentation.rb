@@ -1,7 +1,7 @@
 require "rspec_api_documentation/dsl"
 
 RspecApiDocumentation.configure do |config|
-  config.api_name = "Somleng SCFM API Documentation"
+  config.api_name = "REST API Documentation"
   config.api_explanation = <<~HEREDOC
     This is the API Documentation for Somleng Twilio REST API (Somleng Twilreapi).
   HEREDOC
