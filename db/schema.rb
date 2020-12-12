@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_03_062358) do
+ActiveRecord::Schema.define(version: 2020_12_12_092951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -46,6 +46,10 @@ ActiveRecord::Schema.define(version: 2020_10_03_062358) do
 
   create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "phone_call_id", null: false
+    t.string "file_id"
+    t.string "file_filename"
+    t.integer "file_size"
+    t.string "file_content_type"
     t.integer "bill_sec", null: false
     t.integer "duration_sec", null: false
     t.string "direction", null: false
