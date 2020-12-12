@@ -18,8 +18,8 @@ RSpec.describe ProcessCDRJob do
 
     expect(phone_call.reload.status).to eq("not_answered")
     expect(phone_call.call_data_record).to have_attributes(
-      start_time: Time.local(2016, 9, 20, 16, 15, 23),
-      end_time: Time.local(2016, 9, 20, 16, 15, 24),
+      start_time: Time.utc(2016, 9, 20, 9, 15, 23),
+      end_time: Time.utc(2016, 9, 20, 9, 15, 24),
       answer_time: nil,
       sip_term_status: "487"
     )
