@@ -5,6 +5,15 @@ br:
       metadata:
         gateway:
           host: "200.142.96.52"
+
+mx:
+  operators:
+    c3ntro:
+      prefixes: "*"
+      metadata:
+        gateways:
+          host: "104.152.200.44"
+
 kh:
   operators:
     smart:
