@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 2020_12_12_092951) do
     t.jsonb "settings", default: {}, null: false
   end
 
-  create_table "active_storage_attachments", force: :cascade do |t|
+  create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.uuid "record_id", null: false
