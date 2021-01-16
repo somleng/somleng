@@ -11,8 +11,9 @@ mx:
     c3ntro:
       prefixes: "*"
       metadata:
-        gateways:
-          host: "104.152.200.44"
+        gateway:
+          dial_string_prefix: "69980"
+          host: "200.0.90.35"
 
 kh:
   operators:

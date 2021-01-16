@@ -9,7 +9,7 @@ class OutboundCallRouter
     return if destination_gateway.blank?
 
     {
-      "dial_string" => "#{destination_number}@#{destination_gateway.fetch('host')}"
+      "dial_string" => "#{destination_gateway['dial_string_prefix']}#{destination_number}@#{destination_gateway.fetch('host')}"
     }
   end
 
