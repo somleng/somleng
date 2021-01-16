@@ -20,7 +20,7 @@ Rails.application.configure do
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
-  config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
@@ -36,7 +36,7 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  # config.active_storage.service = :local
+  config.active_storage.service = :amazon
 
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil
@@ -45,13 +45,23 @@ Rails.application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path =~ /health_checks/ } } }
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
   config.log_level = :debug
+  config.lograge.enabled = true
+  config.lograge.base_controller_class = ["ActionController::API", "ActionController::Base"]
+  config.lograge.ignore_actions = ["OkComputer::OkComputerController#show"]
+  config.lograge.custom_options = lambda do |event|
+    exceptions = %w[controller action format id]
+    {
+      params: event.payload[:params].except(*exceptions)
+    }
+  end
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -59,6 +69,10 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "twilreapi_production"
+  config.active_job.queue_adapter = :shoryuken
+  config.action_mailer.perform_caching = false
+
+  config.active_storage.queue = config.active_job.default_queue_name
 
   # config.action_mailer.perform_caching = false
 
@@ -88,6 +102,26 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  Rails.application.routes.default_url_options[:host] = Rails.configuration.app_settings.fetch(:default_url_host)
+
+  config.action_mailer.default_url_options = {
+    host: Rails.configuration.app_settings.fetch(:default_url_host),
+    protocol: "https"
+  }
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.deliver_later_queue_name = config.active_job.default_queue_name
+
+  config.action_mailer.smtp_settings = {
+    enable_starttls_auto: true,
+    port: 587,
+    authentication: :login,
+    domain: "somleng.org",
+    address: Rails.configuration.app_settings.fetch(:smtp_address),
+    user_name: Rails.configuration.app_settings.fetch(:smtp_username),
+    password: Rails.configuration.app_settings.fetch(:smtp_password)
+  }
 
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector

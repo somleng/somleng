@@ -109,5 +109,5 @@ Doorkeeper.configure do
   # end
 
   # WWW-Authenticate Realm (default "Doorkeeper").
-  # realm "Doorkeeper"
+  realm "Twilio API"
 end

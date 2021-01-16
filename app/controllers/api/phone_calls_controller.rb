@@ -1,20 +1,16 @@
-class Api::PhoneCallsController < Api::BaseController
-  def create
-    super
-    resource.enqueue_outbound_call! if resource.persisted?
-  end
+module API
+  class PhoneCallsController < APIController
+    def create
+      validate_request_schema(with: PhoneCallRequestSchema) do |permitted_params|
+        phone_call = current_account.phone_calls.create!(permitted_params)
+        OutboundCallJob.perform_later(phone_call)
+        phone_call
+      end
+    end
 
-  private
-
-  def association_chain
-    current_account.phone_calls
-  end
-
-  def resource_location
-    api_twilio_account_call_url(current_account, resource)
-  end
-
-  def permitted_params
-    params.permit("To", "From", "Url", "Method", "StatusCallback", "StatusCallbackMethod")
+    def show
+      phone_call = current_account.phone_calls.find(params[:id])
+      respond_with_resource(phone_call)
+    end
   end
 end

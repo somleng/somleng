@@ -5,23 +5,36 @@ RSpec.describe "Phone Calls API" do
     # https://www.twilio.com/docs/api/rest/making-calls
 
     it "creates a phone call" do
-      params = {
-        "Url" => "https://rapidpro.ngrok.com/handle/33/",
-        "Method" => "GET",
-        "To" => "+855715100860",
-        "From" => "2442",
-        "StatusCallback" => "https://rapidpro.ngrok.com/handle/33/",
-        "StatusCallbackMethod" => "GET"
-      }
+      account = create(:account)
 
       post(
-        api_twilio_account_calls_path(account_sid),
-        params: params,
+        api_account_phone_calls_path(account),
+        params: {
+          "Url" => "https://rapidpro.ngrok.com/handle/33/",
+          "Method" => "GET",
+          "To" => "+855715100860",
+          "From" => "2442",
+          "StatusCallback" => "https://rapidpro.ngrok.com/handle/33/",
+          "StatusCallbackMethod" => "GET"
+        },
         headers: build_api_authorization_headers(account)
       )
 
       expect(response.code).to eq("201")
-      expect(parsed_response_body.fetch("to")).to eq("+855715100860")
+      expect(response.body).to match_api_response_schema(:phone_call)
+    end
+
+    it "handles invalid requests" do
+      account = create(:account)
+
+      post(
+        api_account_phone_calls_path(account),
+        params: {},
+        headers: build_api_authorization_headers(account)
+      )
+
+      expect(response.code).to eq("422")
+      expect(response.body).to match_api_response_schema(:api_errors)
     end
   end
 
@@ -33,12 +46,12 @@ RSpec.describe "Phone Calls API" do
       phone_call = create(:phone_call, account: account)
 
       get(
-        api_twilio_account_call_path(account, phone_call),
+        api_account_phone_call_path(account, phone_call),
         headers: build_api_authorization_headers(account)
       )
 
       expect(response.code).to eq("200")
-      expect(parsed_response_body).to eq(phone_call.as_json)
+      expect(response.body).to match_api_response_schema(:phone_call)
     end
   end
 end

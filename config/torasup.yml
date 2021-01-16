@@ -3,76 +3,68 @@ br:
     mundivox:
       prefixes: "*"
       metadata:
-        gateways:
-          default:
-            host: "200.142.96.52"
+        gateway:
+          host: "200.142.96.52"
 
 mx:
   operators:
     c3ntro:
       prefixes: "*"
       metadata:
-        gateways:
-          default:
-            host: "104.152.200.44"
+        gateway:
+          dial_string_prefix: "69980"
+          host: "200.0.90.35"
 
 kh:
   operators:
     smart:
       metadata:
-        gateways:
-          default:
-            host: "27.109.112.140"
-            prefix: false
-          "999999":
-            host: "3.0.245.70"
+        gateway:
+          host: "27.109.112.140"
+          prefix: false
+
     mobitel:
       metadata:
-        gateways:
-          default:
-            host: "103.193.204.26"
-            prefix: false
-          "999999":
-            host: "3.0.245.70"
+        gateway:
+          host: "103.193.204.26"
+          prefix: false
+
     metfone:
       metadata:
-        gateways:
-          default:
-            host: "175.100.93.13"
-            prefix: false
-          "999999":
-            host: "3.0.245.70"
+        gateway:
+          host: "175.100.93.13"
+          prefix: false
+
 sl:
   operators:
     orange:
       metadata:
-        gateways:
-          default:
-            host: "197.215.105.30"
+        gateway:
+          host: "197.215.105.30"
+
 so:
   operators:
     telesom:
       metadata:
-        gateways:
-          default:
-            host: "41.78.73.242"
+        gateway:
+          host: "41.78.73.242"
+
     golis:
       metadata:
-        gateways:
-          default:
-            host: "41.78.73.242"
+        gateway:
+          host: "41.78.73.242"
+
     nationlink:
       metadata:
-        gateways:
-          default:
-            host: "41.78.73.242"
+        gateway:
+          host: "41.78.73.242"
+
     somtel:
       metadata:
-        gateways:
-          default:
-            host: "41.78.73.242"
+        gateway:
+          host: "41.78.73.242"
+
     hormuud:
       metadata:
-        gateways:
-          default:
-            host: "41.78.73.242"
+        gateway:
+          host: "41.78.73.242"

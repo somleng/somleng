@@ -1,11 +1,12 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  # For details on connection pooling, see rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("DB_POOL") { 5 } %>
   reaping_frequency: 10
-  host: localhost
 
-development:
+development: &development
   <<: *default
   database: twilreapi_development
 
@@ -13,6 +14,10 @@ test:
   <<: *default
   database: twilreapi_test
 
-production:
+production: &production
   <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  database: <%= ENV['DATABASE_NAME'] %>
+  host: <%= ENV['DATABASE_HOST'] %>
+  port: <%= ENV['DATABASE_PORT'] %>
