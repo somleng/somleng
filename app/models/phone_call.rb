@@ -40,7 +40,7 @@ class PhoneCall < ApplicationRecord
     end
 
     event :complete do
-      transitions from: %i[initiated ringing answered], to: :completed
+      transitions from: %i[initiated ringing answered completed], to: :completed
     end
 
     event :mark_as_not_answered do
