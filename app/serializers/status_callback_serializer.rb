@@ -18,8 +18,8 @@ class StatusCallbackSerializer < ApplicationSerializer
     super.merge(
       "CallSid" => object.id,
       "AccountSid" => object.account.id,
-      "From" => object.from,
-      "To" => object.to,
+      "From" => format_number(object.from),
+      "To" => format_number(object.to),
       "CallStatus" => PhoneCallSerializer::TWILIO_CALL_STATUS_MAPPINGS.fetch(object.status),
       "ApiVersion" => ApplicationSerializer::API_VERSION,
       "Direction" => PhoneCallSerializer::TWILIO_CALL_DIRECTIONS.fetch(object.direction),
@@ -31,9 +31,9 @@ class StatusCallbackSerializer < ApplicationSerializer
     )
   end
 
-  def twilio_signature(url:, auth_token:)
-    data = url + serializable_hash.sort.join
-    digest = OpenSSL::Digest.new("sha1")
-    Base64.encode64(OpenSSL::HMAC.digest(digest, auth_token, data)).strip
+  private
+
+  def format_number(number)
+    Phony.plausible?(number) ? "+#{number}" : number
   end
 end

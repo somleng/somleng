@@ -8,11 +8,13 @@ class StatusCallbackNotifierJob < ApplicationJob
     status_callback_url = phone_call.status_callback_url
     http_method = HTTP_METHODS.fetch(phone_call.status_callback_method, :post)
     serializer = StatusCallbackSerializer.new(phone_call)
+    payload = serializer.serializable_hash
     http_client.run_request(
       http_method,
       phone_call.status_callback_url,
-      serializer.serializable_hash.to_query,
-      "x-twilio-signature" => serializer.twilio_signature(
+      payload.to_query,
+      "x-twilio-signature" => twilio_signature(
+        payload: payload,
         url: status_callback_url,
         auth_token: phone_call.account.auth_token
       )
@@ -20,6 +22,12 @@ class StatusCallbackNotifierJob < ApplicationJob
   end
 
   private
+
+  def twilio_signature(payload:, url:, auth_token:)
+    data = url + payload.sort.join
+    digest = OpenSSL::Digest.new("sha1")
+    Base64.encode64(OpenSSL::HMAC.digest(digest, auth_token, data)).strip
+  end
 
   def http_client
     @http_client ||= Faraday.new do |conn|
