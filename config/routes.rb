@@ -12,4 +12,8 @@ Rails.application.routes.draw do
       resources :phone_calls, only: %i[create show], path: "Calls"
     end
   end
+
+  scope "/2010-04-01/Accounts/:account_id", as: :account, defaults: { format: "json" } do
+    resources :phone_calls, only: %i[create show], path: "Calls", controller: "api/phone_calls"
+  end
 end

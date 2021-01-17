@@ -8,7 +8,7 @@ RSpec.describe "Phone Calls API" do
       account = create(:account)
 
       post(
-        api_account_phone_calls_path(account),
+        account_phone_calls_path(account),
         params: {
           "Url" => "https://rapidpro.ngrok.com/handle/33/",
           "Method" => "GET",
@@ -28,7 +28,7 @@ RSpec.describe "Phone Calls API" do
       account = create(:account)
 
       post(
-        api_account_phone_calls_path(account),
+        account_phone_calls_path(account),
         params: {},
         headers: build_api_authorization_headers(account)
       )
@@ -46,7 +46,7 @@ RSpec.describe "Phone Calls API" do
       phone_call = create(:phone_call, account: account)
 
       get(
-        api_account_phone_call_path(account, phone_call),
+        account_phone_call_path(account, phone_call),
         headers: build_api_authorization_headers(account)
       )
 
