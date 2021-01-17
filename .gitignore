@@ -40,6 +40,9 @@ rspec_examples.txt
 
 .idea
 
+doc
+!doc/slate
+
 # terraform
 terraform.tfstate.d/
 .terraform
