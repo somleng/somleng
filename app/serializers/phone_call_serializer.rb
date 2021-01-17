@@ -39,7 +39,7 @@ class PhoneCallSerializer < ResourceSerializer
       subresource_uris: {},
       to: format_number(object.to, spaces: ""),
       to_formatted: format_number(object.to, format: :international),
-      uri: url_helpers.api_account_phone_call_url(object.account, object, format: :json)
+      uri: url_helpers.account_phone_call_url(object.account, object, format: :json)
     )
   end
 
