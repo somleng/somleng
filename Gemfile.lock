@@ -151,7 +151,7 @@ GEM
       dry-equalizer (~> 0.2)
       dry-initializer (~> 3.0)
       dry-schema (~> 1.5, >= 1.5.2)
-    enumerize (2.2.2)
+    enumerize (2.4.0)
       activesupport (>= 3.2)
     erubi (1.10.0)
     factory_bot (6.1.0)
