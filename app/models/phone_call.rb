@@ -44,15 +44,15 @@ class PhoneCall < ApplicationRecord
     end
 
     event :mark_as_not_answered do
-      transitions from: %i[initiated ringing], to: :not_answered
+      transitions from: %i[initiated ringing not_answered], to: :not_answered
     end
 
     event :mark_as_busy do
-      transitions from: %i[initiated ringing], to: :busy
+      transitions from: %i[initiated ringing busy], to: :busy
     end
 
     event :fail do
-      transitions from: %i[initiated ringing], to: :failed
+      transitions from: %i[initiated ringing failed], to: :failed
     end
   end
 
