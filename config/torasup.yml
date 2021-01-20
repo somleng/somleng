@@ -15,6 +15,15 @@ mx:
           dial_string_prefix: "69980"
           host: "200.0.90.35"
 
+gt:
+  operators:
+    c3ntro:
+      prefixes: "*"
+      metadata:
+        gateway:
+          dial_string_prefix: "69980"
+          host: "200.0.90.35"
+
 kh:
   operators:
     smart:
