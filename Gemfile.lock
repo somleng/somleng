@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
-  revision: 949bfa38f1c1f74782e20304e1240e7059aaf4f2
+  revision: bf850fa0439d1a5a9e135e0f5434ed6e04fc2f46
   specs:
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
