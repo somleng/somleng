@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
-  revision: 9763c17d27221c5d3946b0b297b0c17b8f5644f5
+  revision: 178df4970cd80d63b5e800bdf5d3a37bb43506ea
   specs:
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
@@ -184,7 +184,7 @@ GEM
     mimemagic (0.3.4)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
-    minitest (5.14.3)
+    minitest (5.14.4)
     msgpack (1.4.2)
     multipart-post (2.1.1)
     mustache (1.1.1)
