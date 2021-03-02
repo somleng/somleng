@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :inbound_phone_calls, only: :create
     resources :phone_call_events, only: :create
     resources :call_data_records, only: :create
+    resource :dial_string, only: :create
   end
 
   namespace :api, defaults: { format: "json" } do
