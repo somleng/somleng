@@ -16,5 +16,17 @@ RSpec.describe "Services" do
         "dial_string" => "016701721@27.109.112.140"
       )
     end
+
+    it "handles an supported number" do
+      post(
+        services_dial_string_path,
+        params: {
+          phone_number: "+81-9082702366"
+        },
+        headers: build_authorization_headers("services", "password")
+      )
+
+      expect(response.code).to eq("501")
+    end
   end
 end

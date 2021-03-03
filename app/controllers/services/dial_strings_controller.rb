@@ -6,6 +6,8 @@ module Services
       ).routing_instructions
 
       render json: routing_instructions, status: :created
+    rescue OutboundCallRouter::UnsupportedGatewayError
+      head :not_implemented
     end
   end
 end

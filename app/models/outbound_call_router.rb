@@ -1,12 +1,14 @@
 class OutboundCallRouter
   attr_reader :destination
 
+  class UnsupportedGatewayError < StandardError; end
+
   def initialize(destination)
     @destination = Phony.normalize(destination)
   end
 
   def routing_instructions
-    return if destination_gateway.blank?
+    raise UnsupportedGatewayError if destination_gateway.blank?
 
     {
       "dial_string" => "#{destination_gateway['dial_string_prefix']}#{destination_number}@#{destination_gateway.fetch('host')}"

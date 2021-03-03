@@ -9,9 +9,9 @@ RSpec.describe OutboundCallRouter do
     end
 
     it "handles unknown source destination gateway" do
-      result = OutboundCallRouter.new("85513333333").routing_instructions
-
-      expect(result).to eq(nil)
+      expect {
+        OutboundCallRouter.new("85513333333").routing_instructions
+      }.to raise_error(OutboundCallRouter::UnsupportedGatewayError)
     end
 
     it "handles a gateway has prefix false" do

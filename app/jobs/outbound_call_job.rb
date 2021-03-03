@@ -1,7 +1,6 @@
 class OutboundCallJob < ApplicationJob
   def perform(phone_call, http_client: default_http_client)
     routing_instructions = OutboundCallRouter.new(phone_call.to).routing_instructions
-    return phone_call.cancel! if routing_instructions.blank?
 
     response = http_client.post(
       "/calls",
@@ -25,6 +24,8 @@ class OutboundCallJob < ApplicationJob
     else
       phone_call.cancel!
     end
+  rescue OutboundCallRouter::UnsupportedGatewayError
+    phone_call.cancel!
   end
 
   private
