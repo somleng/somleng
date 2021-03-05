@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/shoulda-matchers.git
-  revision: 178df4970cd80d63b5e800bdf5d3a37bb43506ea
+  revision: 0cc461d4d927b3d51ec41052d01edd9f8f39cbdc
   specs:
     shoulda-matchers (4.5.1)
-      activesupport (>= 4.2.0)
+      activesupport (>= 5.0.0)
 
 GEM
   remote: https://rubygems.org/
