@@ -77,3 +77,11 @@ so:
       metadata:
         gateway:
           host: "41.78.73.242"
+
+gl:
+  operators:
+    test_gateway:
+      prefixes: "*"
+      metadata:
+        gateway:
+          host: "host.docker.internal:5080"

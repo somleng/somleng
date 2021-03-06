@@ -309,7 +309,7 @@ GEM
     squasher (0.6.2)
     thor (1.1.0)
     thread_safe (0.3.6)
-    torasup (0.3.2)
+    torasup (0.3.3)
       countries
       deep_merge
       phony
