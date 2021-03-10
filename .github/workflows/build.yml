@@ -226,19 +226,23 @@ jobs:
         if: github.ref == matrix.app_env.branch
         id: build-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           APP_ECR_REPOSITORY: twilreapi
           NGINX_ECR_REPOSITORY: twilreapi-nginx
           IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: us-east-1
         run: |
           cp -R public/* docker/nginx/public
-          docker build -t $ECR_REGISTRY/$NGINX_ECR_REPOSITORY:$IMAGE_TAG docker/nginx
-          docker push $ECR_REGISTRY/$NGINX_ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=nginx-image::$ECR_REGISTRY/$NGINX_ECR_REPOSITORY:$IMAGE_TAG"
 
-          docker build -t $ECR_REGISTRY/$APP_ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$APP_ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=app-image::$ECR_REGISTRY/$APP_ECR_REPOSITORY:$IMAGE_TAG"
+          ECR_PUBLIC_REGISTRY=$(aws ecr-public describe-registries --output text --query 'registries[0].registryUri')
+          aws ecr-public get-login-password | docker login --username AWS --password-stdin public.ecr.aws
+
+          docker build -t $ECR_PUBLIC_REGISTRY/$NGINX_ECR_REPOSITORY:$IMAGE_TAG -t $ECR_PUBLIC_REGISTRY/$NGINX_ECR_REPOSITORY:latest docker/nginx
+          docker push --all-tags $ECR_PUBLIC_REGISTRY/$NGINX_ECR_REPOSITORY
+          echo "::set-output name=nginx-image::$ECR_PUBLIC_REGISTRY/$NGINX_ECR_REPOSITORY:$IMAGE_TAG"
+
+          docker build -t $ECR_PUBLIC_REGISTRY/$APP_ECR_REPOSITORY:$IMAGE_TAG -t $ECR_PUBLIC_REGISTRY/$APP_ECR_REPOSITORY:latest .
+          docker push --all-tags $ECR_PUBLIC_REGISTRY/$APP_ECR_REPOSITORY
+          echo "::set-output name=app-image::$ECR_PUBLIC_REGISTRY/$APP_ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Prepare nginx task definition
         if: github.ref == matrix.app_env.branch

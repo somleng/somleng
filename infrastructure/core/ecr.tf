@@ -1,15 +1,20 @@
-resource "aws_ecr_repository" "app" {
-  name                 = "twilreapi"
+resource "aws_ecrpublic_repository" "app" {
+  repository_name = "twilreapi"
+  provider = aws.us-east-1
 
-  image_scanning_configuration {
-    scan_on_push = true
+  catalog_data {
+    about_text        = "Twilreapi /twil-reap-i/ (Twilio Rest API)"
+    architectures     = ["Linux"]
+    description       = "Open Source Implementation of Twilio's REST API."
   }
 }
 
-resource "aws_ecr_repository" "nginx" {
-  name                 = "twilreapi-nginx"
+resource "aws_ecrpublic_repository" "nginx" {
+  repository_name = "twilreapi-nginx"
+  provider = aws.us-east-1
 
-  image_scanning_configuration {
-    scan_on_push = true
+  catalog_data {
+    about_text        = "Somleng Twilreapi Nginx"
+    architectures     = ["Linux"]
   }
 }
