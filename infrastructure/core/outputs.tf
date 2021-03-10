@@ -1,7 +1,7 @@
 output "app_ecr_repository" {
-  value = aws_ecr_repository.app.repository_url
+  value = aws_ecrpublic_repository.app.repository_uri
 }
 
 output "nginx_ecr_repository" {
-  value = aws_ecr_repository.nginx.repository_url
+  value = aws_ecrpublic_repository.nginx.repository_uri
 }
