@@ -39,7 +39,7 @@ jobs:
           node-version: '14.x'
 
       - name: Cache ruby gems
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gem-twilreapi-${{ hashFiles('Gemfile.lock') }}
@@ -51,7 +51,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: Cache yarn dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: ${{ steps.get-yarn-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-yarn-twilreapi-${{ hashFiles('yarn.lock') }}
@@ -129,7 +129,7 @@ jobs:
           repository: slatedocs/slate
 
       - name: Cache Slate Dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-slate-gem-${{ hashFiles('**/Gemfile.lock') }}
