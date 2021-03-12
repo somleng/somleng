@@ -91,7 +91,7 @@ jobs:
 
       - name: Upload Documentation Source
         if: github.ref == 'refs/heads/master'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: documentation_source
           path: doc/api
@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload Assets
         if: github.ref == 'refs/heads/master'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: assets
           path: public
@@ -156,7 +156,7 @@ jobs:
         run: bundle exec middleman build
 
       - name: Upload API Documentation
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: api_documentation
           path: build
