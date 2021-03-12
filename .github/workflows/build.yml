@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2-beta
+        uses: actions/checkout@v2.3.4
 
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
@@ -34,12 +34,12 @@ jobs:
           ruby-version: '2.6'
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: '14.x'
 
       - name: Cache ruby gems
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gem-twilreapi-${{ hashFiles('Gemfile.lock') }}
@@ -51,7 +51,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: Cache yarn dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: ${{ steps.get-yarn-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-yarn-twilreapi-${{ hashFiles('yarn.lock') }}
@@ -91,21 +91,21 @@ jobs:
 
       - name: Upload Documentation Source
         if: github.ref == 'refs/heads/master'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: documentation_source
           path: doc/api
 
       - name: Compile Assets
-        if: github.ref == 'refs/heads/new_routing_for_metfone'
+        if: github.ref == 'refs/heads/master'
         env:
           RAILS_ENV: development
         run: |
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/new_routing_for_metfone'
-        uses: actions/upload-artifact@v1
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: assets
           path: public
@@ -123,13 +123,13 @@ jobs:
           ruby-version: '2.6'
 
       - name: Checkout Slate
-        uses: actions/checkout@v2-beta
+        uses: actions/checkout@v2.3.4
         with:
           ref: main
           repository: slatedocs/slate
 
       - name: Cache Slate Dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2.1.4
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-slate-gem-${{ hashFiles('**/Gemfile.lock') }}
@@ -143,7 +143,7 @@ jobs:
           bundle install
 
       - name: Download Documentation Source
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2.0.8
         with:
           name: documentation_source
           path: source
@@ -156,7 +156,7 @@ jobs:
         run: bundle exec middleman build
 
       - name: Upload API Documentation
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: api_documentation
           path: build
@@ -181,17 +181,17 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/new_routing_for_metfone'
+    if: github.ref == 'refs/heads/master'
 
     strategy:
       matrix:
         app_env:
-          - { identifier: 'twilreapi', name: 'production', branch: 'refs/heads/new_routing_for_metfone' }
+          - { identifier: 'twilreapi', name: 'production', branch: 'refs/heads/master' }
 
     steps:
       - name: Checkout
         if: github.ref == matrix.app_env.branch
-        uses: actions/checkout@v2-beta
+        uses: actions/checkout@v2.3.4
 
       - name: Setup Ruby
         if: github.ref == matrix.app_env.branch
@@ -201,7 +201,7 @@ jobs:
 
       - name: Download Assets
         if: github.ref == matrix.app_env.branch
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2.0.8
         with:
           name: assets
           path: public
