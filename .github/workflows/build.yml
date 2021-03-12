@@ -143,7 +143,7 @@ jobs:
           bundle install
 
       - name: Download Documentation Source
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2.0.8
         with:
           name: documentation_source
           path: source
@@ -201,7 +201,7 @@ jobs:
 
       - name: Download Assets
         if: github.ref == matrix.app_env.branch
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2.0.8
         with:
           name: assets
           path: public
