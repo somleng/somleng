@@ -41,7 +41,7 @@ kh:
     metfone:
       metadata:
         gateway:
-          host: "175.100.93.13"
+          host: "175.100.32.29"
           prefix: false
 
 sl:
