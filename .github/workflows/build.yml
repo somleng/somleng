@@ -230,12 +230,6 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
-      # - name: Login to Amazon Public ECR
-      #   if: github.ref == matrix.app_env.branch
-      #   run: aws ecr-public get-login-password | docker login --username AWS --password-stdin public.ecr.aws
-      #   env:
-      #     AWS_REGION: us-east-1
-
       - name: Set up Docker Buildx
         if: github.ref == matrix.app_env.branch
         uses: docker/setup-buildx-action@v1
@@ -255,9 +249,11 @@ jobs:
         with:
           context: .
           push: true
-          tags: somleng/twilreapi:latest, somleng/twilreapi:${{ env.IMAGE_TAG  }}
           cache-from: type=local,src=/tmp/.buildx-cache/buildx-cache-twilreapi
           cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi
+          tags: |
+            public.ecr.aws/somleng/twilreapi:latest
+            public.ecr.aws/somleng/twilreapi:${{ env.IMAGE_TAG  }}
 
       - name: Build and push to AWS ECR `nginx`
         id: docker_build_nginx
@@ -266,9 +262,11 @@ jobs:
         with:
           context: "docker/nginx"
           push: true
-          tags: somleng/twilreapi-nginx:latest, somleng/twilreapi-nginx:${{ env.IMAGE_TAG  }}
           cache-from: type=local,src=/tmp/.buildx-cache/buildx-cache-twilreapi-nginx
           cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi-nginx
+          tags: |
+            public.ecr.aws/somleng/twilreapi-nginx:latest
+            public.ecr.aws/somleng/twilreapi-nginx:${{ env.IMAGE_TAG  }}
 
       - name: Move cache
         # Temp fix
