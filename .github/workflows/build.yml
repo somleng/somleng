@@ -69,9 +69,9 @@ jobs:
       - name: Setup DB
         run: bundle exec rails db:create db:schema:load
 
-      # - name: Run Specs
-      #   run: |
-      #     bundle exec rspec --format RspecApiDocumentation::ApiFormatter
+      - name: Run Specs
+        run: |
+          bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
       - name: Upload Test Coverage
         working-directory: ${{ env.working-directory }}
@@ -184,6 +184,9 @@ jobs:
     if: github.ref == 'refs/heads/docker_caching'
     env:
       IMAGE_TAG: ${{ github.sha }}
+      ECR_PUBLIC_REGISTRY: public.ecr.aws
+      APP_ECR_REPOSITORY_URI: public.ecr.aws/somleng/twilreapi
+      NGINX_ECR_REPOSITORY_URI: public.ecr.aws/somleng/twilreapi-nginx
 
     strategy:
       matrix:
@@ -223,7 +226,7 @@ jobs:
         if: github.ref == matrix.app_env.branch
         uses: docker/login-action@v1
         with:
-          registry: public.ecr.aws
+          registry: ${{ env.ECR_PUBLIC_REGISTRY }}
           username: ${{ env.AWS_ACCESS_KEY_ID }}
           password: ${{ env.AWS_SECRET_ACCESS_KEY }}
         env:
@@ -255,8 +258,8 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache/.buildx-cache-twilreapi
           cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi
           tags: |
-            public.ecr.aws/somleng/twilreapi:latest
-            public.ecr.aws/somleng/twilreapi:${{ env.IMAGE_TAG  }}
+            ${{ env.APP_ECR_REPOSITORY_URI }}:latest
+            ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
 
       - name: Build and push to AWS ECR `nginx`
         if: github.ref == matrix.app_env.branch
@@ -267,10 +270,10 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache/.buildx-cache-twilreapi-nginx
           cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi-nginx
           tags: |
-            public.ecr.aws/somleng/twilreapi-nginx:latest
-            public.ecr.aws/somleng/twilreapi-nginx:${{ env.IMAGE_TAG  }}
+            ${{ env.NGINX_ECR_REPOSITORY_URI }}:latest
+            ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
 
-      - name: Move cache
+      - name: Move docker layer caches
         # Temp fix
         # https://github.com/docker/build-push-action/issues/252
         # https://github.com/moby/buildkit/issues/1896
@@ -287,7 +290,7 @@ jobs:
         with:
           task-definition: deploy/${{ matrix.app_env.name }}/appserver_task_definition.json
           container-name: nginx
-          image: public.ecr.aws/somleng/twilreapi-nginx:${{ env.IMAGE_TAG }}
+          image: ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
       - name: Prepare app server task definition
         if: github.ref == matrix.app_env.branch
@@ -296,7 +299,7 @@ jobs:
         with:
           task-definition: ${{ steps.render-nginx-task-def.outputs.task-definition }}
           container-name: app
-          image: public.ecr.aws/somleng/twilreapi:${{ env.IMAGE_TAG }}
+          image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
       - name: Prepare worker task definition
         if: github.ref == matrix.app_env.branch
@@ -305,31 +308,31 @@ jobs:
         with:
           task-definition: deploy/${{ matrix.app_env.name }}/worker_task_definition.json
           container-name: worker
-          image: public.ecr.aws/somleng/twilreapi:${{ env.IMAGE_TAG }}
+          image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
-      # - name: Run DB Migrate
-      #   if: github.ref == matrix.app_env.branch
-      #   run: |
-      #     aws ecs register-task-definition --cli-input-json file://${{ steps.render-worker-task-def.outputs.task-definition }}
-      #     ./bin/ecs_run_task --cluster somleng --started-by db_migrate_ci --service ${{ matrix.app_env.identifier }}-worker --command "bundle exec rails db:migrate"
+      - name: Run DB Migrate
+        if: github.ref == matrix.app_env.branch
+        run: |
+          aws ecs register-task-definition --cli-input-json file://${{ steps.render-worker-task-def.outputs.task-definition }}
+          ./bin/ecs_run_task --cluster somleng --started-by db_migrate_ci --service ${{ matrix.app_env.identifier }}-worker --command "bundle exec rails db:migrate"
 
-      # - name: Deploy App Server
-      #   if: github.ref == matrix.app_env.branch
-      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      #   with:
-      #     task-definition: ${{ steps.render-appserver-task-def.outputs.task-definition }}
-      #     service: ${{ matrix.app_env.identifier }}-appserver
-      #     cluster: somleng
-      #     wait-for-service-stability: true
-      #     codedeploy-appspec: deploy/appspec.yaml
-      #     codedeploy-application: ${{ matrix.app_env.identifier }}
-      #     codedeploy-deployment-group: ${{ matrix.app_env.identifier }}
+      - name: Deploy App Server
+        if: github.ref == matrix.app_env.branch
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-appserver-task-def.outputs.task-definition }}
+          service: ${{ matrix.app_env.identifier }}-appserver
+          cluster: somleng
+          wait-for-service-stability: true
+          codedeploy-appspec: deploy/appspec.yaml
+          codedeploy-application: ${{ matrix.app_env.identifier }}
+          codedeploy-deployment-group: ${{ matrix.app_env.identifier }}
 
-      # - name: Deploy Worker
-      #   if: github.ref == matrix.app_env.branch
-      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      #   with:
-      #     task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
-      #     service: ${{ matrix.app_env.identifier }}-worker
-      #     cluster: somleng
-      #     wait-for-service-stability: true
+      - name: Deploy Worker
+        if: github.ref == matrix.app_env.branch
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
+          service: ${{ matrix.app_env.identifier }}-worker
+          cluster: somleng
+          wait-for-service-stability: true
