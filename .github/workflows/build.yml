@@ -97,14 +97,14 @@ jobs:
           path: doc/api
 
       - name: Compile Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/docker_caching'
         env:
           RAILS_ENV: development
         run: |
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/docker_caching'
         uses: actions/upload-artifact@v2.2.2
         with:
           name: assets
