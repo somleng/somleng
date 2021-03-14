@@ -57,9 +57,9 @@ jobs:
       - name: Setup DB
         run: bundle exec rails db:create db:schema:load
 
-      # - name: Run Specs
-      #   run: |
-      #     bundle exec rspec --format RspecApiDocumentation::ApiFormatter
+      - name: Run Specs
+        run: |
+          bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
       - name: Upload Test Coverage
         working-directory: ${{ env.working-directory }}
@@ -72,27 +72,27 @@ jobs:
           ./codacy-coverage-reporter report -l Ruby -r coverage/lcov/*
 
       - name: Prepare Documentation Source
-        if: github.ref == 'refs/heads/docker_caching'
+        if: github.ref == 'refs/heads/master'
         run: |
           cp -R doc/slate/source/* doc/api
           cp app/assets/images/logo.png doc/api/logo.png
 
       - name: Upload Documentation Source
-        if: github.ref == 'refs/heads/docker_caching'
+        if: github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@v2.2.2
         with:
           name: documentation_source
           path: doc/api
 
       - name: Compile Assets
-        if: github.ref == 'refs/heads/docker_caching'
+        if: github.ref == 'refs/heads/master'
         env:
           RAILS_ENV: development
         run: |
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/docker_caching'
+        if: github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@v2.2.2
         with:
           name: assets
@@ -102,7 +102,7 @@ jobs:
     name: Build Documentation
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/docker_caching'
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout Slate
@@ -156,7 +156,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/docker_caching'
+    if: github.ref == 'refs/heads/master'
     env:
       IMAGE_TAG: ${{ github.sha }}
       APP_IDENTIFIER: twilreapi
