@@ -219,22 +219,22 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ap-southeast-1
 
-      - name: Login to Amazon Public ECR
+
+        name: Login to AWS Public ECR
         if: github.ref == matrix.app_env.branch
-        run: aws ecr-public get-login-password | docker login --username AWS --password-stdin public.ecr.aws
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ env.AWS_ACCESS_KEY_ID }}
+          password: ${{ env.AWS_SECRET_ACCESS_KEY }}
         env:
           AWS_REGION: us-east-1
 
-      - name: Build and push to AWS ECR `twilreapi`
-        id: docker_build_twilreapi
-        if: github.ref == matrix.app_env.branch
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: somleng/twilreapi:latest, somleng/twilreapi:${{ env.IMAGE_TAG  }}
-          cache-from: type=local,src=/tmp/.buildx-cache/buildx-cache-twilreapi
-          cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi
+      # - name: Login to Amazon Public ECR
+      #   if: github.ref == matrix.app_env.branch
+      #   run: aws ecr-public get-login-password | docker login --username AWS --password-stdin public.ecr.aws
+      #   env:
+      #     AWS_REGION: us-east-1
 
       - name: Set up Docker Buildx
         if: github.ref == matrix.app_env.branch
@@ -247,6 +247,17 @@ jobs:
           key: ${{ runner.os }}-twilreapi-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-twilreapi-
+
+      - name: Build and push to AWS ECR `twilreapi`
+        id: docker_build_twilreapi
+        if: github.ref == matrix.app_env.branch
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: somleng/twilreapi:latest, somleng/twilreapi:${{ env.IMAGE_TAG  }}
+          cache-from: type=local,src=/tmp/.buildx-cache/buildx-cache-twilreapi
+          cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi
 
       - name: Build and push to AWS ECR `nginx`
         id: docker_build_nginx
