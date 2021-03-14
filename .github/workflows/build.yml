@@ -245,9 +245,6 @@ jobs:
         if: github.ref == matrix.app_env.branch
         run: |
           cp -R public/* docker/nginx/public
-          ls -lta /tmp/.buildx-cache
-          ls -lta /tmp/.buildx-cache/buildx-cache-twilreapi
-          ls -lta /tmp/.buildx-cache/buildx-cache-twilreapi-nginx
 
       - name: Build and push to AWS ECR `twilreapi`
         if: github.ref == matrix.app_env.branch
@@ -255,7 +252,7 @@ jobs:
         with:
           context: .
           push: true
-          cache-from: type=local,src=/tmp/.buildx-cache/buildx-cache-twilreapi
+          cache-from: type=local,src=/tmp/.buildx-cache/.buildx-cache-twilreapi
           cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi
           tags: |
             public.ecr.aws/somleng/twilreapi:latest
@@ -267,7 +264,7 @@ jobs:
         with:
           context: "docker/nginx"
           push: true
-          cache-from: type=local,src=/tmp/.buildx-cache/buildx-cache-twilreapi-nginx
+          cache-from: type=local,src=/tmp/.buildx-cache/.buildx-cache-twilreapi-nginx
           cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi-nginx
           tags: |
             public.ecr.aws/somleng/twilreapi-nginx:latest
