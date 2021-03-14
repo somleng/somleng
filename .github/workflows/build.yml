@@ -208,18 +208,6 @@ jobs:
           name: assets
           path: public
 
-      - name: Set up Docker Buildx
-        if: github.ref == matrix.app_env.branch
-        uses: docker/setup-buildx-action@v1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-twilreapi-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-twilreapi-
-
       - name: Configure AWS credentials
         if: github.ref == matrix.app_env.branch
         uses: aws-actions/configure-aws-credentials@v1
@@ -249,6 +237,18 @@ jobs:
           tags: somleng/twilreapi:latest, somleng/twilreapi:${{ env.IMAGE_TAG  }}
           cache-from: type=local,src=/tmp/.buildx-cache/buildx-cache-twilreapi
           cache-to: type=local,dest=/tmp/.buildx-cache-twilreapi
+
+      - name: Set up Docker Buildx
+        if: github.ref == matrix.app_env.branch
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-twilreapi-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-twilreapi-
 
       - name: Build and push to AWS ECR `nginx`
         id: docker_build_nginx
