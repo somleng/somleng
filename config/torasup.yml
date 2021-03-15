@@ -84,4 +84,4 @@ gl:
       prefixes: "*"
       metadata:
         gateway:
-          host: "host.docker.internal:5080"
+          host: "host.docker.internal:5061"
