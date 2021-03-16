@@ -1,13 +1,13 @@
 default: &default
-  secret_key_base: "<%= Rails.application.credentials.secret_key_base %>"
+  default_url_host: <%= ENV.fetch("APP_URL_HOST", "http://localhost:3000") %>
   mailer_sender: "support@somleng.org"
   aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default") %>
   aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
-  uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "uploads.somleng.org") %>
+  uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "upload-bucket") %>
   services_user: "services"
   services_password: "password"
-  ahn_host: "https://ahn.somleng.org"
+  ahn_host: <%= ENV.fetch("AHN_HOST", "http://localhost:8080") %>
   ahn_username: "adhearsion"
   ahn_password: "password"
 
@@ -19,12 +19,13 @@ production: &production
   smtp_address: "email-smtp.us-east-1.amazonaws.com"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= Rails.application.credentials.services_password %>"
+  ahn_host: "https://ahn.somleng.org"
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
 
 development: &development
   <<: *default
-  default_url_host: "http://localhost:3000"
 
 test:
   <<: *development
+  ahn_host: "https://ahn.somleng.org"
   default_url_host: https://twilreapi.somleng.org
