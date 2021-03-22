@@ -4,25 +4,24 @@ require Rails.root.join("db/application_seeder")
 describe ApplicationSeeder do
   describe "#seed!" do
     it "creates a new account" do
-      seeder = described_class.new
-
-      expect { seeder.seed! }.to output(
-        /Account SID.+Auth Token/m
-      ).to_stdout
+      ApplicationSeeder.new.seed!
 
       account = Account.first
-
       expect(account).to be_present
       expect(account.auth_token).to be_present
+      expect(account.incoming_phone_numbers).to be_present
     end
 
     it "does not create a new account if one already exists" do
-      seeder = described_class.new
-      create(:account)
+      existing_account = create(:account, :with_access_token)
+      create(:incoming_phone_number, account: existing_account)
 
-      expect { seeder.seed! }.to output.to_stdout
+      ApplicationSeeder.new.seed!
 
+      account = Account.first
       expect(Account.count).to eq(1)
+      expect(account.auth_token).to eq(existing_account.auth_token)
+      expect(account.incoming_phone_numbers.count).to eq(1)
     end
   end
 end
