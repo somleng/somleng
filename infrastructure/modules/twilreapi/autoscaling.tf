@@ -38,7 +38,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
   alarm_name          = "${var.app_identifier}-queue-size-alarm-high"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
-  threshold           = 100
+  threshold           = 1000
 
   metric_query {
     id = "e1"
@@ -99,7 +99,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   alarm_name          = "${var.app_identifier}-queue-size-alarm-low"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = 1
-  threshold           = 100
+  threshold           = 500
 
   metric_query {
     id = "e1"
@@ -218,7 +218,7 @@ resource "aws_appautoscaling_policy" "worker_down" {
 
   step_scaling_policy_configuration {
     adjustment_type         = "ChangeInCapacity"
-    cooldown                = 0 # Turn off cooldown
+    cooldown                = 300
     metric_aggregation_type = "Average"
 
     step_adjustment {
