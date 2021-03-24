@@ -85,14 +85,14 @@ jobs:
           path: doc/api
 
       - name: Compile Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/healt_check_background_jobs'
         env:
           RAILS_ENV: development
         run: |
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/healt_check_background_jobs'
         uses: actions/upload-artifact@v2.2.2
         with:
           name: assets
@@ -156,7 +156,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/healt_check_background_jobs'
     env:
       IMAGE_TAG: ${{ github.sha }}
       APP_IDENTIFIER: twilreapi
