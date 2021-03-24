@@ -11,6 +11,13 @@
        }
     },
     "command": ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],
+    "startTimeout": 120,
+    "healthCheck": {
+      "command": [ "CMD-SHELL", "wget --server-response --spider --quiet http://localhost:3000/health_checks 2>&1 | grep '200 OK' > /dev/null" ],
+      "interval": 10,
+      "retries": 10,
+      "timeout": 5
+    },
     "essential": true,
     "secrets": [
       {
