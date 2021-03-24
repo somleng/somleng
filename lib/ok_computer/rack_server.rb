@@ -12,7 +12,7 @@ module OkComputer
       checks.run
 
       if checks.success?
-        [200, {}, ["Alive!"]]
+        [200, {}, ["200 OK"]]
       else
         [500, {}, [checks.to_text]]
       end
