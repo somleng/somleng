@@ -31,7 +31,7 @@ gem "bootsnap", require: false
 
 group :development, :test do
   gem "pry"
-  gem "rspec_api_documentation", github: "samnang/rspec_api_documentation"
+  gem "rspec_api_documentation"
   gem "rspec-rails"
   gem "rubocop"
   gem "rubocop-rspec"
@@ -45,7 +45,7 @@ end
 
 group :test do
   gem "factory_bot_rails"
-  gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers"
+  gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
   gem "webmock"
