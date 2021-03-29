@@ -8,6 +8,7 @@ gem "rails", "6.0.2.1"
 
 gem "aasm"
 gem "after_commit_everywhere"
+gem "aws-sdk-rails"
 gem "aws-sdk-s3"
 gem "aws-sdk-sqs"
 gem "doorkeeper"

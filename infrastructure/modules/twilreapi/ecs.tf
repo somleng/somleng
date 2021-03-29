@@ -30,8 +30,6 @@ data "template_file" "appserver_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    smtp_username = data.aws_ssm_parameter.smtp_username.value
-    smtp_password_parameter_arn = data.aws_ssm_parameter.smtp_password.arn
   }
 }
 
@@ -111,8 +109,6 @@ data "template_file" "worker_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    smtp_username = data.aws_ssm_parameter.smtp_username.value
-    smtp_password_parameter_arn = data.aws_ssm_parameter.smtp_password.arn
   }
 }
 

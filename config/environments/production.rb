@@ -110,18 +110,8 @@ Rails.application.configure do
     protocol: "https"
   }
 
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.delivery_method = :ses
   config.action_mailer.deliver_later_queue_name = config.active_job.default_queue_name
-
-  config.action_mailer.smtp_settings = {
-    enable_starttls_auto: true,
-    port: 587,
-    authentication: :login,
-    domain: "somleng.org",
-    address: Rails.configuration.app_settings.fetch(:smtp_address),
-    user_name: Rails.configuration.app_settings.fetch(:smtp_username),
-    password: Rails.configuration.app_settings.fetch(:smtp_password)
-  }
 
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector
