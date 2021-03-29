@@ -27,10 +27,6 @@
       {
         "name": "DATABASE_PASSWORD",
         "valueFrom": "${database_password_parameter_arn}"
-      },
-      {
-        "name": "SMTP_PASSWORD",
-        "valueFrom": "${smtp_password_parameter_arn}"
       }
     ],
     "environment": [
@@ -85,10 +81,6 @@
       {
         "name": "UPLOADS_BUCKET",
         "value": "${uploads_bucket}"
-      },
-      {
-        "name": "SMTP_USERNAME",
-        "value": "${smtp_username}"
       }
     ]
   }
