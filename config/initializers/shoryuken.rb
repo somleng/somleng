@@ -1,14 +1,6 @@
-Shoryuken.default_worker_options["auto_visibility_timeout"] = true
-Shoryuken.default_worker_options["retry_intervals"] = lambda { |attempts|
-  (12.hours.seconds**(attempts / 10.0)).to_i
-}
-ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper.shoryuken_options(
-  Shoryuken.default_worker_options.slice("auto_visibility_timeout", "retry_intervals")
-)
-# Turn on long polling
-# https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
-# https://github.com/phstc/shoryuken/wiki/Long-Polling
-Shoryuken.sqs_client_receive_message_opts["wait_time_seconds"] = 20
+# Reduce the number of requests against SQS
+# https://github.com/ruby-shoryuken/shoryuken/wiki/Shoryuken-options#cache_visibility_timeout
+Shoryuken.cache_visibility_timeout = true
 
 Shoryuken.configure_server do |config|
   config.on(:startup) do
@@ -21,4 +13,12 @@ Shoryuken.configure_server do |config|
       Process.wait(@server_pid)
     end
   end
+
+  config.default_worker_options["auto_visibility_timeout"] = true
+  config.default_worker_options["retry_intervals"] = ->(attempts) { (12.hours.seconds**(attempts / 10.0)).to_i }
+
+  # Turn on long polling
+  # https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
+  # https://github.com/phstc/shoryuken/wiki/Long-Polling
+  config.sqs_client_receive_message_opts = { wait_time_seconds: 20 }
 end
