@@ -50,9 +50,11 @@ RSpec.describe OutboundCallJob do
     phone_call = create(:phone_call, :queued, to: "85516701721")
     stub_request(:post, "https://ahn.somleng.org/calls").to_return(status: 500)
 
-    OutboundCallJob.new.perform(phone_call)
+    expect {
+      OutboundCallJob.new.perform(phone_call)
+    }.to raise_error(OutboundCallJob::RetryJob)
 
-    expect(phone_call.status).to eq("canceled")
+    expect(phone_call.status).to eq("queued")
     expect(WebMock).to have_requested(:post, "https://ahn.somleng.org/calls")
   end
 end
