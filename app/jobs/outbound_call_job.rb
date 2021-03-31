@@ -1,4 +1,6 @@
 class OutboundCallJob < ApplicationJob
+  class RetryJob < StandardError; end
+
   def perform(phone_call, http_client: default_http_client)
     routing_instructions = OutboundCallRouter.new(phone_call.to).routing_instructions
 
@@ -18,12 +20,11 @@ class OutboundCallJob < ApplicationJob
       }.to_json
     )
 
-    if response.success?
-      phone_call.external_id = JSON.parse(response.body).fetch("id")
-      phone_call.initiate!
-    else
-      phone_call.cancel!
-    end
+    # re-enqueue job with exponential backoff
+    raise RetryJob, "Response body: #{response.body}" unless response.success?
+
+    phone_call.external_id = JSON.parse(response.body).fetch("id")
+    phone_call.initiate!
   rescue OutboundCallRouter::UnsupportedGatewayError
     phone_call.cancel!
   end
