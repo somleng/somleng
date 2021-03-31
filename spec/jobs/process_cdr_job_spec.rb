@@ -26,13 +26,4 @@ RSpec.describe ProcessCDRJob do
     expect(phone_call.call_data_record.file.attached?).to eq(true)
     expect(StatusCallbackNotifierJob).to have_been_enqueued.with(phone_call)
   end
-
-  it "handles phone call not found" do
-    raw_freeswitch_cdr = file_fixture("freeswitch_cdr.json").read
-    freeswitch_cdr = JSON.parse(raw_freeswitch_cdr)
-
-    ProcessCDRJob.new.perform(freeswitch_cdr)
-
-    expect(CallDataRecord.count).to eq(0)
-  end
 end

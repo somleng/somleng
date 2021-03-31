@@ -1,9 +1,7 @@
 class ProcessCDRJob < ApplicationJob
   def perform(cdr)
     cdr_variables = cdr.fetch("variables")
-    phone_call = PhoneCall.find_by(external_id: cdr_variables.fetch("uuid"))
-
-    return if phone_call.blank?
+    phone_call = PhoneCall.find_by!(external_id: cdr_variables.fetch("uuid"))
 
     CallDataRecord.create!(
       phone_call: phone_call,
