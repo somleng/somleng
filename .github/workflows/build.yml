@@ -130,6 +130,9 @@ jobs:
       - name: Build API Documentation
         run: bundle exec middleman build
 
+      - name: Copy OpenAPI specification
+        run: cp source/open_api.json build
+
       - name: Upload API Documentation
         uses: actions/upload-artifact@v2
         with:
