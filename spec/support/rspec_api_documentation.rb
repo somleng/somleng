@@ -16,7 +16,7 @@ RspecApiDocumentation.configure do |config|
 
     ## OpenAPI Specification
 
-    You can download the [OpenAPI specification for Somleng Twilreapi](/open_api.json) and import it into your favourite HTTP Client such as [Postman](https://www.postman.com/).
+    You can download the [OpenAPI specification](/open_api.json) and import it into your favourite HTTP Client such as [Postman](https://www.postman.com/).
 
     ## Credentials
 
