@@ -1,57 +1,79 @@
 require "rails_helper"
 
-RSpec.describe "Phone Calls API" do
-  describe "POST /api/2010-04-01/Accounts/{AccountSid}/Calls" do
-    # https://www.twilio.com/docs/api/rest/making-calls
+RSpec.resource "Phone Calls" do
+  header("Content-Type", "application/x-www-form-urlencoded")
 
-    it "creates a phone call" do
+  post "/2010-04-01/Accounts/:account_sid/Calls" do
+    parameter(
+      "To",
+      "The phone number to call.",
+      required: true
+    )
+    parameter(
+      "From",
+      "The phone number to use as the caller id",
+      required: true
+    )
+    parameter(
+      "Url",
+      "The absolute URL that returns the TwiML instructions for the call. We will call this URL using the `method` when the call connects.",
+      required: true
+    )
+    parameter(
+      "Method",
+      "The HTTP method we should use when calling the url parameter's value. Can be: `GET` or `POST` and the default is `POST`.",
+      required: false
+    )
+    parameter(
+      "StatusCallback",
+      "The URL we should call using the `status_callback_method` to send status information to your application. URLs must contain a valid hostname (underscores are not permitted).",
+      required: false
+    )
+    parameter(
+      "StatusCallbackMethod",
+      "The HTTP method we should use when calling the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
+      required: false
+    )
+
+    # https://www.twilio.com/docs/api/rest/making-calls
+    example "Create a call" do
       account = create(:account)
 
-      post(
-        account_phone_calls_path(account),
-        params: {
-          "Url" => "https://rapidpro.ngrok.com/handle/33/",
-          "Method" => "GET",
-          "To" => "+855715100860",
-          "From" => "2442",
-          "StatusCallback" => "https://rapidpro.ngrok.com/handle/33/",
-          "StatusCallbackMethod" => "GET"
-        },
-        headers: build_api_authorization_headers(account)
+      set_api_authorization_header(account)
+      do_request(
+        account_sid: account.id,
+        "To" => "+85512888999",
+        "From" => "2442",
+        "Url" => "https://demo.twilio.com/docs/voice.xml"
       )
 
-      expect(response.code).to eq("201")
-      expect(response.body).to match_api_response_schema(:phone_call)
+      expect(response_status).to eq(201)
+      expect(response_body).to match_api_response_schema(:phone_call)
     end
 
-    it "handles invalid requests" do
+    example "Handles invalid requests", document: false do
       account = create(:account)
 
-      post(
-        account_phone_calls_path(account),
-        params: {},
-        headers: build_api_authorization_headers(account)
-      )
+      set_api_authorization_header(account)
+      do_request(account_sid: account.id)
 
-      expect(response.code).to eq("422")
-      expect(response.body).to match_api_response_schema(:api_errors)
+      expect(response_status).to eq(422)
+      expect(response_body).to match_api_response_schema(:api_errors)
     end
   end
 
-  describe "GET '/api/2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}'" do
+  get "/2010-04-01/Accounts/:account_sid/Calls/:call_sid" do
     # https://www.twilio.com/docs/api/rest/call#instance-get
 
-    it "gets a phone call" do
+    it "Fetch a call" do
       account = create(:account)
       phone_call = create(:phone_call, account: account)
 
-      get(
-        account_phone_call_path(account, phone_call),
-        headers: build_api_authorization_headers(account)
-      )
+      set_api_authorization_header(account)
+      do_request(account_sid: account.id, call_sid: phone_call.id)
 
-      expect(response.code).to eq("200")
-      expect(response.body).to match_api_response_schema(:phone_call)
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema(:phone_call)
     end
   end
 end
