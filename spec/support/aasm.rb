@@ -1,1 +1,1 @@
-require 'aasm/rspec'
+require "aasm/rspec"

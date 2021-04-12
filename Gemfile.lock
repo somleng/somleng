@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/zipmark/rspec_api_documentation.git
+  revision: d3892cc7388460a98476734963face5a7a2ac158
+  specs:
+    rspec_api_documentation (6.1.0)
+      activesupport (>= 3.0.0)
+      mustache (~> 1.0, >= 0.99.4)
+      rspec (~> 3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -270,10 +279,6 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.10.2)
-    rspec_api_documentation (6.1.0)
-      activesupport (>= 3.0.0)
-      mustache (~> 1.0, >= 0.99.4)
-      rspec (~> 3.0)
     rubocop (0.93.1)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
@@ -285,6 +290,13 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (1.4.0)
       parser (>= 2.7.1.5)
+    rubocop-performance (1.10.2)
+      rubocop (>= 0.90.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.9.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 0.90.0, < 2.0)
     rubocop-rspec (1.44.1)
       rubocop (~> 0.87)
       rubocop-ast (>= 0.7.1)
@@ -365,8 +377,10 @@ DEPENDENCIES
   rails (~> 6.1.0)
   responders
   rspec-rails
-  rspec_api_documentation
+  rspec_api_documentation!
   rubocop
+  rubocop-performance
+  rubocop-rails
   rubocop-rspec
   sentry-raven
   shoryuken

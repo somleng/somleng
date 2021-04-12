@@ -60,7 +60,7 @@ FactoryBot.define do
     direction { "outbound" }
     hangup_cause { "ORIGINATOR_CANCEL" }
     start_time { 10.seconds.ago }
-    end_time { 5.seconds.ago  }
+    end_time { 5.seconds.ago }
   end
 
   factory :account do
@@ -173,5 +173,5 @@ FactoryBot.define do
     end
   end
 
-  factory :access_token, class: Doorkeeper::AccessToken
+  factory :access_token, class: "Doorkeeper::AccessToken"
 end
