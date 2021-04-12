@@ -42,6 +42,7 @@ rspec_examples.txt
 
 doc
 !doc/slate
+!doc/config
 
 # terraform
 terraform.tfstate.d/

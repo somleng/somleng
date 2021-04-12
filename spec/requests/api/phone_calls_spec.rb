@@ -7,32 +7,38 @@ RSpec.resource "Phone Calls" do
     parameter(
       "To",
       "The phone number to call.",
-      required: true
+      required: true,
+      example: "+299221234"
     )
     parameter(
       "From",
       "The phone number to use as the caller id",
-      required: true
+      required: true,
+      example: "1234"
     )
     parameter(
       "Url",
       "The absolute URL that returns the TwiML instructions for the call. We will call this URL using the `method` when the call connects.",
-      required: true
+      required: true,
+      example: "https://demo.twilio.com/docs/voice.xml"
     )
     parameter(
       "Method",
       "The HTTP method we should use when calling the url parameter's value. Can be: `GET` or `POST` and the default is `POST`.",
-      required: false
+      required: false,
+      example: "GET"
     )
     parameter(
       "StatusCallback",
       "The URL we should call using the `status_callback_method` to send status information to your application. URLs must contain a valid hostname (underscores are not permitted).",
-      required: false
+      required: false,
+      example: "https://example.com/status_callback"
     )
     parameter(
       "StatusCallbackMethod",
       "The HTTP method we should use when calling the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
-      required: false
+      required: false,
+      example: "POST"
     )
 
     # https://www.twilio.com/docs/api/rest/making-calls
@@ -42,8 +48,8 @@ RSpec.resource "Phone Calls" do
       set_api_authorization_header(account)
       do_request(
         account_sid: account.id,
-        "To" => "+85512888999",
-        "From" => "2442",
+        "To" => "+299221234",
+        "From" => "1234",
         "Url" => "https://demo.twilio.com/docs/voice.xml"
       )
 

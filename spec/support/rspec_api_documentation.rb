@@ -29,7 +29,8 @@ RspecApiDocumentation.configure do |config|
     | AccountSid | AuthToken |
   HEREDOC
 
-  config.format = :slate
+  config.format = [:slate,  "OpenApi"]
+  config.configurations_dir = Rails.root.join("doc", "config")
   config.curl_host = "https://twilreapi.somleng.org"
   config.curl_headers_to_filter = ["Host", "Cookie"]
 
