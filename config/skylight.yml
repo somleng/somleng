@@ -1,0 +1,6 @@
+ignored_endpoints:
+  - OkComputer::OkComputerController#show
+  - OkComputer::OkComputerController#index
+
+production: &production
+  authentication: <%= Rails.application.credentials.skylight_authentication_token %>
