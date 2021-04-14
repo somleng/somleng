@@ -318,6 +318,8 @@ GEM
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.2)
     sixarm_ruby_unaccent (1.2.0)
+    skylight (5.0.1)
+      activesupport (>= 5.2.0)
     spring (2.1.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -387,6 +389,7 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   simplecov-lcov
+  skylight
   spring
   spring-commands-rspec
   squasher
