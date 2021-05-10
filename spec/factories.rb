@@ -63,9 +63,20 @@ FactoryBot.define do
     end_time { 5.seconds.ago }
   end
 
+  factory :carrier do
+    name { "Somleng" }
+  end
+
+  factory :outbound_sip_trunk do
+    carrier
+    name { "My SIP trunk" }
+    host { "96.9.66.131" }
+  end
+
   factory :account do
     enabled
     with_access_token
+    carrier
     traits_for_enum :state, %w[enabled disabled]
 
     trait :with_access_token do
