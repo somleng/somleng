@@ -11,15 +11,11 @@ class OutboundCallRouter
   def routing_instructions
     raise UnsupportedGatewayError unless calling_code_allowed?
 
-    if account.carrier.outbound_sip_trunks.any?
-      sip_trunk = find_sip_trunk
-      raise UnsupportedGatewayError if sip_trunk.blank?
+    sip_trunk = find_sip_trunk
+    raise UnsupportedGatewayError if sip_trunk.blank?
 
-      destination_number = sip_trunk.trunk_prefix? ? Phony.format(destination, format: :national, spaces: "") : destination
-      dial_string = "#{sip_trunk.dial_string_prefix}#{destination_number}@#{sip_trunk.host}"
-    else
-      dial_string = GlobalCallRouter.new(destination).dial_string
-    end
+    destination_number = sip_trunk.trunk_prefix? ? Phony.format(destination, format: :national, spaces: "") : destination
+    dial_string = "#{sip_trunk.dial_string_prefix}#{destination_number}@#{sip_trunk.host}"
 
     {
       "dial_string" => dial_string
@@ -39,32 +35,6 @@ class OutboundCallRouter
 
     account.carrier.outbound_sip_trunks.sort_by { |sip_trunk| -sip_trunk.route_prefixes.length }.detect do |sip_trunk|
       sip_trunk.route_prefixes.any? { |prefix| destination =~ /\A#{prefix}/ } || sip_trunk.route_prefixes.empty?
-    end
-  end
-
-  class GlobalCallRouter
-    attr_reader :destination
-
-    def initialize(destination)
-      @destination = destination
-    end
-
-    def dial_string
-      raise UnsupportedGatewayError if destination_gateway.blank?
-
-      "#{destination_gateway['dial_string_prefix']}#{destination_number}@#{destination_gateway.fetch('host')}"
-    end
-
-    private
-
-    def destination_gateway
-      @destination_gateway ||= Torasup::PhoneNumber.new(destination).operator.gateway
-    end
-
-    def destination_number
-      return destination unless destination_gateway["prefix"] == false
-
-      Phony.format(destination, format: :national, spaces: "")
     end
   end
 end

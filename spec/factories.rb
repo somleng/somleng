@@ -84,6 +84,10 @@ FactoryBot.define do
         account.access_token ||= build(:access_token, resource_owner_id: account.id)
       end
     end
+
+    trait :with_outbound_sip_trunk do
+      outbound_sip_trunk { build(:outbound_sip_trunk, carrier: carrier) }
+    end
   end
 
   factory :incoming_phone_number do
@@ -111,6 +115,10 @@ FactoryBot.define do
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
     voice_method { "POST" }
     outbound
+
+    trait :routable do
+      association :account, factory: %i[account with_outbound_sip_trunk]
+    end
 
     trait :inbound do
       with_external_id

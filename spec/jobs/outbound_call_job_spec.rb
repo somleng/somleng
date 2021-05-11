@@ -4,7 +4,9 @@ RSpec.describe OutboundCallJob do
   it "initiates an outbound call" do
     phone_call = create(
       :phone_call,
+      :outbound,
       :queued,
+      :routable,
       to: "85516701721",
       from: "1294",
       voice_url: "http://example.com/voice_url",
@@ -47,7 +49,7 @@ RSpec.describe OutboundCallJob do
   end
 
   it "handles failed outbound calls" do
-    phone_call = create(:phone_call, :queued, to: "85516701721")
+    phone_call = create(:phone_call, :outbound, :queued, :routable)
     stub_request(:post, "https://ahn.somleng.org/calls").to_return(status: 500)
 
     expect {

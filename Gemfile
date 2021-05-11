@@ -23,7 +23,6 @@ gem "responders"
 gem "sentry-raven"
 gem "shoryuken"
 gem "skylight"
-gem "torasup"
 gem "tzinfo-data"
 gem "webpacker"
 
