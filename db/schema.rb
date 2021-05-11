@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 2021_05_10_073816) do
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
     t.uuid "outbound_sip_trunk_id"
+    t.string "allowed_calling_codes", default: [], null: false, array: true
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc

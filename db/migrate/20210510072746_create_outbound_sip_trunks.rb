@@ -1,4 +1,4 @@
-class CreateOutboundSipTrunks < ActiveRecord::Migration[6.1]
+class CreateOutboundSIPTrunks < ActiveRecord::Migration[6.1]
   def change
     create_table :outbound_sip_trunks, id: :uuid do |t|
       t.references :carrier, type: :uuid, null: false, foreign_key: true
