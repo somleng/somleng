@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2021_05_10_073816) do
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "state", null: false
+    t.string "status", null: false
     t.jsonb "settings", default: {}, null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false

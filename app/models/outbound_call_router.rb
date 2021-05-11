@@ -9,6 +9,8 @@ class OutboundCallRouter
   end
 
   def routing_instructions
+    raise UnsupportedGatewayError unless calling_code_allowed?
+
     if account.carrier.outbound_sip_trunks.any?
       sip_trunk = find_sip_trunk
       raise UnsupportedGatewayError if sip_trunk.blank?
@@ -25,6 +27,12 @@ class OutboundCallRouter
   end
 
   private
+
+  def calling_code_allowed?
+    return true if account.allowed_calling_codes.empty?
+
+    account.allowed_calling_codes.include?(Phony.split(destination)[0])
+  end
 
   def find_sip_trunk
     return account.outbound_sip_trunk if account.outbound_sip_trunk.present?

@@ -77,7 +77,7 @@ FactoryBot.define do
     enabled
     with_access_token
     carrier
-    traits_for_enum :state, %w[enabled disabled]
+    traits_for_enum :status, %w[enabled disabled]
 
     trait :with_access_token do
       after(:build) do |account|

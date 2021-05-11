@@ -8,17 +8,23 @@ RSpec.describe OutboundCallRouter do
       _other_sip_trunk = create(:outbound_sip_trunk, carrier: carrier)
       account = create(:account, carrier: carrier, outbound_sip_trunk: sip_trunk)
 
-      result = OutboundCallRouter.new(account: account, destination: "855715100970").routing_instructions
+      result = OutboundCallRouter.new(
+        account: account,
+        destination: "855715100970"
+      ).routing_instructions
 
       expect(result).to eq("dial_string" => "855715100970@96.9.66.131")
     end
 
     it "returns the first sip trunk of the carrier" do
       carrier = create(:carrier)
-      sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "96.9.66.131")
+      _sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "96.9.66.131")
       account = create(:account, carrier: carrier)
 
-      result = OutboundCallRouter.new(account: account, destination: "855715100970").routing_instructions
+      result = OutboundCallRouter.new(
+        account: account,
+        destination: "855715100970"
+      ).routing_instructions
 
       expect(result).to eq("dial_string" => "855715100970@96.9.66.131")
     end
@@ -26,17 +32,30 @@ RSpec.describe OutboundCallRouter do
     it "handles prefix routing" do
       carrier = create(:carrier)
       _catch_all_sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "96.9.66.234")
-      sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "96.9.66.131", route_prefixes: ["85571"])
+      _sip_trunk = create(
+        :outbound_sip_trunk,
+        carrier: carrier,
+        host: "96.9.66.131",
+        route_prefixes: ["85571"]
+      )
       account = create(:account, carrier: carrier)
 
-      result = OutboundCallRouter.new(account: account, destination: "855715100970").routing_instructions
+      result = OutboundCallRouter.new(
+        account: account,
+        destination: "855715100970"
+      ).routing_instructions
 
       expect(result).to eq("dial_string" => "855715100970@96.9.66.131")
     end
 
-    it "raises unsupported gateway errors" do
+    it "raises unsupported gateway errors when no route is found" do
       carrier = create(:carrier)
-      sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "96.9.66.131", route_prefixes: ["85512"])
+      _sip_trunk = create(
+        :outbound_sip_trunk,
+        carrier: carrier,
+        host: "96.9.66.131",
+        route_prefixes: ["85512"]
+      )
       account = create(:account, carrier: carrier)
 
       expect {
@@ -44,22 +63,51 @@ RSpec.describe OutboundCallRouter do
       }.to raise_error(OutboundCallRouter::UnsupportedGatewayError)
     end
 
+    it "raises unsupported gateway errors if route is not allowed" do
+      carrier = create(:carrier)
+      _sip_trunk = create(:outbound_sip_trunk, carrier: carrier)
+      account = create(:account, carrier: carrier, allowed_calling_codes: ["55"])
+
+      expect {
+        OutboundCallRouter.new(
+          account: account,
+          destination: "855715100970"
+        ).routing_instructions
+      }.to raise_error(OutboundCallRouter::UnsupportedGatewayError)
+    end
+
     it "handles trunk prefix gateways" do
       carrier = create(:carrier)
-      sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "96.9.66.131", trunk_prefix: true)
+      _sip_trunk = create(
+        :outbound_sip_trunk,
+        carrier: carrier,
+        host: "96.9.66.131",
+        trunk_prefix: true
+      )
       account = create(:account, carrier: carrier)
 
-      result = OutboundCallRouter.new(account: account, destination: "855715100970").routing_instructions
+      result = OutboundCallRouter.new(
+        account: account,
+        destination: "855715100970"
+      ).routing_instructions
 
       expect(result).to eq("dial_string" => "0715100970@96.9.66.131")
     end
 
     it "handles dial string prefixes" do
       carrier = create(:carrier)
-      sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "96.9.66.131", dial_string_prefix: "69980")
+      _sip_trunk = create(
+        :outbound_sip_trunk,
+        carrier: carrier,
+        host: "96.9.66.131",
+        dial_string_prefix: "69980"
+      )
       account = create(:account, carrier: carrier)
 
-      result = OutboundCallRouter.new(account: account, destination: "855715100970").routing_instructions
+      result = OutboundCallRouter.new(
+        account: account,
+        destination: "855715100970"
+      ).routing_instructions
 
       expect(result).to eq("dial_string" => "69980855715100970@96.9.66.131")
     end
