@@ -2,7 +2,7 @@ class OutboundCallJob < ApplicationJob
   class RetryJob < StandardError; end
 
   def perform(phone_call, http_client: default_http_client)
-    routing_instructions = OutboundCallRouter.new(phone_call.to).routing_instructions
+    routing_instructions = OutboundCallRouter.new(account: phone_call.account, destination: phone_call.to).routing_instructions
 
     response = http_client.post(
       "/calls",

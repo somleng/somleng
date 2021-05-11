@@ -63,15 +63,30 @@ FactoryBot.define do
     end_time { 5.seconds.ago }
   end
 
+  factory :carrier do
+    name { "Somleng" }
+  end
+
+  factory :outbound_sip_trunk do
+    carrier
+    name { "My SIP trunk" }
+    host { "host.docker.internal:5061" }
+  end
+
   factory :account do
     enabled
     with_access_token
-    traits_for_enum :state, %w[enabled disabled]
+    carrier
+    traits_for_enum :status, %w[enabled disabled]
 
     trait :with_access_token do
       after(:build) do |account|
         account.access_token ||= build(:access_token, resource_owner_id: account.id)
       end
+    end
+
+    trait :with_outbound_sip_trunk do
+      outbound_sip_trunk { build(:outbound_sip_trunk, carrier: carrier) }
     end
   end
 
@@ -100,6 +115,10 @@ FactoryBot.define do
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
     voice_method { "POST" }
     outbound
+
+    trait :routable do
+      association :account, factory: %i[account with_outbound_sip_trunk]
+    end
 
     trait :inbound do
       with_external_id

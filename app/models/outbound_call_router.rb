@@ -1,29 +1,40 @@
 class OutboundCallRouter
-  attr_reader :destination
+  attr_reader :account, :destination
 
   class UnsupportedGatewayError < StandardError; end
 
-  def initialize(destination)
+  def initialize(account:, destination:)
+    @account = account
     @destination = Phony.normalize(destination)
   end
 
   def routing_instructions
-    raise UnsupportedGatewayError if destination_gateway.blank?
+    raise UnsupportedGatewayError unless calling_code_allowed?
+
+    sip_trunk = find_sip_trunk
+    raise UnsupportedGatewayError if sip_trunk.blank?
+
+    destination_number = sip_trunk.trunk_prefix? ? Phony.format(destination, format: :national, spaces: "") : destination
+    dial_string = "#{sip_trunk.dial_string_prefix}#{destination_number}@#{sip_trunk.host}"
 
     {
-      "dial_string" => "#{destination_gateway['dial_string_prefix']}#{destination_number}@#{destination_gateway.fetch('host')}"
+      "dial_string" => dial_string
     }
   end
 
   private
 
-  def destination_gateway
-    @destination_gateway ||= Torasup::PhoneNumber.new(destination).operator.gateway
+  def calling_code_allowed?
+    return true if account.allowed_calling_codes.empty?
+
+    account.allowed_calling_codes.include?(Phony.split(destination)[0])
   end
 
-  def destination_number
-    return destination unless destination_gateway["prefix"] == false
+  def find_sip_trunk
+    return account.outbound_sip_trunk if account.outbound_sip_trunk.present?
 
-    Phony.format(destination, format: :national, spaces: "")
+    account.carrier.outbound_sip_trunks.sort_by { |sip_trunk| -sip_trunk.route_prefixes.length }.detect do |sip_trunk|
+      sip_trunk.route_prefixes.any? { |prefix| destination =~ /\A#{prefix}/ } || sip_trunk.route_prefixes.empty?
+    end
   end
 end

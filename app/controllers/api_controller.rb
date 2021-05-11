@@ -10,7 +10,7 @@ class APIController < ApplicationController
   end
 
   def respond_with_resource(resource, options = {})
-    respond_with(:api, resource.account, resource, **options)
+    respond_with(resource.account, resource, **options)
   end
 
   def current_account

@@ -12,6 +12,8 @@ class PhoneCall < ApplicationRecord
   has_one    :call_data_record
   has_many   :phone_call_events
 
+  delegate :carrier, to: :account
+
   aasm column: :status do
     state :queued, initial: true
     state :initiated
