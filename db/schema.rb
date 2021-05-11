@@ -155,7 +155,7 @@ ActiveRecord::Schema.define(version: 2021_05_10_073816) do
   create_table "outbound_sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "name", null: false
-    t.inet "host", null: false
+    t.string "host", null: false
     t.string "route_prefixes", default: [], null: false, array: true
     t.string "dial_string_prefix"
     t.boolean "trunk_prefix", default: false, null: false

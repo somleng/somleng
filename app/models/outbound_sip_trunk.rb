@@ -1,3 +1,3 @@
-class OutboundSipTrunk < ApplicationRecord
+class OutboundSIPTrunk < ApplicationRecord
   belongs_to :carrier
 end
