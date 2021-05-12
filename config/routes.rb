@@ -1,4 +1,27 @@
 Rails.application.routes.draw do
+  devise_for :users, skip: :registrations
+  devise_scope :user do
+    resource(
+      :registration,
+      only: %i[edit update],
+      controller: "devise/registrations",
+      as: :user_registration,
+      path: "users"
+    )
+
+    resource(
+      :invitation,
+      only: :update,
+      controller: "devise/invitations",
+      as: :user_invitation,
+      path: "users/invitation"
+    ) do
+      get :accept, action: :edit
+    end
+
+    # root to: "dashboard/accounts#index"
+  end
+
   root to: redirect("https://www.somleng.org")
 
   namespace :services, defaults: { format: "json" } do

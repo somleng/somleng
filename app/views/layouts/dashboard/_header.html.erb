@@ -1,0 +1,44 @@
+<header class="c-header c-header-light c-header-fixed c-header-with-subheader">
+  <button class="c-header-toggler c-class-toggler d-lg-none" type="button" data-target="#sidebar" data-class="c-sidebar-show">
+    <span class="c-header-toggler-icon"></span>
+  </button>
+  <%= link_to dashboard_root_path, class: "c-header-brand d-lg-none c-header-brand-sm-up-center" do %>
+    <%= image_tag("logos/bongloy_logo_color.png", class: "c-sidebar-brand-full", height: 46) %>
+  <% end %>
+  <button class="c-header-toggler c-class-toggler mfs-3 d-md-down-none" type="button" data-target="#sidebar" data-class="c-sidebar-lg-show" responsive="true">
+    <span class="c-header-toggler-icon"></span>
+  </button>
+  <ul class="c-header-nav mr-auto">
+  </ul>
+  <ul class="c-header-nav">
+    <li class="c-header-nav-item dropdown">
+      <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <div class="c-avatar">
+          <%= image_tag(user_profile_image_url(current_user), class: "c-avatar-img") %>
+        </div>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right pt-0">
+        <div class="dropdown-header bg-light py-2">
+          <strong><%= current_user.card_issuer.name %></strong>
+        </div>
+        <div class="dropdown-item disabled">
+          <i class="fas fa-user mfe-2"></i> <%= current_user.name %>
+        </div>
+
+        <div class="dropdown-header bg-light py-2">
+          <strong>Settings</strong>
+        </div>
+        <%= link_to(edit_user_registration_path, class: "dropdown-item") do %>
+          <i class="fas fa-user-cog mfe-2"></i> Change Password
+        <% end %>
+
+        <div class="dropdown-divider"></div>
+
+        <%= link_to(destroy_user_session_path, method: :delete, class: "dropdown-item") do %>
+          <i class="fas fa-sign-out-alt mfe-2"></i>
+          Logout
+        <% end %>
+      </div>
+    </li>
+  </ul>
+</header>

@@ -15,4 +15,30 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-console.log('Hello World from Webpacker')
+require("@rails/ujs").start()
+require("turbolinks").start()
+require("@rails/activestorage").start()
+
+import $ from "jquery";
+import "bootstrap";
+import "@fortawesome/fontawesome-free/js/all";
+import "@coreui/coreui";
+import "select2";
+import moment from "moment";
+
+import "controllers"
+import "../components/direct_upload"
+
+import "../stylesheets/application";
+
+document.addEventListener("turbolinks:load", function() {
+  $('[data-behavior~=select2-input]').select2({
+    theme: 'bootstrap4'
+  })
+
+  $('time[data-behavior~=local-time]').each(function() {
+    $(this).text(
+      moment($(this).text()).format("lll (Z)")
+    )
+  })
+});

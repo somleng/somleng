@@ -1,4 +1,4 @@
-class ApplicationResponder < ActionController::Responder
+class APIResponder < ActionController::Responder
   include Responders::HttpCacheResponder
 
   def display(resource, given_options = {})

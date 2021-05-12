@@ -1,5 +1,5 @@
-module API
-  class PhoneCallsController < APIController
+module TwilioAPI
+  class PhoneCallsController < TwilioAPIController
     def create
       validate_request_schema(with: PhoneCallRequestSchema) do |permitted_params|
         phone_call = current_account.phone_calls.create!(permitted_params)

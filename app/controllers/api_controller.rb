@@ -1,44 +1,24 @@
-class APIController < ApplicationController
-  before_action :doorkeeper_authorize!
-  before_action :authorize_account!
+class APIController < ActionController::API
+  self.responder = APIResponder
+
+  respond_to :json
 
   private
 
-  def authorize_account!
-    return deny_access! unless current_account.enabled?
-    return deny_access! unless current_account.id == params[:account_id]
+  def validate_request_schema(with:, **options, &_block)
+    schema_options = options.delete(:schema_options) || {}
+    input_params = options.delete(:input_params) || request.request_parameters
+    schema = with.new(input_params: input_params, options: schema_options)
+
+    if schema.success?
+      resource = yield(schema.output)
+      respond_with_resource(resource, options)
+    else
+      respond_with(schema, responder: InvalidRequestSchemaResponder, **options)
+    end
   end
 
   def respond_with_resource(resource, options = {})
-    respond_with(resource.account, resource, **options)
-  end
-
-  def current_account
-    @current_account ||= Account.find(doorkeeper_token.resource_owner_id)
-  end
-
-  def deny_access!
-    render(unauthorized_render_options)
-  end
-
-  def doorkeeper_unauthorized_render_options(**)
-    unauthorized_render_options
-  end
-
-  def doorkeeper_forbidden_render_options(**)
-    unauthorized_render_options
-  end
-
-  def unauthorized_render_options
-    {
-      json: {
-        "code": 20003,
-        "detail": "",
-        "message": "Authenticate",
-        "more_info": "https://www.twilio.com/docs/errors/20003",
-        "status": 401
-      },
-      status: :unauthorized
-    }
+    respond_with(resource, **options)
   end
 end

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Somleng - <%= yield(:page_title) %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%= render "shared/favicon" %>
+  </head>
+
+  <body class="c-app">
+    <%= render "layouts/dashboard/side_navigation" %>
+
+    <div class="c-wrapper">
+      <%= render "layouts/dashboard/header" %>
+
+      <div class="c-body">
+        <main class="c-main">
+          <div class="container-fluid">
+            <%= render "shared/alerts" %>
+
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="card">
+                  <%= yield %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <footer class="c-footer">
+        <div class="mfs-auto"><%= Date.current.year %> &copy; Somleng</div>
+      </footer>
+    </div>
+  </body>
+</html>

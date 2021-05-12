@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Somleng</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%= render "shared/favicon" %>
+  </head>
+
+  <body class="c-app mt-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <%= image_tag "somleng_logo.png", class: "img-fluid mx-auto px-5 my-3 d-block" %>
+
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body">
+                <%= render "shared/alerts" %>
+
+                <%= yield %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

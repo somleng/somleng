@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_10_073816) do
+ActiveRecord::Schema.define(version: 2021_05_12_075516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -202,6 +202,40 @@ ActiveRecord::Schema.define(version: 2021_05_10_073816) do
     t.index ["status"], name: "index_phone_calls_on_status"
   end
 
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id"
+    t.uuid "account_id"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer "invitation_limit"
+    t.string "invited_by_type"
+    t.bigint "invited_by_id"
+    t.integer "invitations_count", default: 0
+    t.index ["account_id"], name: "index_users_on_account_id"
+    t.index ["carrier_id"], name: "index_users_on_carrier_id"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
+  end
+
   add_foreign_key "accounts", "carriers"
   add_foreign_key "accounts", "outbound_sip_trunks"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -217,4 +251,6 @@ ActiveRecord::Schema.define(version: 2021_05_10_073816) do
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "incoming_phone_numbers"
+  add_foreign_key "users", "accounts"
+  add_foreign_key "users", "carriers"
 end

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Somleng</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%= render "shared/favicon" %>
+    <%= yield :head if content_for?(:head) %>
+  </head>
+
+  <body class="container">
+    <%= yield %>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+<div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
+  <div class="c-sidebar-brand">
+    <%= link_to dashboard_root_path do %>
+      <%= image_tag("logo.png", class: "c-sidebar-brand-full", height: 46) %>
+      <%= image_tag("logo_square.png", class: "c-sidebar-brand-minimized", height: 46) %>
+    <% end %>
+  </div>
+  <ul class="c-sidebar-nav">
+    <%= sidebar_nav("Cardholders", dashboard_cardholders_path, icon_class: "fas fa-user") %>
+    <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fas fa-wallet") %>
+    <%= sidebar_nav("Cards", dashboard_cards_path, icon_class: "fas fa-credit-card") %>
+    <%= sidebar_nav("Transactions", dashboard_transactions_path, icon_class: "fas fa-list-ul") %>
+    <li class="c-sidebar-nav-item"><hr/></li>
+    <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fas fa-file-download") %>
+  </ul>
+</div>
