@@ -278,7 +278,7 @@ jobs:
           ./bin/ecs_run_task --cluster somleng --started-by db_migrate_ci --service ${{ env.APP_IDENTIFIER }}-worker --command "bundle exec rails db:migrate"
 
       - name: Deploy App Server
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.5
         with:
           task-definition: ${{ steps.render-appserver-task-def.outputs.task-definition }}
           service: ${{ env.APP_IDENTIFIER }}-appserver
@@ -289,7 +289,7 @@ jobs:
           codedeploy-deployment-group: ${{ env.APP_IDENTIFIER }}
 
       - name: Deploy Worker
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.5
         with:
           task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
           service: ${{ env.APP_IDENTIFIER }}-worker
