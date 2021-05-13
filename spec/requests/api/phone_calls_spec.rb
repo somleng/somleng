@@ -68,7 +68,7 @@ RSpec.resource "Phone Calls" do
     end
   end
 
-  get "/2010-04-01/Accounts/:account_sid/Calls/:call_sid" do
+  get "/2010-04-01/Accounts/:account_sid/Calls/:sid" do
     # https://www.twilio.com/docs/api/rest/call#instance-get
 
     it "Fetch a call" do
@@ -76,10 +76,37 @@ RSpec.resource "Phone Calls" do
       phone_call = create(:phone_call, account: account)
 
       set_api_authorization_header(account)
-      do_request(account_sid: account.id, call_sid: phone_call.id)
+      do_request(account_sid: account.id, sid: phone_call.id)
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema(:phone_call)
+    end
+  end
+
+  post "/2010-04-01/Accounts/:account_sid/Calls/:sid" do
+    parameter(
+      "Status",
+      "The new status of the resource. Can be: `canceled` or `completed`. Specifying `canceled` will attempt to hang up calls that are `queued` or `ringing`; however, it will not affect calls already in progress. Specifying `completed` will attempt to hang up a call even if it's already in progress.",
+      required: false,
+      example: "completed"
+    )
+
+    # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-resource
+
+    example "Update a call" do
+      account = create(:account)
+      phone_call = create(:phone_call, :answered, account: account)
+
+      set_api_authorization_header(account)
+      do_request(
+        account_sid: account.id,
+        sid: phone_call.id,
+        "Status" => "completed"
+      )
+
+      expect(response_status).to eq(201)
+      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(json_response.fetch("status")).to eq("completed")
     end
   end
 end

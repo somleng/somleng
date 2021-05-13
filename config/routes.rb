@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   end
 
   scope "/2010-04-01/Accounts/:account_id", as: :account, defaults: { format: "json" } do
-    resources :phone_calls, only: %i[create show], path: "Calls", controller: "api/phone_calls"
+    resources :phone_calls, only: %i[create show update], path: "Calls", controller: "api/phone_calls"
+    post "Calls/:id" => "api/phone_calls#update"
   end
 end
