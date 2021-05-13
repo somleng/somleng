@@ -177,6 +177,7 @@ GEM
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
+    jwt (2.2.2)
     lograge (0.11.2)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -325,6 +326,10 @@ GEM
       sprockets (>= 3.0.0)
     squasher (0.6.2)
     thor (1.1.0)
+    twilio-ruby (5.51.0)
+      faraday (>= 0.9, < 2.0)
+      jwt (>= 1.5, <= 2.5)
+      nokogiri (>= 1.6, < 2.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2021.1)
@@ -381,6 +386,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   squasher
+  twilio-ruby
   tzinfo-data
   webmock
   webpacker

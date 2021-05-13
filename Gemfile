@@ -50,5 +50,6 @@ group :test do
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
+  gem "twilio-ruby"
   gem "webmock"
 end
