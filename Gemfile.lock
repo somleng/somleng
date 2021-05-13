@@ -76,6 +76,8 @@ GEM
     after_commit_everywhere (1.0.0)
       activerecord (>= 4.2)
     ast (2.4.1)
+    attr_encrypted (3.1.0)
+      encryptor (~> 3.0.0)
     aws-eventstream (1.1.1)
     aws-partitions (1.441.0)
     aws-record (2.5.0)
@@ -117,6 +119,15 @@ GEM
     bootsnap (1.7.2)
       msgpack (~> 1.0)
     builder (3.2.4)
+    capybara (3.35.3)
+      addressable
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (>= 1.5, < 3.0)
+      xpath (~> 3.2)
+    childprocess (3.0.0)
     coderay (1.1.3)
     concurrent-ruby (1.1.8)
     crack (0.4.5)
@@ -128,6 +139,12 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise-two-factor (4.0.0)
+      activesupport (< 6.2)
+      attr_encrypted (>= 1.3, < 4, != 2)
+      devise (~> 4.0)
+      railties (< 6.2)
+      rotp (~> 6.0)
     devise_invitable (2.0.5)
       actionmailer (>= 5.0)
       devise (>= 4.6)
@@ -171,6 +188,7 @@ GEM
       dry-equalizer (~> 0.2)
       dry-initializer (~> 3.0)
       dry-schema (~> 1.5, >= 1.5.2)
+    encryptor (3.0.0)
     enumerize (2.4.0)
       activesupport (>= 3.2)
     erubi (1.10.0)
@@ -188,6 +206,18 @@ GEM
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
+    kaminari (1.2.1)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.1)
+      kaminari-activerecord (= 1.2.1)
+      kaminari-core (= 1.2.1)
+    kaminari-actionview (1.2.1)
+      actionview
+      kaminari-core (= 1.2.1)
+    kaminari-activerecord (1.2.1)
+      activerecord
+      kaminari-core (= 1.2.1)
+    kaminari-core (1.2.1)
     lograge (0.11.2)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -223,6 +253,8 @@ GEM
     public_suffix (4.0.6)
     puma (5.2.2)
       nio4r (~> 2.0)
+    pundit (2.1.0)
+      activesupport (>= 3.0.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-proxy (0.6.5)
@@ -264,6 +296,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.4)
+    rotp (6.2.0)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -307,6 +340,7 @@ GEM
       rubocop (~> 0.87)
       rubocop-ast (>= 0.7.1)
     ruby-progressbar (1.11.0)
+    rubyzip (2.3.0)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -315,6 +349,9 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    selenium-webdriver (3.142.7)
+      childprocess (>= 0.5, < 4.0)
+      rubyzip (>= 1.2.2)
     semantic_range (2.3.1)
     sentry-raven (3.0.0)
       faraday (>= 1.0)
@@ -362,6 +399,10 @@ GEM
     unicode-display_width (1.7.0)
     warden (1.2.9)
       rack (>= 2.0.9)
+    webdrivers (4.6.0)
+      nokogiri (~> 1.6)
+      rubyzip (>= 1.3.0)
+      selenium-webdriver (>= 3.0, < 4.0)
     webmock (3.12.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -374,6 +415,8 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xpath (3.2.0)
+      nokogiri (~> 1.8)
     zeitwerk (2.4.2)
 
 PLATFORMS
@@ -386,18 +429,22 @@ DEPENDENCIES
   aws-sdk-s3
   aws-sdk-sqs
   bootsnap
+  capybara
   devise
+  devise-two-factor
   devise_invitable
   doorkeeper
   dry-validation
   enumerize
   factory_bot_rails
+  kaminari
   lograge
   okcomputer
   pg
   phony
   pry
   puma
+  pundit
   rails (~> 6.1.0)
   responders
   rspec-rails
@@ -420,6 +467,7 @@ DEPENDENCIES
   squasher
   turbolinks
   tzinfo-data
+  webdrivers
   webmock
   webpacker
 

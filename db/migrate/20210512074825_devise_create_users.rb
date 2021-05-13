@@ -6,6 +6,9 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.references :carrier, type: :uuid, null: true, foreign_key: true
       t.references :account, type: :uuid, null: true, foreign_key: true
 
+      t.string :name, null: false
+      t.string :role, null: false
+
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""

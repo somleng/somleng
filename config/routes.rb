@@ -19,10 +19,8 @@ Rails.application.routes.draw do
       get :accept, action: :edit
     end
 
-    # root to: "dashboard/accounts#index"
+    root to: "dashboard/accounts#index"
   end
-
-  root to: redirect("https://www.somleng.org")
 
   namespace :services, defaults: { format: "json" } do
     resources :inbound_phone_calls, only: :create
@@ -33,5 +31,10 @@ Rails.application.routes.draw do
 
   scope "/2010-04-01/Accounts/:account_id", as: :account, defaults: { format: "json" } do
     resources :phone_calls, only: %i[create show], path: "Calls", controller: "api/phone_calls"
+  end
+
+  namespace :dashboard do
+    resource :two_factor_authentication, only: %i[new create]
+    resources :accounts, only: :index
   end
 end

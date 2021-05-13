@@ -13,21 +13,24 @@ gem "aws-sdk-s3"
 gem "aws-sdk-sqs"
 gem "devise"
 gem "devise_invitable"
+gem "devise-two-factor"
 gem "doorkeeper"
 gem "dry-validation"
 gem "enumerize"
+gem "kaminari"
 gem "lograge"
 gem "okcomputer"
 gem "pg"
 gem "phony"
 gem "puma"
+gem "pundit"
 gem "responders"
+gem "sassc-rails"
 gem "sentry-raven"
 gem "shoryuken"
 gem "show_for"
 gem "simple_form"
 gem "skylight"
-gem "sassc-rails"
 gem "turbolinks"
 gem "tzinfo-data"
 gem "webpacker"
@@ -52,9 +55,11 @@ group :development do
 end
 
 group :test do
+  gem "capybara"
   gem "factory_bot_rails"
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
+  gem "webdrivers"
   gem "webmock"
 end
