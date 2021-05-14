@@ -108,25 +108,19 @@ FactoryBot.define do
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
     voice_method { "POST" }
     outbound
-    with_external_id
+    external_id { SecureRandom.uuid }
 
     trait :routable do
       association :account, factory: %i[account with_outbound_sip_trunk]
     end
 
-    traits_for_enum :status, %w[queued initiated answered not_answered ringing canceled failed completed busy]
-
-    trait :inbound do
-      direction { :inbound }
+    trait :queued do
+      external_id { nil }
+      status { :queued }
     end
 
-    trait :outbound do
-      direction { :outbound }
-    end
-
-    trait :with_external_id do
-      external_id { SecureRandom.uuid }
-    end
+    traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
+    traits_for_enum :direction, %i[inbound outbound]
   end
 
   factory :access_token, class: "Doorkeeper::AccessToken"
