@@ -108,7 +108,6 @@ RSpec.resource "Phone Calls" do
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema(:phone_call)
       expect(EndCallJob).to have_been_enqueued.with(phone_call)
-      expect(json_response.fetch("status")).to eq("completed")
     end
 
     example "Cancels a call", document: false do
@@ -124,23 +123,6 @@ RSpec.resource "Phone Calls" do
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema(:phone_call)
-      expect(json_response.fetch("status")).to eq("canceled")
-    end
-
-    example "Handles updating a call to an invalid status", document: false do
-      account = create(:account)
-      phone_call = create(:phone_call, :busy, account: account)
-
-      set_api_authorization_header(account)
-      do_request(
-        account_sid: account.id,
-        sid: phone_call.id,
-        "Status" => "completed"
-      )
-
-      expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema(:phone_call)
-      expect(json_response.fetch("status")).to eq("busy")
     end
 
     example "Handles invalid requests", document: false do
