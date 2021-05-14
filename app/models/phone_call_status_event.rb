@@ -10,14 +10,6 @@ class PhoneCallStatusEvent
     @phone_call = phone_call
   end
 
-  def transition_to(new_state)
-    return false unless may_transition_to?(new_state)
-
-    phone_call.fire_event!(EVENTS.fetch(new_state))
-  end
-
-  private
-
   def may_transition_to?(new_state)
     return false unless EVENTS.key?(new_state)
 

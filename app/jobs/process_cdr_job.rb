@@ -35,7 +35,8 @@ class ProcessCDRJob < ApplicationJob
       phone_call,
       event_type: :completed,
       answer_epoch: phone_call.call_data_record.answer_time.to_i,
-      sip_term_status: phone_call.call_data_record.sip_term_status
+      sip_term_status: phone_call.call_data_record.sip_term_status,
+      sip_invite_failure_status: phone_call.call_data_record.sip_invite_failure_status
     )
   end
 

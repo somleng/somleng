@@ -31,7 +31,7 @@ class PhoneCall < ApplicationRecord
     end
 
     event :cancel do
-      transitions from: :queued, to: :canceled
+      transitions from: %i[queued initiatied ringing], to: :canceled
     end
 
     event :ring do
