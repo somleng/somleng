@@ -27,3 +27,5 @@ module Twilreapi
     Rails.application.routes.default_url_options[:host] = config.app_settings.fetch(:default_url_host)
   end
 end
+
+require "call_service"
