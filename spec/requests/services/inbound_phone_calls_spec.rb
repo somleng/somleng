@@ -27,7 +27,7 @@ RSpec.describe "Services" do
 
       expect(response.code).to eq("201")
       expect(response.body).to match_api_response_schema("services/phone_call")
-      expect(json_response).to include(
+      expect(json_response(response.body)).to include(
         "to" => "855716200876",
         "from" => "85512234567",
         "voice_url" => "https://example.com/voice.xml",

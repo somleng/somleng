@@ -115,13 +115,6 @@ FactoryBot.define do
     voice_method { "POST" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
 
-    trait :with_optional_attributes do
-      with_voice_method
-      with_status_callback_url
-      with_status_callback_method
-      with_twilio_request_phone_number
-    end
-
     trait :with_twilio_request_phone_number do
       twilio_request_phone_number { "123456789" }
     end
@@ -134,81 +127,19 @@ FactoryBot.define do
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
     voice_method { "POST" }
     outbound
+    external_id { SecureRandom.uuid }
 
     trait :routable do
       association :account, factory: %i[account with_outbound_sip_trunk]
     end
 
-    trait :inbound do
-      with_external_id
-      direction { :inbound }
-    end
-
-    trait :outbound do
-      direction { :outbound }
-    end
-
-    trait :with_external_id do
-      external_id { SecureRandom.uuid }
-    end
-
     trait :queued do
-      status { PhoneCall::STATE_QUEUED }
+      external_id { nil }
+      status { :queued }
     end
 
-    trait :initiated do
-      with_external_id
-      status { PhoneCall::STATE_INITIATED }
-    end
-
-    trait :answered do
-      with_external_id
-      status { PhoneCall::STATE_ANSWERED }
-    end
-
-    trait :not_answered do
-      with_external_id
-      status { PhoneCall::STATE_NOT_ANSWERED }
-    end
-
-    trait :ringing do
-      with_external_id
-      status { PhoneCall::STATE_RINGING }
-    end
-
-    trait :canceled do
-      with_external_id
-      status { PhoneCall::STATE_CANCELED }
-    end
-
-    trait :failed do
-      with_external_id
-      status { PhoneCall::STATE_FAILED }
-    end
-
-    trait :completed do
-      with_external_id
-      status { PhoneCall::STATE_COMPLETED }
-    end
-
-    trait :busy do
-      with_external_id
-      status { PhoneCall::STATE_BUSY }
-    end
-
-    trait :can_complete do
-      answered
-    end
-
-    trait :already_completed do
-      failed
-    end
-
-    trait :with_optional_attributes do
-      with_voice_method
-      with_status_callback_url
-      with_status_callback_method
-    end
+    traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
+    traits_for_enum :direction, %i[inbound outbound]
   end
 
   factory :access_token, class: "Doorkeeper::AccessToken"

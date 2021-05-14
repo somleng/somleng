@@ -13,6 +13,7 @@ class PhoneCall < ApplicationRecord
   has_many   :phone_call_events
 
   delegate :carrier, to: :account
+  delegate :may_fire_event?, to: :aasm
 
   aasm column: :status do
     state :queued, initial: true
@@ -60,6 +61,10 @@ class PhoneCall < ApplicationRecord
 
   validates :external_id, presence: true, if: :inbound?
   before_save :normalize_phone_numbers
+
+  def fire_event!(event)
+    aasm.fire!(event)
+  end
 
   private
 

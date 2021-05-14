@@ -1,6 +1,6 @@
 module RequestHelpers
-  def json_response
-    JSON.parse(response.body)
+  def json_response(body = response_body)
+    JSON.parse(body)
   end
 
   def build_api_authorization_headers(account)

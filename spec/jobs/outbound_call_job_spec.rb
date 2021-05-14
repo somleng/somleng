@@ -14,7 +14,7 @@ RSpec.describe OutboundCallJob do
     )
     stub_request(:post, "https://ahn.somleng.org/calls").to_return(body: "{\"id\": \"123456789\"}")
 
-    OutboundCallJob.new.perform(phone_call)
+    OutboundCallJob.perform_now(phone_call)
 
     expect(phone_call.external_id).to eq("123456789")
     expect(phone_call.status).to eq("initiated")
@@ -43,7 +43,7 @@ RSpec.describe OutboundCallJob do
       to: "85513333333"
     )
 
-    OutboundCallJob.new.perform(phone_call)
+    OutboundCallJob.perform_now(phone_call)
 
     expect(phone_call.status).to eq("canceled")
   end
@@ -53,7 +53,7 @@ RSpec.describe OutboundCallJob do
     stub_request(:post, "https://ahn.somleng.org/calls").to_return(status: 500)
 
     expect {
-      OutboundCallJob.new.perform(phone_call)
+      OutboundCallJob.perform_now(phone_call)
     }.to raise_error(OutboundCallJob::RetryJob)
 
     expect(phone_call.status).to eq("queued")
