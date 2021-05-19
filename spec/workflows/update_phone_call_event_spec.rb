@@ -53,6 +53,20 @@ RSpec.describe UpdatePhoneCallStatus do
     expect(phone_call.status).to eq("not_answered")
   end
 
+  it "handles completed events with " do
+    phone_call = create(:phone_call, :ringing)
+
+    UpdatePhoneCallStatus.call(
+      phone_call,
+      event_type: "completed",
+      answer_epoch: nil,
+      sip_term_status: nil,
+      sip_invite_failure_status: "487"
+    )
+
+    expect(phone_call.status).to eq("canceled")
+  end
+
   it "handles completed events with busy" do
     phone_call = create(:phone_call, :ringing)
 

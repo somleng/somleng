@@ -7,13 +7,14 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
     "486"
   ].freeze
 
-  attr_reader :phone_call, :event_type, :answer_epoch, :sip_term_status
+  attr_reader :phone_call, :event_type, :answer_epoch, :sip_term_status, :sip_invite_failure_status
 
   def initialize(phone_call, event_details)
     @phone_call = phone_call
     @event_type = event_details.fetch(:event_type).to_sym
     @answer_epoch = event_details.fetch(:answer_epoch)
     @sip_term_status = event_details.fetch(:sip_term_status)
+    @sip_invite_failure_status = event_details[:sip_invite_failure_status]
   end
 
   def call
@@ -28,6 +29,7 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
     return phone_call.complete!             if answer_epoch.to_i.positive?
     return phone_call.mark_as_not_answered! if NOT_ANSWERED_SIP_TERM_STATUSES.include?(sip_term_status)
     return phone_call.mark_as_busy!         if BUSY_SIP_TERM_STATUSES.include?(sip_term_status)
+    return phone_call.cancel!               if NOT_ANSWERED_SIP_TERM_STATUSES.include?(sip_invite_failure_status)
 
     phone_call.fail!
   end
