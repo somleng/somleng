@@ -123,6 +123,7 @@ RSpec.resource "Phone Calls" do
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema(:phone_call)
+      expect(json_response.fetch("status")).to eq("canceled")
     end
 
     example "Handles invalid requests", document: false do

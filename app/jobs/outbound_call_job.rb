@@ -2,6 +2,8 @@ class OutboundCallJob < ApplicationJob
   class RetryJob < StandardError; end
 
   def perform(phone_call, call_service_client: CallService::Client.new)
+    return if phone_call.canceled?
+
     routing_instructions = OutboundCallRouter.new(
       account: phone_call.account,
       destination: phone_call.to
