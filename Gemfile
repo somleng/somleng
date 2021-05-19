@@ -14,6 +14,7 @@ gem "aws-sdk-sqs"
 gem "doorkeeper"
 gem "dry-validation"
 gem "enumerize"
+gem "http"
 gem "lograge"
 gem "okcomputer"
 gem "pg"
@@ -50,5 +51,6 @@ group :test do
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
+  gem "twilio-ruby"
   gem "webmock"
 end

@@ -5,37 +5,50 @@ class StatusCallbackNotifierJob < ApplicationJob
   }.freeze
 
   def perform(phone_call)
-    status_callback_url = phone_call.status_callback_url
+    status_callback_uri = HTTP::URI.parse(phone_call.status_callback_url)
     http_method = HTTP_METHODS.fetch(phone_call.status_callback_method, :post)
-    serializer = StatusCallbackSerializer.new(phone_call)
-    payload = serializer.serializable_hash
-    http_client.run_request(
-      http_method,
-      phone_call.status_callback_url,
-      payload.to_query,
-      "x-twilio-signature" => twilio_signature(
-        payload: payload,
-        url: status_callback_url,
-        auth_token: phone_call.account.auth_token
+    call_params = StatusCallbackSerializer.new(phone_call).serializable_hash
+
+    if http_method == :get
+      status_callback_uri.query_values = status_callback_uri.query_values(Array).to_a.concat(call_params.to_a)
+      http_client.get(
+        status_callback_uri,
+        headers: {
+          "X-Twilio-Signature" => twilio_signature(
+            uri: status_callback_uri,
+            auth_token: phone_call.account.auth_token
+          )
+        }
       )
-    )
+    else
+      http_client.post(
+        status_callback_uri,
+        form: call_params,
+        headers: {
+          "X-Twilio-Signature" => twilio_signature(
+            uri: status_callback_uri,
+            auth_token: phone_call.account.auth_token,
+            payload: call_params
+          )
+        }
+      )
+    end
   end
 
   private
 
-  def twilio_signature(payload:, url:, auth_token:)
-    data = url + payload.sort.join
+  def twilio_signature(uri:, auth_token:, payload: {})
+    data = uri.to_s + payload.sort.join
     digest = OpenSSL::Digest.new("sha1")
-    Base64.encode64(OpenSSL::HMAC.digest(digest, auth_token, data)).strip
+    Base64.strict_encode64(OpenSSL::HMAC.digest(digest, auth_token, data))
   end
 
   def http_client
-    @http_client ||= Faraday.new do |conn|
-      conn.headers["content-type"] = "application/x-www-form-urlencoded; charset=utf-8"
-      conn.headers["user-agent"] = "TwilioProxy/1.1"
-      conn.headers["accept"] = "*/*"
-      conn.headers["cache-control"] = "max-age=#{72.hours.seconds}"
-      conn.adapter Faraday.default_adapter
-    end
+    @http_client ||= HTTP.follow.headers(
+      "Content-Type" => "application/x-www-form-urlencoded; charset=utf-8",
+      "User-Agent" => "TwilioProxy/1.1",
+      "Accept" => "*/*",
+      "Cache-Control" => "max-age=#{72.hours.seconds}"
+    )
   end
 end
