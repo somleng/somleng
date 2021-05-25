@@ -4,6 +4,9 @@ class DashboardController < ApplicationController
   self.responder = DashboardResponder
   respond_to :html
 
+  delegate :carrier, to: :current_user
+  helper_method :carrier
+
   before_action :authenticate_user!
   before_action :enforce_two_factor_authentication!
 

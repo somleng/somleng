@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_12_094943) do
+ActiveRecord::Schema.define(version: 2021_05_25_084315) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2021_05_12_094943) do
     t.uuid "carrier_id", null: false
     t.uuid "outbound_sip_trunk_id"
     t.string "allowed_calling_codes", default: [], null: false, array: true
+    t.string "name", null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
@@ -91,6 +92,18 @@ ActiveRecord::Schema.define(version: 2021_05_12_094943) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "exports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.jsonb "filter_params", default: {}, null: false
+    t.string "name", null: false
+    t.string "resource_type", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["sequence_number"], name: "index_exports_on_sequence_number", unique: true, order: :desc
+    t.index ["user_id"], name: "index_exports_on_user_id"
   end
 
   create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -247,6 +260,7 @@ ActiveRecord::Schema.define(version: 2021_05_12_094943) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "exports", "users"
   add_foreign_key "incoming_phone_numbers", "accounts"
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

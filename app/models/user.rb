@@ -5,6 +5,7 @@ class User < ApplicationRecord
 
   belongs_to :carrier, optional: true
   belongs_to :account, optional: true
+  has_many :exports
 
   devise :invitable, :registerable,
          :recoverable, :validatable, :trackable, :rememberable,

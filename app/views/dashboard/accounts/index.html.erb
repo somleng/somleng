@@ -1,0 +1,16 @@
+<%= page_title(title: "Accounts") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.select :status, Account.status.values.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+  <%= render("shared/export_action", export_params: { resource_type: "Account" }) %>
+  <% if policy(:account).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_account_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

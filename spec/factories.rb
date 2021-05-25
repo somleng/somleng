@@ -74,6 +74,7 @@ FactoryBot.define do
   end
 
   factory :account do
+    name { "My Account"}
     enabled
     with_access_token
     carrier

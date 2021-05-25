@@ -25,6 +25,7 @@ gem "phony"
 gem "puma"
 gem "pundit"
 gem "responders"
+gem "rqrcode"
 gem "sassc-rails"
 gem "sentry-raven"
 gem "shoryuken"
@@ -56,6 +57,7 @@ end
 
 group :test do
   gem "capybara"
+  gem "email_spec"
   gem "factory_bot_rails"
   gem "shoulda-matchers"
   gem "simplecov", require: false

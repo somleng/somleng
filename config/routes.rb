@@ -36,6 +36,9 @@ Rails.application.routes.draw do
 
   namespace :dashboard do
     resource :two_factor_authentication, only: %i[new create]
-    resources :accounts, only: :index
+    resources :accounts
+    resources :exports, only: %i[index create]
+
+    root to: "accounts#index"
   end
 end

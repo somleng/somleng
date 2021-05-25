@@ -1,7 +1,7 @@
 module Dashboard
   class AccountsController < DashboardController
     def index
-      @resources = apply_filters(accounts_scope.includes(:cardholder, :cards))
+      @resources = apply_filters(accounts_scope)
       @resources = paginate_resources(@resources)
     end
 
@@ -10,27 +10,46 @@ module Dashboard
     end
 
     def new
-      @resource = AccountForm.new(card_issuer: card_issuer)
+      @resource = AccountForm.new(carrier: carrier)
     end
 
     def create
       @resource = AccountForm.new(permitted_params)
-      @resource.card_issuer = card_issuer
+      @resource.carrier = carrier
       @resource.save
 
       respond_with(:dashboard, @resource)
     end
 
+    def edit
+      account = accounts_scope.find(params[:id])
+      @resource = AccountForm.initialize_with(account)
+    end
+
+    def update
+      account = accounts_scope.find(params[:id])
+      @resource = AccountForm.new(permitted_params)
+      @resource.account = account
+      @resource.carrier = account.carrier
+      @resource.save
+
+      respond_with(:dashboard, @resource)
+    end
+
+    def destroy
+      account = accounts_scope.find(params[:id])
+      account.destroy
+      respond_with(:dashboard, account)
+    end
+
     private
 
     def permitted_params
-      params.require(:account).permit(
-        :cardholder_id, :number
-      )
+      params.require(:account).permit(:name, :enabled)
     end
 
     def accounts_scope
-      card_issuer.accounts
+      carrier.accounts
     end
   end
 end

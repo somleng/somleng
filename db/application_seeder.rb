@@ -1,13 +1,18 @@
 class ApplicationSeeder
+  USER_PASSWORD = "Somleng1234!".freeze
+
   def seed!
     carrier = create_carrier
     create_outbound_sip_trunk(carrier: carrier)
     account = create_account(carrier: carrier)
+    carrier_user = create_carrier_user(carrier: carrier)
 
     puts(<<~INFO)
-      Account SID:          #{account.id}
-      Auth Token:           #{account.auth_token}
-      Inbound Phone Number: #{account.incoming_phone_numbers.first.phone_number}
+      Account SID:           #{account.id}
+      Auth Token:            #{account.auth_token}
+      Inbound Phone Number:  #{account.incoming_phone_numbers.first.phone_number}
+      Carrier User Email:    #{carrier_user.email}
+      Carrier User Password: #{USER_PASSWORD}
     INFO
   end
 
@@ -29,7 +34,9 @@ class ApplicationSeeder
   end
 
   def create_account(params)
-    Account.first_or_create!(params) do |record|
+    Account.first_or_create!(
+      params.reverse_merge(name: "My Account")
+    ) do |record|
       record.build_access_token
       record.incoming_phone_numbers.build(
         phone_number: "1234",
@@ -37,5 +44,15 @@ class ApplicationSeeder
         voice_method: "GET"
       )
     end
+  end
+
+  def create_carrier_user(params)
+    User.first_or_create!(
+      params.reverse_merge(
+        email: "user@example-carrier.com",
+        name: "John Doe",
+        password: "Somleng1234!"
+      )
+    )
   end
 end

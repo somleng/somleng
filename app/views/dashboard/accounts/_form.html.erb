@@ -1,0 +1,17 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :name, maxlength: 128, hint: "A friendly name for the account. (Not shown to the account holder)" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch, hint: "Accounts which are disabled are blocked from accessing the API" %>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

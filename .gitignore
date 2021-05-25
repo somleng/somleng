@@ -26,9 +26,9 @@ coverage
 # Ignore encrypted secrets key file.
 config/secrets.yml.key
 
-+# Ignore uploaded files in development.
-+/storage/*
-+!/storage/.keep
+# Ignore uploaded files in development.
+/storage/*
+!/storage/.keep
 
 /public/assets
 

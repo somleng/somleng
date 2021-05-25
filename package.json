@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "4": "^0.0.0",
+    "5": "^0.0.1",
     "@coreui/coreui": "^3.4.0",
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@popperjs/core": "^2.9.2",
@@ -7,11 +9,12 @@
     "@rails/ujs": "^6.0.3-7",
     "@rails/webpacker": "5.2.1",
     "@ttskch/select2-bootstrap4-theme": "^1.5.2",
-    "bootstrap": "^5.0.0",
+    "bootstrap": "4",
     "daterangepicker": "^3.1.0",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "perfect-scrollbar": "^1.5.1",
+    "popper.js": "^1.16.1",
     "select2": "^4.1.0-rc.0",
     "stimulus": "^2.0.0",
     "turbolinks": "^5.2.0"
