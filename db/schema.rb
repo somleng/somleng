@@ -217,9 +217,10 @@ ActiveRecord::Schema.define(version: 2021_05_25_084315) do
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "carrier_id"
+    t.uuid "carrier_id", null: false
     t.uuid "account_id"
     t.string "name", null: false
+    t.string "role", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -239,7 +240,7 @@ ActiveRecord::Schema.define(version: 2021_05_25_084315) do
     t.datetime "invitation_accepted_at"
     t.integer "invitation_limit"
     t.string "invited_by_type"
-    t.bigint "invited_by_id"
+    t.uuid "invited_by_id"
     t.integer "invitations_count", default: 0
     t.string "encrypted_otp_secret"
     t.string "encrypted_otp_secret_iv"

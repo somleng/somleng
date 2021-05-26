@@ -100,21 +100,13 @@ FactoryBot.define do
 
   factory :user do
     admin
-    carrier_user
+    carrier
     sequence(:email) { |n| "user#{n}@example.com" }
     name { "John Doe" }
     password { "super secret password" }
     otp_required_for_login { true }
 
     traits_for_enum :role, %i[admin member]
-
-    trait :carrier_user do
-      carrier
-    end
-
-    trait :account_user do
-      account
-    end
   end
 
   factory :incoming_phone_number do

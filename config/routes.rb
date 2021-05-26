@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, skip: :registrations
+  devise_for :users, skip: %i[registrations invitations]
   devise_scope :user do
     resource(
       :registration,
@@ -19,6 +19,14 @@ Rails.application.routes.draw do
       get :accept, action: :edit
     end
 
+    resource(
+      :invitation,
+      only: %i[new create],
+      controller: "dashboard/user_invitations",
+      as: :user_invitation,
+      path: "users/invitation"
+    )
+
     root to: "dashboard/accounts#index"
   end
 
@@ -30,13 +38,15 @@ Rails.application.routes.draw do
   end
 
   scope "/2010-04-01/Accounts/:account_id", as: :account, defaults: { format: "json" } do
-    resources :phone_calls, only: %i[create show update], path: "Calls", controller: "twilio_api/phone_calls"
+    resources :phone_calls, only: %i[create show update], path: "Calls",
+                            controller: "twilio_api/phone_calls"
     post "Calls/:id" => "twilio_api/phone_calls#update"
   end
 
   namespace :dashboard do
     resource :two_factor_authentication, only: %i[new create]
     resources :accounts
+    resources :users, only: %i[index show destroy]
     resources :exports, only: %i[index create]
 
     root to: "accounts#index"

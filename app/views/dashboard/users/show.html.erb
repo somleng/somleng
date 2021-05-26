@@ -1,0 +1,30 @@
+<%= page_title(title: "User") do %>
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_user_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <% unless @resource.accepted_or_not_invited? %>
+    <div class="alert alert-info" role="alert">
+      The user has not yet accepted their invite.
+      <%= link_to("Resend", user_invitation_path(user: { id: @resource.id }), method: :post) %>
+    </div>
+  <% end %>
+
+  <%= show_for(@resource) do |f| %>
+    <%= f.attribute :name, value: @resource.name %>
+
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">
+      <%= @resource.email %>
+      <% unless @resource.accepted_or_not_invited? %>
+        <span class="badge badge-info">Invited</span>
+      <% end %>
+    </dd>
+
+    <%= f.attribute :role, value: @resource.role.humanize %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

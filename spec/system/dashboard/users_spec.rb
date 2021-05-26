@@ -1,27 +1,17 @@
 require "rails_helper"
 
-RSpec.describe "Accounts" do
-  it "List and filter accounts", :js do
+RSpec.describe "Users" do
+  it "List and filter users" do
     carrier = create(:carrier)
     user = create(:user, carrier: carrier)
-    create(:account, name: "Rocket Rides", carrier: carrier, created_at: Time.utc(2021, 12, 1))
-    create(:account, name: "Garry Gas", carrier: carrier, created_at: Time.utc(2021, 12, 10))
-    create(:account, name: "Alice Apples", carrier: carrier, created_at: Time.utc(2021, 10, 1))
-    create(:account, :disabled, name: "Disabled Account", carrier: carrier, created_at: Time.utc(2021, 12, 10))
+    create(:user, name: "John Doe", carrier: carrier, created_at: Time.utc(2021, 12, 1))
+    create(:user, name: "Joe Bloggs", carrier: carrier, created_at: Time.utc(2021, 10, 10))
 
     sign_in(user)
-    visit dashboard_accounts_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
-    click_button("Filter")
-    check("Status")
-    select("Enabled", from: "filter[status]")
-    click_button("Done")
+    visit dashboard_users_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
 
-    expect(page).to have_content("Filter 2")
-    expect(page).to have_content("Rocket Rides")
-    expect(page).to have_content("Garry Gas")
-    expect(page).not_to have_content("Alice Apples")
-    expect(page).not_to have_content("Disabled Account")
-    expect(page).not_to have_content("Carrier Account")
+    expect(page).to have_content("John Doe")
+    expect(page).not_to have_content("Joe Bloggs")
   end
 
   it "Create an account" do

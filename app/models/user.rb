@@ -14,6 +14,10 @@ class User < ApplicationRecord
 
   before_create :generate_otp_secret
 
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
+  end
+
   private
 
   def generate_otp_secret

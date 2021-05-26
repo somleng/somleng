@@ -8,7 +8,7 @@
   <%= show_for(@resource) do |f| %>
     <%= f.attribute :id, label: "SID" %>
     <% if @resource.carrier? %>
-        <%= f.attribute :auth_token, value: @resource.auth_token %>
+        <%= f.attribute :auth_token, label: "Auth Token", value: @resource.auth_token %>
     <% end %>
     <%= f.attribute :name, value: @resource.name %>
     <%= f.attribute :type, value: @resource.type.humanize %>

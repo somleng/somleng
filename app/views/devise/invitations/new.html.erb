@@ -1,0 +1,27 @@
+<%= page_title(title: t("devise.invitations.new.header")) %>
+
+<div class="card-body">
+  <%= simple_form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post }) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :name, maxlength: 128 %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input :email %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :role, as: :radio_buttons, hint: "Admin can manage all resources. Member is read only" %>
+      </div>
+    </div>
+
+    <%= f.button :submit, t("devise.invitations.new.submit_button") %>
+  <% end %>
+</div>
+
+
+
+
