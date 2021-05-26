@@ -15,3 +15,7 @@ RSpec.configure do |config|
     driven_by :selenium, using: :chrome
   end
 end
+
+Capybara.configure do |config|
+  config.automatic_label_click = true
+end
