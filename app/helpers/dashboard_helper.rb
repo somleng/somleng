@@ -31,9 +31,9 @@ module DashboardHelper
   end
 
   def two_fa_qr_code(user)
-    label = "Bongloy Issuing:#{user.email}"
+    label = "Somleng:#{user.email}"
     RQRCode::QRCode.new(
-      user.otp_provisioning_uri(label, issuer: "Bongloy")
+      user.otp_provisioning_uri(label, issuer: "Somleng")
     ).as_svg(
       offset: 0,
       color: "000",
