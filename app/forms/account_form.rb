@@ -5,7 +5,7 @@ class AccountForm
   attribute :carrier
   attribute :name
   attribute :enabled, :boolean, default: true
-  attribute :account, default: -> { Account.new(access_token: Doorkeeper::AccessToken.new) }
+  attribute :account, default: -> { Account.new(type: :customer, access_token: Doorkeeper::AccessToken.new) }
 
   delegate :persisted?, :id, to: :account
 

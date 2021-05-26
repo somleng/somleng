@@ -1,12 +1,19 @@
 class ResourceSerializer < ApplicationSerializer
-  def serializable_hash(_options = nil)
+  def attributes
     super.merge(
-      api_version: ApplicationSerializer::API_VERSION,
-      sid: object.id,
-      account_sid: object.account_id,
-      date_created: format_time(object.created_at),
-      date_updated: format_time(object.updated_at)
+      "sid" => nil,
+      "account_sid" => nil,
+      "date_created" => nil,
+      "date_updated" => nil
     )
+  end
+
+  def date_created
+    format_time(__getobj__.created_at)
+  end
+
+  def date_updated
+    format_time(__getobj__.updated_at)
   end
 
   private

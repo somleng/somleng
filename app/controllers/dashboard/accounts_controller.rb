@@ -1,5 +1,7 @@
 module Dashboard
   class AccountsController < DashboardController
+    skip_before_action :authorize_user!, only: :destroy
+
     def index
       @resources = apply_filters(accounts_scope)
       @resources = paginate_resources(@resources)
@@ -38,6 +40,7 @@ module Dashboard
 
     def destroy
       account = accounts_scope.find(params[:id])
+      authorize(account)
       account.destroy
       respond_with(:dashboard, account)
     end

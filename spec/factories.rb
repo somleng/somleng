@@ -74,11 +74,18 @@ FactoryBot.define do
   end
 
   factory :account do
-    name { "My Account"}
+    name { "Rocket Rides" }
     enabled
     with_access_token
-    carrier
+    association :carrier
+    customer
+    traits_for_enum :type, %w[customer]
     traits_for_enum :status, %w[enabled disabled]
+
+    trait :carrier do
+      name { carrier.name }
+      type { :carrier }
+    end
 
     trait :with_access_token do
       after(:build) do |account|

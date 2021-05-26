@@ -1,10 +1,19 @@
 module CSVSerializer
   class AccountSerializer < ResourceSerializer
-    def serializable_hash(_options = nil)
+    def attributes
       super.merge(
-        name: object.name,
-        status: object.status.humanize
+        "name" => nil,
+        "status" => nil,
+        "type" => nil
       )
+    end
+
+    def status
+      super.humanize
+    end
+
+    def type
+      super.humanize
     end
   end
 end

@@ -1,15 +1,31 @@
 module CSVSerializer
   class ResourceSerializer < ApplicationSerializer
-    def serializable_hash(_options = nil)
-      super.merge(
-        sid: object.id,
-        created_at: format_time(object.created_at),
-        updated_at: format_time(object.updated_at)
-      )
+    def attributes
+      {
+        sid: nil,
+        created_at: nil,
+        updated_at: nil
+      }
     end
 
     def as_csv
       serializable_hash.values
+    end
+
+    def headers
+      attributes.keys
+    end
+
+    def sid
+      id
+    end
+
+    def created_at
+      format_time(super)
+    end
+
+    def updated_at
+      format_time(super)
     end
 
     private

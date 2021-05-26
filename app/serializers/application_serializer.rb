@@ -1,19 +1,28 @@
-class ApplicationSerializer
+class ApplicationSerializer < SimpleDelegator
+  include ActiveModel::Serializers::JSON
+
   API_VERSION = "2010-04-01".freeze
 
-  attr_reader :object, :serializer_options
-
-  def initialize(object, serializer_options = {})
-    @object = object
-    @serializer_options = serializer_options
+  def attributes
+    {
+      "api_version" => nil
+    }
   end
 
-  def serializable_hash(_options = nil)
-    {}
+  def to_json(*args)
+    serializable_hash(*args).to_json
   end
 
-  def as_json(_options = nil)
-    serializable_hash.as_json
+  def api_version
+    API_VERSION
+  end
+
+  def sid
+    __getobj__.id
+  end
+
+  def account_sid
+    __getobj__.account_id
   end
 
   private

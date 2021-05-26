@@ -34,8 +34,12 @@ class ApplicationSeeder
   end
 
   def create_account(params)
+    carrier = params.fetch(:carrier)
     Account.first_or_create!(
-      params.reverse_merge(name: "My Account")
+      params.reverse_merge(
+        name: carrier.name,
+        type: :carrier
+      )
     ) do |record|
       record.build_access_token
       record.incoming_phone_numbers.build(

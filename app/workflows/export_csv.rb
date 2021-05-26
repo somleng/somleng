@@ -25,7 +25,7 @@ class ExportCSV < ApplicationWorkflow
   end
 
   def attribute_names
-    serializer_class.new(resource_class.new).serializable_hash.keys
+    serializer_class.new(resource_class.new).headers
   end
 
   def attach_file(csv)
