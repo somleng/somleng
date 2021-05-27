@@ -11,17 +11,5 @@ class AccountFilter < ResourceFilter
     end
   end
 
-  class TypeFilter < ApplicationFilter
-    filter_params do
-      optional(:type).value(:string, included_in?: Account.type.values)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(type: filter_params.fetch(:type))
-    end
-  end
-
-  filter_with StatusFilter, TypeFilter, DateFilter
+  filter_with StatusFilter, DateFilter
 end

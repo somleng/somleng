@@ -38,7 +38,7 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("Enabled")
     expect(page).to have_link("Edit")
-    expect(page).to have_content("Auth Token")
+    expect(page).not_to have_content("Auth Token")
   end
 
   it "Handle validation errors" do

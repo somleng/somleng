@@ -78,14 +78,7 @@ FactoryBot.define do
     enabled
     with_access_token
     association :carrier
-    customer
-    traits_for_enum :type, %w[customer]
     traits_for_enum :status, %w[enabled disabled]
-
-    trait :carrier do
-      name { carrier.name }
-      type { :carrier }
-    end
 
     trait :with_access_token do
       after(:build) do |account|

@@ -37,8 +37,7 @@ class ApplicationSeeder
     carrier = params.fetch(:carrier)
     Account.first_or_create!(
       params.reverse_merge(
-        name: carrier.name,
-        type: :carrier
+        name: carrier.name
       )
     ) do |record|
       record.build_access_token

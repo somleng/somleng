@@ -4,7 +4,6 @@ class Account < ApplicationRecord
   extend Enumerize
 
   enumerize :status, in: %i[enabled disabled], predicates: true, default: :enabled
-  enumerize :type, in: %i[carrier customer], predicates: true
 
   belongs_to :carrier
   belongs_to :outbound_sip_trunk, optional: true
