@@ -4,8 +4,8 @@ RSpec.describe "Users" do
   it "List and filter users" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier: carrier)
-    create(:user, name: "John Doe", carrier: carrier, created_at: Time.utc(2021, 12, 1))
-    create(:user, name: "Joe Bloggs", carrier: carrier, created_at: Time.utc(2021, 10, 10))
+    create(:user, :carrier, name: "John Doe", carrier: carrier, created_at: Time.utc(2021, 12, 1))
+    create(:user, :carrier, name: "Joe Bloggs", carrier: carrier, created_at: Time.utc(2021, 10, 10))
 
     sign_in(user)
     visit dashboard_users_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })

@@ -36,7 +36,7 @@ RSpec.describe "Account Memberships" do
     select("Owner", from: "Role")
 
     perform_enqueued_jobs do
-      click_button("Send an invitation")
+      click_button("Send an Invitation")
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
@@ -49,7 +49,7 @@ RSpec.describe "Account Memberships" do
 
     sign_in(user)
     visit new_dashboard_account_membership_path(account)
-    click_button "Send an invitation"
+    click_button "Send an Invitation"
 
     expect(page).to have_content("can't be blank")
   end
@@ -73,7 +73,8 @@ RSpec.describe "Account Memberships" do
   it "Delete an account membership" do
     user = create(:user, :carrier, :admin)
     account = create(:account, carrier: user.carrier)
-    account_membership = create_account_membership(account: account, name: "Bob Chann")
+    account_member = create(:user, :invited, name: "Bob Chann")
+    account_membership = create(:account_membership, account: account, user: account_member)
 
     sign_in(user)
     visit edit_dashboard_account_membership_path(account, account_membership)
@@ -84,7 +85,7 @@ RSpec.describe "Account Memberships" do
   end
 
   def create_account_membership(account:, role: :admin, **user_attributes)
-    user = create(:user, *user_attributes)
+    user = create(:user, user_attributes)
     create(:account_membership, account: account, role: role, user: user, created_at: user.created_at)
   end
 end

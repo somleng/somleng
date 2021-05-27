@@ -1,5 +1,7 @@
 module Dashboard
   class AccountMembershipsController < DashboardController
+    skip_before_action :authorize_user!, only: :destroy
+
     def index
       @resources = apply_filters(account_memberships_scope.includes(:user))
       @resources = paginate_resources(@resources)
@@ -21,7 +23,7 @@ module Dashboard
       respond_with(
         @resource,
         notice: "An invitation email has been sent to #{@resource.email}.",
-        location: dashboard_account_membership_path(@account, @resource)
+        location: -> { dashboard_account_membership_path(@account, @resource) }
       )
     end
 
@@ -36,11 +38,15 @@ module Dashboard
       @resource.account_membership = account_membership
       @resource.save
 
-      respond_with(@resource, location: dashboard_account_membership_path(@account, @resource))
+      respond_with(
+        @resource,
+        location: -> { dashboard_account_membership_path(@account, @resource) }
+      )
     end
 
     def destroy
       @resource = account_memberships_scope.find(params[:id])
+      authorize(@resource)
       @resource.destroy
       respond_with(@resource, location: dashboard_account_memberships_path(@account))
     end

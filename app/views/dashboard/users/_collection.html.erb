@@ -8,6 +8,9 @@
         Email
       </th>
       <th>
+        Role
+      </th>
+      <th>
         Created At
       </th>
     </tr>
@@ -25,6 +28,10 @@
           <% unless user.accepted_or_not_invited? %>
             <span class="badge badge-info">Invited</span>
           <% end %>
+        </td>
+
+        <td>
+          <%= user.carrier_role.humanize %>
         </td>
 
         <td>
