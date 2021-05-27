@@ -1,0 +1,23 @@
+<%= page_title(title: "Account Membership", subtitle: external_link_to(@resource.account.name, dashboard_account_memberships_path(@resource.account))) do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_account_membership_path(@resource.account, @resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <% unless @resource.user.accepted_or_not_invited? %>
+    <div class="alert alert-info" role="alert">
+      <i class="fas fa-info-circle"></i> The user has not yet accepted their invite.
+      <%= link_to("Resend", user_invitation_path(user: { id: @resource.id }), method: :post) %>
+    </div>
+  <% end %>
+
+  <%= show_for(@resource) do |f| %>
+    <%= f.attribute :name, value: @resource.user.name %>
+    <%= f.attribute :email, value: @resource.user.email %>
+    <%= f.attribute :role, value: @resource.role.humanize %>
+    <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

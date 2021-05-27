@@ -1,0 +1,17 @@
+<%= page_title(title: "Invite Member", subtitle: external_link_to(@account.name, dashboard_account_memberships_path(@account))) %>
+
+<div class="card-body">
+  <div class="alert alert-info" role="alert">
+    <i class="fas fa-info-circle"></i> This user will become a member of the account
+    <%= link_to(@account.name, dashboard_account_memberships_path(@account)) %>
+  </div>
+
+  <%=
+    render(
+      "form",
+      resource: @resource,
+      url: dashboard_account_memberships_path(@account),
+      button_text: "Send an Invitation"
+    )
+  %>
+</div>

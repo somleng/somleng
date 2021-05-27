@@ -1,0 +1,43 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Name
+      </th>
+      <th>
+        Email
+      </th>
+      <th>
+        Role
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |account_membership| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(account_membership.user.name, dashboard_account_membership_path(account_membership.account, account_membership)) %>
+        </td>
+
+        <td>
+          <%= account_membership.user.email %>
+          <% unless account_membership.user.accepted_or_not_invited? %>
+            <span class="badge badge-info">Invited</span>
+          <% end %>
+        </td>
+
+        <td>
+          <%= account_membership.role.humanize %>
+        </td>
+
+        <td>
+          <%= local_time(account_membership.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

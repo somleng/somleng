@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "4": "^0.0.0",
-    "5": "^0.0.1",
     "@coreui/coreui": "^3.4.0",
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@popperjs/core": "^2.9.2",

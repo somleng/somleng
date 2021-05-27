@@ -10,11 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_25_084315) do
+ActiveRecord::Schema.define(version: 2021_05_27_064522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "account_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "user_id", null: false
+    t.string "role", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_account_memberships_on_account_id"
+    t.index ["sequence_number"], name: "index_account_memberships_on_sequence_number", unique: true, order: :desc
+    t.index ["user_id"], name: "index_account_memberships_on_user_id"
+  end
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -254,6 +266,8 @@ ActiveRecord::Schema.define(version: 2021_05_25_084315) do
     t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
   end
 
+  add_foreign_key "account_memberships", "accounts"
+  add_foreign_key "account_memberships", "users"
   add_foreign_key "accounts", "carriers"
   add_foreign_key "accounts", "outbound_sip_trunks"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

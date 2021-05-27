@@ -15,6 +15,7 @@ class Account < ApplicationRecord
 
   has_many :phone_calls, dependent: :restrict_with_error
   has_many :incoming_phone_numbers, dependent: :delete_all
+  has_many :account_memberships, dependent: :restrict_with_error
 
   def auth_token
     access_token.token

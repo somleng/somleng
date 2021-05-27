@@ -9,11 +9,11 @@ module Dashboard
     end
 
     def permitted_params
-      params.require(:user).permit(:name, :email, :role, :id)
+      params.require(:user).permit(:name, :email, :carrier_role, :id)
     end
 
-    def after_invite_path_for(*)
-      dashboard_users_path
+    def after_invite_path_for(_inviter, invitee)
+      dashboard_user_path(invitee)
     end
   end
 end

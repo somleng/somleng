@@ -14,6 +14,9 @@ Bundler.require(*Rails.groups)
 
 module Twilreapi
   class Application < Rails::Application
+    # Use the responders controller from the responders gem
+    config.app_generators.scaffold_controller :responders_controller
+
     config.load_defaults 6.1
 
     config.active_support.escape_html_entities_in_json = false

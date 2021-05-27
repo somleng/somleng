@@ -4,7 +4,6 @@ class User < ApplicationRecord
   enumerize :carrier_role, in: %i[owner admin member], predicates: true
 
   belongs_to :carrier, optional: true
-  belongs_to :account, optional: true
   has_many :exports
 
   devise :invitable, :registerable,

@@ -103,6 +103,24 @@ FactoryBot.define do
       carrier
       admin
     end
+
+    trait :invited do
+      invitation_sent_at { Time.current }
+      invitation_token { SecureRandom.urlsafe_base64 }
+    end
+
+    trait :invitation_accepted do
+      invited
+      invitation_accepted_at { Time.current }
+    end
+  end
+
+  factory :account_membership do
+    user
+    account
+    admin
+
+    traits_for_enum :role, %i[owner admin member]
   end
 
   factory :incoming_phone_number do

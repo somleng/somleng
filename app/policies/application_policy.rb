@@ -35,6 +35,6 @@ class ApplicationPolicy
   end
 
   def manage?
-    user.admin?
+    user.owner? || user.admin?
   end
 end

@@ -3,7 +3,7 @@
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
   <%= render("shared/export_action", export_params: { resource_type: "User" }) %>
-  <% if policy(:account).new? %>
+  <% if policy(:user).invite? %>
     <%= render("shared/new_resource_page_action", path: new_user_invitation_path ) %>
   <% end %>
 <% end %>

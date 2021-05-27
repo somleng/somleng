@@ -9,10 +9,10 @@ class UserForm
   attribute :role
   attribute :id
 
-  validates :name, :email, presence: true
+  validates :name, :email, :carrier_role, presence: true
   validate :validate_email
 
-  enumerize :role, in: User.role.values
+  enumerize :carrier_role, in: User.carrier_role.values
 
   def invite!(inviter)
     return resend_invite!(inviter) if id.present?
@@ -22,7 +22,7 @@ class UserForm
       {
         name: name,
         email: email,
-        role: role,
+        carrier_role: carrier_role,
         carrier: inviter.carrier
       },
       inviter
