@@ -1,6 +1,5 @@
 <%= page_title(title: "Users") do %>
   <%= render("shared/filters") do |form| %>
-    <%= form.select :role, User.role.values.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :role) } %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
   <%= render("shared/export_action", export_params: { resource_type: "User" }) %>

@@ -49,7 +49,7 @@ RSpec.describe "Authentication" do
       User.invite!(
         email: "new_user@example.com",
         name: "John Doe",
-        role: :member,
+        carrier_role: :member,
         carrier: carrier
       )
     end

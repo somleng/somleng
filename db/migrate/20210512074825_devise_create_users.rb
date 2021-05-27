@@ -3,11 +3,10 @@
 class DeviseCreateUsers < ActiveRecord::Migration[6.1]
   def change
     create_table :users, id: :uuid do |t|
-      t.references :carrier, type: :uuid, null: false, foreign_key: true
-      t.references :account, type: :uuid, null: true, foreign_key: true
+      t.references :carrier, type: :uuid, null: true, foreign_key: true
+      t.string :carrier_role, null: true
 
       t.string :name, null: false
-      t.string :role, null: false
 
       ## Database authenticatable
       t.string :email,              null: false, default: ""

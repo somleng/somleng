@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Accounts" do
   it "List and filter accounts", :js do
     carrier = create(:carrier)
-    user = create(:user, carrier: carrier)
+    user = create(:user, :carrier, carrier: carrier)
     create(:account, name: "Rocket Rides", carrier: carrier, created_at: Time.utc(2021, 12, 1))
     create(:account, name: "Garry Gas", carrier: carrier, created_at: Time.utc(2021, 12, 10))
     create(:account, name: "Alice Apples", carrier: carrier, created_at: Time.utc(2021, 10, 1))
@@ -25,7 +25,7 @@ RSpec.describe "Accounts" do
   end
 
   it "Create an account" do
-    user = create(:user)
+    user = create(:user, :carrier)
 
     sign_in(user)
     visit dashboard_accounts_path
@@ -42,7 +42,7 @@ RSpec.describe "Accounts" do
   end
 
   it "Handle validation errors" do
-    user = create(:user, :admin)
+    user = create(:user, :carrier)
 
     sign_in(user)
     visit new_dashboard_account_path
@@ -52,7 +52,7 @@ RSpec.describe "Accounts" do
   end
 
   it "Update an account" do
-    user = create(:user)
+    user = create(:user, :carrier)
     account = create(
       :account,
       :enabled,
@@ -72,7 +72,7 @@ RSpec.describe "Accounts" do
   end
 
   it "Delete an account" do
-    user = create(:user)
+    user = create(:user, :carrier)
     account = create(
       :account,
       name: "Rocket Rides",

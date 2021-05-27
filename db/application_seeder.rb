@@ -54,7 +54,8 @@ class ApplicationSeeder
       params.reverse_merge(
         email: "user@example-carrier.com",
         name: "John Doe",
-        password: "Somleng1234!"
+        password: USER_PASSWORD,
+        carrier_role: :owner
       )
     )
   end

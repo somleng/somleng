@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   extend Enumerize
 
-  enumerize :role, in: %i[admin member], predicates: true, default: :admin
+  enumerize :carrier_role, in: %i[owner admin member], predicates: true
 
   belongs_to :carrier, optional: true
   belongs_to :account, optional: true

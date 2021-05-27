@@ -216,10 +216,9 @@ ActiveRecord::Schema.define(version: 2021_05_25_084315) do
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "carrier_id", null: false
-    t.uuid "account_id"
+    t.uuid "carrier_id"
     t.string "name", null: false
-    t.string "role", null: false
+    t.string "carrier_role"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -246,7 +245,6 @@ ActiveRecord::Schema.define(version: 2021_05_25_084315) do
     t.string "encrypted_otp_secret_salt"
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
-    t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -272,6 +270,5 @@ ActiveRecord::Schema.define(version: 2021_05_25_084315) do
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "incoming_phone_numbers"
-  add_foreign_key "users", "accounts"
   add_foreign_key "users", "carriers"
 end
