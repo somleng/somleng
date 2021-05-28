@@ -11,6 +11,9 @@
         Role
       </th>
       <th>
+        Account
+      </th>
+      <th>
         Created At
       </th>
     </tr>
@@ -20,7 +23,7 @@
     <% resources.each do |account_membership| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(account_membership.user.name, dashboard_account_membership_path(account_membership.account, account_membership)) %>
+          <%= link_to(account_membership.user.name, dashboard_account_membership_path(account_membership)) %>
         </td>
 
         <td>
@@ -32,6 +35,10 @@
 
         <td>
           <%= account_membership.role.humanize %>
+        </td>
+
+        <td>
+          <%= external_link_to(account_membership.account.name, dashboard_account_path(account_membership.account)) %>
         </td>
 
         <td>

@@ -3,7 +3,7 @@ module Dashboard
     skip_before_action :authorize_user!, only: :destroy
 
     def index
-      @resources = apply_filters(account_memberships_scope.includes(:user))
+      @resources = apply_filters(account_memberships_scope.includes(:user, :account))
       @resources = paginate_resources(@resources)
     end
 
@@ -12,18 +12,18 @@ module Dashboard
     end
 
     def new
-      @resource = AccountMembershipForm.new(account: account)
+      @resource = AccountMembershipForm.new(carrier: current_carrier)
     end
 
     def create
-      @resource = AccountMembershipForm.new(form_params.permit(:name, :email, :role))
-      @resource.account = account
+      @resource = AccountMembershipForm.new(form_params.permit(:account_id, :name, :email, :role))
+      @resource.carrier = current_carrier
       @resource.save
 
       respond_with(
+        :dashboard,
         @resource,
-        notice: "An invitation email has been sent to #{@resource.email}.",
-        location: -> { dashboard_account_membership_path(@account, @resource) }
+        notice: "An invitation email has been sent to #{@resource.email}."
       )
     end
 
@@ -38,27 +38,20 @@ module Dashboard
       @resource.account_membership = account_membership
       @resource.save
 
-      respond_with(
-        @resource,
-        location: -> { dashboard_account_membership_path(@account, @resource) }
-      )
+      respond_with(@resource)
     end
 
     def destroy
       @resource = account_memberships_scope.find(params[:id])
       authorize(@resource)
       @resource.destroy
-      respond_with(@resource, location: dashboard_account_memberships_path(@account))
+      respond_with(@resource)
     end
 
     private
 
-    def account
-      @account ||= carrier.accounts.find(params[:account_id])
-    end
-
     def account_memberships_scope
-      account.account_memberships
+      current_organization.account_memberships
     end
 
     def form_params

@@ -49,7 +49,7 @@ module Dashboard
     end
 
     def accounts_scope
-      carrier.accounts
+      current_carrier.accounts
     end
   end
 end

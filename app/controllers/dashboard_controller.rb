@@ -4,8 +4,7 @@ class DashboardController < ApplicationController
   self.responder = DashboardResponder
   respond_to :html
 
-  delegate :carrier, to: :current_user
-  helper_method :carrier
+  helper_method :current_carrier
 
   before_action :authenticate_user!
   before_action :enforce_two_factor_authentication!
@@ -44,5 +43,13 @@ class DashboardController < ApplicationController
 
   def paginate_resources(resources_scope)
     resources_scope.latest_first.page(params[:page])
+  end
+
+  def current_organization
+    @current_organization ||= current_carrier
+  end
+
+  def current_carrier
+    current_user.carrier
   end
 end

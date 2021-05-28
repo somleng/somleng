@@ -6,14 +6,17 @@ class AccountMembershipForm
 
   enumerize :role, in: AccountMembership.role.values
 
+  attribute :account_id
   attribute :account
   attribute :name
   attribute :email
   attribute :role
+  attribute :carrier
   attribute :account_membership, default: -> { AccountMembership.new }
 
   validates :name, :email, presence: true, unless: :persisted?
   validates :role, presence: true
+  validates :account_id, presence: true, unless: ->(f) { f.account.present? || f.persisted? }
 
   delegate :user, :persisted?, :id, to: :account_membership
 
@@ -36,13 +39,26 @@ class AccountMembershipForm
 
     AccountMembership.transaction do
       account_membership.user ||= invite_user!
-      account_membership.account ||= account
+      account_membership.account ||= accounts_scope.find(account_id)
       account_membership.role = role
       account_membership.save!
     end
   end
 
+  def account_options_for_select
+    accounts_scope.map do |account|
+      {
+        id: account.id,
+        text: account.name
+      }
+    end
+  end
+
   private
+
+  def accounts_scope
+    carrier.accounts
+  end
 
   def invite_user!
     User.invite!(name: name, email: email)

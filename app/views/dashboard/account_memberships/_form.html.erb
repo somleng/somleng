@@ -1,4 +1,4 @@
-  <%= simple_form_for(resource, url: url) do |f| %>
+  <%= simple_form_for([:dashboard, resource]) do |f| %>
     <div class="row">
       <div class="col-sm-6">
         <%= f.input :name, maxlength: 128, disabled: local_assigns.fetch(:disable_name_input, false) %>
@@ -10,6 +10,14 @@
     </div>
 
     <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :account_id,
+                    collection: [],
+                    hint: "The member will be added to this account",
+                    disabled: local_assigns.fetch(:disable_account_input, false),
+                    input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select } } %>
+      </div>
+
       <div class="col-sm-6">
         <%= f.input :role, label: "Role", hint: "Owners have full access. Admins can manage all resources except users. Members have read-only access" %>
       </div>

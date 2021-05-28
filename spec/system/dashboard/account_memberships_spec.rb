@@ -5,34 +5,28 @@ RSpec.describe "Account Memberships" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier: carrier)
     account = create(:account, carrier: carrier)
-    other_account = create(:account, carrier: carrier, name: "Rocket Rides")
     create_account_membership(account: account, name: "John Doe", created_at: Time.utc(2021, 12, 1))
     create_account_membership(account: account, name: "Joe Bloggs", created_at: Time.utc(2021, 10, 10))
-    create_account_membership(account: other_account, name: "Magic Johnson", created_at: Time.utc(2021, 12, 1))
 
     sign_in(user)
-    visit dashboard_account_memberships_path(account, filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
+    visit dashboard_account_memberships_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
 
-    expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
     expect(page).to have_content("John Doe")
     expect(page).not_to have_content("Joe Bloggs")
-    expect(page).not_to have_content("Magic Johnson")
   end
 
-  it "Create a new account membership" do
+  it "Create a new account membership", :js do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier: carrier)
-    account = create(:account, carrier: carrier, name: "Rocket Rides")
+    create(:account, carrier: carrier, name: "Rocket Rides")
 
     sign_in(user)
-    visit dashboard_account_path(account)
-    click_link("Manage account memberships")
+    visit dashboard_account_memberships_path
+
     click_link("New")
-
-    expect(page).to have_link("Rocket Rides", href: dashboard_account_memberships_path(account))
-
     fill_in("Name", with: "John Doe")
     fill_in("Email", with: "johndoe@example.com")
+    select("Rocket Rides", from: "Account")
     select("Owner", from: "Role")
 
     perform_enqueued_jobs do
