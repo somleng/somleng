@@ -9,7 +9,7 @@ module DashboardHelper
 
     content_tag(:div, class: "card-header") do
       content = "".html_safe
-      content = content_tag(:span, title, class: "h2")
+      content += content_tag(:span, title, class: "h2")
 
       if subtitle.present?
         content += " "

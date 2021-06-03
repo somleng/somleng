@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_27_064522) do
+ActiveRecord::Schema.define(version: 2021_06_03_075602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2021_05_27_064522) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id", "user_id"], name: "index_account_memberships_on_account_id_and_user_id", unique: true
     t.index ["account_id"], name: "index_account_memberships_on_account_id"
     t.index ["sequence_number"], name: "index_account_memberships_on_sequence_number", unique: true, order: :desc
     t.index ["user_id"], name: "index_account_memberships_on_user_id"
@@ -257,7 +258,9 @@ ActiveRecord::Schema.define(version: 2021_05_27_064522) do
     t.string "encrypted_otp_secret_salt"
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
+    t.uuid "current_account_membership_id"
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
+    t.index ["current_account_membership_id"], name: "index_users_on_current_account_membership_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
@@ -284,5 +287,6 @@ ActiveRecord::Schema.define(version: 2021_05_27_064522) do
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "incoming_phone_numbers"
+  add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
 end

@@ -4,6 +4,7 @@ class CreateAccountMemberships < ActiveRecord::Migration[6.1]
       t.references :account, type: :uuid, null: false, foreign_key: true
       t.references :user, type: :uuid, null: false, foreign_key: true
       t.string :role, null: false
+      t.index %i[account_id user_id], unique: true
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
 

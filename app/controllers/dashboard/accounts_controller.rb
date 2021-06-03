@@ -10,12 +10,12 @@ module Dashboard
     end
 
     def new
-      @resource = AccountForm.new(carrier: carrier)
+      @resource = AccountForm.new(carrier: current_carrier)
     end
 
     def create
       @resource = AccountForm.new(permitted_params)
-      @resource.carrier = carrier
+      @resource.carrier = current_carrier
       @resource.save
 
       respond_with(:dashboard, @resource)

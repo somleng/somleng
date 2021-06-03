@@ -6,10 +6,20 @@
     <% end %>
   </div>
   <ul class="c-sidebar-nav">
-    <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fas fa-list-alt") %>
-    <%= sidebar_nav("Account Memberships", dashboard_account_memberships_path, icon_class: "fas fa-user-plus") %>
-    <%= sidebar_nav("Users", dashboard_users_path, icon_class: "fas fa-users") %>
-    <li class="c-sidebar-nav-item"><hr/></li>
-    <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fas fa-file-download") %>
+    <% if policy(:account).index? %>
+      <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fas fa-list-alt") %>
+    <% end %>
+    <% if policy(:account_membership).index? %>
+      <%= sidebar_nav("Account Memberships", dashboard_account_memberships_path, icon_class: "fas fa-user-plus") %>
+    <% end %>
+    <% if policy(:user).index? %>
+      <%= sidebar_nav("Users", dashboard_users_path, icon_class: "fas fa-users") %>
+    <% end %>
+
+    <% if policy(:export).index? %>
+      <li class="c-sidebar-nav-item"><hr/></li>
+
+      <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fas fa-file-download") %>
+    <% end %>
   </ul>
 </div>

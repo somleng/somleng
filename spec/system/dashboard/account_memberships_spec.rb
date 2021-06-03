@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Account Memberships" do
-  it "List and filter account memberships" do
+  it "List and filter account memberships as a carrier" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier: carrier)
     account = create(:account, carrier: carrier)
@@ -9,13 +9,32 @@ RSpec.describe "Account Memberships" do
     create_account_membership(account: account, name: "Joe Bloggs", created_at: Time.utc(2021, 10, 10))
 
     sign_in(user)
-    visit dashboard_account_memberships_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
+    visit dashboard_account_memberships_path(
+      filter: { from_date: "01/12/2021", to_date: "15/12/2021" }
+    )
 
     expect(page).to have_content("John Doe")
     expect(page).not_to have_content("Joe Bloggs")
   end
 
-  it "Create a new account membership", :js do
+  it "List account memberships as an account owner" do
+    account = create(:account)
+    other_account = create(:account, carrier: account.carrier)
+    user = create(
+      :user, :with_account_membership, account_role: :owner, account: account, name: "Joe Bloggs"
+    )
+    create_account_membership(account: account, role: :owner, name: "John Doe")
+    create_account_membership(account: other_account, role: :owner, name: "Bob Chann")
+
+    sign_in(user)
+    visit dashboard_account_memberships_path
+
+    expect(page).to have_content("Joe Bloggs")
+    expect(page).to have_content("John Doe")
+    expect(page).not_to have_content("Bob Chann")
+  end
+
+  it "Create a new account membership as a carrier", :js do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier: carrier)
     create(:account, carrier: carrier, name: "Rocket Rides")
@@ -37,6 +56,21 @@ RSpec.describe "Account Memberships" do
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
+  it "Create a new account membership as an account owner" do
+    user = create(:user, :with_account_membership, account_role: :owner)
+
+    sign_in(user)
+    visit dashboard_account_memberships_path
+
+    click_link("New")
+    fill_in("Name", with: "John Doe")
+    fill_in("Email", with: "johndoe@example.com")
+    select("Owner", from: "Role")
+
+    click_button("Send an Invitation")
+    expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
+  end
+
   it "Handle validation errors" do
     user = create(:user, :carrier, :admin)
     account = create(:account, carrier: user.carrier)
@@ -49,12 +83,12 @@ RSpec.describe "Account Memberships" do
   end
 
   it "Update an account membership" do
-    user = create(:user, :carrier, :admin)
-    account = create(:account, carrier: user.carrier)
+    account = create(:account)
+    user = create(:user, :with_account_membership, account_role: :owner, account: account)
     account_membership = create_account_membership(account: account, role: :admin)
 
     sign_in(user)
-    visit dashboard_account_membership_path(account, account_membership)
+    visit dashboard_account_membership_path(account_membership)
     click_link("Edit")
 
     select("Owner", from: "Role")
@@ -71,7 +105,7 @@ RSpec.describe "Account Memberships" do
     account_membership = create(:account_membership, account: account, user: account_member)
 
     sign_in(user)
-    visit edit_dashboard_account_membership_path(account, account_membership)
+    visit dashboard_account_membership_path(account_membership)
     click_link("Delete")
 
     expect(page).to have_content("Account membership was successfully destroyed")
@@ -80,6 +114,12 @@ RSpec.describe "Account Memberships" do
 
   def create_account_membership(account:, role: :admin, **user_attributes)
     user = create(:user, user_attributes)
-    create(:account_membership, account: account, role: role, user: user, created_at: user.created_at)
+    create(
+      :account_membership,
+      account: account,
+      role: role,
+      user: user,
+      created_at: user.created_at
+    )
   end
 end

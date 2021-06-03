@@ -2,6 +2,10 @@
   <% if policy(@resource).edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_account_path(@resource)) %>
   <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_account_path(@resource)) %>
+  <% end %>
 <% end %>
 
 <div class="card-body">
@@ -12,7 +16,7 @@
     <% end %>
     <%= f.attribute :name, value: @resource.name %>
     <%= f.attribute :status, value: @resource.status.humanize %>
-    <%= f.attribute :account_memberships, value: external_link_to("Manage", dashboard_account_memberships_path(@resource), title: "Manage account memberships") %>
+    <%= f.attribute :account_memberships, value: external_link_to("Manage", dashboard_account_memberships_path(filter: {account_id: @resource.id}), title: "Manage account memberships") %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

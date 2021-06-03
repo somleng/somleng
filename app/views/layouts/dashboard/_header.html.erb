@@ -12,19 +12,48 @@
   </ul>
   <ul class="c-header-nav">
     <li class="c-header-nav-item dropdown">
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="accountSwitcher" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <%= current_organization.name %>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="accountSwitcher">
+          <% if current_user.carrier.present? %>
+            <%= link_to(dashboard_account_session_path(account_membership: { id: nil }), method: :post, class: "dropdown-item") do %>
+              <i class="fas fa-broadcast-tower mfe-2"></i> <%= current_user.carrier.name %>
+            <% end %>
+
+            <div class="dropdown-divider"></div>
+          <% end %>
+
+
+          <div class="dropdown-header bg-light py-2">
+            <strong>Accounts</strong>
+          </div>
+
+          <% if current_user.accounts.any? %>
+            <% current_user.account_memberships.includes(:account).each do |account_membership| %>
+              <%= link_to(dashboard_account_session_path(account_membership: { id: account_membership.id }), method: :post, class: "dropdown-item") do %>
+                <i class="fas fa-random mfe-2"></i> <%= account_membership.account.name %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <div class="dropdown-divider"></div>
+
+          <%= link_to("#", class: "dropdown-item") do %>
+            <i class="fas fa-cog mfe-2"></i> Account Settings
+          <% end %>
+        </div>
+      </div>
+    </li>
+
+    <li class="c-header-nav-item dropdown">
       <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
         <div class="c-avatar">
           <%= image_tag(user_profile_image_url(current_user), class: "c-avatar-img") %>
         </div>
       </a>
       <div class="dropdown-menu dropdown-menu-right pt-0">
-        <div class="dropdown-header bg-light py-2">
-          <strong><%= current_user.carrier.name %></strong>
-        </div>
-        <div class="dropdown-item disabled">
-          <i class="fas fa-user mfe-2"></i> <%= current_user.name %>
-        </div>
-
         <div class="dropdown-header bg-light py-2">
           <strong>Settings</strong>
         </div>

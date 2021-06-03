@@ -1,5 +1,14 @@
 <%= page_title(title: "Account Memberships") do %>
   <%= render("shared/filters") do |form| %>
+    <% if current_organization.carrier? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.accounts.map { |account| [account.name, account.id] },
+          { filter_value: params.dig(:filter, :account_id) }
+        )
+      %>
+    <% end %>
+
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
   <%= render("shared/export_action", export_params: { resource_type: "AccountMembership" }) %>

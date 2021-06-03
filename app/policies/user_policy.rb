@@ -1,4 +1,8 @@
 class UserPolicy < ApplicationPolicy
+  def index?
+    user.current_organization.carrier?
+  end
+
   def destroy?
     super && user != record
   end
@@ -8,6 +12,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   def manage?
-    user.owner?
+    carrier_owner?
   end
 end

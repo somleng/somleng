@@ -113,6 +113,24 @@ FactoryBot.define do
       invited
       invitation_accepted_at { Time.current }
     end
+
+    trait :with_account_membership do
+      transient do
+        account_role { :owner }
+        account { build(:account) }
+      end
+
+      after(:build) do |user, evaluator|
+        account_membership = build(
+          :account_membership,
+          user: user,
+          account: evaluator.account,
+          role: evaluator.account_role
+        )
+        user.account_memberships << account_membership
+        user.current_account_membership = account_membership
+      end
+    end
   end
 
   factory :account_membership do
@@ -154,6 +172,22 @@ FactoryBot.define do
 
     traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
     traits_for_enum :direction, %i[inbound outbound]
+  end
+
+  factory :user_context do
+    user
+    association :current_organization, factory: :dashboard_organization
+    association :current_account_membership, factory: :account_membership
+
+    initialize_with { new(user, current_organization, current_account_membership) }
+  end
+
+  factory :dashboard_organization, class: "DashboardController::Organization" do
+    transient do
+      organization { build(:account) }
+    end
+
+    initialize_with { new(organization) }
   end
 
   factory :access_token, class: "Doorkeeper::AccessToken"

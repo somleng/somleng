@@ -1,7 +1,3 @@
-<%= page_title(title: "Edit Account") do %>
-  <% if policy(@resource.account).destroy? %>
-    <%= render("shared/destroy_resource_page_action", path: dashboard_account_path(@resource)) %>
-  <% end %>
-<% end %>
+<%= page_title(title: "Edit Account") %>
 
 <%= render "form", resource: @resource %>

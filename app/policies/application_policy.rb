@@ -35,6 +35,20 @@ class ApplicationPolicy
   end
 
   def manage?
-    user.owner? || user.admin?
+    false
+  end
+
+  private
+
+  def carrier_admin?
+    user.current_organization.carrier? && (user.owner? || user.admin?)
+  end
+
+  def carrier_owner?
+    user.current_organization.carrier? && user.owner?
+  end
+
+  def account_owner?
+    user.current_organization.account? && user.current_account_membership.owner?
   end
 end

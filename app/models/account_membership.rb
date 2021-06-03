@@ -4,5 +4,5 @@ class AccountMembership < ApplicationRecord
   belongs_to :account
   belongs_to :user
 
-  enumerize :role, in: %i[owner admin member]
+  enumerize :role, in: %i[owner admin member], predicates: true
 end

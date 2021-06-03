@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Authentication" do
   it "Sign in with OTP" do
-    user = create(:user, password: "Super Secret")
+    user = create(:user, :carrier, password: "Super Secret")
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
@@ -14,7 +14,7 @@ RSpec.describe "Authentication" do
   end
 
   it "Sign in without OTP" do
-    user = create(:user, password: "Super Secret", otp_required_for_login: false)
+    user = create(:user, :carrier, password: "Super Secret", otp_required_for_login: false)
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
@@ -30,7 +30,7 @@ RSpec.describe "Authentication" do
   end
 
   it "Change password" do
-    user = create(:user, password: "current password")
+    user = create(:user, :carrier, password: "current password")
 
     sign_in(user)
     visit(dashboard_root_path)

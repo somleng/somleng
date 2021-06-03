@@ -12,12 +12,11 @@ module Dashboard
     end
 
     def new
-      @resource = AccountMembershipForm.new(carrier: current_carrier)
+      @resource = initialize_form
     end
 
     def create
-      @resource = AccountMembershipForm.new(form_params.permit(:account_id, :name, :email, :role))
-      @resource.carrier = current_carrier
+      @resource = initialize_form(form_params.permit(:account_id, :name, :email, :role))
       @resource.save
 
       respond_with(
@@ -30,25 +29,33 @@ module Dashboard
     def edit
       account_membership = account_memberships_scope.find(params[:id])
       @resource = AccountMembershipForm.initialize_with(account_membership)
+      @resource
     end
 
     def update
       account_membership = account_memberships_scope.find(params[:id])
-      @resource = AccountMembershipForm.new(form_params.permit(:role))
+      @resource = initialize_form(form_params.permit(:role))
       @resource.account_membership = account_membership
       @resource.save
 
-      respond_with(@resource)
+      respond_with(:dashboard, @resource)
     end
 
     def destroy
       @resource = account_memberships_scope.find(params[:id])
       authorize(@resource)
       @resource.destroy
-      respond_with(@resource)
+      respond_with(:dashboard, @resource)
     end
 
     private
+
+    def initialize_form(params = {})
+      form = AccountMembershipForm.new(params)
+      form.current_account = current_account
+      form.current_carrier = current_carrier
+      form
+    end
 
     def account_memberships_scope
       current_organization.account_memberships

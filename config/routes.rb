@@ -27,7 +27,7 @@ Rails.application.routes.draw do
       path: "users/invitation"
     )
 
-    root to: "dashboard/accounts#index"
+    root to: "dashboard/account_memberships#index"
   end
 
   namespace :services, defaults: { format: "json" } do
@@ -49,7 +49,8 @@ Rails.application.routes.draw do
     resources :account_memberships
     resources :users, only: %i[index show destroy]
     resources :exports, only: %i[index create]
+    resource :account_session, only: :create
 
-    root to: "accounts#index"
+    root to: "account_memberships#index"
   end
 end

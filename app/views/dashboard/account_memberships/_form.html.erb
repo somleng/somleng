@@ -10,13 +10,15 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :account_id,
-                    collection: [],
-                    hint: "The member will be added to this account",
-                    disabled: local_assigns.fetch(:disable_account_input, false),
-                    input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select } } %>
-      </div>
+      <% if resource.require_account_id? %>
+        <div class="col-sm-6">
+          <%= f.input :account_id,
+                      collection: [],
+                      hint: "The member will be added to this account",
+                      selected: resource.account_id,
+                      input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select } } %>
+        </div>
+      <% end %>
 
       <div class="col-sm-6">
         <%= f.input :role, label: "Role", hint: "Owners have full access. Admins can manage all resources except users. Members have read-only access" %>
