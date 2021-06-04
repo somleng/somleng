@@ -1,13 +1,13 @@
 class AccountPolicy < ApplicationPolicy
-  def show_auth_token?
-    false
-  end
-
   def index?
     manage?
   end
 
   def manage?
     user.current_organization.carrier?
+  end
+
+  def destroy?
+    super && record.account_memberships.empty?
   end
 end

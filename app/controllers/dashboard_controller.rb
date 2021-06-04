@@ -7,6 +7,7 @@ class DashboardController < ApplicationController
   helper_method :current_carrier
   helper_method :current_organization
   helper_method :current_account
+  helper_method :current_account_membership
 
   before_action :authenticate_user!
   before_action :enforce_two_factor_authentication!
@@ -14,7 +15,7 @@ class DashboardController < ApplicationController
   before_action :authorize_user!
   after_action :verify_authorized
   rescue_from Pundit::NotAuthorizedError do
-    redirect_to dashboard_root_path, alert: "You are not authorized to perform this action"
+    redirect_to user_root_path, alert: "You are not authorized to perform this action"
   end
 
   private
@@ -93,6 +94,10 @@ class DashboardController < ApplicationController
 
     def name
       "Select Account"
+    end
+
+    def present?
+      false
     end
 
     def account_memberships

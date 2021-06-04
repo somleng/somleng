@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, skip: %i[registrations invitations]
+
   devise_scope :user do
     resource(
       :registration,
@@ -26,9 +27,9 @@ Rails.application.routes.draw do
       as: :user_invitation,
       path: "users/invitation"
     )
-
-    root to: "dashboard/account_memberships#index"
   end
+
+  get "/dashboard/account_memberships" => "dashboard/account_memberships#index", as: :user_root
 
   namespace :services, defaults: { format: "json" } do
     resources :inbound_phone_calls, only: :create
@@ -49,8 +50,9 @@ Rails.application.routes.draw do
     resources :account_memberships
     resources :users, only: %i[index show destroy]
     resources :exports, only: %i[index create]
-    resource :account_session, only: :create
+    resource :account_session, only: %i[create destroy]
+    resource :account_settings, only: %i[show edit update]
 
-    root to: "account_memberships#index"
+    # root to: "account_memberships#index"
   end
 end

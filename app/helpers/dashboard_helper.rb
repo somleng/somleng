@@ -57,4 +57,31 @@ module DashboardHelper
       standalone: true
     )
   end
+
+  def mask_content(content, start_from: 0, length: 20)
+    masked_content = content.dup
+    masked_content[start_from..-1] = "*" * length
+
+    content_tag(:div, data: { controller: "masked-content", masked_content_raw_content: content }) do
+      content = "".html_safe
+      content += content_tag(
+        :code,
+        masked_content,
+        data: {
+          "masked-content-target" => "content"
+        }
+      )
+      content += content_tag(
+        :button,
+        class: "btn btn-secondary btn-sm",
+        title: "Reveal",
+        data: {
+          "action" => "masked-content#reveal",
+          "masked-content-target" => "revealButton"
+        }
+      ) do
+        content_tag(:i, nil, class: "fas fa-eye")
+      end
+    end
+  end
 end

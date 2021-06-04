@@ -80,7 +80,7 @@ RSpec.describe "Accounts" do
     )
 
     sign_in(user)
-    visit edit_dashboard_account_path(account)
+    visit dashboard_account_path(account)
 
     click_link "Delete"
 

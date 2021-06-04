@@ -69,7 +69,7 @@ class AccountMembershipForm
   end
 
   def account
-    current_account || current_carrier.accounts.find(account_id)
+    current_account || current_carrier.accounts.find_by(id: account_id)
   end
 
   def invite_user!

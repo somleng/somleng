@@ -10,9 +10,12 @@
       <th>
         Role
       </th>
-      <th>
-        Account
-      </th>
+
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
       <th>
         Created At
       </th>
@@ -37,9 +40,11 @@
           <%= account_membership.role.humanize %>
         </td>
 
-        <td>
-          <%= external_link_to(account_membership.account.name, dashboard_account_path(account_membership.account)) %>
-        </td>
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(account_membership.account.name, dashboard_account_path(account_membership.account)) %>
+          </td>
+        <% end %>
 
         <td>
           <%= local_time(account_membership.created_at) %>

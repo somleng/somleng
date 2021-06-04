@@ -11,9 +11,6 @@
 <div class="card-body">
   <%= show_for(@resource) do |f| %>
     <%= f.attribute :id, label: "SID" %>
-    <% if policy(@resource).show_auth_token? %>
-      <%= f.attribute :auth_token, label: "Auth Token", value: @resource.auth_token %>
-    <% end %>
     <%= f.attribute :name, value: @resource.name %>
     <%= f.attribute :status, value: @resource.status.humanize %>
     <%= f.attribute :account_memberships, value: external_link_to("Manage", dashboard_account_memberships_path(filter: {account_id: @resource.id}), title: "Manage account memberships") %>

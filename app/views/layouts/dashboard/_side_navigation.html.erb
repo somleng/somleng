@@ -1,13 +1,17 @@
 <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
   <div class="c-sidebar-brand">
-    <%= link_to dashboard_root_path do %>
+    <%= link_to user_root_path do %>
       <%= image_tag("somleng_logo.png", class: "c-sidebar-brand-full", height: 46) %>
       <%= image_tag("logo_square.png", class: "c-sidebar-brand-minimized", height: 46) %>
     <% end %>
   </div>
   <ul class="c-sidebar-nav">
+    <% if policy(:account_settings).show? %>
+      <%= sidebar_nav("Account", dashboard_account_settings_path, icon_class: "fas fa-cloud") %>
+    <% end %>
+
     <% if policy(:account).index? %>
-      <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fas fa-list-alt") %>
+      <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fas fa-cloud") %>
     <% end %>
     <% if policy(:account_membership).index? %>
       <%= sidebar_nav("Account Memberships", dashboard_account_memberships_path, icon_class: "fas fa-user-plus") %>
