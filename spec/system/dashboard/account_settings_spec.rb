@@ -8,7 +8,7 @@ RSpec.describe "Account Settings" do
     )
 
     sign_in(user)
-    visit dashboard_root_path
+    visit dashboard_account_settings_path
 
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("SID")
@@ -27,7 +27,7 @@ RSpec.describe "Account Settings" do
     )
 
     sign_in(user)
-    visit dashboard_root_path
+    visit dashboard_account_settings_path
     click_link("Edit")
     fill_in("Name", with: "Car Rides")
     click_button("Update Account Settings")

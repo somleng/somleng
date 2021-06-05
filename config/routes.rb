@@ -27,6 +27,8 @@ Rails.application.routes.draw do
       as: :user_invitation,
       path: "users/invitation"
     )
+
+    root to: "dashboard/home#show"
   end
 
   namespace :services, defaults: { format: "json" } do

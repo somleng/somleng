@@ -62,12 +62,10 @@ RSpec.describe "Accounts" do
     sign_in(user)
     visit edit_dashboard_account_path(account)
 
-    fill_in "Name", with: "Rocket Rides 2"
     uncheck("Enabled")
     click_button "Update Account"
 
     expect(page).to have_content("Account was successfully updated")
-    expect(page).to have_content("Rocket Rides 2")
     expect(page).to have_content("Disabled")
   end
 

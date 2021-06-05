@@ -14,7 +14,7 @@ module Dashboard
     end
 
     def create
-      @resource = AccountForm.new(permitted_params)
+      @resource = AccountForm.new(form_params.permit(:name, :enabled))
       @resource.carrier = current_carrier
       @resource.save
 
@@ -28,7 +28,7 @@ module Dashboard
 
     def update
       account = accounts_scope.find(params[:id])
-      @resource = AccountForm.new(permitted_params)
+      @resource = AccountForm.new(form_params.permit(:enabled))
       @resource.account = account
       @resource.carrier = account.carrier
       @resource.save
@@ -44,8 +44,8 @@ module Dashboard
 
     private
 
-    def permitted_params
-      params.require(:account).permit(:name, :enabled)
+    def form_params
+      params.require(:account)
     end
 
     def accounts_scope

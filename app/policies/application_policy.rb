@@ -7,7 +7,7 @@ class ApplicationPolicy
   end
 
   def index?
-    true
+    user.current_organization.present?
   end
 
   def show?

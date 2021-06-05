@@ -8,7 +8,7 @@ RSpec.describe "Account Switcher" do
     create_account_membership(user: user, carrier: carrier, name: "Bob's Bananas")
 
     sign_in(user)
-    visit dashboard_accounts_path
+    visit dashboard_root_path
 
     within("#accountSwitcher") do
       click_button("My Carrier")
@@ -18,7 +18,7 @@ RSpec.describe "Account Switcher" do
       click_link("Rocket Rides")
     end
 
-    expect(page).to have_current_path(dashboard_root_path)
+    expect(page).to have_current_path(dashboard_account_settings_path)
     within("#sidebar") do
       expect(page).not_to have_content("Accounts")
     end
@@ -31,7 +31,7 @@ RSpec.describe "Account Switcher" do
       click_link("My Carrier")
     end
 
-    expect(page).to have_current_path(dashboard_root_path)
+    expect(page).to have_current_path(dashboard_carrier_settings_path)
     within("#sidebar") do
       expect(page).to have_content("Accounts")
     end

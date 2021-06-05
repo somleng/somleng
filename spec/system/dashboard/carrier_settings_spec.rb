@@ -6,7 +6,7 @@ RSpec.describe "Carrier Settings" do
     user = create(:user, :carrier, :owner, carrier: carrier)
 
     sign_in(user)
-    visit dashboard_root_path
+    visit dashboard_carrier_settings_path
 
     click_link("Edit")
     fill_in("Name", with: "T-Mobile")

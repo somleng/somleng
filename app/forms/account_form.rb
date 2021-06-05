@@ -9,7 +9,7 @@ class AccountForm
 
   delegate :persisted?, :id, to: :account
 
-  validates :name, presence: true
+  validates :name, presence: true, unless: :persisted?
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Account")
@@ -28,9 +28,9 @@ class AccountForm
 
     account.attributes = {
       carrier: carrier,
-      name: name,
       status: enabled ? "enabled" : "disabled"
     }
+    account.name = name if name.present?
 
     account.save!
   end
