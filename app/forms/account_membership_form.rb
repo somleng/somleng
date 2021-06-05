@@ -3,6 +3,7 @@ class AccountMembershipForm
   include ActiveModel::Attributes
 
   extend Enumerize
+  EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\z/.freeze
 
   enumerize :role, in: AccountMembership.role.values
 
@@ -14,7 +15,8 @@ class AccountMembershipForm
   attribute :role
   attribute :account_membership, default: -> { AccountMembership.new }
 
-  validates :name, :email, presence: true, unless: :persisted?
+  validates :name, presence: true, unless: :persisted?
+  validates :email, presence: true, format: EMAIL_FORMAT, unless: :persisted?
   validates :role, presence: true
   validates :account_id, presence: true, if: :require_account_id?
   validate  :validate_user

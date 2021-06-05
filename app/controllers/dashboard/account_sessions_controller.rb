@@ -4,13 +4,13 @@ module Dashboard
       account_membership = account_memberships_scope.find(permitted_params[:id])
       current_user.update!(current_account_membership: account_membership)
       session[:current_account_membership] = account_membership.id
-      redirect_to(user_root_path)
+      redirect_to(dashboard_root_path)
     end
 
     def destroy
       current_user.update!(current_account_membership: nil)
       session[:current_account_membership] = nil
-      redirect_to(user_root_path)
+      redirect_to(dashboard_root_path)
     end
 
     private

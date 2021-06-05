@@ -18,7 +18,7 @@ RSpec.describe "Account Switcher" do
       click_link("Rocket Rides")
     end
 
-    expect(page).to have_current_path(user_root_path)
+    expect(page).to have_current_path(dashboard_root_path)
     within("#sidebar") do
       expect(page).not_to have_content("Accounts")
     end
@@ -31,7 +31,7 @@ RSpec.describe "Account Switcher" do
       click_link("My Carrier")
     end
 
-    expect(page).to have_current_path(user_root_path)
+    expect(page).to have_current_path(dashboard_root_path)
     within("#sidebar") do
       expect(page).to have_content("Accounts")
     end

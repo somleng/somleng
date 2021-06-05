@@ -33,7 +33,7 @@ RSpec.describe "Authentication" do
     user = create(:user, :carrier, password: "current password")
 
     sign_in(user)
-    visit(user_root_path)
+    visit(dashboard_root_path)
     click_link("Change Password")
     fill_in("Password", with: "new password")
     fill_in("Password confirmation", with: "new password")

@@ -15,7 +15,7 @@ class DashboardController < ApplicationController
   before_action :authorize_user!
   after_action :verify_authorized
   rescue_from Pundit::NotAuthorizedError do
-    redirect_to user_root_path, alert: "You are not authorized to perform this action"
+    redirect_to dashboard_root_path, alert: "You are not authorized to perform this action"
   end
 
   private

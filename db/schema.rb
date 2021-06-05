@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_03_075602) do
+ActiveRecord::Schema.define(version: 2021_06_05_044621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 2021_06_03_075602) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "country_code", null: false
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
   end
 

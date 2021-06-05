@@ -65,6 +65,7 @@ FactoryBot.define do
 
   factory :carrier do
     name { "Somleng" }
+    country_code { "KH" }
   end
 
   factory :outbound_sip_trunk do

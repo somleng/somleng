@@ -29,8 +29,6 @@ Rails.application.routes.draw do
     )
   end
 
-  get "/dashboard/account_memberships" => "dashboard/account_memberships#index", as: :user_root
-
   namespace :services, defaults: { format: "json" } do
     resources :inbound_phone_calls, only: :create
     resources :phone_call_events, only: :create
@@ -52,7 +50,9 @@ Rails.application.routes.draw do
     resources :exports, only: %i[index create]
     resource :account_session, only: %i[create destroy]
     resource :account_settings, only: %i[show edit update]
+    resource :carrier_settings, only: %i[show edit update]
+    resource :home, only: :show
 
-    # root to: "account_memberships#index"
+    root to: "home#show"
   end
 end

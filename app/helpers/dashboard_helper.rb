@@ -62,7 +62,8 @@ module DashboardHelper
     masked_content = content.dup
     masked_content[start_from..-1] = "*" * length
 
-    content_tag(:div, data: { controller: "masked-content", masked_content_raw_content: content }) do
+    content_tag(:div,
+                data: { controller: "masked-content", masked_content_raw_content: content }) do
       content = "".html_safe
       content += content_tag(
         :code,
@@ -71,6 +72,7 @@ module DashboardHelper
           "masked-content-target" => "content"
         }
       )
+      content += " "
       content += content_tag(
         :button,
         class: "btn btn-secondary btn-sm",
@@ -83,5 +85,22 @@ module DashboardHelper
         content_tag(:i, nil, class: "fas fa-eye")
       end
     end
+  end
+
+  def local_time(time)
+    return if time.blank?
+
+    tag.time(time.utc.iso8601, data: { behavior: "local-time" })
+  end
+
+  def image_thumbnail(image)
+    return unless image.attached?
+
+    link_to(
+      image_tag(image, width: 100, class: "img-thumbnail"),
+      url_for(image),
+      target: "_blank",
+      rel: "noopener"
+    )
   end
 end

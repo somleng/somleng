@@ -5,13 +5,13 @@ class ApplicationSeeder
     carrier = create_carrier
     create_outbound_sip_trunk(carrier: carrier)
     account = create_account(carrier: carrier)
-    carrier_user = create_carrier_user(carrier: carrier)
+    carrier_owner = create_carrier_owner(carrier: carrier)
 
     puts(<<~INFO)
       Account SID:           #{account.id}
       Auth Token:            #{account.auth_token}
       Inbound Phone Number:  #{account.incoming_phone_numbers.first.phone_number}
-      Carrier User Email:    #{carrier_user.email}
+      Carrier User Email:    #{carrier_owner.email}
       Carrier User Password: #{USER_PASSWORD}
     INFO
   end
@@ -19,9 +19,21 @@ class ApplicationSeeder
   private
 
   def create_carrier(params = {})
-    Carrier.first_or_create!(
-      params.reverse_merge(name: "My Carrier")
+    carrier = Carrier.first_or_create!(
+      params.reverse_merge(
+        name: "My Carrier",
+        country_code: "KH"
+      )
     )
+
+    return carrier if carrier.logo.attached?
+
+    carrier.logo.attach(
+      io: File.open(Rails.root.join("app/assets/images/logo.png")),
+      filename: "photo.jpg"
+    )
+
+    carrier
   end
 
   def create_outbound_sip_trunk(params)
@@ -49,7 +61,7 @@ class ApplicationSeeder
     end
   end
 
-  def create_carrier_user(params)
+  def create_carrier_owner(params)
     User.first_or_create!(
       params.reverse_merge(
         email: "user@example-carrier.com",
