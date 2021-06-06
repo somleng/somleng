@@ -1,14 +1,6 @@
 class UserPolicy < ApplicationPolicy
-  def index?
+  def read?
     user.current_organization.carrier?
-  end
-
-  def destroy?
-    super && user != record
-  end
-
-  def invite?
-    manage?
   end
 
   def manage?

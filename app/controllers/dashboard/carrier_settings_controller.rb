@@ -25,5 +25,9 @@ module Dashboard
     def policy_class
       CarrierSettingsPolicy
     end
+
+    def record
+      @record ||= current_carrier
+    end
   end
 end

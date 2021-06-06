@@ -6,43 +6,44 @@ module Dashboard
     end
 
     def show
-      @resource = accounts_scope.find(params[:id])
+      @resource = record
     end
 
     def new
-      @resource = AccountForm.new(carrier: current_carrier)
+      @resource = initialize_form
     end
 
     def create
-      @resource = AccountForm.new(form_params.permit(:name, :enabled))
-      @resource.carrier = current_carrier
+      @resource = initialize_form(form_params.permit(:name, :outbound_sip_trunk_id, :enabled))
       @resource.save
 
       respond_with(:dashboard, @resource)
     end
 
     def edit
-      account = accounts_scope.find(params[:id])
-      @resource = AccountForm.initialize_with(account)
+      @resource = AccountForm.initialize_with(record)
     end
 
     def update
-      account = accounts_scope.find(params[:id])
-      @resource = AccountForm.new(form_params.permit(:enabled))
-      @resource.account = account
-      @resource.carrier = account.carrier
+      @resource = initialize_form(form_params.permit(:outbound_sip_trunk_id, :enabled))
+      @resource.account = record
       @resource.save
 
       respond_with(:dashboard, @resource)
     end
 
     def destroy
-      account = accounts_scope.find(params[:id])
-      account.destroy
-      respond_with(:dashboard, account)
+      record.destroy
+      respond_with(:dashboard, record)
     end
 
     private
+
+    def initialize_form(params = {})
+      @resource = AccountForm.new(params)
+      @resource.carrier = current_carrier
+      @resource
+    end
 
     def form_params
       params.require(:account)
@@ -50,6 +51,10 @@ module Dashboard
 
     def accounts_scope
       current_carrier.accounts
+    end
+
+    def record
+      @record ||= accounts_scope.find(params[:id])
     end
   end
 end

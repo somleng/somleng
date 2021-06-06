@@ -51,21 +51,26 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("can't be blank")
   end
 
-  it "Update an account" do
+  it "Update an account", :js do
     user = create(:user, :carrier)
     account = create(
       :account,
       :enabled,
       carrier: user.carrier
     )
+    outbound_sip_trunk = create(:outbound_sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
 
     sign_in(user)
-    visit edit_dashboard_account_path(account)
-
+    visit dashboard_account_path(account)
+    click_link("Edit")
     uncheck("Enabled")
+    select("Main SIP Trunk", from: "Outbound SIP trunk")
     click_button "Update Account"
 
     expect(page).to have_content("Account was successfully updated")
+    expect(page).to have_link(
+      "Main SIP Trunk", href: dashboard_outbound_sip_trunk_path(outbound_sip_trunk)
+    )
     expect(page).to have_content("Disabled")
   end
 

@@ -71,7 +71,7 @@ FactoryBot.define do
   factory :outbound_sip_trunk do
     carrier
     name { "My SIP trunk" }
-    host { "host.docker.internal:5061" }
+    host { "sip.example.com" }
   end
 
   factory :account do

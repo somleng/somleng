@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_05_044621) do
+ActiveRecord::Schema.define(version: 2021_06_06_023024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -231,8 +231,8 @@ ActiveRecord::Schema.define(version: 2021_06_05_044621) do
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id"
-    t.string "name", null: false
     t.string "carrier_role"
+    t.string "name", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -270,10 +270,10 @@ ActiveRecord::Schema.define(version: 2021_06_05_044621) do
     t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
   end
 
-  add_foreign_key "account_memberships", "accounts"
-  add_foreign_key "account_memberships", "users"
+  add_foreign_key "account_memberships", "accounts", on_delete: :cascade
+  add_foreign_key "account_memberships", "users", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
-  add_foreign_key "accounts", "outbound_sip_trunks"
+  add_foreign_key "accounts", "outbound_sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"

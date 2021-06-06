@@ -1,14 +1,12 @@
 module Dashboard
   class AccountMembershipsController < DashboardController
-    skip_before_action :authorize_user!, only: :destroy
-
     def index
       @resources = apply_filters(account_memberships_scope.includes(:user, :account))
       @resources = paginate_resources(@resources)
     end
 
     def show
-      @resource = account_memberships_scope.find(params[:id])
+      @resource = record
     end
 
     def new
@@ -27,25 +25,20 @@ module Dashboard
     end
 
     def edit
-      account_membership = account_memberships_scope.find(params[:id])
-      @resource = AccountMembershipForm.initialize_with(account_membership)
-      @resource
+      @resource = AccountMembershipForm.initialize_with(record)
     end
 
     def update
-      account_membership = account_memberships_scope.find(params[:id])
       @resource = initialize_form(form_params.permit(:role))
-      @resource.account_membership = account_membership
+      @resource.account_membership = record
       @resource.save
 
       respond_with(:dashboard, @resource)
     end
 
     def destroy
-      @resource = account_memberships_scope.find(params[:id])
-      authorize(@resource)
-      @resource.destroy
-      respond_with(:dashboard, @resource)
+      record.destroy
+      respond_with(:dashboard, record)
     end
 
     private
@@ -63,6 +56,10 @@ module Dashboard
 
     def form_params
       params.require(:account_membership)
+    end
+
+    def record
+      @record ||= account_memberships_scope.find(params[:id])
     end
   end
 end

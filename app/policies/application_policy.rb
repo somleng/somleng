@@ -7,7 +7,7 @@ class ApplicationPolicy
   end
 
   def index?
-    user.current_organization.present?
+    read?
   end
 
   def show?
@@ -36,6 +36,10 @@ class ApplicationPolicy
 
   def manage?
     false
+  end
+
+  def read?
+    user.current_organization.present?
   end
 
   private

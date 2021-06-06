@@ -25,5 +25,9 @@ module Dashboard
     def policy_class
       AccountSettingsPolicy
     end
+
+    def record
+      @record ||= current_account
+    end
   end
 end

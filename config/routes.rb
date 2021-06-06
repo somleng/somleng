@@ -20,14 +20,6 @@ Rails.application.routes.draw do
       get :accept, action: :edit
     end
 
-    resource(
-      :invitation,
-      only: %i[new create],
-      controller: "dashboard/user_invitations",
-      as: :user_invitation,
-      path: "users/invitation"
-    )
-
     root to: "dashboard/home#show"
   end
 
@@ -48,6 +40,7 @@ Rails.application.routes.draw do
     resource :two_factor_authentication, only: %i[new create]
     resources :accounts
     resources :account_memberships
+    resources :outbound_sip_trunks
     resources :users, only: %i[index show destroy]
     resources :exports, only: %i[index create]
     resource :account_session, only: %i[create destroy]

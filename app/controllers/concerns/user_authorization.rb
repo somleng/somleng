@@ -18,7 +18,7 @@ module UserAuthorization
   private
 
   def authorize_user!
-    authorize(current_user, policy_class: policy_class)
+    authorize(@record, policy_class: policy_class)
   end
 
   def policy_class

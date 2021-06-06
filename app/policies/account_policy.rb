@@ -1,10 +1,14 @@
 class AccountPolicy < ApplicationPolicy
   def index?
-    manage?
+    read?
+  end
+
+  def read?
+    user.current_organization.carrier?
   end
 
   def manage?
-    user.current_organization.carrier?
+    carrier_admin?
   end
 
   def destroy?
