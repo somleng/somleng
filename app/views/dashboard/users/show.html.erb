@@ -1,4 +1,8 @@
 <%= page_title(title: "User") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_user_path(@resource)) %>
+  <% end %>
+
   <% if policy(@resource).destroy? %>
     <%= render("shared/destroy_resource_page_action", path: dashboard_user_path(@resource)) %>
   <% end %>

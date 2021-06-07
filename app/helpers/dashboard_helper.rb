@@ -55,7 +55,7 @@ module DashboardHelper
       shape_rendering: "crispEdges",
       module_size: 3,
       standalone: true
-    )
+    ).html_safe
   end
 
   def mask_content(content, start_from: 0, length: 20)

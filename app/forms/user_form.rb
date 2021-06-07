@@ -7,35 +7,46 @@ class UserForm
   attribute :name
   attribute :email
   attribute :role
-  attribute :id
+  attribute :user
+  attribute :carrier
+  attribute :inviter
 
-  validates :name, :email, :carrier_role, presence: true
+  enumerize :role, in: User.carrier_role.values, presence: true
+  validates :name, :email, presence: true, unless: :persisted?
   validate :validate_email
 
-  enumerize :carrier_role, in: User.carrier_role.values
+  delegate :persisted?, :id, to: :user
 
-  def invite!(inviter)
-    return resend_invite!(inviter) if id.present?
-    return self if invalid?
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "User")
+  end
+
+  def self.initialize_with(user)
+    new(
+      user: user,
+      carrier: user.carrier,
+      name: user.name,
+      email: user.email,
+      role: user.carrier_role
+    )
+  end
+
+  def save
+    return false if invalid?
+    return user.update!(carrier_role: role) if persisted?
 
     User.invite!(
       {
         name: name,
         email: email,
-        carrier_role: carrier_role,
-        carrier: inviter.carrier
+        carrier_role: role,
+        carrier: carrier
       },
       inviter
     )
   end
 
   private
-
-  def resend_invite!(inviter)
-    user = inviter.carrier.users.find(id)
-    user.invite!
-    user
-  end
 
   def validate_email
     errors.add(:email, :taken) if User.exists?(email: email)

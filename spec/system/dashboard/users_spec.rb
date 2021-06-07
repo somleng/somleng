@@ -15,15 +15,11 @@ RSpec.describe "Users" do
   end
 
   it "Carrier owner invites another user" do
-    carrier = create(:carrier, name: "My Carrier")
-    user = create(:user, :carrier, :owner, carrier: carrier)
+    user = create(:user, :carrier, :owner)
 
     sign_in(user)
     visit dashboard_users_path
     click_link("New")
-
-    expect(page).to have_content("Invite user to My Carrier")
-
     fill_in("Name", with: "John Doe")
     fill_in("Email", with: "johndoe@example.com")
     select("Admin", from: "Role")
@@ -39,10 +35,24 @@ RSpec.describe "Users" do
     user = create(:user, :carrier, :owner)
 
     sign_in(user)
-    visit new_user_invitation_path
+    visit new_dashboard_user_path
     click_button "Send an invitation"
 
     expect(page).to have_content("can't be blank")
+  end
+
+  it "Carrier owner can update a user" do
+    user = create(:user, :carrier, :owner)
+
+    sign_in(user)
+    visit dashboard_user_path(user)
+    click_link("Edit")
+
+    select("Member", from: "Role")
+    click_button "Update User"
+
+    expect(page).to have_content("User was successfully updated")
+    expect(page).to have_content("Member")
   end
 
   it "Carrier re-invites a user" do

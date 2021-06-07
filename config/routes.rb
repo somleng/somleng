@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     resources :accounts
     resources :account_memberships
     resources :outbound_sip_trunks
-    resources :users, only: %i[index show destroy]
+    resources :users
     resources :exports, only: %i[index create]
     resource :account_session, only: %i[create destroy]
     resource :account_settings, only: %i[show edit update]

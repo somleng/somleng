@@ -8,50 +8,60 @@ module Dashboard
     end
 
     def show
-      @resource = users_scope.find(params[:id])
+      @resource = record
     end
 
-    # def new
-    #   @resource = AccountForm.new(carrier: carrier)
-    # end
+    def new
+      @resource = initialize_form
+    end
 
-    # def create
-    #   @resource = AccountForm.new(permitted_params)
-    #   @resource.carrier = carrier
-    #   @resource.save
+    def create
+      @resource = initialize_form(form_params.permit(:name, :email, :role))
+      @resource.inviter = current_user
+      @resource.save
 
-    #   respond_with(:dashboard, @resource)
-    # end
+      respond_with(
+        :dashboard,
+        @resource,
+        notice: "An invitation email has been sent to #{@resource.email}."
+      )
+    end
 
-    # def edit
-    #   account = accounts_scope.find(params[:id])
-    #   @resource = AccountForm.initialize_with(account)
-    # end
+    def edit
+      @resource = UserForm.initialize_with(record)
+    end
 
-    # def update
-    #   account = accounts_scope.find(params[:id])
-    #   @resource = AccountForm.new(permitted_params)
-    #   @resource.account = account
-    #   @resource.carrier = account.carrier
-    #   @resource.save
+    def update
+      @resource = initialize_form(form_params.permit(:role))
+      @resource.user = record
+      @resource.save
 
-    #   respond_with(:dashboard, @resource)
-    # end
+      respond_with(:dashboard, @resource)
+    end
 
     def destroy
-      user = users_scope.find(params[:id])
-      authorize(user)
-      respond_with(:dashboard, user)
+      record.destroy
+      respond_with(:dashboard, record)
     end
 
     private
 
-    # def permitted_params
-    #   params.require(:account).permit(:name, :enabled)
-    # end
+    def initialize_form(params = {})
+      form = UserForm.new(params)
+      form.carrier = current_carrier
+      form
+    end
+
+    def form_params
+      params.require(:user)
+    end
 
     def users_scope
       current_carrier.users
+    end
+
+    def record
+      @record ||= users_scope.find(params[:id])
     end
   end
 end
