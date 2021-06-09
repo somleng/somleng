@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     resource :account_settings, only: %i[show edit update]
     resource :carrier_settings, only: %i[show edit update]
     resource :home, only: :show
+    resources :user_invitations, only: :update
 
     root to: "home#show"
   end

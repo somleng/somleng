@@ -9,10 +9,10 @@
 <% end %>
 
 <div class="card-body">
-  <% unless @resource.user.accepted_or_not_invited? %>
+  <% if UserInvitationPolicy.new(pundit_user, @resource.user).update? %>
     <div class="alert alert-info" role="alert">
       <i class="fas fa-info-circle"></i> The user has not yet accepted their invite.
-      <%= link_to("Resend", user_invitation_path(user: { id: @resource.id }), method: :post) %>
+      <%= link_to("Resend", dashboard_user_invitation_path(@resource.user), method: :patch) %>
     </div>
   <% end %>
 

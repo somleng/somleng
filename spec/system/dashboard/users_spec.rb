@@ -55,7 +55,7 @@ RSpec.describe "Users" do
     expect(page).to have_content("Member")
   end
 
-  it "Carrier re-invites a user" do
+  it "Resend invitation" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :owner, carrier: carrier)
     invited_user = create(:user, :carrier, :admin, :invited, carrier: carrier, email: "johndoe@example.com")

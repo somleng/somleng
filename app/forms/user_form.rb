@@ -7,7 +7,7 @@ class UserForm
   attribute :name
   attribute :email
   attribute :role
-  attribute :user
+  attribute :user, default: -> { User.new }
   attribute :carrier
   attribute :inviter
 

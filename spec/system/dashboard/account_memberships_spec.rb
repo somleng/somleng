@@ -112,6 +112,26 @@ RSpec.describe "Account Memberships" do
     expect(page).not_to have_content("Bob Chann")
   end
 
+  it "Resend invitation" do
+    user = create(:user, :carrier, :admin)
+    account = create(:account, carrier: user.carrier)
+    invited_user = create(:user, :invited, email: "johndoe@example.com")
+    account_membership = create(:account_membership, account: account, user: invited_user)
+
+    sign_in(user)
+    visit dashboard_account_membership_path(account_membership)
+
+    expect(page).to have_content("The user has not yet accepted their invite.")
+
+    perform_enqueued_jobs do
+      click_link("Resend")
+    end
+
+    expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
+    expect(page).to have_current_path(dashboard_account_membership_path(account_membership))
+    expect(last_email_sent).to deliver_to("johndoe@example.com")
+  end
+
   def create_account_membership(account:, role: :admin, **user_attributes)
     user = create(:user, user_attributes)
     create(
