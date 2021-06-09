@@ -1,4 +1,4 @@
-<%= page_title(title: "Carrier") do %>
+<%= page_title(title: "Carrier Settings") do %>
   <% if CarrierSettingsPolicy.new(pundit_user, @resource).edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_carrier_settings_path) %>
   <% end %>

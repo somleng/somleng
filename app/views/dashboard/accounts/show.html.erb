@@ -16,6 +16,10 @@
         <%= @resource.id %>
       </code>
     <% end %>
+    <% if policy(@resource).show_auth_token? %>
+      <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
+    <% end %>
+    <%= f.attribute :type, value: @resource.type.humanize %>
     <%= f.attribute :status, value: @resource.status.humanize %>
     <%= f.attribute :account_memberships, value: external_link_to("Manage", dashboard_account_memberships_path(filter: {account_id: @resource.id}), title: "Manage account memberships") %>
     <%= f.attribute :outbound_sip_trunk do %>

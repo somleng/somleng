@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     resource(
       :registration,
       only: %i[edit update],
-      controller: "devise/registrations",
+      controller: "users/registrations",
       as: :user_registration,
       path: "users"
     )
@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     resource(
       :invitation,
       only: :update,
-      controller: "devise/invitations",
+      controller: "users/invitations",
       as: :user_invitation,
       path: "users/invitation"
     ) do
@@ -43,7 +43,7 @@ Rails.application.routes.draw do
     resources :outbound_sip_trunks
     resources :users
     resources :exports, only: %i[index create]
-    resource :account_session, only: %i[create destroy]
+    resource :account_session, only: :create
     resource :account_settings, only: %i[show edit update]
     resource :carrier_settings, only: %i[show edit update]
     resource :home, only: :show

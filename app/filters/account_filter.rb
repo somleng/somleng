@@ -11,5 +11,22 @@ class AccountFilter < ResourceFilter
     end
   end
 
-  filter_with StatusFilter, DateFilter
+  class TypeFilter < ApplicationFilter
+    filter_params do
+      optional(:type).value(:string, included_in?: Account::TYPES)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      case filter_params.fetch(:type)
+      when "carrier_managed"
+        super.merge(Account.carrier_managed)
+      when "customer_managed"
+        super.merge(Account.customer_managed)
+      end
+    end
+  end
+
+  filter_with StatusFilter, TypeFilter, DateFilter
 end

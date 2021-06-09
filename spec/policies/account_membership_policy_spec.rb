@@ -25,6 +25,8 @@ RSpec.describe AccountMembershipPolicy, type: :policy do
 
       expect(policy.destroy?).to eq(true)
     end
+
+    it "denies access to account owners for their own account"
   end
 
   describe "#manage?" do

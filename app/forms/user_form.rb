@@ -13,6 +13,7 @@ class UserForm
 
   enumerize :role, in: User.carrier_role.values, presence: true
   validates :name, :email, presence: true, unless: :persisted?
+  validates :email, format: User::EMAIL_FORMAT, allow_nil: true, allow_blank: true
   validate :validate_email
 
   delegate :persisted?, :id, to: :user
@@ -35,7 +36,7 @@ class UserForm
     return false if invalid?
     return user.update!(carrier_role: role) if persisted?
 
-    User.invite!(
+    self.user = User.invite!(
       {
         name: name,
         email: email,
@@ -44,6 +45,8 @@ class UserForm
       },
       inviter
     )
+
+    true
   end
 
   private

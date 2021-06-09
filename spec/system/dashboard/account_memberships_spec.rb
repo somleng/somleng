@@ -46,17 +46,17 @@ RSpec.describe "Account Memberships" do
     fill_in("Name", with: "John Doe")
     fill_in("Email", with: "johndoe@example.com")
     select("Rocket Rides", from: "Account")
-    select("Owner", from: "Role")
 
     perform_enqueued_jobs do
       click_button("Send an Invitation")
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
+    expect(page).to have_content("Owner")
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
-  it "Create a new account membership as an account owner" do
+  it "Invite an account member" do
     user = create(:user, :with_account_membership, account_role: :owner)
 
     sign_in(user)
@@ -65,10 +65,11 @@ RSpec.describe "Account Memberships" do
     click_link("New")
     fill_in("Name", with: "John Doe")
     fill_in("Email", with: "johndoe@example.com")
-    select("Owner", from: "Role")
+    select("Admin", from: "Role")
 
     click_button("Send an Invitation")
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
+    expect(page).to have_content("Admin")
   end
 
   it "Handle validation errors" do

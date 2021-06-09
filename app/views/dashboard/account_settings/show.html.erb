@@ -1,4 +1,4 @@
-<%= page_title(title: "Account") do %>
+<%= page_title(title: "Account Settings") do %>
   <% if AccountSettingsPolicy.new(pundit_user, @resource).edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_account_settings_path) %>
   <% end %>

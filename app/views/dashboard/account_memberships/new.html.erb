@@ -1,9 +1,18 @@
 <%= page_title(title: "Invite Member") %>
 
-<%=
-  render(
-    "form",
-    resource: @resource,
-    button_text: "Send an Invitation"
-  )
-%>
+<div class="card-body">
+  <% unless policy(@resource).account_managed? %>
+    <div class="alert alert-info" role="alert">
+      <i class="fas fa-info-circle"></i> Inviting an account member will automatically make the account customer managed.
+    </div>
+  <% end %>
+
+  <%=
+    render(
+      "form",
+      resource: @resource,
+      disable_role_input: !policy(@resource).account_managed?,
+      button_text: "Send an Invitation"
+    )
+  %>
+</div>

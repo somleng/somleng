@@ -43,7 +43,7 @@ RSpec.describe "Authentication" do
     expect(page).to have_content("Your account has been updated successfully")
   end
 
-  it "Accepts an invitation" do
+  it "Accept an invitation from a carrier" do
     carrier = create(:carrier)
     perform_enqueued_jobs do
       User.invite!(
@@ -61,5 +61,25 @@ RSpec.describe "Authentication" do
     click_button("Set my password")
 
     expect(page).to have_content("Setup Two Factor Authentication")
+  end
+
+  it "Accept an invitation from an account owner" do
+    account = create(:account, name: "Rocket Rides")
+    perform_enqueued_jobs do
+      user = User.invite!(
+        email: "johndoe@example.com",
+        name: "John Doe"
+      )
+      create(:account_membership, account: account, user: user)
+    end
+
+    open_email("johndoe@example.com")
+    visit_in_email("Accept invitation")
+    fill_in("Password", with: "password123")
+    fill_in("Password confirmation", with: "password123")
+    click_button("Set my password")
+
+    expect(page).to have_content("Setup Two Factor Authentication")
+    expect(page).to have_content("Rocket Rides")
   end
 end

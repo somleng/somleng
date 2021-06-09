@@ -10,5 +10,7 @@ class CreateAccountMemberships < ActiveRecord::Migration[6.1]
 
       t.timestamps
     end
+
+    add_column(:accounts, :account_memberships_count, :integer, null: false, default: 0, index: true)
   end
 end

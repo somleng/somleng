@@ -1,5 +1,6 @@
 <%= page_title(title: "Accounts") do %>
   <%= render("shared/filters") do |form| %>
+    <%= form.select :type, Account::TYPES.map { |t| [t.humanize, t] }, { filter_value: params.dig(:filter, :type) } %>
     <%= form.select :status, Account.status.values.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

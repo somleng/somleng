@@ -14,7 +14,9 @@ module Dashboard
     end
 
     def create
-      @resource = initialize_form(form_params.permit(:account_id, :name, :email, :role))
+      permitted_params = %i[account_id name email]
+      permitted_params << :role if policy(:account_membership).account_managed?
+      @resource = initialize_form(form_params.permit(*permitted_params))
       @resource.save
 
       respond_with(

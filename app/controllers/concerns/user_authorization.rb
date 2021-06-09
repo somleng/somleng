@@ -73,10 +73,6 @@ module UserAuthorization
       false
     end
 
-    def name
-      "Select Account"
-    end
-
     def present?
       false
     end

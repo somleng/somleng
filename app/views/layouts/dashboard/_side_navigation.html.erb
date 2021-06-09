@@ -7,11 +7,11 @@
   </div>
   <ul class="c-sidebar-nav">
     <% if policy(:account_settings).show? %>
-      <%= sidebar_nav("Account", dashboard_account_settings_path, icon_class: "fas fa-cloud") %>
+      <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fas fa-cloud") %>
     <% end %>
 
     <% if policy(:carrier_settings).show? %>
-      <%= sidebar_nav("Carrier", dashboard_carrier_settings_path, icon_class: "fas fa-broadcast-tower") %>
+      <%= sidebar_nav("Carrier Settings", dashboard_carrier_settings_path, icon_class: "fas fa-broadcast-tower") %>
     <% end %>
 
     <% if policy(:account).index? %>

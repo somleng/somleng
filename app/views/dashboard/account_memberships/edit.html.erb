@@ -1,11 +1,13 @@
 <%= page_title(title: "Edit Account Membership") %>
 
-<%=
-  render(
-    "form",
-    resource: @resource,
-    disable_name_input: true,
-    disable_email_input: true,
-    button_text: "Update Account Membership"
-  )
-%>
+<div class="card-body">
+  <%=
+    render(
+      "form",
+      resource: @resource,
+      disable_name_input: true,
+      disable_email_input: true,
+      button_text: "Update Account Membership"
+    )
+  %>
+</div>

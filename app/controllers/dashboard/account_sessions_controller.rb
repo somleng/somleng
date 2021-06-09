@@ -7,12 +7,6 @@ module Dashboard
       redirect_to(dashboard_root_path)
     end
 
-    def destroy
-      current_user.update!(current_account_membership: nil)
-      session[:current_account_membership] = nil
-      redirect_to(dashboard_root_path)
-    end
-
     private
 
     def account_memberships_scope

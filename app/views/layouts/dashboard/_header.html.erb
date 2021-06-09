@@ -11,7 +11,9 @@
   <ul class="c-header-nav mr-auto">
   </ul>
   <ul class="c-header-nav">
-    <%= render("shared/account_switcher") %>
+    <% if policy(:account_session).manage? %>
+      <%= render("shared/account_switcher") %>
+    <% end %>
 
     <li class="c-header-nav-item dropdown">
       <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">

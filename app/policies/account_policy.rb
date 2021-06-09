@@ -7,6 +7,10 @@ class AccountPolicy < ApplicationPolicy
     user.current_organization.carrier?
   end
 
+  def show_auth_token?
+    read? && record.carrier_managed?
+  end
+
   def manage?
     carrier_admin?
   end

@@ -3,7 +3,6 @@ class AccountMembershipForm
   include ActiveModel::Attributes
 
   extend Enumerize
-  EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\z/.freeze
 
   enumerize :role, in: AccountMembership.role.values
 
@@ -13,13 +12,14 @@ class AccountMembershipForm
   attribute :name
   attribute :email
   attribute :role
-  attribute :account_membership, default: -> { AccountMembership.new }
+  attribute :account_membership, default: -> { AccountMembership.new(role: :owner) }
 
   validates :name, presence: true, unless: :persisted?
-  validates :email, presence: true, format: EMAIL_FORMAT, unless: :persisted?
-  validates :role, presence: true
+  validates :email, format: User::EMAIL_FORMAT, allow_nil: true, allow_blank: true
+  validates :email, presence: true, unless: :persisted?
+  validates :role, presence: true, if: :account_managed?
   validates :account_id, presence: true, if: :require_account_id?
-  validate  :validate_user
+  validate  :validate_email
 
   delegate :user, :persisted?, :new_record?, :id, to: :account_membership
 
@@ -43,7 +43,7 @@ class AccountMembershipForm
     AccountMembership.transaction do
       account_membership.user ||= invite_user!
       account_membership.account ||= account
-      account_membership.role = role
+      account_membership.role = role if role.present?
       account_membership.save!
     end
   end
@@ -63,11 +63,14 @@ class AccountMembershipForm
 
   private
 
-  def validate_user
-    return if account.blank?
+  def validate_email
     return if email.blank?
 
-    errors.add(:email, :taken) if account.users.exists?(email: email)
+    if carrier_managed?
+      errors.add(:email, :taken) if current_carrier.users.exists?(email: email)
+    elsif account.users.exists?(email: email)
+      errors.add(:email, :taken)
+    end
   end
 
   def account
@@ -76,5 +79,13 @@ class AccountMembershipForm
 
   def invite_user!
     User.invite!(name: name, email: email)
+  end
+
+  def account_managed?
+    current_account.present?
+  end
+
+  def carrier_managed?
+    current_carrier.present?
   end
 end
