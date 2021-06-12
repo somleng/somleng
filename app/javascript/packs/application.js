@@ -24,6 +24,8 @@ document.addEventListener("turbolinks:load", function() {
     theme: 'bootstrap4'
   })
 
+  $('[data-toggle="tooltip"]').tooltip()
+
   $('time[data-behavior~=local-time]').each(function() {
     $(this).text(
       moment($(this).text()).format("lll (Z)")
