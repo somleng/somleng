@@ -3,6 +3,17 @@
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_user_path(@resource)) %>
   <% end %>
 
+  <% if TwoFactorAuthenticationPolicy.new(pundit_user, @resource).destroy? %>
+    <div class="btn-group">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-user-actions" data-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-cog"></i>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdown-menu-user-actions">
+        <%= render("shared/reset_2fa_page_action", user: @resource) %>
+      </div>
+    </div>
+  <% end %>
+
   <% if policy(@resource).destroy? %>
     <%= render("shared/destroy_resource_page_action", path: dashboard_user_path(@resource)) %>
   <% end %>
@@ -20,6 +31,7 @@
     <%= f.attribute :name, value: @resource.name %>
     <%= f.attribute :email, value: @resource.email %>
     <%= f.attribute :role, value: @resource.carrier_role.humanize %>
+    <%= f.attribute :otp_required_for_login, label: "OTP required for login" %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

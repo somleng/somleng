@@ -133,6 +133,19 @@ RSpec.describe "Account Memberships" do
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
+  it "Reset 2FA" do
+    account = create(:account)
+    user = create(:user, :with_account_membership, account: account, account_role: :owner)
+    account_membership = create_account_membership(account: account, email: "johndoe@example.com")
+
+    sign_in(user)
+    visit dashboard_account_membership_path(account_membership)
+    click_link("Reset 2FA")
+
+    expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
+    expect(page).to have_current_path(dashboard_account_membership_path(account_membership))
+  end
+
   def create_account_membership(account:, role: :admin, **user_attributes)
     user = create(:user, user_attributes)
     create(

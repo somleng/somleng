@@ -1,8 +1,6 @@
 module Dashboard
   class TwoFactorAuthenticationsController < DashboardController
     skip_before_action :enforce_two_factor_authentication!
-    skip_before_action :authorize_user!
-    skip_after_action :verify_authorized
 
     def new
       @resource = TwoFactorAuthenticationForm.new
@@ -20,10 +18,19 @@ module Dashboard
       )
     end
 
+    def destroy
+      record.update!(otp_required_for_login: false)
+      redirect_back(fallback_location: dashboard_root_path, notice: "2FA was successfully reset for #{record.email}.")
+    end
+
     private
 
     def permitted_params
       params.require(:two_factor_authentication).permit(:otp_attempt)
+    end
+
+    def record
+      @record ||= User.find(params[:id])
     end
   end
 end

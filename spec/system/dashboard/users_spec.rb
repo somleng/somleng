@@ -73,4 +73,18 @@ RSpec.describe "Users" do
     expect(page).to have_current_path(dashboard_user_path(invited_user))
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
+
+  it "Reset 2FA for a user" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, :owner, carrier: carrier)
+    other_user = create(:user, :carrier, :admin, :otp_required_for_login, carrier: carrier, email: "johndoe@example.com")
+
+    sign_in(user)
+    visit dashboard_user_path(other_user)
+
+    click_link("Reset 2FA")
+
+    expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
+    expect(page).to have_current_path(dashboard_user_path(other_user))
+  end
 end

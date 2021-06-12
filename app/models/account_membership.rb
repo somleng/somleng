@@ -5,4 +5,6 @@ class AccountMembership < ApplicationRecord
   belongs_to :user
 
   enumerize :role, in: %i[owner admin member], predicates: true
+
+  delegate :otp_required_for_login, to: :user
 end

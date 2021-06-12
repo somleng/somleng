@@ -115,6 +115,10 @@ FactoryBot.define do
       invitation_accepted_at { Time.current }
     end
 
+    trait :otp_required_for_login do
+      otp_required_for_login { true }
+    end
+
     trait :with_account_membership do
       transient do
         account_role { :owner }

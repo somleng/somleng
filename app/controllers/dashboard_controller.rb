@@ -5,8 +5,9 @@ class DashboardController < ApplicationController
   include UserAuthorization
 
   prepend_before_action :find_record, only: %i[show edit update destroy]
-  prepend_before_action :enforce_two_factor_authentication!
   prepend_before_action :authenticate_user!
+
+  before_action :enforce_two_factor_authentication!
 
   private
 
