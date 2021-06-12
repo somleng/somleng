@@ -12,8 +12,10 @@ RSpec.describe "Dashboard Home" do
 
   it "Tells the user to select an account", :js do
     user = create(:user)
-    account = create(:account, name: "Rocket Rides")
-    create(:account_membership, user: user, account: account)
+    account1 = create(:account, name: "Rocket Rides")
+    account2 = create(:account, name: "Bob's Bananas")
+    create(:account_membership, user: user, account: account1)
+    create(:account_membership, user: user, account: account2)
 
     sign_in(user)
     visit dashboard_root_path

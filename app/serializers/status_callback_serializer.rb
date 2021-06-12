@@ -14,21 +14,69 @@ class StatusCallbackSerializer < ApplicationSerializer
   # | CallerName    | This parameter is set when the IncomingPhoneNumber that received the call has set its VoiceCallerIdLookup value to true     |
   # | ParentCallSid | A unique identifier for the call that created this leg. If this is the first leg of a call, this parameter is not included. |
 
-  def serializable_hash(_options = nil)
+  def attributes
     super.merge(
-      "CallSid" => object.id,
-      "AccountSid" => object.account.id,
-      "From" => format_number(object.from),
-      "To" => format_number(object.to),
-      "CallStatus" => PhoneCallSerializer::TWILIO_CALL_STATUS_MAPPINGS.fetch(object.status),
-      "ApiVersion" => ApplicationSerializer::API_VERSION,
-      "Direction" => PhoneCallSerializer::TWILIO_CALL_DIRECTIONS.fetch(object.direction),
-      "CallDuration" => object.call_data_record.bill_sec.to_s,
-      "SipResponseCode" => object.call_data_record.sip_term_status,
-      "CallbackSource" => "call-progress-events",
-      "Timestamp" => Time.current.utc.rfc2822,
-      "SequenceNumber" => "0"
+      "CallSid" => nil,
+      "AccountSid" => nil,
+      "From" => nil,
+      "To" => nil,
+      "CallStatus" => nil,
+      "ApiVersion" => nil,
+      "Direction" => nil,
+      "CallDuration" => nil,
+      "SipResponseCode" => nil,
+      "CallbackSource" => nil,
+      "Timestamp" => nil,
+      "SequenceNumber" => nil
     )
+  end
+
+  def CallSid
+    sid
+  end
+
+  def AccountSid
+    account_sid
+  end
+
+  def From
+    format_number(__getobj__.from)
+  end
+
+  def To
+    format_number(__getobj__.to)
+  end
+
+  def CallStatus
+    PhoneCallSerializer::TWILIO_CALL_STATUS_MAPPINGS.fetch(__getobj__.status)
+  end
+
+  def ApiVersion
+    ApplicationSerializer::API_VERSION
+  end
+
+  def Direction
+    PhoneCallSerializer::TWILIO_CALL_DIRECTIONS.fetch(__getobj__.direction)
+  end
+
+  def CallDuration
+    __getobj__.call_data_record.bill_sec.to_s
+  end
+
+  def SipResponseCode
+    __getobj__.call_data_record.sip_term_status
+  end
+
+  def CallbackSource
+    "call-progress-events"
+  end
+
+  def Timestamp
+    Time.current.utc.rfc2822
+  end
+
+  def SequenceNumber
+    "0"
   end
 
   private

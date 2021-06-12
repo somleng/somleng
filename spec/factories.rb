@@ -183,7 +183,7 @@ FactoryBot.define do
     initialize_with { new(user, current_organization, current_account_membership) }
   end
 
-  factory :dashboard_organization, class: "DashboardController::Organization" do
+  factory :dashboard_organization, class: "UserAuthorization::Organization" do
     transient do
       organization { build(:account) }
     end

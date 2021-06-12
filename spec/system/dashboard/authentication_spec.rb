@@ -64,7 +64,7 @@ RSpec.describe "Authentication" do
   end
 
   it "Accept an invitation from an account owner" do
-    account = create(:account, name: "Rocket Rides")
+    account = create(:account)
     perform_enqueued_jobs do
       user = User.invite!(
         email: "johndoe@example.com",
@@ -80,6 +80,5 @@ RSpec.describe "Authentication" do
     click_button("Set my password")
 
     expect(page).to have_content("Setup Two Factor Authentication")
-    expect(page).to have_content("Rocket Rides")
   end
 end
