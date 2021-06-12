@@ -13,7 +13,7 @@ class Account < ApplicationRecord
           dependent: :destroy
 
   has_many :phone_calls
-  has_many :incoming_phone_numbers
+  has_many :phone_numbers
   has_many :account_memberships
   has_many :users, through: :account_memberships
 

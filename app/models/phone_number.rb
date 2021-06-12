@@ -1,4 +1,4 @@
-class IncomingPhoneNumber < ApplicationRecord
+class PhoneNumber < ApplicationRecord
   extend Enumerize
 
   belongs_to :account

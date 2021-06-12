@@ -10,7 +10,7 @@ class ApplicationSeeder
     puts(<<~INFO)
       Account SID:           #{account.id}
       Auth Token:            #{account.auth_token}
-      Inbound Phone Number:  #{account.incoming_phone_numbers.first.phone_number}
+      Inbound Phone Number:  #{account.phone_numbers.first.phone_number}
       Carrier User Email:    #{carrier_owner.email}
       Carrier User Password: #{USER_PASSWORD}
     INFO
@@ -53,7 +53,7 @@ class ApplicationSeeder
       )
     ) do |record|
       record.build_access_token
-      record.incoming_phone_numbers.build(
+      record.phone_numbers.build(
         phone_number: "1234",
         voice_url: "https://demo.twilio.com/docs/voice.xml",
         voice_method: "GET"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_06_023024) do
+ActiveRecord::Schema.define(version: 2021_06_12_071821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -121,21 +121,6 @@ ActiveRecord::Schema.define(version: 2021_06_06_023024) do
     t.index ["user_id"], name: "index_exports_on_user_id"
   end
 
-  create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id", null: false
-    t.string "phone_number", null: false
-    t.string "voice_url", null: false
-    t.string "voice_method", null: false
-    t.string "status_callback_url"
-    t.string "status_callback_method"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigserial "sequence_number", null: false
-    t.index ["account_id"], name: "index_incoming_phone_numbers_on_account_id"
-    t.index ["phone_number"], name: "index_incoming_phone_numbers_on_phone_number", unique: true
-    t.index ["sequence_number"], name: "index_incoming_phone_numbers_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "resource_owner_id", null: false
     t.uuid "application_id", null: false
@@ -218,16 +203,31 @@ ActiveRecord::Schema.define(version: 2021_06_06_023024) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
-    t.uuid "incoming_phone_number_id"
+    t.uuid "phone_number_id"
     t.json "variables", default: {}, null: false
     t.string "direction", null: false
     t.bigserial "sequence_number", null: false
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
-    t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id"
+    t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["status"], name: "index_phone_calls_on_status"
+  end
+
+  create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.string "phone_number", null: false
+    t.string "voice_url", null: false
+    t.string "voice_method", null: false
+    t.string "status_callback_url"
+    t.string "status_callback_method"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "sequence_number", default: -> { "nextval('incoming_phone_numbers_sequence_number_seq'::regclass)" }, null: false
+    t.index ["account_id"], name: "index_phone_numbers_on_account_id"
+    t.index ["phone_number"], name: "index_phone_numbers_on_phone_number", unique: true
+    t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -279,7 +279,6 @@ ActiveRecord::Schema.define(version: 2021_06_06_023024) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "exports", "users"
-  add_foreign_key "incoming_phone_numbers", "accounts"
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"
@@ -288,7 +287,8 @@ ActiveRecord::Schema.define(version: 2021_06_06_023024) do
   add_foreign_key "outbound_sip_trunks", "carriers"
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
-  add_foreign_key "phone_calls", "incoming_phone_numbers"
+  add_foreign_key "phone_calls", "phone_numbers"
+  add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
 end

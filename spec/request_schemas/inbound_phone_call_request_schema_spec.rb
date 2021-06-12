@@ -2,10 +2,7 @@ require "rails_helper"
 
 RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
   it "validates to" do
-    _incoming_phone_number = create(
-      :incoming_phone_number,
-      phone_number: "855716100235"
-    )
+    _phone_number = create(phone_number, phone_number: "855716100235")
 
     expect(
       validate_request_schema(input_params: { to: "855716100235" })
@@ -21,7 +18,7 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
   end
 
   it "normalizes the output" do
-    incoming_phone_number = create(:incoming_phone_number, phone_number: "2442")
+    phone_number = create(:phone_number, phone_number: "2442")
     schema = validate_request_schema(
       input_params: {
         to: "2442",
@@ -37,7 +34,7 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
       to: "2442",
       from: "855716100230",
       external_id: "external-id",
-      incoming_phone_number: incoming_phone_number,
+      phone_number: phone_number,
       variables: {
         "sip_from_host" => "103.9.189.2"
       }
@@ -51,8 +48,8 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
         trunk_prefix_replacement: "855"
       }
     )
-    _incoming_phone_number = create(
-      :incoming_phone_number,
+    _phone_number = create(
+      :phone_number,
       account: account,
       phone_number: "855716100235"
     )

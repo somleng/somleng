@@ -146,7 +146,7 @@ FactoryBot.define do
     traits_for_enum :role, %i[owner admin member]
   end
 
-  factory :incoming_phone_number do
+  factory :phone_number do
     account
     phone_number { generate(:phone_number) }
     voice_method { "POST" }

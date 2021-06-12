@@ -76,7 +76,7 @@ class PhoneCallSerializer < ResourceSerializer
   def parent_call_sid; end
 
   def phone_number_sid
-    incoming_phone_number_id
+    phone_number_id
   end
 
   def price; end

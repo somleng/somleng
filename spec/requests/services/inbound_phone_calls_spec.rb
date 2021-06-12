@@ -4,7 +4,7 @@ RSpec.describe "Services" do
   describe "POST /services/inbound_phone_calls" do
     it "creates a phone call" do
       create(
-        :incoming_phone_number,
+        :phone_number,
         phone_number: "855716200876",
         voice_url: "https://example.com/voice.xml",
         voice_method: "POST",
