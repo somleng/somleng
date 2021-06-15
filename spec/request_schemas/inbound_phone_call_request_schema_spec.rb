@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
   it "validates to" do
-    _phone_number = create(phone_number, phone_number: "855716100235")
+    _phone_number = create(:phone_number, phone_number: "855716100235")
 
     expect(
       validate_request_schema(input_params: { to: "855716100235" })
