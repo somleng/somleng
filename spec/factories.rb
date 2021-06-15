@@ -181,13 +181,13 @@ FactoryBot.define do
 
   factory :user_context do
     user
-    association :current_organization, factory: :dashboard_organization
+    association :current_organization, factory: :organization
     association :current_account_membership, factory: :account_membership
 
     initialize_with { new(user, current_organization, current_account_membership) }
   end
 
-  factory :dashboard_organization, class: "UserAuthorization::Organization" do
+  factory :organization, class: "UserAuthorization::Organization" do
     transient do
       organization { build(:account) }
     end

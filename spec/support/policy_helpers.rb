@@ -2,7 +2,7 @@ module PolicyHelpers
   def build_user_context_for_carrier(role:, carrier: nil)
     carrier ||= build_stubbed(:carrier)
     user = build_stubbed(:user, :carrier, role, carrier: carrier)
-    organization = build_stubbed(:dashboard_organization, organization: carrier)
+    organization = build_stubbed(:organization, organization: carrier)
     build_stubbed(:user_context, user: user, current_organization: organization)
   end
 
@@ -10,7 +10,7 @@ module PolicyHelpers
     account ||= build_stubbed(:account)
     user = build_stubbed(:user)
     account_membership = build_stubbed(:account_membership, role, user: user, account: account)
-    organization = build_stubbed(:dashboard_organization, organization: account)
+    organization = build_stubbed(:organization, organization: account)
     build_stubbed(
       :user_context,
       user: user,

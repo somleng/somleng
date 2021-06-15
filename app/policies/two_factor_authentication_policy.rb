@@ -10,10 +10,11 @@ class TwoFactorAuthenticationPolicy < ApplicationPolicy
   private
 
   def manage_record?
+    return false if user.id == record.id
     return false unless record.otp_required_for_login?
     return carrier_users.exists?(record.id) if carrier_owner?
 
-    account_users if account_owner?
+    account_users.exists?(record.id) if account_owner?
   end
 
   def carrier_users
