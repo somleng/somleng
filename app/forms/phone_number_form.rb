@@ -52,9 +52,10 @@ class PhoneNumberForm
   private
 
   def validate_number
-    return if number.blank?
-    return if phone_number.present? && phone_number.number == number
+    return if errors[:number].any?
+    return if phone_number.number == number
+    return unless carrier.phone_numbers.exists?(number: number)
 
-    errors.add(:number, :taken) if carrier.phone_numbers.exists?(number: number)
+    errors.add(:number, :taken)
   end
 end

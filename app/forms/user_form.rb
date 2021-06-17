@@ -52,6 +52,9 @@ class UserForm
   private
 
   def validate_email
-    errors.add(:email, :taken) if User.exists?(email: email)
+    return if errors[:email].any?
+    return unless User.exists?(email: email)
+
+    errors.add(:email, :taken)
   end
 end

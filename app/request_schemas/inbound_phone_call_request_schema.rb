@@ -1,6 +1,7 @@
 class InboundPhoneCallRequestSchema < ApplicationRequestSchema
   params do
     required(:to).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
+    required(:source_ip).filled(:str?)
     required(:from).filled(:str?)
     required(:external_id).filled(:str?)
     optional(:variables).maybe(:hash)
@@ -9,6 +10,11 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
   rule(:to) do
     phone_number = find_phone_number(value)
     key("to").failure("does not exist") if phone_number.blank?
+  end
+
+  rule(:source_ip) do
+    inbound_sip_trunk = find_inbound_sip_trunk(value)
+    key("source_ip").failure("does not exist") if inbound_sip_trunk.blank?
   end
 
   def output

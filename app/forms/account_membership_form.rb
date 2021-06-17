@@ -64,7 +64,7 @@ class AccountMembershipForm
   private
 
   def validate_email
-    return if email.blank?
+    return if errors[:email].any?
 
     if carrier_managed?
       errors.add(:email, :taken) if carrier.users.exists?(email: email)

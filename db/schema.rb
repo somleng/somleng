@@ -130,6 +130,7 @@ ActiveRecord::Schema.define(version: 2021_06_17_085541) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["carrier_id"], name: "index_inbound_sip_trunks_on_carrier_id"
     t.index ["sequence_number"], name: "index_inbound_sip_trunks_on_sequence_number", unique: true, order: :desc
+    t.index ["source_ip"], name: "index_inbound_sip_trunks_on_source_ip", unique: true
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

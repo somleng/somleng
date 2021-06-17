@@ -4,7 +4,7 @@ class CreateInboundSIPTrunks < ActiveRecord::Migration[6.1]
       t.references :carrier, type: :uuid, null: false, foreign_key: true
       t.string :name, null: false
       t.inet :source_ip, null: false
-
+      t.index :source_ip, unique: true
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
 
       t.timestamps
