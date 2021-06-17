@@ -33,7 +33,6 @@ ActiveRecord::Schema.define(version: 2021_06_17_103612) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", null: false
-    t.jsonb "settings", default: {}, null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
     t.uuid "outbound_sip_trunk_id"

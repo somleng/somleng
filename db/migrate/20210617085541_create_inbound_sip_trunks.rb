@@ -16,5 +16,7 @@ class CreateInboundSIPTrunks < ActiveRecord::Migration[6.1]
         # Create Inbound SIP Trunks here manually for production
       end
     end
+
+    remove_column(:accounts, :settings, :jsonb)
   end
 end
