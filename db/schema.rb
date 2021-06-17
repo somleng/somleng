@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_17_085541) do
+ActiveRecord::Schema.define(version: 2021_06_17_103612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 2021_06_17_085541) do
   create_table "inbound_sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "name", null: false
+    t.string "trunk_prefix_replacement"
     t.inet "source_ip", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -219,9 +220,11 @@ ActiveRecord::Schema.define(version: 2021_06_17_085541) do
     t.json "variables", default: {}, null: false
     t.string "direction", null: false
     t.bigserial "sequence_number", null: false
+    t.uuid "inbound_sip_trunk_id"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
+    t.index ["inbound_sip_trunk_id"], name: "index_phone_calls_on_inbound_sip_trunk_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["status"], name: "index_phone_calls_on_status"
@@ -303,6 +306,7 @@ ActiveRecord::Schema.define(version: 2021_06_17_085541) do
   add_foreign_key "outbound_sip_trunks", "carriers"
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
+  add_foreign_key "phone_calls", "inbound_sip_trunks"
   add_foreign_key "phone_calls", "phone_numbers"
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"

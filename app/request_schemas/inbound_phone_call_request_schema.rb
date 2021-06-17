@@ -7,14 +7,16 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
     optional(:variables).maybe(:hash)
   end
 
-  rule(:to) do
-    phone_number = find_phone_number(value)
-    key("to").failure("does not exist") if phone_number.blank?
+  rule(:source_ip) do |context:|
+    context[:inbound_sip_trunk] = InboundSIPTrunk.find_by(source_ip: value)
+    key("source_ip").failure("does not exist") if context[:inbound_sip_trunk].blank?
   end
 
-  rule(:source_ip) do
-    inbound_sip_trunk = find_inbound_sip_trunk(value)
-    key("source_ip").failure("does not exist") if inbound_sip_trunk.blank?
+  rule(:to) do |context:|
+    if context[:inbound_sip_trunk].present?
+      context[:phone_number] = context[:inbound_sip_trunk].carrier.phone_numbers.find_by(number: value)
+      key("to").failure("does not exist") if context[:phone_number].blank?
+    end
   end
 
   def output
@@ -25,27 +27,23 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
     result[:external_id] = params.fetch(:external_id)
     result[:variables] = params.fetch(:variables) if params.key?(:variables)
 
-    phone_number = find_phone_number(result.fetch(:to))
-    result[:phone_number] = phone_number
+    result[:phone_number] = context.fetch(:phone_number)
+    result[:inbound_sip_trunk] = context.fetch(:inbound_sip_trunk)
     result[:direction] = :inbound
-    result[:account] = phone_number.account
-    result[:voice_url] = phone_number.voice_url
-    result[:voice_method] = phone_number.voice_method
-    result[:status_callback_url] = phone_number.status_callback_url
-    result[:status_callback_method] = phone_number.status_callback_method
+    result[:account] = result[:phone_number].account
+    result[:voice_url] = result[:phone_number].voice_url
+    result[:voice_method] = result[:phone_number].voice_method
+    result[:status_callback_url] = result[:phone_number].status_callback_url
+    result[:status_callback_method] = result[:phone_number].status_callback_method
     result[:from] = normalize_from(
       params.fetch(:from),
-      phone_number.account.settings["trunk_prefix_replacement"]
+      result[:inbound_sip_trunk].trunk_prefix_replacement
     )
 
     result
   end
 
   private
-
-  def find_phone_number(phone_number)
-    PhoneNumber.find_by(number: phone_number)
-  end
 
   def normalize_from(from, trunk_prefix_replacement)
     result = from.sub(/\A\+*/, "")
