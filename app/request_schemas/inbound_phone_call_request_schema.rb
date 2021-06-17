@@ -38,7 +38,7 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
   private
 
   def find_phone_number(phone_number)
-    PhoneNumber.find_by(phone_number: phone_number)
+    PhoneNumber.find_by(number: phone_number)
   end
 
   def normalize_from(from, trunk_prefix_replacement)

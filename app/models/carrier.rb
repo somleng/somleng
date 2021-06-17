@@ -4,6 +4,7 @@ class Carrier < ApplicationRecord
   has_many :account_users, through: :accounts, source: :users, class_name: "User"
   has_many :users
   has_many :outbound_sip_trunks
+  has_many :phone_numbers
 
   has_one_attached :logo
 

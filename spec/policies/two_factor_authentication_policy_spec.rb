@@ -12,7 +12,10 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
   describe "#destroy?" do
     it "denies access to reset 2FA for oneself" do
-      user_context = build_user_context_for_carrier(carrier_role: :owner, otp_required_for_login: true)
+      user_context = build_user_context_for_carrier(
+        carrier_role: :owner,
+        otp_required_for_login: true
+      )
 
       policy = TwoFactorAuthenticationPolicy.new(user_context, user_context)
 

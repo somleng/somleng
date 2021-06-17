@@ -32,7 +32,7 @@
     <%= f.attribute :email, value: @resource.user.email %>
     <%= f.attribute :role, value: @resource.role.humanize %>
 
-    <% if current_organization.carrier? %>
+    <% if policy(:account).show? %>
       <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
     <% end %>
 

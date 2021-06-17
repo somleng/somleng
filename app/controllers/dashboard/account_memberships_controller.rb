@@ -47,8 +47,8 @@ module Dashboard
 
     def initialize_form(params = {})
       form = AccountMembershipForm.new(params)
-      form.current_account = current_account
-      form.current_carrier = current_carrier
+      form.account = current_account
+      form.carrier = current_carrier
       form
     end
 

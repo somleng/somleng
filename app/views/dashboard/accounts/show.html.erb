@@ -22,6 +22,7 @@
     <%= f.attribute :type, value: @resource.type.humanize %>
     <%= f.attribute :status, value: @resource.status.humanize %>
     <%= f.attribute :account_memberships, value: external_link_to("Manage", dashboard_account_memberships_path(filter: {account_id: @resource.id}), title: "Manage account memberships") %>
+    <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>
     <%= f.attribute :outbound_sip_trunk do %>
       <% if @resource.outbound_sip_trunk.present? %>
         <%= external_link_to(@resource.outbound_sip_trunk.name, dashboard_outbound_sip_trunk_path(@resource.outbound_sip_trunk)) %>

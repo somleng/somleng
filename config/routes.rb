@@ -48,6 +48,8 @@ Rails.application.routes.draw do
     resource :carrier_settings, only: %i[show edit update]
     resource :home, only: :show
     resources :user_invitations, only: :update
+    resources :phone_numbers
+    resources :phone_number_configuration, only: %i[edit update]
 
     root to: "home#show"
   end

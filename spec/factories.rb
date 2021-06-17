@@ -147,14 +147,13 @@ FactoryBot.define do
   end
 
   factory :phone_number do
-    account
-    phone_number { generate(:phone_number) }
-    voice_method { "POST" }
-    voice_url { "https://rapidpro.ngrok.com/handle/33/" }
+    carrier
 
-    trait :with_twilio_request_phone_number do
-      twilio_request_phone_number { "123456789" }
+    trait :assigned_to_account do
+      account
     end
+
+    number { generate(:phone_number) }
   end
 
   factory :phone_call do

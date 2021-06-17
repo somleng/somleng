@@ -1,0 +1,27 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource]) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%=
+          f.input(
+            :number,
+            as: :numeric,
+            hint: "Phone number or shortcode"
+          ) %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+          <%= f.input :account_id,
+                      collection: [],
+                      hint: "Optionally assign the phone number to an account",
+                      selected: resource.account_id,
+                      prompt: "",
+                      input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select } } %>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

@@ -6,8 +6,8 @@ class AccountMembershipForm
 
   enumerize :role, in: AccountMembership.role.values
 
-  attribute :current_account
-  attribute :current_carrier
+  attribute :account
+  attribute :carrier
   attribute :account_id
   attribute :name
   attribute :email
@@ -30,7 +30,7 @@ class AccountMembershipForm
   def self.initialize_with(account_membership)
     new(
       account_membership: account_membership,
-      current_account: account_membership.account,
+      account: account_membership.account,
       name: account_membership.user.name,
       email: account_membership.user.email,
       role: account_membership.role
@@ -42,14 +42,14 @@ class AccountMembershipForm
 
     AccountMembership.transaction do
       account_membership.user ||= invite_user!
-      account_membership.account ||= account
+      account_membership.account ||= find_account
       account_membership.role = role if role.present?
       account_membership.save!
     end
   end
 
   def account_options_for_select
-    current_carrier.accounts.map do |account|
+    carrier.accounts.map do |account|
       {
         id: account.id,
         text: account.name
@@ -58,7 +58,7 @@ class AccountMembershipForm
   end
 
   def require_account_id?
-    current_account.blank?
+    find_account.blank?
   end
 
   private
@@ -67,14 +67,14 @@ class AccountMembershipForm
     return if email.blank?
 
     if carrier_managed?
-      errors.add(:email, :taken) if current_carrier.users.exists?(email: email)
+      errors.add(:email, :taken) if carrier.users.exists?(email: email)
     elsif account.users.exists?(email: email)
       errors.add(:email, :taken)
     end
   end
 
-  def account
-    current_account || current_carrier.accounts.find_by(id: account_id)
+  def find_account
+    account || carrier.accounts.find_by(id: account_id)
   end
 
   def invite_user!
@@ -82,10 +82,10 @@ class AccountMembershipForm
   end
 
   def account_managed?
-    current_account.present?
+    account.present?
   end
 
   def carrier_managed?
-    current_carrier.present?
+    carrier.present?
   end
 end

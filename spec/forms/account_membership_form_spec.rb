@@ -99,8 +99,8 @@ RSpec.describe AccountMembershipForm do
     form = AccountMembershipForm.new(params)
     carrier ||= create(:carrier) if account.blank?
     account ||= create(:account) if carrier.blank?
-    form.current_account = account
-    form.current_carrier = carrier
+    form.account = account
+    form.carrier = carrier
     form
   end
 end

@@ -1,4 +1,4 @@
-<%= page_title(title: "Account Memberships") do %>
+<%= page_title(title: "Phone Numbers") do %>
   <%= render("shared/filters") do |form| %>
     <% if policy(:account).show? %>
       <%= form.select(
@@ -11,9 +11,9 @@
 
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
-  <%= render("shared/export_action", export_params: { resource_type: "AccountMembership" }) %>
+  <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>
   <% if policy(:account_membership).new? %>
-    <%= render("shared/new_resource_page_action", path: new_dashboard_account_membership_path) %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_phone_number_path) %>
   <% end %>
 <% end %>
 

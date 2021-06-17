@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_12_071821) do
+ActiveRecord::Schema.define(version: 2021_06_16_063149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -216,17 +216,20 @@ ActiveRecord::Schema.define(version: 2021_06_12_071821) do
   end
 
   create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id", null: false
-    t.string "phone_number", null: false
-    t.string "voice_url", null: false
-    t.string "voice_method", null: false
+    t.uuid "account_id"
+    t.string "number", null: false
+    t.string "voice_url"
+    t.string "voice_method"
     t.string "status_callback_url"
     t.string "status_callback_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigserial "sequence_number", null: false
+    t.uuid "carrier_id", null: false
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
-    t.index ["phone_number"], name: "index_phone_numbers_on_phone_number", unique: true
+    t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
+    t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
+    t.index ["number"], name: "index_phone_numbers_on_number"
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
   end
 
@@ -289,6 +292,7 @@ ActiveRecord::Schema.define(version: 2021_06_12_071821) do
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "phone_numbers"
   add_foreign_key "phone_numbers", "accounts"
+  add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
 end
