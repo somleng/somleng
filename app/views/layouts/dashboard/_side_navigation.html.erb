@@ -26,6 +26,10 @@
       <%= sidebar_nav("Outbound SIP Trunks", dashboard_outbound_sip_trunks_path, icon_class: "fas fa-sort-amount-up") %>
     <% end %>
 
+    <% if policy(:inbound_sip_trunk).index? %>
+      <%= sidebar_nav("Inbound SIP Trunks", dashboard_inbound_sip_trunks_path, icon_class: "fas fa-sort-amount-down") %>
+    <% end %>
+
     <% if policy(:phone_number).index? %>
       <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fas fa-hashtag") %>
     <% end %>

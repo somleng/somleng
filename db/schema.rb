@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_16_063149) do
+ActiveRecord::Schema.define(version: 2021_06_17_085541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -119,6 +119,17 @@ ActiveRecord::Schema.define(version: 2021_06_16_063149) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["sequence_number"], name: "index_exports_on_sequence_number", unique: true, order: :desc
     t.index ["user_id"], name: "index_exports_on_user_id"
+  end
+
+  create_table "inbound_sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "name", null: false
+    t.inet "source_ip", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["carrier_id"], name: "index_inbound_sip_trunks_on_carrier_id"
+    t.index ["sequence_number"], name: "index_inbound_sip_trunks_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -282,6 +293,7 @@ ActiveRecord::Schema.define(version: 2021_06_16_063149) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "exports", "users"
+  add_foreign_key "inbound_sip_trunks", "carriers"
   add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"

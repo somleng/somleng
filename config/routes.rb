@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     resources :user_invitations, only: :update
     resources :phone_numbers
     resources :phone_number_configuration, only: %i[edit update]
+    resources :inbound_sip_trunks
 
     root to: "home#show"
   end

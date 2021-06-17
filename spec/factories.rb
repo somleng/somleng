@@ -74,6 +74,12 @@ FactoryBot.define do
     host { "sip.example.com" }
   end
 
+  factory :inbound_sip_trunk do
+    carrier
+    name { "My SIP trunk" }
+    source_ip { "175.100.7.240" }
+  end
+
   factory :account do
     name { "Rocket Rides" }
     enabled

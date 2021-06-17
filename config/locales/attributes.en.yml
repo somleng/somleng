@@ -2,3 +2,4 @@ en:
   attributes:
     voice_url: "Voice URL"
     status_callback_url: "Status callback URL"
+    source_ip: "Source IP"

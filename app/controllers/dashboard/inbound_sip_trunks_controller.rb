@@ -1,7 +1,7 @@
 module Dashboard
-  class OutboundSIPTrunksController < DashboardController
+  class InboundSIPTrunksController < DashboardController
     def index
-      @resources = apply_filters(outbound_sip_trunks_scope)
+      @resources = apply_filters(inbound_sip_trunks_scope)
       @resources = paginate_resources(@resources)
     end
 
@@ -21,12 +21,12 @@ module Dashboard
     end
 
     def edit
-      @resource = OutboundSIPTrunkForm.initialize_with(record)
+      @resource = InboundSIPTrunkForm.initialize_with(record)
     end
 
     def update
       @resource = initialize_form(permitted_params)
-      @resource.outbound_sip_trunk = record
+      @resource.inbound_sip_trunk = record
       @resource.save
 
       respond_with(:dashboard, @resource)
@@ -39,22 +39,22 @@ module Dashboard
 
     private
 
+    def permitted_params
+      params.require(:inbound_sip_trunk).permit(:name, :source_ip)
+    end
+
     def initialize_form(params = {})
-      form = OutboundSIPTrunkForm.new(params)
+      form = InboundSIPTrunkForm.new(params)
       form.carrier = current_carrier
       form
     end
 
-    def permitted_params
-      params.require(:outbound_sip_trunk).permit(:name, :host, :dial_string_prefix, :trunk_prefix)
-    end
-
-    def outbound_sip_trunks_scope
-      current_carrier.outbound_sip_trunks
+    def inbound_sip_trunks_scope
+      current_carrier.inbound_sip_trunks
     end
 
     def record
-      @record ||= outbound_sip_trunks_scope.find(params[:id])
+      @record ||= inbound_sip_trunks_scope.find(params[:id])
     end
   end
 end

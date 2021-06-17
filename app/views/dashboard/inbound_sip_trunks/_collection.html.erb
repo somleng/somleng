@@ -1,0 +1,36 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Name
+      </th>
+      <th>
+        Source IP
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |inbound_sip_trunk| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+
+        <td>
+          <%= link_to(inbound_sip_trunk.name, polymorphic_path([:dashboard, inbound_sip_trunk])) %>
+        </td>
+
+        <td>
+          <code>
+            <%= inbound_sip_trunk.source_ip %>
+          </code>
+        </td>
+
+        <td>
+          <%= local_time(inbound_sip_trunk.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
