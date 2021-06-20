@@ -1,66 +1,33 @@
 require "rails_helper"
 
 RSpec.describe AccountMembershipPolicy, type: :policy do
-  describe "#destroy?" do
-    it "denies access to carrier owners for memberships with an accepted invitation" do
-      carrier = build_stubbed(:carrier)
-      user_context = build_user_context_for_carrier(role: :owner)
-      user = build_stubbed(:user, :invitation_accepted)
-      account = build_stubbed(:account, carrier: carrier)
-      account_membership = build_stubbed(:account_membership, account: account, user: user)
+  it "denies access to users managing their own membership" do
+    account_membership = create(:account_membership, :owner)
+    user_context = build_user_context_for_account(role: :owner, account_membership: account_membership)
 
-      policy = AccountMembershipPolicy.new(user_context, account_membership)
+    policy = AccountMembershipPolicy.new(user_context, account_membership)
 
-      expect(policy.destroy?).to eq(false)
-    end
-
-    it "allows access to carrier owners for memberships with an pending invitations" do
-      carrier = build_stubbed(:carrier)
-      user_context = build_user_context_for_carrier(role: :owner)
-      user = build_stubbed(:user, :invited)
-      account = build_stubbed(:account, carrier: carrier)
-      account_membership = build_stubbed(:account_membership, account: account, user: user)
-
-      policy = AccountMembershipPolicy.new(user_context, account_membership)
-
-      expect(policy.destroy?).to eq(true)
-    end
-
-    it "denies access to account owners for their own account"
+    expect(policy.update?).to eq(false)
+    expect(policy.destroy?).to eq(false)
   end
 
-  describe "#manage?" do
-    it "allows carrier admins"
+  it "grants access to account owners" do
+    account_membership = create(:account_membership, :owner)
+    user_context = build_user_context_for_account(account_membership: account_membership)
+    managed_account_membership = create(:account_membership, account: account_membership.account)
+
+    policy = AccountMembershipPolicy.new(user_context, managed_account_membership)
+
+    expect(policy.update?).to eq(true)
+    expect(policy.destroy?).to eq(true)
   end
 
-  describe "#update?" do
-    it "denies access to carrier owners" do
-      carrier = build_stubbed(:carrier)
-      user_context = build_user_context_for_carrier(carrier: carrier, role: :owner)
-      account = build_stubbed(:account, carrier: carrier)
-      account_membership = build_stubbed(:account_membership, account: account)
+  it "denies access to account admins" do
+    user_context = build_user_context_for_account(role: :admin)
 
-      policy = AccountMembershipPolicy.new(user_context, account_membership)
+    policy = AccountMembershipPolicy.new(user_context)
 
-      expect(policy.update?).to eq(false)
-    end
-
-    it "grants access to account owners" do
-      user_context = build_user_context_for_account(role: :owner)
-      account_membership = build_stubbed(:account_membership, account: user_context.current_account_membership.account)
-
-      policy = AccountMembershipPolicy.new(user_context, account_membership)
-
-      expect(policy.update?).to eq(true)
-    end
-
-    it "denies access to account admins" do
-      user_context = build_user_context_for_account(role: :admin)
-      account_membership = build_stubbed(:account_membership, account: user_context.current_account_membership.account)
-
-      policy = AccountMembershipPolicy.new(user_context, account_membership)
-
-      expect(policy.update?).to eq(false)
-    end
+    expect(policy.index?).to eq(false)
+    expect(policy.create?).to eq(false)
   end
 end

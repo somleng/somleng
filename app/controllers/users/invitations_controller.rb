@@ -3,7 +3,7 @@ class Users::InvitationsController < Devise::InvitationsController
 
   def accept_resource
     user = super
-    if user.current_account_membership.blank?
+    if user.errors.empty? && user.current_account_membership.blank?
       user.update!(current_account_membership: user.account_memberships.first)
     end
     user

@@ -6,16 +6,21 @@ module PolicyHelpers
     build_stubbed(:user_context, user: user, current_organization: organization)
   end
 
-  def build_user_context_for_account(role:, account: nil)
-    account ||= build_stubbed(:account)
-    user = build_stubbed(:user)
-    account_membership = build_stubbed(:account_membership, role, user: user, account: account)
-    organization = build_stubbed(:organization, organization: account)
+  def build_user_context_for_account(params)
+    params[:account] ||= build_stubbed(:account)
+    params[:user] ||= build_stubbed(:user)
+    params[:account_membership] ||= build_stubbed(
+      :account_membership,
+      params.fetch(:role, :owner),
+      user: params.fetch(:user),
+      account: params.fetch(:account)
+    )
+    organization = build_stubbed(:organization, organization: params.fetch(:account))
     build_stubbed(
       :user_context,
-      user: user,
+      user: params.fetch(:account_membership).user,
       current_organization: organization,
-      current_account_membership: account_membership
+      current_account_membership: params.fetch(:account_membership)
     )
   end
 end

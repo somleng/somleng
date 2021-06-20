@@ -40,4 +40,8 @@ class Account < ApplicationRecord
   def customer_managed?
     type == "customer_managed"
   end
+
+  def owner
+    account_memberships.owner.first&.user
+  end
 end

@@ -1,3 +1,3 @@
 class AccountMembershipFilter < ResourceFilter
-  filter_with AccountIdFilter, DateFilter
+  filter_with DateFilter
 end

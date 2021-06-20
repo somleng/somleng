@@ -66,13 +66,42 @@ RSpec.describe "Accounts" do
     click_link("Edit")
     uncheck("Enabled")
     select("Main SIP Trunk", from: "Outbound SIP trunk")
-    click_button "Update Account"
+    fill_in("Owner's name", with: "John Doe")
+    fill_in("Owner's email", with: "johndoe@example.com")
+
+    perform_enqueued_jobs do
+      click_button "Update Account"
+    end
 
     expect(page).to have_content("Account was successfully updated")
     expect(page).to have_link(
       "Main SIP Trunk", href: dashboard_outbound_sip_trunk_path(outbound_sip_trunk)
     )
     expect(page).to have_content("Disabled")
+    expect(page).to have_content("Customer managed")
+    expect(page).to have_content("John Doe")
+    expect(page).to have_content("johndoe@example.com")
+    expect(last_email_sent).to deliver_to("johndoe@example.com")
+  end
+
+  it "Resend invitation" do
+    user = create(:user, :carrier, :admin)
+    account = create(:account, carrier: user.carrier)
+    invited_user = create(:user, :invited, email: "johndoe@example.com")
+    create(:account_membership, :owner, account: account, user: invited_user)
+
+    sign_in(user)
+    visit dashboard_account_path(account)
+
+    expect(page).to have_content("The account owner has not yet accepted their invite.")
+
+    perform_enqueued_jobs do
+      click_link("Resend")
+    end
+
+    expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
+    expect(page).to have_current_path(dashboard_account_path(account))
+    expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
   it "Delete an account" do

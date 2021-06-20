@@ -14,7 +14,7 @@ module Dashboard
     end
 
     def create
-      @resource = initialize_form(form_params.permit(:name, :outbound_sip_trunk_id, :enabled))
+      @resource = initialize_form(permitted_params)
       @resource.save
 
       respond_with(:dashboard, @resource)
@@ -25,7 +25,7 @@ module Dashboard
     end
 
     def update
-      @resource = initialize_form(form_params.permit(:outbound_sip_trunk_id, :enabled))
+      @resource = initialize_form(permitted_params)
       @resource.account = record
       @resource.save
 
@@ -42,11 +42,18 @@ module Dashboard
     def initialize_form(params = {})
       @resource = AccountForm.new(params)
       @resource.carrier = current_carrier
+      @resource.current_user = current_user
       @resource
     end
 
-    def form_params
-      params.require(:account)
+    def permitted_params
+      params.require(:account).permit(
+        :name,
+        :owner_name,
+        :owner_email,
+        :outbound_sip_trunk_id,
+        :enabled
+      )
     end
 
     def accounts_scope

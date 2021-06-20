@@ -1,4 +1,6 @@
 class AccountPolicy < ApplicationPolicy
+  delegate :carrier_managed?, :customer_managed?, to: :record
+
   def index?
     read?
   end

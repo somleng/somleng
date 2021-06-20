@@ -24,7 +24,7 @@ class PhoneNumberForm
   def self.initialize_with(phone_number)
     new(
       phone_number: phone_number,
-      account_id: phone_number.account&.id,
+      account_id: phone_number.account_id,
       carrier: phone_number.carrier,
       number: phone_number.number
     )

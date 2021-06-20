@@ -2,7 +2,17 @@
   <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
     <div class="row">
       <div class="col-sm-6">
-        <%= f.input :name, maxlength: 128, hint: "A friendly name for the account", disabled: local_assigns.fetch(:disable_name_input, false) %>
+        <%= f.input :name, maxlength: 128, hint: "A friendly name for the account", disabled: policy(resource).customer_managed? %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :owner_name, hint: "Specify an owner to make the account customer managed. The owner will receive an invitation email. This cannot be undone.", disabled: policy(resource).customer_managed? %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input :owner_email, disabled: policy(resource).customer_managed? %>
       </div>
     </div>
 

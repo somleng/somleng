@@ -16,11 +16,16 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
   it "validates to" do
     carrier = create(:carrier)
     _inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
-    _phone_number = create(:phone_number, number: "855716100235", carrier: carrier)
+    _unassigned_phone_number = create(:phone_number, number: "855716100235", carrier: carrier)
+    _phone_number_assigned_to_account = create(:phone_number, :assigned_to_account, number: "855716100236", carrier: carrier)
+
+    expect(
+      validate_request_schema(input_params: { to: "855716100236", source_ip: "175.100.7.240" })
+    ).to have_valid_field(:to)
 
     expect(
       validate_request_schema(input_params: { to: "855716100235", source_ip: "175.100.7.240" })
-    ).to have_valid_field(:to)
+    ).not_to have_valid_field(:to)
 
     expect(
       validate_request_schema(input_params: { to: "85516701721", source_ip: "175.100.7.240" })
@@ -34,7 +39,8 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
   it "normalizes the output" do
     carrier = create(:carrier)
     inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
-    phone_number = create(:phone_number, carrier: carrier, number: "2442")
+    account = create(:account)
+    phone_number = create(:phone_number, account: account, carrier: carrier, number: "2442")
     schema = validate_request_schema(
       input_params: {
         source_ip: "175.100.7.240",
@@ -48,6 +54,7 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
     )
 
     expect(schema.output).to include(
+      account: account,
       to: "2442",
       from: "855716100230",
       external_id: "external-id",
@@ -67,7 +74,7 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
       source_ip: "175.100.7.240",
       trunk_prefix_replacement: "855"
     )
-    _phone_number = create(:phone_number, number: "855716100235", carrier: carrier)
+    _phone_number = create(:phone_number, :assigned_to_account, number: "855716100235", carrier: carrier)
     schema = validate_request_schema(
       input_params: {
         source_ip: "175.100.7.240",

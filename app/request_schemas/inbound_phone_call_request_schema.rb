@@ -14,7 +14,7 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
 
   rule(:to) do |context:|
     if context[:inbound_sip_trunk].present?
-      context[:phone_number] = context[:inbound_sip_trunk].carrier.phone_numbers.find_by(number: value)
+      context[:phone_number] = context[:inbound_sip_trunk].carrier.phone_numbers.where.not(account_id: nil).find_by(number: value)
       key("to").failure("does not exist") if context[:phone_number].blank?
     end
   end

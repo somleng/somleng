@@ -18,10 +18,6 @@
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fas fa-cloud") %>
     <% end %>
 
-    <% if policy(:account_membership).index? %>
-      <%= sidebar_nav("Account Memberships", dashboard_account_memberships_path, icon_class: "fas fa-user-plus") %>
-    <% end %>
-
     <% if policy(:outbound_sip_trunk).index? %>
       <%= sidebar_nav("Outbound SIP Trunks", dashboard_outbound_sip_trunks_path, icon_class: "fas fa-sort-amount-up") %>
     <% end %>
@@ -36,6 +32,10 @@
 
     <% if policy(:user).index? %>
       <%= sidebar_nav("Users", dashboard_users_path, icon_class: "fas fa-users") %>
+    <% end %>
+
+    <% if policy(:account_membership).index? %>
+      <%= sidebar_nav("Users", dashboard_account_memberships_path, icon_class: "fas fa-users") %>
     <% end %>
 
     <% if policy(:export).index? %>

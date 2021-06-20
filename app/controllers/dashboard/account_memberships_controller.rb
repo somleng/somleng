@@ -1,7 +1,7 @@
 module Dashboard
   class AccountMembershipsController < DashboardController
     def index
-      @resources = apply_filters(account_memberships_scope.includes(:user, :account))
+      @resources = apply_filters(account_memberships_scope.includes(:user))
       @resources = paginate_resources(@resources)
     end
 
@@ -14,9 +14,7 @@ module Dashboard
     end
 
     def create
-      permitted_params = %i[account_id name email]
-      permitted_params << :role if policy(:account_membership).account_managed?
-      @resource = initialize_form(form_params.permit(*permitted_params))
+      @resource = initialize_form(form_params.permit(:name, :email, :role))
       @resource.save
 
       respond_with(
@@ -48,12 +46,12 @@ module Dashboard
     def initialize_form(params = {})
       form = AccountMembershipForm.new(params)
       form.account = current_account
-      form.carrier = current_carrier
+      form.current_user = current_user
       form
     end
 
     def account_memberships_scope
-      current_organization.account_memberships
+      current_account.account_memberships
     end
 
     def form_params

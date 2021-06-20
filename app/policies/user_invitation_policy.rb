@@ -6,6 +6,7 @@ class UserInvitationPolicy < ApplicationPolicy
   private
 
   def manage_record?
+    return false if record.blank?
     return false if record.accepted_or_not_invited?
     return carrier_account_users.exists?(record.id) || carrier_users.exists?(record.id) if carrier_owner?
     return carrier_account_users.exists?(record.id) if carrier_admin?

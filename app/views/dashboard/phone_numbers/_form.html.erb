@@ -17,7 +17,8 @@
                       collection: [],
                       hint: "Optionally assign the phone number to an account",
                       selected: resource.account_id,
-                      prompt: "",
+                      prompt: "Select an Account",
+                      include_blank: true,
                       input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select } } %>
       </div>
     </div>

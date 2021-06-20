@@ -77,7 +77,7 @@ FactoryBot.define do
   factory :inbound_sip_trunk do
     carrier
     name { "My SIP trunk" }
-    source_ip { "175.100.7.240" }
+    source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
   end
 
   factory :account do

@@ -1,34 +1,23 @@
 <%= simple_form_for([:dashboard, resource]) do |f| %>
   <div class="row">
     <div class="col-sm-6">
-      <%= f.input :name, maxlength: 128, disabled: local_assigns.fetch(:disable_name_input, false) %>
+      <%= f.input :name, required: true, maxlength: 128, disabled: local_assigns.fetch(:disable_name_input, false) %>
     </div>
 
     <div class="col-sm-6">
-      <%= f.input :email, disabled: local_assigns.fetch(:disable_email_input, false) %>
+      <%= f.input :email, required: true, disabled: local_assigns.fetch(:disable_email_input, false) %>
     </div>
   </div>
 
   <div class="row">
-    <% if resource.require_account_id? %>
-      <div class="col-sm-6">
-        <%= f.input :account_id,
-                    collection: [],
-                    hint: "The member will be added to this account",
-                    selected: resource.account_id,
-                    input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select } } %>
-      </div>
-    <% end %>
-
     <div class="col-sm-6">
-      <% hint = local_assigns.fetch(:disable_role_input, false) ? nil : "Owners have full access. Admins can manage all resources except users. Members have read-only access" %>
+      <% hint = "Owners have full access. Admins can manage all resources except users. Members have read-only access" %>
       <%=
         f.input(
           :role,
           label: "Role",
           hint: hint,
-          selected: resource.role,
-          disabled: local_assigns.fetch(:disable_role_input, false)
+          include_blank: false,
         )
       %>
     </div>

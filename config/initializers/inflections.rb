@@ -18,4 +18,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "API"
   inflect.acronym "SIP"
   inflect.acronym "CSV"
+  inflect.acronym "OTP"
 end

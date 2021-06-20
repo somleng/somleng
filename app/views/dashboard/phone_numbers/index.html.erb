@@ -12,7 +12,7 @@
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
   <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>
-  <% if policy(:account_membership).new? %>
+  <% if policy(:phone_number).new? %>
     <%= render("shared/new_resource_page_action", path: new_dashboard_phone_number_path) %>
   <% end %>
 <% end %>
