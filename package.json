@@ -13,7 +13,7 @@
     "moment": "^2.29.1",
     "perfect-scrollbar": "^1.5.1",
     "popper.js": "^1.16.1",
-    "select2": "^4.1.0-rc.0",
+    "select2": "^4.0.13",
     "stimulus": "^2.0.0",
     "turbolinks": "^5.2.0"
   },

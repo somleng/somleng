@@ -35,7 +35,7 @@ class PhoneNumberForm
 
     phone_number.carrier = carrier
     phone_number.number = number
-    phone_number.account = carrier.accounts.find(account_id) if account_id.present?
+    phone_number.account = account_id.present? ? carrier.accounts.find(account_id) : nil
 
     phone_number.save!
   end
