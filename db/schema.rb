@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 2021_06_17_103612) do
   create_table "exports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.jsonb "filter_params", default: {}, null: false
+    t.jsonb "scoped_to", default: {}, null: false
     t.string "name", null: false
     t.string "resource_type", null: false
     t.bigserial "sequence_number", null: false

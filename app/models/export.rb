@@ -1,6 +1,6 @@
 class Export < ApplicationRecord
   extend Enumerize
-  enumerize :resource_type, in: %w[Account User]
+  enumerize :resource_type, in: %w[Account PhoneNumber]
 
   belongs_to :user
 

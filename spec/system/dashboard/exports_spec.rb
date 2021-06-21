@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Exports" do
-  it "Export accounts" do
+  it "Export CSV as a carrier member" do
     carrier = create(:carrier)
     user = create(:user, carrier: carrier)
     create(:account, name: "Rocket Rides", created_at: Time.utc(2021, 12, 1), carrier: carrier)
@@ -27,5 +27,28 @@ RSpec.describe "Exports" do
     expect(page).to have_content("Rocket Rides")
     expect(page).not_to have_content("Alice Apples")
     expect(page).not_to have_content("Bob Bananas")
+  end
+
+  it "Export CSV as an account member" do
+    carrier = create(:carrier)
+    account = create(:account, carrier: carrier)
+    other_account = create(:account, carrier: account.carrier)
+    create(:phone_number, account: account, carrier: carrier, number: "1234")
+    create(:phone_number, account: other_account, carrier: carrier, number: "9876")
+    user = create(:user, :with_account_membership, account: account)
+
+    sign_in(user)
+    visit dashboard_phone_numbers_path
+    perform_enqueued_jobs do
+      click_link("Export")
+    end
+    within(".alert") do
+      expect(page).to have_content("Your export is being processed")
+      click_link("Exports")
+    end
+
+    click_link("phone_numbers_")
+    expect(page).to have_content("1234")
+    expect(page).not_to have_content("9876")
   end
 end

@@ -38,7 +38,7 @@ class ExportCSV < ApplicationWorkflow
 
   def records
     resource_class.filter_class.new(
-      resources_scope: resource_class.where(carrier: export.user.carrier),
+      resources_scope: resource_class.where(export.scoped_to),
       input_params: { filter: export.filter_params }
     ).apply
   end

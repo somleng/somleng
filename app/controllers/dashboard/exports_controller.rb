@@ -5,8 +5,7 @@ module Dashboard
     end
 
     def create
-      @resource = Export.new(permitted_params)
-      @resource.user = current_user
+      @resource = build_export
       @resource.save!
       ExecuteWorkflowJob.perform_later("ExportCSV", @resource)
 
@@ -19,6 +18,17 @@ module Dashboard
     end
 
     private
+
+    def build_export
+      @resource = Export.new(permitted_params)
+      @resource.user = current_user
+      if current_organization.account?
+        @resource.scoped_to[:account_id] = current_account.id
+      else
+        @resource.scoped_to[:carrier_id] = current_carrier.id
+      end
+      @resource
+    end
 
     def permitted_params
       params.require(:export).permit(:resource_type, :name, filter_params: {})

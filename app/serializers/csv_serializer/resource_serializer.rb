@@ -2,7 +2,6 @@ module CSVSerializer
   class ResourceSerializer < ApplicationSerializer
     def attributes
       {
-        sid: nil,
         created_at: nil,
         updated_at: nil
       }
@@ -14,10 +13,6 @@ module CSVSerializer
 
     def headers
       attributes.keys
-    end
-
-    def sid
-      id
     end
 
     def created_at

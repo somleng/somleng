@@ -2,7 +2,6 @@
   <%= render("shared/filters") do |form| %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
-  <%= render("shared/export_action", export_params: { resource_type: "OutboundSIPTrunk" }) %>
   <% if policy(:outbound_sip_trunk).new? %>
     <%= render("shared/new_resource_page_action", path: new_dashboard_outbound_sip_trunk_path) %>
   <% end %>
