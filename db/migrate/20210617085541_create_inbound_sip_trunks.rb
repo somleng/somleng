@@ -13,7 +13,17 @@ class CreateInboundSIPTrunks < ActiveRecord::Migration[6.1]
 
     reversible do |dir|
       dir.up do
-        # Create Inbound SIP Trunks here manually for production
+        if Rails.env.production?
+          carrier_id = "b405d1a4-ebc4-46f8-9d7e-4a3eefa2fe8e"
+          [["Metfone", "175.100.32.29"], ["Cellcard", "103.193.204.26"], ["Smart", "27.109.112.140"]].each do |(name, source_ip)|
+            InboundSIPTrunk.create!(
+              name: name,
+              source_ip: source_ip,
+              carrier_id: carrier_id,
+              trunk_prefix_replacement: "855"
+            )
+          end
+        end
       end
     end
 
