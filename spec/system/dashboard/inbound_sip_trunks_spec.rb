@@ -56,11 +56,13 @@ RSpec.describe "Inbound SIP Trunks" do
     click_link("Edit")
     fill_in("Name", with: "Main Trunk")
     fill_in("Source IP", with: "96.9.66.131")
+    fill_in("Trunk prefix replacement", with: "855")
     click_button "Update Inbound SIP trunk"
 
     expect(page).to have_content("Inbound SIP trunk was successfully updated")
     expect(page).to have_content("Main Trunk")
     expect(page).to have_content("96.9.66.131")
+    expect(page).to have_content("855")
   end
 
   it "Delete an inbound SIP Trunk" do

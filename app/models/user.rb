@@ -10,9 +10,10 @@ class User < ApplicationRecord
   has_many :account_memberships
   has_many :accounts, through: :account_memberships
 
-  devise :invitable, :registerable,
+  devise :invitable, :registerable, :confirmable,
          :recoverable, :validatable, :trackable, :rememberable,
          :two_factor_authenticatable,
+         reconfirmable: true,
          otp_secret_encryption_key: Rails.configuration.app_settings.fetch(:otp_secret_encryption_key)
 
   before_create :generate_otp_secret

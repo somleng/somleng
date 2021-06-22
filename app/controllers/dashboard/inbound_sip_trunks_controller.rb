@@ -40,7 +40,7 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:inbound_sip_trunk).permit(:name, :source_ip)
+      params.require(:inbound_sip_trunk).permit(:name, :source_ip, :trunk_prefix_replacement)
     end
 
     def initialize_form(params = {})

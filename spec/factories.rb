@@ -103,6 +103,7 @@ FactoryBot.define do
     name { "John Doe" }
     password { "super secret password" }
     otp_required_for_login { true }
+    confirmed
 
     traits_for_enum :carrier_role, %i[owner admin member]
 
@@ -119,6 +120,10 @@ FactoryBot.define do
     trait :invitation_accepted do
       invited
       invitation_accepted_at { Time.current }
+    end
+
+    trait :confirmed do
+      confirmed_at { Time.current }
     end
 
     trait :otp_required_for_login do

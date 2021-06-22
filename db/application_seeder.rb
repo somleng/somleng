@@ -76,10 +76,11 @@ class ApplicationSeeder
   def create_carrier_owner(params)
     User.first_or_create!(
       params.reverse_merge(
-        email: "user@example-carrier.com",
+        email: "johndoe@carrier.com",
         name: "John Doe",
         password: USER_PASSWORD,
-        carrier_role: :owner
+        carrier_role: :owner,
+        confirmed_at: Time.current
       )
     )
   end

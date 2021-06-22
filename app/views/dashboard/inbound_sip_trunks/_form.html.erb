@@ -12,6 +12,12 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :trunk_prefix_replacement, placeholder: current_carrier.country.country_code, hint: "Only required if your inbound trunk is configured for local dialing. The leading 0 will be replaced by this value" %>
+      </div>
+    </div>
+
     <%= f.button :submit %>
   <% end %>
 </div>

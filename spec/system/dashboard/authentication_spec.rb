@@ -29,20 +29,6 @@ RSpec.describe "Authentication" do
     expect(page).to have_content("2FA was successfully enabled")
   end
 
-  it "Change password" do
-    user = create(:user, :carrier, password: "current password")
-
-    sign_in(user)
-    visit(dashboard_root_path)
-    click_link("Change Password")
-    fill_in("Password", with: "new password")
-    fill_in("Password confirmation", with: "new password")
-    fill_in("Current password", with: "current password")
-    click_button("Update")
-
-    expect(page).to have_content("Your account has been updated successfully")
-  end
-
   it "Accept an invitation from a carrier" do
     carrier = create(:carrier)
     perform_enqueued_jobs do

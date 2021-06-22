@@ -6,6 +6,7 @@ class InboundSIPTrunkForm
   attribute :inbound_sip_trunk, default: -> { InboundSIPTrunk.new }
   attribute :name
   attribute :source_ip
+  attribute :trunk_prefix_replacement
 
   delegate :persisted?, :id, to: :inbound_sip_trunk
 
@@ -21,7 +22,8 @@ class InboundSIPTrunkForm
     new(
       inbound_sip_trunk: inbound_sip_trunk,
       name: inbound_sip_trunk.name,
-      source_ip: inbound_sip_trunk.source_ip
+      source_ip: inbound_sip_trunk.source_ip,
+      trunk_prefix_replacement: inbound_sip_trunk.trunk_prefix_replacement
     )
   end
 
@@ -31,7 +33,8 @@ class InboundSIPTrunkForm
     inbound_sip_trunk.attributes = {
       name: name,
       carrier: carrier,
-      source_ip: source_ip
+      source_ip: source_ip,
+      trunk_prefix_replacement: trunk_prefix_replacement.presence
     }
 
     inbound_sip_trunk.save!
