@@ -12,7 +12,7 @@ class AccountMembershipPolicy < ApplicationPolicy
   end
 
   def read?
-    manage?
+    managing_account?
   end
 
   private

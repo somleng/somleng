@@ -12,7 +12,8 @@ module TwilioAPI
       phone_call = phone_calls_scope.find(params[:id])
 
       validate_request_schema(
-        with: UpdatePhoneCallRequestSchema, schema_options: { phone_call: phone_call }, status: :ok
+        with: UpdatePhoneCallRequestSchema,
+        schema_options: { phone_call: phone_call }, status: :ok
       ) do |permitted_params|
         if PhoneCallStatusEvent.new(phone_call).may_transition_to?(permitted_params[:status])
           EndCallJob.perform_later(phone_call)

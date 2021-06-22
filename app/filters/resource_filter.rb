@@ -6,7 +6,7 @@ class ResourceFilter < ApplicationFilter
   end
 
   def apply
-    filters.inject(resources_scope) do |result, filter|
+    filters.inject(super) do |result, filter|
       filter.new(resources_scope: result, input_params: input_params).apply
     end
   end

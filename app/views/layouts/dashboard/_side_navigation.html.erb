@@ -30,6 +30,10 @@
       <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fas fa-hashtag") %>
     <% end %>
 
+    <% if policy(:phone_call).index? %>
+      <%= sidebar_nav("Phone Calls", dashboard_phone_calls_path, icon_class: "fas fa-phone") %>
+    <% end %>
+
     <% if policy(:user).index? %>
       <%= sidebar_nav("Users", dashboard_users_path, icon_class: "fas fa-users") %>
     <% end %>

@@ -1,0 +1,34 @@
+<%= page_title(title: "Phone Call") %>
+
+<div class="card-body">
+  <% phone_call = PhoneCallDecorator.new(@resource) %>
+  <%= show_for(phone_call) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= @resource.id %>
+      </code>
+    <% end %>
+
+    <% if policy(:account).show? %>
+      <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
+    <% end %>
+
+    <% if phone_call.phone_number.present? %>
+      <%= f.attribute :phone_number, value: external_link_to(@resource.phone_number.number, dashboard_phone_number_path(@resource.phone_number)) %>
+    <% else %>
+      <%= f.attribute :phone_number %>
+    <% end %>
+
+    <%= f.attribute :to, value: phone_call.to_formatted %>
+    <%= f.attribute :from, value: phone_call.from_formatted %>
+    <%= f.attribute :status, value: phone_call.status.humanize %>
+    <%= f.attribute :direction, value: phone_call.direction.humanize %>
+    <%= f.attribute :duration, value: pluralize(phone_call.duration, "seconds") %>
+    <%= f.attribute :voice_url %>
+    <%= f.attribute :voice_method %>
+    <%= f.attribute :status_callback_url %>
+    <%= f.attribute :status_callback_method %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

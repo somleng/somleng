@@ -27,7 +27,7 @@ RSpec.describe AccountMembershipPolicy, type: :policy do
 
     policy = AccountMembershipPolicy.new(user_context)
 
-    expect(policy.index?).to eq(false)
+    expect(policy.index?).to eq(true)
     expect(policy.create?).to eq(false)
   end
 end

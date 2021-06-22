@@ -100,7 +100,7 @@ RSpec.describe "Phone Numbers" do
 
     sign_in(user)
     visit dashboard_phone_number_path(phone_number)
-    click_link("Configure")
+    click_link("Edit")
 
     fill_in("Voice URL", with: "https://www.example.com/voice.xml")
     select("POST", from: "Voice method")

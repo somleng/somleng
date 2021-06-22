@@ -48,7 +48,7 @@ class StatusCallbackSerializer < ApplicationSerializer
   end
 
   def CallStatus
-    PhoneCallSerializer::TWILIO_CALL_STATUS_MAPPINGS.fetch(__getobj__.status)
+    status
   end
 
   def ApiVersion
@@ -56,11 +56,11 @@ class StatusCallbackSerializer < ApplicationSerializer
   end
 
   def Direction
-    PhoneCallSerializer::TWILIO_CALL_DIRECTIONS.fetch(__getobj__.direction)
+    direction
   end
 
   def CallDuration
-    __getobj__.call_data_record.bill_sec.to_s
+    duration
   end
 
   def SipResponseCode

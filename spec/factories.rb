@@ -25,6 +25,13 @@ FactoryBot.define do
       )
     end
 
+    file do
+      ActiveStorage::Blob.create_and_upload!(
+        io: File.open("#{RSpec.configuration.file_fixture_path}/freeswitch_cdr.json"),
+        filename: external_id
+      )
+    end
+
     trait :inbound do
       direction { "inbound" }
     end

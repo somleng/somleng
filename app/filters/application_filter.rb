@@ -1,5 +1,5 @@
 class ApplicationFilter
-  attr_reader :resources_scope, :input_params
+  attr_reader :resources_scope, :input_params, :scoped_to
 
   class_attribute :filter_schema
 
@@ -11,13 +11,14 @@ class ApplicationFilter
     end
   end
 
-  def initialize(resources_scope:, input_params:)
+  def initialize(resources_scope:, input_params:, scoped_to: {})
     @resources_scope = resources_scope
+    @scoped_to = scoped_to.symbolize_keys
     @input_params = input_params.to_h
   end
 
   def apply
-    resources_scope
+    resources_scope.where(scoped_to)
   end
 
   private

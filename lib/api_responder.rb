@@ -3,8 +3,10 @@ class APIResponder < ActionController::Responder
 
   def display(resource, given_options = {})
     serializer_class = options.delete(:serializer_class) || resolve_serializer_class(resource)
+    decorator_class = options.delete(:decorator_class) || resolve_decorator_class(resource)
+    resource_to_display = decorator_class.present? ? decorator_class.new(resource) : resource
 
-    super(serializer_class.new(resource), given_options)
+    super(serializer_class.new(resource_to_display), given_options)
   end
 
   def api_behavior(*args, &block)
@@ -19,5 +21,11 @@ class APIResponder < ActionController::Responder
     return resource.serializer_class if resource.respond_to?(:serializer_class)
 
     "#{resource.class}Serializer".constantize
+  end
+
+  def resolve_decorator_class(resource)
+    return resource.decorator_class if resource.respond_to?(:decorator_class)
+
+    "#{resource.class}Decorator".safe_constantize
   end
 end

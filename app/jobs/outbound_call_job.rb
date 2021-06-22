@@ -11,7 +11,7 @@ class OutboundCallJob < ApplicationJob
       sid: phone_call.id,
       account_sid: phone_call.account.id,
       account_auth_token: phone_call.account.auth_token,
-      direction: PhoneCallSerializer::TWILIO_CALL_DIRECTIONS.fetch("outbound"),
+      direction: PhoneCallDecorator::TWILIO_CALL_DIRECTIONS.fetch("outbound"),
       api_version: ApplicationSerializer::API_VERSION,
       voice_url: phone_call.voice_url,
       voice_method: phone_call.voice_method,

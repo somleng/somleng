@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     resources :phone_numbers
     resources :phone_number_configuration, only: %i[edit update]
     resources :inbound_sip_trunks
+    resources :phone_calls, only: %i[index show]
 
     root to: "home#show"
   end
