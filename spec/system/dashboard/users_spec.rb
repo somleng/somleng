@@ -42,10 +42,12 @@ RSpec.describe "Users" do
   end
 
   it "Carrier owner can update a user" do
-    user = create(:user, :carrier, :owner)
+    carrier = create(:carrier)
+    user = create(:user, :carrier, :owner, carrier: carrier)
+    managed_user = create(:user, :carrier, carrier: carrier)
 
     sign_in(user)
-    visit dashboard_user_path(user)
+    visit dashboard_user_path(managed_user)
     click_link("Edit")
 
     select("Member", from: "Role")
