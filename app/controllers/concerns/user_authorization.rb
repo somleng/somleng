@@ -26,28 +26,26 @@ module UserAuthorization
   end
 
   def current_organization
-    current_account_or_carrier = current_account_membership&.account || current_carrier
-
-    return BlankOrganization.new if current_account_or_carrier.blank?
-
-    @current_organization ||= Organization.new(current_account_or_carrier)
+    @current_organization ||= begin
+      current_account_or_carrier = current_account_membership&.account || current_carrier
+      current_account_or_carrier.present? ? Organization.new(current_account_or_carrier) : BlankOrganization.new
+    end
   end
 
   def current_account
-    current_account_membership.account
+    @current_account ||= current_account_membership.account
   end
 
   def current_carrier
-    current_user.carrier
+    @current_carrier ||= current_user.carrier
   end
 
   def current_account_membership
-    session[:current_account_membership] ||= current_user.current_account_membership_id
-    account_membership = current_user.account_memberships.find_by(id: session[:current_account_membership])
-
-    return account_membership if account_membership.present?
-
-    BlankAccountMembership.new
+    @current_account_membership ||= begin
+      session[:current_account_membership] ||= current_user.current_account_membership_id
+      account_membership = current_user.account_memberships.find_by(id: session[:current_account_membership])
+      account_membership.present? ? account_membership : BlankAccountMembership.new
+    end
   end
 
   def pundit_user
