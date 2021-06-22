@@ -1,3 +1,5 @@
+require "resolv"
+
 class InboundSIPTrunkForm
   include ActiveModel::Model
   include ActiveModel::Attributes
