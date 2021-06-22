@@ -1,0 +1,37 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Name
+      </th>
+      <th>
+        Status
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |export| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <% if export.ready? %>
+            <%= link_to(export.name, rails_blob_path(export.file, disposition: "attachment")) %>
+          <% else %>
+            <%= export.name %>
+          <% end %>
+        </td>
+
+        <td>
+          <%= export.ready? ? "Ready" : "Processing" %>
+        </td>
+
+        <td>
+          <%= local_time(export.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

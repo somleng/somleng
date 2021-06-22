@@ -1,4 +1,4 @@
-class ServicesController < ApplicationController
+class ServicesController < APIController
   include ActionController::HttpAuthentication::Basic::ControllerMethods
 
   http_basic_authenticate_with(

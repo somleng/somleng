@@ -1,0 +1,20 @@
+@import "custom";
+@import "~@coreui/coreui/scss/coreui";
+
+@import "select2/dist/css/select2.css";
+@import "@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.css";
+
+@import '@fortawesome/fontawesome-free';
+@import "daterangepicker/daterangepicker.css";
+
+
+#filters {
+  .dropdown-menu {
+    width: 15rem;
+  }
+
+  .form-check-label {
+    cursor: pointer;
+    font-weight: bold;
+  }
+}

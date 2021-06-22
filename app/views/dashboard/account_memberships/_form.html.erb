@@ -1,0 +1,27 @@
+<%= simple_form_for([:dashboard, resource]) do |f| %>
+  <div class="row">
+    <div class="col-sm-6">
+      <%= f.input :name, required: true, maxlength: 128, disabled: local_assigns.fetch(:disable_name_input, false) %>
+    </div>
+
+    <div class="col-sm-6">
+      <%= f.input :email, required: true, disabled: local_assigns.fetch(:disable_email_input, false) %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <% hint = "Owners have full access. Admins can manage all resources except users. Members have read-only access" %>
+      <%=
+        f.input(
+          :role,
+          label: "Role",
+          hint: hint,
+          include_blank: false,
+        )
+      %>
+    </div>
+  </div>
+
+  <%= f.button :submit, button_text %>
+<% end %>

@@ -1,0 +1,9 @@
+<%= link_to(
+  dashboard_exports_path(
+    export: export_params.reverse_merge(filter_params: request.query_parameters[:filter]).compact),
+    method: :post,
+    class: "btn btn-info",
+    title: "Export"
+  ) do %>
+  <i class="fas fa-file-download"></i>
+<% end %>

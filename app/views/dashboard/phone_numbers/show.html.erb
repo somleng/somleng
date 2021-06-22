@@ -1,0 +1,50 @@
+<%= page_title(title: "Phone Number") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_path(@resource)) %>
+  <% end %>
+
+  <% if PhoneNumberConfigurationPolicy.new(pundit_user, @resource).edit? %>
+    <% if current_organization.carrier? %>
+      <div class="btn-group">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-phone-number-actions" data-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-cog"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdown-menu-phone-number-actions">
+          <%= link_to(
+            edit_dashboard_phone_number_configuration_path(@resource),
+            class: "dropdown-item"
+          ) do %>
+            <i class="fas fa-tools mfe-2"></i> Configure
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_configuration_path(@resource)) %>
+    <% end %>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_phone_number_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource) do |f| %>
+    <%= f.attribute :number %>
+
+    <% if policy(:account).show? %>
+      <% if @resource.account.present? %>
+        <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
+      <% else %>
+        <%= f.attribute :account %>
+      <% end %>
+    <% end %>
+
+    <%= f.attribute :voice_url %>
+    <%= f.attribute :voice_method %>
+    <%= f.attribute :status_callback_url %>
+    <%= f.attribute :status_callback_method %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

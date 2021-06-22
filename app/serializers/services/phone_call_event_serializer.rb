@@ -1,8 +1,8 @@
 module Services
   class PhoneCallEventSerializer < ResourceSerializer
-    def serializable_hash(_options = nil)
+    def attributes
       super.merge(
-        type: object.type
+        "type" => nil
       )
     end
   end

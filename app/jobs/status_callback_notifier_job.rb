@@ -7,7 +7,7 @@ class StatusCallbackNotifierJob < ApplicationJob
   def perform(phone_call)
     status_callback_uri = HTTP::URI.parse(phone_call.status_callback_url)
     http_method = HTTP_METHODS.fetch(phone_call.status_callback_method, :post)
-    call_params = StatusCallbackSerializer.new(phone_call).serializable_hash
+    call_params = StatusCallbackSerializer.new(PhoneCallDecorator.new(phone_call)).serializable_hash
 
     if http_method == :get
       status_callback_uri.query_values = status_callback_uri.query_values(Array).to_a.concat(call_params.to_a)

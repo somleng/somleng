@@ -1,0 +1,27 @@
+<%= page_title(title: "Configure Phone Number") %>
+
+<div class="card-body">
+  <%= simple_form_for([:dashboard, @resource]) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :voice_url, hint: "URL which returns TwiML. Must start with http or https" %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input :voice_method, collection: PhoneNumber.voice_method.values, include_blank: false %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :status_callback_url %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input :status_callback_method, collection: PhoneNumber.status_callback_method.values, include_blank: true %>
+      </div>
+    </div>
+
+    <%= f.button :submit, "Update Configuration" %>
+  <% end %>
+</div>

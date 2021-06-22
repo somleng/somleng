@@ -10,6 +10,7 @@ default: &default
   ahn_host: <%= ENV.fetch("AHN_HOST", "http://localhost:8080") %>
   ahn_username: "adhearsion"
   ahn_password: "password"
+  otp_secret_encryption_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 production: &production
   <<: *default
@@ -18,6 +19,7 @@ production: &production
   services_password: "<%= Rails.application.credentials.services_password %>"
   ahn_host: "https://ahn.somleng.org"
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
+  otp_secret_encryption_key: <%= Rails.application.credentials.otp_secret_encryption_key %>
 
 development: &development
   <<: *default

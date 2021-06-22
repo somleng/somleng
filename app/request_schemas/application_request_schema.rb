@@ -1,7 +1,7 @@
 class ApplicationRequestSchema < Dry::Validation::Contract
   attr_reader :input_params
 
-  delegate :success?, :errors, to: :result
+  delegate :success?, :errors, :context, to: :result
 
   module Types
     include Dry.Types()

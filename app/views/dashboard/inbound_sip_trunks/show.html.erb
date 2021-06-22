@@ -1,0 +1,18 @@
+<%= page_title(title: "Inbound SIP Trunk") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_inbound_sip_trunk_path(@resource)) %>
+  <% end %>
+    <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_inbound_sip_trunk_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource) do |f| %>
+    <%= f.attribute :name %>
+    <%= f.attribute :source_ip %>
+    <%= f.attribute :trunk_prefix_replacement %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

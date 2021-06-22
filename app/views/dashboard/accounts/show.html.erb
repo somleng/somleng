@@ -1,0 +1,43 @@
+<%= page_title(title: "Account") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_account_path(@resource)) %>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_account_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <% if UserInvitationPolicy.new(pundit_user, @resource.owner).update? %>
+    <div class="alert alert-info" role="alert">
+      <i class="fas fa-info-circle"></i> The account owner has not yet accepted their invite.
+      <%= link_to("Resend", dashboard_user_invitation_path(@resource.owner), method: :patch) %>
+    </div>
+  <% end %>
+
+  <%= show_for(@resource) do |f| %>
+    <%= f.attribute :name, value: @resource.name %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= @resource.id %>
+      </code>
+    <% end %>
+    <% if policy(@resource).show_auth_token? %>
+      <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
+    <% end %>
+    <%= f.attribute :type, value: @resource.type.humanize %>
+    <%= f.attribute :status, value: @resource.status.humanize %>
+    <%= f.attribute :owner_name, value: @resource.owner&.name %>
+    <%= f.attribute :owner_email, value: @resource.owner&.email %>
+    <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>
+    <%= f.attribute :phone_calls, value: external_link_to("Manage", dashboard_phone_calls_path(filter: {account_id: @resource.id}), title: "Manage phone calls") %>
+    <%= f.attribute :outbound_sip_trunk do %>
+      <% if @resource.outbound_sip_trunk.present? %>
+        <%= external_link_to(@resource.outbound_sip_trunk.name, dashboard_outbound_sip_trunk_path(@resource.outbound_sip_trunk)) %>
+      <% end %>
+    <% end %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

@@ -1,0 +1,24 @@
+<%= page_title(title: "Setup Two Factor Authentication") %>
+
+<div class="card-body">
+  <%= simple_form_for(@resource, url: dashboard_two_factor_authentications_path, wrapper: :input_group) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <label>
+          Scan this QR code with your authenticator app e.g. Google Authenticator, Authy.
+        </label>
+        <p>
+          <%= two_fa_qr_code(current_user) %>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :otp_attempt, label: "OTP Code",
+                     as: :tel, minlength: 6, maxlength: 6, hint: "6 digit OTP code" %>
+      </div>
+    </div>
+
+    <%= f.button :submit, "Enable" %>
+  <% end %>
+</div>

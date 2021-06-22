@@ -1,0 +1,30 @@
+<div class="card mb-0 border-0" data-controller="filters--field">
+  <div class="card-header bg-light">
+    <div class="form-group form-check mb-0">
+      <label class="form-check-label">
+        <%=
+          check_box_tag(
+            nil,
+            true,
+            filter_value.present?,
+            class: "form-check-input",
+            data: {
+              "action" => "filters--field#toggle filters#toggle",
+              "filters-target" => "switcher",
+              "filters--field-target" => "switcher"
+            }
+          )
+        %>
+
+        <%= title %>
+      </label>
+    </div>
+  </div>
+  <div class="collapse" data-filters--field-target="fieldInputsContainer">
+    <div class="card-body">
+      <div class="form-group">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+</div>

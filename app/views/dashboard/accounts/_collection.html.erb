@@ -1,0 +1,47 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Status
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |account| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(account.id, polymorphic_path([:dashboard, account])) %>
+        </td>
+
+        <td>
+          <%= account.name %>
+        </td>
+
+        <td>
+          <%= account.type.humanize %>
+        </td>
+
+        <td>
+          <%= account.status.humanize %>
+        </td>
+
+        <td>
+          <%= local_time(account.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

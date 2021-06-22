@@ -7,7 +7,8 @@ class PhoneCall < ApplicationRecord
   enumerize :direction, in: %i[inbound outbound], predicates: true
 
   belongs_to :account
-  belongs_to :incoming_phone_number, optional: true
+  belongs_to :phone_number, optional: true
+  belongs_to :inbound_sip_trunk, optional: true
 
   has_one    :call_data_record
   has_many   :phone_call_events

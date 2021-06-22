@@ -1,0 +1,38 @@
+<%= page_title(title: "User") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_user_path(@resource)) %>
+  <% end %>
+
+  <% if TwoFactorAuthenticationPolicy.new(pundit_user, @resource).destroy? %>
+    <div class="btn-group">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-user-actions" data-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-cog"></i>
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdown-menu-user-actions">
+        <%= render("shared/reset_2fa_page_action", user: @resource) %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_user_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <% if UserInvitationPolicy.new(pundit_user, @resource).update? %>
+    <div class="alert alert-info" role="alert">
+      <i class="fas fa-info-circle"></i> The user has not yet accepted their invite.
+      <%= link_to("Resend", dashboard_user_invitation_path(@resource.id), method: :patch) %>
+    </div>
+  <% end %>
+
+  <%= show_for(@resource) do |f| %>
+    <%= f.attribute :name, value: @resource.name %>
+    <%= f.attribute :email, value: @resource.email %>
+    <%= f.attribute :role, value: @resource.carrier_role.humanize %>
+    <%= f.attribute :otp_required_for_login, label: "OTP required for login" %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

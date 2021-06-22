@@ -1,11 +1,26 @@
 module Services
   class ResourceSerializer < ApplicationSerializer
-    def serializable_hash(_options = nil)
+    def attributes
       super.merge(
-        api_version: ApplicationSerializer::API_VERSION,
-        created_at: object.created_at.utc.iso8601,
-        updated_at: object.updated_at.utc.iso8601
+        "created_at" => nil,
+        "updated_at" => nil
       )
+    end
+
+    def created_at
+      format_time(super)
+    end
+
+    def updated_at
+      format_time(super)
+    end
+
+    private
+
+    def format_time(value)
+      return if value.blank?
+
+      value.utc.iso8601
     end
   end
 end

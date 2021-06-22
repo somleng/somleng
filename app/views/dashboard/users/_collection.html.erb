@@ -1,0 +1,43 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Name
+      </th>
+      <th>
+        Email
+      </th>
+      <th>
+        Role
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |user| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(user.name, polymorphic_path([:dashboard, user])) %>
+        </td>
+
+        <td>
+          <%= user.email %>
+          <% unless user.accepted_or_not_invited? %>
+            <span class="badge badge-info">Invited</span>
+          <% end %>
+        </td>
+
+        <td>
+          <%= user.carrier_role.humanize %>
+        </td>
+
+        <td>
+          <%= local_time(user.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

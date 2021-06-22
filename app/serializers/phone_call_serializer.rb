@@ -1,57 +1,70 @@
 class PhoneCallSerializer < ResourceSerializer
-  TWILIO_CALL_STATUS_MAPPINGS = {
-    "queued" => "queued",
-    "initiated" => "queued",
-    "ringing" => "ringing",
-    "answered" => "in-progress",
-    "busy" => "busy",
-    "failed" => "failed",
-    "not_answered" => "no-answer",
-    "completed" => "completed",
-    "canceled" => "canceled"
-  }.freeze
-
-  TWILIO_CALL_DIRECTIONS = {
-    "inbound" => "inbound",
-    "outbound" => "outbound-api"
-  }
-
-  NullCallDataRecord = Struct.new(:bill_sec, :start_time, :end_time)
-
-  def serializable_hash(*)
+  def attributes
     super.merge(
       annotation: nil,
       answered_by: nil,
       caller_name: nil,
-      direction: TWILIO_CALL_DIRECTIONS.fetch(object.direction),
-      duration: call_data_record.bill_sec.to_s.presence,
-      end_time: format_time(call_data_record.end_time),
+      direction: nil,
+      duration: nil,
+      end_time: nil,
       forwarded_from: nil,
-      from: format_number(object.from, spaces: ""),
-      from_formatted: format_number(object.from, format: :international),
+      from: nil,
+      from_formatted: nil,
       group_sid: nil,
       parent_call_sid: nil,
-      phone_number_sid: object.incoming_phone_number_id,
+      phone_number_sid: nil,
       price: nil,
       price_unit: nil,
-      start_time: format_time(call_data_record.start_time),
-      status: TWILIO_CALL_STATUS_MAPPINGS.fetch(object.status),
-      subresource_uris: {},
-      to: format_number(object.to, spaces: ""),
-      to_formatted: format_number(object.to, format: :international),
-      uri: url_helpers.account_phone_call_url(object.account, object, format: :json)
+      start_time: nil,
+      status: nil,
+      subresource_uris: nil,
+      to: nil,
+      to_formatted: nil,
+      uri: nil
     )
   end
 
-  private
+  def annotation; end
 
-  def format_number(value, options = {})
-    return value unless Phony.plausible?(value)
+  def answered_by; end
 
-    Phony.format(value, options)
+  def caller_name; end
+
+  def end_time
+    format_time(call_data_record.end_time)
   end
 
-  def call_data_record
-    object.call_data_record || NullCallDataRecord.new
+  def forwarded_from; end
+
+  def from
+    format_number(super, spaces: "")
+  end
+
+  def group_sid; end
+
+  def parent_call_sid; end
+
+  def phone_number_sid
+    phone_number_id
+  end
+
+  def price; end
+
+  def price_unit; end
+
+  def start_time
+    format_time(call_data_record.start_time)
+  end
+
+  def subresource_uris
+    {}
+  end
+
+  def to
+    format_number(super, spaces: "")
+  end
+
+  def uri
+    url_helpers.account_phone_call_url(account, __getobj__, format: :json)
   end
 end

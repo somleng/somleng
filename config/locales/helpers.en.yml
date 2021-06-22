@@ -1,0 +1,7 @@
+en:
+  helpers:
+    submit:
+      account_settings:
+        update: "Update Account Settings"
+      carrier_settings:
+        update: "Update Carrier Settings"

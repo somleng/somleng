@@ -1,3 +1,4 @@
 require "webmock/rspec"
 
-WebMock.disable_net_connect!
+webdriver_hosts = Webdrivers::Common.subclasses.map { |driver| URI(driver.base_url).host }
+WebMock.disable_net_connect!(allow_localhost: true, allow: [*webdriver_hosts])

@@ -1,0 +1,36 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Name
+      </th>
+      <th>
+        Dial string
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |outbound_sip_trunk| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+
+        <td>
+          <%= link_to(outbound_sip_trunk.name, polymorphic_path([:dashboard, outbound_sip_trunk])) %>
+        </td>
+
+        <td>
+          <code>
+            <%= outbound_sip_trunk.example_dial_string %>
+          </code>
+        </td>
+
+        <td>
+          <%= local_time(outbound_sip_trunk.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

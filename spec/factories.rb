@@ -25,6 +25,13 @@ FactoryBot.define do
       )
     end
 
+    file do
+      ActiveStorage::Blob.create_and_upload!(
+        io: File.open("#{RSpec.configuration.file_fixture_path}/freeswitch_cdr.json"),
+        filename: external_id
+      )
+    end
+
     trait :inbound do
       direction { "inbound" }
     end
@@ -65,18 +72,26 @@ FactoryBot.define do
 
   factory :carrier do
     name { "Somleng" }
+    country_code { "KH" }
   end
 
   factory :outbound_sip_trunk do
     carrier
     name { "My SIP trunk" }
-    host { "host.docker.internal:5061" }
+    host { "sip.example.com" }
+  end
+
+  factory :inbound_sip_trunk do
+    carrier
+    name { "My SIP trunk" }
+    source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
   end
 
   factory :account do
+    name { "Rocket Rides" }
     enabled
     with_access_token
-    carrier
+    association :carrier
     traits_for_enum :status, %w[enabled disabled]
 
     trait :with_access_token do
@@ -90,15 +105,73 @@ FactoryBot.define do
     end
   end
 
-  factory :incoming_phone_number do
-    account
-    phone_number { generate(:phone_number) }
-    voice_method { "POST" }
-    voice_url { "https://rapidpro.ngrok.com/handle/33/" }
+  factory :user do
+    sequence(:email) { |n| "user#{n}@example.com" }
+    name { "John Doe" }
+    password { "super secret password" }
+    otp_required_for_login { true }
+    confirmed
 
-    trait :with_twilio_request_phone_number do
-      twilio_request_phone_number { "123456789" }
+    traits_for_enum :carrier_role, %i[owner admin member]
+
+    trait :carrier do
+      carrier
+      admin
     end
+
+    trait :invited do
+      invitation_sent_at { Time.current }
+      invitation_token { SecureRandom.urlsafe_base64 }
+    end
+
+    trait :invitation_accepted do
+      invited
+      invitation_accepted_at { Time.current }
+    end
+
+    trait :confirmed do
+      confirmed_at { Time.current }
+    end
+
+    trait :otp_required_for_login do
+      otp_required_for_login { true }
+    end
+
+    trait :with_account_membership do
+      transient do
+        account_role { :owner }
+        account { build(:account) }
+      end
+
+      after(:build) do |user, evaluator|
+        account_membership = build(
+          :account_membership,
+          user: user,
+          account: evaluator.account,
+          role: evaluator.account_role
+        )
+        user.account_memberships << account_membership
+        user.current_account_membership = account_membership
+      end
+    end
+  end
+
+  factory :account_membership do
+    user
+    account
+    admin
+
+    traits_for_enum :role, %i[owner admin member]
+  end
+
+  factory :phone_number do
+    carrier
+
+    trait :assigned_to_account do
+      account
+    end
+
+    number { generate(:phone_number) }
   end
 
   factory :phone_call do
@@ -121,6 +194,22 @@ FactoryBot.define do
 
     traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
     traits_for_enum :direction, %i[inbound outbound]
+  end
+
+  factory :user_context do
+    user
+    association :current_organization, factory: :organization
+    association :current_account_membership, factory: :account_membership
+
+    initialize_with { new(user, current_organization, current_account_membership) }
+  end
+
+  factory :organization, class: "UserAuthorization::Organization" do
+    transient do
+      organization { build(:account) }
+    end
+
+    initialize_with { new(organization) }
   end
 
   factory :access_token, class: "Doorkeeper::AccessToken"

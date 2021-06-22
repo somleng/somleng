@@ -3,8 +3,9 @@ require_relative "boot"
 require "active_model/railtie"
 require "active_job/railtie"
 require "active_record/railtie"
-require "action_controller/railtie"
 require "active_storage/engine"
+require "action_controller/railtie"
+require "action_view/railtie"
 require "action_mailer/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -13,6 +14,9 @@ Bundler.require(*Rails.groups)
 
 module Twilreapi
   class Application < Rails::Application
+    # Use the responders controller from the responders gem
+    config.app_generators.scaffold_controller :responders_controller
+
     config.load_defaults 6.1
 
     config.active_support.escape_html_entities_in_json = false

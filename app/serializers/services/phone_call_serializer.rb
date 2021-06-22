@@ -1,18 +1,22 @@
 module Services
   class PhoneCallSerializer < ResourceSerializer
-    def serializable_hash(_options = nil)
+    def attributes
       super.merge(
-        voice_url: object.voice_url,
-        voice_method: object.voice_method,
-        status_callback_url: object.status_callback_url,
-        status_callback_method: object.status_callback_method,
-        to: object.to,
-        from: object.from,
-        sid: object.id,
-        account_sid: object.account.id,
-        account_auth_token: object.account.auth_token,
-        direction: object.direction
+        "voice_url" => nil,
+        "voice_method" => nil,
+        "status_callback_url" => nil,
+        "status_callback_method" => nil,
+        "to" => nil,
+        "from" => nil,
+        "sid" => nil,
+        "account_sid" => nil,
+        "account_auth_token" => nil,
+        "direction" => nil
       )
+    end
+
+    def account_auth_token
+      __getobj__.account.auth_token
     end
   end
 end

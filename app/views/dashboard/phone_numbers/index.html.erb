@@ -1,0 +1,24 @@
+<%= page_title(title: "Phone Numbers") do %>
+  <%= render("shared/filters") do |form| %>
+    <% if policy(:account).show? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.accounts.map { |account| [account.name, account.id] },
+          { filter_value: params.dig(:filter, :account_id) }
+        )
+      %>
+    <% end %>
+
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+  <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>
+  <% if policy(:phone_number).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_phone_number_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

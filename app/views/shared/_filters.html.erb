@@ -1,0 +1,17 @@
+<div class="dropdown d-inline" id="filters" data-controller="filters">
+  <button class="btn btn-secondary" data-toggle="dropdown">
+    <i class="fas fa-filter"></i> Filter <span class="badge badge-light" data-filters-target="badge">0</span>
+  </button>
+  <div class="dropdown-menu pb-0">
+    <%= form_with url: url_for(action: :index), scope: :filter, method: :get, local: true, builder: FilterFormBuilder do |form| %>
+      <div class="px-2 clearfix">
+        <%= link_to "Clear", url_for(action: :index), class: "btn btn-secondary float-left" %>
+        <%= form.submit "Done", name: nil, class: "btn btn-primary float-right" %>
+      </div>
+
+      <div class="dropdown-divider mb-0"></div>
+
+      <%= yield form %>
+    <% end %>
+  </div>
+</div>

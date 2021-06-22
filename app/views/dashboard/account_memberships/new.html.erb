@@ -1,0 +1,11 @@
+<%= page_title(title: "Invite User") %>
+
+<div class="card-body">
+  <%=
+    render(
+      "form",
+      resource: @resource,
+      button_text: "Send an Invitation"
+    )
+  %>
+</div>
