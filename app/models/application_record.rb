@@ -3,6 +3,7 @@ class ApplicationRecord < ActiveRecord::Base
   self.implicit_order_column = :sequence_number
 
   include SerializableResource
+  include DecoratableResource
 
   scope :latest_first, -> { order(sequence_number: :desc) }
 

@@ -4,7 +4,7 @@ RSpec.describe "Phone Calls" do
   it "List and filter phone calls" do
     carrier = create(:carrier)
     account = create(:account, carrier: carrier)
-    phone_call = create(:phone_call, account: account, created_at: Time.utc(2021, 12, 1))
+    phone_call = create(:phone_call, :outbound, account: account, created_at: Time.utc(2021, 12, 1))
     filtered_phone_call = create(:phone_call, account: account, created_at: Time.utc(2021, 10, 10))
     user = create(:user, :carrier, carrier: carrier)
 
@@ -24,6 +24,11 @@ RSpec.describe "Phone Calls" do
       expect(page).to have_content("Your export is being processed")
       click_link("Exports")
     end
+
+    click_link("phone_calls_")
+    expect(page).to have_content(phone_call.id)
+    expect(page).to have_content("outbound-api")
+    expect(page).not_to have_content(filtered_phone_call.id)
   end
 
   it "Shows a phone call" do

@@ -19,7 +19,8 @@ class ExportCSV < ApplicationWorkflow
       csv << attribute_names
 
       records.find_each do |record|
-        csv << serializer_class.new(record).as_csv
+        serializable_record = decorator_class.present? ? decorator_class.new(record) : record
+        csv << serializer_class.new(serializable_record).as_csv
       end
     end
   end
@@ -46,6 +47,10 @@ class ExportCSV < ApplicationWorkflow
 
   def serializer_class
     @serializer_class ||= resource_class.csv_serializer_class
+  end
+
+  def decorator_class
+    @decorator_class ||= resource_class.decorator_class
   end
 
   def resource_class

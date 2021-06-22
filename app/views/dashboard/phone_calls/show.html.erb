@@ -19,8 +19,8 @@
       <%= f.attribute :phone_number %>
     <% end %>
 
-    <%= f.attribute :to, value: phone_call.to_formatted %>
     <%= f.attribute :from, value: phone_call.from_formatted %>
+    <%= f.attribute :to, value: phone_call.to_formatted %>
     <%= f.attribute :status, value: phone_call.status.humanize %>
     <%= f.attribute :direction, value: phone_call.direction.humanize %>
     <%= f.attribute :duration, value: pluralize(phone_call.duration, "seconds") %>
