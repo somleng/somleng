@@ -19,6 +19,7 @@ gem "doorkeeper"
 gem "dry-validation"
 gem "enumerize"
 gem "kaminari"
+gem "http"
 gem "lograge"
 gem "okcomputer"
 gem "pg"
@@ -64,5 +65,6 @@ group :test do
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
   gem "webdrivers"
+  gem "twilio-ruby"
   gem "webmock"
 end

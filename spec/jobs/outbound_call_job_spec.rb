@@ -36,6 +36,14 @@ RSpec.describe OutboundCallJob do
     )
   end
 
+  it "handles already canceled calls" do
+    phone_call = create(:phone_call, :outbound, :routable, :canceled, external_id: nil)
+
+    OutboundCallJob.perform_now(phone_call)
+
+    expect(WebMock).not_to have_requested(:post, "https://ahn.somleng.org/calls")
+  end
+
   it "handles unknown gateways" do
     phone_call = create(
       :phone_call,

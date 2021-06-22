@@ -15,9 +15,7 @@ module TwilioAPI
         with: UpdatePhoneCallRequestSchema,
         schema_options: { phone_call: phone_call }, status: :ok
       ) do |permitted_params|
-        if PhoneCallStatusEvent.new(phone_call).may_transition_to?(permitted_params[:status])
-          EndCallJob.perform_later(phone_call)
-        end
+        end_call(phone_call, permitted_params)
         phone_call
       end
     end
@@ -31,6 +29,12 @@ module TwilioAPI
 
     def phone_calls_scope
       current_account.phone_calls
+    end
+
+    def end_call(phone_call, params)
+      return unless PhoneCallStatusEvent.new(phone_call).may_transition_to?(params[:status])
+
+      phone_call.queued? ? phone_call.cancel! : EndCallJob.perform_later(phone_call)
     end
   end
 end
