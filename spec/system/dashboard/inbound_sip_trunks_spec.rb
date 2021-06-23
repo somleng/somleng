@@ -25,9 +25,7 @@ RSpec.describe "Inbound SIP Trunks" do
     fill_in("Name", with: "Main SIP Trunk")
     fill_in("Source IP", with: "175.100.7.240")
 
-    perform_enqueued_jobs do
-      click_button "Create Inbound SIP trunk"
-    end
+    click_button "Create Inbound SIP trunk"
 
     expect(page).to have_content("Inbound SIP trunk was successfully created")
     expect(page).to have_content("175.100.7.240")
@@ -61,9 +59,7 @@ RSpec.describe "Inbound SIP Trunks" do
     fill_in("Source IP", with: "96.9.66.131")
     fill_in("Trunk prefix replacement", with: "855")
 
-    perform_enqueued_jobs do
-      click_button "Update Inbound SIP trunk"
-    end
+    click_button "Update Inbound SIP trunk"
 
     expect(page).to have_content("Inbound SIP trunk was successfully updated")
     expect(page).to have_content("Main Trunk")
@@ -79,9 +75,7 @@ RSpec.describe "Inbound SIP Trunks" do
     sign_in(user)
     visit dashboard_inbound_sip_trunk_path(inbound_sip_trunk)
 
-    perform_enqueued_jobs do
-      click_link("Delete")
-    end
+    click_link("Delete")
 
     expect(page).to have_content("Inbound SIP trunk was successfully destroyed")
     expect(page).not_to have_content("My SIP Trunk")

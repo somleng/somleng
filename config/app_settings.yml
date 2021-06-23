@@ -11,7 +11,6 @@ default: &default
   ahn_username: "adhearsion"
   ahn_password: "password"
   otp_secret_encryption_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  inbound_sip_trunks_security_group_id: <%= ENV.fetch("INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID", "inbound-sip-trunks-security-group-id") %>
 
 production: &production
   <<: *default
@@ -21,6 +20,7 @@ production: &production
   ahn_host: "https://ahn.somleng.org"
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
   otp_secret_encryption_key: "<%= Rails.application.credentials.otp_secret_encryption_key %>"
+  inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
 
 development: &development
   <<: *default
