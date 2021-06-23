@@ -23,5 +23,7 @@ class RevokeSecurityGroupIP < ApplicationWorkflow
         }
       ]
     )
+  rescue Aws::EC2::Errors::InvalidPermissionNotFound => e
+    Rails.logger.warn("#{e.message} - IP: #{ip}")
   end
 end
