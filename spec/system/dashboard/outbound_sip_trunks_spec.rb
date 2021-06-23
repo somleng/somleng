@@ -56,7 +56,7 @@ RSpec.describe "Outbound SIP Trunks" do
 
     expect(page).to have_content("Outbound SIP trunk was successfully updated")
     expect(page).to have_content("Main Trunk")
-    expect(page).to have_content("855XXXXXXXX@96.9.66.131")
+    expect(page).to have_content("XXXXXXXXXXX@96.9.66.131")
   end
 
   it "Delete an outbound SIP Trunk" do
