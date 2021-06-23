@@ -17,7 +17,7 @@ RSpec.describe AuthorizeSecurityGroupIP do
         operation_name: :authorize_security_group_ingress,
         security_group_id: "security-group-id",
         ip_ranges: {
-          cidr_ip: "175.100.7.240",
+          cidr_ip: "175.100.7.240/32",
           description: "Security Group Rule"
         }
       )

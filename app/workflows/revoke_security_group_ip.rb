@@ -17,7 +17,7 @@ class RevokeSecurityGroupIP < ApplicationWorkflow
           to_port: 5060,
           ip_ranges: [
             {
-              cidr_ip: ip
+              cidr_ip: "#{ip}/32"
             }
           ]
         }
