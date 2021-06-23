@@ -90,6 +90,9 @@ GEM
     aws-sdk-dynamodb (1.60.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-ec2 (1.244.0)
+      aws-sdk-core (~> 3, >= 3.112.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.44.0)
       aws-sdk-core (~> 3, >= 3.112.0)
       aws-sigv4 (~> 1.1)
@@ -491,6 +494,7 @@ PLATFORMS
 DEPENDENCIES
   aasm
   after_commit_everywhere
+  aws-sdk-ec2
   aws-sdk-rails
   aws-sdk-s3
   aws-sdk-sqs

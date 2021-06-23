@@ -19,4 +19,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "SIP"
   inflect.acronym "CSV"
   inflect.acronym "OTP"
+  inflect.acronym "IP"
 end
