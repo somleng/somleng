@@ -30,3 +30,13 @@ data "terraform_remote_state" "core_infrastructure" {
     region = var.aws_region
   }
 }
+
+data "terraform_remote_state" "freeswitch" {
+  backend = "s3"
+
+  config = {
+    bucket = "infrastructure.somleng.org"
+    key    = "somleng_freeswitch.tfstate"
+    region = var.aws_region
+  }
+}

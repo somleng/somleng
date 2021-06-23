@@ -30,6 +30,7 @@ data "template_file" "appserver_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
+    inbound_sip_trunks_security_group_id = var.inbound_sip_trunks_security_group.id
   }
 }
 
@@ -109,6 +110,7 @@ data "template_file" "worker_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
+    inbound_sip_trunks_security_group_id = var.inbound_sip_trunks_security_group.id
   }
 }
 

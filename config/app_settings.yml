@@ -19,7 +19,8 @@ production: &production
   services_password: "<%= Rails.application.credentials.services_password %>"
   ahn_host: "https://ahn.somleng.org"
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
-  otp_secret_encryption_key: <%= Rails.application.credentials.otp_secret_encryption_key %>
+  otp_secret_encryption_key: "<%= Rails.application.credentials.otp_secret_encryption_key %>"
+  inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
 
 development: &development
   <<: *default

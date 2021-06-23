@@ -75,6 +75,16 @@ resource "aws_iam_policy" "ecs_task_policy" {
       "Effect": "Allow",
       "Action":"ses:SendRawEmail",
       "Resource":"*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "${var.inbound_sip_trunks_security_group.arn}"
+      ]
     }
   ]
 }
