@@ -6,7 +6,7 @@ resource "aws_security_group" "appserver" {
 resource "aws_security_group" "inbound_sip_trunks" {
   name   = "${var.app_identifier}-inbound-sip-trunks"
   vpc_id = var.vpc_id
-  description = "${var.app_identifier}-inbound-sip-trunks"
+  description = "${var.app_identifier} Inbound SIP Trunks"
 }
 
 resource "aws_security_group_rule" "appserver_ingress" {
