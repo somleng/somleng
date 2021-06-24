@@ -4,6 +4,7 @@ class ApplicationSeeder
   def seed!
     carrier = create_carrier
     create_outbound_sip_trunk(carrier: carrier)
+    create_inbound_sip_trunk(carrier: carrier)
     account = create_account(carrier: carrier)
     phone_number = create_phone_number(carrier: carrier, account: account)
     carrier_owner = create_carrier_owner(carrier: carrier)
@@ -42,6 +43,15 @@ class ApplicationSeeder
       params.reverse_merge(
         name: "My SIP Trunk",
         host: "host.docker.internal:5061"
+      )
+    )
+  end
+
+  def create_inbound_sip_trunk(params)
+    InboundSIPTrunk.first_or_create!(
+      params.reverse_merge(
+        name: "My SIP Trunk",
+        source_ip: "172.18.0.1"
       )
     )
   end
