@@ -12,7 +12,6 @@ variable "codedeploy_role" {}
 variable "uploads_bucket" {}
 variable "load_balancer_arn" {}
 variable "listener_arn" {}
-variable "inbound_sip_trunks_security_group" {}
 
 variable "webserver_container_name" {
   default = "nginx"

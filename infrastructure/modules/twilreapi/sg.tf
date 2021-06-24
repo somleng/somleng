@@ -3,6 +3,12 @@ resource "aws_security_group" "appserver" {
   vpc_id = var.vpc_id
 }
 
+resource "aws_security_group" "inbound_sip_trunks" {
+  name   = "${var.app_identifier}-inbound-sip-trunks"
+  vpc_id = var.vpc_id
+  description = "${var.app_identifier}-inbound-sip-trunks"
+}
+
 resource "aws_security_group_rule" "appserver_ingress" {
   type              = "ingress"
   to_port           = 80

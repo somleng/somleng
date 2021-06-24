@@ -21,6 +21,5 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db.this_rds_cluster_endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db.this_rds_cluster_port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
-  inbound_sip_trunks_security_group = data.terraform_remote_state.freeswitch.outputs.inbound_sip_trunks_security_group
   ecs_worker_autoscale_min_instances = 1
 }
