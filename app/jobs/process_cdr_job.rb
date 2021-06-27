@@ -1,10 +1,22 @@
 class ProcessCDRJob < ApplicationJob
   def perform(cdr)
+    call_data_record = create_call_data_record(cdr)
+    if call_data_record.call_leg.A?
+      update_phone_call_status(call_data_record.phone_call)
+      notify_status_callback_url(call_data_record.phone_call)
+    end
+  end
+
+  private
+
+  def create_call_data_record(cdr)
     cdr_variables = cdr.fetch("variables")
-    phone_call = PhoneCall.find_by!(external_id: cdr_variables.fetch("uuid"))
+    phone_call_id = call_leg_A?(cdr) ? cdr_variables.fetch("uuid") : cdr_variables.fetch("bridge_uuid")
+    phone_call = PhoneCall.find_by!(external_id: phone_call_id)
 
     CallDataRecord.create!(
       phone_call: phone_call,
+      call_leg: call_leg_A?(cdr) ? "A" : "B",
       hangup_cause: cdr_variables.fetch("hangup_cause"),
       direction: cdr_variables.fetch("direction"),
       duration_sec: cdr_variables.fetch("duration"),
@@ -23,12 +35,13 @@ class ProcessCDRJob < ApplicationJob
         content_type: "application/json"
       }
     )
-
-    update_phone_call_status(phone_call)
-    notify_status_callback_url(phone_call)
   end
 
-  private
+  def call_leg_A?(cdr)
+    return true if cdr.fetch("callflow").one?
+
+    cdr.fetch("callflow").any? { |callflow| callflow.dig("caller_profile", "originator").present? }
+  end
 
   def update_phone_call_status(phone_call)
     UpdatePhoneCallStatus.call(
