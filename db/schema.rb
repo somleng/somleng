@@ -95,8 +95,7 @@ ActiveRecord::Schema.define(version: 2021_06_27_155647) do
     t.string "sip_invite_failure_status"
     t.string "sip_invite_failure_phrase"
     t.bigserial "sequence_number", null: false
-    t.string "call_leg", default: "A", null: false
-    t.index ["call_leg"], name: "index_call_data_records_on_call_leg", where: "((call_leg)::text = 'A'::text)"
+    t.string "call_leg", null: false
     t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id"
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
   end

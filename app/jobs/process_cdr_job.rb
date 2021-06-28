@@ -11,12 +11,12 @@ class ProcessCDRJob < ApplicationJob
 
   def create_call_data_record(cdr)
     cdr_variables = cdr.fetch("variables")
-    phone_call_id = call_leg_A?(cdr) ? cdr_variables.fetch("uuid") : cdr_variables.fetch("bridge_uuid")
+    phone_call_id = call_leg_B?(cdr) ? cdr_variables.fetch("bridge_uuid") : cdr_variables.fetch("uuid")
     phone_call = PhoneCall.find_by!(external_id: phone_call_id)
 
     CallDataRecord.create!(
       phone_call: phone_call,
-      call_leg: call_leg_A?(cdr) ? "A" : "B",
+      call_leg: call_leg_B?(cdr) ? "B" : "A",
       hangup_cause: cdr_variables.fetch("hangup_cause"),
       direction: cdr_variables.fetch("direction"),
       duration_sec: cdr_variables.fetch("duration"),
@@ -37,10 +37,8 @@ class ProcessCDRJob < ApplicationJob
     )
   end
 
-  def call_leg_A?(cdr)
-    return true if cdr.fetch("callflow").one?
-
-    cdr.fetch("callflow").any? { |callflow| callflow.dig("caller_profile", "originator").present? }
+  def call_leg_B?(cdr)
+    cdr.fetch("callflow").any? { |callflow| callflow.dig("caller_profile", "originatee").present? }
   end
 
   def update_phone_call_status(phone_call)
