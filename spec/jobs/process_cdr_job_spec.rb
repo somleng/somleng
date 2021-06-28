@@ -23,7 +23,43 @@ RSpec.describe ProcessCDRJob do
       answer_time: nil,
       sip_term_status: "487"
     )
+    expect(phone_call.call_data_record.call_leg.A?).to eq(true)
     expect(phone_call.call_data_record.file.attached?).to eq(true)
     expect(StatusCallbackNotifierJob).to have_been_enqueued.with(phone_call)
+  end
+
+  it "creates a call data record for call leg A with joined by call leg B" do
+    raw_freeswitch_cdr = file_fixture("freeswitch_cdr_leg_a_with_joined_by_leg_b.json").read
+    freeswitch_cdr = JSON.parse(raw_freeswitch_cdr)
+
+    phone_call = create(
+      :phone_call, :initiated, :with_status_callback_url,
+      external_id: freeswitch_cdr.dig("variables", "uuid")
+    )
+
+    ProcessCDRJob.new.perform(freeswitch_cdr)
+
+    expect(phone_call.call_data_record.call_leg.A?).to eq(true)
+    expect(StatusCallbackNotifierJob).to have_been_enqueued.with(phone_call)
+  end
+
+  it "creates a call data record for call leg B" do
+    raw_freeswitch_cdr_call_leg_a = file_fixture("freeswitch_cdr_leg_a_with_joined_by_leg_b.json").read
+    freeswitch_cdr_call_leg_a = JSON.parse(raw_freeswitch_cdr_call_leg_a)
+
+    raw_freeswitch_cdr_call_leg_b = file_fixture("freeswitch_cdr_leg_b.json").read
+    freeswitch_cdr_call_leg_b = JSON.parse(raw_freeswitch_cdr_call_leg_b)
+
+    phone_call = create(
+      :phone_call, :initiated, :with_status_callback_url,
+      external_id: freeswitch_cdr_call_leg_a.dig("variables", "uuid")
+    )
+    call_data_record_call_leg_a = create(:call_data_record, call_leg: "A", phone_call: phone_call)
+
+    ProcessCDRJob.new.perform(freeswitch_cdr_call_leg_b)
+
+    expect(phone_call.call_data_record).to eq(call_data_record_call_leg_a)
+    expect(CallDataRecord.where(phone_call: phone_call).last.call_leg.B?).to eq(true)
+    expect(StatusCallbackNotifierJob).not_to have_been_enqueued.with(phone_call)
   end
 end
