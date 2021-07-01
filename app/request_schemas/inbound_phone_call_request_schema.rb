@@ -64,8 +64,4 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
 
     result.sub(/\A(?:0)?/, "").prepend(trunk_prefix_replacement)
   end
-
-  def url_helpers
-    @url_helpers ||= Rails.application.routes.url_helpers
-  end
 end
