@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say>The voice URL is not configured for this number. Please configure your voice URL to point to a valid TwiML document.</Say>
-</Response>
