@@ -9,19 +9,30 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
 
   rule(:source_ip) do |context:|
     context[:inbound_sip_trunk] = InboundSIPTrunk.find_by(source_ip: value)
-    key("source_ip").failure("does not exist") if context[:inbound_sip_trunk].blank?
+    base.failure("Inbound SIP trunk does not exist for #{value}") if context[:inbound_sip_trunk].blank?
   end
 
   rule(:to) do |context:|
     if context[:inbound_sip_trunk].present?
-      context[:phone_number] = context[:inbound_sip_trunk].carrier.phone_numbers.where.not(account_id: nil).find_by(number: value)
-      key("to").failure("does not exist") if context[:phone_number].blank?
+      context[:phone_number] = context[:inbound_sip_trunk].carrier.phone_numbers.find_by(number: value)
+      if context[:phone_number].present?
+        base.failure("Account is unassigned") if context[:phone_number].account.blank?
+      else
+        base.failure("Phone number does not exist")
+      end
+    end
+  end
+
+  rule do |context:|
+    if context[:phone_number].present?
+      base.failure("Voice URL is not configured") if context[:phone_number].voice_url.blank?
     end
   end
 
   def output
-    params = super
+    return {} if context[:inbound_sip_trunk].blank?
 
+    params = super
     result = {}
     result[:to] = params.fetch(:to)
     result[:external_id] = params.fetch(:external_id)
@@ -32,7 +43,7 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
     result[:direction] = :inbound
     result[:account] = result[:phone_number].account
     result[:voice_url] = result[:phone_number].voice_url
-    result[:voice_method] = result[:phone_number].voice_method
+    result[:voice_method] = result[:phone_number].voice_method || "POST"
     result[:status_callback_url] = result[:phone_number].status_callback_url
     result[:status_callback_method] = result[:phone_number].status_callback_method
     result[:from] = normalize_from(
@@ -52,5 +63,9 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
     return result if result.starts_with?(trunk_prefix_replacement)
 
     result.sub(/\A(?:0)?/, "").prepend(trunk_prefix_replacement)
+  end
+
+  def url_helpers
+    @url_helpers ||= Rails.application.routes.url_helpers
   end
 end

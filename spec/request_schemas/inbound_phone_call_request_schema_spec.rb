@@ -1,39 +1,40 @@
 require "rails_helper"
 
 RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
-  it "validates source_ip" do
+  it "validates the inbound SIP trunk exists" do
     _inbound_sip_trunk = create(:inbound_sip_trunk, source_ip: "175.100.7.240")
 
     expect(
       validate_request_schema(input_params: { source_ip: "175.100.7.240" })
-    ).to have_valid_field(:source_ip)
+    ).to have_valid_schema
 
     expect(
       validate_request_schema(input_params: { source_ip: "175.100.7.241" })
-    ).not_to have_valid_field(:source_ip)
+    ).not_to have_valid_schema(error_message: "Inbound SIP trunk does not exist for 175.100.7.241")
   end
 
-  it "validates to" do
+  it "validates the inbound phone number is valid" do
     carrier = create(:carrier)
     _inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
-    _unassigned_phone_number = create(:phone_number, number: "855716100235", carrier: carrier)
-    _phone_number_assigned_to_account = create(:phone_number, :assigned_to_account, number: "855716100236", carrier: carrier)
-
-    expect(
-      validate_request_schema(input_params: { to: "855716100236", source_ip: "175.100.7.240" })
-    ).to have_valid_field(:to)
+    _assigned_phone_number = create(:phone_number, :assigned_to_account, number: "855716100235", carrier: carrier)
+    _unassigned_phone_number = create(:phone_number, number: "855716100236", carrier: carrier)
+    _unconfigured_phone_number = create(:phone_number, :assigned_to_account, number: "855716100237", carrier: carrier, voice_url: nil)
 
     expect(
       validate_request_schema(input_params: { to: "855716100235", source_ip: "175.100.7.240" })
-    ).not_to have_valid_field(:to)
+    ).to have_valid_schema
 
     expect(
-      validate_request_schema(input_params: { to: "85516701721", source_ip: "175.100.7.240" })
-    ).not_to have_valid_field(:to)
+      validate_request_schema(input_params: { to: "855716100236", source_ip: "175.100.7.240" })
+    ).not_to have_valid_schema(error_message: "Account is unassigned")
 
     expect(
-      validate_request_schema(input_params: { to: "855719999999", source_ip: "175.100.7.240" })
-    ).not_to have_valid_field(:to)
+      validate_request_schema(input_params: { to: "855716100237", source_ip: "175.100.7.240" })
+    ).not_to have_valid_schema(error_message: "Voice URL is not configured")
+
+    expect(
+      validate_request_schema(input_params: { to: "855716100238", source_ip: "175.100.7.240" })
+    ).not_to have_valid_schema(error_message: "Phone number does not exist")
   end
 
   it "normalizes the output" do

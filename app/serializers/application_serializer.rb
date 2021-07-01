@@ -3,6 +3,13 @@ class ApplicationSerializer < SimpleDelegator
 
   API_VERSION = "2010-04-01".freeze
 
+  attr_reader :options
+
+  def initialize(resource, options = {})
+    super(resource)
+    @options = options
+  end
+
   def attributes
     {
       "api_version" => nil

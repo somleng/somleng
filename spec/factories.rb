@@ -168,7 +168,7 @@ FactoryBot.define do
     carrier
 
     trait :assigned_to_account do
-      account
+      account { association :account, carrier: carrier }
     end
 
     number { generate(:phone_number) }

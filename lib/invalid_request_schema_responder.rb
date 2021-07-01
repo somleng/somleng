@@ -8,7 +8,7 @@ class InvalidRequestSchemaResponder < ApplicationResponder
   end
 
   def json_resource_errors
-    errors = APIRequestErrorsSerializer.new(resource).as_json
+    errors = APIRequestErrorsSerializer.new(resource, options.slice(:log)).as_json
 
     Rails.logger.info(errors)
 

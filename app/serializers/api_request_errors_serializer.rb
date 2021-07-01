@@ -21,6 +21,10 @@ class APIRequestErrorsSerializer < ApplicationSerializer
   end
 
   def more_info
-    "https://www.twilio.com/docs/errors/20422"
+    if options[:log].present?
+      url_helpers.dashboard_log_url(options.fetch(:log))
+    else
+      "https://www.twilio.com/docs/errors/20422"
+    end
   end
 end
