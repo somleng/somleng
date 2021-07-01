@@ -14,6 +14,8 @@ FactoryBot.define do
   end
 
   factory :call_data_record do
+    call_leg { "A" }
+
     transient do
       account { build(:account) }
       external_id { SecureRandom.uuid }

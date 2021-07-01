@@ -10,7 +10,7 @@ class PhoneCall < ApplicationRecord
   belongs_to :phone_number, optional: true
   belongs_to :inbound_sip_trunk, optional: true
 
-  has_one    :call_data_record
+  has_one    :call_data_record, -> { where(call_leg: :A) }
   has_many   :phone_call_events
 
   delegate :carrier, to: :account
