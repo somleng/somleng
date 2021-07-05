@@ -7,8 +7,8 @@ module "twilreapi" {
   app_environment = "production"
   app_image = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image = data.terraform_remote_state.core.outputs.nginx_ecr_repository
-  memory = 512
-  cpu = 256
+  memory = 1024
+  cpu = 512
   aws_region = var.aws_region
   load_balancer_arn = data.terraform_remote_state.core_infrastructure.outputs.application_load_balancer.arn
   listener_arn = data.terraform_remote_state.core_infrastructure.outputs.https_listener.arn

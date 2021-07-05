@@ -1,8 +1,8 @@
 {
   "family": "twilreapi-worker",
   "networkMode": "awsvpc",
-  "cpu": "256",
-  "memory": "512",
+  "cpu": "512",
+  "memory": "1024",
   "executionRoleArn": "arn:aws:iam::324279636507:role/twilreapi-ecsTaskExecutionRole",
   "taskRoleArn": "arn:aws:iam::324279636507:role/twilreapi-ecs-task-role",
   "requiresCompatibilities": ["FARGATE"],
