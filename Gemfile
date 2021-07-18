@@ -37,6 +37,7 @@ gem "show_for"
 gem "simple_form"
 gem "skylight"
 gem "turbolinks"
+gem "twilio-ruby"
 gem "tzinfo-data"
 gem "webpacker"
 
@@ -66,7 +67,6 @@ group :test do
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
-  gem "twilio-ruby"
   gem "webdrivers"
   gem "webmock"
 end

@@ -27,14 +27,16 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
     result[:external_id] = params.fetch(:external_id)
     result[:variables] = params.fetch(:variables) if params.key?(:variables)
 
-    result[:phone_number] = context.fetch(:phone_number)
+    phone_number = context.fetch(:phone_number)
+    result[:phone_number] = phone_number
     result[:inbound_sip_trunk] = context.fetch(:inbound_sip_trunk)
     result[:direction] = :inbound
-    result[:account] = result[:phone_number].account
-    result[:voice_url] = result[:phone_number].voice_url
-    result[:voice_method] = result[:phone_number].voice_method
-    result[:status_callback_url] = result[:phone_number].status_callback_url
-    result[:status_callback_method] = result[:phone_number].status_callback_method
+    result[:account] = phone_number.account
+    result[:voice_url] = phone_number.voice_url
+    result[:voice_method] = phone_number.voice_method
+    result[:status_callback_url] = phone_number.status_callback_url
+    result[:status_callback_method] = phone_number.status_callback_method
+    result[:twiml] = route_to_sip_domain(phone_number) if phone_number.sip_domain.present?
     result[:from] = normalize_from(
       params.fetch(:from),
       result[:inbound_sip_trunk].trunk_prefix_replacement
@@ -52,5 +54,13 @@ class InboundPhoneCallRequestSchema < ApplicationRequestSchema
     return result if result.starts_with?(trunk_prefix_replacement)
 
     result.sub(/\A(?:0)?/, "").prepend(trunk_prefix_replacement)
+  end
+
+  def route_to_sip_domain(phone_number)
+    response = Twilio::TwiML::VoiceResponse.new
+    response.dial do |dial|
+      dial.sip("sip:#{phone_number.number}@#{phone_number.sip_domain}")
+    end
+    response.to_xml
   end
 end

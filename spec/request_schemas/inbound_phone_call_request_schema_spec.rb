@@ -87,6 +87,35 @@ RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
     expect(schema.output).to include(from: "855716100230")
   end
 
+  it "normalizes the twiml for routing to a sip domain" do
+    carrier = create(:carrier)
+    inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
+    account = create(:account)
+    phone_number = create(
+      :phone_number,
+      account: account,
+      carrier: carrier,
+      number: "2442",
+      voice_url: nil,
+      voice_method: nil,
+      sip_domain: "example.sip.twilio.com"
+    )
+    schema = validate_request_schema(
+      input_params: {
+        source_ip: "175.100.7.240",
+        to: "2442",
+        from: "855716100230",
+        external_id: "external-id"
+      }
+    )
+
+    expect(schema.output).to include(
+      voice_url: nil,
+      voice_method: nil,
+      twiml: include("sip:2442@example.sip.twilio.com")
+    )
+  end
+
   def validate_request_schema(options)
     InboundPhoneCallRequestSchema.new(options)
   end
