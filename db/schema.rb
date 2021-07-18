@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_27_155647) do
+ActiveRecord::Schema.define(version: 2021_07_18_071256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -209,8 +209,8 @@ ActiveRecord::Schema.define(version: 2021_06_27_155647) do
     t.uuid "account_id", null: false
     t.string "to", null: false
     t.string "from", null: false
-    t.string "voice_url", null: false
-    t.string "voice_method", null: false
+    t.string "voice_url"
+    t.string "voice_method"
     t.string "status", null: false
     t.string "status_callback_url"
     t.string "status_callback_method"
@@ -222,6 +222,7 @@ ActiveRecord::Schema.define(version: 2021_06_27_155647) do
     t.string "direction", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "inbound_sip_trunk_id"
+    t.text "twiml"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
@@ -242,6 +243,7 @@ ActiveRecord::Schema.define(version: 2021_06_27_155647) do
     t.datetime "updated_at", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
+    t.string "sip_domain"
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true

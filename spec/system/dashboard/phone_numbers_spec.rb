@@ -108,9 +108,27 @@ RSpec.describe "Phone Numbers" do
     select("POST", from: "Status callback method")
     click_button("Update Configuration")
 
+    expect(page).to have_content("Phone number configuration was successfully updated")
     expect(page).to have_content("https://www.example.com/voice.xml")
     expect(page).to have_content("https://www.example.com/status_callback.xml")
     expect(page).to have_content("POST")
+  end
+
+  it "Configure a phone number with sip domain as an account admin" do
+    carrier = create(:carrier)
+    account = create(:account, carrier: carrier)
+    user = create(:user, :with_account_membership, account_role: :admin, account: account)
+    phone_number = create(:phone_number, account: account, carrier: carrier)
+
+    sign_in(user)
+    visit dashboard_phone_number_path(phone_number)
+    click_link("Edit")
+
+    fill_in("SIP domain", with: "example.sip.twilio.com")
+    click_button("Update Configuration")
+
+    expect(page).to have_content("Phone number configuration was successfully updated")
+    expect(page).to have_content("example.sip.twilio.com")
   end
 
   it "Handles validations" do
@@ -122,9 +140,9 @@ RSpec.describe "Phone Numbers" do
     sign_in(user)
     visit edit_dashboard_phone_number_configuration_path(phone_number)
 
-    fill_in("Voice URL", with: "")
+    fill_in("Voice URL", with: "ftp://invalid-url.com")
     click_button("Update Configuration")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_content("Voice URL is invalid")
   end
 end

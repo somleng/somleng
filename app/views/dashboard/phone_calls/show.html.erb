@@ -26,6 +26,11 @@
     <%= f.attribute :duration, value: pluralize(phone_call.duration, "seconds") %>
     <%= f.attribute :voice_url %>
     <%= f.attribute :voice_method %>
+    <% if phone_call.twiml.present? %>
+      <%= f.attribute :twiml do %>
+        <pre><code><%= pretty_print_xml(phone_call.twiml) %></code></pre>
+      <% end %>
+    <% end %>
     <%= f.attribute :status_callback_url %>
     <%= f.attribute :status_callback_method %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>

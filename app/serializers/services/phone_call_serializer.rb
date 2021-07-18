@@ -6,6 +6,7 @@ module Services
         "voice_method" => nil,
         "status_callback_url" => nil,
         "status_callback_method" => nil,
+        "twiml" => nil,
         "to" => nil,
         "from" => nil,
         "sid" => nil,

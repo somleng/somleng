@@ -8,7 +8,7 @@
       </div>
 
       <div class="col-sm-6">
-        <%= f.input :voice_method, collection: PhoneNumber.voice_method.values, include_blank: false %>
+        <%= f.input :voice_method, collection: PhoneNumber.voice_method.values, include_blank: true %>
       </div>
     </div>
 
@@ -19,6 +19,12 @@
 
       <div class="col-sm-6">
         <%= f.input :status_callback_method, collection: PhoneNumber.status_callback_method.values, include_blank: true %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :sip_domain, hint: "Use to route the SIP traffic from the incoming calls to this endpoint" %>
       </div>
     </div>
 

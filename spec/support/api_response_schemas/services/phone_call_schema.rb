@@ -1,10 +1,11 @@
 module APIResponseSchema
   module Services
     PhoneCallSchema = Dry::Schema.Params do
-      required(:voice_url).filled(:str?)
-      required(:voice_method).filled(:str?)
+      required(:voice_url).maybe(:str?)
+      required(:voice_method).maybe(:str?)
       optional(:status_callback_url).maybe(:str?)
       optional(:status_callback_method).maybe(:str?)
+      required(:twiml).maybe(:str?)
       required(:to).filled(:str?)
       required(:from).filled(:str?)
       required(:sid).filled(:str?)

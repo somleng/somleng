@@ -19,7 +19,7 @@ RSpec.resource "Phone Calls" do
     parameter(
       "Url",
       "The absolute URL that returns the TwiML instructions for the call. We will call this URL using the `method` when the call connects.",
-      required: true,
+      required: false,
       example: "https://demo.twilio.com/docs/voice.xml"
     )
     parameter(
@@ -27,6 +27,12 @@ RSpec.resource "Phone Calls" do
       "The HTTP method we should use when calling the url parameter's value. Can be: `GET` or `POST` and the default is `POST`.",
       required: false,
       example: "GET"
+    )
+    parameter(
+      "Twiml",
+      "TwiML instructions for the call Twilio will use without fetching Twiml from `Url` parameter. If both `Twiml` and `Url` are provided then `Twiml` parameter will be ignored.",
+      required: false,
+      example: "<Response><Say>Ahoy there!</Say></Response>"
     )
     parameter(
       "StatusCallback",
