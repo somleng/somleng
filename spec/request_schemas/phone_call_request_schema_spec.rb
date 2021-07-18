@@ -17,8 +17,30 @@ RSpec.describe PhoneCallRequestSchema, type: :request_schema do
     ).to have_valid_field(:Url)
 
     expect(
-      validate_request_schema(input_params: { To: "ftp://www.example.com" })
+      validate_request_schema(input_params: { Twiml: "<Response><Say>Ahoy there!</Say></Response>" })
+    ).to have_valid_field(:Url)
+
+    expect(
+      validate_request_schema(input_params: { Url: "ftp://www.example.com" })
     ).not_to have_valid_field(:Url)
+
+    expect(
+      validate_request_schema(input_params: { })
+    ).not_to have_valid_field(:Url)
+  end
+
+  it "validates Twiml" do
+    expect(
+      validate_request_schema(input_params: { Twiml: "<Response><Say>Ahoy there!</Say></Response>" })
+    ).to have_valid_field(:Twiml)
+
+    expect(
+      validate_request_schema(input_params: { Url: "https://www.example.com" })
+    ).to have_valid_field(:Twiml)
+
+    expect(
+      validate_request_schema(input_params: { Twiml: "invalid-payload" })
+    ).not_to have_valid_field(:Twiml)
   end
 
   it "validates Method" do
@@ -56,7 +78,8 @@ RSpec.describe PhoneCallRequestSchema, type: :request_schema do
       input_params: {
         To: "+855 716 100235",
         From: "1294",
-        Url: "https://www.example.com/voice_url.xml"
+        Url: "https://www.example.com/voice_url.xml",
+        Twiml: "<Response><Say>Ahoy there!</Say></Response>"
       }
     )
 
@@ -67,7 +90,24 @@ RSpec.describe PhoneCallRequestSchema, type: :request_schema do
       voice_method: "POST",
       status_callback_url: nil,
       status_callback_method: nil,
+      twiml: nil,
       direction: :outbound
+    )
+  end
+
+  it "handles post processing when passing twiml" do
+    schema = validate_request_schema(
+      input_params: {
+        To: "+855 716 100235",
+        From: "1294",
+        Twiml: "<Response><Say>Ahoy there!</Say></Response>"
+      }
+    )
+
+    expect(schema.output).to include(
+      voice_url: nil,
+      voice_method: nil,
+      twiml: "<Response><Say>Ahoy there!</Say></Response>"
     )
   end
 

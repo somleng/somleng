@@ -17,6 +17,7 @@ class OutboundCallJob < ApplicationJob
       api_version: ApplicationSerializer::API_VERSION,
       voice_url: phone_call.voice_url,
       voice_method: phone_call.voice_method,
+      twiml: phone_call.twiml,
       to: phone_call.to,
       from: phone_call.from,
       routing_instructions: routing_instructions

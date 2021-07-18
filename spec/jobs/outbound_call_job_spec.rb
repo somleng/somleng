@@ -27,6 +27,7 @@ RSpec.describe OutboundCallJob do
         api_version: "2010-04-01",
         voice_url: "http://example.com/voice_url",
         voice_method: "POST",
+        twiml: nil,
         to: "85516701721",
         from: "1294",
         routing_instructions: {
