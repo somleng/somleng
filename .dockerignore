@@ -1,7 +1,6 @@
 .git
 .circleci
 .ebextensions
-.bundle
 coverage
 doc
 docker

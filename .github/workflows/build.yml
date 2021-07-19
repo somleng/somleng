@@ -72,27 +72,27 @@ jobs:
           ./codacy-coverage-reporter report -l Ruby -r coverage/lcov/*
 
       - name: Prepare Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_deployment'
         run: |
           cp -R doc/slate/source/* doc/api
           cp app/assets/images/logo.png doc/api/logo.png
 
       - name: Upload Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_deployment'
         uses: actions/upload-artifact@v2.2.2
         with:
           name: documentation_source
           path: doc/api
 
       - name: Compile Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_deployment'
         env:
           RAILS_ENV: development
         run: |
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_deployment'
         uses: actions/upload-artifact@v2.2.2
         with:
           name: assets
@@ -102,7 +102,7 @@ jobs:
     name: Build Documentation
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/fix_deployment'
 
     steps:
       - name: Checkout Slate
@@ -159,7 +159,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/fix_deployment'
     env:
       IMAGE_TAG: ${{ github.sha }}
       APP_IDENTIFIER: twilreapi
