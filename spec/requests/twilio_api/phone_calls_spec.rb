@@ -30,7 +30,7 @@ RSpec.resource "Phone Calls" do
     )
     parameter(
       "Twiml",
-      "TwiML instructions for the call Twilio will use without fetching Twiml from `Url` parameter. If both `Twiml` and `Url` are provided then `Twiml` parameter will be ignored.",
+      "TwiML instructions for the call Somleng will use without fetching Twiml from `Url` parameter. If both `Twiml` and `Url` are provided then `Twiml` parameter will be ignored.",
       required: false,
       example: "<Response><Say>Ahoy there!</Say></Response>"
     )
