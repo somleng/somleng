@@ -1,3 +1,5 @@
+# ruby:2.7-alpine3.14 has an issue with AWS fargate
+# https://github.com/docker-library/ruby/issues/351
 FROM ruby:2.7-alpine3.13 AS build-env
 
 ARG APP_ROOT="/app"
