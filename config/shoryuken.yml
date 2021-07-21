@@ -1,7 +1,9 @@
 delay: 15
 concurrency: 25
 queues:
-  - <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default") %>
+  - [<%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>, 8]
+  - [<%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>, 4]
+  - [<%= ENV.fetch("AWS_SQS_LOW_PRIORITY_QUEUE_NAME", "low-priority") %>, 1]
 
 groups:
   scheduler:
