@@ -16,6 +16,7 @@ data "template_file" "appserver_container_definitions" {
     rails_master_key_arn = aws_ssm_parameter.rails_master_key.arn
     aws_sqs_high_priority_queue_name = aws_sqs_queue.high_priority.name
     aws_sqs_default_queue_name = aws_sqs_queue.default.name
+    aws_sqs_low_priority_queue_name = aws_sqs_queue.low_priority.name
     aws_sqs_scheduler_queue_name = aws_sqs_queue.scheduler.name
     memory = var.memory
     nginx_logs_group = aws_cloudwatch_log_group.nginx.name
@@ -95,8 +96,9 @@ data "template_file" "worker_container_definitions" {
     app_image      = var.app_image
     rails_master_key_arn = aws_ssm_parameter.rails_master_key.arn
     region = var.aws_region
-    aws_sqs_default_queue_name = aws_sqs_queue.default.name
     aws_sqs_high_priority_queue_name = aws_sqs_queue.high_priority.name
+    aws_sqs_default_queue_name = aws_sqs_queue.default.name
+    aws_sqs_low_priority_queue_name = aws_sqs_queue.low_priority.name
     aws_sqs_scheduler_queue_name = aws_sqs_queue.scheduler.name
     memory = var.memory
     worker_logs_group = aws_cloudwatch_log_group.worker.name

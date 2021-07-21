@@ -59,8 +59,9 @@ resource "aws_iam_policy" "ecs_task_policy" {
         "sqs:SendMessageBatch"
       ],
       "Resource": [
-        "${aws_sqs_queue.default.arn}",
         "${aws_sqs_queue.high_priority.arn}",
+        "${aws_sqs_queue.default.arn}",
+        "${aws_sqs_queue.low_priority.arn}",
         "${aws_sqs_queue.scheduler.arn}"
       ]
     },
@@ -91,9 +92,37 @@ resource "aws_iam_policy" "ecs_task_policy" {
 EOF
 }
 
+# https://aws.amazon.com/blogs/containers/new-using-amazon-ecs-exec-access-your-containers-fargate-ec2/
+resource "aws_iam_policy" "ecs_exec_policy" {
+  name = "${var.app_identifier}-ecs-exec-policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_task_policy" {
   role = aws_iam_role.ecs_task_role.id
   policy_arn = aws_iam_policy.ecs_task_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_exec_policy" {
+  role = aws_iam_role.ecs_task_role.id
+  policy_arn = aws_iam_policy.ecs_exec_policy.arn
 }
 
 resource "aws_iam_role" "task_execution_role" {
