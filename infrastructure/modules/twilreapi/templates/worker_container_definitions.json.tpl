@@ -2,6 +2,9 @@
   {
     "name": "worker",
     "image": "${app_image}:latest",
+    "linuxParameters": {
+      "initProcessEnabled": true
+    },
     "logConfiguration": {
       "logDriver": "awslogs",
        "options": {

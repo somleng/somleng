@@ -6,7 +6,9 @@ require "shellwords"
 
 options = {
   started_by: "ecs_run_task",
-  launch_type: "FARGATE"
+  launch_type: "FARGATE",
+  console: false,
+  container: "worker"
 }
 
 OptionParser.new do |opts|
@@ -24,6 +26,10 @@ OptionParser.new do |opts|
     options[:cluster] = value
   end
 
+  opts.on("--container container", "Container name") do |value|
+    options[:container] = value
+  end
+
   opts.on("--started-by started_by", "Started by") do |value|
     options[:started_by] = value
   end
@@ -34,6 +40,10 @@ OptionParser.new do |opts|
 
   opts.on("--task-definition task_definition", "Task definition") do |value|
     options[:task_definition] = value
+  end
+
+  opts.on("--console", TrueClass, "Run interactive console") do |value|
+    options[:console] = value
   end
 
   opts.on("-h", "--help", "Prints this help") do
@@ -55,14 +65,35 @@ run_task_options = {
   "launchType": options.fetch(:launch_type),
   "taskDefinition": options.fetch(:task_definition, options.fetch(:service)),
   "networkConfiguration": JSON.parse(network_configuration),
+  "enableExecuteCommand": options.fetch(:console),
   "overrides": {
     "containerOverrides": [
       {
-        "name": "worker",
+        "name": options.fetch(:container),
         "command": Shellwords.split(options.fetch(:command))
       }
     ]
   }
 }
 
-puts `aws ecs run-task --cli-input-json '#{run_task_options.to_json}'`
+task_arn = `aws ecs run-task --cli-input-json '#{run_task_options.to_json}' --query 'tasks[0].taskArn' --output text`.chomp
+task_id = task_arn.split("/").last
+
+puts "Task created: #{task_id}"
+puts "Waiting for task to start..."
+`aws ecs wait tasks-running --cluster #{options.fetch(:cluster)} --tasks #{task_id}`
+puts "Task started: #{task_id}"
+
+if options.fetch(:console)
+  puts "Starting console..."
+  `aws ecs execute-command --cluster #{options.fetch(:cluster)} --task #{task_id} --container worker --command "/bin/sh" --interactive`
+
+  puts "Stop task here..."
+
+  puts "Run console: "
+  puts "aws ecs execute-command --cluster #{options.fetch(:cluster)} --task #{task_id} --container #{options.fetch(:container)} --command \"/bin/sh\" --interactive"
+  puts "Stop task: "
+  puts "aws ecs stop-task --cluster #{options.fetch(:cluster)} --task #{task_id}"
+  puts "Describe task: "
+  puts "aws ecs describe-tasks --cluster #{options.fetch(:cluster)} --tasks #{task_id}"
+end

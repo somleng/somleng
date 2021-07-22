@@ -2,6 +2,9 @@
   {
     "name": "${webserver_container_name}",
     "image": "${nginx_image}:latest",
+    "linuxParameters": {
+      "initProcessEnabled": true
+    },
     "logConfiguration": {
       "logDriver": "awslogs",
        "options": {
@@ -26,6 +29,9 @@
   {
     "name": "app",
     "image": "${app_image}:latest",
+    "linuxParameters": {
+      "initProcessEnabled": true
+    },
     "logConfiguration": {
       "logDriver": "awslogs",
        "options": {
