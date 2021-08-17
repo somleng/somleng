@@ -198,6 +198,20 @@ FactoryBot.define do
     traits_for_enum :direction, %i[inbound outbound]
   end
 
+  factory :oauth_application do
+    name { "My Application" }
+    redirect_uri { "urn:ietf:wg:oauth:2.0:oob" }
+
+    trait :carrier do
+      association :owner, factory: :carrier
+      scopes { "carrier" }
+    end
+  end
+
+  factory :oauth_application_settings do
+    oauth_application
+  end
+
   factory :user_context do
     user
     association :current_organization, factory: :organization

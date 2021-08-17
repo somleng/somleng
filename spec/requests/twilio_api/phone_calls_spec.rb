@@ -51,7 +51,7 @@ RSpec.resource "Phone Calls" do
     example "Create a call" do
       account = create(:account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
 
       do_request(
         account_sid: account.id,
@@ -67,7 +67,7 @@ RSpec.resource "Phone Calls" do
     example "Handles invalid requests", document: false do
       account = create(:account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id)
 
       expect(response_status).to eq(422)
@@ -82,7 +82,7 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, sid: phone_call.id)
 
       expect(response_status).to eq(200)
@@ -104,7 +104,7 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, :answered, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(
         account_sid: account.id,
         sid: phone_call.id,
@@ -120,7 +120,7 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, :queued, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(
         account_sid: account.id,
         sid: phone_call.id,
@@ -136,7 +136,7 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, :answered, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(
         account_sid: account.id,
         sid: phone_call.id,
