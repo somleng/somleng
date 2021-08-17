@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_18_071256) do
+ActiveRecord::Schema.define(version: 2021_08_17_100941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -166,6 +166,17 @@ ActiveRecord::Schema.define(version: 2021_07_18_071256) do
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
   end
 
+  create_table "oauth_application_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "oauth_application_id", null: false
+    t.inet "whitelisted_ips", default: [], null: false, array: true
+    t.text "public_key"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["oauth_application_id"], name: "index_oauth_application_settings_on_oauth_application_id"
+    t.index ["sequence_number"], name: "index_oauth_application_settings_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "oauth_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "uid", null: false
@@ -309,6 +320,7 @@ ActiveRecord::Schema.define(version: 2021_07_18_071256) do
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_application_settings", "oauth_applications"
   add_foreign_key "oauth_applications", "accounts", column: "owner_id"
   add_foreign_key "outbound_sip_trunks", "carriers"
   add_foreign_key "phone_call_events", "phone_calls"
