@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_101825) do
   end
 
   create_table "oauth_access_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "resource_owner_id", null: false
+    t.uuid "resource_owner_id"
     t.uuid "application_id"
     t.string "token", null: false
     t.string "refresh_token"
@@ -319,12 +319,10 @@ ActiveRecord::Schema.define(version: 2021_08_17_101825) do
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "exports", "users"
   add_foreign_key "inbound_sip_trunks", "carriers"
-  add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_application_settings", "oauth_applications"
-  add_foreign_key "oauth_applications", "accounts", column: "owner_id"
+  add_foreign_key "oauth_applications", "carriers", column: "owner_id"
   add_foreign_key "outbound_sip_trunks", "carriers"
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"

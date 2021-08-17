@@ -1,4 +1,4 @@
-class APIRequestErrorsSerializer < ApplicationSerializer
+class TwilioAPIRequestErrorsSerializer < ApplicationSerializer
   def attributes
     {
       message: nil,

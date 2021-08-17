@@ -1,4 +1,4 @@
-class CreateOauthApplicationSettings < ActiveRecord::Migration[6.1]
+class CreateOAuthApplicationSettings < ActiveRecord::Migration[6.1]
   def change
     create_table :oauth_application_settings, id: :uuid do |t|
       t.references :oauth_application, null: false, type: :uuid, foreign_key: true

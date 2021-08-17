@@ -55,4 +55,10 @@ Rails.application.routes.draw do
 
     root to: "home#show"
   end
+
+  namespace :carrier_api do
+    namespace :v1, defaults: { format: :json } do
+      resources :accounts, only: [:create, :show]
+    end
+  end
 end

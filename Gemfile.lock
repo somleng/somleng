@@ -519,6 +519,7 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   http
+  jwt
   kaminari
   lograge
   okcomputer

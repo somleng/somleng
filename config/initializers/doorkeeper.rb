@@ -1,3 +1,5 @@
+require_relative "../../app/models/api_authorization_request"
+
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (needs plugins)
   orm :active_record
@@ -68,7 +70,8 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   # access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
 
-  access_token_methods :from_basic_user_password_authorization
+  access_token_methods APIAuthorizationRequest
+
 
   # Change the native redirect uri for client apps
   # When clients register with the following redirect uri, they won't be redirected to any server and the authorization code will be displayed within the provider

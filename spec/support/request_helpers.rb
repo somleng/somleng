@@ -19,7 +19,6 @@ module RequestHelpers
     authentication(:basic, ActionController::HttpAuthentication::Basic.encode_credentials(username, password))
   end
 
-
   def set_carrier_api_authorization_header(carrier)
     rsa_key = OpenSSL::PKey::RSA.generate(2048)
     oauth_application = create(:oauth_application, :carrier, owner: carrier)

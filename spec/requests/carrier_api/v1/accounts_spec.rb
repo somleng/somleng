@@ -3,7 +3,7 @@ require "rails_helper"
 resource "Accounts", document: :carrier_api do
   header("Content-Type", "application/vnd.api+json")
 
-  post "/carrier/v1/accounts" do
+  post "/carrier_api/v1/accounts" do
     with_options scope: %i[data attributes] do
       parameter(
         :name,
@@ -32,6 +32,7 @@ resource "Accounts", document: :carrier_api do
         }
       )
 
+      binding.pry
       expect(response_status).to eq(201)
       expect(response_body).to match_api_resource_schema(:account)
       expect(response_attributes.fetch("name")).to eq("Rocket Rides")
