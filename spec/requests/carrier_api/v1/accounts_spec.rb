@@ -40,7 +40,7 @@ resource "Accounts", document: :carrier_api do
     example "handles invalid requests", document: false do
       carrier = create(:carrier)
 
-      set_carrier_authorization_header(carrier)
+      set_carrier_api_authorization_header(carrier)
       do_request(
         data: {
           type: :account,
@@ -59,7 +59,7 @@ resource "Accounts", document: :carrier_api do
     example "Update an account" do
       account = create(:account, metadata: { "foo" => "bar" })
 
-      set_carrier_authorization_header(
+      set_carrier_api_authorization_header(
         account.carrier
       )
       do_request(
@@ -96,7 +96,7 @@ resource "Accounts", document: :carrier_api do
     example "Retrieve an account" do
       account = create(:account)
 
-      set_carrier_authorization_header(account.carrier)
+      set_carrier_api_authorization_header(account.carrier)
       do_request(id: account.id)
 
       expect(response_status).to eq(200)
@@ -110,7 +110,7 @@ resource "Accounts", document: :carrier_api do
       accounts = create_list(:account, 2, carrier: carrier)
       _other_account = create(:account)
 
-      set_carrier_authorization_header(carrier)
+      set_carrier_api_authorization_header(carrier)
       do_request
 
       expect(response_status).to eq(200)

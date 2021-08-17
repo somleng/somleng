@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_17_100941) do
+ActiveRecord::Schema.define(version: 2021_08_17_101825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -187,6 +187,9 @@ ActiveRecord::Schema.define(version: 2021_08_17_100941) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigserial "sequence_number", null: false
+    t.string "owner_type"
+    t.boolean "confidential", default: true, null: false
+    t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["sequence_number"], name: "index_oauth_applications_on_sequence_number", unique: true, order: :desc
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end

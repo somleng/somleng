@@ -20,4 +20,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "CSV"
   inflect.acronym "OTP"
   inflect.acronym "IP"
+  inflect.acronym "OAuth"
 end
