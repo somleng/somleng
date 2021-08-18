@@ -74,15 +74,15 @@ jobs:
       - name: Prepare Documentation Source
         if: github.ref == 'refs/heads/master'
         run: |
-          cp -R doc/slate/source/* doc/api
-          cp app/assets/images/logo.png doc/api/logo.png
+          cp -R doc/slate/source/* doc/
+          cp app/assets/images/logo.png doc/logo.png
 
       - name: Upload Documentation Source
         if: github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@v2
         with:
           name: documentation_source
-          path: doc/api
+          path: doc/
 
       - name: Compile Assets
         if: github.ref == 'refs/heads/master'
@@ -102,7 +102,7 @@ jobs:
     name: Build Documentation
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/carrier_api'
 
     steps:
       - name: Checkout Slate
