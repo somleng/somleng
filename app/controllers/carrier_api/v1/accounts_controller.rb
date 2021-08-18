@@ -2,13 +2,13 @@ module CarrierAPI
   module V1
     class AccountsController < CarrierAPIController
       def index
-        validate_request_schema(with: AccountFilterRequestSchema, serializer_class: AccountSchemaSerializer) do |permitted_params|
-          accounts_scope.where(permitted_params)
-        end
+        respond_with_resource(accounts_scope, serializer_options)
       end
 
       def create
-        validate_request_schema(with: AccountRequestSchema, serializer_class: AccountSerializer) do |permitted_params|
+        validate_request_schema(
+          with: AccountRequestSchema, **serializer_options
+        ) do |permitted_params|
           accounts_scope.create!(permitted_params)
         end
       end
@@ -18,7 +18,8 @@ module CarrierAPI
 
         validate_request_schema(
           with: UpdateAccountRequestSchema,
-          schema_options: { resource: account }
+          schema_options: { resource: account },
+          **serializer_options
         ) do |permitted_params|
           account.update!(permitted_params)
           account
@@ -26,13 +27,17 @@ module CarrierAPI
       end
 
       def show
-        respond_with_resource(accounts_scope.find(params[:id]))
+        respond_with_resource(accounts_scope.find(params[:id]), serializer_options)
       end
 
       private
 
       def accounts_scope
         current_carrier.accounts
+      end
+
+      def serializer_options
+        { serializer_class: AccountSerializer }
       end
     end
   end

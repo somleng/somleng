@@ -58,7 +58,7 @@ Rails.application.routes.draw do
 
   namespace :carrier_api do
     namespace :v1, defaults: { format: :json } do
-      resources :accounts, only: [:create, :show]
+      resources :accounts, only: %i[create show update index]
     end
   end
 end

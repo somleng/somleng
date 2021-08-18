@@ -15,7 +15,14 @@ Shoryuken.configure_server do |config|
   end
 
   config.default_worker_options["auto_visibility_timeout"] = true
-  config.default_worker_options["retry_intervals"] = ->(attempts) { (12.hours.seconds**(attempts / 10.0)).to_i }
+
+  Shoryuken.default_worker_options["retry_intervals"] = lambda { |attempts|
+    Utils.exponential_backoff_delay(
+      number_of_attempts: attempts,
+      max_retry_period: 12.hours,
+      max_attempts: 10
+    )
+  }
 
   # Turn on long polling
   # https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html

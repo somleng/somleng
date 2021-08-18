@@ -55,7 +55,7 @@ resource "Accounts", document: :carrier_api do
     end
   end
 
-  patch "/v1/accounts/:id" do
+  patch "carrier_api/v1/accounts/:id" do
     example "Update an account" do
       account = create(:account, metadata: { "foo" => "bar" })
 
@@ -76,8 +76,8 @@ resource "Accounts", document: :carrier_api do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_resource_schema(:account)
-      expect(response_attributes).to include(
+      expect(response_body).to match_jsonapi_resource_schema("jsonapi/account")
+      expect(jsonapi_response_attributes).to include(
         "metadata" => {
           "bar" => "foo",
           "foo" => "bar"
@@ -86,7 +86,7 @@ resource "Accounts", document: :carrier_api do
     end
   end
 
-  get "/v1/accounts/:id" do
+  get "carrier_api/v1/accounts/:id" do
     parameter(
       :id,
       "The `id` of the account to be retrieved.",
@@ -100,11 +100,11 @@ resource "Accounts", document: :carrier_api do
       do_request(id: account.id)
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_resource_schema(:account)
+      expect(response_body).to match_jsonapi_resource_schema("jsonapi/account")
     end
   end
 
-  get "/v1/accounts" do
+  get "carrier_api/v1/accounts" do
     example "List all accounts" do
       carrier = create(:carrier)
       accounts = create_list(:account, 2, carrier: carrier)
@@ -114,7 +114,7 @@ resource "Accounts", document: :carrier_api do
       do_request
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_resource_collection_schema(:account)
+      expect(response_body).to match_jsonapi_resource_collection_schema("jsonapi/account")
       expect(json_response.fetch("data").pluck("id")).to match_array(accounts.map(&:id))
     end
   end
