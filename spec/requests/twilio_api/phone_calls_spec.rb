@@ -61,7 +61,7 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(201)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
     end
 
     example "Handles invalid requests", document: false do
@@ -71,7 +71,7 @@ RSpec.resource "Phone Calls" do
       do_request(account_sid: account.id)
 
       expect(response_status).to eq(422)
-      expect(response_body).to match_api_response_schema(:api_errors)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
     end
   end
 
@@ -86,7 +86,7 @@ RSpec.resource "Phone Calls" do
       do_request(account_sid: account.id, sid: phone_call.id)
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
     end
   end
 
@@ -112,7 +112,7 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
       expect(EndCallJob).to have_been_enqueued.with(phone_call)
     end
 
@@ -128,7 +128,7 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
       expect(json_response.fetch("status")).to eq("canceled")
     end
 
@@ -144,7 +144,7 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(422)
-      expect(response_body).to match_api_response_schema(:api_errors)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
     end
   end
 end

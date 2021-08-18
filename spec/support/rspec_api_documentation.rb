@@ -40,7 +40,13 @@ RspecApiDocumentation.configure do |config|
   config.response_headers_to_include = []
 
   config.request_body_formatter = proc do |params|
-    JSON.pretty_generate(params) if params.present? && params.key?("data")
+    if params.present?
+      if params.key?("data")
+        JSON.pretty_generate(params)
+      else
+        params
+      end
+    end
   end
 
   config.keep_source_order = false

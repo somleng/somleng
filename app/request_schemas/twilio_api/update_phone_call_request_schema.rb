@@ -1,5 +1,5 @@
 module TwilioAPI
-  class UpdatePhoneCallRequestSchema < ApplicationRequestSchema
+  class UpdatePhoneCallRequestSchema < TwilioAPIRequestSchema
     option :phone_call
 
     params do

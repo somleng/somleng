@@ -53,7 +53,7 @@ module TwilioAPI
     end
 
     def ApiVersion
-      ApplicationSerializer::API_VERSION
+      TwilioAPISerializer::API_VERSION
     end
 
     def Direction

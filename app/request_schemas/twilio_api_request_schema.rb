@@ -1,5 +1,5 @@
 class TwilioAPIRequestSchema < ApplicationRequestSchema
   def self.error_serializer_class
-    TwilioAPIRequestErrorsSerializer
+    TwilioAPI::RequestErrorsSerializer
   end
 end
