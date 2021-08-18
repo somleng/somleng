@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_014929) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigserial "sequence_number", null: false
-    t.string "owner_type"
+    t.string "owner_type", null: false
     t.boolean "confidential", default: true, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["sequence_number"], name: "index_oauth_applications_on_sequence_number", unique: true, order: :desc

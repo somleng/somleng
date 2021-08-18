@@ -5,6 +5,7 @@ class ApplicationSeeder
     carrier = create_carrier
     create_outbound_sip_trunk(carrier: carrier)
     create_inbound_sip_trunk(carrier: carrier)
+    create_carrier_access_token(carrier)
     account = create_account(carrier: carrier)
     phone_number = create_phone_number(carrier: carrier, account: account)
     carrier_owner = create_carrier_owner(carrier: carrier)
@@ -13,8 +14,10 @@ class ApplicationSeeder
       Account SID:           #{account.id}
       Auth Token:            #{account.auth_token}
       Inbound Phone Number:  #{phone_number.number}
+      ---------------------------------------------
       Carrier User Email:    #{carrier_owner.email}
       Carrier User Password: #{USER_PASSWORD}
+      Carrier API Key:       #{carrier.api_key}
     INFO
   end
 
@@ -93,5 +96,19 @@ class ApplicationSeeder
         confirmed_at: Time.current
       )
     )
+  end
+
+  def create_carrier_access_token(carrier)
+    Doorkeeper::Application.first_or_create!(
+      name: carrier.name,
+      owner: carrier,
+      redirect_uri: "urn:ietf:wg:oauth:2.0:oob",
+      scopes: "carrier_api"
+    ) do |app|
+      Doorkeeper::AccessToken.create!(
+        application: app,
+        scopes: app.scopes
+      )
+    end
   end
 end
