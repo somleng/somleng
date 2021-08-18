@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "API Authentication" do
+RSpec.describe "Twilio API Authentication" do
   it "requires http basic authentication" do
     account = create(:account)
 
