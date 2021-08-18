@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.resource "Phone Calls" do
+RSpec.resource "Phone Calls", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
   post "/2010-04-01/Accounts/:account_sid/Calls" do

@@ -3,8 +3,7 @@ require "rspec_api_documentation/dsl"
 RspecApiDocumentation.configure do |config|
   config.api_name = "Somleng Twilreapi API Documentation"
 
-  config.format = [:slate,  "OpenApi"]
-  config.configurations_dir = Rails.root.join("doc", "config")
+  config.format = [:slate]
   config.curl_host = "https://twilreapi.somleng.org"
   config.curl_headers_to_filter = %w[Host Cookie]
 
@@ -37,10 +36,6 @@ RspecApiDocumentation.configure do |config|
       You can make a raw HTTP request in your code (for example, using a module like [got in NodeJS](https://www.npmjs.com/package/got)) or by using a tool like [Postman](https://www.postman.com/).
       You might find it easier to use the [Twilio Helper Library or SDK](https://www.twilio.com/docs/libraries) for your preferred programming language. These libraries can be usually be used with Somleng Twilreapi by overriding the URL parameter from `api.twilio.com` to `twilreapi.somleng.org` or your own host.
 
-      ## OpenAPI Specification
-
-      You can download the [OpenAPI specification](/open_api.json) and import it into your favourite HTTP Client such as [Postman](https://www.postman.com/).
-
       ## Credentials
 
       All requests to Somleng Twilreapi need to be authenticated. Twilreapi using HTTP basic auth, which use the following username/password schemes:
@@ -55,7 +50,7 @@ RspecApiDocumentation.configure do |config|
     HEREDOC
 
     conf.filter = :twilio_api
-    conf.docs_dir = Rails.root.join("doc/api/twilio_api")
+    conf.docs_dir = Rails.root.join("doc/twilio_api")
   end
 
   config.define_group :carrier_api do |conf|
@@ -64,7 +59,7 @@ RspecApiDocumentation.configure do |config|
     HEREDOC
 
     conf.filter = :carrier_api
-    conf.docs_dir = Rails.root.join("doc/api/carrier_api")
+    conf.docs_dir = Rails.root.join("doc/carrier_api")
   end
 
   # https://github.com/zipmark/rspec_api_documentation/pull/458
