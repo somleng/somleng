@@ -70,8 +70,7 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   # access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
 
-  access_token_methods APIAuthorizationRequest
-
+  access_token_methods APIAuthorizationRequest, :from_basic_authorization
 
   # Change the native redirect uri for client apps
   # When clients register with the following redirect uri, they won't be redirected to any server and the authorization code will be displayed within the provider
