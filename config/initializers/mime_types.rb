@@ -4,3 +4,8 @@
 # Mime::Type.register "text/richtext", :rtf
 
 Mime::Type.register("audio/x-wav", :wav)
+Mime::Type.register(
+  "application/vnd.api+json",
+  :json,
+  %w[application/vnd.api+json text/x-json application/json]
+)

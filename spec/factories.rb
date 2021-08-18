@@ -214,5 +214,28 @@ FactoryBot.define do
     initialize_with { new(organization) }
   end
 
-  factory :access_token, class: "Doorkeeper::AccessToken"
+  factory :access_token, aliases: [:oauth_access_token], class: "Doorkeeper::AccessToken" do
+    trait :account do
+      resource_owner_id { create(:account).id }
+    end
+
+    trait :carrier do
+      association :application, factory: :oauth_application
+
+      resource_owner_id { application.owner_id }
+      scopes { application.scopes }
+    end
+  end
+
+  factory :oauth_application, class: "Doorkeeper::Application" do
+    name { "My Application" }
+    redirect_uri { "urn:ietf:wg:oauth:2.0:oob" }
+    carrier_api
+
+    trait :carrier_api do
+      owner_id { create(:carrier).id }
+      scopes { "carrier_api" }
+    end
+
+  end
 end

@@ -249,6 +249,8 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n_data (0.11.0)
     jmespath (1.4.0)
+    jsonapi-serializer (2.2.0)
+      activesupport (>= 4.2)
     jwt (2.2.3)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
@@ -514,6 +516,7 @@ DEPENDENCIES
   enumerize
   factory_bot_rails
   http
+  jsonapi-serializer
   kaminari
   lograge
   okcomputer

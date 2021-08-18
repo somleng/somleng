@@ -56,6 +56,12 @@ Doorkeeper.configure do
   # default_scopes  :public
   # optional_scopes :write, :update
 
+  optional_scopes :carrier_api
+
+  scopes_by_grant_type client_credentials: %i[carrier_api]
+
+  enforce_configured_scopes
+
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
   # falls back to the `:client_id` and `:client_secret` params from the `params` object.
@@ -68,7 +74,7 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   # access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
 
-  access_token_methods :from_basic_user_password_authorization
+  access_token_methods :from_basic_user_password_authorization, :from_bearer_authorization
 
   # Change the native redirect uri for client apps
   # When clients register with the following redirect uri, they won't be redirected to any server and the authorization code will be displayed within the provider
@@ -99,7 +105,7 @@ Doorkeeper.configure do
   #   http://tools.ietf.org/html/rfc6819#section-4.4.2
   #   http://tools.ietf.org/html/rfc6819#section-4.4.3
   #
-  # grant_flows %w(authorization_code client_credentials)
+  grant_flows %w(client_credentials)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.

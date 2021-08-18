@@ -14,11 +14,15 @@ class APIController < ActionController::API
       resource = yield(schema.output)
       respond_with_resource(resource, options)
     else
-      respond_with(schema, responder: InvalidRequestSchemaResponder, **options)
+      respond_with_resource(schema, responder: InvalidRequestSchemaResponder, **options)
     end
   end
 
   def respond_with_resource(resource, options = {})
-    respond_with(resource, **options)
+    api_namespace = Array(options.delete(:api_namespace))
+    if options[:location].respond_to?(:call)
+      options[:location] = options.fetch(:location).call(resource)
+    end
+    respond_with(*api_namespace, :v1, resource, **options)
   end
 end
