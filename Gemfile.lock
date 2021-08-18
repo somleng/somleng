@@ -522,7 +522,6 @@ DEPENDENCIES
   factory_bot_rails
   http
   jsonapi-serializer
-  jwt
   kaminari
   lograge
   okcomputer
