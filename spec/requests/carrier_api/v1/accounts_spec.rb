@@ -80,7 +80,7 @@ resource "Accounts", document: :carrier_api do
           type: :account,
           id: account.id,
           attributes: {
-            name: "Bob's Cats",
+            name: "Bob Cats",
             status: "disabled",
             metadata: {
               "bar" => "foo"

@@ -74,7 +74,6 @@ jobs:
       - name: Prepare Documentation Source
         if: github.ref == 'refs/heads/carrier_api'
         run: |
-          cp -R doc/slate/source/* doc/
           cp app/assets/images/logo.png doc/logo.png
 
       - name: Upload Documentation Source
@@ -126,6 +125,7 @@ jobs:
       - name: Prepare Slate
         run: |
           cp -R api_docs/slate/source/stylesheets/* source/stylesheets
+          cp api_docs/logo.png source/logo.png
           echo "@import 'overrides';" >> source/stylesheets/_variables.scss
 
       - name: Build API Documentation
@@ -133,7 +133,7 @@ jobs:
           cp -R api_docs/carrier_api/* source
           bundle exec middleman build --build-dir=build/carrier_api
 
-          cp -R api_docs/carrier_api/* source
+          cp -R api_docs/twilio_api/* source
           bundle exec middleman build --build-dir=build/twilio_api
 
       - name: Upload API Documentation
