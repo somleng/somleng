@@ -72,13 +72,13 @@ jobs:
           ./codacy-coverage-reporter report -l Ruby -r coverage/lcov/*
 
       - name: Prepare Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/carrier_api'
         run: |
           cp -R doc/slate/source/* doc/
           cp app/assets/images/logo.png doc/logo.png
 
       - name: Upload Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/carrier_api'
         uses: actions/upload-artifact@v2
         with:
           name: documentation_source
