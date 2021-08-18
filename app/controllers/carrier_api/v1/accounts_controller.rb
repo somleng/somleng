@@ -2,13 +2,13 @@ module CarrierAPI
   module V1
     class AccountsController < CarrierAPIController
       def index
-        validate_request_schema(with: AccountFilterRequestSchema) do |permitted_params|
+        validate_request_schema(with: AccountFilterRequestSchema, serializer_class: AccountSchemaSerializer) do |permitted_params|
           accounts_scope.where(permitted_params)
         end
       end
 
       def create
-        validate_request_schema(with: AccountRequestSchema) do |permitted_params|
+        validate_request_schema(with: AccountRequestSchema, serializer_class: AccountSerializer) do |permitted_params|
           accounts_scope.create!(permitted_params)
         end
       end
@@ -32,7 +32,7 @@ module CarrierAPI
       private
 
       def accounts_scope
-        current_card_issuer.accounts
+        current_carrier.accounts
       end
     end
   end

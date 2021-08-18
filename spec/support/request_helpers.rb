@@ -3,6 +3,10 @@ module RequestHelpers
     JSON.parse(body)
   end
 
+  def jsonapi_response_attributes
+    json_response.dig("data", "attributes")
+  end
+
   def build_api_authorization_headers(account)
     build_authorization_headers(account.id, account.auth_token)
   end

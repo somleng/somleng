@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_17_101825) do
+ActiveRecord::Schema.define(version: 2021_08_18_014929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_101825) do
     t.string "allowed_calling_codes", default: [], null: false, array: true
     t.string "name", null: false
     t.integer "account_memberships_count", default: 0, null: false
+    t.jsonb "metadata", default: {}, null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc

@@ -32,10 +32,9 @@ resource "Accounts", document: :carrier_api do
         }
       )
 
-      binding.pry
       expect(response_status).to eq(201)
-      expect(response_body).to match_api_resource_schema(:account)
-      expect(response_attributes.fetch("name")).to eq("Rocket Rides")
+      expect(response_body).to match_jsonapi_resource_schema("jsonapi/account")
+      expect(jsonapi_response_attributes.fetch("name")).to eq("Rocket Rides")
     end
 
     example "handles invalid requests", document: false do
@@ -52,7 +51,7 @@ resource "Accounts", document: :carrier_api do
       )
 
       expect(response_status).to eq(422)
-      expect(response_body).to match_api_response_schema(:api_error)
+      expect(response_body).to match_api_response_schema("jsonapi/api_error")
     end
   end
 

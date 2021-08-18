@@ -15,7 +15,6 @@ class JSONAPIResponder < ApplicationResponder
       resource = pagination.paginated_collection
     end
 
-    given_options[:status] = :payment_required if resource.is_a?(BusinessRuleAPIError)
     super(serializer_class.new(resource, serializer_options), given_options)
   end
 

@@ -34,12 +34,24 @@ RspecApiDocumentation.configure do |config|
   config.format = [:slate,  "OpenApi"]
   config.configurations_dir = Rails.root.join("doc", "config")
   config.curl_host = "https://twilreapi.somleng.org"
-  config.curl_headers_to_filter = ["Host", "Cookie"]
+  config.curl_headers_to_filter = %w[Host Cookie]
 
   config.request_headers_to_include = []
   config.response_headers_to_include = []
+
+  config.request_body_formatter = proc do |params|
+    JSON.pretty_generate(params) if params.present? && params.key?("data")
+  end
+
   config.keep_source_order = false
   config.disable_dsl_status!
+
+  %i[twilio_api carrier_api].each do |doc|
+    config.define_group doc do |conf|
+      conf.docs_dir = Rails.root.join("doc/api/#{doc}")
+      conf.filter = doc
+    end
+  end
 
   # https://github.com/zipmark/rspec_api_documentation/pull/458
   config.response_body_formatter = proc do |content_type, response_body|
