@@ -56,6 +56,13 @@ resource "Accounts", document: :carrier_api do
   end
 
   patch "carrier_api/v1/accounts/:id" do
+    with_options scope: %i[data attributes] do
+      parameter(
+        :status,
+        "Update the status of the account. One of either `enabled` or `disabled`."
+      )
+    end
+
     example "Update an account" do
       account = create(
         :account,
