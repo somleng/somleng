@@ -5,6 +5,8 @@ module CarrierAPI
         required(:type).filled(:str?, eql?: "account")
         required(:id).filled(:str?)
         required(:attributes).value(:hash).schema do
+          optional(:name).filled(:str?)
+          optional(:status).filled(:str?, included_in?: Account.status.values)
           optional(:metadata).maybe(:hash?)
         end
       end

@@ -1,6 +1,6 @@
 class AddOwnerToApplication < ActiveRecord::Migration[6.0]
   def change
-    add_column :oauth_applications, :owner_type, :string, null: true
+    add_column :oauth_applications, :owner_type, :string, null: false
     add_index :oauth_applications, [:owner_id, :owner_type]
     add_column :oauth_applications, :confidential, :boolean, null: false, default: true
     change_column_null :oauth_access_tokens, :resource_owner_id, true

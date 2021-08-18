@@ -58,6 +58,12 @@ Doorkeeper.configure do
   # default_scopes  :public
   # optional_scopes :write, :update
 
+  optional_scopes :carrier_api
+
+  scopes_by_grant_type client_credentials: %i[carrier_api]
+
+  enforce_configured_scopes
+
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
   # falls back to the `:client_id` and `:client_secret` params from the `params` object.
@@ -70,7 +76,7 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   # access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
 
-  access_token_methods APIAuthorizationRequest, :from_basic_authorization
+  access_token_methods APIAuthorizationRequest
 
   # Change the native redirect uri for client apps
   # When clients register with the following redirect uri, they won't be redirected to any server and the authorization code will be displayed within the provider

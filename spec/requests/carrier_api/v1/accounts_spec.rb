@@ -33,7 +33,7 @@ resource "Accounts", document: :carrier_api do
       )
 
       expect(response_status).to eq(201)
-      expect(response_body).to match_jsonapi_resource_schema("jsonapi/account")
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
       expect(jsonapi_response_attributes.fetch("name")).to eq("Rocket Rides")
     end
 
@@ -51,13 +51,18 @@ resource "Accounts", document: :carrier_api do
       )
 
       expect(response_status).to eq(422)
-      expect(response_body).to match_api_response_schema("jsonapi/api_error")
+      expect(response_body).to match_api_response_schema("jsonapi_error")
     end
   end
 
   patch "carrier_api/v1/accounts/:id" do
     example "Update an account" do
-      account = create(:account, metadata: { "foo" => "bar" })
+      account = create(
+        :account,
+        name: "Rocket Rides",
+        status: :enabled,
+        metadata: { "foo" => "bar" }
+      )
 
       set_carrier_api_authorization_header(
         account.carrier
@@ -68,6 +73,8 @@ resource "Accounts", document: :carrier_api do
           type: :account,
           id: account.id,
           attributes: {
+            name: "Bob's Cats",
+            status: "disabled",
             metadata: {
               "bar" => "foo"
             }
@@ -76,8 +83,9 @@ resource "Accounts", document: :carrier_api do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_jsonapi_resource_schema("jsonapi/account")
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
       expect(jsonapi_response_attributes).to include(
+        "status" => "disabled",
         "metadata" => {
           "bar" => "foo",
           "foo" => "bar"
@@ -100,7 +108,7 @@ resource "Accounts", document: :carrier_api do
       do_request(id: account.id)
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_jsonapi_resource_schema("jsonapi/account")
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
     end
   end
 
@@ -114,7 +122,7 @@ resource "Accounts", document: :carrier_api do
       do_request
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_jsonapi_resource_collection_schema("jsonapi/account")
+      expect(response_body).to match_jsonapi_resource_collection_schema("carrier_api/account")
       expect(json_response.fetch("data").pluck("id")).to match_array(accounts.map(&:id))
     end
   end

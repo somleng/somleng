@@ -1,5 +1,5 @@
 module CarrierAPI
   class AccountSerializer < ResourceSerializer
-    attributes :name, :metadata
+    attributes :name, :metadata, :status
   end
 end

@@ -209,18 +209,14 @@ FactoryBot.define do
     end
   end
 
-  factory :oauth_application do
+  factory :oauth_application, class: "Doorkeeper::Application" do
     name { "My Application" }
     redirect_uri { "urn:ietf:wg:oauth:2.0:oob" }
 
     trait :carrier do
       association :owner, factory: :carrier
-      scopes { "carrier" }
+      scopes { "carrier_api" }
     end
-  end
-
-  factory :oauth_application_settings do
-    oauth_application
   end
 
   factory :user_context do
