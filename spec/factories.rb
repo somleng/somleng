@@ -98,7 +98,7 @@ FactoryBot.define do
 
     trait :with_access_token do
       after(:build) do |account|
-        account.access_token ||= build(:access_token, resource_owner_id: account.id)
+        account.access_token ||= build(:oauth_access_token, resource_owner_id: account.id)
       end
     end
 
@@ -198,6 +198,27 @@ FactoryBot.define do
     traits_for_enum :direction, %i[inbound outbound]
   end
 
+  factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
+    trait :expired do
+      expires_in { 1 }
+      created_at { 5.minutes.ago }
+    end
+
+    trait :with_refresh_token do
+      refresh_token { SecureRandom.urlsafe_base64 }
+    end
+  end
+
+  factory :oauth_application, class: "Doorkeeper::Application" do
+    name { "My Application" }
+    redirect_uri { "urn:ietf:wg:oauth:2.0:oob" }
+
+    trait :carrier do
+      association :owner, factory: :carrier
+      scopes { "carrier_api" }
+    end
+  end
+
   factory :user_context do
     user
     association :current_organization, factory: :organization
@@ -213,6 +234,4 @@ FactoryBot.define do
 
     initialize_with { new(organization) }
   end
-
-  factory :access_token, class: "Doorkeeper::AccessToken"
 end

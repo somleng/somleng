@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.resource "Phone Calls" do
+RSpec.resource "Phone Calls", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
   post "/2010-04-01/Accounts/:account_sid/Calls" do
@@ -51,7 +51,7 @@ RSpec.resource "Phone Calls" do
     example "Create a call" do
       account = create(:account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
 
       do_request(
         account_sid: account.id,
@@ -61,17 +61,17 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(201)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
     end
 
     example "Handles invalid requests", document: false do
       account = create(:account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id)
 
       expect(response_status).to eq(422)
-      expect(response_body).to match_api_response_schema(:api_errors)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
     end
   end
 
@@ -82,11 +82,11 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, sid: phone_call.id)
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
     end
   end
 
@@ -104,7 +104,7 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, :answered, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(
         account_sid: account.id,
         sid: phone_call.id,
@@ -112,7 +112,7 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
       expect(EndCallJob).to have_been_enqueued.with(phone_call)
     end
 
@@ -120,7 +120,7 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, :queued, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(
         account_sid: account.id,
         sid: phone_call.id,
@@ -128,7 +128,7 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema(:phone_call)
+      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
       expect(json_response.fetch("status")).to eq("canceled")
     end
 
@@ -136,7 +136,7 @@ RSpec.resource "Phone Calls" do
       account = create(:account)
       phone_call = create(:phone_call, :answered, account: account)
 
-      set_api_authorization_header(account)
+      set_twilio_api_authorization_header(account)
       do_request(
         account_sid: account.id,
         sid: phone_call.id,
@@ -144,7 +144,7 @@ RSpec.resource "Phone Calls" do
       )
 
       expect(response_status).to eq(422)
-      expect(response_body).to match_api_response_schema(:api_errors)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
     end
   end
 end

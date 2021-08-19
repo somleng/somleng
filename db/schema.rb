@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_18_071256) do
+ActiveRecord::Schema.define(version: 2021_08_18_014929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2021_07_18_071256) do
     t.string "allowed_calling_codes", default: [], null: false, array: true
     t.string "name", null: false
     t.integer "account_memberships_count", default: 0, null: false
+    t.jsonb "metadata", default: {}, null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
@@ -151,7 +152,7 @@ ActiveRecord::Schema.define(version: 2021_07_18_071256) do
   end
 
   create_table "oauth_access_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "resource_owner_id", null: false
+    t.uuid "resource_owner_id"
     t.uuid "application_id"
     t.string "token", null: false
     t.string "refresh_token"
@@ -176,6 +177,9 @@ ActiveRecord::Schema.define(version: 2021_07_18_071256) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigserial "sequence_number", null: false
+    t.string "owner_type", null: false
+    t.boolean "confidential", default: true, null: false
+    t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["sequence_number"], name: "index_oauth_applications_on_sequence_number", unique: true, order: :desc
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
@@ -305,11 +309,9 @@ ActiveRecord::Schema.define(version: 2021_07_18_071256) do
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "exports", "users"
   add_foreign_key "inbound_sip_trunks", "carriers"
-  add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_applications", "accounts", column: "owner_id"
+  add_foreign_key "oauth_applications", "carriers", column: "owner_id"
   add_foreign_key "outbound_sip_trunks", "carriers"
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"

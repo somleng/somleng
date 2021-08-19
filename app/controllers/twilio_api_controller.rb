@@ -1,10 +1,15 @@
 class TwilioAPIController < APIController
+  include ActionController::HttpAuthentication::Basic::ControllerMethods
+
   before_action :doorkeeper_authorize!
   before_action :authorize_account!
 
   private
 
   def authorize_account!
+    return deny_access! unless authenticate_with_http_basic do |given_name|
+      ActiveSupport::SecurityUtils.secure_compare(given_name, current_account.id)
+    end
     return deny_access! unless current_account.enabled?
     return deny_access! unless current_account.id == params[:account_id]
   end
