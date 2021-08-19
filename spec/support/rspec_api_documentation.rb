@@ -55,7 +55,15 @@ RspecApiDocumentation.configure do |config|
 
   config.define_group :carrier_api do |conf|
     conf.api_explanation = <<~HEREDOC
-      # Carrier API Documentation
+      # Somleng Carrier API
+
+      This API is intended for carriers. The documentation for Somleng's Open Source implementation of Twilio's REST API is available [here](../twilio_api).
+
+      This API is written according to the [JSON API Specification](https://jsonapi.org/). We recommend using a [JSON API Client](https://jsonapi.org/implementations/) for consuming this API.
+
+      ## Authentication
+
+      This API uses Bearer authentication. You must include your API key in the Authorization header for all requests. Your API key is available on the [Carrier Dashboard](https://twilreapi.somleng.org/dashboard/carrier_settings).
     HEREDOC
 
     conf.filter = :carrier_api
