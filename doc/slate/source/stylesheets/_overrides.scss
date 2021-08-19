@@ -9,6 +9,7 @@ $nav-bg-color: #6C63FF;
 // BACKGROUND COLORS
 ////////////////////
 
+$logo-margin: 20px;
 $main-bg: #F7F7F7;
 $nav-bg: $nav-bg-color;
 $nav-active-bg: $brand-color;
@@ -25,3 +26,7 @@ $nav-text: #fff;
 $nav-active-text: #fff ;
 $nav-active-parent-text: #fff;
 $main-text: #333;
+
+.logo {
+  margin: 20px auto;
+}
