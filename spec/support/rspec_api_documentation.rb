@@ -66,9 +66,9 @@ RspecApiDocumentation.configure do |config|
       This tells Somleng to send outbound calls to your this host using the configured dial string.
       Somleng will send SIP and RTP from NATed from the IP address below:
 
-      | NAT IP        |
-      | ------------- |
-      | 13.250.230.15 |
+      | NAT IP          |
+      | --------------- |
+      | `13.250.230.15` |
 
       You should allow this IP address on your firewall.
 
@@ -78,12 +78,12 @@ RspecApiDocumentation.configure do |config|
       When configuring an Inbound SIP trunk, you specify your source IP address from which you will send SIP from.
       You can then send SIP to the following endpoints. We recommend that you use `sip.somleng.org` if possible for high-availability.
 
-      | Endpoint        |
-      | -------------   |
-      | sip.somleng.org |
-      | 52.74.4.205     |
-      | 18.136.239.28   |
-      | 3.0.30.251      |
+      | Endpoint          |
+      | ---------------   |
+      | `sip.somleng.org` |
+      | `52.74.4.205`     |
+      | `18.136.239.28`   |
+      | `3.0.30.251`      |
 
       ## RTP
 
@@ -94,7 +94,7 @@ RspecApiDocumentation.configure do |config|
       The IP address and port are learned when the initial RTP flow is received your device. The flow's source address and port are latched onto and used
       as the destination for the RTP sourced by the other side of the call. The IP address and port in the c line and m line respectively in the SDP message are ignored.
 
-      ## Carrier API
+      # Carrier API
 
       The Carrier API is intended for carriers who need to automate provisioning of carrier resources (e.g. Accounts) rather that using the dashboard.
       This API is written according to the [JSON API Specification](https://jsonapi.org/). We recommend using a [JSON API Client](https://jsonapi.org/implementations/) for consuming this API.
