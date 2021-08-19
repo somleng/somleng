@@ -74,7 +74,7 @@ jobs:
       - name: Prepare Documentation Source
         if: github.ref == 'refs/heads/master'
         run: |
-          cp app/assets/images/logo.png doc/logo.png
+          cp app/assets/images/logo_documentation.png doc/logo.png
 
       - name: Upload Documentation Source
         if: github.ref == 'refs/heads/master'
