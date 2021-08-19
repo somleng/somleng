@@ -35,6 +35,7 @@ resource "Accounts", document: :carrier_api do
       expect(response_status).to eq(201)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
       expect(jsonapi_response_attributes.fetch("name")).to eq("Rocket Rides")
+      expect(jsonapi_response_attributes.fetch("type")).to eq("carrier_managed")
     end
 
     example "handles invalid requests", document: false do
@@ -122,7 +123,8 @@ resource "Accounts", document: :carrier_api do
   get "carrier_api/v1/accounts" do
     example "List all accounts" do
       carrier = create(:carrier)
-      accounts = create_list(:account, 2, carrier: carrier)
+      customer_managed_account = create(:account, :customer_managed, name: "Rocket Rides", carrier: carrier)
+      carrier_managed_account = create(:account, :carrier_managed, name: "Telco Net", carrier: carrier)
       _other_account = create(:account)
 
       set_carrier_api_authorization_header(carrier)
@@ -130,7 +132,9 @@ resource "Accounts", document: :carrier_api do
 
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_collection_schema("carrier_api/account")
-      expect(json_response.fetch("data").pluck("id")).to match_array(accounts.map(&:id))
+      expect(json_response.fetch("data").pluck("id")).to match_array([customer_managed_account.id, carrier_managed_account.id])
+      expect(json_response.dig("data", 0, "attributes", "auth_token")).to eq(carrier_managed_account.auth_token)
+      expect(json_response.dig("data", 1, "attributes").has_key?("auth_token")).to eq(false)
     end
   end
 end

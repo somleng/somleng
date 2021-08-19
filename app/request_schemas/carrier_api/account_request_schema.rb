@@ -9,5 +9,11 @@ module CarrierAPI
         end
       end
     end
+
+    def output
+      result = super
+      result[:access_token] = Doorkeeper::AccessToken.new
+      result
+    end
   end
 end

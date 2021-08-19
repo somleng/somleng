@@ -96,6 +96,18 @@ FactoryBot.define do
     association :carrier
     traits_for_enum :status, %w[enabled disabled]
 
+    trait :carrier_managed do
+      with_access_token
+    end
+
+    trait :customer_managed do
+      with_access_token
+
+      after(:build) do |account|
+        account.account_memberships << build(:account_membership, account: account) if account.account_memberships.empty?
+      end
+    end
+
     trait :with_access_token do
       after(:build) do |account|
         account.access_token ||= build(:oauth_access_token, resource_owner_id: account.id)
