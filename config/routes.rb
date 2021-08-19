@@ -30,10 +30,9 @@ Rails.application.routes.draw do
     resource :dial_string, only: :create
   end
 
-  scope "/2010-04-01/Accounts/:account_id", as: :account, defaults: { format: "json" } do
-    resources :phone_calls, only: %i[create show update], path: "Calls",
-                            controller: "twilio_api/phone_calls"
-    post "Calls/:id" => "twilio_api/phone_calls#update"
+  scope "/2010-04-01/Accounts/:account_id", as: :account, module: :twilio_api, defaults: { format: "json" } do
+    resources :phone_calls, only: %i[create show update], path: "Calls"
+    post "Calls/:id" => "phone_calls#update"
   end
 
   namespace :dashboard do
@@ -56,7 +55,7 @@ Rails.application.routes.draw do
     root to: "home#show"
   end
 
-  namespace :carrier_api do
+  scope :carrier, as: :carrier_api, module: :carrier_api  do
     namespace :v1, defaults: { format: :json } do
       resources :accounts, only: %i[create show update index]
     end

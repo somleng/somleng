@@ -3,7 +3,7 @@ require "rails_helper"
 resource "Accounts", document: :carrier_api do
   header("Content-Type", "application/vnd.api+json")
 
-  post "/carrier_api/v1/accounts" do
+  post "/carrier/v1/accounts" do
     with_options scope: %i[data attributes] do
       parameter(
         :name,
@@ -56,7 +56,7 @@ resource "Accounts", document: :carrier_api do
     end
   end
 
-  patch "carrier_api/v1/accounts/:id" do
+  patch "/carrier/v1/accounts/:id" do
     with_options scope: %i[data attributes] do
       parameter(
         :status,
@@ -102,7 +102,7 @@ resource "Accounts", document: :carrier_api do
     end
   end
 
-  get "carrier_api/v1/accounts/:id" do
+  get "/carrier/v1/accounts/:id" do
     parameter(
       :id,
       "The `id` of the account to be retrieved.",
@@ -120,7 +120,7 @@ resource "Accounts", document: :carrier_api do
     end
   end
 
-  get "carrier_api/v1/accounts" do
+  get "/carrier/v1/accounts" do
     example "List all accounts" do
       carrier = create(:carrier)
       customer_managed_account = create(:account, :customer_managed, name: "Rocket Rides", carrier: carrier)
