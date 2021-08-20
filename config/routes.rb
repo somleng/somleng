@@ -23,21 +23,23 @@ Rails.application.routes.draw do
     root to: "dashboard/home#show"
   end
 
-  namespace :services, constraints: { subdomain: "api" }, defaults: { format: "json" } do
-    resources :inbound_phone_calls, only: :create
-    resources :phone_call_events, only: :create
-    resources :call_data_records, only: :create
-    resource :dial_string, only: :create
-  end
+  constraints subdomain: "api" do
+    namespace :services, defaults: { format: "json" } do
+      resources :inbound_phone_calls, only: :create
+      resources :phone_call_events, only: :create
+      resources :call_data_records, only: :create
+      resource :dial_string, only: :create
+    end
 
-  scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :account, constraints: { subdomain: "api" }, defaults: { format: "json" } do
-    resources :phone_calls, only: %i[create show update], path: "Calls"
-    post "Calls/:id" => "phone_calls#update"
-  end
+    scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_api_account, defaults: { format: "json" } do
+      resources :phone_calls, only: %i[create show update], path: "Calls"
+      post "Calls/:id" => "phone_calls#update"
+    end
 
-  scope :carrier, as: :carrier_api, module: :carrier_api, constraints: { subdomain: "api" } do
-    namespace :v1, defaults: { format: :json } do
-      resources :accounts, only: %i[create show update index]
+    scope :carrier, as: :carrier_api, module: :carrier_api do
+      namespace :v1, defaults: { format: :json } do
+        resources :accounts, only: %i[create show update index]
+      end
     end
   end
 
