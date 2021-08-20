@@ -1,5 +1,5 @@
 module Services
-  class InboundPhoneCallRequestSchema < ApplicationRequestSchema
+  class InboundPhoneCallRequestSchema < ServicesRequestSchema
     params do
       required(:to).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
       required(:source_ip).filled(:str?)

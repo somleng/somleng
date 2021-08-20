@@ -1,5 +1,5 @@
 module Services
-  class RequestErrorsSerializer
+  class RequestErrorsSerializer < ApplicationSerializer
     def attributes
       {
         message: nil

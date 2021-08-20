@@ -1,5 +1,5 @@
 module Services
-  class PhoneCallEventRequestSchema < ApplicationRequestSchema
+  class PhoneCallEventRequestSchema < ServicesRequestSchema
     params do
       required(:type).value(:str?, included_in?: PhoneCallEvent.type.values)
       required(:phone_call).value(:str?)
