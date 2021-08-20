@@ -17,7 +17,7 @@ default: &default
 
 production: &production
   <<: *default
-  default_url_host: "https://twilreapi.somleng.org"
+  default_url_host: "https://api.somleng.org"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= Rails.application.credentials.services_password %>"
   ahn_host: "https://ahn.somleng.org"
@@ -31,4 +31,4 @@ development: &development
 test:
   <<: *development
   ahn_host: "https://ahn.somleng.org"
-  default_url_host: https://twilreapi.somleng.org
+  default_url_host: https://api.somleng.org

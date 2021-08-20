@@ -1,9 +1,9 @@
-# Twilreapi (Twilio Rest API)
+# Somleng
 
 [![GitHub Action](https://github.com/somleng/twilreapi/actions/workflows/build.yml/badge.svg)](https://github.com/somleng/twilreapi/actions)
 [![View performance data on Skylight](https://badges.skylight.io/status/DvGhX1IYIjrx.svg)](https://oss.skylight.io/app/applications/DvGhX1IYIjrx)
 
-Twilreapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest) written in Rails. You can use Twilreapi as a drop-in replacement for Twilio and enqueue calls, send SMS etc.
+Somleng is an Open Source Cloud Communications Platform as a Service (CPaaS). It contains an open source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest), as well as functionality for carrier services.
 
 ## Usage
 
@@ -11,7 +11,7 @@ If you want to get the full Somleng stack up and running on your local machine, 
 
 ## API Documentation
 
-[https://www.somleng.org/docs/twilreapi](https://www.somleng.org/docs/twilreapi)
+[https://www.somleng.org/docs/twilio_api](https://www.somleng.org/docs/twilio_api)
 
 ## License
 
