@@ -27,7 +27,7 @@ resource "aws_lb_listener_rule" "this" {
 
   condition {
     host_header {
-      values = ["twilreapi.somleng.org"]
+      values = ["api.somleng.org", "dashboard.somleng.org", "twilreapi.somleng.org"]
     }
   }
 
