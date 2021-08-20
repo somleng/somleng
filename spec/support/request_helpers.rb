@@ -32,4 +32,7 @@ end
 
 RSpec.configure do |config|
   config.include RequestHelpers, type: :request
+  config.before(:each, type: :request) do
+    host! "twilreapi.somleng.org"
+  end
 end

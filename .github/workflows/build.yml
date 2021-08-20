@@ -1,5 +1,5 @@
 on: push
-name: Build Twilreapi
+name: Build Somleng
 
 jobs:
   build:
@@ -47,9 +47,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.get-yarn-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-yarn-twilreapi-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-somleng-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-twilreapi-
+            ${{ runner.os }}-yarn-somleng-
 
       - name: Install yarn dependencies
         run: yarn install

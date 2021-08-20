@@ -1,10 +1,10 @@
 require "rspec_api_documentation/dsl"
 
 RspecApiDocumentation.configure do |config|
-  config.api_name = "Somleng Twilreapi API Documentation"
+  config.api_name = "Somleng API Documentation"
 
   config.format = [:slate]
-  config.curl_host = "https://twilreapi.somleng.org"
+  config.curl_host = ""
   config.curl_headers_to_filter = %w[Host Cookie]
 
   config.request_headers_to_include = []
@@ -27,18 +27,20 @@ RspecApiDocumentation.configure do |config|
     conf.api_explanation = <<~HEREDOC
       # Introduction
 
-      Somleng Twilreapi is an Open Source implementation of [Twilio's REST API](https://www.twilio.com/docs/voice/api).
+      Somleng is an Open Source Cloud Communications Platform as a Service (CPaaS). It contains an open source implementation of [Twilio's REST API](https://www.twilio.com/docs/voice/api).
       Currently it only supports a tiny subset of Twilio's REST API. More features may be added in the future.
 
-      ## Make an HTTP Request to Somleng Twilreapi
+      This API documentation is intended for users of the REST API.
 
-      There are a lot of ways you can make an HTTP request to Somleng Twilreapi.
+      ## Make an HTTP Request to Somleng
+
+      There are a lot of ways you can make an HTTP request to Somleng.
       You can make a raw HTTP request in your code (for example, using a module like [got in NodeJS](https://www.npmjs.com/package/got)) or by using a tool like [Postman](https://www.postman.com/).
-      You might find it easier to use the [Twilio Helper Library or SDK](https://www.twilio.com/docs/libraries) for your preferred programming language. These libraries can be usually be used with Somleng Twilreapi by overriding the URL parameter from `api.twilio.com` to `twilreapi.somleng.org` or your own host.
+      You might find it easier to use the [Twilio Helper Library or SDK](https://www.twilio.com/docs/libraries) for your preferred programming language. These libraries can be usually be used with Somleng by overriding the URL parameter from `api.twilio.com` to `api.somleng.org` or that of your own host.
 
       ## Credentials
 
-      All requests to Somleng Twilreapi need to be authenticated. Twilreapi using HTTP basic auth, which use the following username/password schemes:
+      All requests to Somleng need to be authenticated. Somleng using HTTP basic auth, which use the following username/password schemes:
 
       ### Account SID and Auth Token
 
@@ -61,7 +63,7 @@ RspecApiDocumentation.configure do |config|
 
       ## Configuring Outbound SIP Trunks
 
-      To setup outbound dialing you create an Outbound SIP trunk(s) via the [Carrier Dashboard](https://twilreapi.somleng.org/dashboard).
+      To setup outbound dialing you create an Outbound SIP trunk(s) via the [Carrier Dashboard](https://dashboard.somleng.org).
       When configuring an Outbound SIP trunk, you specify your host as either a fully qualified domain name (FQDN) or IP Address.
       This tells Somleng to send outbound calls to your this host using the configured dial string.
       Somleng will send SIP and RTP from NATed from the IP address below:
@@ -74,7 +76,7 @@ RspecApiDocumentation.configure do |config|
 
       ## Configuring Inbound SIP Trunks
 
-      To setup inbound dialing you create an Inbound SIP Trunk via the [Carrier Dashboard](https://twilreapi.somleng.org/dashboard).
+      To setup inbound dialing you create an Inbound SIP Trunk via the [Carrier Dashboard](https://dashboard.somleng.org).
       When configuring an Inbound SIP trunk, you specify your source IP address from which you will send SIP from.
       You can then send SIP to the following endpoints. We recommend that you use `sip.somleng.org` if possible for high-availability.
 
@@ -101,7 +103,7 @@ RspecApiDocumentation.configure do |config|
 
       ## Authentication
 
-      This API uses Bearer authentication. You must include your API key in the Authorization header for all requests. Your API key is available on the [Carrier Dashboard](https://twilreapi.somleng.org/dashboard/carrier_settings).
+      This API uses Bearer authentication. You must include your API key in the Authorization header for all requests. Your API key is available on the [Carrier Dashboard](https://dashboard.somleng.org/carrier_settings).
     HEREDOC
 
     conf.filter = :carrier_api

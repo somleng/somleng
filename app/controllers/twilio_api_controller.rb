@@ -15,7 +15,7 @@ class TwilioAPIController < APIController
   end
 
   def respond_with_resource(resource, options = {})
-    respond_with(resource.account, resource, **options)
+    respond_with(:twilio_api, resource.account, resource, **options)
   end
 
   def current_account

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.resource "Phone Calls", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
-  post "/2010-04-01/Accounts/:account_sid/Calls" do
+  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
     parameter(
       "To",
       "The phone number to call.",
@@ -75,7 +75,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
   end
 
-  get "/2010-04-01/Accounts/:account_sid/Calls/:sid" do
+  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls/:sid" do
     # https://www.twilio.com/docs/api/rest/call#instance-get
 
     it "Fetch a call" do
@@ -90,7 +90,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
   end
 
-  post "/2010-04-01/Accounts/:account_sid/Calls/:sid" do
+  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls/:sid" do
     parameter(
       "Status",
       "The new status of the resource. Can be: `canceled` or `completed`. Specifying `canceled` will attempt to hang up calls that are `queued` or `ringing`; however, it will not affect calls already in progress. Specifying `completed` will attempt to hang up a call even if it's already in progress.",
