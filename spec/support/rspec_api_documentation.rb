@@ -4,7 +4,7 @@ RspecApiDocumentation.configure do |config|
   config.api_name = "Somleng API Documentation"
 
   config.format = [:slate]
-  config.curl_host = "https://api.somleng.org"
+  config.curl_host = ""
   config.curl_headers_to_filter = %w[Host Cookie]
 
   config.request_headers_to_include = []
