@@ -21,7 +21,7 @@ class AccountDashboard < Administrate::BaseDashboard
     carrier
     name
     status
-    outbound_sip_trunk
+    created_at
   ].freeze
 
   SHOW_PAGE_ATTRIBUTES = %i[
