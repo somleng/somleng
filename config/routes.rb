@@ -7,6 +7,8 @@ Rails.application.routes.draw do
     resources :inbound_sip_trunks, only: :show
     resources :outbound_sip_trunks, only: :show
     resources :phone_numbers, only: :show
+    resources :phone_call_events, only: :show
+    resources :call_data_records, only: :show
 
     root to: "phone_calls#index"
   end

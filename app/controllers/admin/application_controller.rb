@@ -4,5 +4,15 @@ module Admin
       name: Rails.configuration.app_settings.fetch(:admin_username),
       password: Rails.configuration.app_settings.fetch(:admin_password)
     )
+
+    private
+
+    def default_sorting_attribute
+      :sequence_number
+    end
+
+    def default_sorting_direction
+      :desc
+    end
   end
 end

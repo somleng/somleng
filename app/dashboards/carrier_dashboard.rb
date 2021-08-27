@@ -6,7 +6,7 @@ class CarrierDashboard < Administrate::BaseDashboard
     inbound_sip_trunks: Field::HasMany,
     outbound_sip_trunks: Field::HasMany,
     phone_numbers: Field::HasMany,
-    phone_calls: Field::HasMany,
+    phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
     id: Field::String,
     name: Field::String,
     created_at: Field::DateTime,
