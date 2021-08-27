@@ -14,12 +14,15 @@ default: &default
   ahn_username: "adhearsion"
   ahn_password: "password"
   otp_secret_encryption_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  admin_username: "admin"
+  admin_password: "password"
 
 production: &production
   <<: *default
   default_url_host: "https://api.somleng.org"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= Rails.application.credentials.services_password %>"
+  admin_password: "<%= Rails.application.credentials.admin_password %>"
   ahn_host: "https://ahn.somleng.org"
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
   otp_secret_encryption_key: "<%= Rails.application.credentials.otp_secret_encryption_key %>"
