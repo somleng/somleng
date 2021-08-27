@@ -1,4 +1,15 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :carriers, only: %i[show index]
+    resources :accounts, only: %i[show index]
+    resources :phone_calls, only: %i[show index]
+
+    resources :inbound_sip_trunks, only: :show
+    resources :outbound_sip_trunks, only: :show
+    resources :phone_numbers, only: :show
+
+    root to: "phone_calls#index"
+  end
   devise_for :users, skip: %i[registrations invitations]
 
   devise_scope :user do

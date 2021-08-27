@@ -7,6 +7,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem "rails", "~> 6.1.0"
 
 gem "aasm"
+gem "administrate"
 gem "after_commit_everywhere"
 gem "aws-sdk-ec2"
 gem "aws-sdk-rails"
