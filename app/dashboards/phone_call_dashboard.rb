@@ -2,9 +2,15 @@ require "administrate/base_dashboard"
 
 class PhoneCallDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
-    account: Field::BelongsTo,
-    inbound_sip_trunk: Field::BelongsTo,
-    call_data_record: Field::HasOne,
+    account: Field::BelongsTo.with_options(
+      transform_on_export: ->(field) { field.data.id }
+    ),
+    inbound_sip_trunk: Field::BelongsTo.with_options(
+      transform_on_export: ->(field) { field.data&.id }
+    ),
+    call_data_record: Field::BelongsTo.with_options(
+      transform_on_export: ->(field) { field.data&.id }
+    ),
     phone_call_events: Field::HasMany,
     id: Field::String,
     to: Field::String,
@@ -17,9 +23,9 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     external_id: Field::String,
-    variables: Field::JSON.with_options(searchable: false),
+    variables: Field::JSON.with_options(searchable: false, export: false),
     direction: Field::String,
-    twiml: Field::Text
+    twiml: Field::Text.with_options(export: false)
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -51,5 +57,18 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     phone_call_events
   ].freeze
 
-  COLLECTION_FILTERS = {}.freeze
+  filters = PhoneCall.aasm.states.map(&:name).index_with do |status|
+    ->(resources) { resources.where(status: status) }
+  end
+
+  filters[:inbound] = ->(resources) { resources.inbound }
+  filters[:outbound] = ->(resources) { resources.outbound }
+
+  filters[:last_month] = ->(resources) { resources.where(created_at: 1.month.ago.all_month) }
+  filters[:last_week] = ->(resources) { resources.where(created_at: 1.week.ago.all_week) }
+  filters[:yesterday] = ->(resources) { resources.where(created_at: Date.yesterday.all_day) }
+  filters[:today] = ->(resources) { resources.where(created_at: Date.current.all_day) }
+  filters[:this_month] = ->(resources) { resources.where(created_at: Time.current.all_month) }
+
+  COLLECTION_FILTERS = filters.freeze
 end

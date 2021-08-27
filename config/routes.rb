@@ -1,17 +1,4 @@
 Rails.application.routes.draw do
-  namespace :admin do
-    resources :carriers, only: %i[show index]
-    resources :accounts, only: %i[show index]
-    resources :phone_calls, only: %i[show index]
-
-    resources :inbound_sip_trunks, only: :show
-    resources :outbound_sip_trunks, only: :show
-    resources :phone_numbers, only: :show
-    resources :phone_call_events, only: :show
-    resources :call_data_records, only: :show
-
-    root to: "phone_calls#index"
-  end
   devise_for :users, skip: %i[registrations invitations]
 
   devise_scope :user do
@@ -75,5 +62,23 @@ Rails.application.routes.draw do
     resources :phone_calls, only: %i[index show]
 
     root to: "home#show"
+  end
+
+  namespace :admin do
+    concern :exportable do
+      get :export, on: :collection
+    end
+
+    resources :carriers, only: %i[show index], concerns: :exportable
+    resources :accounts, only: %i[show index], concerns: :exportable
+    resources :phone_calls, only: %i[show index], concerns: :exportable
+
+    resources :inbound_sip_trunks, only: :show
+    resources :outbound_sip_trunks, only: :show
+    resources :phone_numbers, only: :show
+    resources :phone_call_events, only: :show
+    resources :call_data_records, only: :show
+
+    root to: "phone_calls#index"
   end
 end

@@ -7,6 +7,7 @@ class CarrierDashboard < Administrate::BaseDashboard
     outbound_sip_trunks: Field::HasMany,
     phone_numbers: Field::HasMany,
     phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
+    logo: Field::ActiveStorage.with_options(show_preview_size: [150, 150], export: false),
     id: Field::String,
     name: Field::String,
     created_at: Field::DateTime,
@@ -23,6 +24,7 @@ class CarrierDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     id
     name
+    logo
     country_code
     created_at
     updated_at

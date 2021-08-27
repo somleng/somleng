@@ -4,6 +4,7 @@ class CallDataRecordDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     phone_call: Field::BelongsTo,
     id: Field::String,
+    file: Field::ActiveStorage.with_options(export: false),
     bill_sec: Field::Number,
     duration_sec: Field::Number,
     direction: Field::String,
@@ -22,6 +23,7 @@ class CallDataRecordDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     phone_call
     id
+    file
     bill_sec
     duration_sec
     direction

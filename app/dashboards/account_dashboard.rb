@@ -3,7 +3,9 @@ require "administrate/base_dashboard"
 class AccountDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
-    outbound_sip_trunk: Field::BelongsTo,
+    outbound_sip_trunk: Field::BelongsTo.with_options(
+      transform_on_export: ->(field) { field.data&.id }
+    ),
     phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
     phone_numbers: Field::HasMany,
     id: Field::String,
