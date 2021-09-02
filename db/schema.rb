@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_18_014929) do
+ActiveRecord::Schema.define(version: 2021_09_02_154717) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -230,10 +230,12 @@ ActiveRecord::Schema.define(version: 2021_08_18_014929) do
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
+    t.index ["from"], name: "index_phone_calls_on_from"
     t.index ["inbound_sip_trunk_id"], name: "index_phone_calls_on_inbound_sip_trunk_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["status"], name: "index_phone_calls_on_status"
+    t.index ["to"], name: "index_phone_calls_on_to"
   end
 
   create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
