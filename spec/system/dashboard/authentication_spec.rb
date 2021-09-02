@@ -42,6 +42,8 @@ RSpec.describe "Authentication" do
 
     open_email("new_user@example.com")
     visit_in_email("Accept invitation")
+    expect(current_url).to match("dashboard")
+
     fill_in("Password", with: "password123")
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
