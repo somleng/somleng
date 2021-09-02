@@ -66,7 +66,7 @@ module TwilioAPI
     end
 
     def uri
-      url_helpers.twilio_api_account_phone_call_url(account, __getobj__, format: :json)
+      url_helpers.twilio_api_account_phone_call_url(account, __getobj__, format: :json, subdomain: "api")
     end
   end
 end

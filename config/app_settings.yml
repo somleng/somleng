@@ -1,5 +1,6 @@
 default: &default
-  default_url_host: <%= ENV.fetch("APP_URL_HOST", "http://localhost:3000") %>
+  api_url_host: <%= ENV.fetch("API_URL_HOST", "http://localhost:3000") %>
+  dashboard_url_host: <%= ENV.fetch("DASHBOARD_URL_HOST", "http://localhost:3000") %>
   mailer_sender: "support@somleng.org"
 
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
@@ -19,7 +20,8 @@ default: &default
 
 production: &production
   <<: *default
-  default_url_host: "https://api.somleng.org"
+  api_url_host: "https://api.somleng.org"
+  dashboard_url_host: "https://dashboard.somleng.org"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= Rails.application.credentials.services_password %>"
   admin_password: "<%= Rails.application.credentials.admin_password %>"
@@ -34,4 +36,5 @@ development: &development
 test:
   <<: *development
   ahn_host: "https://ahn.somleng.org"
-  default_url_host: https://api.somleng.org
+  api_url_host: "https://api.somleng.org"
+  dashboard_url_host: "https://dashboard.somleng.org"

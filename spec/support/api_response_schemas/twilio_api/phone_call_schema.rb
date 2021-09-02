@@ -23,7 +23,7 @@ module APIResponseSchema
       required(:api_version).filled(:str?, eql?: "2010-04-01")
       required(:date_created).filled(:str?)
       required(:date_updated).filled(:str?)
-      required(:uri).filled(:str?)
+      required(:uri).filled(:str?, format?: /api.somleng.org/)
     end
   end
 end
