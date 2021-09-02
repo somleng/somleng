@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users, skip: %i[registrations invitations]
 
-  constraints subdomain: :dashboard do
+  constraints subdomain: "dashboard" do
     devise_scope :user do
       resource(
         :registration,
