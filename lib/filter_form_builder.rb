@@ -30,13 +30,13 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
       template = "".html_safe
       template += @template.tag.div(class: "mb-3") do
         form_group = "".html_safe
-        form_group += @template.label_tag("#{@object_name}_#{name}_key", "Key", class: "form-label")
+        form_group += label("#{name}_key", "Key")
         form_group += @template.text_field_tag("#{@object_name}[#{name}][key]", key, class: "form-control", placeholder: "customer.id")
         form_group
       end
       template += @template.tag.div(class: "mb-3") do
         form_group = "".html_safe
-        form_group += @template.label_tag("#{@object_name}_#{name}_value", "Value", class: "form-label")
+        form_group += label("#{name}_value", "Value")
         form_group += @template.text_field_tag("#{@object_name}[#{name}][value]", value, class: "form-control", placeholder: "abcd1234")
         form_group
       end
