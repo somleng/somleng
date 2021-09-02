@@ -1,7 +1,5 @@
 module Dashboard
   class UsersController < DashboardController
-    skip_before_action :authorize_user!, only: :destroy
-
     def index
       @resources = apply_filters(users_scope)
       @resources = paginate_resources(@resources)
