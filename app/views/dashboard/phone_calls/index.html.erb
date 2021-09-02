@@ -9,6 +9,8 @@
       %>
     <% end %>
 
+    <%= form.text_field_tag(:to, params.dig(:filter, :to)) %>
+    <%= form.text_field_tag(:from, params.dig(:filter, :from)) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
   <%= render("shared/export_action", export_params: { resource_type: "PhoneCall" }) %>

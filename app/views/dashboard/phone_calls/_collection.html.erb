@@ -16,6 +16,12 @@
         Direction
       </th>
       <th>
+        To
+      </th>
+      <th>
+        From
+      </th>
+      <th>
         Duration
       </th>
       <th>
@@ -44,6 +50,14 @@
 
         <td>
           <%= phone_call.direction.humanize %>
+        </td>
+
+        <td>
+          <%= phone_call.to_formatted %>
+        </td>
+
+        <td>
+          <%= phone_call.from_formatted %>
         </td>
 
         <td>

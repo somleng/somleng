@@ -5,7 +5,7 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
 
     @template.render("shared/filters/field", filter_value: from_date, title: title) do
       @template.tag.div(data: { controller: "filters--date-picker" }) do
-        input_box = @template.text_field_tag(nil, nil, class: "form-control", data: { "filters--date-picker-target" => "dateRangePicker" })
+        input_box = @template.text_field_tag(nil, nil, class: "form-control", placeholder: "Enter date", data: { "filters--date-picker-target" => "dateRangePicker" })
         from_date_hidden_field = hidden_field(:from_date, value: from_date, data: { "filters--date-picker-target" => "fromDate" })
         to_date_hidden_field = hidden_field(:to_date, value: to_date, data: { "filters--date-picker-target" => "toDate" })
 
@@ -41,6 +41,12 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
         form_group
       end
       template
+    end
+  end
+
+  def text_field_tag(name, value, options = {})
+    @template.render("shared/filters/field", filter_value: value, title: name.to_s.humanize) do
+      @template.text_field_tag("#{@object_name}[#{name}]", value, class: "form-control", **options)
     end
   end
 end
