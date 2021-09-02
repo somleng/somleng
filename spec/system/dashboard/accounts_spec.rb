@@ -4,21 +4,40 @@ RSpec.describe "Accounts" do
   it "List and filter accounts", :js do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier: carrier)
-    create(:account, name: "Rocket Rides", carrier: carrier, created_at: Time.utc(2021, 12, 1))
+    create(
+      :account,
+      name: "Rocket Rides",
+      carrier: carrier,
+      created_at: Time.utc(2021, 12, 1),
+      metadata: {
+        "customer" => {
+          "id" => "RR1234"
+        }
+      }
+    )
+
     create(:account, name: "Garry Gas", carrier: carrier, created_at: Time.utc(2021, 12, 10))
     create(:account, name: "Alice Apples", carrier: carrier, created_at: Time.utc(2021, 10, 1))
     create(:account, :disabled, name: "Disabled Account", carrier: carrier, created_at: Time.utc(2021, 12, 10))
 
     sign_in(user)
-    visit dashboard_accounts_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
+    visit dashboard_accounts_path(
+      filter: {
+        from_date: "01/12/2021",
+        to_date: "15/12/2021"
+      }
+    )
     click_button("Filter")
     check("Status")
     select("Enabled", from: "filter[status]")
+    check("Metadata")
+    fill_in("Key", with: "customer.id")
+    fill_in("Value", with: "RR1234")
     click_button("Done")
 
-    expect(page).to have_content("Filter 2")
+    expect(page).to have_content("Filter 3")
     expect(page).to have_content("Rocket Rides")
-    expect(page).to have_content("Garry Gas")
+    expect(page).not_to have_content("Garry Gas")
     expect(page).not_to have_content("Alice Apples")
     expect(page).not_to have_content("Disabled Account")
     expect(page).not_to have_content("Carrier Account")

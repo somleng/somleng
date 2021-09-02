@@ -24,4 +24,23 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
       super
     end
   end
+
+  def key_value(name, key, value, options = {})
+    @template.render("shared/filters/field", filter_value: key, title: options.fetch(:title, name.to_s.humanize)) do
+      template = "".html_safe
+      template += @template.tag.div(class: "mb-3") do
+        form_group = "".html_safe
+        form_group += label("#{name}_key", "Key")
+        form_group += @template.text_field_tag("#{@object_name}[#{name}][key]", key, class: "form-control", placeholder: "customer.id")
+        form_group
+      end
+      template += @template.tag.div(class: "mb-3") do
+        form_group = "".html_safe
+        form_group += label("#{name}_value", "Value")
+        form_group += @template.text_field_tag("#{@object_name}[#{name}][value]", value, class: "form-control", placeholder: "abcd1234")
+        form_group
+      end
+      template
+    end
+  end
 end

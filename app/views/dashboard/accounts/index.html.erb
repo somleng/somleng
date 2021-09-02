@@ -2,6 +2,7 @@
   <%= render("shared/filters") do |form| %>
     <%= form.select :type, Account::TYPES.map { |t| [t.humanize, t] }, { filter_value: params.dig(:filter, :type) } %>
     <%= form.select :status, Account.status.values.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
+    <%= form.key_value(:metadata, params.dig(:filter, :metadata, :key), params.dig(:filter, :metadata, :value)) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
   <%= render("shared/export_action", export_params: { resource_type: "Account" }) %>
