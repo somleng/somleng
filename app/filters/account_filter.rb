@@ -28,5 +28,28 @@ class AccountFilter < ResourceFilter
     end
   end
 
-  filter_with StatusFilter, TypeFilter, DateFilter
+  class MetadataFilter < ApplicationFilter
+    self.filter_schema = Dry::Validation.Contract do
+      params do
+        optional(:filter).schema do
+          optional(:metadata).schema do
+            required(:key).value(:string)
+            required(:value).value(:string)
+          end
+        end
+      end
+    end
+
+    def apply
+      return super if filter_params[:metadata].blank?
+
+      key = filter_params.dig(:metadata, :key)
+      value = filter_params.dig(:metadata, :value)
+      keys = key.split(".").join(",")
+
+      super.where("metadata #>> :key = :value", key: "{#{keys}}", value: value)
+    end
+  end
+
+  filter_with StatusFilter, TypeFilter, DateFilter, MetadataFilter
 end
