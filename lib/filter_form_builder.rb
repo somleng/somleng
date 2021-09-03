@@ -45,7 +45,7 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def text_field_tag(name, value, options = {})
-    @template.render("shared/filters/field", filter_value: value, title: name.to_s.humanize) do
+    @template.render("shared/filters/field", filter_value: value, title: options.fetch(:title, name.to_s.humanize)) do
       @template.text_field_tag("#{@object_name}[#{name}]", value, class: "form-control", **options)
     end
   end

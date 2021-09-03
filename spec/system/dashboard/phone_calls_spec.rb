@@ -15,7 +15,14 @@ RSpec.describe "Phone Calls" do
     filtered_out_phone_calls =
       [
         create(:phone_call, account: account, created_at: Time.utc(2021, 10, 10)),
-        create(:phone_call, account: account, created_at: phone_call.created_at)
+        create(:phone_call, account: account, created_at: phone_call.created_at),
+        create(
+          :phone_call,
+          account: account,
+          created_at: phone_call.created_at,
+          to: phone_call.to,
+          from: phone_call.from
+        )
       ]
     user = create(:user, :carrier, carrier: carrier)
 
@@ -25,7 +32,8 @@ RSpec.describe "Phone Calls" do
         from_date: "01/12/2021",
         to_date: "15/12/2021",
         to: "+855 12 234 232 ",
-        from: "1294"
+        from: "1294",
+        id: phone_call.id
       }
     )
 

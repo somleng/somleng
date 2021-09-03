@@ -42,5 +42,5 @@ class PhoneCallFilter < ResourceFilter
     super.joins(:account).where(accounts: { carrier_id: carrier_id })
   end
 
-  filter_with AccountFilter, ToFilter, FromFilter, DateFilter
+  filter_with IDFilter, AccountFilter, ToFilter, FromFilter, DateFilter
 end

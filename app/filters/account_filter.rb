@@ -51,5 +51,5 @@ class AccountFilter < ResourceFilter
     end
   end
 
-  filter_with StatusFilter, TypeFilter, DateFilter, MetadataFilter
+  filter_with IDFilter, StatusFilter, TypeFilter, DateFilter, MetadataFilter
 end
