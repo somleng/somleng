@@ -33,6 +33,7 @@ module Services
       result[:inbound_sip_trunk] = context.fetch(:inbound_sip_trunk)
       result[:direction] = :inbound
       result[:account] = phone_number.account
+      result[:carrier] = phone_number.carrier
       result[:voice_url] = phone_number.voice_url
       result[:voice_method] = phone_number.voice_method
       result[:status_callback_url] = phone_number.status_callback_url

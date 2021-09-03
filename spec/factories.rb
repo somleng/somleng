@@ -190,6 +190,7 @@ FactoryBot.define do
 
   factory :phone_call do
     account
+    carrier { account.carrier }
     to { "85512334667" }
     from { "2442" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
@@ -207,7 +208,23 @@ FactoryBot.define do
     end
 
     traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
-    traits_for_enum :direction, %i[inbound outbound]
+
+    trait :inbound do
+      direction { :inbound }
+
+      after(:build) do |phone_call|
+        phone_call.inbound_sip_trunk ||= build(:inbound_sip_trunk, carrier: phone_call.carrier)
+      end
+    end
+
+    trait :outbound do
+      direction { :outbound }
+
+      after(:build) do |phone_call|
+        phone_call.outbound_sip_trunk ||= build(:outbound_sip_trunk, carrier: phone_call.carrier)
+        phone_call.dial_string ||= "#{phone_call.to}#{phone_call.outbound_sip_trunk.host}"
+      end
+    end
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do

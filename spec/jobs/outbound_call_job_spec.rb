@@ -8,6 +8,7 @@ RSpec.describe OutboundCallJob do
       :queued,
       :routable,
       to: "85516701721",
+      dial_string: "85516701721@sip.example.com",
       from: "1294",
       voice_url: "http://example.com/voice_url",
       voice_method: "POST"
@@ -31,7 +32,7 @@ RSpec.describe OutboundCallJob do
         to: "85516701721",
         from: "1294",
         routing_instructions: {
-          dial_string: be_present
+          dial_string: "85516701721@sip.example.com"
         }
       }
     )
@@ -43,18 +44,6 @@ RSpec.describe OutboundCallJob do
     OutboundCallJob.perform_now(phone_call)
 
     expect(WebMock).not_to have_requested(:post, "https://ahn.somleng.org/calls")
-  end
-
-  it "handles unknown gateways" do
-    phone_call = create(
-      :phone_call,
-      :queued,
-      to: "85513333333"
-    )
-
-    OutboundCallJob.perform_now(phone_call)
-
-    expect(phone_call.status).to eq("canceled")
   end
 
   it "handles failed outbound calls" do

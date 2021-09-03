@@ -50,6 +50,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     # https://www.twilio.com/docs/api/rest/making-calls
     example "Create a call" do
       account = create(:account)
+      create(:outbound_sip_trunk, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
 

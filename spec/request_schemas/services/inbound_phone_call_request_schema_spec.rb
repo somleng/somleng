@@ -90,9 +90,9 @@ module Services
 
     it "normalizes the twiml for routing to a sip domain" do
       carrier = create(:carrier)
-      inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
+      create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
       account = create(:account)
-      phone_number = create(
+      create(
         :phone_number,
         account: account,
         carrier: carrier,

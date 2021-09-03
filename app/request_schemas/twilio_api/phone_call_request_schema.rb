@@ -22,6 +22,23 @@ module TwilioAPI
 
     rule(:To).validate(:phone_number_format)
 
+    rule(:To) do |context:|
+      next if schema_error?(:To)
+
+      destination_rules = DestinationRules.new(account: account, destination: value)
+      unless destination_rules.calling_code_allowed?
+        next base.failure(text: "Call blocked by block list", code: "13225")
+      end
+
+      context[:outbound_sip_trunk] = destination_rules.find_sip_trunk
+      if context[:outbound_sip_trunk].blank?
+        base.failure(
+          text: "Calling this number is unsupported or the number is invalid",
+          code: "13224"
+        )
+      end
+    end
+
     rule(:Twiml) do
       Nokogiri::XML(value) { |c| c.options = Nokogiri::XML::ParseOptions::STRICT } if key? && value.present?
     rescue Nokogiri::XML::SyntaxError
@@ -29,21 +46,26 @@ module TwilioAPI
     end
 
     rule(:Url, :Twiml) do
-      if !(key?(:Url) || key?(:Twiml))
-        key(:Url).failure("is required")
-      end
+      key(:Url).failure("is required") unless key?(:Url) || key?(:Twiml)
     end
 
     def output
       params = super
 
       {
+        account: account,
+        carrier: account.carrier,
+        outbound_sip_trunk: context.fetch(:outbound_sip_trunk),
+        dial_string: DialString.new(
+          outbound_sip_trunk: context.fetch(:outbound_sip_trunk),
+          destination: params.fetch(:To)
+        ).to_s,
         to: params.fetch(:To),
         from: params.fetch(:From),
         voice_url: params[:Url],
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
         status_callback_url: params[:StatusCallback],
-        status_callback_method: params[:SatatusCallbackMethod],
+        status_callback_method: params[:StatusCallbackMethod],
         twiml: (params[:Twiml] unless params.key?(:Url)),
         direction: :outbound
       }
