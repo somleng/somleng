@@ -13,10 +13,10 @@
       <%= f.attribute :account, value: external_link_to(phone_call.account.name, dashboard_account_path(phone_call.account)) %>
     <% end %>
 
-    <% if phone_call.phone_number.present? %>
-      <%= f.attribute :phone_number, value: external_link_to(phone_call.phone_number.number, dashboard_phone_number_path(phone_call.phone_number)) %>
-    <% else %>
-      <%= f.attribute :phone_number %>
+    <% if policy(:phone_number).show? %>
+      <% if phone_call.phone_number.present? %>
+        <%= f.attribute :phone_number, value: external_link_to(phone_call.phone_number.number, dashboard_phone_number_path(phone_call.phone_number)) %>
+      <% end %>
     <% end %>
 
     <% if policy(:outbound_sip_trunk).show? %>
