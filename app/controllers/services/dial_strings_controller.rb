@@ -1,14 +1,18 @@
 module Services
   class DialStringsController < ServicesController
     def create
-      routing_instructions = OutboundCallRouter.new(
-        destination: params.fetch(:phone_number),
-        account: Account.find(params.fetch(:account_sid))
-      ).routing_instructions
+      account = Account.find(params.fetch(:account_sid))
+      destination = params.fetch(:phone_number)
+      destination_rules = DestinationRules.new(account: account, destination: destination)
 
-      render json: routing_instructions, status: :created
-    rescue OutboundCallRouter::UnsupportedGatewayError
-      head :not_implemented
+      if destination_rules.valid?
+        outbound_sip_trunk = destination_rules.sip_trunk
+        dial_string = DialString.new(outbound_sip_trunk: outbound_sip_trunk, destination: destination)
+
+        render json: { dial_string: dial_string.to_s }, status: :created
+      else
+        head :not_implemented
+      end
     end
   end
 end

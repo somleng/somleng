@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe DestinationRules do
-  describe "#find_sip_trunk" do
+  describe "#sip_trunk" do
     it "returns the sip trunk configured for the account" do
       carrier = create(:carrier)
       sip_trunk = create(:outbound_sip_trunk, carrier: carrier)
@@ -11,7 +11,7 @@ RSpec.describe DestinationRules do
       result = DestinationRules.new(
         account: account,
         destination: "855715100970"
-      ).find_sip_trunk
+      ).sip_trunk
 
       expect(result).to eq(sip_trunk)
     end
@@ -24,7 +24,7 @@ RSpec.describe DestinationRules do
       result = DestinationRules.new(
         account: account,
         destination: "855715100970"
-      ).find_sip_trunk
+      ).sip_trunk
 
       expect(result).to eq(sip_trunk)
     end
@@ -42,7 +42,7 @@ RSpec.describe DestinationRules do
       result = DestinationRules.new(
         account: account,
         destination: "855715100970"
-      ).find_sip_trunk
+      ).sip_trunk
 
       expect(result).to eq(sip_trunk)
     end
@@ -56,7 +56,7 @@ RSpec.describe DestinationRules do
       )
       account = create(:account, carrier: carrier)
 
-      result = DestinationRules.new(account: account, destination: "855715100970").find_sip_trunk
+      result = DestinationRules.new(account: account, destination: "855715100970").sip_trunk
 
       expect(result).to eq(nil)
     end

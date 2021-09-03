@@ -16,11 +16,11 @@ module TwilioAPI
 
       expect(
         validate_request_schema(input_params: { To: "61428234567" }, options: { account: account })
-      ).not_to have_valid_field(:base, error_message: "Call blocked by block list", error_code: "13225")
+      ).not_to have_valid_schema(error_message: "Call blocked by block list", error_code: "13225")
 
       expect(
         validate_request_schema(input_params: { To: "855716100235" }, options: { account: account_with_no_sip_trunks })
-      ).not_to have_valid_field(:base, error_message: "Calling this number is unsupported or the number is invalid", error_code: "13224")
+      ).not_to have_valid_schema(error_message: "Calling this number is unsupported or the number is invalid", error_code: "13224")
     end
 
     it "validates Url" do
@@ -124,11 +124,19 @@ module TwilioAPI
     end
 
     it "handles post processing when passing TwiML" do
+      account = create(:account)
+      create(
+        :outbound_sip_trunk,
+        carrier: account.carrier
+      )
       schema = validate_request_schema(
         input_params: {
           To: "+855 716 100235",
           From: "1294",
           Twiml: "<Response><Say>Ahoy there!</Say></Response>"
+        },
+        options: {
+          account: account
         }
       )
 
