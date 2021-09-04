@@ -15,7 +15,6 @@ class PhoneCall < ApplicationRecord
   has_one    :call_data_record, -> { where(call_leg: :A) }
   has_many   :phone_call_events
 
-  delegate :carrier, to: :account
   delegate :may_fire_event?, to: :aasm
 
   aasm column: :status do
