@@ -3,21 +3,19 @@ module Services
     def create
       validate_request_schema(
         with: PhoneCallEventRequestSchema,
-        serializer_class: PhoneCallEventSerializer,
         location: nil
       ) do |permitted_params|
-        ApplicationRecord.transaction do
-          event = PhoneCallEvent.create!(permitted_params)
-          UpdatePhoneCallStatus.call(
-            event.phone_call,
-            event_type: event.type,
-            answer_epoch: event.params["answer_epoch"],
-            sip_term_status: event.params["sip_term_status"]
-          )
-
-          event
-        end
+        ExecuteWorkflowJob.perform_later(
+          "ProcessPhoneCallEvent",
+          permitted_params
+        )
       end
+    end
+
+    private
+
+    def respond_with_resource(*)
+      head(:created)
     end
   end
 end
