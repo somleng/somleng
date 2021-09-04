@@ -1,27 +1,31 @@
 class ProcessPhoneCallEvent < ApplicationWorkflow
-  attr_reader :type, :external_phone_call_id, :params
+  attr_reader :params
 
-  def initialize(options)
-    @type = options.fetch(:type)
-    @external_phone_call_id = options.fetch(:external_phone_call_id)
-    @params = options.fetch(:params)
+  def initialize(params)
+    @params = params
   end
 
   def call
-    phone_call = PhoneCall.find_by!(external_id: external_phone_call_id)
+    params[:phone_call] = find_phone_call!
+    create_event!
+  end
 
+  private
+
+  def find_phone_call!
+    PhoneCall.find_by!(external_id: params.fetch(:phone_call))
+  end
+
+  def create_event!
     ApplicationRecord.transaction do
-      event = PhoneCallEvent.create!(permitted_params)
+      event = PhoneCallEvent.create!(params)
       UpdatePhoneCallStatus.call(
         event.phone_call,
         event_type: event.type,
         answer_epoch: event.params["answer_epoch"],
         sip_term_status: event.params["sip_term_status"]
       )
+      event
     end
   end
-
-  private
-
-
 end
