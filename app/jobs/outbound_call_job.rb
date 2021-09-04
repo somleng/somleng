@@ -4,11 +4,6 @@ class OutboundCallJob < ApplicationJob
   def perform(phone_call, call_service_client: CallService::Client.new)
     return if phone_call.canceled?
 
-    routing_instructions = OutboundCallRouter.new(
-      account: phone_call.account,
-      destination: phone_call.to
-    ).routing_instructions
-
     response = call_service_client.create_call(
       sid: phone_call.id,
       account_sid: phone_call.account.id,
@@ -20,7 +15,9 @@ class OutboundCallJob < ApplicationJob
       twiml: phone_call.twiml,
       to: phone_call.to,
       from: phone_call.from,
-      routing_instructions: routing_instructions
+      routing_instructions: {
+        dial_string: phone_call.dial_string
+      }
     )
 
     # re-enqueue job with exponential backoff
@@ -28,7 +25,5 @@ class OutboundCallJob < ApplicationJob
 
     phone_call.external_id = response.fetch(:id)
     phone_call.initiate!
-  rescue OutboundCallRouter::UnsupportedGatewayError
-    phone_call.cancel!
   end
 end

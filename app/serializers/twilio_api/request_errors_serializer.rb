@@ -1,5 +1,7 @@
 module TwilioAPI
   class RequestErrorsSerializer < TwilioAPISerializer
+    DEFAULT_ERROR_CODE = 20422
+
     def attributes
       {
         message: nil,
@@ -10,7 +12,7 @@ module TwilioAPI
     end
 
     def message
-      errors(full: true).to_h.values.flatten.to_sentence
+      errors(full: true).map(&:text).to_sentence
     end
 
     def status
@@ -18,11 +20,15 @@ module TwilioAPI
     end
 
     def code
-      20422
+      errors.each do |error|
+        return error.meta.fetch(:code).to_i if error.meta.key?(:code)
+      end
+
+      DEFAULT_ERROR_CODE
     end
 
     def more_info
-      "https://www.twilio.com/docs/errors/20422"
+      "https://www.twilio.com/docs/errors/#{code}"
     end
   end
 end

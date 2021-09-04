@@ -37,7 +37,23 @@ module RequestSchemaMatchers
     match_when_negated { |actual| invalid?(actual, *path) }
 
     failure_message do |actual|
-      "expected: schema not to have errors on #{path.inspect}\ngot: #{actual.errors.to_h}"
+      "expected schema not to have errors on #{path.inspect}\ngot: #{actual.errors.to_h}"
+    end
+
+    failure_message_when_negated do |actual|
+      options = path.extract_options!
+      "expected schema to have errors on #{path.inspect} with #{options} but got #{actual.errors.to_h}"
+    end
+  end
+
+  matcher :have_valid_schema do |options|
+    include Helpers
+
+    match { |actual| valid?(actual, nil, options) }
+    match_when_negated { |actual| invalid?(actual, nil, options) }
+
+    failure_message do |actual|
+      "expected: schema not to have errors on base\ngot: #{actual.errors.to_h}"
     end
   end
 end
