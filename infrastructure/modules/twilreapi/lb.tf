@@ -33,8 +33,12 @@ resource "aws_lb_listener_rule" "allow_old_api" {
 
   condition {
     path_pattern {
-      values = ["/2010-04-01/*", "/services/*"]
+      values = ["/2010-04-01/*"]
     }
+  }
+
+  lifecycle {
+    ignore_changes = [action]
   }
 }
 
@@ -73,5 +77,9 @@ resource "aws_lb_listener_rule" "this" {
     host_header {
       values = ["api.somleng.org", "dashboard.somleng.org"]
     }
+  }
+
+  lifecycle {
+    ignore_changes = [action]
   }
 }
