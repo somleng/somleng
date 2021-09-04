@@ -12,7 +12,7 @@ module TwilioAPI
     end
 
     def message
-      errors(full: true).to_h.values.flatten.to_sentence
+      errors(full: true).map(&:text).to_sentence
     end
 
     def status
@@ -21,7 +21,7 @@ module TwilioAPI
 
     def code
       errors.each do |error|
-        returrn error.meta.fetch(:code) if error.meta.key?(:code)
+        return error.meta.fetch(:code).to_i if error.meta.key?(:code)
       end
 
       DEFAULT_ERROR_CODE

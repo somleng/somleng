@@ -69,10 +69,21 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       account = create(:account)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id)
+      do_request(
+        account_sid: account.id,
+        "To" => "+299221234",
+        "From" => "1234",
+        "Url" => "https://demo.twilio.com/docs/voice.xml"
+      )
 
       expect(response_status).to eq(422)
       expect(response_body).to match_api_response_schema("twilio_api/api_errors")
+      expect(json_response).to eq(
+        "message" => "Calling this number is unsupported or the number is invalid",
+        "status" => 422,
+        "code" => 13224,
+        "more_info" => "https://www.twilio.com/docs/errors/13224"
+      )
     end
   end
 
