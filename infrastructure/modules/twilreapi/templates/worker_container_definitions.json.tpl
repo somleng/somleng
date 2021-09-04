@@ -27,6 +27,10 @@
       {
         "name": "DATABASE_PASSWORD",
         "valueFrom": "${database_password_parameter_arn}"
+      },
+      {
+        "name": "SERVICES_PASSWORD",
+        "valueFrom": "${services_password_parameter_arn}"
       }
     ],
     "environment": [

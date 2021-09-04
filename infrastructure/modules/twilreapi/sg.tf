@@ -3,10 +3,16 @@ resource "aws_security_group" "appserver" {
   vpc_id = var.vpc_id
 }
 
-resource "aws_security_group" "inbound_sip_trunks" {
-  name   = "${var.app_identifier}-inbound-sip-trunks"
+resource "aws_security_group" "inbound_sip_trunks_old" {
+  name   = "twilreapi-inbound-sip-trunks"
   vpc_id = var.vpc_id
-  description = "${var.app_identifier} Inbound SIP Trunks"
+  description = "twilreapi Inbound SIP Trunks"
+}
+
+resource "aws_security_group" "inbound_sip_trunks" {
+  name   = "somleng-inbound-sip-trunks"
+  vpc_id = var.vpc_id
+  description = "Somleng Inbound SIP Trunks"
 }
 
 resource "aws_security_group_rule" "appserver_ingress" {

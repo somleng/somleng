@@ -11,11 +11,11 @@ default: &default
 
 development: &development
   <<: *default
-  database: twilreapi_development
+  database: somleng_development
 
 test:
   <<: *default
-  database: twilreapi_test
+  database: somleng_test
 
 production: &production
   <<: *default
