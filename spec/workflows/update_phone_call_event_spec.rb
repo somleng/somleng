@@ -27,6 +27,19 @@ RSpec.describe UpdatePhoneCallStatus do
     expect(phone_call.status).to eq("answered")
   end
 
+  it "handles events received out of order" do
+    phone_call = create(:phone_call, :completed)
+
+    UpdatePhoneCallStatus.call(
+      phone_call,
+      event_type: "answered",
+      answer_epoch: 0,
+      sip_term_status: ""
+    )
+
+    expect(phone_call.status).to eq("completed")
+  end
+
   it "handles completed events" do
     phone_call = create(:phone_call, :answered)
 
@@ -53,7 +66,7 @@ RSpec.describe UpdatePhoneCallStatus do
     expect(phone_call.status).to eq("not_answered")
   end
 
-  it "handles completed events with " do
+  it "handles completed events with canceled" do
     phone_call = create(:phone_call, :ringing)
 
     UpdatePhoneCallStatus.call(

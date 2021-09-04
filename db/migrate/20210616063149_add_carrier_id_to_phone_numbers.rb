@@ -1,4 +1,4 @@
-class AddCarrierIdToPhoneNumbers < ActiveRecord::Migration[6.1]
+class AddCarrierIDToPhoneNumbers < ActiveRecord::Migration[6.1]
   def change
     add_reference :phone_numbers, :carrier, foreign_key: true, type: :uuid
 
