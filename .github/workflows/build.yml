@@ -165,10 +165,11 @@ jobs:
     if: github.ref == 'refs/heads/master'
     env:
       IMAGE_TAG: ${{ github.sha }}
-      APP_IDENTIFIER: twilreapi
+      APP_IDENTIFIER: somleng
+      SERVICE_IDENTIFIER: twilreapi
       ECR_PUBLIC_REGISTRY: public.ecr.aws
-      APP_ECR_REPOSITORY_URI: public.ecr.aws/somleng/twilreapi
-      NGINX_ECR_REPOSITORY_URI: public.ecr.aws/somleng/twilreapi-nginx
+      APP_ECR_REPOSITORY_URI: public.ecr.aws/somleng/somleng
+      NGINX_ECR_REPOSITORY_URI: public.ecr.aws/somleng/somleng-nginx
 
     steps:
       - name: Checkout
@@ -278,23 +279,23 @@ jobs:
       - name: Run DB Migrate
         run: |
           aws ecs register-task-definition --cli-input-json file://${{ steps.render-worker-task-def.outputs.task-definition }}
-          ./bin/ecs_run_task --cluster somleng --started-by db_migrate_ci --service ${{ env.APP_IDENTIFIER }}-worker --command "bundle exec rails db:migrate"
+          ./bin/ecs_run_task --cluster somleng --started-by db_migrate_ci --service ${{ env.SERVICE_IDENTIFIER }}-worker --command "bundle exec rails db:migrate"
 
       - name: Deploy App Server
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-appserver-task-def.outputs.task-definition }}
-          service: ${{ env.APP_IDENTIFIER }}-appserver
+          service: ${{ env.SERVICE_IDENTIFIER }}-appserver
           cluster: somleng
           wait-for-service-stability: true
           codedeploy-appspec: deploy/appspec.yaml
-          codedeploy-application: ${{ env.APP_IDENTIFIER }}
-          codedeploy-deployment-group: ${{ env.APP_IDENTIFIER }}
+          codedeploy-application: ${{ env.SERVICE_IDENTIFIER }}
+          codedeploy-deployment-group: ${{ env.SERVICE_IDENTIFIER }}
 
       - name: Deploy Worker
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
-          service: ${{ env.APP_IDENTIFIER }}-worker
+          service: ${{ env.SERVICE_IDENTIFIER }}-worker
           cluster: somleng
           wait-for-service-stability: true
