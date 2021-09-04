@@ -19,8 +19,8 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
 
   def call
     return handle_complete_event if event_type == :completed
-    return phone_call.ring!      if event_type == :ringing
-    return phone_call.answer!    if event_type == :answered
+    return phone_call.ring!      if event_type == :ringing && phone_call.may_fire_event?(:ring)
+    return phone_call.answer!    if event_type == :answered && phone_call.may_fire_event?(:answer)
   end
 
   private
