@@ -50,12 +50,12 @@ RSpec.describe "Services" do
       )
 
       expect(response.code).to eq("422")
-      expect(response.body).to match_api_response_schema("api_errors")
+      expect(response.body).to match_api_response_schema("services/api_errors")
     end
 
     it "handles phone numbers which aren't assigned to an account" do
       carrier = create(:carrier)
-      create(
+      phone_number = create(
         :phone_number,
         carrier: carrier,
         number: "855716200876"
@@ -77,8 +77,15 @@ RSpec.describe "Services" do
       )
 
       expect(response.code).to eq("422")
-      expect(response.body).to match_api_response_schema("api_errors")
-      expect(json_response(body).fetch("more_info")).to match(%r{https://twilreapi.somleng.org/dashboard/logs/})
+      expect(response.body).to match_api_response_schema("services/api_errors")
+      expect(Log.last).to have_attributes(
+        carrier: carrier,
+        phone_number: phone_number,
+        type: "inbound_phone_call_failure",
+        status: "failure",
+        error_message: "Failed to create inbound phone call",
+        body: "Account is unassigned and Phone number is unconfigured. Either a Voice URL or a SIP domain must be configured."
+      )
     end
   end
 end

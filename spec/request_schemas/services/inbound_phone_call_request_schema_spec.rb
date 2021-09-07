@@ -17,9 +17,29 @@ module Services
     it "validates the inbound phone number is valid" do
       carrier = create(:carrier)
       _inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
-      _assigned_phone_number = create(:phone_number, :assigned_to_account, number: "855716100235", carrier: carrier)
-      _unassigned_phone_number = create(:phone_number, number: "855716100236", carrier: carrier)
-      _unconfigured_phone_number = create(:phone_number, :assigned_to_account, number: "855716100237", carrier: carrier, voice_url: nil)
+      _configured_with_voice_url = create(
+        :phone_number,
+        :assigned_to_account,
+        number: "855716100235",
+        voice_url: "https://www.example.com/voice-url",
+        carrier: carrier
+      )
+      _configured_with_sip_domain = create(
+        :phone_number,
+        :assigned_to_account,
+        number: "855716100236",
+        carrier: carrier,
+        voice_url: nil,
+        sip_domain: "example.sip.twilio.com"
+      )
+      _unassigned_phone_number = create(:phone_number, number: "855716100237", carrier: carrier)
+      _unconfigured_phone_number = create(
+        :phone_number,
+        :assigned_to_account,
+        number: "855716100238",
+        carrier: carrier,
+        voice_url: nil
+      )
 
       expect(
         validate_request_schema(input_params: { to: "855716100235", source_ip: "175.100.7.240" })
@@ -27,14 +47,18 @@ module Services
 
       expect(
         validate_request_schema(input_params: { to: "855716100236", source_ip: "175.100.7.240" })
-      ).not_to have_valid_schema(error_message: "Account is unassigned")
+      ).to have_valid_schema
 
       expect(
         validate_request_schema(input_params: { to: "855716100237", source_ip: "175.100.7.240" })
-      ).not_to have_valid_schema(error_message: "Voice URL is not configured")
+      ).not_to have_valid_schema(error_message: "Account is unassigned")
 
       expect(
         validate_request_schema(input_params: { to: "855716100238", source_ip: "175.100.7.240" })
+      ).not_to have_valid_schema(error_message: "Phone number is unconfigured. Either a Voice URL or a SIP domain must be configured.")
+
+      expect(
+        validate_request_schema(input_params: { to: "855716100239", source_ip: "175.100.7.240" })
       ).not_to have_valid_schema(error_message: "Phone number does not exist")
     end
 
@@ -42,7 +66,13 @@ module Services
       carrier = create(:carrier)
       inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
       account = create(:account)
-      phone_number = create(:phone_number, account: account, carrier: carrier, number: "2442")
+      phone_number = create(
+        :phone_number,
+        account: account,
+        carrier: carrier,
+        number: "2442",
+        voice_url: "https://www.example.com/voice-url"
+      )
       schema = validate_request_schema(
         input_params: {
           source_ip: "175.100.7.240",
@@ -62,6 +92,8 @@ module Services
         external_id: "external-id",
         phone_number: phone_number,
         inbound_sip_trunk: inbound_sip_trunk,
+        voice_url: "https://www.example.com/voice-url",
+        voice_method: "POST",
         variables: {
           "sip_from_host" => "103.9.189.2"
         }

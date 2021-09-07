@@ -25,9 +25,10 @@ module Services
     end
 
     rule do |context:|
-      if context[:phone_number].present?
-        base.failure("Voice URL is not configured") if context[:phone_number].voice_url.blank?
-      end
+      next if context[:phone_number].blank?
+      next if context[:phone_number].voice_url.present? || context[:phone_number].sip_domain.present?
+
+      base.failure("Phone number is unconfigured. Either a Voice URL or a SIP domain must be configured.")
     end
 
     def output
@@ -46,10 +47,11 @@ module Services
       result[:account] = phone_number.account
       result[:carrier] = phone_number.carrier
       result[:voice_url] = phone_number.voice_url
-      result[:voice_method] = phone_number.voice_method || "POST"
+      result[:voice_method] = phone_number.voice_method
       result[:status_callback_url] = phone_number.status_callback_url
       result[:status_callback_method] = phone_number.status_callback_method
       result[:twiml] = route_to_sip_domain(phone_number) if phone_number.sip_domain.present?
+      result[:voice_method] ||= "POST" if phone_number.sip_domain.blank?
       result[:from] = normalize_from(
         params.fetch(:from),
         result[:inbound_sip_trunk].trunk_prefix_replacement

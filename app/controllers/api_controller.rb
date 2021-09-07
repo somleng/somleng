@@ -12,6 +12,7 @@ class APIController < ActionController::API
       resource = yield(schema.output)
       respond_with_resource(resource, options)
     else
+      handle_failure(schema, options)
       respond_with_error(schema, options)
     end
   end
@@ -25,6 +26,8 @@ class APIController < ActionController::API
   def respond_with_resource(resource, options = {})
     respond_with(resource, **options)
   end
+
+  def handle_failure(*); end
 
   def respond_with_error(schema, options = {})
     respond_with(schema, responder: InvalidRequestSchemaResponder, **options)
