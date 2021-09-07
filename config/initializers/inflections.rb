@@ -14,10 +14,13 @@
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "CDR"
   inflect.acronym "UUID"
+  inflect.acronym "JSONAPI"
   inflect.acronym "JSON"
   inflect.acronym "API"
   inflect.acronym "SIP"
   inflect.acronym "CSV"
   inflect.acronym "OTP"
   inflect.acronym "IP"
+  inflect.acronym "ID"
+  inflect.acronym "OAuth"
 end

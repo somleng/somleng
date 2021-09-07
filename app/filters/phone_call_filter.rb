@@ -11,6 +11,30 @@ class PhoneCallFilter < ResourceFilter
     end
   end
 
+  class ToFilter < ApplicationFilter
+    filter_params do
+      optional(:to).value(ApplicationRequestSchema::Types::PhoneNumber)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.where(to: filter_params.fetch(:to))
+    end
+  end
+
+  class FromFilter < ApplicationFilter
+    filter_params do
+      optional(:from).value(ApplicationRequestSchema::Types::PhoneNumber)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.where(from: filter_params.fetch(:from))
+    end
+  end
+
   def apply
     return super unless scoped_to.key?(:carrier_id)
 
@@ -18,5 +42,5 @@ class PhoneCallFilter < ResourceFilter
     super.joins(:account).where(accounts: { carrier_id: carrier_id })
   end
 
-  filter_with AccountFilter, DateFilter
+  filter_with IDFilter, AccountFilter, ToFilter, FromFilter, DateFilter
 end

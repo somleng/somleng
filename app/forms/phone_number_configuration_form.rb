@@ -10,15 +10,17 @@ class PhoneNumberConfigurationForm
   attribute :voice_method
   attribute :status_callback_url
   attribute :status_callback_method
+  attribute :sip_domain
   attribute :phone_number
 
-  validates :voice_url, presence: true
-  validates :voice_url, format: URL_FORMAT, allow_nil: true, allow_blank: true
-  validates :status_callback_url, format: URL_FORMAT, allow_nil: true, allow_blank: true
-  validates :voice_method, presence: true, inclusion: { in: PhoneNumber.voice_method.values }
+  validates :voice_url, format: URL_FORMAT, allow_blank: true
+  validates :status_callback_url, format: URL_FORMAT, allow_blank: true
+  validates :voice_method,
+            inclusion: { in: PhoneNumber.voice_method.values },
+            allow_blank: true
   validates :status_callback_method,
             inclusion: { in: PhoneNumber.status_callback_method.values },
-            allow_blank: true, allow_nil: true
+            allow_blank: true
 
   delegate :persisted?, :new_record?, :id, to: :phone_number
 
@@ -32,17 +34,19 @@ class PhoneNumberConfigurationForm
       voice_url: phone_number.voice_url,
       voice_method: phone_number.voice_method,
       status_callback_url: phone_number.status_callback_url,
-      status_callback_method: phone_number.status_callback_method
+      status_callback_method: phone_number.status_callback_method,
+      sip_domain: phone_number.sip_domain
     )
   end
 
   def save
     return false if invalid?
 
-    phone_number.voice_url = voice_url
-    phone_number.voice_method = voice_method
+    phone_number.voice_url = voice_url.presence
+    phone_number.voice_method = voice_method.presence
     phone_number.status_callback_url = status_callback_url.presence
     phone_number.status_callback_method = status_callback_method.presence
+    phone_number.sip_domain = sip_domain.presence
 
     phone_number.save!
   end

@@ -69,7 +69,7 @@ Rails.application.configure do
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "twilreapi_production"
+  # config.active_job.queue_name_prefix = "somleng_production"
   config.active_job.queue_adapter = :shoryuken
   config.action_mailer.perform_caching = false
 
@@ -110,10 +110,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  Rails.application.routes.default_url_options[:host] = Rails.configuration.app_settings.fetch(:default_url_host)
-
   config.action_mailer.default_url_options = {
-    host: Rails.configuration.app_settings.fetch(:default_url_host),
+    host: Rails.configuration.app_settings.fetch(:dashboard_url_host),
     protocol: "https"
   }
 

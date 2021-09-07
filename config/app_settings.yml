@@ -1,7 +1,10 @@
 default: &default
-  default_url_host: <%= ENV.fetch("APP_URL_HOST", "http://localhost:3000") %>
+  api_url_host: <%= ENV.fetch("API_URL_HOST", "http://localhost:3000") %>
+  dashboard_url_host: <%= ENV.fetch("DASHBOARD_URL_HOST", "http://localhost:3000") %>
   mailer_sender: "support@somleng.org"
-  aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default") %>
+  aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
+  aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>
+  aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_LOW_PRIORITY_QUEUE_NAME", "low-priority") %>
   aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
   uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "upload-bucket") %>
@@ -11,12 +14,16 @@ default: &default
   ahn_username: "adhearsion"
   ahn_password: "password"
   otp_secret_encryption_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  admin_username: "admin"
+  admin_password: "password"
 
 production: &production
   <<: *default
-  default_url_host: "https://twilreapi.somleng.org"
+  api_url_host: "https://api.somleng.org"
+  dashboard_url_host: "https://dashboard.somleng.org"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
-  services_password: "<%= Rails.application.credentials.services_password %>"
+  services_password: "<%= ENV['SERVICES_PASSWORD'] %>"
+  admin_password: "<%= Rails.application.credentials.admin_password %>"
   ahn_host: "https://ahn.somleng.org"
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
   otp_secret_encryption_key: "<%= Rails.application.credentials.otp_secret_encryption_key %>"
@@ -28,4 +35,5 @@ development: &development
 test:
   <<: *development
   ahn_host: "https://ahn.somleng.org"
-  default_url_host: https://twilreapi.somleng.org
+  api_url_host: "https://api.somleng.org"
+  dashboard_url_host: "https://dashboard.somleng.org"

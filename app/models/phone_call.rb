@@ -4,16 +4,17 @@ class PhoneCall < ApplicationRecord
 
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]
-  enumerize :direction, in: %i[inbound outbound], predicates: true
+  enumerize :direction, in: %i[inbound outbound], predicates: true, scope: :shallow
 
+  belongs_to :carrier
   belongs_to :account
   belongs_to :phone_number, optional: true
   belongs_to :inbound_sip_trunk, optional: true
+  belongs_to :outbound_sip_trunk, optional: true
 
   has_one    :call_data_record, -> { where(call_leg: :A) }
   has_many   :phone_call_events
 
-  delegate :carrier, to: :account
   delegate :may_fire_event?, to: :aasm
 
   aasm column: :status do
@@ -32,7 +33,7 @@ class PhoneCall < ApplicationRecord
     end
 
     event :cancel do
-      transitions from: %i[queued initiatied ringing], to: :canceled
+      transitions from: %i[queued initiated ringing], to: :canceled
     end
 
     event :ring do

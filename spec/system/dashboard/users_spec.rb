@@ -89,4 +89,21 @@ RSpec.describe "Users" do
     expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
     expect(page).to have_current_path(dashboard_user_path(other_user))
   end
+
+  it "Delete a user" do
+    user = create(:user, :carrier, :owner)
+    other_user = create(
+      :user,
+      :carrier,
+      name: "Joe Bloggs",
+      carrier: user.carrier
+    )
+
+    sign_in(user)
+    visit dashboard_user_path(other_user)
+
+    click_link "Delete"
+
+    expect(page).not_to have_content("Joe Bloggs")
+  end
 end

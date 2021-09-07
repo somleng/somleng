@@ -6,6 +6,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem "rails", "~> 6.1.0"
 
+gem "administrate"
+gem "administrate_exportable"
+gem "administrate-field-active_storage"
+gem "image_processing"
+
 gem "aasm"
 gem "after_commit_everywhere"
 gem "aws-sdk-ec2"
@@ -13,6 +18,7 @@ gem "aws-sdk-rails"
 gem "aws-sdk-s3"
 gem "aws-sdk-sqs"
 gem "country_select"
+gem "cursor_paginator"
 gem "devise"
 gem "devise_invitable"
 gem "devise-two-factor"
@@ -20,6 +26,7 @@ gem "doorkeeper"
 gem "dry-validation"
 gem "enumerize"
 gem "http"
+gem "jsonapi-serializer"
 gem "kaminari"
 gem "lograge"
 gem "okcomputer"
@@ -37,6 +44,7 @@ gem "show_for"
 gem "simple_form"
 gem "skylight"
 gem "turbolinks"
+gem "twilio-ruby"
 gem "tzinfo-data"
 gem "webpacker"
 
@@ -66,7 +74,6 @@ group :test do
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
-  gem "twilio-ruby"
   gem "webdrivers"
   gem "webmock"
 end

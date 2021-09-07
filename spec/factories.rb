@@ -96,9 +96,21 @@ FactoryBot.define do
     association :carrier
     traits_for_enum :status, %w[enabled disabled]
 
+    trait :carrier_managed do
+      with_access_token
+    end
+
+    trait :customer_managed do
+      with_access_token
+
+      after(:build) do |account|
+        account.account_memberships << build(:account_membership, account: account) if account.account_memberships.empty?
+      end
+    end
+
     trait :with_access_token do
       after(:build) do |account|
-        account.access_token ||= build(:access_token, resource_owner_id: account.id)
+        account.access_token ||= build(:oauth_access_token, resource_owner_id: account.id)
       end
     end
 
@@ -178,6 +190,7 @@ FactoryBot.define do
 
   factory :phone_call do
     account
+    carrier { account.carrier }
     to { "85512334667" }
     from { "2442" }
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
@@ -195,7 +208,44 @@ FactoryBot.define do
     end
 
     traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
-    traits_for_enum :direction, %i[inbound outbound]
+
+    trait :inbound do
+      direction { :inbound }
+
+      after(:build) do |phone_call|
+        phone_call.inbound_sip_trunk ||= build(:inbound_sip_trunk, carrier: phone_call.carrier)
+      end
+    end
+
+    trait :outbound do
+      direction { :outbound }
+
+      after(:build) do |phone_call|
+        phone_call.outbound_sip_trunk ||= build(:outbound_sip_trunk, carrier: phone_call.carrier)
+        phone_call.dial_string ||= "#{phone_call.to}#{phone_call.outbound_sip_trunk.host}"
+      end
+    end
+  end
+
+  factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
+    trait :expired do
+      expires_in { 1 }
+      created_at { 5.minutes.ago }
+    end
+
+    trait :with_refresh_token do
+      refresh_token { SecureRandom.urlsafe_base64 }
+    end
+  end
+
+  factory :oauth_application, class: "Doorkeeper::Application" do
+    name { "My Application" }
+    redirect_uri { "urn:ietf:wg:oauth:2.0:oob" }
+
+    trait :carrier do
+      association :owner, factory: :carrier
+      scopes { "carrier_api" }
+    end
   end
 
   factory :user_context do
@@ -213,6 +263,4 @@ FactoryBot.define do
 
     initialize_with { new(organization) }
   end
-
-  factory :access_token, class: "Doorkeeper::AccessToken"
 end

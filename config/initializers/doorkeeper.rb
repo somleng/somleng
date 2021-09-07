@@ -1,3 +1,5 @@
+require_relative "../../app/models/api_authorization_request"
+
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (needs plugins)
   orm :active_record
@@ -48,13 +50,19 @@ Doorkeeper.configure do
   # Optional parameter confirmation: true (default false) if you want to enforce ownership of
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
-  # enable_application_owner confirmation: false
+  enable_application_owner confirmation: false
 
   # Define access token scopes for your provider
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
   # default_scopes  :public
   # optional_scopes :write, :update
+
+  optional_scopes :carrier_api
+
+  scopes_by_grant_type client_credentials: %i[carrier_api]
+
+  enforce_configured_scopes
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -68,7 +76,7 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   # access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
 
-  access_token_methods :from_basic_user_password_authorization
+  access_token_methods APIAuthorizationRequest
 
   # Change the native redirect uri for client apps
   # When clients register with the following redirect uri, they won't be redirected to any server and the authorization code will be displayed within the provider

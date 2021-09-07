@@ -43,14 +43,14 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
   metric_query {
     id = "e1"
     return_data = true
-    expression = "m1 + m2 + m3"
+    expression = "m1 + m2 + m3 + m4"
     label = "Number of Messages"
   }
 
   metric_query {
     id = "m1"
     return_data = false
-    label = "Number of default messages"
+    label = "Number of default priority messages"
     metric {
       namespace           = "AWS/SQS"
       metric_name         = "ApproximateNumberOfMessagesVisible"
@@ -88,6 +88,21 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
       stat           = "Sum"
       dimensions = {
         QueueName = aws_sqs_queue.high_priority.name
+      }
+    }
+  }
+
+  metric_query {
+    id = "m4"
+    return_data = false
+    label = "Number of low priority messages"
+    metric {
+      namespace           = "AWS/SQS"
+      metric_name         = "ApproximateNumberOfMessagesVisible"
+      period              = 60 # Wait this number of seconds before triggering the alarm (smallest available)
+      stat           = "Sum"
+      dimensions = {
+        QueueName = aws_sqs_queue.low_priority.name
       }
     }
   }
@@ -104,14 +119,14 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   metric_query {
     id = "e1"
     return_data = true
-    expression = "m1 + m2 + m3"
+    expression = "m1 + m2 + m3 + m4"
     label = "Number of Messages"
   }
 
   metric_query {
     id = "m1"
     return_data = false
-    label = "Number of default messages"
+    label = "Number of default priority messages"
     metric {
       namespace           = "AWS/SQS"
       metric_name         = "ApproximateNumberOfMessagesVisible"
@@ -149,6 +164,21 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
       stat           = "Sum"
       dimensions = {
         QueueName = aws_sqs_queue.high_priority.name
+      }
+    }
+  }
+
+  metric_query {
+    id = "m4"
+    return_data = false
+    label = "Number of low priority messages"
+    metric {
+      namespace           = "AWS/SQS"
+      metric_name         = "ApproximateNumberOfMessagesVisible"
+      period              = 300
+      stat           = "Sum"
+      dimensions = {
+        QueueName = aws_sqs_queue.low_priority.name
       }
     }
   }

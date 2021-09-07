@@ -50,6 +50,10 @@
       {
         "name": "DATABASE_PASSWORD",
         "valueFrom": "${database_password_parameter_arn}"
+      },
+      {
+        "name": "SERVICES_PASSWORD",
+        "valueFrom": "${services_password_parameter_arn}"
       }
     ],
     "portMappings": [
@@ -67,12 +71,16 @@
         "value": "${app_environment}"
       },
       {
+        "name": "AWS_SQS_HIGH_PRIORITY_QUEUE_NAME",
+        "value": "${aws_sqs_high_priority_queue_name}"
+      },
+      {
         "name": "AWS_SQS_DEFAULT_QUEUE_NAME",
         "value": "${aws_sqs_default_queue_name}"
       },
       {
-        "name": "AWS_SQS_HIGH_PRIORITY_QUEUE_NAME",
-        "value": "${aws_sqs_high_priority_queue_name}"
+        "name": "AWS_SQS_LOW_PRIORITY_QUEUE_NAME",
+        "value": "${aws_sqs_low_priority_queue_name}"
       },
       {
         "name": "AWS_SQS_SCHEDULER_QUEUE_NAME",

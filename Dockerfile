@@ -5,7 +5,7 @@ ENV BUNDLE_APP_CONFIG="/app/.bundle"
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base git postgresql-dev && \
+    apk add --update --no-cache build-base git postgresql-dev imagemagick && \
     gem install bundler
 
 RUN mkdir -p $APP_ROOT
@@ -23,7 +23,7 @@ RUN mkdir -p tmp/pids
 RUN rm -rf vendor/bundle/ruby/*/cache/ && find vendor/ -name "*.o" -delete && find vendor/ -name "*.c"
 
 
-FROM ruby:2.7-alpine
+FROM ruby:2.7-alpine3.13
 
 ARG APP_ROOT="/app"
 ENV BUNDLE_APP_CONFIG="/app/.bundle"
@@ -32,7 +32,7 @@ WORKDIR $APP_ROOT
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base postgresql-dev && \
+    apk add --update --no-cache build-base postgresql-dev imagemagick && \
     gem install bundler
 
 COPY --from=build-env $APP_ROOT $APP_ROOT

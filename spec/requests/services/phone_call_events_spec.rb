@@ -25,8 +25,17 @@ RSpec.describe "Services" do
       end
 
       expect(response.code).to eq("201")
-      expect(response.body).to match_api_response_schema("services/phone_call_event")
       expect(phone_call.reload.status).to eq("completed")
+    end
+
+    it "handles invalid requests" do
+      post(
+        services_phone_call_events_path,
+        headers: build_authorization_headers("services", "password")
+      )
+
+      expect(response.code).to eq("422")
+      expect(response.body).to match_api_response_schema("services/api_errors")
     end
   end
 end

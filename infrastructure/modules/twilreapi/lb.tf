@@ -15,6 +15,54 @@ resource "aws_lb_target_group" "this" {
   }
 }
 
+resource "aws_lb_listener_rule" "allow_old_api" {
+  priority = 11
+
+  listener_arn = var.listener_arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.this[0].id
+  }
+
+  condition {
+    host_header {
+      values = ["twilreapi.somleng.org"]
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/2010-04-01/*"]
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [action]
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_old_dashboard" {
+  priority = 12
+
+  listener_arn = var.listener_arn
+
+  action {
+    type = "redirect"
+
+    redirect {
+      host        = "dashboard.somleng.org"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["twilreapi.somleng.org"]
+    }
+  }
+}
+
 resource "aws_lb_listener_rule" "this" {
   priority = 15
 
@@ -27,7 +75,7 @@ resource "aws_lb_listener_rule" "this" {
 
   condition {
     host_header {
-      values = ["twilreapi.somleng.org"]
+      values = ["api.somleng.org", "dashboard.somleng.org"]
     }
   }
 

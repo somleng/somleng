@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_28_082645) do
+ActiveRecord::Schema.define(version: 2021_09_03_050337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2021_06_28_082645) do
     t.string "allowed_calling_codes", default: [], null: false, array: true
     t.string "name", null: false
     t.integer "account_memberships_count", default: 0, null: false
+    t.jsonb "metadata", default: {}, null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
@@ -168,7 +169,7 @@ ActiveRecord::Schema.define(version: 2021_06_28_082645) do
   end
 
   create_table "oauth_access_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "resource_owner_id", null: false
+    t.uuid "resource_owner_id"
     t.uuid "application_id"
     t.string "token", null: false
     t.string "refresh_token"
@@ -193,6 +194,9 @@ ActiveRecord::Schema.define(version: 2021_06_28_082645) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigserial "sequence_number", null: false
+    t.string "owner_type", null: false
+    t.boolean "confidential", default: true, null: false
+    t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["sequence_number"], name: "index_oauth_applications_on_sequence_number", unique: true, order: :desc
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
@@ -226,8 +230,8 @@ ActiveRecord::Schema.define(version: 2021_06_28_082645) do
     t.uuid "account_id", null: false
     t.string "to", null: false
     t.string "from", null: false
-    t.string "voice_url", null: false
-    t.string "voice_method", null: false
+    t.string "voice_url"
+    t.string "voice_method"
     t.string "status", null: false
     t.string "status_callback_url"
     t.string "status_callback_method"
@@ -239,13 +243,21 @@ ActiveRecord::Schema.define(version: 2021_06_28_082645) do
     t.string "direction", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "inbound_sip_trunk_id"
+    t.text "twiml"
+    t.uuid "outbound_sip_trunk_id"
+    t.uuid "carrier_id", null: false
+    t.string "dial_string"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
+    t.index ["carrier_id"], name: "index_phone_calls_on_carrier_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
+    t.index ["from"], name: "index_phone_calls_on_from"
     t.index ["inbound_sip_trunk_id"], name: "index_phone_calls_on_inbound_sip_trunk_id"
+    t.index ["outbound_sip_trunk_id"], name: "index_phone_calls_on_outbound_sip_trunk_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["status"], name: "index_phone_calls_on_status"
+    t.index ["to"], name: "index_phone_calls_on_to"
   end
 
   create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -259,6 +271,7 @@ ActiveRecord::Schema.define(version: 2021_06_28_082645) do
     t.datetime "updated_at", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
+    t.string "sip_domain"
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
@@ -323,15 +336,15 @@ ActiveRecord::Schema.define(version: 2021_06_28_082645) do
   add_foreign_key "logs", "accounts"
   add_foreign_key "logs", "carriers"
   add_foreign_key "logs", "phone_numbers"
-  add_foreign_key "oauth_access_grants", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "accounts", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_applications", "accounts", column: "owner_id"
+  add_foreign_key "oauth_applications", "carriers", column: "owner_id"
   add_foreign_key "outbound_sip_trunks", "carriers"
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
+  add_foreign_key "phone_calls", "carriers"
   add_foreign_key "phone_calls", "inbound_sip_trunks"
+  add_foreign_key "phone_calls", "outbound_sip_trunks"
   add_foreign_key "phone_calls", "phone_numbers"
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"

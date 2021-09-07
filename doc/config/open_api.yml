@@ -1,9 +1,0 @@
-swagger: '2.0'
-info:
-  title: Somleng Twilreapi
-  description: Somleng Twilreapi is an Open Source implementation of Twilio's REST API
-  contact:
-    name: Somleng
-    url: 'https://www.somleng.org'
-    email: contact@somleng.org
-  version: 1.0.0
