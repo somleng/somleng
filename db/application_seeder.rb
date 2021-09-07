@@ -2,20 +2,28 @@ class ApplicationSeeder
   USER_PASSWORD = "Somleng1234!".freeze
 
   def seed!
-    carrier = create_carrier
+    carrier = OnboardCarrier.call(
+      name: "My Carrier",
+      country_code: "KH",
+      owner: {
+        email: "johndoe@carrier.com",
+        name: "John Doe",
+        password: USER_PASSWORD,
+        carrier_role: :owner,
+        confirmed_at: Time.current
+      }
+    )
     create_outbound_sip_trunk(carrier: carrier)
     create_inbound_sip_trunk(carrier: carrier)
-    create_carrier_access_token(carrier)
     account = create_account(carrier: carrier)
     phone_number = create_phone_number(carrier: carrier, account: account)
-    carrier_owner = create_carrier_owner(carrier: carrier)
 
     puts(<<~INFO)
       Account SID:           #{account.id}
       Auth Token:            #{account.auth_token}
       Inbound Phone Number:  #{phone_number.number}
       ---------------------------------------------
-      Carrier User Email:    #{carrier_owner.email}
+      Carrier User Email:    #{carrier.users.first.email}
       Carrier User Password: #{USER_PASSWORD}
       Carrier API Key:       #{carrier.api_key}
     INFO
@@ -23,12 +31,19 @@ class ApplicationSeeder
 
   private
 
-  def create_carrier(params = {})
-    carrier = Carrier.first_or_create!(
-      params.reverse_merge(
-        name: "My Carrier",
-        country_code: "KH"
-      )
+  def create_carrier
+    return Carrier.first if Carrier.any?
+
+    carrier = OnboardCarrier.call(
+      name: "My Carrier",
+      country_code: "KH",
+      owner: {
+        email: "johndoe@carrier.com",
+        name: "John Doe",
+        password: USER_PASSWORD,
+        carrier_role: :owner,
+        confirmed_at: Time.current
+      }
     )
 
     return carrier if carrier.logo.attached?
@@ -84,31 +99,5 @@ class ApplicationSeeder
         voice_method: "GET"
       )
     )
-  end
-
-  def create_carrier_owner(params)
-    User.first_or_create!(
-      params.reverse_merge(
-        email: "johndoe@carrier.com",
-        name: "John Doe",
-        password: USER_PASSWORD,
-        carrier_role: :owner,
-        confirmed_at: Time.current
-      )
-    )
-  end
-
-  def create_carrier_access_token(carrier)
-    Doorkeeper::Application.first_or_create!(
-      name: carrier.name,
-      owner: carrier,
-      redirect_uri: "urn:ietf:wg:oauth:2.0:oob",
-      scopes: "carrier_api"
-    ) do |app|
-      Doorkeeper::AccessToken.create!(
-        application: app,
-        scopes: app.scopes
-      )
-    end
   end
 end
