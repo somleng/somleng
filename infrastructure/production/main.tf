@@ -22,4 +22,5 @@ module "twilreapi" {
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db.rds_cluster_port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
   ecs_worker_autoscale_min_instances = 1
+  ecs_worker_autoscale_max_instances = 10
 }
