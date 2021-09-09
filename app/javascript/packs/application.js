@@ -21,7 +21,14 @@ import "../stylesheets/application";
 
 document.addEventListener("turbolinks:load", function() {
   $('[data-behavior~=select2-input]').select2({
-    theme: 'bootstrap4'
+    theme: 'bootstrap4',
+  })
+
+  // This is useful when attempting to render Select2 correctly inside of modals and other small containers.
+  // https://select2.org/dropdown#dropdown-placement
+  $('[data-behavior~=select2-filter-input]').select2({
+    theme: 'bootstrap4',
+    dropdownParent: $("#filters")
   })
 
   $('[data-toggle="tooltip"]').tooltip()
