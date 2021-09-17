@@ -28,7 +28,7 @@ class DashboardController < ApplicationController
   end
 
   def paginate_resources(resources_scope)
-    resources_scope.latest_first.page(params[:page])
+    resources_scope.latest_first.page(params[:page]).without_count
   end
 
   def find_record

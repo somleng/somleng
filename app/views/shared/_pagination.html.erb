@@ -1,1 +1,10 @@
-<%= paginate resources, views_prefix: "shared/pagination" %>
+<nav>
+  <ul class="pagination">
+    <li class="page-item">
+      <%= link_to_prev_page resources, raw(t 'views.pagination.previous'), rel: 'prev', class: 'page-link' %>
+    </li>
+    <li class="page-item">
+      <%= link_to_next_page resources, raw(t 'views.pagination.next'), rel: 'next', class: 'page-link' %>
+    </li>
+  </ul>
+</nav>

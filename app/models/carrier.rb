@@ -6,7 +6,7 @@ class Carrier < ApplicationRecord
   has_many :inbound_sip_trunks
   has_many :outbound_sip_trunks
   has_many :phone_numbers
-  has_many :phone_calls, through: :accounts
+  has_many :phone_calls
 
   has_one :application,
           class_name: "Doorkeeper::Application",
