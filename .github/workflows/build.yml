@@ -84,14 +84,14 @@ jobs:
           path: doc/
 
       - name: Compile Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_generating_dial_string'
         env:
           RAILS_ENV: development
         run: |
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_generating_dial_string'
         uses: actions/upload-artifact@v2
         with:
           name: assets
@@ -162,7 +162,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/fix_generating_dial_string'
     env:
       IMAGE_TAG: ${{ github.sha }}
       APP_IDENTIFIER: somleng
