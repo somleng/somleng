@@ -10,7 +10,7 @@ RSpec.describe "Services" do
       post(
         services_dial_string_path,
         params: {
-          phone_number: "85516701721",
+          phone_number: "+85516701721",
           account_sid: account.id
         },
         headers: build_authorization_headers("services", "password")

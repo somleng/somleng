@@ -2,7 +2,7 @@ module Services
   class DialStringsController < ServicesController
     def create
       account = Account.find(params.fetch(:account_sid))
-      destination = params.fetch(:phone_number)
+      destination = Phony.normalize(params.fetch(:phone_number))
       destination_rules = DestinationRules.new(account: account, destination: destination)
 
       if destination_rules.valid?
