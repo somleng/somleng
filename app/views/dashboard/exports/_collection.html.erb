@@ -15,7 +15,7 @@
 
   <tbody>
     <% resources.each do |export| %>
-      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+      <%= tag.tr id: dom_id(export), row: "row", class: cycle("odd", "even", name: "row_class") do %>
         <td>
           <% if export.ready? %>
             <%= link_to(export.name, rails_blob_path(export.file, disposition: "attachment")) %>
@@ -31,7 +31,7 @@
         <td>
           <%= local_time(export.created_at) %>
         </td>
-      </tr>
+      <% end %>
     <% end %>
   </tbody>
 </table>
