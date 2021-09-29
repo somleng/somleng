@@ -84,14 +84,14 @@ jobs:
           path: doc/
 
       - name: Compile Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_incomplete_exports'
         env:
           RAILS_ENV: development
         run: |
           bundle exec rails assets:precompile
 
       - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/fix_incomplete_exports'
         uses: actions/upload-artifact@v2
         with:
           name: assets
@@ -162,7 +162,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/fix_incomplete_exports'
     env:
       IMAGE_TAG: ${{ github.sha }}
       APP_IDENTIFIER: somleng
