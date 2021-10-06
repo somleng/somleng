@@ -12,7 +12,9 @@
         <%= @resource.id %>
       </code>
     <% end %>
-    <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
+    <%= f.attribute :auth_token, label: "Auth Token" do %>
+      <%= render MaskedContentComponent.new(raw_content: @resource.auth_token) %>
+    <% end %>
     <%= f.attribute :status, value: @resource.status.humanize %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>

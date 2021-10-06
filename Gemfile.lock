@@ -509,6 +509,9 @@ GEM
     unf_ext (0.0.7.7)
     unicode-display_width (2.0.0)
     unicode_utils (1.4.0)
+    view_component (2.40.0)
+      activesupport (>= 5.0.0, < 8.0)
+      method_source (~> 1.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     webdrivers (4.6.0)
@@ -592,6 +595,7 @@ DEPENDENCIES
   turbolinks
   twilio-ruby
   tzinfo-data
+  view_component
   webdrivers
   webmock
   webpacker

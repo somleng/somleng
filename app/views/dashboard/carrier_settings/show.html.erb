@@ -12,7 +12,7 @@
       <%= @resource.country.name %>
     <% end %>
     <%= f.attribute :api_key, label: "API Key" do %>
-      <%= mask_content(@resource.api_key) if @resource.api_key.present? %>
+      <%= render MaskedContentComponent.new(raw_content: @resource.api_key) %>
     <% end %>
     <%= f.attribute :logo do %>
       <%= image_thumbnail(@resource.logo) %>

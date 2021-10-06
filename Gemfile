@@ -46,6 +46,7 @@ gem "skylight"
 gem "turbolinks"
 gem "twilio-ruby"
 gem "tzinfo-data"
+gem "view_component", require: "view_component/engine"
 gem "webpacker"
 
 # Reduces boot times through caching; required in config/boot.rb

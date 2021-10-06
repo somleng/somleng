@@ -24,7 +24,9 @@
       </code>
     <% end %>
     <% if policy(@resource).show_auth_token? %>
-      <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
+      <%= f.attribute :auth_token, label: "Auth Token" do %>
+        <%= render MaskedContentComponent.new(raw_content: @resource.auth_token) %>
+      <% end %>
     <% end %>
     <%= f.attribute :type, value: @resource.type.humanize %>
     <%= f.attribute :status, value: @resource.status.humanize %>
