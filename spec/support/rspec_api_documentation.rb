@@ -90,7 +90,7 @@ RspecApiDocumentation.configure do |config|
       ## RTP
 
       RTP from Somleng is sent through a NAT Gateway. This means that the ports specified in the SDP in the SIP Invite from Somleng are unreachable.
-      In order to work-around this problem, it is required that you setup Symmetric Latching on your device/software.
+      In order to work-around this problem, it is required that you setup [Symmetric Latching](https://github.com/somleng/somleng-switch/wiki/SIP-NAT) on your device/software.
 
       Symmetric RTP means that the IP address and port pair used by an outbound RTP flow is reused for the inbound flow.
       The IP address and port are learned when the initial RTP flow is received your device. The flow's source address and port are latched onto and used
