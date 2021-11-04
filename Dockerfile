@@ -18,11 +18,11 @@ RUN bundle config --local deployment true && \
     bundle config --local without 'development test'
 
 RUN bundle install --jobs 20 --retry 5
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN bundle exec rails assets:precompile RAILS_ENV=development
+RUN bundle exec rails assets:precompile
 
 RUN mkdir -p tmp/pids
 RUN rm -rf vendor/bundle/ruby/*/cache/ && find vendor/ -name "*.o" -delete && find vendor/ -name "*.c"
