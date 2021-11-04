@@ -167,12 +167,6 @@ jobs:
         with:
           ruby-version: '2.7'
 
-      - name: Download Assets
-        uses: actions/download-artifact@v2
-        with:
-          name: assets
-          path: public
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
