@@ -83,19 +83,6 @@ jobs:
           name: documentation_source
           path: doc/
 
-      - name: Compile Assets
-        if: github.ref == 'refs/heads/master'
-        env:
-          RAILS_ENV: development
-        run: |
-          bundle exec rails assets:precompile
-
-      - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets
-          path: public
 
   build_documentation:
     name: Build Documentation
@@ -162,7 +149,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/fix-dockerfile'
     env:
       IMAGE_TAG: ${{ github.sha }}
       APP_IDENTIFIER: somleng
