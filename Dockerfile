@@ -18,7 +18,7 @@ RUN bundle config --local deployment true && \
     bundle config --local without 'development test'
 
 RUN bundle install --jobs 20 --retry 5
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 COPY . .
 
