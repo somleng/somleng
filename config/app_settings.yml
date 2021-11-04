@@ -21,6 +21,7 @@ production: &production
   <<: *default
   api_url_host: "https://api.somleng.org"
   dashboard_url_host: "https://dashboard.somleng.org"
+  asset_url_host: "https://cdn.somleng.org"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= ENV['SERVICES_PASSWORD'] %>"
   admin_password: "<%= Rails.application.credentials.admin_password %>"
