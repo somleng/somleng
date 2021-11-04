@@ -22,7 +22,7 @@ RUN yarn install
 
 COPY . .
 
-RUN bundle exec rails assets:precompile
+RUN bundle exec rails assets:precompile RAILS_ENV=development
 
 RUN mkdir -p tmp/pids
 RUN rm -rf vendor/bundle/ruby/*/cache/ && find vendor/ -name "*.o" -delete && find vendor/ -name "*.c"
