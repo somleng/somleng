@@ -1,5 +1,7 @@
 module "twilreapi" {
   source = "../modules/twilreapi"
+  dashboard_subdomain = "dashboard"
+  api_subdomain = "api"
 
   ecs_cluster = data.terraform_remote_state.core_infrastructure.outputs.ecs_cluster
   codedeploy_role = data.terraform_remote_state.core_infrastructure.outputs.codedeploy_role
@@ -10,8 +12,10 @@ module "twilreapi" {
   memory = 1024
   cpu = 512
   aws_region = var.aws_region
-  load_balancer_arn = data.terraform_remote_state.core_infrastructure.outputs.application_load_balancer.arn
+  load_balancer = data.terraform_remote_state.core_infrastructure.outputs.application_load_balancer
   listener_arn = data.terraform_remote_state.core_infrastructure.outputs.https_listener.arn
+  route53_zone = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
+  cdn_certificate = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
   container_instance_subnets = data.terraform_remote_state.core_infrastructure.outputs.vpc.private_subnets
   vpc_id = data.terraform_remote_state.core_infrastructure.outputs.vpc.vpc_id
   uploads_bucket = "uploads.twilreapi.somleng.org"
