@@ -63,7 +63,7 @@ Rails.application.routes.draw do
     end
   end
 
-  constraints subdomain: %w[api twilreapi] do
+  constraints subdomain: %w[api] do
     namespace :services, defaults: { format: "json" } do
       resources :inbound_phone_calls, only: :create
       resources :phone_call_events, only: :create
