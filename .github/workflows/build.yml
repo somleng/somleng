@@ -83,20 +83,6 @@ jobs:
           name: documentation_source
           path: doc/
 
-      - name: Compile Assets
-        if: github.ref == 'refs/heads/master'
-        env:
-          RAILS_ENV: development
-        run: |
-          bundle exec rails assets:precompile
-
-      - name: Upload Assets
-        if: github.ref == 'refs/heads/master'
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets
-          path: public
-
   build_documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
@@ -180,12 +166,6 @@ jobs:
         with:
           ruby-version: '2.7'
 
-      - name: Download Assets
-        uses: actions/download-artifact@v2
-        with:
-          name: assets
-          path: public
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -226,10 +206,6 @@ jobs:
           tags: |
             ${{ env.APP_ECR_REPOSITORY_URI }}:latest
             ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
-
-      - name: Prepare nginx config
-        run: |
-          cp -R public/* docker/nginx/public
 
       - name: Build and push to AWS ECR `nginx`
         uses: docker/build-push-action@v2

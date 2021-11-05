@@ -115,6 +115,10 @@
         "value": "true"
       },
       {
+        "name": "RAILS_SERVE_STATIC_FILES",
+        "value": "true"
+      },
+      {
         "name": "UPLOADS_BUCKET",
         "value": "${uploads_bucket}"
       },
