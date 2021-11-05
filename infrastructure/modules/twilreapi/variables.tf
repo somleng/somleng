@@ -10,8 +10,12 @@ variable "container_instance_subnets" {}
 variable "vpc_id" {}
 variable "codedeploy_role" {}
 variable "uploads_bucket" {}
-variable "load_balancer_arn" {}
+variable "load_balancer" {}
 variable "listener_arn" {}
+variable "route53_zone" {}
+variable "cdn_certificate" {}
+variable "dashboard_subdomain" {}
+variable "api_subdomain" {}
 
 variable "webserver_container_name" {
   default = "nginx"
