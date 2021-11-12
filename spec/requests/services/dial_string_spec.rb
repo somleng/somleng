@@ -4,7 +4,12 @@ RSpec.describe "Services" do
   describe "POST /services/dial_string" do
     it "generates a dial string" do
       carrier = create(:carrier)
-      _sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "27.109.112.141")
+      _sip_trunk = create(
+        :outbound_sip_trunk,
+        carrier: carrier,
+        nat_supported: true,
+        host: "27.109.112.141"
+      )
       account = create(:account, carrier: carrier)
 
       post(
@@ -18,7 +23,8 @@ RSpec.describe "Services" do
 
       expect(response.code).to eq("201")
       expect(json_response(response.body)).to eq(
-        "dial_string" => "85516701721@27.109.112.141"
+        "dial_string" => "85516701721@27.109.112.141",
+        "nat_supported" => true
       )
     end
 

@@ -84,7 +84,7 @@ resource "aws_iam_policy" "ecs_task_policy" {
         "ec2:RevokeSecurityGroupIngress"
       ],
       "Resource": [
-        "${aws_security_group.inbound_sip_trunks.arn}"
+        "${data.aws_security_group.inbound_sip_trunks.arn}"
       ]
     }
   ]

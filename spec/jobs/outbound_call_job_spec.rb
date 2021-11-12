@@ -2,18 +2,23 @@ require "rails_helper"
 
 RSpec.describe OutboundCallJob do
   it "initiates an outbound call" do
+    carrier = create(:carrier)
+    outbound_sip_trunk = create(:outbound_sip_trunk, nat_supported: false, carrier: carrier)
+
     phone_call = create(
       :phone_call,
       :outbound,
       :queued,
       :routable,
+      carrier: carrier,
+      outbound_sip_trunk: outbound_sip_trunk,
       to: "85516701721",
       dial_string: "85516701721@sip.example.com",
       from: "1294",
       voice_url: "http://example.com/voice_url",
       voice_method: "POST"
     )
-    stub_request(:post, "https://ahn.somleng.org/calls").to_return(body: "{\"id\": \"123456789\"}")
+    stub_switch_request(external_call_id: "123456789")
 
     OutboundCallJob.perform_now(phone_call)
 
@@ -32,7 +37,8 @@ RSpec.describe OutboundCallJob do
         to: "85516701721",
         from: "1294",
         routing_instructions: {
-          dial_string: "85516701721@sip.example.com"
+          dial_string: "85516701721@sip.example.com",
+          nat_supported: false
         }
       }
     )
@@ -56,5 +62,11 @@ RSpec.describe OutboundCallJob do
 
     expect(phone_call.status).to eq("queued")
     expect(WebMock).to have_requested(:post, "https://ahn.somleng.org/calls")
+  end
+
+  def stub_switch_request(external_call_id: "ext-id")
+    stub_request(
+      :post, "https://ahn.somleng.org/calls"
+    ).to_return(body: "{\"id\": \"#{external_call_id}\"}")
   end
 end

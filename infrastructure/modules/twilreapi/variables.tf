@@ -17,6 +17,8 @@ variable "cdn_certificate" {}
 variable "dashboard_subdomain" {}
 variable "api_subdomain" {}
 
+variable "inbound_sip_trunks_security_group_name" {}
+
 variable "webserver_container_name" {
   default = "nginx"
 }

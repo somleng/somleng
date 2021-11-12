@@ -25,6 +25,7 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db.rds_cluster_endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db.rds_cluster_port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
+  inbound_sip_trunks_security_group_name = "somleng-inbound-sip-trunks"
   ecs_worker_autoscale_min_instances = 1
   ecs_worker_autoscale_max_instances = 10
 }

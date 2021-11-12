@@ -1,12 +1,13 @@
+data "aws_security_group" "inbound_sip_trunks" {
+  filter {
+    name   = "group-name"
+    values = [var.inbound_sip_trunks_security_group_name]
+  }
+}
+
 resource "aws_security_group" "appserver" {
   name   = "${var.app_identifier}-appserver"
   vpc_id = var.vpc_id
-}
-
-resource "aws_security_group" "inbound_sip_trunks" {
-  name   = "somleng-inbound-sip-trunks"
-  vpc_id = var.vpc_id
-  description = "Somleng Inbound SIP Trunks"
 }
 
 resource "aws_security_group_rule" "appserver_ingress" {
