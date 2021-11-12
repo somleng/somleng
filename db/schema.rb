@@ -136,23 +136,6 @@ ActiveRecord::Schema.define(version: 2021_11_12_053423) do
     t.index ["source_ip"], name: "index_inbound_sip_trunks_on_source_ip", unique: true
   end
 
-  create_table "logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "carrier_id", null: false
-    t.uuid "account_id"
-    t.uuid "phone_number_id"
-    t.string "type", null: false
-    t.string "status", null: false
-    t.string "error_message"
-    t.text "body"
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["account_id"], name: "index_logs_on_account_id"
-    t.index ["carrier_id"], name: "index_logs_on_carrier_id"
-    t.index ["phone_number_id"], name: "index_logs_on_phone_number_id"
-    t.index ["sequence_number"], name: "index_logs_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "resource_owner_id", null: false
     t.uuid "application_id", null: false
@@ -334,9 +317,6 @@ ActiveRecord::Schema.define(version: 2021_11_12_053423) do
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "exports", "users"
   add_foreign_key "inbound_sip_trunks", "carriers"
-  add_foreign_key "logs", "accounts"
-  add_foreign_key "logs", "carriers"
-  add_foreign_key "logs", "phone_numbers"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "carriers", column: "owner_id"
