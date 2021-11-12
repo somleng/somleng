@@ -222,7 +222,7 @@ FactoryBot.define do
 
       after(:build) do |phone_call|
         phone_call.outbound_sip_trunk ||= build(:outbound_sip_trunk, carrier: phone_call.carrier)
-        phone_call.dial_string ||= "#{phone_call.to}#{phone_call.outbound_sip_trunk.host}"
+        phone_call.dial_string ||= "#{phone_call.to}@#{phone_call.outbound_sip_trunk.host}"
       end
     end
   end
