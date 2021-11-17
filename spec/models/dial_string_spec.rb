@@ -10,10 +10,10 @@ RSpec.describe DialString do
 
     result = DialString.new(
       outbound_sip_trunk: sip_trunk,
-      destination: "855715100970"
+      destination: "2609702120780"
     ).to_s
 
-    expect(result).to eq("0715100970@96.9.66.131")
+    expect(result).to eq("09702120780@96.9.66.131")
   end
 
   it "handles dial string prefixes" do
