@@ -19,6 +19,17 @@ class ApplicationRequestSchema < Dry::Validation::Contract
     key.failure("is invalid") if key? && !Phony.plausible?(value)
   end
 
+  register_macro(:date_range) do
+    if key?
+      from_date = value[:from_date]
+      to_date = value[:to_date]
+      empty_range = from_date.blank? && to_date.blank?
+      valid_range = from_date.present? && to_date.present? && to_date >= from_date
+
+      key([*key.path.keys, :date_range].join(".")).failure("invalid date range") unless empty_range || valid_range
+    end
+  end
+
   def initialize(input_params:, options: {})
     super(options)
 
