@@ -16,7 +16,7 @@ resource "Phone Calls", document: :carrier_api do
       )
     end
 
-    example "Filter phone calls" do
+    example "List phone calls" do
       carrier = create(:carrier)
       account = create(:account, carrier: carrier)
       other_account = create(:account, carrier: carrier)
@@ -42,6 +42,53 @@ resource "Phone Calls", document: :carrier_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_collection_schema("carrier_api/phone_call")
       expect(json_response.fetch("data").pluck("id")).to match_array([outbound_call.id])
+    end
+  end
+
+  get "https://api.somleng.org/carrier/v1/phone_calls/:id" do
+    example "Retrieve a phone call" do
+      phone_call = create(:phone_call)
+
+      set_carrier_api_authorization_header(phone_call.carrier)
+      do_request(id: phone_call.id)
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_call")
+    end
+  end
+
+  patch "https://api.somleng.org/carrier/v1/phone_calls/:id" do
+    with_options scope: %i[data attributes] do
+      parameter(
+        :price, "The charge for this call."
+      )
+      parameter(
+        :price_unit, "The currency in which `price`` is measured, in <a href=\"https://www.iso.org/iso/home/standards/currency_codes.htm\">ISO 4127 </a> format. (e.g., `USD`, `EUR`, `JPY`). Always capitalized for calls.",
+      )
+    end
+
+    example "Update a phone call" do
+      phone_call = create(:phone_call, price: nil, price_unit: nil)
+
+      set_carrier_api_authorization_header(phone_call.carrier)
+      do_request(
+        id: phone_call.id,
+        data: {
+          id: phone_call.id,
+          type: :phone_call,
+          attributes: {
+            price: "-0.05",
+            price_unit: "USD",
+          }
+        }
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_call")
+      expect(json_response.dig("data", "attributes")).to include(
+        "price" => "-0.05",
+        "price_unit" => "USD"
+      )
     end
   end
 end
