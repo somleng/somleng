@@ -12,7 +12,22 @@ module CarrierAPI
       end
 
       def show
-        respond_with_resource(phone_calls_scope.find(params[:id]), serializer_options)
+        phone_call = phone_calls_scope.find(params[:id])
+
+        respond_with_resource(phone_call, serializer_options)
+      end
+
+      def update
+        phone_call = phone_calls_scope.find(params[:id])
+
+        validate_request_schema(
+          with: UpdatePhoneCallRequestSchema,
+          schema_options: { resource: phone_call },
+          **serializer_options
+        ) do |permitted_params|
+          phone_call.update!(permitted_params)
+          phone_call
+        end
       end
 
       private
