@@ -13,10 +13,10 @@ module CarrierAPI
       end
     end
 
-    attribute_rule(:price, :price_unit) do |attribbutes|
-      if attribbutes.values_at(:price, :price_unit).one?
-        key(attribute_key_path(:price)).failure(text: "is blank") unless attribbutes.key?(:price)
-        key(attribute_key_path(:price_unit)).failure(text: "is blank") unless attribbutes.key?(:price_unit)
+    attribute_rule(:price, :price_unit) do |attributes|
+      if attributes.values_at(:price, :price_unit).one?
+        key(attribute_key_path(:price)).failure(text: "is blank") unless attributes.key?(:price)
+        key(attribute_key_path(:price_unit)).failure(text: "is blank") unless attributes.key?(:price_unit)
       end
     end
 

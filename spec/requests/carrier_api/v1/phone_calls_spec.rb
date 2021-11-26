@@ -78,7 +78,7 @@ resource "Phone Calls", document: :carrier_api do
           type: :phone_call,
           attributes: {
             price: "-0.05",
-            price_unit: "USD",
+            price_unit: "USD"
           }
         }
       )
