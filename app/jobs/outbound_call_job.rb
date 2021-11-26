@@ -4,11 +4,12 @@ class OutboundCallJob < ApplicationJob
   def perform(phone_call, call_service_client: CallService::Client.new)
     return if phone_call.canceled?
 
+    phone_call = PhoneCallDecorator.new(phone_call)
     response = call_service_client.create_call(
-      sid: phone_call.id,
-      account_sid: phone_call.account.id,
+      sid: phone_call.sid,
+      account_sid: phone_call.account_sid,
       account_auth_token: phone_call.account.auth_token,
-      direction: PhoneCallDecorator::TWILIO_CALL_DIRECTIONS.fetch("outbound"),
+      direction: phone_call.direction,
       api_version: TwilioAPISerializer::API_VERSION,
       voice_url: phone_call.voice_url,
       voice_method: phone_call.voice_method,
