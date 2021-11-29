@@ -43,6 +43,23 @@ module CarrierAPI
               type: "phone_call",
               id: phone_call.id,
               attributes: {
+                price: "0.01"
+              }
+            }
+          },
+          options: {
+            resource: phone_call
+          }
+        )
+      ).not_to have_valid_field(:data, :attributes, :price)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_call",
+              id: phone_call.id,
+              attributes: {
                 price_unit: "USD"
               }
             }

@@ -7,7 +7,7 @@ module CarrierAPI
         required(:type).filled(:string, eql?: "phone_call")
         required(:id).filled(:string)
         required(:attributes).value(:hash).schema do
-          optional(:price).filled(:decimal)
+          optional(:price).filled(:decimal, lteq?: 0)
           optional(:price_unit).filled(:string)
         end
       end
@@ -20,6 +20,7 @@ module CarrierAPI
       end
     end
 
+    # respond with friendly error message
     attribute_rule(:price_unit) do
       next unless key?
 
