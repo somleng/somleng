@@ -63,7 +63,7 @@ resource "Phone Calls", document: :carrier_api do
         :price, "The charge for this call."
       )
       parameter(
-        :price_unit, "The currency in which `price`` is measured, in <a href=\"https://www.iso.org/iso/home/standards/currency_codes.htm\">ISO 4127 </a> format. (e.g., `USD`, `EUR`, `JPY`). Always capitalized for calls.",
+        :price_unit, "The currency in which `price` is measured, in <a href=\"https://www.iso.org/iso/home/standards/currency_codes.htm\">ISO 4127 </a> format. (e.g., `USD`, `EUR`, `JPY`). Always capitalized for calls.",
       )
     end
 
