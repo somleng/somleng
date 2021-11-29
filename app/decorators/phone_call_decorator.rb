@@ -26,6 +26,30 @@ class PhoneCallDecorator < SimpleDelegator
     PhoneCall.human_attribute_name(*args)
   end
 
+  def from
+    format_number(super, spaces: "")
+  end
+
+  def to
+    format_number(super, spaces: "")
+  end
+
+  def sid
+    id
+  end
+
+  def account_sid
+    account_id
+  end
+
+  def phone_number_sid
+    phone_number_id
+  end
+
+  def duration
+    super.to_i
+  end
+
   def direction
     TWILIO_CALL_DIRECTIONS.fetch(super)
   end

@@ -37,21 +37,9 @@ module TwilioAPI
 
     def forwarded_from; end
 
-    def from
-      format_number(super, spaces: "")
-    end
-
     def group_sid; end
 
     def parent_call_sid; end
-
-    def phone_number_sid
-      phone_number_id
-    end
-
-    def price; end
-
-    def price_unit; end
 
     def start_time
       format_time(call_data_record.start_time)
@@ -59,10 +47,6 @@ module TwilioAPI
 
     def subresource_uris
       {}
-    end
-
-    def to
-      format_number(super, spaces: "")
     end
 
     def uri

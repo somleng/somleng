@@ -22,7 +22,8 @@ module CallService
         conn.headers["Content-Type"] = "application/json"
 
         conn.adapter Faraday.default_adapter
-        conn.basic_auth(CallService.configuration.username, CallService.configuration.password)
+
+        conn.request :basic_auth, CallService.configuration.username, CallService.configuration.password
       end
     end
   end

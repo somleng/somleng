@@ -318,6 +318,8 @@ GEM
     minitest (5.14.4)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
+    money (6.13.8)
+      i18n (>= 0.6.4, <= 2)
     msgpack (1.4.2)
     multipart-post (2.1.1)
     mustache (1.1.1)
@@ -561,6 +563,7 @@ DEPENDENCIES
   jsonapi-serializer
   kaminari
   lograge
+  money
   okcomputer
   pg
   phony
@@ -597,4 +600,4 @@ DEPENDENCIES
   webpacker
 
 BUNDLED WITH
-   2.2.31
+   2.2.32

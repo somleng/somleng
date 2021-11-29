@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_12_053423) do
+ActiveRecord::Schema.define(version: 2021_11_24_142522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -231,6 +231,8 @@ ActiveRecord::Schema.define(version: 2021_11_12_053423) do
     t.uuid "outbound_sip_trunk_id"
     t.uuid "carrier_id", null: false
     t.string "dial_string"
+    t.decimal "price", precision: 10, scale: 4
+    t.string "price_unit"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["carrier_id"], name: "index_phone_calls_on_carrier_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
