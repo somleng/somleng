@@ -14,7 +14,7 @@ RSpec.describe ProcessCDRJob do
       external_id: freeswitch_cdr.dig("variables", "uuid")
     )
 
-    ProcessCDRJob.new.perform(freeswitch_cdr)
+    ProcessCDRJob.perform_now(freeswitch_cdr)
 
     expect(phone_call.reload.status).to eq("not_answered")
     expect(phone_call.call_data_record).to have_attributes(
@@ -28,6 +28,24 @@ RSpec.describe ProcessCDRJob do
     expect(StatusCallbackNotifierJob).to have_been_enqueued.with(phone_call)
   end
 
+  it "creates an event" do
+    raw_freeswitch_cdr = file_fixture("freeswitch_cdr.json").read
+    freeswitch_cdr = JSON.parse(raw_freeswitch_cdr)
+
+    phone_call = create(
+      :phone_call, :initiated,
+      external_id: freeswitch_cdr.dig("variables", "uuid")
+    )
+
+    ProcessCDRJob.perform_now(freeswitch_cdr)
+
+    event = Event.find_by(eventable_id: phone_call.id)
+    expect(event).to have_attributes(
+      type: "phone_call.completed",
+      carrier: phone_call.carrier
+    )
+  end
+
   it "creates a call data record for call leg A with joined by call leg B" do
     raw_freeswitch_cdr = file_fixture("freeswitch_cdr_leg_a_with_joined_by_leg_b.json").read
     freeswitch_cdr = JSON.parse(raw_freeswitch_cdr)
@@ -37,7 +55,7 @@ RSpec.describe ProcessCDRJob do
       external_id: freeswitch_cdr.dig("variables", "uuid")
     )
 
-    ProcessCDRJob.new.perform(freeswitch_cdr)
+    ProcessCDRJob.perform_now(freeswitch_cdr)
 
     expect(phone_call.call_data_record.call_leg.A?).to eq(true)
     expect(StatusCallbackNotifierJob).to have_been_enqueued.with(phone_call)
@@ -56,7 +74,7 @@ RSpec.describe ProcessCDRJob do
     )
     call_data_record_call_leg_a = create(:call_data_record, call_leg: "A", phone_call: phone_call)
 
-    ProcessCDRJob.new.perform(freeswitch_cdr_call_leg_b)
+    ProcessCDRJob.perform_now(freeswitch_cdr_call_leg_b)
 
     expect(phone_call.call_data_record).to eq(call_data_record_call_leg_a)
     expect(CallDataRecord.where(phone_call: phone_call).last.call_leg.B?).to eq(true)

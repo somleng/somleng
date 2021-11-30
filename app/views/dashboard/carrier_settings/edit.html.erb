@@ -12,6 +12,18 @@
       </div>
     </div>
 
+    <% unless @resource.webhooks_disabled? %>
+      <div class="row">
+        <div class="col-sm-6">
+          <%= f.input :webhook_url, hint: "Must start with https" %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @resource.webhook_configured? %>
+      <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
+    <% end %>
+
     <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
 
     <%= f.button :submit %>

@@ -15,7 +15,7 @@ RSpec.describe OnboardCarrier do
       name: "AT&T",
       country_code: "US",
       api_key: be_present,
-      application: be_present,
+      oauth_application: be_present,
       users: [
         have_attributes(
           name: "John Doe",

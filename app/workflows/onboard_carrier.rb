@@ -26,7 +26,7 @@ class OnboardCarrier < ApplicationWorkflow
   end
 
   def create_carrier_access_token(carrier)
-    Doorkeeper::Application.create!(
+    OAuthApplication.create!(
       name: carrier.name,
       owner: carrier,
       redirect_uri: "urn:ietf:wg:oauth:2.0:oob",

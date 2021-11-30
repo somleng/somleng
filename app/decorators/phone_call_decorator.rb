@@ -46,10 +46,6 @@ class PhoneCallDecorator < SimpleDelegator
     phone_number_id
   end
 
-  def duration
-    super.to_i
-  end
-
   def direction
     TWILIO_CALL_DIRECTIONS.fetch(super)
   end

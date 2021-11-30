@@ -29,8 +29,8 @@ RSpec.describe "Dashboard Home" do
   end
 
   it "Redirects a carrier user to the carrier home page" do
-    carrier = create(:carrier)
-    user = create(:user, :carrier, carrier: carrier)
+    carrier = create(:carrier, :with_oauth_application)
+    user = create(:user, carrier: carrier)
 
     sign_in(user)
     visit dashboard_root_path

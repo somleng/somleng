@@ -42,28 +42,6 @@ FactoryBot.define do
       direction { "outbound" }
     end
 
-    trait :billable do
-      bill_sec { 1 }
-      answer_time { Time.now }
-    end
-
-    trait :not_billable do
-      bill_sec { 0 }
-      answer_time { nil }
-    end
-
-    trait :event_answered do
-      billable
-    end
-
-    trait :event_not_answered do
-      sip_term_status { "480" }
-    end
-
-    trait :event_busy do
-      sip_term_status { "486" }
-    end
-
     duration_sec { 5 }
     bill_sec { 5 }
     direction { "outbound" }
@@ -75,6 +53,17 @@ FactoryBot.define do
   factory :carrier do
     name { "Somleng" }
     country_code { "KH" }
+
+    trait :with_oauth_application do
+      after(:build) do |carrier|
+        carrier.oauth_application ||= build(:oauth_application, owner: carrier)
+        carrier.oauth_application.access_tokens << build(
+          :oauth_access_token,
+          application: carrier.oauth_application,
+          scopes: :carrier_api
+        )
+      end
+    end
   end
 
   factory :outbound_sip_trunk do
@@ -87,6 +76,15 @@ FactoryBot.define do
     carrier
     name { "My SIP trunk" }
     source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
+  end
+
+  factory :event do
+    carrier { eventable.carrier }
+    association :eventable, factory: :phone_call
+    type { "phone_call.completed" }
+    details {
+      eventable.jsonapi_serializer_class.new(eventable.decorated).as_json
+    }
   end
 
   factory :account do
@@ -104,7 +102,10 @@ FactoryBot.define do
       with_access_token
 
       after(:build) do |account|
-        account.account_memberships << build(:account_membership, account: account) if account.account_memberships.empty?
+        if account.account_memberships.empty?
+          account.account_memberships << build(:account_membership,
+                                               account: account)
+        end
       end
     end
 
@@ -207,7 +208,7 @@ FactoryBot.define do
       status { :queued }
     end
 
-    traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
+    traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed busy]
 
     trait :inbound do
       direction { :inbound }
@@ -225,6 +226,14 @@ FactoryBot.define do
         phone_call.dial_string ||= "#{phone_call.to}@#{phone_call.outbound_sip_trunk.host}"
       end
     end
+
+    trait :completed do
+      status { :completed }
+
+      after(:build) do |phone_call|
+        phone_call.call_data_record ||= build(:call_data_record, phone_call: phone_call)
+      end
+    end
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
@@ -238,13 +247,31 @@ FactoryBot.define do
     end
   end
 
-  factory :oauth_application, class: "Doorkeeper::Application" do
+  factory :oauth_application do
     name { "My Application" }
     redirect_uri { "urn:ietf:wg:oauth:2.0:oob" }
 
     trait :carrier do
       association :owner, factory: :carrier
       scopes { "carrier_api" }
+    end
+  end
+
+  factory :webhook_endpoint do
+    association :oauth_application, factory: %i[oauth_application carrier]
+    url { "https://somleng-carrier.free.beeceptor.com" }
+  end
+
+  factory :webhook_request_log do
+    event
+    webhook_endpoint
+    url { webhook_endpoint.url }
+    failed { false }
+    http_status_code { "200" }
+
+    trait :failed do
+      failed { true }
+      http_status_code { "500" }
     end
   end
 
