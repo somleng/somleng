@@ -14,6 +14,9 @@ resource "Phone Calls", document: :carrier_api do
       parameter(
         :to_date, "Return phone calls on or before the provided date/time in <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO 8601</a> format.",
       )
+      parameter(
+        :direction, "Either `outbound-api` or `inbound`"
+      )
     end
 
     example "List phone calls" do
@@ -68,7 +71,7 @@ resource "Phone Calls", document: :carrier_api do
     end
 
     example "Update a phone call" do
-      phone_call = create(:phone_call, price: nil, price_unit: nil)
+      phone_call = create(:phone_call, :completed, price: nil, price_unit: nil)
 
       set_carrier_api_authorization_header(phone_call.carrier)
       do_request(

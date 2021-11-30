@@ -42,28 +42,6 @@ FactoryBot.define do
       direction { "outbound" }
     end
 
-    trait :billable do
-      bill_sec { 1 }
-      answer_time { Time.now }
-    end
-
-    trait :not_billable do
-      bill_sec { 0 }
-      answer_time { nil }
-    end
-
-    trait :event_answered do
-      billable
-    end
-
-    trait :event_not_answered do
-      sip_term_status { "480" }
-    end
-
-    trait :event_busy do
-      sip_term_status { "486" }
-    end
-
     duration_sec { 5 }
     bill_sec { 5 }
     direction { "outbound" }
@@ -207,7 +185,7 @@ FactoryBot.define do
       status { :queued }
     end
 
-    traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed completed busy]
+    traits_for_enum :status, %i[initiated answered not_answered ringing canceled failed busy]
 
     trait :inbound do
       direction { :inbound }
@@ -223,6 +201,14 @@ FactoryBot.define do
       after(:build) do |phone_call|
         phone_call.outbound_sip_trunk ||= build(:outbound_sip_trunk, carrier: phone_call.carrier)
         phone_call.dial_string ||= "#{phone_call.to}@#{phone_call.outbound_sip_trunk.host}"
+      end
+    end
+
+    trait :completed do
+      status { :completed }
+
+      after(:build) do |phone_call|
+        phone_call.call_data_record ||= build(:call_data_record, phone_call: phone_call)
       end
     end
   end
