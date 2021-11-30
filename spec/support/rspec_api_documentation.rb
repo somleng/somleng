@@ -93,8 +93,10 @@ RspecApiDocumentation.configure do |config|
       In order to work-around this problem, it is required that you setup [Symmetric Latching](https://github.com/somleng/somleng-switch/wiki/SIP-NAT) on your device/software.
 
       Symmetric RTP means that the IP address and port pair used by an outbound RTP flow is reused for the inbound flow.
-      The IP address and port are learned when the initial RTP flow is received your device. The flow's source address and port are latched onto and used
+      The IP address and port are learned when the initial RTP flow is received on your device. The flow's source address and port are latched onto and used
       as the destination for the RTP sourced by the other side of the call. The IP address and port in the c line and m line respectively in the SDP message are ignored.
+
+      If your device does not support symmetric latching please contact us for assistance.
 
       # Carrier API
 
@@ -104,6 +106,28 @@ RspecApiDocumentation.configure do |config|
       ## Authentication
 
       This API uses Bearer authentication. You must include your API key in the Authorization header for all requests. Your API key is available on the [Carrier Dashboard](https://dashboard.somleng.org/carrier_settings).
+
+      ## Webhooks
+
+      Somleng uses webhooks to notify your application when an event happens in your account.
+      Somleng signs the webhook events it sends to your endpoint by including a signature in each event's `Authorization` header.
+      This allows you to verify that the events were sent by Somleng, not by a third party.
+
+      All requests are signed using [JSON Web Token (JWT)](https://jwt.io/) Bearer authentication, according to the HS256 (HMAC-SHA256) algorithm.
+
+      You should verify the events that Somleng sends to your Webhook endpoints. Here's an example in Ruby:
+
+      ```ruby
+      JWT.decode(
+        request.headers["Authorization"].sub("Bearer ", ""),
+        "[your-webhook-signing-secret]",
+        true,
+        algorithm: "HS256",
+        verify_iss: true,
+        iss: "Somleng"
+      )
+      ```
+
     HEREDOC
 
     conf.filter = :carrier_api
