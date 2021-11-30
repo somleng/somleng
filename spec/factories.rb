@@ -53,6 +53,17 @@ FactoryBot.define do
   factory :carrier do
     name { "Somleng" }
     country_code { "KH" }
+
+    trait :with_oauth_application do
+      after(:build) do |carrier|
+        carrier.oauth_application ||= build(:oauth_application, owner: carrier)
+        carrier.oauth_application.access_tokens << build(
+          :oauth_access_token,
+          application: carrier.oauth_application,
+          scopes: :carrier_api
+        )
+      end
+    end
   end
 
   factory :outbound_sip_trunk do
@@ -65,6 +76,15 @@ FactoryBot.define do
     carrier
     name { "My SIP trunk" }
     source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
+  end
+
+  factory :event do
+    carrier { eventable.carrier }
+    association :eventable, factory: :phone_call
+    type { "phone_call.completed" }
+    details {
+      eventable.jsonapi_serializer_class.new(eventable.decorated).as_json
+    }
   end
 
   factory :account do
@@ -82,7 +102,10 @@ FactoryBot.define do
       with_access_token
 
       after(:build) do |account|
-        account.account_memberships << build(:account_membership, account: account) if account.account_memberships.empty?
+        if account.account_memberships.empty?
+          account.account_memberships << build(:account_membership,
+                                               account: account)
+        end
       end
     end
 
@@ -224,13 +247,31 @@ FactoryBot.define do
     end
   end
 
-  factory :oauth_application, class: "Doorkeeper::Application" do
+  factory :oauth_application do
     name { "My Application" }
     redirect_uri { "urn:ietf:wg:oauth:2.0:oob" }
 
     trait :carrier do
       association :owner, factory: :carrier
       scopes { "carrier_api" }
+    end
+  end
+
+  factory :webhook_endpoint do
+    association :oauth_application, factory: %i[oauth_application carrier]
+    url { "https://somleng-carrier.free.beeceptor.com" }
+  end
+
+  factory :webhook_request_log do
+    event
+    webhook_endpoint
+    url { webhook_endpoint.url }
+    failed { false }
+    http_status_code { "200" }
+
+    trait :failed do
+      failed { true }
+      http_status_code { "500" }
     end
   end
 

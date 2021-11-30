@@ -1,10 +1,11 @@
 class ProcessCDRJob < ApplicationJob
   def perform(cdr)
     call_data_record = create_call_data_record(cdr)
-    if call_data_record.call_leg.A?
-      update_phone_call_status(call_data_record.phone_call)
-      notify_status_callback_url(call_data_record.phone_call)
-    end
+    return unless call_data_record.call_leg.A?
+
+    update_phone_call_status(call_data_record.phone_call)
+    notify_status_callback_url(call_data_record.phone_call)
+    create_event(call_data_record.phone_call)
   end
 
   private
@@ -55,6 +56,10 @@ class ProcessCDRJob < ApplicationJob
     return if phone_call.status_callback_url.blank?
 
     StatusCallbackNotifierJob.perform_later(phone_call)
+  end
+
+  def create_event(phone_call)
+    CreateEvent.call(eventable: phone_call, type: "phone_call.completed")
   end
 
   def parse_epoch(epoch)

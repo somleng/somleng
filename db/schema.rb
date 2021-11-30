@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_24_142522) do
+ActiveRecord::Schema.define(version: 2021_11_30_034220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -108,6 +108,20 @@ ActiveRecord::Schema.define(version: 2021_11_24_142522) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "country_code", null: false
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "eventable_type", null: false
+    t.uuid "eventable_id", null: false
+    t.string "type", null: false
+    t.jsonb "details", default: {}, null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["carrier_id"], name: "index_events_on_carrier_id"
+    t.index ["eventable_type", "eventable_id"], name: "index_events_on_eventable"
+    t.index ["sequence_number"], name: "index_events_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "exports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -310,6 +324,33 @@ ActiveRecord::Schema.define(version: 2021_11_24_142522) do
     t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "webhook_endpoints", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "oauth_application_id", null: false
+    t.string "url", null: false
+    t.string "signing_secret", null: false
+    t.boolean "enabled", default: true, null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
+    t.index ["sequence_number"], name: "index_webhook_endpoints_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "webhook_request_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "event_id", null: false
+    t.uuid "webhook_endpoint_id", null: false
+    t.string "url", null: false
+    t.string "http_status_code", null: false
+    t.boolean "failed", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["event_id"], name: "index_webhook_request_logs_on_event_id"
+    t.index ["sequence_number"], name: "index_webhook_request_logs_on_sequence_number", unique: true, order: :desc
+    t.index ["webhook_endpoint_id"], name: "index_webhook_request_logs_on_webhook_endpoint_id"
+  end
+
   add_foreign_key "account_memberships", "accounts", on_delete: :cascade
   add_foreign_key "account_memberships", "users", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
@@ -317,6 +358,7 @@ ActiveRecord::Schema.define(version: 2021_11_24_142522) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "events", "carriers"
   add_foreign_key "exports", "users"
   add_foreign_key "inbound_sip_trunks", "carriers"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
@@ -333,4 +375,7 @@ ActiveRecord::Schema.define(version: 2021_11_24_142522) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
+  add_foreign_key "webhook_endpoints", "oauth_applications"
+  add_foreign_key "webhook_request_logs", "events"
+  add_foreign_key "webhook_request_logs", "webhook_endpoints"
 end

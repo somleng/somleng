@@ -14,6 +14,21 @@
     <%= f.attribute :api_key, label: "API Key" do %>
       <%= mask_content(@resource.api_key) if @resource.api_key.present? %>
     <% end %>
+
+    <% if @resource.webhooks_enabled? %>
+      <%= f.attribute :webhook_url, label: "Webhook URL" do %>
+        <code>
+          <%= @resource.webhook_endpoint.url %>
+        </code>
+      <% end %>
+    <% end %>
+
+    <% if @resource.webhooks_enabled? %>
+      <%= f.attribute :webhook_signing_secret do %>
+        <%= mask_content(@resource.webhook_endpoint.signing_secret) %>
+      <% end %>
+    <% end %>
+
     <%= f.attribute :logo do %>
       <%= image_thumbnail(@resource.logo) %>
     <% end %>

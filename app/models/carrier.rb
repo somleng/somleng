@@ -7,10 +7,9 @@ class Carrier < ApplicationRecord
   has_many :outbound_sip_trunks
   has_many :phone_numbers
   has_many :phone_calls
-
-  has_one :application,
-          class_name: "Doorkeeper::Application",
-          as: :owner
+  has_many :events
+  has_one :oauth_application, as: :owner
+  has_one :webhook_endpoint, through: :oauth_application
 
   has_one_attached :logo
 
@@ -19,8 +18,10 @@ class Carrier < ApplicationRecord
   end
 
   def api_key
-    return if application.blank?
+    oauth_application.access_tokens.last.token
+  end
 
-    application.access_tokens.last.token
+  def webhooks_enabled?
+    webhook_endpoint&.enabled?
   end
 end

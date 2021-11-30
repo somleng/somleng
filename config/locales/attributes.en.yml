@@ -5,3 +5,4 @@ en:
     source_ip: "Source IP"
     owner_name: "Owner's name"
     owner_email: "Owner's email"
+    webhook_url: "Webhook URL"
