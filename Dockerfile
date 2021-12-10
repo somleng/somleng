@@ -5,7 +5,7 @@ ENV BUNDLE_APP_CONFIG="/app/.bundle"
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base git postgresql-dev imagemagick nodejs python yarn && \
+    apk add --update --no-cache build-base git postgresql-dev imagemagick nodejs python3 yarn && \
     gem install bundler
 
 RUN mkdir -p $APP_ROOT
