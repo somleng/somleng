@@ -18,6 +18,8 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     voice_url: Field::String,
     voice_method: Field::String,
     status: Field::String,
+    price: Field::String,
+    price_unit: Field::String,
     status_callback_url: Field::String,
     status_callback_method: Field::String,
     created_at: Field::DateTime,
@@ -48,6 +50,8 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     external_id
     voice_url
     voice_method
+    price
+    price_unit
     status_callback_url
     status_callback_method
     created_at

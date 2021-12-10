@@ -66,6 +66,16 @@ class PhoneCallDecorator < SimpleDelegator
     format_number(__getobj__.from, format: :international)
   end
 
+  def price_formatted
+    return if price.blank?
+
+    ActiveSupport::NumberHelper.number_to_currency(
+      __getobj__.price,
+      unit: Money::Currency.new(__getobj__.price_unit).symbol,
+      precision: 6
+    )
+  end
+
   def call_data_record
     __getobj__.call_data_record || NullCallDataRecord.new
   end

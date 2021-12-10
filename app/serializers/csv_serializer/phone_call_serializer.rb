@@ -8,6 +8,8 @@ module CSVSerializer
         "from" => nil,
         "to" => nil,
         "duration" => nil,
+        "price" => nil,
+        "price_unit" => nil,
         "direction" => nil,
         "status" => nil
       )
