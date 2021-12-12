@@ -5,7 +5,7 @@
     "@popperjs/core": "^2.9.2",
     "@rails/activestorage": "^6.0.3-7",
     "@rails/ujs": "^6.0.3-7",
-    "@rails/webpacker": "5.2.1",
+    "@rails/webpacker": "5.4.3",
     "@ttskch/select2-bootstrap4-theme": "^1.5.2",
     "bootstrap": "4",
     "daterangepicker": "^3.1.0",
@@ -18,6 +18,6 @@
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^4.6.0"
   }
 }
