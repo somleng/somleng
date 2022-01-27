@@ -18,12 +18,13 @@
           f.input(
             :dial_string_prefix,
             as: :numeric,
-            hint: "Prefix applied to the beginning of the dial string"
+            hint: "Numeric prefix applied to the beginning of the dial string"
           ) %>
       </div>
     </div>
 
-    <%= f.input :trunk_prefix, as: :boolean, wrapper: :custom_boolean_switch, hint: "Turn this on to replace the country code with a 0" %>
+    <%= f.input :trunk_prefix, as: :boolean, wrapper: :custom_boolean_switch, hint: "Replaces the country code with a 0. Use for local dialing." %>
+    <%= f.input :plus_prefix, as: :boolean, wrapper: :custom_boolean_switch, hint: "Prefixes the dial string with a plus (+)." %>
 
     <%= f.button :submit %>
   <% end %>

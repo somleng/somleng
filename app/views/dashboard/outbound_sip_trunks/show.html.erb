@@ -18,6 +18,7 @@
     <%= f.attribute :host %>
     <%= f.attribute :dial_string_prefix %>
     <%= f.attribute :trunk_prefix %>
+    <%= f.attribute :plus_prefix %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

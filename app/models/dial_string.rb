@@ -7,7 +7,9 @@ class DialString
   end
 
   def to_s
-    destination_number = outbound_sip_trunk.trunk_prefix? ? Phony.format(destination, format: :national, spaces: "") : destination
-    "#{outbound_sip_trunk.dial_string_prefix}#{destination_number}@#{outbound_sip_trunk.host}"
+    result = outbound_sip_trunk.trunk_prefix? ? Phony.format(destination, format: :national, spaces: "") : destination
+    result = "#{outbound_sip_trunk.dial_string_prefix}#{result}@#{outbound_sip_trunk.host}"
+    result.prepend("+") if outbound_sip_trunk.plus_prefix?
+    result
   end
 end

@@ -27,10 +27,11 @@ RSpec.describe "Outbound SIP Trunks" do
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
     check("Trunk prefix")
+    check("Plus prefix")
     click_button "Create Outbound SIP trunk"
 
     expect(page).to have_content("Outbound SIP trunk was successfully created")
-    expect(page).to have_content("1234560XXXXXXXX@sip.example.com:5061")
+    expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
   end
 
   it "Update an outbound SIP Trunk" do
@@ -42,7 +43,8 @@ RSpec.describe "Outbound SIP Trunks" do
       name: "My Trunk",
       host: "sip.example.com:5061",
       dial_string_prefix: "1234",
-      trunk_prefix: true
+      trunk_prefix: true,
+      plus_prefix: true
     )
 
     sign_in(user)
@@ -52,6 +54,7 @@ RSpec.describe "Outbound SIP Trunks" do
     fill_in("Host", with: "96.9.66.131")
     fill_in("Dial string prefix", with: "")
     uncheck("Trunk prefix")
+    uncheck("Plus prefix")
     click_button "Update Outbound SIP trunk"
 
     expect(page).to have_content("Outbound SIP trunk was successfully updated")

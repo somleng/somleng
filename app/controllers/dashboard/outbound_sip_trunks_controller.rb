@@ -46,7 +46,9 @@ module Dashboard
     end
 
     def permitted_params
-      params.require(:outbound_sip_trunk).permit(:name, :host, :dial_string_prefix, :trunk_prefix)
+      params.require(:outbound_sip_trunk).permit(
+        :name, :host, :dial_string_prefix, :trunk_prefix, :plus_prefix
+      )
     end
 
     def outbound_sip_trunks_scope
