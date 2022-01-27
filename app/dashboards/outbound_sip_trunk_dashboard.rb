@@ -9,14 +9,16 @@ class OutboundSIPTrunkDashboard < Administrate::BaseDashboard
     route_prefixes: Field::String,
     dial_string_prefix: Field::String,
     trunk_prefix: Field::Boolean,
+    plus_prefix: Field::Boolean,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
     name
     host
     trunk_prefix
+    plus_prefix
   ].freeze
 
   SHOW_PAGE_ATTRIBUTES = %i[
@@ -27,6 +29,7 @@ class OutboundSIPTrunkDashboard < Administrate::BaseDashboard
     route_prefixes
     dial_string_prefix
     trunk_prefix
+    plus_prefix
     created_at
     updated_at
   ].freeze

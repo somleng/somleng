@@ -30,4 +30,19 @@ RSpec.describe DialString do
 
     expect(result).to eq("69980855715100970@96.9.66.131")
   end
+
+  it "handles plus prefixes" do
+    sip_trunk = create(
+      :outbound_sip_trunk,
+      host: "96.9.66.131",
+      plus_prefix: true
+    )
+
+    result = DialString.new(
+      outbound_sip_trunk: sip_trunk,
+      destination: "855715100970"
+    ).to_s
+
+    expect(result).to eq("+855715100970@96.9.66.131")
+  end
 end

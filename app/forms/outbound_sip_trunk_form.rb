@@ -10,6 +10,7 @@ class OutboundSIPTrunkForm
   attribute :host
   attribute :dial_string_prefix
   attribute :trunk_prefix, :boolean, default: false
+  attribute :plus_prefix, :boolean, default: false
 
   delegate :persisted?, :id, to: :outbound_sip_trunk
 
@@ -27,7 +28,8 @@ class OutboundSIPTrunkForm
       name: outbound_sip_trunk.name,
       host: outbound_sip_trunk.host,
       dial_string_prefix: outbound_sip_trunk.dial_string_prefix,
-      trunk_prefix: outbound_sip_trunk.trunk_prefix
+      trunk_prefix: outbound_sip_trunk.trunk_prefix,
+      plus_prefix: outbound_sip_trunk.plus_prefix
     )
   end
 
@@ -39,7 +41,8 @@ class OutboundSIPTrunkForm
       carrier: carrier,
       host: host.strip,
       dial_string_prefix: dial_string_prefix.presence,
-      trunk_prefix: trunk_prefix
+      trunk_prefix: trunk_prefix,
+      plus_prefix: plus_prefix
     }
 
     outbound_sip_trunk.save!

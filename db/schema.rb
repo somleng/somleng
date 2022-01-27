@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_30_034220) do
+ActiveRecord::Schema.define(version: 2022_01_27_082011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -209,6 +209,7 @@ ActiveRecord::Schema.define(version: 2021_11_30_034220) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "nat_supported", default: true, null: false
+    t.boolean "plus_prefix", default: false, null: false
     t.index ["carrier_id"], name: "index_outbound_sip_trunks_on_carrier_id"
     t.index ["sequence_number"], name: "index_outbound_sip_trunks_on_sequence_number", unique: true, order: :desc
   end

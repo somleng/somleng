@@ -8,6 +8,9 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     inbound_sip_trunk: Field::BelongsTo.with_options(
       transform_on_export: ->(field) { field.data&.id }
     ),
+    outbound_sip_trunk: Field::BelongsTo.with_options(
+      transform_on_export: ->(field) { field.data&.id }
+    ),
     call_data_record: Field::BelongsTo.with_options(
       transform_on_export: ->(field) { field.data&.id }
     ),
