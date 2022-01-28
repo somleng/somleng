@@ -15,6 +15,7 @@ RSpec.describe OutboundCallJob do
       to: "85516701721",
       dial_string: "85516701721@sip.example.com",
       from: "1294",
+      caller_id: "1294",
       voice_url: "http://example.com/voice_url",
       voice_method: "POST"
     )

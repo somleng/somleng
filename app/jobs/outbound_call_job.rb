@@ -15,7 +15,7 @@ class OutboundCallJob < ApplicationJob
       voice_method: phone_call.voice_method,
       twiml: phone_call.twiml,
       to: phone_call.to,
-      from: phone_call.from,
+      from: phone_call.caller_id,
       routing_instructions: {
         dial_string: phone_call.dial_string,
         nat_supported: phone_call.outbound_sip_trunk.nat_supported

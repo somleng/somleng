@@ -52,6 +52,9 @@ module TwilioAPI
     def output
       params = super
 
+      caller_id = params.fetch(:From)
+      caller_id = "+#{caller_id}" if input_params.fetch(:From).starts_with?("+")
+
       {
         account: account,
         carrier: account.carrier,
@@ -62,6 +65,7 @@ module TwilioAPI
         ).to_s,
         to: params.fetch(:To),
         from: params.fetch(:From),
+        caller_id: caller_id,
         voice_url: params[:Url],
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
         status_callback_url: params[:StatusCallback],
