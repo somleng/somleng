@@ -95,7 +95,7 @@ module TwilioAPI
       schema = validate_request_schema(
         input_params: {
           To: "+855 716 100235",
-          From: "1294",
+          From: "+855 716 100234",
           Url: "https://www.example.com/voice_url.xml",
           Method: "GET",
           Twiml: "<Response><Say>Ahoy there!</Say></Response>",
@@ -109,7 +109,8 @@ module TwilioAPI
 
       expect(schema.output).to eq(
         to: "855716100235",
-        from: "1294",
+        from: "855716100234",
+        caller_id: "+855716100234",
         account: account,
         carrier: account.carrier,
         outbound_sip_trunk: outbound_sip_trunk,
