@@ -30,7 +30,10 @@ module Somleng
     config.active_job.default_queue_name = config.app_settings.fetch(:aws_sqs_default_queue_name)
     Rails.application.routes.default_url_options[:host] = config.app_settings.fetch(:dashboard_url_host)
 
-    ActiveRecord::Encryption.configure(config.app_settings.fetch(:active_record_encryption))
+    encryption_config = config.app_settings.fetch(:active_record_encryption)
+    config.active_record.encryption.primary_key = encryption_config.fetch(:primary_key)
+    config.active_record.encryption.deterministic_key = encryption_config.fetch(:deterministic_key)
+    config.active_record.encryption.key_derivation_salt = encryption_config.fetch(:key_derivation_salt)
   end
 end
 
