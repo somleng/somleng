@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem "rails", "~> 6.1.0"
+gem "rails", "~> 7.0.0"
 
 gem "administrate"
 gem "administrate_exportable"
@@ -21,7 +21,7 @@ gem "country_select"
 gem "cursor_paginator"
 gem "devise"
 gem "devise_invitable"
-gem "devise-two-factor"
+gem "devise-two-factor", github: "cybersecuricy/devise-two-factor", branch: "securicy-fixes-rails-7"
 gem "doorkeeper"
 gem "dry-validation"
 gem "enumerize"
@@ -49,6 +49,10 @@ gem "turbolinks"
 gem "twilio-ruby"
 gem "tzinfo-data"
 gem "webpacker"
+
+# We just need this to migrate from attr_encrypted to use Rails encryption in the migration
+# https://github.com/tinfoil/devise-two-factor/issues/192#issuecomment-1022504126
+gem "encryptor"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false

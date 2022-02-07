@@ -1,4 +1,14 @@
 GIT
+  remote: https://github.com/cybersecuricy/devise-two-factor.git
+  revision: 87036f3b2e3cf60e8f84bb77c381d61bd9b76dbf
+  branch: securicy-fixes-rails-7
+  specs:
+    devise-two-factor (4.0.1)
+      devise (~> 4.0)
+      rails (< 8)
+      rotp (~> 6.0)
+
+GIT
   remote: https://github.com/zipmark/rspec_api_documentation.git
   revision: d3892cc7388460a98476734963face5a7a2ac158
   specs:
@@ -12,65 +22,71 @@ GEM
   specs:
     aasm (5.2.0)
       concurrent-ruby (~> 1.0)
-    actioncable (6.1.4.1)
-      actionpack (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
+    actioncable (7.0.1)
+      actionpack (= 7.0.1)
+      activesupport (= 7.0.1)
       nio4r (~> 2.0)
       websocket-driver (>= 0.6.1)
-    actionmailbox (6.1.4.1)
-      actionpack (= 6.1.4.1)
-      activejob (= 6.1.4.1)
-      activerecord (= 6.1.4.1)
-      activestorage (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
+    actionmailbox (7.0.1)
+      actionpack (= 7.0.1)
+      activejob (= 7.0.1)
+      activerecord (= 7.0.1)
+      activestorage (= 7.0.1)
+      activesupport (= 7.0.1)
       mail (>= 2.7.1)
-    actionmailer (6.1.4.1)
-      actionpack (= 6.1.4.1)
-      actionview (= 6.1.4.1)
-      activejob (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
+      net-imap
+      net-pop
+      net-smtp
+    actionmailer (7.0.1)
+      actionpack (= 7.0.1)
+      actionview (= 7.0.1)
+      activejob (= 7.0.1)
+      activesupport (= 7.0.1)
       mail (~> 2.5, >= 2.5.4)
+      net-imap
+      net-pop
+      net-smtp
       rails-dom-testing (~> 2.0)
-    actionpack (6.1.4.1)
-      actionview (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
-      rack (~> 2.0, >= 2.0.9)
+    actionpack (7.0.1)
+      actionview (= 7.0.1)
+      activesupport (= 7.0.1)
+      rack (~> 2.0, >= 2.2.0)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actiontext (6.1.4.1)
-      actionpack (= 6.1.4.1)
-      activerecord (= 6.1.4.1)
-      activestorage (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
+    actiontext (7.0.1)
+      actionpack (= 7.0.1)
+      activerecord (= 7.0.1)
+      activestorage (= 7.0.1)
+      activesupport (= 7.0.1)
+      globalid (>= 0.6.0)
       nokogiri (>= 1.8.5)
-    actionview (6.1.4.1)
-      activesupport (= 6.1.4.1)
+    actionview (7.0.1)
+      activesupport (= 7.0.1)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activejob (6.1.4.1)
-      activesupport (= 6.1.4.1)
+    activejob (7.0.1)
+      activesupport (= 7.0.1)
       globalid (>= 0.3.6)
-    activemodel (6.1.4.1)
-      activesupport (= 6.1.4.1)
-    activerecord (6.1.4.1)
-      activemodel (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
-    activestorage (6.1.4.1)
-      actionpack (= 6.1.4.1)
-      activejob (= 6.1.4.1)
-      activerecord (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
-      marcel (~> 1.0.0)
+    activemodel (7.0.1)
+      activesupport (= 7.0.1)
+    activerecord (7.0.1)
+      activemodel (= 7.0.1)
+      activesupport (= 7.0.1)
+    activestorage (7.0.1)
+      actionpack (= 7.0.1)
+      activejob (= 7.0.1)
+      activerecord (= 7.0.1)
+      activesupport (= 7.0.1)
+      marcel (~> 1.0)
       mini_mime (>= 1.1.0)
-    activesupport (6.1.4.1)
+    activesupport (7.0.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     administrate (0.16.0)
@@ -95,8 +111,6 @@ GEM
       activerecord (>= 4.2)
       activesupport
     ast (2.4.2)
-    attr_encrypted (3.1.0)
-      encryptor (~> 3.0.0)
     aws-eventstream (1.2.0)
     aws-partitions (1.536.0)
     aws-record (2.7.0)
@@ -167,22 +181,17 @@ GEM
       activesupport (>= 3)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
-    devise (4.8.0)
+    devise (4.8.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-two-factor (4.0.1)
-      activesupport (< 6.2)
-      attr_encrypted (>= 1.3, < 4, != 2)
-      devise (~> 4.0)
-      railties (< 6.2)
-      rotp (~> 6.0)
     devise_invitable (2.0.5)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.4.4)
+    digest (3.1.0)
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -225,7 +234,7 @@ GEM
       launchy (~> 2.1)
       mail (~> 2.7)
     encryptor (3.0.0)
-    enumerize (2.4.0)
+    enumerize (2.5.0)
       activesupport (>= 3.2)
     erubi (1.10.0)
     factory_bot (6.2.0)
@@ -268,12 +277,13 @@ GEM
     http-cookie (1.0.4)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    i18n (1.8.11)
+    i18n (1.9.1)
       concurrent-ruby (~> 1.0)
     i18n_data (0.13.1)
     image_processing (1.12.1)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
+    io-wait (0.2.1)
     jmespath (1.4.0)
     jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
@@ -314,8 +324,8 @@ GEM
     method_source (1.0.0)
     mini_magick (4.11.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.6.1)
-    minitest (5.14.4)
+    mini_portile2 (2.7.1)
+    minitest (5.15.0)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
     money (6.16.0)
@@ -323,9 +333,24 @@ GEM
     msgpack (1.4.2)
     multipart-post (2.1.1)
     mustache (1.1.1)
+    net-imap (0.2.3)
+      digest
+      net-protocol
+      strscan
+    net-pop (0.1.1)
+      digest
+      net-protocol
+      timeout
+    net-protocol (0.1.2)
+      io-wait
+      timeout
+    net-smtp (0.3.1)
+      digest
+      net-protocol
+      timeout
     nio4r (2.5.8)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.13.1)
+      mini_portile2 (~> 2.7.0)
       racc (~> 1.4)
     okcomputer (1.18.4)
     orm_adapter (0.5.0)
@@ -348,32 +373,32 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
-    rails (6.1.4.1)
-      actioncable (= 6.1.4.1)
-      actionmailbox (= 6.1.4.1)
-      actionmailer (= 6.1.4.1)
-      actionpack (= 6.1.4.1)
-      actiontext (= 6.1.4.1)
-      actionview (= 6.1.4.1)
-      activejob (= 6.1.4.1)
-      activemodel (= 6.1.4.1)
-      activerecord (= 6.1.4.1)
-      activestorage (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
+    rails (7.0.1)
+      actioncable (= 7.0.1)
+      actionmailbox (= 7.0.1)
+      actionmailer (= 7.0.1)
+      actionpack (= 7.0.1)
+      actiontext (= 7.0.1)
+      actionview (= 7.0.1)
+      activejob (= 7.0.1)
+      activemodel (= 7.0.1)
+      activerecord (= 7.0.1)
+      activestorage (= 7.0.1)
+      activesupport (= 7.0.1)
       bundler (>= 1.15.0)
-      railties (= 6.1.4.1)
-      sprockets-rails (>= 2.0.0)
+      railties (= 7.0.1)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
-    railties (6.1.4.1)
-      actionpack (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
+    railties (7.0.1)
+      actionpack (= 7.0.1)
+      activesupport (= 7.0.1)
       method_source
-      rake (>= 0.13)
+      rake (>= 12.2)
       thor (~> 1.0)
+      zeitwerk (~> 2.5)
     rainbow (3.0.0)
     rake (13.0.6)
     regexp_parser (2.1.1)
@@ -488,13 +513,15 @@ GEM
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    sprockets-rails (3.4.1)
+    sprockets-rails (3.4.2)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     squasher (0.6.2)
-    thor (1.1.0)
+    strscan (3.0.1)
+    thor (1.2.1)
     tilt (2.0.10)
+    timeout (0.2.0)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -531,7 +558,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.5.1)
+    zeitwerk (2.5.4)
 
 PLATFORMS
   ruby
@@ -551,11 +578,12 @@ DEPENDENCIES
   country_select
   cursor_paginator
   devise
-  devise-two-factor
+  devise-two-factor!
   devise_invitable
   doorkeeper
   dry-validation
   email_spec
+  encryptor
   enumerize
   factory_bot_rails
   http
@@ -571,7 +599,7 @@ DEPENDENCIES
   pry
   puma
   pundit
-  rails (~> 6.1.0)
+  rails (~> 7.0.0)
   responders
   rqrcode
   rspec-rails

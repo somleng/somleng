@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_28_044246) do
+ActiveRecord::Schema.define(version: 2022_02_07_051836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 2022_01_28_044246) do
     t.string "content_type"
     t.text "metadata"
     t.bigint "byte_size", null: false
-    t.string "checksum", null: false
+    t.string "checksum"
     t.datetime "created_at", null: false
     t.string "service_name", null: false
     t.bigserial "sequence_number", null: false
@@ -316,6 +316,7 @@ ActiveRecord::Schema.define(version: 2022_01_28_044246) do
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
     t.uuid "current_account_membership_id"
+    t.text "otp_secret"
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
     t.index ["current_account_membership_id"], name: "index_users_on_current_account_membership_id"
     t.index ["email"], name: "index_users_on_email", unique: true
