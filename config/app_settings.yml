@@ -35,9 +35,9 @@ production: &production
   inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
 
   active_record_encryption:
-    primary_key: "<%= Rails.application.credentials.active_record_encryption.fetch(:primary_key) %>"
-    deterministic_key: "<%= Rails.application.credentials.active_record_encryption.fetch(:deterministic_key) %>"
-    key_derivation_salt: "<%= Rails.application.credentials.active_record_encryption.fetch(:key_derivation_salt) %>"
+    primary_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :primary_key) %>"
+    deterministic_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) %>"
+    key_derivation_salt: "<%= Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) %>"
 
 development: &development
   <<: *default
