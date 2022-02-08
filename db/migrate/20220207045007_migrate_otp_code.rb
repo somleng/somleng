@@ -18,9 +18,16 @@ class MigrateOTPCode < ActiveRecord::Migration[7.0]
         )
       )
     end
+
+    remove_column :users, :encrypted_otp_secret
+    remove_column :users, :encrypted_otp_secret_salt
+    remove_column :users, :encrypted_otp_secret_iv
   end
 
   def down
     remove_column :users, :otp_secret
+    add_column :users, :encrypted_otp_secret, :string
+    add_column :users, :encrypted_otp_secret_salt, :string
+    add_column :users, :encrypted_otp_secret_iv, :string
   end
 end

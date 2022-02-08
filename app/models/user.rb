@@ -13,8 +13,7 @@ class User < ApplicationRecord
   devise :invitable, :registerable, :confirmable,
          :recoverable, :validatable, :trackable, :rememberable,
          :two_factor_authenticatable,
-         reconfirmable: true,
-         otp_secret_encryption_key: Rails.configuration.app_settings.fetch(:otp_secret_encryption_key)
+         reconfirmable: true
 
   before_create :generate_otp_secret
 
