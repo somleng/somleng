@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_07_051836) do
+ActiveRecord::Schema.define(version: 2022_02_09_070302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -313,9 +313,6 @@ ActiveRecord::Schema.define(version: 2022_02_07_051836) do
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
     t.uuid "current_account_membership_id"
-    t.string "encrypted_otp_secret"
-    t.string "encrypted_otp_secret_salt"
-    t.string "encrypted_otp_secret_iv"
     t.text "otp_secret"
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
     t.index ["current_account_membership_id"], name: "index_users_on_current_account_membership_id"
