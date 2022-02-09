@@ -76,8 +76,8 @@ module CarrierAPI
       )
     end
 
-    def validate_request_schema(options)
-      PhoneCallFilterRequestSchema.new(options)
+    def validate_request_schema(...)
+      PhoneCallFilterRequestSchema.new(...)
     end
   end
 end

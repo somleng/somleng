@@ -401,7 +401,7 @@ GEM
       zeitwerk (~> 2.5)
     rainbow (3.0.0)
     rake (13.0.6)
-    regexp_parser (2.1.1)
+    regexp_parser (2.2.0)
     request_store (1.5.0)
       rack (>= 1.4)
     responders (3.0.1)
@@ -629,4 +629,4 @@ DEPENDENCIES
   webpacker
 
 BUNDLED WITH
-   2.2.32
+   2.3.6

@@ -148,10 +148,10 @@ module TwilioAPI
       )
     end
 
-    def validate_request_schema(options)
-      options[:options] ||= {}
-      options[:options][:account] ||= build_stubbed(:account)
-      PhoneCallRequestSchema.new(options)
+    def validate_request_schema(input_params:, options: {})
+      options[:account] ||= build_stubbed(:account)
+
+      PhoneCallRequestSchema.new(input_params: input_params, options: options)
     end
   end
 end
