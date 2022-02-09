@@ -303,9 +303,9 @@ ActiveRecord::Schema.define(version: 2022_02_07_051836) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "invitation_token"
-    t.datetime "invitation_created_at"
-    t.datetime "invitation_sent_at"
-    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at", precision: 6
+    t.datetime "invitation_sent_at", precision: 6
+    t.datetime "invitation_accepted_at", precision: 6
     t.integer "invitation_limit"
     t.string "invited_by_type"
     t.uuid "invited_by_id"
