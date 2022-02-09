@@ -233,7 +233,6 @@ GEM
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
       mail (~> 2.7)
-    encryptor (3.0.0)
     enumerize (2.5.0)
       activesupport (>= 3.2)
     erubi (1.10.0)
@@ -586,7 +585,6 @@ DEPENDENCIES
   doorkeeper
   dry-validation
   email_spec
-  encryptor
   enumerize
   factory_bot_rails
   http
