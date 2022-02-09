@@ -16,6 +16,10 @@ default: &default
   otp_secret_encryption_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   admin_username: "admin"
   admin_password: "password"
+  active_record_encryption:
+    primary_key: 5Owbop0UTpEsYwX0wK56VM1eg4xl7LXX
+    deterministic_key: 5J0sxNi4YDp5cZnfV9BhXpujwgoOvhgV
+    key_derivation_salt: M8Ic6zpgGiXHYCjOH8nie0c9aMtFoPWV
 
 production: &production
   <<: *default
@@ -29,6 +33,11 @@ production: &production
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
   otp_secret_encryption_key: "<%= Rails.application.credentials.otp_secret_encryption_key %>"
   inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
+
+  active_record_encryption:
+    primary_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :primary_key) %>"
+    deterministic_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) %>"
+    key_derivation_salt: "<%= Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) %>"
 
 development: &development
   <<: *default

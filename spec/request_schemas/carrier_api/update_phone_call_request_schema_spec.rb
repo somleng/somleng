@@ -106,8 +106,8 @@ module CarrierAPI
       ).to have_valid_field(:data, :attributes, :price)
     end
 
-    def validate_request_schema(options)
-      UpdatePhoneCallRequestSchema.new(options)
+    def validate_request_schema(...)
+      UpdatePhoneCallRequestSchema.new(...)
     end
   end
 end

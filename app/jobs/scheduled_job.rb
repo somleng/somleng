@@ -3,7 +3,8 @@ class ScheduledJob < ApplicationJob
   # See http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html
   MAX_DELAY = 15.minutes
 
-  def perform(job_class, *args, **options)
+  def perform(job_class, *args)
+    options = args.extract_options!
     scheduled_at = Time.at(options.fetch(:wait_until))
     job_args = args.dup
     job_options = options.except(:wait_until)

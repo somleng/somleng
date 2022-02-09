@@ -31,7 +31,7 @@ class ApplicationRequestSchema < Dry::Validation::Contract
   end
 
   def initialize(input_params:, options: {})
-    super(options)
+    super(**options)
 
     @input_params = input_params.to_h.with_indifferent_access
   end

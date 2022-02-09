@@ -117,8 +117,8 @@ module Services
       )
     end
 
-    def validate_request_schema(options)
-      InboundPhoneCallRequestSchema.new(options)
+    def validate_request_schema(...)
+      InboundPhoneCallRequestSchema.new(...)
     end
   end
 end
