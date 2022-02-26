@@ -10,4 +10,8 @@ class ApplicationSerializer < SimpleDelegator
   def url_helpers
     @url_helpers ||= Rails.application.routes.url_helpers
   end
+
+  def object
+    __getobj__
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_09_070302) do
+ActiveRecord::Schema.define(version: 2022_02_26_072525) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -281,6 +281,20 @@ ActiveRecord::Schema.define(version: 2022_02_09_070302) do
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "recordings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "phone_call_id", null: false
+    t.string "status", null: false
+    t.string "external_id", null: false
+    t.integer "duration_sec"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_recordings_on_account_id"
+    t.index ["phone_call_id"], name: "index_recordings_on_phone_call_id"
+    t.index ["sequence_number"], name: "index_recordings_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id"
     t.string "carrier_role"
@@ -373,6 +387,8 @@ ActiveRecord::Schema.define(version: 2022_02_09_070302) do
   add_foreign_key "phone_calls", "phone_numbers"
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
+  add_foreign_key "recordings", "accounts"
+  add_foreign_key "recordings", "phone_calls"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
   add_foreign_key "webhook_endpoints", "oauth_applications"

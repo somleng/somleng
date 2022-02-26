@@ -68,12 +68,15 @@ Rails.application.routes.draw do
       resources :inbound_phone_calls, only: :create
       resources :phone_call_events, only: :create
       resources :call_data_records, only: :create
+      resources :recordings, only: :create
       resource :dial_string, only: :create
     end
 
     scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_api_account,
                                               defaults: { format: "json" } do
-      resources :phone_calls, only: %i[create show update], path: "Calls"
+      resources :phone_calls, only: %i[create show update], path: "Calls" do
+        resources :recordings, only: :show
+      end
       post "Calls/:id" => "phone_calls#update"
     end
 
