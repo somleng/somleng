@@ -4,6 +4,7 @@ class PhoneCall < ApplicationRecord
 
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]
+  enumerize :recording_status_callback_method, in: %w[POST GET]
   enumerize :direction, in: %i[inbound outbound], predicates: true, scope: :shallow
 
   belongs_to :carrier

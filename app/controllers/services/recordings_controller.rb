@@ -9,5 +9,20 @@ module Services
         Recording.create!(permitted_params)
       end
     end
+
+
+    def update
+      recording = Recording.find(params[:id])
+
+      validate_request_schema(
+        with: UpdateRecordingRequestSchema,
+        serializer_class: RecordingSerializer,
+        schema_options: { resource: recording }
+      ) do |permitted_params|
+        recording.update!(permitted_params)
+        ExecuteWorkflowJob.perform_later(NotifyRecordingStatusCallback, recording)
+        recording
+      end
+    end
   end
 end

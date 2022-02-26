@@ -11,10 +11,6 @@ module Services
       )
     end
 
-    def duration
-      object.duration_sec
-    end
-
     def url
       url_helpers.twilio_api_account_phone_call_recording_url(object.account, object.phone_call, object)
     end

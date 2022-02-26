@@ -68,7 +68,7 @@ Rails.application.routes.draw do
       resources :inbound_phone_calls, only: :create
       resources :phone_call_events, only: :create
       resources :call_data_records, only: :create
-      resources :recordings, only: :create
+      resources :recordings, only: [:create, :update]
       resource :dial_string, only: :create
     end
 
