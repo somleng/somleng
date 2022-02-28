@@ -1,10 +1,19 @@
-class NotifyStatusCallback < ApplicationJob
+class NotifyStatusCallback < ApplicationWorkflow
   HTTP_METHODS = {
     "GET" => :get,
     "POST" => :post
   }.freeze
 
-  def perform(phone_call, callback_url, callback_http_method, params)
+  attr_reader :phone_call, :callback_url, :callback_http_method, :params
+
+  def initialize(phone_call:, callback_url:, callback_http_method:, params:)
+    @phone_call = phone_call
+    @callback_url = callback_url
+    @callback_http_method = callback_http_method
+    @params = params
+  end
+
+  def call
     status_callback_uri = HTTP::URI.parse(callback_url)
     http_method = HTTP_METHODS.fetch(callback_http_method, :post)
 

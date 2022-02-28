@@ -7,9 +7,9 @@ class NotifyRecordingStatusCallback < ApplicationWorkflow
 
   def call
     NotifyStatusCallback.call(
-      phone_call,
-      phone_call.recording_status_callback_url,
-      phone_call.recording_status_callback_method,
+      phone_call: phone_call,
+      callback_url: phone_call.recording_status_callback_url,
+      callback_http_method: phone_call.recording_status_callback_method,
       params: recording_params
     )
   end

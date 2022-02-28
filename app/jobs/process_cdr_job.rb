@@ -56,7 +56,7 @@ class ProcessCDRJob < ApplicationJob
     return if phone_call.status_callback_url.blank?
 
     ExecuteWorkflowJob.perform_later(
-      "NotifyStatusCallback", phone_call
+      "NotifyPhoneCallStatusCallback", phone_call
     )
   end
 
