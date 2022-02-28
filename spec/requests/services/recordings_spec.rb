@@ -7,7 +7,7 @@ RSpec.describe "Services" do
 
       post(
         services_recordings_path,
-        params: { phone_call_id: phone_call.id, external_id: "recording-id" },
+        params: { phone_call_id: phone_call.id },
         headers: build_authorization_headers("services", "password")
       )
 
@@ -22,11 +22,14 @@ RSpec.describe "Services" do
 
       patch(
         services_recording_path(recording),
-        params: { raw_recording_url: "https://www.example.com/recording.wave", duration: 12 },
+        params: {
+          raw_recording_url: "https://www.example.com/recording.wav",
+          external_id: SecureRandom.uuid,
+          duration: 12
+        },
         headers: build_authorization_headers("services", "password")
       )
 
-      binding.pry
       expect(response.code).to eq("200")
       expect(response.body).to match_api_response_schema("services/recording")
     end

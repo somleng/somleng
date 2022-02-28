@@ -55,7 +55,9 @@ class ProcessCDRJob < ApplicationJob
   def notify_status_callback_url(phone_call)
     return if phone_call.status_callback_url.blank?
 
-    StatusCallbackNotifierJob.perform_later(phone_call)
+    ExecuteWorkflowJob.perform_later(
+      "NotifyStatusCallback", phone_call
+    )
   end
 
   def create_event(phone_call)

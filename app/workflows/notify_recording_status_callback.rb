@@ -10,11 +10,15 @@ class NotifyRecordingStatusCallback < ApplicationWorkflow
       phone_call,
       phone_call.recording_status_callback_url,
       phone_call.recording_status_callback_method,
-      call_params: { placeholder: :recording_params }
+      params: recording_params
     )
   end
 
   def phone_call
     recording.phone_call
+  end
+
+  def recording_params
+    TwilioAPI::RecordingStatusCallbackSerializer.new(recording).serializable_hash
   end
 end

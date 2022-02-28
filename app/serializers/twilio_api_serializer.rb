@@ -12,10 +12,10 @@ class TwilioAPISerializer < ApplicationSerializer
   end
 
   def sid
-    __getobj__.id
+    object.id
   end
 
   def account_sid
-    __getobj__.account_id
+    object.account_id
   end
 end
