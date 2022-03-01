@@ -21,6 +21,7 @@ module Services
       ) do |permitted_params|
         recording.update!(permitted_params)
         ExecuteWorkflowJob.perform_later(ProcessRecording.to_s, recording)
+
         recording
       end
     end

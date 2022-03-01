@@ -1,4 +1,4 @@
-class NotifyPhoneCallStatusCallback
+class NotifyPhoneCallStatusCallback < ApplicationWorkflow
   attr_reader :phone_call
 
   def initialize(phone_call)

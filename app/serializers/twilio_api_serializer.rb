@@ -2,9 +2,7 @@ class TwilioAPISerializer < ApplicationSerializer
   API_VERSION = "2010-04-01".freeze
 
   def attributes
-    {
-      "api_version" => nil
-    }
+    {}
   end
 
   def api_version

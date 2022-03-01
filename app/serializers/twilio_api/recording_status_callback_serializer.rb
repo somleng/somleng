@@ -16,6 +16,7 @@ module TwilioAPI
 
     def attributes
       super.merge(
+        "ApiVersion" => nil,
         "CallSid" => nil,
         "AccountSid" => nil,
         "RecordingSid" => nil,
@@ -26,6 +27,10 @@ module TwilioAPI
         "RecordingStartTime" => nil,
         "RecordingSource" => nil
       )
+    end
+
+    def ApiVersion
+      TwilioAPISerializer::API_VERSION
     end
 
     def CallSid

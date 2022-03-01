@@ -25,7 +25,7 @@ RSpec.describe ProcessCDRJob do
     )
     expect(phone_call.call_data_record.call_leg.A?).to eq(true)
     expect(phone_call.call_data_record.file.attached?).to eq(true)
-    expect(StatusCallbackNotifierJob).to have_been_enqueued.with(phone_call)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with("NotifyPhoneCallStatusCallback", phone_call)
   end
 
   it "creates an event" do
@@ -58,7 +58,7 @@ RSpec.describe ProcessCDRJob do
     ProcessCDRJob.perform_now(freeswitch_cdr)
 
     expect(phone_call.call_data_record.call_leg.A?).to eq(true)
-    expect(StatusCallbackNotifierJob).to have_been_enqueued.with(phone_call)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with("NotifyPhoneCallStatusCallback", phone_call)
   end
 
   it "creates a call data record for call leg B" do
@@ -78,6 +78,6 @@ RSpec.describe ProcessCDRJob do
 
     expect(phone_call.call_data_record).to eq(call_data_record_call_leg_a)
     expect(CallDataRecord.where(phone_call: phone_call).last.call_leg.B?).to eq(true)
-    expect(StatusCallbackNotifierJob).not_to have_been_enqueued.with(phone_call)
+    expect(ExecuteWorkflowJob).not_to have_been_enqueued.with("NotifyPhoneCallStatusCallback", phone_call)
   end
 end

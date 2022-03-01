@@ -2,6 +2,7 @@ module TwilioAPI
   class ResourceSerializer < TwilioAPISerializer
     def attributes
       super.merge(
+        "api_version" => nil,
         "sid" => nil,
         "account_sid" => nil,
         "date_created" => nil,
