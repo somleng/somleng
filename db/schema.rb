@@ -287,7 +287,7 @@ ActiveRecord::Schema.define(version: 2022_02_26_092154) do
     t.uuid "account_id", null: false
     t.uuid "phone_call_id", null: false
     t.string "status", null: false
-    t.string "external_id", null: false
+    t.string "external_id"
     t.string "raw_recording_url"
     t.integer "duration"
     t.bigserial "sequence_number", null: false

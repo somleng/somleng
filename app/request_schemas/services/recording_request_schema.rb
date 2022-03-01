@@ -2,7 +2,6 @@ module Services
   class RecordingRequestSchema < ServicesRequestSchema
     params do
       required(:phone_call_id).filled(:str?)
-      required(:external_id).filled(:str?)
     end
 
     def output
