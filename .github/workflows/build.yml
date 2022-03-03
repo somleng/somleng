@@ -65,6 +65,8 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           api-token: ${{ secrets.CODACY_API_TOKEN }}
+          coverage-reports: coverage/lcov/*
+          language: Ruby
 
       - name: Prepare Documentation Source
         if: github.ref == 'refs/heads/master'
