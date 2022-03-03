@@ -2,6 +2,7 @@
 
 [![GitHub Action](https://github.com/somleng/somleng/actions/workflows/build.yml/badge.svg)](https://github.com/somleng/somleng/actions)
 [![View performance data on Skylight](https://badges.skylight.io/status/DvGhX1IYIjrx.svg)](https://oss.skylight.io/app/applications/DvGhX1IYIjrx)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e1f941eb9ba34197a87ddc5a930558bd)](https://www.codacy.com/gh/somleng/somleng/dashboard?utm_source=github.com&utm_medium=referral&utm_content=somleng/somleng&utm_campaign=Badge_Coverage)
 
 Somleng is an Open Source Cloud Communications Platform as a Service (CPaaS). It includes an open source implementation of [Twilio's REST API](https://www.twilio.com/docs/api/rest), as well as a dashboard and API for carriers to offer programmable Voice and SMS to their customers.
 
