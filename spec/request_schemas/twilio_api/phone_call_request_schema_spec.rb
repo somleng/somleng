@@ -100,9 +100,7 @@ module TwilioAPI
           Method: "GET",
           Twiml: "<Response><Say>Ahoy there!</Say></Response>",
           StatusCallback: "https://example.com/status-callback",
-          StatusCallbackMethod: "GET",
-          RecordingStatusCallback: "https://example.com/recording-status-callback",
-          RecordingStatusCallbackMethod: "POST",
+          StatusCallbackMethod: "GET"
         },
         options: {
           account: account
@@ -121,8 +119,6 @@ module TwilioAPI
         voice_method: "GET",
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "GET",
-        recording_status_callback_url: "https://example.com/recording-status-callback",
-        recording_status_callback_method: "POST",
         twiml: nil,
         direction: :outbound
       )

@@ -15,12 +15,6 @@ module TwilioAPI
         :filled?,
         included_in?: PhoneCall.status_callback_method.values
       )
-      optional(:RecordingStatusCallback).filled(:string, format?: URL_FORMAT)
-      optional(:RecordingStatusCallbackMethod).value(
-        ApplicationRequestSchema::Types::UppercaseString,
-        :filled?,
-        included_in?: PhoneCall.recording_status_callback_method.values
-      )
       optional(:Twiml).filled(:str?)
     end
 
@@ -74,8 +68,6 @@ module TwilioAPI
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
         status_callback_url: params[:StatusCallback],
         status_callback_method: params[:StatusCallbackMethod],
-        recording_status_callback_url: params[:RecordingStatusCallback],
-        recording_status_callback_method: params[:RecordingStatusCallbackMethod],
         twiml: (params[:Twiml] unless params.key?(:Url)),
         direction: :outbound
       }

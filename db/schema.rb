@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_26_092154) do
+ActiveRecord::Schema.define(version: 2022_03_18_071857) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -249,8 +249,6 @@ ActiveRecord::Schema.define(version: 2022_02_26_092154) do
     t.decimal "price", precision: 10, scale: 4
     t.string "price_unit"
     t.string "caller_id"
-    t.string "recording_status_callback_url"
-    t.string "recording_status_callback_method"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["carrier_id"], name: "index_phone_calls_on_carrier_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
@@ -293,6 +291,8 @@ ActiveRecord::Schema.define(version: 2022_02_26_092154) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "status_callback_url"
+    t.string "status_callback_method"
     t.index ["account_id"], name: "index_recordings_on_account_id"
     t.index ["phone_call_id"], name: "index_recordings_on_phone_call_id"
     t.index ["sequence_number"], name: "index_recordings_on_sequence_number", unique: true, order: :desc

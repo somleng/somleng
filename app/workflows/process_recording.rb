@@ -11,7 +11,7 @@ class ProcessRecording < ApplicationWorkflow
     recording.file.attach(io: file, filename: File.basename(file))
 
     recording.complete!
-    ExecuteWorkflowJob.perform_later(NotifyRecordingStatusCallback.to_s, recording)
+    ExecuteWorkflowJob.perform_later(NotifyRecordingStatusCallback.to_s, recording) if recording.status_callback_url.present?
   end
 
   def raw_recording_file
