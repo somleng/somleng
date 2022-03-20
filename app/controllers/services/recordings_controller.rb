@@ -10,7 +10,6 @@ module Services
       end
     end
 
-
     def update
       recording = Recording.find(params[:id])
 

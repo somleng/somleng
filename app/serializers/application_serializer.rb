@@ -1,6 +1,10 @@
 class ApplicationSerializer < SimpleDelegator
   include ActiveModel::Serializers::JSON
 
+  def attributes
+    {}
+  end
+
   def to_json(*args)
     serializable_hash(*args).to_json
   end

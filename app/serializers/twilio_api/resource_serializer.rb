@@ -17,13 +17,5 @@ module TwilioAPI
     def date_updated
       format_time(__getobj__.updated_at)
     end
-
-    private
-
-    def format_time(value)
-      return if value.blank?
-
-      value.utc.rfc2822
-    end
   end
 end

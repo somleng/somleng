@@ -46,7 +46,7 @@ module TwilioAPI
     end
 
     def RecordingUrl
-      url_helpers.twilio_api_account_phone_call_recording_url(object.account, object.phone_call, object)
+      url_helpers.twilio_api_account_phone_call_recording_url(object.account, object.phone_call, object, subdomain: "api")
     end
 
     def RecordingStatus
@@ -58,15 +58,15 @@ module TwilioAPI
     end
 
     def RecordingChannels
-      1
+      object.channels
     end
 
     def RecordingStartTime
-      object.created_at
+      format_time(object.start_time)
     end
 
     def RecordingSource
-      "RecordVerb"
+      object.source
     end
   end
 end

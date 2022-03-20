@@ -13,9 +13,7 @@ RSpec.describe "Services" do
 
       expect(response.code).to eq("201")
       expect(response.body).to match_api_response_schema("services/recording")
-      expect(json_response(response.body)).to include(
-        "status" => "in_progress"
-      )
+      expect(json_response(response.body).fetch("url")).to start_with("https://api.somleng.org")
     end
   end
 

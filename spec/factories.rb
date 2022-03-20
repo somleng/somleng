@@ -303,6 +303,7 @@ FactoryBot.define do
 
     trait :completed do
       status { :completed }
+      duration { 5 }
     end
   end
 end

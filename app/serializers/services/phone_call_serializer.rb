@@ -12,8 +12,13 @@ module Services
         "sid" => nil,
         "account_sid" => nil,
         "account_auth_token" => nil,
-        "direction" => nil
+        "direction" => nil,
+        "api_version" => nil
       )
+    end
+
+    def api_version
+      TwilioAPISerializer::API_VERSION
     end
 
     def account_auth_token

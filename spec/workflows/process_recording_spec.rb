@@ -26,7 +26,8 @@ RSpec.describe ProcessRecording do
         "RecordingUrl" => Rails.application.routes.url_helpers.twilio_api_account_phone_call_recording_url(
           recording.account,
           recording.phone_call,
-          recording
+          recording,
+          subdomain: "api"
         ),
         "RecordingDuration" => "15"
       )

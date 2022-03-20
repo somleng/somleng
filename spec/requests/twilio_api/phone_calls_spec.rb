@@ -90,7 +90,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls/:sid" do
     # https://www.twilio.com/docs/api/rest/call#instance-get
 
-    it "Fetch a call" do
+    example "Fetch a call" do
       account = create(:account)
       phone_call = create(:phone_call, account: account)
 
