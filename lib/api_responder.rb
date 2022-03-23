@@ -3,8 +3,8 @@ class APIResponder < ActionController::Responder
 
   def display(resource, given_options = {})
     serializer_class = options.delete(:serializer_class)
-
-    super(serializer_class.new(resource.decorated), given_options)
+    serializer_options = options.delete(:serializer_options)
+    super(serializer_class.new(resource, serializer_options), given_options)
   end
 
   def api_behavior(*args, &block)

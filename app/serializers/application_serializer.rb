@@ -1,6 +1,13 @@
 class ApplicationSerializer < SimpleDelegator
   include ActiveModel::Serializers::JSON
 
+  attr_reader :serializer_options
+
+  def initialize(object, serializer_options = {})
+    super(object)
+    @serializer_options = serializer_options
+  end
+
   def attributes
     {}
   end
