@@ -86,6 +86,11 @@ class APIResponseSchemaValidator
       required(collection_name).value(:array).each do
         schema(__schema__)
       end
+      required(:uri).filled(:str?)
+      required(:page).filled(:int?)
+      required(:first_page_uri).filled(:str?)
+      required(:next_page_uri).maybe(:str?)
+      required(:previous_page_uri).maybe(:str?)
     end
   end
 end

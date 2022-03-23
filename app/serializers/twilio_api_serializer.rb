@@ -30,24 +30,20 @@ class TwilioAPISerializer < ApplicationSerializer
       :uri => serializer_options.fetch(:url),
       :page => object.current_page,
       :page_size => object.limit_value,
-      :first_page_uri => build_page_uri(1),
-      :next_page_uri => build_page_uri(object.next_page),
-      :previous_page_uri => build_page_uri(object.prev_page)
+      :first_page_uri => build_pagination_uri(:first),
+      :next_page_uri => build_pagination_uri(object.next_page),
+      :previous_page_uri => build_pagination_uri(object.prev_page)
     }
   end
 
-  def build_page_uri(page_number)
+  def build_pagination_uri(page_number)
     return if page_number.blank?
 
     uri = URI(serializer_options.fetch(:url))
     params = Hash[URI.decode_www_form(uri.query || "")]
     params["PageSize"] = object.limit_value
-    if page_number == 1
-      params.delete("Page")
-    else
-      params["Page"] = page_number
-    end
-
+    params["Page"] = page_number
+    params.delete("Page") if page_number == :first
     uri.query = URI.encode_www_form(params)
     uri.to_s
   end
