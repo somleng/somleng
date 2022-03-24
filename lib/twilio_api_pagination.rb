@@ -1,6 +1,5 @@
 class TwilioAPIPagination
   DEFAULT_LIMIT_PER_PAGE = 50
-  MAX_LIMIT_PER_PAGE = 1000
 
   attr_reader :paginated_collection, :resources, :requested_uri, :params
 
@@ -56,7 +55,7 @@ class TwilioAPIPagination
   end
 
   def page_size
-    [params.fetch(:PageSize, DEFAULT_LIMIT_PER_PAGE).to_i, MAX_LIMIT_PER_PAGE].min
+    params.fetch(:PageSize, DEFAULT_LIMIT_PER_PAGE).to_i
   end
 
   def page_number
