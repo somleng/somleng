@@ -8,7 +8,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       _other_recording = create(:recording)
 
       set_twilio_api_authorization_header(phone_call.account)
-      do_request(account_sid: phone_call.account_id, call_sid: phone_call.id, foobar: true)
+      do_request(account_sid: phone_call.account_id, call_sid: phone_call.id)
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/recording")

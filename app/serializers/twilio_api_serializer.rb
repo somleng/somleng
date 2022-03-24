@@ -25,27 +25,8 @@ class TwilioAPISerializer < ApplicationSerializer
       self.class.new(record.decorated).serializable_hash(options)
     end
 
-    {
-      collection_name => data,
-      :uri => serializer_options.fetch(:url),
-      :page => object.current_page,
-      :page_size => object.limit_value,
-      :first_page_uri => build_pagination_uri(:first),
-      :next_page_uri => build_pagination_uri(object.next_page),
-      :previous_page_uri => build_pagination_uri(object.prev_page)
-    }
-  end
-
-  def build_pagination_uri(page_number)
-    return if page_number.blank?
-
-    uri = URI(serializer_options.fetch(:url))
-    params = Hash[URI.decode_www_form(uri.query || "")]
-    params["PageSize"] = object.limit_value
-    params["Page"] = page_number
-    params.delete("Page") if page_number == :first
-    uri.query = URI.encode_www_form(params)
-    uri.to_s
+    results = { collection_name => data }
+    results.merge(serializer_options.fetch(:pagination_info))
   end
 
   def serializable_is_collection?
@@ -55,7 +36,6 @@ class TwilioAPISerializer < ApplicationSerializer
   def collection_name
     self.class.name.demodulize.gsub("Serializer", "").underscore.pluralize.to_sym
   end
-
 
   def format_time(value)
     return if value.blank?

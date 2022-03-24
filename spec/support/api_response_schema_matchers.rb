@@ -88,6 +88,7 @@ class APIResponseSchemaValidator
       end
       required(:uri).filled(:str?)
       required(:page).filled(:int?)
+      required(:page_size).filled(:int?)
       required(:first_page_uri).filled(:str?)
       required(:next_page_uri).maybe(:str?)
       required(:previous_page_uri).maybe(:str?)
