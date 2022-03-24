@@ -10,7 +10,7 @@ RSpec.resource "Pagination" do
   )
 
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
-    example "Example" do
+    example "List resources with PageSize" do
       account = create(:account)
       _older, newer, newest = 3.times.map { create(:phone_call, account: account) }
 
@@ -29,6 +29,50 @@ RSpec.resource "Pagination" do
         "first_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2),
         "next_page_uri" => twilio_api_account_phone_calls_path(account, Page: 1, PageSize: 2, PageToken: "PA#{newer.id}"),
         "previous_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2, PageToken: "PB#{newest.id}")
+      )
+    end
+
+    example "List next result" do
+      account = create(:account)
+      older, newer, newest = 3.times.map { create(:phone_call, account: account) }
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id, PageSize: 2, PageToken: "PA#{newest.id}")
+
+      expect(response_status).to eq(200)
+      expect(json_response.fetch("calls").size).to eq(2)
+      expect(json_response.dig("calls", 0, "sid")).to eq(newer.id)
+      expect(json_response.dig("calls", 1, "sid")).to eq(older.id)
+
+      expect(json_response).to include(
+        "page" => 0,
+        "page_size" => 2,
+        "uri" => twilio_api_account_phone_calls_path(account, PageSize: 2, PageToken: "PA#{newest.id}"),
+        "first_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2),
+        "next_page_uri" => nil,
+        "previous_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2, PageToken: "PB#{newer.id}")
+      )
+    end
+
+    example "List previous result" do
+      account = create(:account)
+      oldest, older, newer, newest = 4.times.map { create(:phone_call, account: account) }
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id, PageSize: 2, PageToken: "PB#{older.id}")
+
+      expect(response_status).to eq(200)
+      expect(json_response.fetch("calls").size).to eq(2)
+      expect(json_response.dig("calls", 0, "sid")).to eq(newest.id)
+      expect(json_response.dig("calls", 1, "sid")).to eq(newer.id)
+
+      expect(json_response).to include(
+        "page" => 0,
+        "page_size" => 2,
+        "uri" => twilio_api_account_phone_calls_path(account, PageSize: 2, PageToken: "PB#{older.id}"),
+        "first_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2),
+        "next_page_uri" => twilio_api_account_phone_calls_path(account, Page: 1, PageSize: 2, PageToken: "PA#{newer.id}"),
+        "previous_page_uri" => nil
       )
     end
   end
