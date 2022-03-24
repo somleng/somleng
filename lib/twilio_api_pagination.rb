@@ -40,14 +40,14 @@ class TwilioAPIPagination
   def paginate_resources
     CursorPaginator.paginate(
       resources,
-      page_options: page_options,
+      page_options: cursor_page_options,
       paginator_options: {
         order_key: :sequence_number
       }
     )
   end
 
-  def page_options
+  def cursor_page_options
     options = { size: page_size }
     options[:after] = page_cursor  if page_token&.start_with?("PA")
     options[:before] = page_cursor if page_token&.start_with?("PB")

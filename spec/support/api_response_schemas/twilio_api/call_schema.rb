@@ -1,6 +1,6 @@
 module APIResponseSchema
   module TwilioAPI
-    PhoneCallSchema = Dry::Schema.Params do
+    CallSchema = Dry::Schema.Params do
       required(:annotation).maybe(:str?)
       required(:answered_by).maybe(:str?)
       required(:caller_name).maybe(:str?)

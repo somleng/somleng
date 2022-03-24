@@ -74,7 +74,7 @@ Rails.application.routes.draw do
 
     scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_api_account,
                                               defaults: { format: "json" } do
-      resources :phone_calls, only: %i[create show update], path: "Calls" do
+      resources :phone_calls, only: %i[index create show update], path: "Calls" do
         resources :recordings, only: %i[index show], path: "Recordings"
       end
       post "Calls/:id" => "phone_calls#update"

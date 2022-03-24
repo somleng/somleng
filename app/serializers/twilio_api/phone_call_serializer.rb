@@ -52,5 +52,9 @@ module TwilioAPI
     def uri
       url_helpers.twilio_api_account_phone_call_path(account, object, format: :json)
     end
+
+    def collection_name
+      "calls"
+    end
   end
 end
