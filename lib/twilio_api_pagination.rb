@@ -17,7 +17,7 @@ class TwilioAPIPagination
       page_size: page_size,
       first_page_uri: pagination_link(PageToken: nil, Page: 0),
       next_page_uri: next_cursor && pagination_link(PageToken: "PA#{next_cursor}", Page: page_number + 1),
-      previous_page_uri: prev_cursor && pagination_link(PageToken: "PB#{prev_cursor}", Page: (page_number.zero? ? 0 : page_number - 1))
+      previous_page_uri: prev_cursor && pagination_link(PageToken: "PB#{prev_cursor}", Page: [page_number - 1, 0].max)
     }
   end
 
