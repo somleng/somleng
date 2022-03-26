@@ -65,7 +65,7 @@ class TwilioAPIPagination
   def page_cursor
     return if page_token.blank?
 
-    page_token.sub(/P[AB]/, "")
+    page_token.sub(/\AP[AB]/, "")
   end
 
   def page_token

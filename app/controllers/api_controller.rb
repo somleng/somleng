@@ -17,7 +17,7 @@ class APIController < ActionController::API
     end
   end
 
-  def respond_with_resource(resource, options = {})
-    respond_with(resource, **options)
+  def respond_with_resource(resource, options = {}, &block)
+    respond_with(resource, **options, &block)
   end
 end

@@ -16,6 +16,7 @@ class Account < ApplicationRecord
   has_many :phone_numbers
   has_many :account_memberships
   has_many :users, through: :account_memberships
+  has_many :recordings
 
   def self.customer_managed
     where(arel_table[:account_memberships_count].gt(0))

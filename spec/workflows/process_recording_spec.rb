@@ -52,7 +52,7 @@ RSpec.describe ProcessRecording do
   def build_stubbed_s3_client
     Aws::S3::Client.new(
       stub_responses: {
-        get_object: ->(_context) { File.open(file_fixture("recording.wav")) }
+        get_object: ->(_context) { { body: File.open(file_fixture("recording.wav")) } }
       }
     )
   end

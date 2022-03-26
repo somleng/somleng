@@ -8,7 +8,7 @@ class ProcessRecording < ApplicationWorkflow
 
   def call
     file = raw_recording_file
-    recording.file.attach(io: file, filename: File.basename(file))
+    recording.file.attach(io: file, filename: "#{recording.id}.wav")
 
     recording.complete!
     ExecuteWorkflowJob.perform_later(NotifyRecordingStatusCallback.to_s, recording) if recording.status_callback_url.present?
@@ -19,8 +19,8 @@ class ProcessRecording < ApplicationWorkflow
       Rails.configuration.app_settings.fetch(:raw_recording_bucket)
     )
     s3_object = raw_recording_bucket.object(
-      URI(recording.raw_recording_url).path
+      URI(recording.raw_recording_url).path[1..]
     )
-    s3_object.get
+    s3_object.get.body
   end
 end
