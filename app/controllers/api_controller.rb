@@ -9,7 +9,6 @@ class APIController < ActionController::API
     schema_options = options.delete(:schema_options) || {}
     input_params = options.delete(:input_params) || request.request_parameters
     schema = with.new(input_params: input_params, options: schema_options)
-
     if schema.success?
       resource = yield(schema.output)
       respond_with_resource(resource, options)
@@ -18,7 +17,7 @@ class APIController < ActionController::API
     end
   end
 
-  def respond_with_resource(resource, options = {})
-    respond_with(resource, **options)
+  def respond_with_resource(resource, options = {}, &block)
+    respond_with(resource, **options, &block)
   end
 end

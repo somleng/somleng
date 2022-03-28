@@ -93,6 +93,10 @@
       {
         "name": "INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID",
         "value": "${inbound_sip_trunks_security_group_id}"
+      },
+      {
+        "name": "RAW_RECORDINGS_BUCKET",
+        "value": "${raw_recordings_bucket_name}"
       }
     ]
   }

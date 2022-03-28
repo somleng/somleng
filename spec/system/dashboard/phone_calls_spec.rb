@@ -79,6 +79,7 @@ RSpec.describe "Phone Calls" do
       price: "-0.001",
       price_unit: "MXN"
     )
+    create(:recording, :completed, phone_call: phone_call)
     create(:call_data_record, bill_sec: 5, phone_call: phone_call)
     user = create(:user, :carrier, carrier: carrier)
 
@@ -95,5 +96,6 @@ RSpec.describe "Phone Calls" do
     expect(page).to have_link("1294", href: dashboard_phone_number_path(phone_number))
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
+    expect(page).to have_content("Recordings")
   end
 end

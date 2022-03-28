@@ -1,10 +1,9 @@
 module Services
-  class ResourceSerializer < TwilioAPISerializer
+  class ResourceSerializer < ApplicationSerializer
     def attributes
       super.merge(
         "created_at" => nil,
-        "updated_at" => nil,
-        "api_version" => nil
+        "updated_at" => nil
       )
     end
 

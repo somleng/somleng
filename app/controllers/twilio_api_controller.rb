@@ -1,6 +1,8 @@
 class TwilioAPIController < APIController
   include ActionController::HttpAuthentication::Basic::ControllerMethods
 
+  self.responder = TwilioAPIResponder
+
   before_action :doorkeeper_authorize!
   before_action :authorize_account!
 

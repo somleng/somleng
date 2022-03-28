@@ -3,6 +3,21 @@ require "rails_helper"
 RSpec.resource "Phone Calls", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
+  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
+    example "List phone calls" do
+      account = create(:account)
+      phone_call = create(:phone_call, account: account)
+      _other_phone_call = create(:phone_call)
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id)
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_collection_schema("twilio_api/call")
+      expect(json_response.fetch("calls").pluck("sid")).to match_array([phone_call.id])
+    end
+  end
+
   post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
     parameter(
       "To",
@@ -62,7 +77,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       )
 
       expect(response_status).to eq(201)
-      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
+      expect(response_body).to match_api_response_schema("twilio_api/call")
     end
 
     example "Handles invalid requests", document: false do
@@ -90,7 +105,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls/:sid" do
     # https://www.twilio.com/docs/api/rest/call#instance-get
 
-    it "Fetch a call" do
+    example "Fetch a call" do
       account = create(:account)
       phone_call = create(:phone_call, account: account)
 
@@ -98,7 +113,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       do_request(account_sid: account.id, sid: phone_call.id)
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
+      expect(response_body).to match_api_response_schema("twilio_api/call")
     end
   end
 
@@ -124,7 +139,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
+      expect(response_body).to match_api_response_schema("twilio_api/call")
       expect(EndCallJob).to have_been_enqueued.with(phone_call)
     end
 
@@ -140,7 +155,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       )
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema("twilio_api/phone_call")
+      expect(response_body).to match_api_response_schema("twilio_api/call")
       expect(json_response.fetch("status")).to eq("canceled")
     end
 

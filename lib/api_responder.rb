@@ -1,6 +1,4 @@
-class APIResponder < ActionController::Responder
-  include Responders::HttpCacheResponder
-
+class APIResponder < ApplicationResponder
   def display(resource, given_options = {})
     serializer_class = options.delete(:serializer_class)
 

@@ -8,6 +8,7 @@ default: &default
   aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
   uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "upload-bucket") %>
+  raw_recordings_bucket: <%= ENV.fetch("RAW_RECORDINGS_BUCKET", "raw-recordings-bucket") %>
   services_user: "services"
   services_password: "password"
   ahn_host: <%= ENV.fetch("AHN_HOST", "http://localhost:8080") %>

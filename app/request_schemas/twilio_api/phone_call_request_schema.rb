@@ -1,7 +1,5 @@
 module TwilioAPI
   class PhoneCallRequestSchema < TwilioAPIRequestSchema
-    URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/.freeze
-
     params do
       required(:To).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
       required(:From).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)

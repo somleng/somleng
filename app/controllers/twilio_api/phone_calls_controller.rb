@@ -1,5 +1,9 @@
 module TwilioAPI
   class PhoneCallsController < TwilioAPIController
+    def index
+      respond_with(phone_calls_scope, serializer_options)
+    end
+
     def create
       validate_request_schema(
         with: PhoneCallRequestSchema,

@@ -290,4 +290,27 @@ FactoryBot.define do
 
     initialize_with { new(organization) }
   end
+
+  factory :recording do
+    phone_call
+    account { phone_call.account }
+    external_id { SecureRandom.uuid }
+    in_progress
+
+    trait :in_progress do
+      status { :in_progress }
+    end
+
+    trait :completed do
+      status { :completed }
+      duration { 5 }
+
+      file {
+        ActiveStorage::Blob.create_and_upload!(
+          io: File.open(RSpec.configuration.file_fixture_path + "/recording.wav"),
+          filename: "recording.wav"
+        )
+      }
+    end
+  end
 end

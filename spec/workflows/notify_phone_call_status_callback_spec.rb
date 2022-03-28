@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe StatusCallbackNotifierJob do
+RSpec.describe NotifyPhoneCallStatusCallback do
   it "notifies the status callback url via HTTP POST by default" do
     phone_call = create(
       :phone_call,
@@ -10,7 +10,7 @@ RSpec.describe StatusCallbackNotifierJob do
     )
     stub_request(:post, phone_call.status_callback_url)
 
-    StatusCallbackNotifierJob.new.perform(phone_call)
+    NotifyPhoneCallStatusCallback.call(phone_call)
 
     expect(WebMock).to have_requested(:post, phone_call.status_callback_url).with { |request|
       payload = Rack::Utils.parse_nested_query(request.body)

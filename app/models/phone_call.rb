@@ -4,6 +4,7 @@ class PhoneCall < ApplicationRecord
 
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]
+  enumerize :recording_status_callback_method, in: %w[POST GET]
   enumerize :direction, in: %i[inbound outbound], predicates: true, scope: :shallow
 
   belongs_to :carrier
@@ -14,6 +15,7 @@ class PhoneCall < ApplicationRecord
 
   has_one    :call_data_record, -> { where(call_leg: :A) }
   has_many   :phone_call_events
+  has_many   :recordings
 
   delegate :may_fire_event?, to: :aasm
 
