@@ -16,7 +16,7 @@ class ProcessRecording < ApplicationWorkflow
 
   def raw_recording_file
     raw_recording_bucket = Aws::S3::Resource.new(client: s3_client).bucket(
-      Rails.configuration.app_settings.fetch(:raw_recording_bucket)
+      Rails.configuration.app_settings.fetch(:raw_recordings_bucket)
     )
     s3_object = raw_recording_bucket.object(
       URI(recording.raw_recording_url).path.delete_prefix("/")

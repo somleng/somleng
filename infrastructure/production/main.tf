@@ -28,4 +28,6 @@ module "twilreapi" {
   inbound_sip_trunks_security_group_name = "somleng-inbound-sip-trunks"
   ecs_worker_autoscale_min_instances = 1
   ecs_worker_autoscale_max_instances = 10
+
+  raw_recordings_bucket_name = "raw-recordings.somleng.org"
 }
