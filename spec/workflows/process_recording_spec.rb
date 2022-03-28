@@ -8,9 +8,13 @@ RSpec.describe ProcessRecording do
       duration: 15,
       status_callback_url: "https://example.com/recording-callback",
       status_callback_method: "POST",
-      raw_recording_url: "https://raw-recordings.s3.amazonaws.com/recording.wav"
+      raw_recording_url: "https://raw-recordings.s3.amazonaws.com/folder/recording.wav"
     )
+    s3_objects = { "folder/recording.wav" => File.open(file_fixture("recording.wav")) }
     s3_client_stub = build_stubbed_s3_client
+    s3_client_stub.stub_responses(
+      :get_object, ->(context) { { body: s3_objects.fetch(context.params[:key]) } }
+    )
     stub_request(:post, recording.status_callback_url)
 
     perform_enqueued_jobs do

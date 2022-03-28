@@ -47,6 +47,11 @@
     <% end %>
     <%= f.attribute :status_callback_url %>
     <%= f.attribute :status_callback_method %>
+
+    <% if phone_call.recordings.any? %>
+      <dt class="col-sm-3">Recordings</dt>
+      <dd><%= render "dashboard/recordings/collection", recordings: phone_call.recordings %></dd>
+    <% end %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

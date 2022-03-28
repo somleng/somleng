@@ -1,0 +1,42 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Status
+      </th>
+      <th>
+        Duration
+      </th>
+      <th>
+        Download
+      </th>
+    </tr>
+  </thead>
+  <% recordings.each do |recording| %>
+    <% recording = RecordingDecorator.new(recording) %>
+    <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+      <td>
+        <%= recording.id %>
+      </td>
+
+      <td>
+        <%= recording.status.humanize %>
+      </td>
+
+      <td>
+        <%= recording.duration %>
+      </td>
+
+      <td>
+        <% if recording.file.attached? %>
+          <%= link_to rails_blob_path(recording.file, disposition: "attachment") do %>
+            <i class="fas fa-file-download"></i>
+          <% end %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

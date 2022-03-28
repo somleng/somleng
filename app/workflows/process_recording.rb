@@ -19,7 +19,7 @@ class ProcessRecording < ApplicationWorkflow
       Rails.configuration.app_settings.fetch(:raw_recording_bucket)
     )
     s3_object = raw_recording_bucket.object(
-      URI(recording.raw_recording_url).path[1..]
+      URI(recording.raw_recording_url).path.delete_prefix("/")
     )
     s3_object.get.body
   end
