@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.resource "Recordings", document: :twilio_api do
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls/:call_sid/Recordings" do
-    example "List recordings for a given phone call" do
+    example "List recordings by call" do
       phone_call = create(:phone_call)
       recording = create(:recording, :completed, phone_call:)
       _other_recording = create(:recording)
@@ -18,7 +18,7 @@ RSpec.resource "Recordings", document: :twilio_api do
   end
 
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Recordings" do
-    example "List recordings for a given account" do
+    example "List recordings by account" do
       account = create(:account)
       recordings = create_list(:recording, 2, account:)
       _other_recording = create(:recording)

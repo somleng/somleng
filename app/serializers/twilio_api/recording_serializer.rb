@@ -37,7 +37,7 @@ module TwilioAPI
     def encryption_details; end
 
     def uri
-      url_helpers.twilio_api_account_phone_call_path(object.account, object.phone_call, object, format: :json)
+      url_helpers.twilio_api_account_phone_call_recording_path(object.account, object.phone_call, object, format: :json)
     end
   end
 end
