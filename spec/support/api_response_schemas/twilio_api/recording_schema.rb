@@ -18,7 +18,7 @@ module APIResponseSchema
       required(:track).filled(:str?)
       required(:date_created).filled(:str?)
       required(:date_updated).filled(:str?)
-      required(:uri).filled(:str?)
+      required(:uri).filled(:str?, format?: /Recordings/)
     end
   end
 end
