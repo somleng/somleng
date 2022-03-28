@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.resource "Pagination" do
+RSpec.resource "Pagination", document: :twilio_api do
   explanation <<~HEREDOC
     When fetching multiple pages of API results, use the provided `next_page_uri` parameter to retrieve the next page of results.
   HEREDOC
@@ -32,7 +32,7 @@ RSpec.resource "Pagination" do
       )
     end
 
-    example "List next result" do
+    example "List next result", document: false do
       account = create(:account)
       older, newer, newest = 3.times.map { create(:phone_call, account: account) }
 
@@ -54,9 +54,9 @@ RSpec.resource "Pagination" do
       )
     end
 
-    example "List previous result" do
+    example "List previous result", document: false do
       account = create(:account)
-      oldest, older, newer, newest = 4.times.map { create(:phone_call, account: account) }
+      _oldest, older, newer, newest = 4.times.map { create(:phone_call, account: account) }
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, PageSize: 2, PageToken: "PB#{older.id}")
