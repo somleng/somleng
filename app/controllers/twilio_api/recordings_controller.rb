@@ -27,7 +27,7 @@ module TwilioAPI
 
         format.wav do
           if recording.file.attached?
-            redirect_to(recording.file.url)
+            redirect_to(recording.file.url, allow_other_host: true)
           else
             head :not_found
           end
