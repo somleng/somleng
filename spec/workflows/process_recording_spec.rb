@@ -41,7 +41,6 @@ RSpec.describe ProcessRecording do
     recording = create(
       :recording,
       :in_progress,
-      duration: 15,
       raw_recording_url: "https://raw-recordings.s3.amazonaws.com/recording.wav"
     )
 
