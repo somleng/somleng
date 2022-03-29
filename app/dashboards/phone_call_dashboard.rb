@@ -15,6 +15,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
       transform_on_export: ->(field) { field.data&.id }
     ),
     phone_call_events: Field::HasMany,
+    recordings: Field::HasMany,
     id: Field::String,
     to: Field::String,
     from: Field::String,
@@ -62,10 +63,11 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     inbound_sip_trunk
     call_data_record
     phone_call_events
+    recordings
   ].freeze
 
   filters = PhoneCall.aasm.states.map(&:name).index_with do |status|
-    ->(resources) { resources.where(status: status) }
+    ->(resources) { resources.where(status:) }
   end
 
   filters[:inbound] = ->(resources) { resources.inbound }
