@@ -5,7 +5,7 @@ ENV BUNDLE_APP_CONFIG="/app/.bundle"
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base git postgresql-dev imagemagick nodejs yarn ffmpeg
+    apk add --update --no-cache build-base git postgresql-dev imagemagick nodejs yarn
 
 RUN gem install bundler
 
@@ -38,7 +38,7 @@ WORKDIR $APP_ROOT
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base postgresql-dev imagemagick && \
+    apk add --update --no-cache build-base postgresql-dev imagemagick ffmpeg && \
     gem install bundler
 
 COPY --from=build-env $APP_ROOT $APP_ROOT
