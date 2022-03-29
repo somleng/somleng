@@ -591,6 +591,7 @@ DEPENDENCIES
   email_spec
   enumerize
   factory_bot_rails
+  faraday
   http
   image_processing
   importmap-rails

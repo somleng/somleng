@@ -1,6 +1,6 @@
 module UserAuthorization
   extend ActiveSupport::Concern
-  include Pundit
+  include Pundit::Authorization
 
   included do
     helper_method :current_carrier
