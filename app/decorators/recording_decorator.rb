@@ -9,7 +9,7 @@ class RecordingDecorator < SimpleDelegator
   end
 
   def duration
-    object.duration.to_s.presence
+    object.file.metadata[:duration] if object.file.attached?
   end
 
   def start_time

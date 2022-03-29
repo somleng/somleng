@@ -303,7 +303,6 @@ FactoryBot.define do
 
     trait :completed do
       status { :completed }
-      duration { 5 }
 
       file {
         ActiveStorage::Blob.create_and_upload!(

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_18_071857) do
+ActiveRecord::Schema.define(version: 2022_03_29_041050) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -287,7 +287,6 @@ ActiveRecord::Schema.define(version: 2022_03_18_071857) do
     t.string "status", null: false
     t.string "external_id"
     t.string "raw_recording_url"
-    t.integer "duration"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

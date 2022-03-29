@@ -5,7 +5,6 @@ RSpec.describe ProcessRecording do
     recording = create(
       :recording,
       :in_progress,
-      duration: 15,
       status_callback_url: "https://example.com/recording-callback",
       status_callback_method: "POST",
       raw_recording_url: "https://raw-recordings.s3.amazonaws.com/folder/recording.wav"

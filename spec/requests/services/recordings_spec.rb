@@ -25,8 +25,7 @@ RSpec.describe "Services" do
         services_recording_path(recording),
         params: {
           raw_recording_url: "https://raw-recordings.s3.amazonaws.com/recording.wav",
-          external_id: "external-id",
-          duration: 12
+          external_id: "external-id"
         },
         headers: build_authorization_headers("services", "password")
       )
@@ -35,8 +34,7 @@ RSpec.describe "Services" do
       expect(response.body).to match_api_response_schema("services/recording")
       expect(recording.reload).to have_attributes(
         raw_recording_url: "https://raw-recordings.s3.amazonaws.com/recording.wav",
-        external_id: "external-id",
-        duration: 12
+        external_id: "external-id"
       )
       expect(ExecuteWorkflowJob).to have_been_enqueued.with("ProcessRecording", recording)
     end
