@@ -32,7 +32,7 @@ RSpec.describe ProcessRecording do
           recording,
           subdomain: "api"
         ),
-        "RecordingDuration" => "15"
+        "RecordingDuration" => be_present
       )
     }
   end
