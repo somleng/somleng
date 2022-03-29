@@ -9,6 +9,7 @@ class ProcessRecording < ApplicationWorkflow
   def call
     file = download_raw_recording_file
     recording.file.attach(io: file, filename: "#{recording.id}.wav")
+    recording.file.analyze
 
     recording.complete!
     ExecuteWorkflowJob.perform_later(NotifyRecordingStatusCallback.to_s, recording) if recording.status_callback_url.present?
