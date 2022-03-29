@@ -24,7 +24,7 @@ class UserForm
 
   def self.initialize_with(user)
     new(
-      user: user,
+      user:,
       carrier: user.carrier,
       name: user.name,
       email: user.email,
@@ -38,10 +38,10 @@ class UserForm
 
     self.user = User.invite!(
       {
-        name: name,
-        email: email,
-        carrier_role: role,
-        carrier: carrier
+        name:,
+        email:,
+        carrier:,
+        carrier_role: role
       },
       inviter
     )
@@ -53,7 +53,7 @@ class UserForm
 
   def validate_email
     return if errors[:email].any?
-    return unless User.exists?(email: email)
+    return unless User.exists?(email:)
 
     errors.add(:email, :taken)
   end
