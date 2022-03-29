@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin / Carriers" do
+RSpec.describe "Admin/Carriers" do
   it "List carriers" do
     create(:carrier, name: "My Carrier")
 
