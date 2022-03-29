@@ -23,7 +23,7 @@ class AccountForm
 
   def self.initialize_with(account)
     new(
-      account: account,
+      account:,
       carrier: account.carrier,
       name: account.name,
       outbound_sip_trunk_id: account.outbound_sip_trunk_id,
@@ -76,7 +76,7 @@ class AccountForm
 
   def invite_owner!
     AccountMembership.create!(
-      account: account,
+      account:,
       user: User.invite!({ email: owner_email, name: owner_name }, current_user),
       role: :owner
     )

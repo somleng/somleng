@@ -13,8 +13,7 @@ class UserForm
 
   enumerize :role, in: User.carrier_role.values, presence: true
   validates :name, :email, presence: true, unless: :persisted?
-  validates :email, format: User::EMAIL_FORMAT, allow_nil: true, allow_blank: true
-  validate :validate_email
+  validates :email, email_uniqueness: true, email_format: true, allow_nil: true, allow_blank: true
 
   delegate :persisted?, :id, to: :user
 
@@ -47,14 +46,5 @@ class UserForm
     )
 
     true
-  end
-
-  private
-
-  def validate_email
-    return if errors[:email].any?
-    return unless User.exists?(email:)
-
-    errors.add(:email, :taken)
   end
 end

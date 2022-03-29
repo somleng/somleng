@@ -11,7 +11,7 @@ class OnboardCarrier < ApplicationWorkflow
     ApplicationRecord.transaction do
       carrier = create_carrier
       create_carrier_access_token(carrier)
-      invite_carrier_owner(carrier: carrier, **owner)
+      onboard_carrier_owner(carrier:, **owner)
       carrier
     end
   end
@@ -20,8 +20,8 @@ class OnboardCarrier < ApplicationWorkflow
 
   def create_carrier
     Carrier.create!(
-      name: name,
-      country_code: country_code
+      name:,
+      country_code:
     )
   end
 
@@ -39,11 +39,11 @@ class OnboardCarrier < ApplicationWorkflow
     end
   end
 
-  def invite_carrier_owner(params)
-    User.invite!(
-      params.reverse_merge(
-        carrier_role: :owner
-      )
+  def onboard_carrier_owner(params)
+    user_params = params.reverse_merge(
+      carrier_role: :owner
     )
+
+    user_params.key?(:password) ? User.create!(user_params) : User.invite!(user_params)
   end
 end
