@@ -41,11 +41,11 @@ module TwilioAPI
     end
 
     def From
-      format_number(__getobj__.from)
+      object.from
     end
 
     def To
-      format_number(__getobj__.to)
+      object.to
     end
 
     def CallStatus
@@ -65,7 +65,7 @@ module TwilioAPI
     end
 
     def SipResponseCode
-      __getobj__.call_data_record.sip_term_status
+      object.call_data_record.sip_term_status
     end
 
     def CallbackSource
@@ -78,12 +78,6 @@ module TwilioAPI
 
     def SequenceNumber
       "0"
-    end
-
-    private
-
-    def format_number(number)
-      Phony.plausible?(number) ? "+#{number}" : number
     end
   end
 end

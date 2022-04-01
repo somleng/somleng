@@ -22,7 +22,7 @@ module Services
     end
 
     def account_auth_token
-      __getobj__.account.auth_token
+      object.account.auth_token
     end
   end
 end
