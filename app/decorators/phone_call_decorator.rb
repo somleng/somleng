@@ -59,30 +59,36 @@ class PhoneCallDecorator < SimpleDelegator
   end
 
   def to_formatted
-    format_number(__getobj__.to, format: :international)
+    format_number(object.to, format: :international)
   end
 
   def from_formatted
-    format_number(__getobj__.from, format: :international)
+    format_number(object.from, format: :international)
   end
 
   def price_formatted
     return if price.blank?
 
     ActiveSupport::NumberHelper.number_to_currency(
-      __getobj__.price,
-      unit: Money::Currency.new(__getobj__.price_unit).symbol,
+      object.price,
+      unit: Money::Currency.new(object.price_unit).symbol,
       precision: 6
     )
   end
 
   def call_data_record
-    __getobj__.call_data_record || NullCallDataRecord.new
+    object.call_data_record || NullCallDataRecord.new
   end
+
+  private
 
   def format_number(value, options = {})
     return value unless Phony.plausible?(value)
 
     Phony.format(value, options)
+  end
+
+  def object
+    __getobj__
   end
 end

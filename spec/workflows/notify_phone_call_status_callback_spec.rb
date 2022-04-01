@@ -5,6 +5,8 @@ RSpec.describe NotifyPhoneCallStatusCallback do
     phone_call = create(
       :phone_call,
       :not_answered,
+      from: "2442",
+      to: "+85512334667",
       status_callback_url: "https://www.example.com/status_callback_url?b=2&a=1",
       call_data_record: build(:call_data_record, bill_sec: "15")
     )
@@ -15,7 +17,12 @@ RSpec.describe NotifyPhoneCallStatusCallback do
     expect(WebMock).to have_requested(:post, phone_call.status_callback_url).with { |request|
       payload = Rack::Utils.parse_nested_query(request.body)
 
-      expect(payload).to include("CallStatus" => "no-answer", "CallDuration" => "15")
+      expect(payload).to include(
+        "CallStatus" => "no-answer",
+        "CallDuration" => "15",
+        "From" => "2442",
+        "To" => "+85512334667"
+      )
 
       validator = Twilio::Security::RequestValidator.new(phone_call.account.auth_token)
       expect(

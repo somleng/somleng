@@ -11,11 +11,11 @@ module TwilioAPI
     end
 
     def date_created
-      format_time(__getobj__.created_at)
+      format_time(object.created_at)
     end
 
     def date_updated
-      format_time(__getobj__.updated_at)
+      format_time(object.updated_at)
     end
   end
 end
