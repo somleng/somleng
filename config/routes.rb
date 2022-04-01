@@ -5,10 +5,21 @@ Rails.application.routes.draw do
     devise_scope :user do
       resource(
         :registration,
-        only: %i[edit update new create],
+        only: %i[edit update create],
         controller: "users/registrations",
         as: :user_registration,
         path: "users"
+      )
+
+      resource(
+        :registration,
+        only: %i[new],
+        controller: "users/registrations",
+        as: :user_registration,
+        path: "users",
+        path_names: {
+          new: "sign_up"
+        }
       )
 
       resource(
@@ -29,7 +40,7 @@ Rails.application.routes.draw do
       resources :accounts
       resources :account_memberships
       resources :outbound_sip_trunks
-      resources :users
+      resources :carrier_users
       resources :exports, only: %i[index create]
       resource :account_session, only: :create
       resource :account_settings, only: %i[show edit update]
@@ -78,12 +89,12 @@ Rails.application.routes.draw do
       resources :recordings, only: %i[show], path: "Recordings", defaults: { format: "wav" }
     end
 
-
     scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_api_account,
                                               defaults: { format: "json" } do
       concerns :recordings
 
-      resources :phone_calls, only: %i[index create show update], path: "Calls", concerns: :recordings
+      resources :phone_calls, only: %i[index create show update], path: "Calls",
+                              concerns: :recordings
       post "Calls/:id" => "phone_calls#update"
     end
 

@@ -1,14 +1,15 @@
 require "rails_helper"
 
-RSpec.describe "Users" do
+RSpec.describe "Carrier users" do
   it "List and filter users" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, carrier: carrier)
-    create(:user, :carrier, name: "John Doe", carrier: carrier, created_at: Time.utc(2021, 12, 1))
-    create(:user, :carrier, name: "Joe Bloggs", carrier: carrier, created_at: Time.utc(2021, 10, 10))
+    user = create(:user, :carrier, carrier:)
+    create(:user, :carrier, name: "John Doe", carrier:, created_at: Time.utc(2021, 12, 1))
+    create(:user, :carrier, name: "Joe Bloggs", carrier:,
+                            created_at: Time.utc(2021, 10, 10))
 
     sign_in(user)
-    visit dashboard_users_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
+    visit dashboard_carrier_users_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
 
     expect(page).to have_content("John Doe")
     expect(page).not_to have_content("Joe Bloggs")
@@ -18,7 +19,7 @@ RSpec.describe "Users" do
     user = create(:user, :carrier, :owner)
 
     sign_in(user)
-    visit dashboard_users_path
+    visit dashboard_carrier_users_path
     click_link("New")
     fill_in("Name", with: "John Doe")
     fill_in("Email", with: "johndoe@example.com")
@@ -35,7 +36,7 @@ RSpec.describe "Users" do
     user = create(:user, :carrier, :owner)
 
     sign_in(user)
-    visit new_dashboard_user_path
+    visit new_dashboard_carrier_user_path
     click_button "Send an invitation"
 
     expect(page).to have_content("can't be blank")
@@ -43,11 +44,11 @@ RSpec.describe "Users" do
 
   it "Carrier owner can update a user" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, :owner, carrier: carrier)
-    managed_user = create(:user, :carrier, carrier: carrier)
+    user = create(:user, :carrier, :owner, carrier:)
+    managed_user = create(:user, :carrier, carrier:)
 
     sign_in(user)
-    visit dashboard_user_path(managed_user)
+    visit dashboard_carrier_user_path(managed_user)
     click_link("Edit")
 
     select("Member", from: "Role")
@@ -59,11 +60,18 @@ RSpec.describe "Users" do
 
   it "Resend invitation" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, :owner, carrier: carrier)
-    invited_user = create(:user, :carrier, :admin, :invited, carrier: carrier, email: "johndoe@example.com")
+    user = create(:user, :carrier, :owner, carrier:)
+    invited_user = create(
+      :user,
+      :carrier,
+      :admin,
+      :invited,
+      carrier:,
+      email: "johndoe@example.com"
+    )
 
     sign_in(user)
-    visit dashboard_user_path(invited_user)
+    visit dashboard_carrier_user_path(invited_user)
 
     expect(page).to have_content("The user has not yet accepted their invite.")
 
@@ -72,22 +80,29 @@ RSpec.describe "Users" do
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
-    expect(page).to have_current_path(dashboard_user_path(invited_user))
+    expect(page).to have_current_path(dashboard_carrier_user_path(invited_user))
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
   it "Reset 2FA for a user" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, :owner, carrier: carrier)
-    other_user = create(:user, :carrier, :admin, :otp_required_for_login, carrier: carrier, email: "johndoe@example.com")
+    user = create(:user, :carrier, :owner, carrier:)
+    other_user = create(
+      :user,
+      :carrier,
+      :admin,
+      :otp_required_for_login,
+      carrier:,
+      email: "johndoe@example.com"
+    )
 
     sign_in(user)
-    visit dashboard_user_path(other_user)
+    visit dashboard_carrier_user_path(other_user)
 
     click_link("Reset 2FA")
 
     expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
-    expect(page).to have_current_path(dashboard_user_path(other_user))
+    expect(page).to have_current_path(dashboard_carrier_user_path(other_user))
   end
 
   it "Delete a user" do
@@ -100,7 +115,7 @@ RSpec.describe "Users" do
     )
 
     sign_in(user)
-    visit dashboard_user_path(other_user)
+    visit dashboard_carrier_user_path(other_user)
 
     click_link "Delete"
 

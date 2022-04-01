@@ -1,5 +1,5 @@
 module Dashboard
-  class UsersController < DashboardController
+  class CarrierUsersController < DashboardController
     def index
       @resources = apply_filters(users_scope)
       @resources = paginate_resources(@resources)
@@ -18,8 +18,7 @@ module Dashboard
       @resource.inviter = current_user
       @resource.save
 
-      respond_with(
-        :dashboard,
+      respond_with_resource(
         @resource,
         notice: "An invitation email has been sent to #{@resource.email}."
       )
@@ -34,12 +33,12 @@ module Dashboard
       @resource.user = record
       @resource.save
 
-      respond_with(:dashboard, @resource)
+      respond_with_resource(@resource)
     end
 
     def destroy
       record.destroy
-      respond_with(:dashboard, record)
+      respond_with_resource(record)
     end
 
     private
@@ -60,6 +59,10 @@ module Dashboard
 
     def record
       @record ||= users_scope.find(params[:id])
+    end
+
+    def respond_with_resource(resource, options = {})
+      respond_with(:dashboard, :carrier, resource, options)
     end
   end
 end

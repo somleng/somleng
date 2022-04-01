@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Signup", :js, :selenium_chrome do
+RSpec.describe "Signup" do
   it "Sign up as a carrier" do
     visit(new_user_registration_path)
     fill_in("Name", with: "John Doe")

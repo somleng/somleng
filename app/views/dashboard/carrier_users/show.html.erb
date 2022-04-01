@@ -1,6 +1,6 @@
 <%= page_title(title: "User") do %>
   <% if policy(@resource).edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_user_path(@resource)) %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_carrier_user_path(@resource)) %>
   <% end %>
 
   <% if TwoFactorAuthenticationPolicy.new(pundit_user, @resource).destroy? %>
@@ -15,7 +15,7 @@
   <% end %>
 
   <% if policy(@resource).destroy? %>
-    <%= render("shared/destroy_resource_page_action", path: dashboard_user_path(@resource)) %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_carrier_user_path(@resource)) %>
   <% end %>
 <% end %>
 

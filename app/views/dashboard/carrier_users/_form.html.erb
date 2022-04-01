@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource]) do |f| %>
+  <%= simple_form_for([:dashboard, :carrier, resource]) do |f| %>
     <div class="row">
       <div class="col-sm-6">
         <%= f.input :name, maxlength: 128, disabled: local_assigns.fetch(:disable_name_input, false) %>

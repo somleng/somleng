@@ -34,8 +34,8 @@
       <%= sidebar_nav("Phone Calls", dashboard_phone_calls_path, icon_class: "fas fa-phone") %>
     <% end %>
 
-    <% if policy(:user).index? %>
-      <%= sidebar_nav("Users", dashboard_users_path, icon_class: "fas fa-users") %>
+    <% if policy(:carrier_user).index? %>
+      <%= sidebar_nav("Users", dashboard_carrier_users_path, icon_class: "fas fa-users") %>
     <% end %>
 
     <% if policy(:account_membership).index? %>

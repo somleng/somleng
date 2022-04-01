@@ -17,6 +17,10 @@ class User < ApplicationRecord
 
   before_create :generate_otp_secret
 
+  def self.policy_class
+    CarrierUserPolicy
+  end
+
   def self.carrier
     where.not(carrier_id: nil)
   end
