@@ -5,15 +5,7 @@ Rails.application.routes.draw do
     devise_scope :user do
       resource(
         :registration,
-        only: %i[edit update create],
-        controller: "users/registrations",
-        as: :user_registration,
-        path: "users"
-      )
-
-      resource(
-        :registration,
-        only: %i[new],
+        only: %i[edit update new create],
         controller: "users/registrations",
         as: :user_registration,
         path: "users",
