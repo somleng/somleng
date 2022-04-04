@@ -22,10 +22,12 @@ class CarrierForm
             :password_confirmation,
             presence: true
 
-  validates :work_email, email_format: true, email_uniqueness: true, allow_nil: true, allow_blank: true
+  validates :work_email, email_format: true, email_uniqueness: true, allow_blank: true
   validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
   validates :website, format: URL_FORMAT, allow_blank: true
   validates :password, confirmation: true
+
+  delegate :persisted?, to: :user
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Carrier")
@@ -37,6 +39,7 @@ class CarrierForm
     carrier = OnboardCarrier.call(
       name: company,
       country_code: country,
+      website:,
       owner: {
         name:,
         password:,

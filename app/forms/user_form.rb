@@ -13,7 +13,7 @@ class UserForm
 
   enumerize :role, in: User.carrier_role.values, presence: true
   validates :name, :email, presence: true, unless: :persisted?
-  validates :email, email_uniqueness: true, email_format: true, allow_nil: true, allow_blank: true
+  validates :email, email_uniqueness: true, email_format: true, allow_blank: true
 
   delegate :persisted?, :id, to: :user
 

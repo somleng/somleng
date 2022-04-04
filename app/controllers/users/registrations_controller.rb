@@ -10,7 +10,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     super do |form|
-      self.resource = form.user if form.user.persisted?
+      self.resource = form.user if form.persisted?
     end
   end
 

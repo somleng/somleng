@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_29_041050) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_04_04_051018) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -21,8 +20,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.uuid "user_id", null: false
     t.string "role", null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id", "user_id"], name: "index_account_memberships_on_account_id_and_user_id", unique: true
     t.index ["account_id"], name: "index_account_memberships_on_account_id"
     t.index ["sequence_number"], name: "index_account_memberships_on_sequence_number", unique: true, order: :desc
@@ -30,8 +29,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
   end
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "status", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
@@ -50,7 +49,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "record_type", null: false
     t.uuid "record_id", null: false
     t.uuid "blob_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.bigserial "sequence_number", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
@@ -64,7 +63,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.text "metadata"
     t.bigint "byte_size", null: false
     t.string "checksum"
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
     t.bigserial "sequence_number", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
@@ -87,11 +86,11 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.integer "duration_sec", null: false
     t.string "direction", null: false
     t.string "hangup_cause", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "start_time", null: false
-    t.datetime "end_time", null: false
-    t.datetime "answer_time"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "start_time", precision: nil, null: false
+    t.datetime "end_time", precision: nil, null: false
+    t.datetime "answer_time", precision: nil
     t.string "sip_term_status"
     t.string "sip_invite_failure_status"
     t.string "sip_invite_failure_phrase"
@@ -104,9 +103,10 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "country_code", null: false
+    t.string "website"
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
   end
 
@@ -117,8 +117,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "type", null: false
     t.jsonb "details", default: {}, null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["carrier_id"], name: "index_events_on_carrier_id"
     t.index ["eventable_type", "eventable_id"], name: "index_events_on_eventable"
     t.index ["sequence_number"], name: "index_events_on_sequence_number", unique: true, order: :desc
@@ -131,8 +131,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "name", null: false
     t.string "resource_type", null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["sequence_number"], name: "index_exports_on_sequence_number", unique: true, order: :desc
     t.index ["user_id"], name: "index_exports_on_user_id"
   end
@@ -143,8 +143,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "trunk_prefix_replacement"
     t.inet "source_ip", null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["carrier_id"], name: "index_inbound_sip_trunks_on_carrier_id"
     t.index ["sequence_number"], name: "index_inbound_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["source_ip"], name: "index_inbound_sip_trunks_on_source_ip", unique: true
@@ -156,10 +156,10 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "token", null: false
     t.integer "expires_in", null: false
     t.text "redirect_uri", null: false
-    t.datetime "created_at", null: false
-    t.datetime "revoked_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "revoked_at", precision: nil
     t.string "scopes"
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigserial "sequence_number", null: false
     t.index ["sequence_number"], name: "index_oauth_access_grants_on_sequence_number", unique: true, order: :desc
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
@@ -171,8 +171,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
-    t.datetime "revoked_at"
-    t.datetime "created_at", null: false
+    t.datetime "revoked_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
     t.string "scopes"
     t.bigserial "sequence_number", null: false
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
@@ -188,8 +188,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "secret", null: false
     t.text "redirect_uri", null: false
     t.string "scopes", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigserial "sequence_number", null: false
     t.string "owner_type", null: false
     t.boolean "confidential", default: true, null: false
@@ -206,8 +206,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "dial_string_prefix"
     t.boolean "trunk_prefix", default: false, null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "nat_supported", default: true, null: false
     t.boolean "plus_prefix", default: false, null: false
     t.index ["carrier_id"], name: "index_outbound_sip_trunks_on_carrier_id"
@@ -218,8 +218,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.uuid "phone_call_id", null: false
     t.json "params", default: {}, null: false
     t.string "type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigserial "sequence_number", null: false
     t.index ["phone_call_id"], name: "index_phone_call_events_on_phone_call_id"
     t.index ["sequence_number"], name: "index_phone_call_events_on_sequence_number", unique: true, order: :desc
@@ -234,8 +234,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "status", null: false
     t.string "status_callback_url"
     t.string "status_callback_method"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "external_id"
     t.uuid "phone_number_id"
     t.json "variables", default: {}, null: false
@@ -269,8 +269,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "voice_method"
     t.string "status_callback_url"
     t.string "status_callback_method"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
     t.string "sip_domain"
@@ -288,8 +288,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "external_id"
     t.string "raw_recording_url"
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.text "status_callback_url"
     t.string "status_callback_method"
     t.index ["account_id"], name: "index_recordings_on_account_id"
@@ -304,24 +304,24 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "confirmation_sent_at", precision: nil
     t.string "unconfirmed_email"
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "invitation_token"
-    t.datetime "invitation_created_at", precision: 6
-    t.datetime "invitation_sent_at", precision: 6
-    t.datetime "invitation_accepted_at", precision: 6
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
     t.integer "invitation_limit"
     t.string "invited_by_type"
     t.uuid "invited_by_id"
@@ -346,8 +346,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.string "signing_secret", null: false
     t.boolean "enabled", default: true, null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
     t.index ["sequence_number"], name: "index_webhook_endpoints_on_sequence_number", unique: true, order: :desc
   end
@@ -360,8 +360,8 @@ ActiveRecord::Schema.define(version: 2022_03_29_041050) do
     t.boolean "failed", null: false
     t.jsonb "payload", default: {}, null: false
     t.bigserial "sequence_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_webhook_request_logs_on_event_id"
     t.index ["sequence_number"], name: "index_webhook_request_logs_on_sequence_number", unique: true, order: :desc
     t.index ["webhook_endpoint_id"], name: "index_webhook_request_logs_on_webhook_endpoint_id"
