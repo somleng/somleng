@@ -22,7 +22,7 @@ RSpec.describe UserForm do
   describe "#save" do
     it "creates a user" do
       carrier = create(:carrier)
-      inviter = create(:user, :carrier, carrier: carrier)
+      inviter = create(:user, :carrier, carrier:)
       form = UserForm.new(name: "John Doe", email: "johndoe@example.com", role: "admin")
       form.carrier = carrier
       form.inviter = inviter

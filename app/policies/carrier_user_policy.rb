@@ -1,4 +1,4 @@
-class UserPolicy < ApplicationPolicy
+class CarrierUserPolicy < ApplicationPolicy
   def read?
     user.current_organization.carrier?
   end

@@ -2,8 +2,8 @@
   <%= render("shared/filters") do |form| %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
-  <% if policy(:user).new? %>
-    <%= render("shared/new_resource_page_action", path: new_dashboard_user_path ) %>
+  <% if policy(:carrier_user).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_carrier_user_path ) %>
   <% end %>
 <% end %>
 

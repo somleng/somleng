@@ -1,0 +1,42 @@
+<h1>Sign up</h1>
+
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+
+  <%= f.input :name, autofocus: true %>
+  <%= f.input :work_email %>
+
+  <div class="row">
+    <div class="col-6">
+      <%= f.input :company %>
+    </div>
+    <div class="col-6">
+      <%= f.input :country %>
+    </div>
+  </div>
+
+  <%= f.input :website, hint: "Must start with https or http" %>
+
+  <%= f.input :password,
+              hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
+              input_html: { autocomplete: "new-password" } %>
+
+  <%= f.input :password_confirmation,
+              input_html: { autocomplete: "new-password" } %>
+
+  <div class="row">
+    <div class="col-6">
+      <%= f.button :submit, "Sign up" %>
+    </div>
+    <div class="col-6 text-right">
+      <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
+    </div>
+  </div>
+<% end %>
+
+<div class="row mt-3">
+  <div class="col-12">
+    <%= render "devise/shared/links" %>
+  </div>
+</div>
+

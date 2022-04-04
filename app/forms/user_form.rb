@@ -13,8 +13,7 @@ class UserForm
 
   enumerize :role, in: User.carrier_role.values, presence: true
   validates :name, :email, presence: true, unless: :persisted?
-  validates :email, format: User::EMAIL_FORMAT, allow_nil: true, allow_blank: true
-  validate :validate_email
+  validates :email, email_uniqueness: true, email_format: true, allow_blank: true
 
   delegate :persisted?, :id, to: :user
 
@@ -24,7 +23,7 @@ class UserForm
 
   def self.initialize_with(user)
     new(
-      user: user,
+      user:,
       carrier: user.carrier,
       name: user.name,
       email: user.email,
@@ -38,23 +37,14 @@ class UserForm
 
     self.user = User.invite!(
       {
-        name: name,
-        email: email,
-        carrier_role: role,
-        carrier: carrier
+        name:,
+        email:,
+        carrier:,
+        carrier_role: role
       },
       inviter
     )
 
     true
-  end
-
-  private
-
-  def validate_email
-    return if errors[:email].any?
-    return unless User.exists?(email: email)
-
-    errors.add(:email, :taken)
   end
 end

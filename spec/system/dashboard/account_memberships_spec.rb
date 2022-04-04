@@ -5,9 +5,9 @@ RSpec.describe "Account Memberships" do
     account = create(:account)
     other_account = create(:account, carrier: account.carrier)
     user = create(
-      :user, :with_account_membership, account_role: :owner, account: account, name: "Joe Bloggs"
+      :user, :with_account_membership, account_role: :owner, account:, name: "Joe Bloggs"
     )
-    create_account_membership(account: account, role: :owner, name: "John Doe")
+    create_account_membership(account:, role: :owner, name: "John Doe")
     create_account_membership(account: other_account, role: :owner, name: "Bob Chann")
 
     sign_in(user)
@@ -46,8 +46,8 @@ RSpec.describe "Account Memberships" do
 
   it "Update an account membership" do
     account = create(:account)
-    user = create(:user, :with_account_membership, account_role: :owner, account: account)
-    account_membership = create_account_membership(account: account, role: :admin)
+    user = create(:user, :with_account_membership, account_role: :owner, account:)
+    account_membership = create_account_membership(account:, role: :admin)
 
     sign_in(user)
     visit dashboard_account_membership_path(account_membership)
@@ -62,9 +62,9 @@ RSpec.describe "Account Memberships" do
 
   it "Delete an account membership" do
     account = create(:account)
-    user = create(:user, :with_account_membership, account_role: :owner, account: account)
+    user = create(:user, :with_account_membership, account_role: :owner, account:)
     account_member = create(:user, :invited, name: "Bob Chann")
-    account_membership = create(:account_membership, account: account, user: account_member)
+    account_membership = create(:account_membership, account:, user: account_member)
 
     sign_in(user)
     visit dashboard_account_membership_path(account_membership)
@@ -76,9 +76,9 @@ RSpec.describe "Account Memberships" do
 
   it "Resend invitation" do
     account = create(:account)
-    user = create(:user, :with_account_membership, account: account, account_role: :owner)
+    user = create(:user, :with_account_membership, account:, account_role: :owner)
     invited_user = create(:user, :invited, email: "johndoe@example.com")
-    account_membership = create(:account_membership, account: account, user: invited_user)
+    account_membership = create(:account_membership, account:, user: invited_user)
 
     sign_in(user)
     visit dashboard_account_membership_path(account_membership)
@@ -96,8 +96,8 @@ RSpec.describe "Account Memberships" do
 
   it "Reset 2FA" do
     account = create(:account)
-    user = create(:user, :with_account_membership, account: account, account_role: :owner)
-    account_membership = create_account_membership(account: account, email: "johndoe@example.com")
+    user = create(:user, :with_account_membership, account:, account_role: :owner)
+    account_membership = create_account_membership(account:, email: "johndoe@example.com")
 
     sign_in(user)
     visit dashboard_account_membership_path(account_membership)
@@ -111,9 +111,9 @@ RSpec.describe "Account Memberships" do
     user = create(:user, user_attributes)
     create(
       :account_membership,
-      account: account,
-      role: role,
-      user: user,
+      account:,
+      role:,
+      user:,
       created_at: user.created_at
     )
   end
