@@ -3,7 +3,8 @@ require "rails_helper"
 module CarrierAPI
   RSpec.describe UpdatePhoneCallRequestSchema, type: :request_schema do
     it "validates price and price unit" do
-      phone_call = create(:phone_call)
+      carrier = create(:carrier)
+      phone_call = create(:phone_call, carrier:)
 
       schema = validate_request_schema(
         input_params: {
@@ -14,6 +15,7 @@ module CarrierAPI
           }
         },
         options: {
+          carrier:,
           resource: phone_call
         }
       )
@@ -31,6 +33,7 @@ module CarrierAPI
             }
           },
           options: {
+            carrier:,
             resource: phone_call
           }
         )
@@ -48,6 +51,7 @@ module CarrierAPI
             }
           },
           options: {
+            carrier:,
             resource: phone_call
           }
         )
@@ -65,6 +69,7 @@ module CarrierAPI
             }
           },
           options: {
+            carrier:,
             resource: phone_call
           }
         )
@@ -82,6 +87,7 @@ module CarrierAPI
             }
           },
           options: {
+            carrier:,
             resource: phone_call
           }
         )
@@ -100,6 +106,7 @@ module CarrierAPI
             }
           },
           options: {
+            carrier:,
             resource: phone_call
           }
         )

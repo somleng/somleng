@@ -1,5 +1,5 @@
 module CarrierAPI
-  class UpdateAccountRequestSchema < JSONAPIRequestSchema
+  class UpdateAccountRequestSchema < CarrierAPIRequestSchema
     params do
       required(:data).value(:hash).schema do
         required(:type).filled(:str?, eql?: "account")
