@@ -100,7 +100,7 @@ jobs:
           bundler-cache: true
 
       - name: Download Documentation Source
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: documentation_source
           path: api_docs
