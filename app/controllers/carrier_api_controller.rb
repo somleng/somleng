@@ -10,9 +10,10 @@ class CarrierAPIController < APIController
     schema_options[:carrier] = current_carrier
 
     super(
-      with: with,
-      schema_options: schema_options,
-      **options, &block
+      with:,
+      schema_options:,
+      **options,
+      &block
     )
   end
 

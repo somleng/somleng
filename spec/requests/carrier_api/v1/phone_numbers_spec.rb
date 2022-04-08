@@ -45,7 +45,7 @@ resource "Phone Numbers", document: :carrier_api do
 
     example "Create a phone number" do
       carrier = create(:carrier)
-      account = create(:account, carrier: carrier)
+      account = create(:account, carrier:)
 
       set_carrier_api_authorization_header(carrier)
       do_request(
