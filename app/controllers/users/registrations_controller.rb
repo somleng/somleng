@@ -9,8 +9,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   layout :resolve_layout
 
   def create
-    super do |form|
-      self.resource = form.user if form.persisted?
+    if verify_recaptcha(action: "sign_up", minimum_score: 0.5)
+      super do |form|
+        self.resource = form.user if form.persisted?
+      end
+    else
+      build_resource
+      render :new
     end
   end
 
