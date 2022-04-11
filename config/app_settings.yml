@@ -9,6 +9,8 @@ default: &default
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
   uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "upload-bucket") %>
   raw_recordings_bucket: <%= ENV.fetch("RAW_RECORDINGS_BUCKET", "raw-recordings-bucket") %>
+  recaptcha_site_key: <%= ENV.fetch("RECAPTCHA_SITE_KEY", "recaptcha_site_key") %>
+  recaptcha_secret_key: <%= ENV.fetch("RECAPTCHA_SECRET_KEY", "recaptcha_secret_key") %>
   services_user: "services"
   services_password: "password"
   ahn_host: <%= ENV.fetch("AHN_HOST", "http://localhost:8080") %>
@@ -32,7 +34,8 @@ production: &production
   ahn_host: "https://ahn.somleng.org"
   ahn_password: "<%= Rails.application.credentials.ahn_password %>"
   inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
-
+  recaptcha_site_key: "<%= Rails.application.credentials.recaptcha_site_key %>"
+  recaptcha_secret_key: "<%= Rails.application.credentials.recaptcha_secret_key %>"
   active_record_encryption:
     primary_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :primary_key) %>"
     deterministic_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) %>"
