@@ -263,13 +263,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_12_071058) do
   end
 
   create_table "phone_number_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigserial "sequence_number", null: false
     t.uuid "phone_number_id"
     t.string "voice_url"
     t.string "voice_method"
     t.string "status_callback_url"
     t.string "status_callback_method"
     t.string "sip_domain"
+    t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["phone_number_id"], name: "index_phone_number_configurations_on_phone_number_id"
@@ -398,7 +398,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_12_071058) do
   add_foreign_key "phone_calls", "inbound_sip_trunks"
   add_foreign_key "phone_calls", "outbound_sip_trunks"
   add_foreign_key "phone_calls", "phone_numbers"
-  add_foreign_key "phone_number_configurations", "phone_numbers"
+  add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"

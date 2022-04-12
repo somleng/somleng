@@ -4,17 +4,21 @@ RSpec.describe "Services" do
   describe "POST /services/inbound_phone_calls" do
     it "creates a phone call" do
       carrier = create(:carrier)
-      create(
+      phone_number = create(
         :phone_number,
         :assigned_to_account,
-        carrier: carrier,
-        number: "855716200876",
+        carrier:,
+        number: "855716200876"
+      )
+      create(
+        :phone_number_configuration,
+        phone_number:,
         voice_url: "https://example.com/voice.xml",
         voice_method: "POST",
         status_callback_url: "https://example.com/status_callback",
         status_callback_method: "POST"
       )
-      create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
+      create(:inbound_sip_trunk, carrier:, source_ip: "175.100.7.240")
 
       post(
         services_inbound_phone_calls_path,

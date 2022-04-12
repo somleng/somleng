@@ -4,14 +4,24 @@ class PhoneNumber < ApplicationRecord
   has_many :phone_calls
   has_one :configuration, class_name: "PhoneNumberConfiguration"
 
-  def release!
-    update!(
-      account: nil,
-      voice_url: nil,
-      voice_method: nil,
-      status_callback_url: nil,
-      status_callback_method: nil,
-      sip_domain: nil
+  def self.assigned
+    where.not(account_id: nil)
+  end
+
+  def self.configured
+    left_outer_joins(:configuration).where.not(
+      phone_number_configurations: { phone_number_id: nil }
     )
+  end
+
+  def release!
+    PhoneNumber.transaction do
+      update!(account: nil)
+      configuration&.destroy!
+    end
+  end
+
+  def configured?
+    configuration.present?
   end
 end

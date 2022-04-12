@@ -14,9 +14,15 @@ module Services
     end
 
     rule(:to) do |context:|
-      if context[:inbound_sip_trunk].present?
-        context[:phone_number] = context[:inbound_sip_trunk].carrier.phone_numbers.where.not(account_id: nil).find_by(number: value)
-        key("to").failure("does not exist") if context[:phone_number].blank?
+      next if context[:inbound_sip_trunk].blank?
+
+      phone_numbers = context[:inbound_sip_trunk].carrier.phone_numbers.assigned
+      context[:phone_number] = phone_numbers.find_by(number: value)
+
+      if context[:phone_number].blank?
+        key("to").failure("does not exist")
+      elsif !context[:phone_number].configured?
+        key("to").failure("is not configured")
       end
     end
 
@@ -34,11 +40,11 @@ module Services
       result[:direction] = :inbound
       result[:account] = phone_number.account
       result[:carrier] = phone_number.carrier
-      result[:voice_url] = phone_number.voice_url
-      result[:voice_method] = phone_number.voice_method
-      result[:status_callback_url] = phone_number.status_callback_url
-      result[:status_callback_method] = phone_number.status_callback_method
-      result[:twiml] = route_to_sip_domain(phone_number) if phone_number.sip_domain.present?
+      result[:voice_url] = phone_number.configuration.voice_url
+      result[:voice_method] = phone_number.configuration.voice_method
+      result[:status_callback_url] = phone_number.configuration.status_callback_url
+      result[:status_callback_method] = phone_number.configuration.status_callback_method
+      result[:twiml] = route_to_sip_domain(phone_number) if phone_number.configuration.sip_domain.present?
       result[:from] = normalize_from(
         params.fetch(:from),
         result[:inbound_sip_trunk].trunk_prefix_replacement
@@ -61,7 +67,7 @@ module Services
     def route_to_sip_domain(phone_number)
       response = Twilio::TwiML::VoiceResponse.new
       response.dial do |dial|
-        dial.sip("sip:#{phone_number.number}@#{phone_number.sip_domain}")
+        dial.sip("sip:#{phone_number.number}@#{phone_number.configuration.sip_domain}")
       end
       response.to_xml
     end

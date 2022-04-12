@@ -186,7 +186,26 @@ FactoryBot.define do
       account
     end
 
+    trait :configured do
+      assigned_to_account
+
+      after(:build) do |phone_number|
+        phone_number.configuration ||= build(
+          :phone_number_configuration, phone_number: phone_number
+        )
+      end
+    end
+
     number { generate(:phone_number) }
+  end
+
+  factory :phone_number_configuration do
+    phone_number
+
+    voice_url { "https://demo.twilio.com/docs/voice.xml" }
+    voice_method { "GET" }
+    status_callback_url { "https://example.com/status-callback" }
+    status_callback_method { "POST" }
   end
 
   factory :phone_call do
