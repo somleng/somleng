@@ -1,22 +1,13 @@
-class JSONAPIRequestErrorsSerializer
-  attr_reader :object
+class JSONAPIRequestErrorsSerializer < JSONAPIErrorsSerializer
+  private
 
-  def initialize(object)
-    @object = object
-  end
-
-  def serializable_hash(_options = nil)
-    errors = object.errors
-    errors.each_with_object(errors: []) do |message, result|
-      result[:errors] << {
-        title: message.text,
-        source: { pointer: "/" + message.path.join("/") },
-        **message.meta.slice(:code, :detail)
-      }
-    end
-  end
-
-  def as_json(_options = nil)
-    serializable_hash.as_json
+  def build_error(error)
+    {
+      title: error.text,
+      source: {
+        pointer: "/#{error.path.join('/')}"
+      },
+      **error.meta.slice(:code, :detail)
+    }
   end
 end
