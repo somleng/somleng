@@ -27,7 +27,7 @@
 
     <% if policy(:inbound_sip_trunk).show? %>
       <% if phone_call.inbound_sip_trunk.present? %>
-        <%= f.attribute :inbound_sip_trunk, value: external_link_to(phone_call.inbound_sip_trunk.name, dashboard_outbound_sip_trunk_path(phone_call.inbound_sip_trunk)) %>
+        <%= f.attribute :inbound_sip_trunk, value: external_link_to(phone_call.inbound_sip_trunk.name, dashboard_inbound_sip_trunk_path(phone_call.inbound_sip_trunk)) %>
       <% end %>
     <% end %>
 
