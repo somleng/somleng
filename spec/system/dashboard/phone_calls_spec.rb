@@ -96,7 +96,10 @@ RSpec.describe "Phone Calls" do
     expect(page).to have_content("5 seconds")
     expect(page).to have_content("Inbound")
     expect(page).to have_content("https://demo.twilio.com/docs/voice.xml")
-    expect(page).to have_link("Inbound SIP Trunk", href: dashboard_inbound_sip_trunk_path(inbound_sip_trunk))
+    expect(page).to have_link(
+      "Inbound SIP Trunk",
+      href: dashboard_inbound_sip_trunk_path(inbound_sip_trunk)
+    )
     expect(page).to have_link("1294", href: dashboard_phone_number_path(phone_number))
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
