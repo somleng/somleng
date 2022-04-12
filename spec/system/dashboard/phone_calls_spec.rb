@@ -3,11 +3,11 @@ require "rails_helper"
 RSpec.describe "Phone Calls" do
   it "List and filter phone calls" do
     carrier = create(:carrier)
-    account = create(:account, carrier: carrier)
+    account = create(:account, carrier:)
     phone_call = create(
       :phone_call,
       :outbound,
-      account: account,
+      account:,
       to: "85512234232",
       from: "1294",
       created_at: Time.utc(2021, 12, 1),
@@ -15,17 +15,17 @@ RSpec.describe "Phone Calls" do
       price_unit: "MXN"
     )
     filtered_out_phone_calls = [
-      create(:phone_call, account: account, created_at: Time.utc(2021, 10, 10)),
-      create(:phone_call, account: account, created_at: phone_call.created_at),
+      create(:phone_call, account:, created_at: Time.utc(2021, 10, 10)),
+      create(:phone_call, account:, created_at: phone_call.created_at),
       create(
         :phone_call,
-        account: account,
+        account:,
         created_at: phone_call.created_at,
         to: phone_call.to,
         from: phone_call.from
       )
     ]
-    user = create(:user, :carrier, carrier: carrier)
+    user = create(:user, :carrier, carrier:)
 
     sign_in(user)
     visit dashboard_phone_calls_path(
@@ -67,21 +67,24 @@ RSpec.describe "Phone Calls" do
 
   it "Shows a phone call" do
     carrier = create(:carrier)
-    account = create(:account, name: "Rocket Rides", carrier: carrier)
-    phone_number = create(:phone_number, carrier: carrier, number: "1294")
+    account = create(:account, name: "Rocket Rides", carrier:)
+    phone_number = create(:phone_number, carrier:, number: "1294")
+    inbound_sip_trunk = create(:inbound_sip_trunk, name: "Inbound SIP Trunk", carrier:)
     phone_call = create(
       :phone_call,
-      to: "855715100980",
-      from: "1294",
+      :inbound,
+      from: "855715100980",
+      to: "1294",
       voice_url: "https://demo.twilio.com/docs/voice.xml",
-      account: account,
-      phone_number: phone_number,
+      inbound_sip_trunk:,
+      account:,
+      phone_number:,
       price: "-0.001",
       price_unit: "MXN"
     )
-    create(:recording, :completed, phone_call: phone_call)
-    create(:call_data_record, bill_sec: 5, phone_call: phone_call)
-    user = create(:user, :carrier, carrier: carrier)
+    create(:recording, :completed, phone_call:)
+    create(:call_data_record, bill_sec: 5, phone_call:)
+    user = create(:user, :carrier, carrier:)
 
     sign_in(user)
     visit dashboard_phone_call_path(phone_call)
@@ -93,6 +96,10 @@ RSpec.describe "Phone Calls" do
     expect(page).to have_content("5 seconds")
     expect(page).to have_content("Inbound")
     expect(page).to have_content("https://demo.twilio.com/docs/voice.xml")
+    expect(page).to have_link(
+      "Inbound SIP Trunk",
+      href: dashboard_inbound_sip_trunk_path(inbound_sip_trunk)
+    )
     expect(page).to have_link("1294", href: dashboard_phone_number_path(phone_number))
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
