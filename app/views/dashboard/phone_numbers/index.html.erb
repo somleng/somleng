@@ -10,6 +10,12 @@
     <% end %>
 
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+    <%= form.select(
+        :enabled,
+        [[t("show_for.yes"), true], [t("show_for.no"), false]],
+        { include_blank: true, filter_value: params.dig(:filter, :status) }
+      )
+    %>
   <% end %>
   <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>
   <% if policy(:phone_number).new? %>

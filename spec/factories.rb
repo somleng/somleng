@@ -186,6 +186,10 @@ FactoryBot.define do
       account
     end
 
+    trait :disabled do
+      enabled { false }
+    end
+
     trait :configured do
       assigned_to_account
 

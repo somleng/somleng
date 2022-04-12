@@ -10,7 +10,7 @@
         </th>
       <% end %>
       <th>
-        Enabled
+        Enabled?
       </th>
       <th>
         Created At
@@ -36,7 +36,7 @@
         <% end %>
 
         <td>
-          <%= phone_number.enabled %>
+          <%= phone_number.enabled? ? t("show_for.yes") : t("show_for.no") %>
         </td>
 
         <td>
