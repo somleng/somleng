@@ -10,30 +10,6 @@ resource "Phone Numbers", document: :carrier_api do
         "The phone number in E.164 format, which consists of a + followed by the country code and subscriber number, or a short code.",
         required: true
       )
-      parameter(
-        :voice_url,
-        "The absolute URL that returns the TwiML instructions for the call. We will call this URL using the `method` when the call connects.",
-        required: false,
-        example: "https://demo.twilio.com/docs/voice.xml"
-      )
-      parameter(
-        :voice_method,
-        "The HTTP method we should use when calling the url parameter's value. Can be: `GET` or `POST` and the default is `POST`.",
-        required: false,
-        example: "GET"
-      )
-      parameter(
-        :status_callback_url,
-        "The URL we should call using the `status_callback_method` to send status information to your application. URLs must contain a valid hostname (underscores are not permitted).",
-        required: false,
-        example: "https://example.com/status_callback"
-      )
-      parameter(
-        :status_callback_method,
-        "The HTTP method we should use when calling the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
-        required: false,
-        example: "POST"
-      )
     end
 
     with_options scope: %i[data relationships] do
@@ -52,9 +28,7 @@ resource "Phone Numbers", document: :carrier_api do
         data: {
           type: :phone_number,
           attributes: {
-            number: "1294",
-            voice_url: "https://demo.twilio.com/docs/voice.xml",
-            voice_method: "GET"
+            number: "1294"
           },
           relationships: {
             account: {
@@ -69,19 +43,42 @@ resource "Phone Numbers", document: :carrier_api do
 
       expect(response_status).to eq(201)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
-      expect(jsonapi_response_attributes).to include(
-        "number" => "1294",
-        "voice_url" => "https://demo.twilio.com/docs/voice.xml",
-        "voice_method" => "GET"
-      )
+      expect(jsonapi_response_attributes.fetch("number")).to eq("1294")
       expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(account.id)
     end
   end
 
   patch "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
+    example "Assign an account to a phone number" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      phone_number = create(:phone_number, carrier:)
+
+      set_carrier_api_authorization_header(carrier)
+      do_request(
+        id: phone_number.id,
+        data: {
+          type: :phone_number,
+          id: phone_number.id,
+          relationships: {
+            account: {
+              data: {
+                type: :account,
+                id: account.id
+              }
+            }
+          }
+        }
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
+      expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(account.id)
+    end
+
     example "Update a phone number" do
       carrier = create(:carrier)
-      phone_number = create(:phone_number, carrier:, number: "1000")
+      phone_number = create(:phone_number, enabled: true, carrier:)
 
       set_carrier_api_authorization_header(carrier)
       do_request(
@@ -90,14 +87,29 @@ resource "Phone Numbers", document: :carrier_api do
           type: :phone_number,
           id: phone_number.id,
           attributes: {
-            number: "1294"
+            enabled: false
           }
         }
       )
 
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
-      expect(jsonapi_response_attributes.fetch("number")).to eq("1294")
+      expect(jsonapi_response_attributes["enabled"]).to eq(false)
+    end
+  end
+
+  patch "https://api.somleng.org/carrier/v1/phone_numbers/:id/release" do
+    example "Release a phone number" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      phone_number = create(:phone_number, carrier:, account:)
+
+      set_carrier_api_authorization_header(carrier)
+      do_request(id: phone_number.id)
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
+      expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(nil)
     end
   end
 

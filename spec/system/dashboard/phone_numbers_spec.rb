@@ -109,9 +109,10 @@ RSpec.describe "Phone Numbers" do
     click_button("Update Configuration")
 
     expect(page).to have_content("Phone number configuration was successfully updated")
-    expect(page).to have_content("https://www.example.com/voice.xml")
-    expect(page).to have_content("https://www.example.com/status_callback.xml")
-    expect(page).to have_content("POST")
+    expect(page).to have_field("Voice URL", with: "https://www.example.com/voice.xml")
+    expect(page).to have_field("Voice method", with: "POST")
+    expect(page).to have_field("Status callback URL", with: "https://www.example.com/status_callback.xml")
+    expect(page).to have_field("Status callback method", with: "POST")
   end
 
   it "Configure a phone number with sip domain as an account admin" do
@@ -128,7 +129,7 @@ RSpec.describe "Phone Numbers" do
     click_button("Update Configuration")
 
     expect(page).to have_content("Phone number configuration was successfully updated")
-    expect(page).to have_content("example.sip.twilio.com")
+    expect(page).to have_field("SIP domain", with: "example.sip.twilio.com")
   end
 
   it "Handles validations" do

@@ -30,6 +30,12 @@ module CarrierAPI
         respond_with_resource(phone_numbers_scope.find(params[:id]), serializer_options)
       end
 
+      def release
+        phone_number = phone_numbers_scope.find(params[:id])
+        phone_number.release!
+        respond_with_resource(phone_number, serializer_options)
+      end
+
       private
 
       def phone_numbers_scope

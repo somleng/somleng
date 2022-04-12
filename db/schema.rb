@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_04_051018) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_12_071058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -262,20 +262,31 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_04_051018) do
     t.index ["to"], name: "index_phone_calls_on_to"
   end
 
-  create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id"
-    t.string "number", null: false
+  create_table "phone_number_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigserial "sequence_number", null: false
+    t.uuid "phone_number_id"
     t.string "voice_url"
     t.string "voice_method"
     t.string "status_callback_url"
     t.string "status_callback_method"
+    t.string "sip_domain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phone_number_id"], name: "index_phone_number_configurations_on_phone_number_id"
+    t.index ["sequence_number"], name: "index_phone_number_configurations_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.string "number", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
-    t.string "sip_domain"
+    t.boolean "enabled", default: true, null: false
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
+    t.index ["enabled"], name: "index_phone_numbers_on_enabled"
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
     t.index ["number"], name: "index_phone_numbers_on_number"
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
@@ -387,6 +398,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_04_051018) do
   add_foreign_key "phone_calls", "inbound_sip_trunks"
   add_foreign_key "phone_calls", "outbound_sip_trunks"
   add_foreign_key "phone_calls", "phone_numbers"
+  add_foreign_key "phone_number_configurations", "phone_numbers"
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"

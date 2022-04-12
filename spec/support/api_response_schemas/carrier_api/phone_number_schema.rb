@@ -6,10 +6,7 @@ module APIResponseSchema
 
       required(:attributes).schema do
         required(:number).filled(:str?)
-        required(:voice_url).maybe(:str?)
-        required(:voice_method).maybe(:str?)
-        required(:status_callback_url).maybe(:str?)
-        required(:status_callback_method).maybe(:str?)
+        required(:enabled).filled(:bool?)
         required(:created_at).filled(:str?)
         required(:updated_at).filled(:str?)
       end

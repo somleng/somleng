@@ -10,7 +10,7 @@
         </th>
       <% end %>
       <th>
-        Voice URL
+        Enabled
       </th>
       <th>
         Created At
@@ -36,11 +36,7 @@
         <% end %>
 
         <td>
-          <% if phone_number.voice_url.present? %>
-            <%= phone_number.voice_url %>
-          <% else %>
-            <%= t("show_for.blank") %>
-          <% end %>
+          <%= phone_number.enabled %>
         </td>
 
         <td>
