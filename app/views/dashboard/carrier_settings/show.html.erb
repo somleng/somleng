@@ -9,7 +9,7 @@
     <%= f.attribute :name, value: @resource.name %>
     <%= f.attribute :country do %>
       <%= @resource.country.emoji_flag %>
-      <%= @resource.country.name %>
+      <%= @resource.country.iso_short_name %>
     <% end %>
     <%= f.attribute :api_key, label: "API Key" do %>
       <%= mask_content(@resource.api_key) if @resource.api_key.present? %>
