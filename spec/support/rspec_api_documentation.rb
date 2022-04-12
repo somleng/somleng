@@ -57,48 +57,9 @@ RspecApiDocumentation.configure do |config|
 
   config.define_group :carrier_api do |conf|
     conf.api_explanation = <<~HEREDOC
-      # Carrier Documentation
-
-      This documentation is intended for carriers. The documentation for Somleng's Open Source implementation of Twilio's REST API is available [here](../twilio_api).
-
-      ## Configuring Outbound SIP Trunks
-
-      To setup outbound dialing you create an Outbound SIP trunk(s) via the [Carrier Dashboard](https://dashboard.somleng.org).
-      When configuring an Outbound SIP trunk, you specify your host as either a fully qualified domain name (FQDN) or IP Address.
-      This tells Somleng to send outbound calls to your this host using the configured dial string.
-      Somleng will send SIP and RTP from NATed from the IP address below:
-
-      | NAT IP          |
-      | --------------- |
-      | `13.250.230.15` |
-
-      You should allow this IP address on your firewall.
-
-      ## Configuring Inbound SIP Trunks
-
-      To setup inbound dialing you create an Inbound SIP Trunk via the [Carrier Dashboard](https://dashboard.somleng.org).
-      When configuring an Inbound SIP trunk, you specify your source IP address from which you will send SIP from.
-      You can then send SIP to the following endpoints. We recommend that you use `sip.somleng.org` if possible for high-availability.
-
-      | Endpoint          |
-      | ---------------   |
-      | `sip.somleng.org` |
-      | `52.74.4.205`     |
-      | `18.136.239.28`   |
-      | `3.0.30.251`      |
-
-      ## RTP
-
-      RTP from Somleng is sent through a NAT Gateway. This means that the ports specified in the SDP in the SIP Invite from Somleng are unreachable.
-      In order to work-around this problem, it is required that you setup [Symmetric Latching](https://github.com/somleng/somleng-switch/wiki/SIP-NAT) on your device/software.
-
-      Symmetric RTP means that the IP address and port pair used by an outbound RTP flow is reused for the inbound flow.
-      The IP address and port are learned when the initial RTP flow is received on your device. The flow's source address and port are latched onto and used
-      as the destination for the RTP sourced by the other side of the call. The IP address and port in the c line and m line respectively in the SDP message are ignored.
-
-      If your device does not support symmetric latching please contact us for assistance.
-
       # Carrier API
+
+      This documentation is intended for carriers as defined in the [carrier documentation](https://www.somleng.org/carrier_documentation.html). The API documentation for Somleng's Open Source implementation of Twilio's REST API is available [here](../twilio_api).
 
       The Carrier API is intended for carriers who need to automate provisioning of carrier resources (e.g. Accounts) rather that using the dashboard.
       This API is written according to the [JSON API Specification](https://jsonapi.org/). We recommend using a [JSON API Client](https://jsonapi.org/implementations/) for consuming this API.
