@@ -10,7 +10,7 @@ module Dashboard
     end
 
     def create
-      @resource = initialize_form(permitted_params)
+      @resource = initialize_form(required_params.permit(:number, :account_id))
       @resource.save
 
       respond_with(:dashboard, @resource)
@@ -26,7 +26,7 @@ module Dashboard
     end
 
     def update
-      @resource = initialize_form(permitted_params)
+      @resource = initialize_form(required_params.permit(:account_id))
       @resource.phone_number = record
       @resource.save
 
@@ -40,8 +40,8 @@ module Dashboard
 
     private
 
-    def permitted_params
-      params.require(:phone_number).permit(:number, :account_id)
+    def required_params
+      params.require(:phone_number)
     end
 
     def phone_numbers_scope

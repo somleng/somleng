@@ -3,24 +3,38 @@
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_path(@resource)) %>
   <% end %>
 
-  <% if PhoneNumberConfigurationPolicy.new(pundit_user, @resource).edit? %>
-    <% if current_organization.carrier? %>
-      <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-phone-number-actions" data-toggle="dropdown" aria-expanded="false">
-          <i class="fas fa-cog"></i>
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdown-menu-phone-number-actions">
+  <% phone_number_policy = PhoneNumberPolicy.new(pundit_user, @resource) %>
+  <% phone_number_configuration_policy = PhoneNumberConfigurationPolicy.new(pundit_user, @resource) %>
+  <% display_dropdown = current_organization.carrier? && (phone_number_policy.release? || phone_number_configuration_policy.edit?) %>
+
+  <% if display_dropdown %>
+    <div class="btn-group">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-phone-number-actions" data-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-cog"></i>
+      </button>
+
+      <div class="dropdown-menu" aria-labelledby="dropdown-menu-phone-number-actions">
+        <% if phone_number_configuration_policy.edit? %>
           <%= link_to(
             edit_dashboard_phone_number_configuration_path(@resource),
             class: "dropdown-item"
           ) do %>
             <i class="fas fa-tools mfe-2"></i> Configure
           <% end %>
-        </div>
+        <% end %>
+
+        <% if phone_number_policy.release? %>
+          <%= link_to(
+            edit_dashboard_phone_number_configuration_path(@resource),
+            class: "dropdown-item"
+          ) do %>
+            <i class="fas fa-unlink mfe-2"></i> Release
+          <% end %>
+        <% end %>
       </div>
-    <% else %>
-      <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_configuration_path(@resource)) %>
-    <% end %>
+    </div>
+  <% elsif phone_number_configuration_policy.edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_configuration_path(@resource)) %>
   <% end %>
 
   <% if policy(@resource).destroy? %>
