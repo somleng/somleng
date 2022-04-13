@@ -82,9 +82,9 @@ FactoryBot.define do
     carrier { eventable.carrier }
     association :eventable, factory: :phone_call
     type { "phone_call.completed" }
-    details {
+    details do
       eventable.jsonapi_serializer_class.new(eventable.decorated).as_json
-    }
+    end
   end
 
   factory :account do
@@ -104,7 +104,7 @@ FactoryBot.define do
       after(:build) do |account|
         if account.account_memberships.empty?
           account.account_memberships << build(:account_membership,
-                                               account: account)
+                                               account:)
         end
       end
     end
@@ -116,7 +116,7 @@ FactoryBot.define do
     end
 
     trait :with_outbound_sip_trunk do
-      outbound_sip_trunk { build(:outbound_sip_trunk, carrier: carrier) }
+      outbound_sip_trunk { build(:outbound_sip_trunk, carrier:) }
     end
   end
 
@@ -161,7 +161,7 @@ FactoryBot.define do
       after(:build) do |user, evaluator|
         account_membership = build(
           :account_membership,
-          user: user,
+          user:,
           account: evaluator.account,
           role: evaluator.account_role
         )
@@ -195,7 +195,7 @@ FactoryBot.define do
 
       after(:build) do |phone_number|
         phone_number.configuration ||= build(
-          :phone_number_configuration, phone_number: phone_number
+          :phone_number_configuration, phone_number:
         )
       end
     end
@@ -254,7 +254,7 @@ FactoryBot.define do
       status { :completed }
 
       after(:build) do |phone_call|
-        phone_call.call_data_record ||= build(:call_data_record, phone_call: phone_call)
+        phone_call.call_data_record ||= build(:call_data_record, phone_call:)
       end
     end
   end
@@ -327,12 +327,12 @@ FactoryBot.define do
     trait :completed do
       status { :completed }
 
-      file {
+      file do
         ActiveStorage::Blob.create_and_upload!(
           io: File.open(RSpec.configuration.file_fixture_path + "/recording.wav"),
           filename: "recording.wav"
         )
-      }
+      end
     end
   end
 end

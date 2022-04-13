@@ -10,4 +10,12 @@ class PhoneNumber < ApplicationRecord
       configuration&.destroy!
     end
   end
+
+  def may_release?
+    account_id.present?
+  end
+
+  def assigned?
+    account_id.present?
+  end
 end

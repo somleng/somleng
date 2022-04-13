@@ -36,7 +36,7 @@ module CarrierAPI
       account = carrier.accounts.find_by(id: value)
       if account.blank?
         key.failure("does not exist")
-      elsif resource&.account.present?
+      elsif resource&.assigned?
         key.failure("cannot be updated") if resource.account != account
       end
     end

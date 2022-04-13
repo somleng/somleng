@@ -4,11 +4,11 @@ class PhoneNumberPolicy < ApplicationPolicy
   end
 
   def update?
-    super && record.account_id.blank?
+    super && !record.assigned?
   end
 
   def release?
-    manage? && record.account_id.present?
+    manage? && record.may_release?
   end
 
   def manage?
