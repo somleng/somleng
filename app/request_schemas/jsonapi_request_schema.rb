@@ -14,7 +14,7 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
   end
 
   def self.error_serializer_class
-    JSONAPIRequestErrorsSerializer
+    JSONAPIRequestSchemaErrorsSerializer
   end
 
   rule(:data) do

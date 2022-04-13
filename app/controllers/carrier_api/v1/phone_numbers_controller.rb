@@ -36,10 +36,9 @@ module CarrierAPI
         if phone_number.destroy
           respond_with_resource(phone_number)
         else
-          respond_with_resource(
+          respond_with_errors(
             phone_number,
-            responder: InvalidRequestSchemaResponder,
-            serializer_class: JSONAPIErrorsSerializer
+            error_serializer_class: JSONAPIErrorsSerializer
           )
         end
       end

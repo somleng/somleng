@@ -10,19 +10,21 @@ module Services
 
     rule(:source_ip) do |context:|
       context[:inbound_sip_trunk] = InboundSIPTrunk.find_by(source_ip: value)
-      key("source_ip").failure("does not exist") if context[:inbound_sip_trunk].blank?
+      key("source_ip").failure("doesn't exist") if context[:inbound_sip_trunk].blank?
     end
 
     rule(:to) do |context:|
       next if context[:inbound_sip_trunk].blank?
 
-      phone_numbers = context[:inbound_sip_trunk].carrier.phone_numbers.assigned
+      phone_numbers = context[:inbound_sip_trunk].carrier.phone_numbers
       context[:phone_number] = phone_numbers.find_by(number: value)
 
       if context[:phone_number].blank?
-        key("to").failure("does not exist")
-      elsif !context[:phone_number].configured?
-        key("to").failure("is not configured")
+        key("to").failure("doesn't exist")
+      elsif context[:phone_number].account_id.blank?
+        key("to").failure("is unassigned")
+      elsif context[:phone_number].configuration.blank?
+        key("to").failure("is unconfigured")
       end
     end
 

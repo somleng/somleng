@@ -1,4 +1,4 @@
-class JSONAPIRequestErrorsSerializer < JSONAPIErrorsSerializer
+class JSONAPIRequestSchemaErrorsSerializer < JSONAPIErrorsSerializer
   private
 
   def build_error(error)

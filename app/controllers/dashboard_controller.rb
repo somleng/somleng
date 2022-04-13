@@ -22,7 +22,7 @@ class DashboardController < ApplicationController
 
   def apply_filters(resources_scope)
     resources_scope.filter_class.new(
-      resources_scope: resources_scope,
+      resources_scope:,
       input_params: request.params
     ).apply
   end
