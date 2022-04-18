@@ -1,4 +1,7 @@
 class Import < ApplicationRecord
+  extend Enumerize
+  enumerize :resource_type, in: %w[PhoneNumber]
+
   belongs_to :user
   belongs_to :carrier
 
