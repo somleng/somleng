@@ -183,7 +183,7 @@ FactoryBot.define do
     carrier
 
     trait :assigned_to_account do
-      account
+      account { association :account, carrier: }
     end
 
     trait :disabled do

@@ -15,8 +15,7 @@ RSpec.describe PhoneNumberPolicy, type: :policy do
     it "denies access if the phone number is assigned" do
       carrier = create(:carrier)
       user_context = build_user_context_for_carrier(role: :admin, carrier:)
-      account = create(:account, carrier:)
-      phone_number = create(:phone_number, account:)
+      phone_number = create(:phone_number, :assigned_to_account, carrier:)
 
       policy = PhoneNumberPolicy.new(user_context, phone_number)
 
@@ -28,8 +27,7 @@ RSpec.describe PhoneNumberPolicy, type: :policy do
     it "allows access if the phone number is assigned" do
       carrier = create(:carrier)
       user_context = build_user_context_for_carrier(role: :admin, carrier:)
-      account = create(:account, carrier:)
-      phone_number = create(:phone_number, account:)
+      phone_number = create(:phone_number, :assigned_to_account, carrier:)
 
       policy = PhoneNumberPolicy.new(user_context, phone_number)
 
