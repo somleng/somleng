@@ -15,13 +15,15 @@ class CreatePhoneNumberConfigurations < ActiveRecord::Migration[7.0]
     reversible do |dir|
       dir.up do
         PhoneNumber.find_each do |phone_number|
-          phone_number.create_configuration!(
-            voice_url: phone_number.voice_url,
-            voice_method: phone_number.voice_method,
-            status_callback_url: phone_number.status_callback_url,
-            status_callback_method: phone_number.status_callback_method,
-            sip_domain: phone_number.sip_domain
-          )
+          if phone_number.voice_url.present? || phone_number.sip_domain.present?
+            phone_number.create_configuration!(
+              voice_url: phone_number.voice_url,
+              voice_method: phone_number.voice_method,
+              status_callback_url: phone_number.status_callback_url,
+              status_callback_method: phone_number.status_callback_method,
+              sip_domain: phone_number.sip_domain
+            )
+          end
         end
       end
     end

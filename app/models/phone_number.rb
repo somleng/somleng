@@ -5,7 +5,7 @@ class PhoneNumber < ApplicationRecord
   has_one :configuration, class_name: "PhoneNumberConfiguration"
 
   def release!
-    PhoneNumber.transaction do
+    transaction do
       update!(account: nil)
       configuration&.destroy!
     end
