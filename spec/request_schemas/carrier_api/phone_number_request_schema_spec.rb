@@ -210,7 +210,7 @@ module CarrierAPI
           data: {
             type: "phone_number",
             attributes: {
-              number: "1294",
+              number: "1294"
             },
             relationships: {
               account: {

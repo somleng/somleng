@@ -36,7 +36,7 @@ class PhoneNumberConfigurationForm
 
   def self.initialize_with(phone_number_configuration)
     new(
-      phone_number_configuration: phone_number_configuration,
+      phone_number_configuration:,
       voice_url: phone_number_configuration.voice_url,
       voice_method: phone_number_configuration.voice_method,
       status_callback_url: phone_number_configuration.status_callback_url,
