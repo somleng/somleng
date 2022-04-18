@@ -54,18 +54,16 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   patch "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
-    with_options scope: %i[data attributes] do
-      parameter(
-        :enabled,
-        "Set to `false` to disable this number.",
-        required: false
-      )
-    end
-
     with_options scope: %i[data relationships] do
       parameter(
         :account,
         "The `id` of the `account` to associate the phone number with."
+      )
+    end
+    with_options scope: %i[data attributes] do
+      parameter(
+        :enabled,
+        "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts."
       )
     end
 
@@ -94,13 +92,6 @@ resource "Phone Numbers", document: :carrier_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
       expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(account.id)
-    end
-
-    with_options scope: %i[data attributes] do
-      parameter(
-        :enabled,
-        "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts."
-      )
     end
 
     example "Update a phone number" do
