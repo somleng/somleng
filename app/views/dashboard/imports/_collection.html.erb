@@ -1,0 +1,42 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Import
+      </th>
+
+      <th>
+        Import Type
+      </th>
+
+      <th>
+        Status
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |import| %>
+      <%= tag.tr id: dom_id(import), row: "row", class: cycle("odd", "even", name: "row_class") do %>
+        <td>
+          <%= link_to(import.file.filename, rails_blob_path(import.file, disposition: "attachment")) %>
+        </td>
+
+        <td>
+          <%= import.resource_type.titleize %>
+        </td>
+
+        <td>
+          <%= "Finished" %>
+        </td>
+
+        <td>
+          <%= local_time(import.created_at) %>
+        </td>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

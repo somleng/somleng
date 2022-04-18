@@ -1,5 +1,9 @@
 class ImportPolicy < ApplicationPolicy
   def manage?
-    true
+    carrier_admin?
+  end
+
+  def read?
+    manage?
   end
 end

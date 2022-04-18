@@ -42,9 +42,13 @@
       <%= sidebar_nav("Users", dashboard_account_memberships_path, icon_class: "fas fa-users") %>
     <% end %>
 
-    <% if policy(:export).index? %>
-      <li class="c-sidebar-nav-item"><hr/></li>
+    <li class="c-sidebar-nav-item"><hr/></li>
 
+    <% if policy(:import).index? %>
+      <%= sidebar_nav("Imports", dashboard_imports_path, icon_class: "fas fa-file-upload") %>
+    <% end %>
+
+    <% if policy(:export).index? %>
       <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fas fa-file-download") %>
     <% end %>
   </ul>

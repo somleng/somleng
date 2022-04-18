@@ -1,15 +1,19 @@
 module Dashboard
   class ImportsController < DashboardController
+    def index
+      @resources = paginate_resources(current_user.imports)
+    end
+
     def create
       @resource = build_import
-      @resource.save!
-      # ExecuteWorkflowJob.perform_later("ExportCSV", @resource)
+      if @resource.save
+        flash[:notice] = "Your import is being processed. You can view its status from the #{helpers.link_to('Imports', dashboard_imports_path)} page."
+      else
+        flash[:alert] = "Your import failed with the following error: #{@resource.errors.full_messages.to_sentence}"
+      end
 
       redirect_back(
-        fallback_location: dashboard_imports_path,
-        flash: {
-          notice: "Your import is being processed. You can view its status from the #{helpers.link_to('Imports', dashboard_imports_path)} page."
-        }
+        fallback_location: dashboard_imports_path
       )
     end
 
