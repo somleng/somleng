@@ -24,6 +24,9 @@ module Services
       unconfigured_phone_number = create(
         :phone_number, :assigned_to_account
       )
+      disabled_phone_number = create(
+        :phone_number, :configured, :disabled, :assigned_to_account, carrier:
+      )
 
       expect(
         validate_request_schema(
@@ -56,6 +59,15 @@ module Services
         validate_request_schema(
           input_params: {
             to: unconfigured_phone_number.number,
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
+      ).not_to have_valid_field(:to)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            to: disabled_phone_number.number,
             source_ip: inbound_sip_trunk.source_ip.to_s
           }
         )

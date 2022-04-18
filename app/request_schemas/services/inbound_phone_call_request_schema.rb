@@ -21,10 +21,10 @@ module Services
 
       if context[:phone_number].blank?
         key("to").failure("doesn't exist")
-      elsif context[:phone_number].account_id.blank?
-        key("to").failure("is unassigned")
-      elsif context[:phone_number].configuration.blank?
+      elsif !context[:phone_number].configured?
         key("to").failure("is unconfigured")
+      elsif !context[:phone_number].enabled?
+        key("to").failure("is disabled")
       end
     end
 

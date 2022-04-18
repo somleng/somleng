@@ -18,4 +18,8 @@ class PhoneNumber < ApplicationRecord
   def assigned?
     account_id.present?
   end
+
+  def configured?
+    configuration.present?
+  end
 end

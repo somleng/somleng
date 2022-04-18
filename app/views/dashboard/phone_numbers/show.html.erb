@@ -1,8 +1,4 @@
 <%= page_title(title: "Phone Number") do %>
-  <% if policy(@resource).edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_path(@resource)) %>
-  <% end %>
-
   <% phone_number_policy = PhoneNumberPolicy.new(pundit_user, @resource) %>
   <% phone_number_configuration_policy = PhoneNumberConfigurationPolicy.new(pundit_user, @resource) %>
   <% display_dropdown = current_organization.carrier? && phone_number_configuration_policy.edit? %>
@@ -24,6 +20,10 @@
     </div>
   <% elsif phone_number_configuration_policy.edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_configuration_path(@resource)) %>
+  <% end %>
+
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_path(@resource)) %>
   <% end %>
 
   <% if phone_number_policy.release? %>

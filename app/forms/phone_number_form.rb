@@ -9,6 +9,7 @@ class PhoneNumberForm
   attribute :carrier
   attribute :number
   attribute :account_id
+  attribute :enabled, default: true
   attribute :phone_number, default: -> { PhoneNumber.new }
 
   with_options if: :new_record? do
@@ -17,7 +18,7 @@ class PhoneNumberForm
     validate :validate_number
   end
 
-  delegate :persisted?, :new_record?, :id, to: :phone_number
+  delegate :persisted?, :new_record?, :id, :assigned?, to: :phone_number
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "PhoneNumber")
@@ -28,7 +29,8 @@ class PhoneNumberForm
       phone_number: phone_number,
       account_id: phone_number.account_id,
       carrier: phone_number.carrier,
-      number: phone_number.number
+      number: phone_number.number,
+      enabled: phone_number.enabled
     )
   end
 
@@ -36,8 +38,9 @@ class PhoneNumberForm
     return false if invalid?
 
     phone_number.carrier = carrier
+    phone_number.enabled = enabled
     phone_number.number = number if new_record?
-    phone_number.account = account_id.present? ? carrier.accounts.find(account_id) : nil
+    phone_number.account ||= carrier.accounts.find(account_id) if account_id.present?
 
     phone_number.save!
   end

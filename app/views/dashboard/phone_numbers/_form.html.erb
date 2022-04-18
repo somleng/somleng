@@ -18,10 +18,13 @@
                       collection: [],
                       hint: "Optionally assign the phone number to an account",
                       selected: resource.account_id,
+                      disabled: resource.assigned?,
                       prompt: "",
                       input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select, "allow-clear" => true, placeholder: "Select an Account" } } %>
       </div>
     </div>
+
+    <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch %>
 
     <%= f.button :submit %>
   <% end %>

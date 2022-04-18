@@ -12,7 +12,7 @@ module Dashboard
     end
 
     def create
-      @resource = initialize_form(required_params.permit(:number, :account_id))
+      @resource = initialize_form(required_params.permit(:number, :account_id, :enabled))
       @resource.save
 
       respond_with(:dashboard, @resource)
@@ -28,7 +28,8 @@ module Dashboard
     end
 
     def update
-      @resource = initialize_form(required_params.permit(:account_id))
+      permitted_params = record.assigned? ? required_params.permit(:enabled) : required_params.permit(:account_id, :enabled)
+      @resource = initialize_form(permitted_params)
       @resource.phone_number = record
       @resource.save
 

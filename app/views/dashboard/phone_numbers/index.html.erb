@@ -11,11 +11,8 @@
 
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
 
-    <%= form.boolean_select(
-        :enabled,
-        { filter_value: params.dig(:filter, :enabled) }
-      )
-    %>
+    <%= form.boolean_select(:enabled, { filter_value: params.dig(:filter, :enabled) }) %>
+    <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>
   <% end %>
 
   <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe PhoneNumberPolicy, type: :policy do
   describe "#update?" do
-    it "allows access if the phone number is unassigned" do
+    it "allows access for carrier admin" do
       carrier = create(:carrier)
       user_context = build_user_context_for_carrier(role: :admin, carrier:)
       phone_number = create(:phone_number, carrier:)
@@ -12,10 +12,9 @@ RSpec.describe PhoneNumberPolicy, type: :policy do
       expect(policy.update?).to eq(true)
     end
 
-    it "denies access if the phone number is assigned" do
-      carrier = create(:carrier)
-      user_context = build_user_context_for_carrier(role: :admin, carrier:)
-      phone_number = create(:phone_number, :assigned_to_account, carrier:)
+    it "denies access for account admins" do
+      user_context = build_user_context_for_account(role: :admin)
+      phone_number = create(:phone_number)
 
       policy = PhoneNumberPolicy.new(user_context, phone_number)
 

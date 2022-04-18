@@ -10,6 +10,11 @@ resource "Phone Numbers", document: :carrier_api do
         "The phone number in E.164 format, which consists of a + followed by the country code and subscriber number, or a short code.",
         required: true
       )
+      parameter(
+        :enabled,
+        "Set to `false` to disable this number.",
+        required: false
+      )
     end
 
     with_options scope: %i[data relationships] do
@@ -49,6 +54,14 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   patch "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
+    with_options scope: %i[data attributes] do
+      parameter(
+        :enabled,
+        "Set to `false` to disable this number.",
+        required: false
+      )
+    end
+
     with_options scope: %i[data relationships] do
       parameter(
         :account,

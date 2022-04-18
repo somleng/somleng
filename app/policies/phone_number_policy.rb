@@ -3,10 +3,6 @@ class PhoneNumberPolicy < ApplicationPolicy
     true
   end
 
-  def update?
-    super && !record.assigned?
-  end
-
   def release?
     manage? && record.may_release?
   end
