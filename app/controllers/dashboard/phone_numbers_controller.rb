@@ -1,5 +1,7 @@
 module Dashboard
   class PhoneNumbersController < DashboardController
+    prepend_before_action :find_record, only: :release
+
     def index
       @resources = apply_filters(phone_numbers_scope.includes(:account))
       @resources = paginate_resources(@resources)
@@ -35,6 +37,11 @@ module Dashboard
 
     def destroy
       record.destroy
+      respond_with(:dashboard, record)
+    end
+
+    def release
+      record.release!
       respond_with(:dashboard, record)
     end
 

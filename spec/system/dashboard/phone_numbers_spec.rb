@@ -109,4 +109,18 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("Phone number was successfully destroyed")
     expect(page).not_to have_content("1234")
   end
+
+  it "Release a phone number" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+    account = create(:account, carrier:, name: "Rocket Rides")
+    phone_number = create(:phone_number, carrier:, account:, number: "1234")
+
+    sign_in(user)
+    visit dashboard_phone_number_path(phone_number)
+
+    click_link("Release")
+    expect(page).to have_content("Phone number was successfully released")
+    expect(page).not_to have_content("Rocket Rides")
+  end
 end

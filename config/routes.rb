@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       resources :user_invitations, only: :update
       resources :phone_numbers do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
+        patch :release, on: :member
       end
       resources :inbound_sip_trunks
       resources :phone_calls, only: %i[index show]

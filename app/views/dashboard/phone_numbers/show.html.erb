@@ -5,7 +5,7 @@
 
   <% phone_number_policy = PhoneNumberPolicy.new(pundit_user, @resource) %>
   <% phone_number_configuration_policy = PhoneNumberConfigurationPolicy.new(pundit_user, @resource) %>
-  <% display_dropdown = current_organization.carrier? && (phone_number_policy.release? || phone_number_configuration_policy.edit?) %>
+  <% display_dropdown = current_organization.carrier? && phone_number_configuration_policy.edit? %>
 
   <% if display_dropdown %>
     <div class="btn-group">
@@ -14,27 +14,22 @@
       </button>
 
       <div class="dropdown-menu" aria-labelledby="dropdown-menu-phone-number-actions">
-        <% if phone_number_configuration_policy.edit? %>
-          <%= link_to(
-            edit_dashboard_phone_number_configuration_path(@resource),
-            class: "dropdown-item"
-          ) do %>
-            <i class="fas fa-tools mfe-2"></i> Configure
-          <% end %>
-        <% end %>
-
-        <% if phone_number_policy.release? %>
-          <%= link_to(
-            edit_dashboard_phone_number_configuration_path(@resource),
-            class: "dropdown-item"
-          ) do %>
-            <i class="fas fa-unlink mfe-2"></i> Release
-          <% end %>
+        <%= link_to(
+          edit_dashboard_phone_number_configuration_path(@resource),
+          class: "dropdown-item"
+        ) do %>
+          <i class="fas fa-tools mfe-2"></i> Configure
         <% end %>
       </div>
     </div>
   <% elsif phone_number_configuration_policy.edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_configuration_path(@resource)) %>
+  <% end %>
+
+  <% if phone_number_policy.release? %>
+    <%= link_to(release_dashboard_phone_number_path(@resource), method: :patch, class: "btn btn-warning", title: "Release", data: { confirm: "This action cannot be undone. Are you sure you want to continue?" }) do %>
+      <i class="fas fa-unlink mfe-2"></i>
+    <% end %>
   <% end %>
 
   <% if policy(@resource).destroy? %>
