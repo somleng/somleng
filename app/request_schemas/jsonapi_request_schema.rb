@@ -14,7 +14,7 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
   end
 
   def self.error_serializer_class
-    JSONAPIRequestErrorsSerializer
+    JSONAPIRequestSchemaErrorsSerializer
   end
 
   rule(:data) do
@@ -30,7 +30,7 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
 
   def output
     output_data = super
-    result = output_data.dig(:data, :attributes)
+    result = output_data.dig(:data, :attributes) || {}
 
     output_data.fetch(:data).fetch(:relationships, {}).each do |relationship, relationship_data|
       result[relationship] = relationship_data.dig(:data, :id)

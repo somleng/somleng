@@ -2,7 +2,8 @@ class ApplicationSeeder
   USER_PASSWORD = "Somleng1234!".freeze
 
   def seed!
-    carrier = OnboardCarrier.call(
+    carrier = Carrier.first
+    carrier ||= OnboardCarrier.call(
       name: "My Carrier",
       country_code: "KH",
       owner: {
@@ -13,10 +14,10 @@ class ApplicationSeeder
         confirmed_at: Time.current
       }
     )
-    create_outbound_sip_trunk(carrier: carrier)
-    create_inbound_sip_trunk(carrier: carrier)
-    account = create_account(carrier: carrier)
-    phone_number = create_phone_number(carrier: carrier, account: account)
+    create_outbound_sip_trunk(carrier:)
+    create_inbound_sip_trunk(carrier:)
+    account = create_account(carrier:)
+    phone_number = create_phone_number(carrier:, account:)
 
     puts(<<~INFO)
       Account SID:           #{account.id}
@@ -30,31 +31,6 @@ class ApplicationSeeder
   end
 
   private
-
-  def create_carrier
-    return Carrier.first if Carrier.any?
-
-    carrier = OnboardCarrier.call(
-      name: "My Carrier",
-      country_code: "KH",
-      owner: {
-        email: "johndoe@carrier.com",
-        name: "John Doe",
-        password: USER_PASSWORD,
-        carrier_role: :owner,
-        confirmed_at: Time.current
-      }
-    )
-
-    return carrier if carrier.logo.attached?
-
-    carrier.logo.attach(
-      io: File.open(Rails.root.join("app/assets/images/logo.png")),
-      filename: "photo.jpg"
-    )
-
-    carrier
-  end
 
   def create_outbound_sip_trunk(params)
     OutboundSIPTrunk.first_or_create!(
@@ -76,28 +52,17 @@ class ApplicationSeeder
 
   def create_account(params)
     carrier = params.fetch(:carrier)
-    Account.first_or_create!(
-      params.reverse_merge(
-        name: carrier.name
-      )
-    ) do |record|
-      record.build_access_token
-      record.phone_numbers.build(
-        number: "1234",
-        voice_url: "https://demo.twilio.com/docs/voice.xml",
-        voice_method: "GET",
-        carrier: carrier
-      )
-    end
+    Account.first_or_create!(params.reverse_merge(name: carrier.name), &:build_access_token)
   end
 
   def create_phone_number(params)
     PhoneNumber.first_or_create!(
-      params.reverse_merge(
-        number: "1234",
+      params.reverse_merge(number: "1234")
+    ) do |record|
+      record.build_configuration(
         voice_url: "https://demo.twilio.com/docs/voice.xml",
         voice_method: "GET"
       )
-    )
+    end
   end
 end

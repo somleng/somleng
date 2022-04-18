@@ -1,15 +1,15 @@
 module Dashboard
-  class PhoneNumberConfigurationController < DashboardController
+  class PhoneNumberConfigurationsController < DashboardController
     def edit
       @resource = PhoneNumberConfigurationForm.initialize_with(record)
     end
 
     def update
       @resource = PhoneNumberConfigurationForm.new(permitted_params)
-      @resource.phone_number = record
+      @resource.phone_number_configuration = record
       @resource.save
 
-      respond_with(:dashboard, @resource, location: dashboard_phone_number_path(@resource))
+      respond_with(:dashboard, @resource, location: edit_dashboard_phone_number_configuration_path(@resource.phone_number))
     end
 
     private
@@ -25,7 +25,10 @@ module Dashboard
     end
 
     def record
-      @record ||= phone_numbers_scope.find(params[:id])
+      @record ||= begin
+        phone_number = phone_numbers_scope.find(params[:phone_number_id])
+        phone_number.configuration || phone_number.build_configuration
+      end
     end
   end
 end

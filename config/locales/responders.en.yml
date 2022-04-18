@@ -17,3 +17,6 @@ en:
       carrier_settings:
         update:
           notice: "Carrier Settings were successfully updated."
+      phone_numbers:
+        release:
+          notice: '%{resource_name} was successfully released.'

@@ -1,10 +1,25 @@
 class PhoneNumber < ApplicationRecord
-  extend Enumerize
-
   belongs_to :carrier
   belongs_to :account, optional: true
-  has_many :phone_calls
+  has_many :phone_calls, dependent: :restrict_with_error
+  has_one :configuration, class_name: "PhoneNumberConfiguration"
 
-  enumerize :voice_method, in: %w[POST GET]
-  enumerize :status_callback_method, in: %w[POST GET]
+  def release!
+    transaction do
+      update!(account: nil)
+      configuration&.destroy!
+    end
+  end
+
+  def may_release?
+    account_id.present?
+  end
+
+  def assigned?
+    account_id.present?
+  end
+
+  def configured?
+    configuration.present?
+  end
 end

@@ -16,32 +16,78 @@ module Services
 
     it "validates to" do
       carrier = create(:carrier)
-      _inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
-      _unassigned_phone_number = create(:phone_number, number: "855716100235", carrier: carrier)
-      _phone_number_assigned_to_account = create(:phone_number, :assigned_to_account, number: "855716100236", carrier: carrier)
+      inbound_sip_trunk = create(:inbound_sip_trunk, carrier:)
+      unassigned_phone_number = create(:phone_number, carrier:)
+      configured_phone_number = create(
+        :phone_number, :configured, :assigned_to_account, carrier:
+      )
+      unconfigured_phone_number = create(
+        :phone_number, :assigned_to_account
+      )
+      disabled_phone_number = create(
+        :phone_number, :configured, :disabled, :assigned_to_account, carrier:
+      )
 
       expect(
-        validate_request_schema(input_params: { to: "855716100236", source_ip: "175.100.7.240" })
+        validate_request_schema(
+          input_params: {
+            to: configured_phone_number.number,
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
       ).to have_valid_field(:to)
 
       expect(
-        validate_request_schema(input_params: { to: "855716100235", source_ip: "175.100.7.240" })
+        validate_request_schema(
+          input_params: {
+            to: unassigned_phone_number.number,
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
       ).not_to have_valid_field(:to)
 
       expect(
-        validate_request_schema(input_params: { to: "85516701721", source_ip: "175.100.7.240" })
+        validate_request_schema(
+          input_params: {
+            to: "85516701721", # unknown number
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
       ).not_to have_valid_field(:to)
 
       expect(
-        validate_request_schema(input_params: { to: "855719999999", source_ip: "175.100.7.240" })
+        validate_request_schema(
+          input_params: {
+            to: unconfigured_phone_number.number,
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
+      ).not_to have_valid_field(:to)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            to: disabled_phone_number.number,
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
       ).not_to have_valid_field(:to)
     end
 
     it "normalizes the output" do
       carrier = create(:carrier)
-      inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
+      inbound_sip_trunk = create(:inbound_sip_trunk, carrier:, source_ip: "175.100.7.240")
       account = create(:account)
-      phone_number = create(:phone_number, account: account, carrier: carrier, number: "2442")
+      phone_number = create(:phone_number, account:, carrier:, number: "2442")
+      create(
+        :phone_number_configuration,
+        phone_number:,
+        voice_url: "https://demo.twilio.com/docs/voice.xml",
+        voice_method: "GET",
+        status_callback_url: "https://example.com/status-callback",
+        status_callback_method: "POST"
+      )
+
       schema = validate_request_schema(
         input_params: {
           source_ip: "175.100.7.240",
@@ -55,12 +101,16 @@ module Services
       )
 
       expect(schema.output).to include(
-        account: account,
+        account:,
         to: "2442",
         from: "855716100230",
         external_id: "external-id",
-        phone_number: phone_number,
-        inbound_sip_trunk: inbound_sip_trunk,
+        phone_number:,
+        inbound_sip_trunk:,
+        voice_url: "https://demo.twilio.com/docs/voice.xml",
+        voice_method: "GET",
+        status_callback_url: "https://example.com/status-callback",
+        status_callback_method: "POST",
         variables: {
           "sip_from_host" => "103.9.189.2"
         }
@@ -71,11 +121,16 @@ module Services
       carrier = create(:carrier)
       _inbound_sip_trunk = create(
         :inbound_sip_trunk,
-        carrier: carrier,
+        carrier:,
         source_ip: "175.100.7.240",
         trunk_prefix_replacement: "855"
       )
-      _phone_number = create(:phone_number, :assigned_to_account, number: "855716100235", carrier: carrier)
+      _phone_number = create(
+        :phone_number,
+        :configured,
+        number: "855716100235",
+        carrier:
+      )
       schema = validate_request_schema(
         input_params: {
           source_ip: "175.100.7.240",
@@ -90,21 +145,25 @@ module Services
 
     it "normalizes the twiml for routing to a sip domain" do
       carrier = create(:carrier)
-      create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240")
+      inbound_sip_trunk = create(:inbound_sip_trunk, carrier:)
       account = create(:account)
-      create(
+      phone_number = create(
         :phone_number,
-        account: account,
-        carrier: carrier,
-        number: "2442",
+        account:,
+        carrier:,
+        number: "2442"
+      )
+      create(
+        :phone_number_configuration,
+        phone_number:,
         voice_url: nil,
         voice_method: nil,
         sip_domain: "example.sip.twilio.com"
       )
       schema = validate_request_schema(
         input_params: {
-          source_ip: "175.100.7.240",
-          to: "2442",
+          source_ip: inbound_sip_trunk.source_ip.to_s,
+          to: phone_number.number,
           from: "855716100230",
           external_id: "external-id"
         }

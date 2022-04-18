@@ -39,8 +39,10 @@ Rails.application.routes.draw do
       resource :carrier_settings, only: %i[show edit update]
       resource :home, only: :show
       resources :user_invitations, only: :update
-      resources :phone_numbers
-      resources :phone_number_configuration, only: %i[edit update]
+      resources :phone_numbers do
+        resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
+        patch :release, on: :member
+      end
       resources :inbound_sip_trunks
       resources :phone_calls, only: %i[index show]
 
@@ -96,6 +98,9 @@ Rails.application.routes.draw do
         resources :events, only: %i[index show]
 
         resources :phone_calls, only: %i[index show update]
+        resources :phone_numbers, only: %i[index create show update destroy] do
+          patch :release, on: :member
+        end
       end
     end
   end

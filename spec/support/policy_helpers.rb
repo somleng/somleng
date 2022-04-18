@@ -1,9 +1,9 @@
 module PolicyHelpers
   def build_user_context_for_carrier(role:, carrier: nil)
     carrier ||= build_stubbed(:carrier)
-    user = build_stubbed(:user, :carrier, role, carrier: carrier)
+    user = build_stubbed(:user, :carrier, role, carrier:)
     organization = build_stubbed(:organization, organization: carrier)
-    build_stubbed(:user_context, user: user, current_organization: organization)
+    build_stubbed(:user_context, user:, current_organization: organization)
   end
 
   def build_user_context_for_account(params)

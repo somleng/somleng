@@ -1,5 +1,7 @@
 module Dashboard
   class PhoneNumbersController < DashboardController
+    prepend_before_action :find_record, only: %i[show edit update destroy release]
+
     def index
       @resources = apply_filters(phone_numbers_scope.includes(:account))
       @resources = paginate_resources(@resources)
@@ -10,7 +12,7 @@ module Dashboard
     end
 
     def create
-      @resource = initialize_form(permitted_params)
+      @resource = initialize_form(required_params.permit(:number, :account_id, :enabled))
       @resource.save
 
       respond_with(:dashboard, @resource)
@@ -26,6 +28,7 @@ module Dashboard
     end
 
     def update
+      permitted_params = record.assigned? ? required_params.permit(:enabled) : required_params.permit(:account_id, :enabled)
       @resource = initialize_form(permitted_params)
       @resource.phone_number = record
       @resource.save
@@ -38,10 +41,15 @@ module Dashboard
       respond_with(:dashboard, record)
     end
 
+    def release
+      record.release!
+      respond_with(:dashboard, record)
+    end
+
     private
 
-    def permitted_params
-      params.require(:phone_number).permit(:number, :account_id)
+    def required_params
+      params.require(:phone_number)
     end
 
     def phone_numbers_scope

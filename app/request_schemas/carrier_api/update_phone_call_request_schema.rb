@@ -1,5 +1,5 @@
 module CarrierAPI
-  class UpdatePhoneCallRequestSchema < JSONAPIRequestSchema
+  class UpdatePhoneCallRequestSchema < CarrierAPIRequestSchema
     CURRENCIES = Money::Currency.table.values.pluck(:iso_code)
 
     params do

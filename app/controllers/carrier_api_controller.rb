@@ -5,6 +5,18 @@ class CarrierAPIController < APIController
 
   private
 
+  def validate_request_schema(with:, **options, &block)
+    schema_options = options.delete(:schema_options) || {}
+    schema_options[:carrier] = current_carrier
+
+    super(
+      with:,
+      schema_options:,
+      **options,
+      &block
+    )
+  end
+
   def current_carrier
     @current_carrier ||= doorkeeper_token.application.owner
   end

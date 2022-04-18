@@ -3,26 +3,44 @@ require "rails_helper"
 RSpec.describe "Phone Numbers" do
   it "List and filter phone numbers" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, carrier: carrier)
-    create(:phone_number, carrier: carrier, number: "855972222222", created_at: Time.utc(2021, 12, 1))
-    create(:phone_number, carrier: carrier, number: "855973333333", created_at: Time.utc(2021, 10, 10))
+    user = create(:user, :carrier, carrier:)
+    create(
+      :phone_number,
+      carrier:,
+      number: "855972222222",
+      created_at: Time.utc(2021, 12, 1)
+    )
+    create(
+      :phone_number,
+      carrier:,
+      number: "855973333333",
+      created_at: Time.utc(2021, 10, 10)
+    )
+    create(
+      :phone_number,
+      :disabled,
+      carrier:,
+      number: "855974444444",
+      created_at: Time.utc(2021, 12, 1)
+    )
 
     sign_in(user)
     visit dashboard_phone_numbers_path(
-      filter: { from_date: "01/12/2021", to_date: "15/12/2021" }
+      filter: { from_date: "01/12/2021", to_date: "15/12/2021", enabled: true }
     )
 
     expect(page).to have_content("855972222222")
     expect(page).not_to have_content("855973333333")
+    expect(page).not_to have_content("855974444444")
   end
 
   it "List phone numbers as an account member" do
     carrier = create(:carrier)
-    account = create(:account, carrier: carrier)
+    account = create(:account, carrier:)
     other_account = create(:account, carrier: account.carrier)
-    create(:phone_number, account: account, carrier: carrier, number: "1234")
-    create(:phone_number, account: other_account, carrier: carrier, number: "9876")
-    user = create(:user, :with_account_membership, account: account)
+    create(:phone_number, account:, carrier:, number: "1234")
+    create(:phone_number, account: other_account, carrier:, number: "9876")
+    user = create(:user, :with_account_membership, account:)
 
     sign_in(user)
     visit dashboard_phone_numbers_path
@@ -33,8 +51,8 @@ RSpec.describe "Phone Numbers" do
 
   it "Create a phone number", :js do
     carrier = create(:carrier)
-    user = create(:user, :carrier, :admin, carrier: carrier)
-    create(:account, carrier: carrier, name: "Rocket Rides")
+    user = create(:user, :carrier, :admin, carrier:)
+    create(:account, carrier:, name: "Rocket Rides")
 
     sign_in(user)
     visit dashboard_phone_numbers_path
@@ -61,28 +79,25 @@ RSpec.describe "Phone Numbers" do
 
   it "Update a phone number", :js do
     carrier = create(:carrier)
-    account = create(:account, carrier: carrier, name: "Bob's Bananas")
-    create(:account, carrier: carrier, name: "Rocket Rides")
-    user = create(:user, :carrier, carrier: carrier)
-    phone_number = create(:phone_number, carrier: carrier, account: account)
+    create(:account, carrier:, name: "Rocket Rides")
+    user = create(:user, :carrier, carrier:)
+    phone_number = create(:phone_number, carrier:)
 
     sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
     click_link("Edit")
-    fill_in("Number", with: "1234")
     select("Rocket Rides", from: "Account")
     click_button "Update Phone number"
 
     expect(page).to have_content("Phone number was successfully updated")
-    expect(page).to have_content("1234")
     expect(page).to have_content("Rocket Rides")
   end
 
   it "Delete a phone number" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, carrier: carrier)
-    phone_number = create(:phone_number, carrier: carrier, number: "1234")
+    user = create(:user, :carrier, carrier:)
+    phone_number = create(:phone_number, carrier:, number: "1234")
 
     sign_in(user)
     visit dashboard_phone_number_path(phone_number)
@@ -92,57 +107,17 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("1234")
   end
 
-  it "Configure a phone number as an account admin" do
+  it "Release a phone number" do
     carrier = create(:carrier)
-    account = create(:account, carrier: carrier)
-    user = create(:user, :with_account_membership, account_role: :admin, account: account)
-    phone_number = create(:phone_number, account: account, carrier: carrier)
+    user = create(:user, :carrier, carrier:)
+    account = create(:account, carrier:, name: "Rocket Rides")
+    phone_number = create(:phone_number, carrier:, account:, number: "1234")
 
     sign_in(user)
     visit dashboard_phone_number_path(phone_number)
-    click_link("Edit")
 
-    fill_in("Voice URL", with: "https://www.example.com/voice.xml")
-    select("POST", from: "Voice method")
-    fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
-    select("POST", from: "Status callback method")
-    click_button("Update Configuration")
-
-    expect(page).to have_content("Phone number configuration was successfully updated")
-    expect(page).to have_content("https://www.example.com/voice.xml")
-    expect(page).to have_content("https://www.example.com/status_callback.xml")
-    expect(page).to have_content("POST")
-  end
-
-  it "Configure a phone number with sip domain as an account admin" do
-    carrier = create(:carrier)
-    account = create(:account, carrier: carrier)
-    user = create(:user, :with_account_membership, account_role: :admin, account: account)
-    phone_number = create(:phone_number, account: account, carrier: carrier)
-
-    sign_in(user)
-    visit dashboard_phone_number_path(phone_number)
-    click_link("Edit")
-
-    fill_in("SIP domain", with: "example.sip.twilio.com")
-    click_button("Update Configuration")
-
-    expect(page).to have_content("Phone number configuration was successfully updated")
-    expect(page).to have_content("example.sip.twilio.com")
-  end
-
-  it "Handles validations" do
-    carrier = create(:carrier)
-    account = create(:account, carrier: carrier)
-    user = create(:user, :with_account_membership, account_role: :admin, account: account)
-    phone_number = create(:phone_number, account: account, carrier: carrier)
-
-    sign_in(user)
-    visit edit_dashboard_phone_number_configuration_path(phone_number)
-
-    fill_in("Voice URL", with: "ftp://invalid-url.com")
-    click_button("Update Configuration")
-
-    expect(page).to have_content("Voice URL is invalid")
+    click_link("Release")
+    expect(page).to have_content("Phone number was successfully released")
+    expect(page).not_to have_content("Rocket Rides")
   end
 end
