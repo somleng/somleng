@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       resources :outbound_sip_trunks
       resources :carrier_users
       resources :exports, only: %i[index create]
+      resources :imports, only: %i[index create]
       resource :account_session, only: :create
       resource :account_settings, only: %i[show edit update]
       resource :carrier_settings, only: %i[show edit update]
