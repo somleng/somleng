@@ -6,6 +6,7 @@
           f.input(
             :number,
             as: :numeric,
+            disabled: resource.persisted?,
             hint: "Phone number or shortcode"
           ) %>
       </div>

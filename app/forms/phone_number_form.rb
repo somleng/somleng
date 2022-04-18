@@ -11,9 +11,11 @@ class PhoneNumberForm
   attribute :account_id
   attribute :phone_number, default: -> { PhoneNumber.new }
 
-  validates :number, presence: true
-  validates :number, format: NUMBER_FORMAT, allow_nil: true, allow_blank: true
-  validate :validate_number
+  with_options if: :new_record? do
+    validates :number, presence: true
+    validates :number, format: NUMBER_FORMAT, allow_blank: true
+    validate :validate_number
+  end
 
   delegate :persisted?, :new_record?, :id, to: :phone_number
 
@@ -34,7 +36,7 @@ class PhoneNumberForm
     return false if invalid?
 
     phone_number.carrier = carrier
-    phone_number.number = number
+    phone_number.number = number if new_record?
     phone_number.account = account_id.present? ? carrier.accounts.find(account_id) : nil
 
     phone_number.save!
@@ -53,7 +55,6 @@ class PhoneNumberForm
 
   def validate_number
     return if errors[:number].any?
-    return if phone_number.number == number
     return unless carrier.phone_numbers.exists?(number: number)
 
     errors.add(:number, :taken)

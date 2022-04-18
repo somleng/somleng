@@ -79,21 +79,18 @@ RSpec.describe "Phone Numbers" do
 
   it "Update a phone number", :js do
     carrier = create(:carrier)
-    account = create(:account, carrier:, name: "Bob's Bananas")
     create(:account, carrier:, name: "Rocket Rides")
     user = create(:user, :carrier, carrier:)
-    phone_number = create(:phone_number, carrier:, account:)
+    phone_number = create(:phone_number, carrier:)
 
     sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
     click_link("Edit")
-    fill_in("Number", with: "1234")
     select("Rocket Rides", from: "Account")
     click_button "Update Phone number"
 
     expect(page).to have_content("Phone number was successfully updated")
-    expect(page).to have_content("1234")
     expect(page).to have_content("Rocket Rides")
   end
 

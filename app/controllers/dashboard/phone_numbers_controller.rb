@@ -1,6 +1,6 @@
 module Dashboard
   class PhoneNumbersController < DashboardController
-    prepend_before_action :find_record, only: :release
+    prepend_before_action :find_record, only: %i[show edit update destroy release]
 
     def index
       @resources = apply_filters(phone_numbers_scope.includes(:account))
