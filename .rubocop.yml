@@ -20,3 +20,7 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*_spec.rb"
