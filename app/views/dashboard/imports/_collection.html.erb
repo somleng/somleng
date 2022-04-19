@@ -12,6 +12,11 @@
       <th>
         Status
       </th>
+
+      <th>
+        Error Message
+      </th>
+
       <th>
         Created At
       </th>
@@ -30,7 +35,11 @@
         </td>
 
         <td>
-          <%= "Finished" %>
+          <%= import.status.humanize %>
+        </td>
+
+        <td>
+          <%= import.error_message %>
         </td>
 
         <td>

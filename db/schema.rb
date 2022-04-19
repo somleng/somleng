@@ -138,10 +138,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_18_074234) do
   end
 
   create_table "imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigserial "sequence_number", null: false
     t.string "resource_type", null: false
+    t.string "status", null: false
+    t.string "error_message"
     t.uuid "user_id", null: false
     t.uuid "carrier_id", null: false
+    t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["carrier_id"], name: "index_imports_on_carrier_id"

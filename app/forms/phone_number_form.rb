@@ -4,8 +4,6 @@ class PhoneNumberForm
 
   extend Enumerize
 
-  NUMBER_FORMAT = /\A\d+\z/
-
   attribute :carrier
   attribute :number
   attribute :account_id
@@ -14,7 +12,7 @@ class PhoneNumberForm
 
   with_options if: :new_record? do
     validates :number, presence: true
-    validates :number, format: NUMBER_FORMAT, allow_blank: true
+    validates :number, format: PhoneNumber::NUMBER_FORMAT, allow_blank: true
     validate :validate_number
   end
 

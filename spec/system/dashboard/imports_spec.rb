@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Imports" do
-  it "Import phone numbers", :js, :selenium_chrome do
+  it "Import phone numbers" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
 
@@ -18,5 +18,8 @@ RSpec.describe "Imports" do
       expect(page).to have_content("Your import is being processed")
       click_link("Imports")
     end
+
+    expect(page).to have_content("Completed")
+    expect(page).to have_content("phone_numbers.csv")
   end
 end

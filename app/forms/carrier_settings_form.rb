@@ -2,7 +2,7 @@ class CarrierSettingsForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[https])}\z/.freeze
+  URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[https])}\z/
 
   attribute :carrier
   attribute :name
@@ -23,7 +23,7 @@ class CarrierSettingsForm
 
   def self.initialize_with(carrier)
     new(
-      carrier: carrier,
+      carrier:,
       name: carrier.name,
       country: carrier.country_code,
       logo: carrier.logo,
@@ -36,7 +36,7 @@ class CarrierSettingsForm
     return false if invalid?
 
     carrier.attributes = {
-      name: name,
+      name:,
       country_code: country
     }
 

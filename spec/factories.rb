@@ -179,6 +179,31 @@ FactoryBot.define do
     traits_for_enum :role, %i[owner admin member]
   end
 
+  factory :import do
+    phone_numbers
+    association :user, factory: %i[user carrier]
+    carrier { user.carrier }
+
+    trait :phone_numbers do
+      resource_type { "PhoneNumber" }
+
+      association :file, factory: :active_storage_attachment, filename: "phone_numbers.csv"
+    end
+  end
+
+  factory :active_storage_attachment, class: "ActiveStorage::Blob" do
+    transient do
+      filename { "phone_numbers.csv" }
+    end
+
+    initialize_with do
+      ActiveStorage::Blob.create_and_upload!(
+        io: File.open("#{RSpec.configuration.file_fixture_path}/#{filename}"),
+        filename:
+      )
+    end
+  end
+
   factory :phone_number do
     carrier
 

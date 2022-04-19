@@ -6,14 +6,14 @@ module Dashboard
 
     def create
       @resource = build_import
-      if @resource.save
-        flash[:notice] = "Your import is being processed. You can view its status from the #{helpers.link_to('Imports', dashboard_imports_path)} page."
-      else
-        flash[:alert] = "Your import failed with the following error: #{@resource.errors.full_messages.to_sentence}"
-      end
+      @resource.save!
+      ExecuteWorkflowJob.perform_later(ImportCSV.to_s, @resource)
 
       redirect_back(
-        fallback_location: dashboard_imports_path
+        fallback_location: dashboard_imports_path,
+        flash: {
+          notice: "Your import is being processed. You can view its status from the #{helpers.link_to('Imports', dashboard_imports_path)} page."
+        }
       )
     end
 

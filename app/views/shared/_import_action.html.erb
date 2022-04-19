@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" title="Import'" data-toggle="modal" data-target="#importModal">
+<button type="button" class="btn btn-primary" title="Import" data-toggle="modal" data-target="#importModal">
   <i class="fas fa-file-upload"></i>
 </button>
 
@@ -14,7 +14,7 @@
         </div>
         <div class="modal-body">
           <%= f.input :resource_type, as: :hidden %>
-          <%= f.input :file, input_html: { accept: "text/csv", direct_upload: true }, hint: "Link to template here" %>
+          <%= f.input :file, input_html: { accept: "text/csv", direct_upload: true }, hint: link_to("Sample CSV file", asset_url("phone_number_import_template.csv"), download: "phone_number_import.csv") %>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
