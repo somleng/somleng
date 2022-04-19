@@ -5,7 +5,7 @@ module CarrierAPI
         optional(:id).filled(:str?)
         required(:type).filled(:str?, eql?: "phone_number")
         optional(:attributes).value(:hash).schema do
-          optional(:number).filled(:str?, format: PhoneNumber::NUMBER_FORMAT)
+          optional(:number).filled(:str?, format?: PhoneNumber::NUMBER_FORMAT)
           optional(:enabled).filled(:bool?)
         end
 
