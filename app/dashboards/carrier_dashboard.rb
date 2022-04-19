@@ -40,6 +40,6 @@ class CarrierDashboard < Administrate::BaseDashboard
   COLLECTION_FILTERS = {}.freeze
 
   def display_resource(carrier)
-    "Carrier: #{carrier.name}"
+    carrier.name
   end
 end

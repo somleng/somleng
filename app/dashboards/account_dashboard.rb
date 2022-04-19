@@ -41,6 +41,6 @@ class AccountDashboard < Administrate::BaseDashboard
   COLLECTION_FILTERS = {}.freeze
 
   def display_resource(account)
-    "Account: #{account.carrier.name} / #{account.name}"
+    account.name
   end
 end
