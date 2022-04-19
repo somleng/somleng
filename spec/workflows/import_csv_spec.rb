@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe ImportCSV do
-  # Validate account exists
-
   it "imports a CSV" do
     import = create(
       :import,
