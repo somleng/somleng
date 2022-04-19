@@ -58,7 +58,9 @@ Rails.application.routes.draw do
       resources :carriers, only: %i[show index], concerns: :exportable
       resources :accounts, only: %i[show index], concerns: :exportable
       resources :phone_calls, only: %i[show index], concerns: :exportable
+      resources :users, only: %i[show index], concerns: :exportable
 
+      resources :account_memberships, only: :show
       resources :inbound_sip_trunks, only: :show
       resources :outbound_sip_trunks, only: :show
       resources :phone_numbers, only: :show
