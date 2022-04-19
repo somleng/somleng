@@ -4,7 +4,7 @@ class PhoneNumberForm
 
   extend Enumerize
 
-  NUMBER_FORMAT = /\A\d+\z/.freeze
+  NUMBER_FORMAT = /\A\d+\z/
 
   attribute :carrier
   attribute :number
@@ -26,7 +26,7 @@ class PhoneNumberForm
 
   def self.initialize_with(phone_number)
     new(
-      phone_number: phone_number,
+      phone_number:,
       account_id: phone_number.account_id,
       carrier: phone_number.carrier,
       number: phone_number.number,
@@ -58,7 +58,7 @@ class PhoneNumberForm
 
   def validate_number
     return if errors[:number].any?
-    return unless carrier.phone_numbers.exists?(number: number)
+    return unless carrier.phone_numbers.exists?(number:)
 
     errors.add(:number, :taken)
   end
