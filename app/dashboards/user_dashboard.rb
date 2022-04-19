@@ -13,7 +13,7 @@ class UserDashboard < Administrate::BaseDashboard
     confirmed_at: Field::DateTime,
     invitation_sent_at: Field::DateTime,
     invitation_accepted_at: Field::DateTime,
-    invited_by: Field::BelongsTo,
+    invited_by: Field::Polymorphic,
     account_memberships: Field::HasMany
   }.freeze
 
