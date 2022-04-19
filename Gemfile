@@ -12,6 +12,7 @@ gem "administrate-field-active_storage"
 gem "image_processing"
 
 gem "aasm"
+gem "active_storage_validations"
 gem "after_commit_everywhere"
 gem "aws-sdk-ec2"
 gem "aws-sdk-rails"

@@ -7,6 +7,7 @@ class User < ApplicationRecord
   belongs_to :carrier, optional: true
   belongs_to :current_account_membership, optional: true, class_name: "AccountMembership"
   has_many :exports
+  has_many :imports
   has_many :account_memberships
   has_many :accounts, through: :account_memberships
 

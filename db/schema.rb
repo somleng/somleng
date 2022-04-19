@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_12_071058) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_18_074234) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -135,6 +135,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_12_071058) do
     t.datetime "updated_at", null: false
     t.index ["sequence_number"], name: "index_exports_on_sequence_number", unique: true, order: :desc
     t.index ["user_id"], name: "index_exports_on_user_id"
+  end
+
+  create_table "imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "resource_type", null: false
+    t.string "status", null: false
+    t.string "error_message"
+    t.uuid "user_id", null: false
+    t.uuid "carrier_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_imports_on_carrier_id"
+    t.index ["sequence_number"], name: "index_imports_on_sequence_number", unique: true, order: :desc
+    t.index ["user_id"], name: "index_imports_on_user_id"
   end
 
   create_table "inbound_sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -387,6 +401,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_12_071058) do
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "events", "carriers"
   add_foreign_key "exports", "users"
+  add_foreign_key "imports", "carriers", on_delete: :cascade
+  add_foreign_key "imports", "users", on_delete: :cascade
   add_foreign_key "inbound_sip_trunks", "carriers"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
