@@ -3,9 +3,19 @@ require "rails_helper"
 RSpec.describe "Inbound SIP Trunks" do
   it "List and filter inbound SIP trunks" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, carrier: carrier)
-    create(:inbound_sip_trunk, carrier: carrier, name: "Main SIP Trunk", created_at: Time.utc(2021, 12, 1))
-    create(:inbound_sip_trunk, carrier: carrier, name: "Old SIP Trunk", created_at:  Time.utc(2021, 10, 10))
+    user = create(:user, :carrier, carrier:)
+    create(
+      :inbound_sip_trunk,
+      carrier:,
+      name: "Main SIP Trunk",
+      created_at: Time.utc(2021, 12, 1)
+    )
+    create(
+      :inbound_sip_trunk,
+      carrier:,
+      name: "Old SIP Trunk",
+      created_at: Time.utc(2021, 10, 10)
+    )
 
     sign_in(user)
     visit dashboard_inbound_sip_trunks_path(
@@ -43,10 +53,10 @@ RSpec.describe "Inbound SIP Trunks" do
 
   it "Update an inbound SIP Trunk" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, :admin, carrier: carrier)
+    user = create(:user, :carrier, :admin, carrier:)
     inbound_sip_trunk = create(
       :inbound_sip_trunk,
-      carrier: carrier,
+      carrier:,
       name: "My Trunk",
       source_ip: "175.100.7.111"
     )
@@ -69,8 +79,9 @@ RSpec.describe "Inbound SIP Trunks" do
 
   it "Delete an inbound SIP Trunk" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, :admin, carrier: carrier)
-    inbound_sip_trunk = create(:inbound_sip_trunk, carrier: carrier, name: "My SIP Trunk")
+    user = create(:user, :carrier, :admin, carrier:)
+    inbound_sip_trunk = create(:inbound_sip_trunk, carrier:, name: "My SIP Trunk")
+    create(:phone_call, :inbound, carrier:, inbound_sip_trunk:)
 
     sign_in(user)
     visit dashboard_inbound_sip_trunk_path(inbound_sip_trunk)

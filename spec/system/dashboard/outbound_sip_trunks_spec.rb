@@ -3,9 +3,19 @@ require "rails_helper"
 RSpec.describe "Outbound SIP Trunks" do
   it "List and filter outbound SIP trunks" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, carrier: carrier)
-    create(:outbound_sip_trunk, carrier: carrier, name: "Main SIP Trunk", created_at: Time.utc(2021, 12, 1))
-    create(:outbound_sip_trunk, carrier: carrier, name: "Old SIP Trunk", created_at:  Time.utc(2021, 10, 10))
+    user = create(:user, :carrier, carrier:)
+    create(
+      :outbound_sip_trunk,
+      carrier:,
+      name: "Main SIP Trunk",
+      created_at: Time.utc(2021, 12, 1)
+    )
+    create(
+      :outbound_sip_trunk,
+      carrier:,
+      name: "Old SIP Trunk",
+      created_at: Time.utc(2021, 10, 10)
+    )
 
     sign_in(user)
     visit dashboard_outbound_sip_trunks_path(
@@ -18,7 +28,7 @@ RSpec.describe "Outbound SIP Trunks" do
 
   it "Create an outbound SIP Trunk" do
     carrier = create(:carrier, country_code: "KH")
-    user = create(:user, :carrier, :admin, carrier: carrier)
+    user = create(:user, :carrier, :admin, carrier:)
 
     sign_in(user)
     visit dashboard_outbound_sip_trunks_path
@@ -36,10 +46,10 @@ RSpec.describe "Outbound SIP Trunks" do
 
   it "Update an outbound SIP Trunk" do
     carrier = create(:carrier, country_code: "KH")
-    user = create(:user, :carrier, :admin, carrier: carrier)
+    user = create(:user, :carrier, :admin, carrier:)
     outbound_sip_trunk = create(
       :outbound_sip_trunk,
-      carrier: carrier,
+      carrier:,
       name: "My Trunk",
       host: "sip.example.com:5061",
       dial_string_prefix: "1234",
@@ -64,9 +74,10 @@ RSpec.describe "Outbound SIP Trunks" do
 
   it "Delete an outbound SIP Trunk" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, :admin, carrier: carrier)
-    outbound_sip_trunk = create(:outbound_sip_trunk, carrier: carrier, name: "My SIP Trunk")
-    create(:account, outbound_sip_trunk: outbound_sip_trunk)
+    user = create(:user, :carrier, :admin, carrier:)
+    outbound_sip_trunk = create(:outbound_sip_trunk, carrier:, name: "My SIP Trunk")
+    create(:account, outbound_sip_trunk:)
+    create(:phone_call, carrier:, outbound_sip_trunk:)
 
     sign_in(user)
     visit dashboard_outbound_sip_trunk_path(outbound_sip_trunk)
