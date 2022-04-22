@@ -22,7 +22,7 @@ module Services
         :phone_number, :configured, :assigned_to_account, carrier:
       )
       unconfigured_phone_number = create(
-        :phone_number, :assigned_to_account
+        :phone_number, :assigned_to_account, carrier:
       )
       disabled_phone_number = create(
         :phone_number, :configured, :disabled, :assigned_to_account, carrier:
@@ -44,7 +44,7 @@ module Services
             source_ip: inbound_sip_trunk.source_ip.to_s
           }
         )
-      ).not_to have_valid_field(:to)
+      ).not_to have_valid_field(:to, error_message: "is unassigned")
 
       expect(
         validate_request_schema(
@@ -62,7 +62,7 @@ module Services
             source_ip: inbound_sip_trunk.source_ip.to_s
           }
         )
-      ).not_to have_valid_field(:to)
+      ).not_to have_valid_field(:to, error_message: "is unconfigured")
 
       expect(
         validate_request_schema(
@@ -71,7 +71,7 @@ module Services
             source_ip: inbound_sip_trunk.source_ip.to_s
           }
         )
-      ).not_to have_valid_field(:to)
+      ).not_to have_valid_field(:to, error_message: "is disabled")
     end
 
     it "normalizes the output" do

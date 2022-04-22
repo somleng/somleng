@@ -98,7 +98,7 @@ Rails.application.routes.draw do
 
     scope :carrier, as: :carrier_api, module: :carrier_api do
       namespace :v1, defaults: { format: :json } do
-        resources :accounts, only: %i[create show update index]
+        resources :accounts, only: %i[create show update index destroy]
         resources :events, only: %i[index show]
 
         resources :phone_calls, only: %i[index show update]
