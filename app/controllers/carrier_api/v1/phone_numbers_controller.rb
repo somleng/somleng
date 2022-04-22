@@ -33,14 +33,8 @@ module CarrierAPI
 
       def destroy
         phone_number = find_phone_number
-        if phone_number.destroy
-          respond_with_resource(phone_number)
-        else
-          respond_with_errors(
-            phone_number,
-            error_serializer_class: JSONAPIErrorsSerializer
-          )
-        end
+        phone_number.destroy!
+        respond_with_resource(phone_number)
       end
 
       def release
