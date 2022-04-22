@@ -8,7 +8,7 @@ class PhoneNumber < ApplicationRecord
 
   validates :number,
             presence: true,
-            uniqueness: { scoped_to: :carrier_id },
+            uniqueness: { scope: :carrier_id },
             format: { with: NUMBER_FORMAT, allow_blank: true }
 
   def release!
