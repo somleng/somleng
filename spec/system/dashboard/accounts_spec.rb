@@ -130,7 +130,6 @@ RSpec.describe "Accounts" do
       name: "Rocket Rides",
       carrier: user.carrier
     )
-    create(:phone_number, account:)
 
     sign_in(user)
     visit dashboard_account_path(account)

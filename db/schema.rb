@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_22_070423) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_22_053524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -415,7 +415,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_22_070423) do
   add_foreign_key "phone_calls", "outbound_sip_trunks", on_delete: :nullify
   add_foreign_key "phone_calls", "phone_numbers", on_delete: :nullify
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
-  add_foreign_key "phone_numbers", "accounts", on_delete: :nullify
+  add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"

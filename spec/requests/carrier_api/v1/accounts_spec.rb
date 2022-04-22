@@ -142,7 +142,6 @@ resource "Accounts", document: :carrier_api do
     example "Delete an account" do
       carrier = create(:carrier)
       account = create(:account, carrier:)
-      create(:phone_number, account:, carrier:)
 
       set_carrier_api_authorization_header(carrier)
       do_request(id: account.id)
