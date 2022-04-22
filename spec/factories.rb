@@ -263,6 +263,9 @@ FactoryBot.define do
 
       after(:build) do |phone_call|
         phone_call.inbound_sip_trunk ||= build(:inbound_sip_trunk, carrier: phone_call.carrier)
+        phone_call.phone_number ||= build(
+          :phone_number, number: phone_call.to, carrier: phone_call.carrier
+        )
       end
     end
 

@@ -7,12 +7,12 @@ resource "Phone Numbers", document: :carrier_api do
     with_options scope: %i[data attributes] do
       parameter(
         :number,
-        "The phone number in E.164 format, which consists of a + followed by the country code and subscriber number, or a short code.",
+        "Phone number or shortcode.",
         required: true
       )
       parameter(
         :enabled,
-        "Set to `false` to disable this number.",
+        "Set to `false` to disable this number. Disabled phone numbers cannot be used by accounts. Enabled by default.",
         required: false
       )
     end
@@ -20,7 +20,7 @@ resource "Phone Numbers", document: :carrier_api do
     with_options scope: %i[data relationships] do
       parameter(
         :account,
-        "The `id` of the `account` to associate the phone number with"
+        "The `id` of the `account` to associate the phone number with."
       )
     end
 
@@ -60,12 +60,6 @@ resource "Phone Numbers", document: :carrier_api do
         "The `id` of the `account` to associate the phone number with."
       )
     end
-    with_options scope: %i[data attributes] do
-      parameter(
-        :enabled,
-        "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts."
-      )
-    end
 
     example "Assign an account to a phone number" do
       carrier = create(:carrier)
@@ -93,6 +87,15 @@ resource "Phone Numbers", document: :carrier_api do
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
       expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(account.id)
     end
+  end
+
+  patch "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
+    with_options scope: %i[data attributes] do
+      parameter(
+        :enabled,
+        "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts."
+      )
+    end
 
     example "Update a phone number" do
       carrier = create(:carrier)
@@ -117,9 +120,9 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   patch "https://api.somleng.org/carrier/v1/phone_numbers/:id/release" do
-    explanation "Releases a phone number back to the pool by unassigning the account and removing any configuration."
-
     example "Release a phone number" do
+      explanation "Releases a phone number by unassigning the account and removing any configuration."
+
       carrier = create(:carrier)
       account = create(:account, carrier:)
       phone_number = create(:phone_number, carrier:, account:)
@@ -165,23 +168,12 @@ resource "Phone Numbers", document: :carrier_api do
     example "Delete a phone number" do
       carrier = create(:carrier)
       phone_number = create(:phone_number, :configured, carrier:)
+      create(:phone_call, :inbound, phone_number:, carrier:)
 
       set_carrier_api_authorization_header(carrier)
       do_request(id: phone_number.id)
 
       expect(response_status).to eq(204)
-    end
-
-    example "Delete a phone number with associated phone calls", document: false do
-      carrier = create(:carrier)
-      phone_number = create(:phone_number, carrier:)
-      create(:phone_call, :inbound, phone_number:)
-
-      set_carrier_api_authorization_header(carrier)
-      do_request(id: phone_number.id)
-
-      expect(response_status).to eq(422)
-      expect(response_body).to match_api_response_schema("jsonapi_error")
     end
   end
 end

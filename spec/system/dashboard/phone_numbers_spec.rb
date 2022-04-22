@@ -98,6 +98,7 @@ RSpec.describe "Phone Numbers" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:, number: "1234")
+    create(:phone_call, :inbound, carrier:, phone_number:)
 
     sign_in(user)
     visit dashboard_phone_number_path(phone_number)
