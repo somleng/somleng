@@ -20,8 +20,10 @@ class ImportCSV < ApplicationWorkflow
     import.file.open do |file|
       ApplicationRecord.transaction do
         CSV.foreach(file, headers: true).with_index do |row, index|
+          row_data = row.to_h.transform_keys { |key| key.to_s.strip.downcase }
+
           import.error_line = index + 1
-          create_phone_number(row) if import.resource_type == "PhoneNumber"
+          create_phone_number(row_data) if import.resource_type == "PhoneNumber"
         end
 
         import.complete!
