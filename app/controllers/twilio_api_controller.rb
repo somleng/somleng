@@ -14,6 +14,7 @@ class TwilioAPIController < APIController
     end
     return deny_access! unless current_account.enabled?
     return deny_access! unless current_account.id == params[:account_id]
+    return deny_access! unless current_account.carrier.good_standing?
   end
 
   def respond_with_resource(resource, options = {})

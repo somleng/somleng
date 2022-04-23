@@ -1,4 +1,10 @@
 class Carrier < ApplicationRecord
+  extend Enumerize
+
+  MAX_RESTRICTED_INTERACTIONS_PER_MONTH = 100
+
+  enumerize :status, in: %i[disabled restricted enabled], predicates: true
+
   has_many :accounts
   has_many :account_memberships, through: :accounts
   has_many :account_users, through: :accounts, source: :users, class_name: "User"
@@ -8,6 +14,7 @@ class Carrier < ApplicationRecord
   has_many :phone_numbers
   has_many :phone_calls
   has_many :events
+  has_many :interactions
   has_one :oauth_application, as: :owner
   has_one :webhook_endpoint, through: :oauth_application
 
@@ -23,5 +30,15 @@ class Carrier < ApplicationRecord
 
   def webhooks_enabled?
     webhook_endpoint&.enabled?
+  end
+
+  def good_standing?
+    return false unless enabled? || restricted?
+
+    !restricted? || remaining_interactions.positive?
+  end
+
+  def remaining_interactions
+    [(MAX_RESTRICTED_INTERACTIONS_PER_MONTH - interactions.this_month.count), 0].max
   end
 end

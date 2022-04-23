@@ -16,7 +16,7 @@ class ProcessCDRJob < ApplicationJob
     phone_call = PhoneCall.find_by!(external_id: phone_call_id)
 
     CallDataRecord.create!(
-      phone_call: phone_call,
+      phone_call:,
       call_leg: call_leg_B?(cdr) ? "B" : "A",
       hangup_cause: cdr_variables.fetch("hangup_cause"),
       direction: cdr_variables.fetch("direction"),

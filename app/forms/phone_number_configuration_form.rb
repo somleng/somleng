@@ -2,8 +2,6 @@ class PhoneNumberConfigurationForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  extend Enumerize
-
   URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/.freeze
 
   attribute :voice_url

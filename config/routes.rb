@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       resources :phone_call_events, only: :show
       resources :call_data_records, only: :show
       resources :recordings, only: :show
+      resources :statistics, only: :index
 
       root to: "phone_calls#index"
     end

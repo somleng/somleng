@@ -14,6 +14,7 @@ class PhoneCall < ApplicationRecord
   belongs_to :outbound_sip_trunk, optional: true
 
   has_one    :call_data_record, -> { where(call_leg: :A) }
+  has_one    :interaction, as: :interactable
   has_many   :phone_call_events
   has_many   :recordings
 

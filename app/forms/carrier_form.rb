@@ -40,6 +40,7 @@ class CarrierForm
       name: company,
       country_code: country,
       website:,
+      status: :restricted,
       owner: {
         name:,
         password:,

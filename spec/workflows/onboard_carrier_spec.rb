@@ -5,6 +5,7 @@ RSpec.describe OnboardCarrier do
     carrier = OnboardCarrier.call(
       name: "AT&T",
       country_code: "US",
+      status: :restricted,
       owner: {
         name: "John Doe",
         email: "johndoe@example.com"
@@ -16,6 +17,7 @@ RSpec.describe OnboardCarrier do
       country_code: "US",
       api_key: be_present,
       oauth_application: be_present,
+      status: "restricted",
       users: [
         have_attributes(
           name: "John Doe",

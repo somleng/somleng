@@ -53,6 +53,8 @@ FactoryBot.define do
   factory :carrier do
     name { "Somleng" }
     country_code { "KH" }
+    enabled
+    traits_for_enum :status, %w[enabled restricted disabled]
 
     trait :with_oauth_application do
       after(:build) do |carrier|
@@ -63,6 +65,18 @@ FactoryBot.define do
           scopes: :carrier_api
         )
       end
+    end
+  end
+
+  factory :interaction do
+    carrier
+    account { association :account, carrier: }
+    for_phone_call
+
+    trait :for_phone_call do
+      interactable { association :phone_call, account:, to: generate(:phone_number) }
+      beneficiary_identifier { interactable.to }
+      beneficiary_country_code { "KH" }
     end
   end
 
