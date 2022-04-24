@@ -90,7 +90,7 @@ class StatisticDashboard < Administrate::CustomDashboard
   end
 
   def beneficiaries_count
-    interactions.select(:beneficiary_identifier).distinct.count
+    interactions.select(:beneficiary_fingerprint).distinct.count
   end
 
   def beneficiary_countries_count

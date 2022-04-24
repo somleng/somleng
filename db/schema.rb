@@ -170,17 +170,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_23_032515) do
     t.uuid "interactable_id", null: false
     t.uuid "carrier_id", null: false
     t.uuid "account_id", null: false
-    t.string "beneficiary_identifier", null: false
+    t.string "beneficiary_fingerprint", null: false
     t.string "beneficiary_country_code"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_interactions_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_interactions_on_beneficiary_country_code"
-    t.index ["beneficiary_identifier"], name: "index_interactions_on_beneficiary_identifier"
+    t.index ["beneficiary_fingerprint"], name: "index_interactions_on_beneficiary_fingerprint"
     t.index ["carrier_id"], name: "index_interactions_on_carrier_id"
     t.index ["created_at"], name: "index_interactions_on_created_at"
-    t.index ["interactable_type", "interactable_id"], name: "index_interactions_on_interactable"
+    t.index ["interactable_type", "interactable_id"], name: "index_interactions_on_interactable", unique: true
     t.index ["sequence_number"], name: "index_interactions_on_sequence_number", unique: true, order: :desc
   end
 

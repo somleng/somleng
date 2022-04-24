@@ -3,7 +3,7 @@ class Interaction < ApplicationRecord
   belongs_to :carrier
   belongs_to :interactable, polymorphic: true
 
-  attribute :beneficiary_identifier, SHA256Type.new
+  attribute :beneficiary_fingerprint, SHA256Type.new
 
   def self.this_month
     where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)

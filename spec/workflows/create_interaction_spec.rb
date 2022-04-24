@@ -6,7 +6,8 @@ RSpec.describe CreateInteraction do
 
     interaction = CreateInteraction.call(
       interactable: phone_call,
-      beneficiary_identifier: phone_call.to
+      beneficiary_fingerprint: phone_call.to,
+      created_at: Time.new(2022, 1, 1)
     )
 
     expect(interaction).to have_attributes(
@@ -14,9 +15,10 @@ RSpec.describe CreateInteraction do
       interactable: phone_call,
       account: phone_call.account,
       carrier: phone_call.carrier,
-      beneficiary_country_code: "KH"
+      beneficiary_country_code: "KH",
+      created_at: Time.new(2022, 1, 1)
     )
-    expect(interaction.beneficiary_identifier.to_s).to eq(Digest::SHA256.hexdigest(phone_call.to))
+    expect(interaction.beneficiary_fingerprint.to_s).to eq(Digest::SHA256.hexdigest(phone_call.to))
   end
 
   it "guesses the beneficiary country from the carrier" do
@@ -25,7 +27,7 @@ RSpec.describe CreateInteraction do
 
     interaction = CreateInteraction.call(
       interactable: phone_call,
-      beneficiary_identifier: phone_call.to
+      beneficiary_fingerprint: phone_call.to
     )
 
     expect(interaction.beneficiary_country_code).to eq("CA")
@@ -37,9 +39,21 @@ RSpec.describe CreateInteraction do
 
     interaction = CreateInteraction.call(
       interactable: phone_call,
-      beneficiary_identifier: phone_call.to
+      beneficiary_fingerprint: phone_call.to
     )
 
     expect(interaction.beneficiary_country_code).to eq("US")
+  end
+
+  it "handles race conditions" do
+    phone_call = create(:phone_call, :outbound)
+    existing_interaction = create(:interaction, interactable: phone_call)
+
+    interaction = CreateInteraction.call(
+      interactable: existing_interaction.interactable,
+      beneficiary_fingerprint: phone_call.to
+    )
+
+    expect(interaction).to eq(existing_interaction)
   end
 end

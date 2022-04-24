@@ -25,7 +25,7 @@ RSpec.describe "Admin/Statistics" do
     phone_call = create(:phone_call, :outbound, phone_call_params)
     CreateInteraction.call(
       interactable: phone_call,
-      beneficiary_identifier: phone_call.to,
+      beneficiary_fingerprint: phone_call.to,
       **params
     )
   end

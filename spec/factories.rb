@@ -14,6 +14,7 @@ FactoryBot.define do
   end
 
   factory :call_data_record do
+    association :file, factory: :active_storage_attachment, filename: "freeswitch_cdr.json"
     call_leg { "A" }
 
     transient do
@@ -24,13 +25,6 @@ FactoryBot.define do
     after(:build) do |call_data_record, evaluator|
       call_data_record.phone_call ||= build(
         :phone_call, account: evaluator.account, external_id: evaluator.external_id
-      )
-    end
-
-    file do
-      ActiveStorage::Blob.create_and_upload!(
-        io: File.open("#{RSpec.configuration.file_fixture_path}/freeswitch_cdr.json"),
-        filename: external_id
       )
     end
 
@@ -75,7 +69,7 @@ FactoryBot.define do
 
     trait :for_phone_call do
       interactable { association :phone_call, account:, to: generate(:phone_number) }
-      beneficiary_identifier { interactable.to }
+      beneficiary_fingerprint { interactable.to }
       beneficiary_country_code { "KH" }
     end
   end
@@ -369,12 +363,7 @@ FactoryBot.define do
     trait :completed do
       status { :completed }
 
-      file do
-        ActiveStorage::Blob.create_and_upload!(
-          io: File.open(RSpec.configuration.file_fixture_path + "/recording.wav"),
-          filename: "recording.wav"
-        )
-      end
+      association :file, factory: :active_storage_attachment, filename: "recording.wav"
     end
   end
 end
