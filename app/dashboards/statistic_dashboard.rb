@@ -24,17 +24,17 @@ class StatisticDashboard < Administrate::CustomDashboard
     end
 
     def to_s
-      reference_time.strftime(TIME_FORMATS.fetch(time_period))
+      reference_time.call.strftime(TIME_FORMATS.fetch(time_period))
     end
 
     private
 
     def start_time
-      reference_time.public_send("beginning_of_#{time_period}")
+      reference_time.call.public_send("beginning_of_#{time_period}")
     end
 
     def end_time
-      reference_time.public_send("end_of_#{time_period}")
+      reference_time.call.public_send("end_of_#{time_period}")
     end
   end
 
@@ -52,28 +52,28 @@ class StatisticDashboard < Administrate::CustomDashboard
     end
   end
 
-  DEFAULT_FILTER = Filter.new(name: :today, reference_time: Time.current, time_period: :day)
+  DEFAULT_FILTER = Filter.new(name: :today, reference_time: -> { Time.current }, time_period: :day)
 
   FILTERS = [
     AllFilter.new(name: :all_time),
     DEFAULT_FILTER,
-    Filter.new(name: :yesterday, reference_time: 1.day.ago, time_period: :day),
-    Filter.new(name: :this_month, reference_time: Time.current, time_period: :month),
-    Filter.new(name: :last_month, reference_time: 1.month.ago, time_period: :month),
-    Filter.new(name: :this_year, reference_time: Time.current, time_period: :year),
-    Filter.new(name: :last_year, reference_time: 1.year.ago, time_period: :year)
+    Filter.new(name: :yesterday, reference_time: -> { 1.day.ago }, time_period: :day),
+    Filter.new(name: :this_month, reference_time: -> { Time.current }, time_period: :month),
+    Filter.new(name: :last_month, reference_time: -> { 1.month.ago }, time_period: :month),
+    Filter.new(name: :this_year, reference_time: -> { Time.current }, time_period: :year),
+    Filter.new(name: :last_year, reference_time: -> { 1.year.ago }, time_period: :year)
   ]
 
   (2..31).each do |i|
-    FILTERS << Filter.new(name: :"#{i}_days_ago", reference_time: i.days.ago, time_period: :day)
+    FILTERS << Filter.new(name: :"#{i}_days_ago", reference_time: -> { i.days.ago }, time_period: :day)
   end
 
   (2..12).each do |i|
-    FILTERS << Filter.new(name: :"#{i}_months_ago", reference_time: i.months.ago, time_period: :month)
+    FILTERS << Filter.new(name: :"#{i}_months_ago", reference_time: -> { i.months.ago }, time_period: :month)
   end
 
   (2..10).each do |i|
-    FILTERS << Filter.new(name: :"#{i}_years_ago", reference_time: i.years.ago, time_period: :year)
+    FILTERS << Filter.new(name: :"#{i}_years_ago", reference_time: -> { i.years.ago }, time_period: :year)
   end
 
   FILTERS.freeze
