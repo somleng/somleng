@@ -1,10 +1,10 @@
 class OnboardCarrier < ApplicationWorkflow
-  attr_reader :name, :country_code, :owner, :status, :website
+  attr_reader :name, :country_code, :owner, :restricted, :website
 
   def initialize(params)
     @name = params.fetch(:name)
     @country_code = params.fetch(:country_code)
-    @status = params.fetch(:status)
+    @restricted = params.fetch(:restricted)
     @website = params[:website]
     @owner = params.fetch(:owner)
   end
@@ -25,7 +25,7 @@ class OnboardCarrier < ApplicationWorkflow
       name:,
       country_code:,
       website:,
-      status:
+      restricted:
     )
   end
 

@@ -45,7 +45,7 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
       account: phone_call.account,
       carrier: phone_call.carrier,
       interactable: phone_call,
-      beneficiary_fingerprint: phone_call.outbound? ? phone_call.to : phone_call.from
+      beneficiary: phone_call.outbound? ? phone_call.to : phone_call.from
     )
   end
 end

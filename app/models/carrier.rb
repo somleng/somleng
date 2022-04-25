@@ -1,9 +1,5 @@
 class Carrier < ApplicationRecord
-  extend Enumerize
-
   MAX_RESTRICTED_INTERACTIONS_PER_MONTH = 100
-
-  enumerize :status, in: %i[disabled restricted enabled], predicates: true
 
   has_many :accounts
   has_many :account_memberships, through: :accounts
@@ -33,9 +29,9 @@ class Carrier < ApplicationRecord
   end
 
   def good_standing?
-    return false unless enabled? || restricted?
+    return true unless restricted?
 
-    !restricted? || remaining_interactions.positive?
+    remaining_interactions.positive?
   end
 
   def remaining_interactions

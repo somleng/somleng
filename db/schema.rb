@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_23_032515) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_25_055938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -107,7 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_23_032515) do
     t.datetime "updated_at", null: false
     t.string "country_code", null: false
     t.string "website"
-    t.string "status", null: false
+    t.boolean "restricted", default: false, null: false
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
   end
 
