@@ -50,7 +50,7 @@ RSpec.describe "Twilio API Authentication" do
   end
 
   it "denies access for carriers that are not in good standing" do
-    carrier = create(:carrier, :disabled)
+    carrier = create_restricted_carrier
     account = create(:account, carrier:)
 
     get(

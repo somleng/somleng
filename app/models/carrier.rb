@@ -1,6 +1,4 @@
 class Carrier < ApplicationRecord
-  MAX_RESTRICTED_INTERACTIONS_PER_MONTH = 100
-
   has_many :accounts
   has_many :account_memberships, through: :accounts
   has_many :account_users, through: :accounts, source: :users, class_name: "User"
@@ -26,15 +24,5 @@ class Carrier < ApplicationRecord
 
   def webhooks_enabled?
     webhook_endpoint&.enabled?
-  end
-
-  def good_standing?
-    return true unless restricted?
-
-    remaining_interactions.positive?
-  end
-
-  def remaining_interactions
-    [(MAX_RESTRICTED_INTERACTIONS_PER_MONTH - interactions.this_month.count), 0].max
   end
 end

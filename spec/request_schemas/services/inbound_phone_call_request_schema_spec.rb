@@ -74,6 +74,21 @@ module Services
       ).not_to have_valid_field(:to, error_message: "is disabled")
     end
 
+    it "validates carrier is in good standing" do
+      carrier = create_restricted_carrier
+      inbound_sip_trunk = create(:inbound_sip_trunk, carrier:)
+      phone_number = create(:phone_number, carrier:)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            to: phone_number.number,
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
+      ).not_to have_valid_schema(error_message: "carrier is not in good standing")
+    end
+
     it "normalizes the output" do
       carrier = create(:carrier)
       inbound_sip_trunk = create(:inbound_sip_trunk, carrier:, source_ip: "175.100.7.240")

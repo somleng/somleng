@@ -13,14 +13,16 @@ class SHA256Type < ActiveRecord::Type::String
   end
 
   def cast(value)
-    SHA256Digest.new(value:) if value.present?
+    return if value.blank?
+
+    value.is_a?(SHA256Digest) ? value : SHA256Digest.new(value:)
   end
 
   def serialize(value)
-    value.is_a?(SHA256Digest) ? value.digest : SHA256Digest.new(value:).digest
+    cast(value)&.digest
   end
 
   def deserialize(value)
-    SHA256Digest.new(digest: value)
+    SHA256Digest.new(digest: value) if value.present?
   end
 end

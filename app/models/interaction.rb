@@ -5,10 +5,6 @@ class Interaction < ApplicationRecord
 
   attribute :beneficiary_fingerprint, SHA256Type.new
 
-  def self.this_month
-    where(created_at: Time.current.beginning_of_month..Time.current.end_of_month)
-  end
-
   def beneficiary_country
     ISO3166::Country.new(beneficiary_country_code)
   end

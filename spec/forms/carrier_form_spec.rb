@@ -42,7 +42,7 @@ RSpec.describe CarrierForm do
       expect(form.user.carrier).to have_attributes(
         name: "AT&T",
         country_code: "KH",
-        status: "restricted"
+        restricted: true
       )
       expect(ActionMailer::MailDeliveryJob).to have_been_enqueued
     end

@@ -7,6 +7,8 @@ class PhoneCall < ApplicationRecord
   enumerize :recording_status_callback_method, in: %w[POST GET]
   enumerize :direction, in: %i[inbound outbound], predicates: true, scope: :shallow
 
+  attribute :beneficiary_fingerprint, SHA256Type.new
+
   belongs_to :carrier
   belongs_to :account
   belongs_to :phone_number, optional: true
@@ -65,7 +67,8 @@ class PhoneCall < ApplicationRecord
   end
 
   validates :external_id, presence: true, if: :inbound?
-  before_save :normalize_phone_numbers
+  before_create :normalize_phone_numbers
+  before_create :set_beneficiary_data
 
   def fire_event!(event)
     aasm.fire!(event)
@@ -76,5 +79,17 @@ class PhoneCall < ApplicationRecord
   def normalize_phone_numbers
     self.from = Phony.normalize(from)
     self.to = Phony.normalize(to)
+  end
+
+  def set_beneficiary_data
+    self.beneficiary_fingerprint = beneficiary
+    self.beneficiary_country_code = ResolvePhoneNumberCountry.call(
+      beneficiary,
+      fallback_country: carrier.country
+    ).alpha2
+  end
+
+  def beneficiary
+    outbound? ? to : from
   end
 end
