@@ -28,7 +28,7 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
   def handle_complete_event
     if answer_epoch.to_i.positive?
       phone_call.complete!
-      create_interaction
+      create_interaction if phone_call.interaction.blank?
     elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(sip_term_status)
       phone_call.mark_as_not_answered!
     elsif BUSY_SIP_TERM_STATUSES.include?(sip_term_status)

@@ -51,7 +51,7 @@ RSpec.describe UpdatePhoneCallStatus do
     )
 
     expect(phone_call.status).to eq("completed")
-    expect(phone_call.interaction).to be_present
+    expect(phone_call.reload.interaction).to be_present
   end
 
   it "handles completed events with not answered" do
