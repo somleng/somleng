@@ -171,7 +171,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_25_071805) do
     t.uuid "carrier_id", null: false
     t.uuid "account_id", null: false
     t.string "beneficiary_fingerprint", null: false
-    t.string "beneficiary_country_code"
+    t.string "beneficiary_country_code", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

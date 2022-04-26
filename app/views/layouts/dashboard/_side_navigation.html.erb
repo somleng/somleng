@@ -55,12 +55,10 @@
 
   <% if current_organization.carrier? && current_carrier.restricted? %>
     <div class="c-sidebar-footer">
-      <div class="text-center"><strong>Account (Trial)</strong></div>
+      <div class="text-center mb-1"><strong>Account (Trial)</strong></div>
 
       <% interactions_count = CarrierStanding.new(current_carrier).interactions_this_month.count %>
       <% max_interations_count = CarrierStanding::MAX_RESTRICTED_INTERACTIONS_PER_MONTH %>
-      <% interactions_count = 0 %>
-
 
       <div>
         <div class="progress">

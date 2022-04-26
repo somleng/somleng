@@ -5,7 +5,7 @@ class CreateInteractions < ActiveRecord::Migration[7.0]
       t.references :carrier, type: :uuid, null: false, foreign_key: true
       t.references :account, type: :uuid, null: false, foreign_key: true
       t.string :beneficiary_fingerprint, null: false
-      t.string :beneficiary_country_code
+      t.string :beneficiary_country_code, null: false
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
       t.timestamps
