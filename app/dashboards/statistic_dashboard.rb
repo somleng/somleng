@@ -40,7 +40,7 @@ class StatisticDashboard < Administrate::CustomDashboard
 
   class AllFilter < Filter
     def initialize(name:)
-      super(name: name, reference_time: nil, time_period: nil)
+      super(name:, reference_time: nil, time_period: nil)
     end
 
     def apply(scope)
@@ -65,15 +65,21 @@ class StatisticDashboard < Administrate::CustomDashboard
   ]
 
   (2..31).each do |i|
-    FILTERS << Filter.new(name: :"#{i}_days_ago", reference_time: -> { i.days.ago }, time_period: :day)
+    FILTERS << Filter.new(
+      name: :"#{i}_days_ago", reference_time: -> { i.days.ago }, time_period: :day
+    )
   end
 
   (2..12).each do |i|
-    FILTERS << Filter.new(name: :"#{i}_months_ago", reference_time: -> { i.months.ago }, time_period: :month)
+    FILTERS << Filter.new(
+      name: :"#{i}_months_ago", reference_time: -> { i.months.ago }, time_period: :month
+    )
   end
 
   (2..10).each do |i|
-    FILTERS << Filter.new(name: :"#{i}_years_ago", reference_time: -> { i.years.ago }, time_period: :year)
+    FILTERS << Filter.new(
+      name: :"#{i}_years_ago", reference_time: -> { i.years.ago }, time_period: :year
+    )
   end
 
   FILTERS.freeze

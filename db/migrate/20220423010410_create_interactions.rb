@@ -1,7 +1,12 @@
 class CreateInteractions < ActiveRecord::Migration[7.0]
   def change
     create_table :interactions, id: :uuid do |t|
-      t.references :interactable, polymorphic: true, type: :uuid, null: false, index: { unique: true }
+      t.references :interactable,
+                   polymorphic: true,
+                   type: :uuid,
+                   null: false,
+                   index: { unique: true }
+
       t.references :carrier, type: :uuid, null: false, foreign_key: true
       t.references :account, type: :uuid, null: false, foreign_key: true
       t.string :beneficiary_fingerprint, null: false

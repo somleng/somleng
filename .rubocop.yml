@@ -8,6 +8,8 @@ Style/StringLiterals:
 
 Layout/LineLength:
   Max: 100
+  Exclude:
+    - "db/schema.rb"
 
 Style/Documentation:
   Enabled: false
@@ -24,3 +26,7 @@ RSpec/MultipleExpectations:
 Metrics/BlockLength:
   Exclude:
     - "spec/**/*_spec.rb"
+
+Metrics/MethodLength:
+  Exclude:
+    - "db/migrate/*.rb"
