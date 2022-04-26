@@ -30,6 +30,13 @@ module Services
       end
     end
 
+    rule do |context:|
+      next if context[:phone_number].blank?
+      next if CarrierStanding.new(context[:phone_number].carrier).good_standing?
+
+      base.failure("carrier is not in good standing")
+    end
+
     def output
       params = super
 

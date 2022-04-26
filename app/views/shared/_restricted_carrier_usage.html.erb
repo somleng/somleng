@@ -1,0 +1,16 @@
+<div class="text-center mb-1"><strong>Account (Trial)</strong></div>
+
+<% interactions_count = CarrierStanding.new(current_carrier).interactions_this_month.count %>
+<% max_interations_count = CarrierStanding::MAX_RESTRICTED_INTERACTIONS_PER_MONTH %>
+
+<div>
+  <div class="progress">
+    <div class="progress-bar bg-info" role="progressbar" style="width: <%= (interactions_count.to_f / max_interations_count * 100).to_i %>%"></div>
+  </div>
+  <div class="text-center">
+    <%= interactions_count %> of <%= max_interations_count %> interactions used
+    <a tabindex="0" data-toggle="popover" data-trigger="focus" data-content="An interaction is a completed phone call or SMS.">
+      <i class="fas fa-info-circle"></i>
+    </a>
+  </div>
+</div>

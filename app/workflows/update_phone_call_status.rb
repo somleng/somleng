@@ -26,11 +26,30 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
   private
 
   def handle_complete_event
-    return phone_call.complete!             if answer_epoch.to_i.positive?
-    return phone_call.mark_as_not_answered! if NOT_ANSWERED_SIP_TERM_STATUSES.include?(sip_term_status)
-    return phone_call.mark_as_busy!         if BUSY_SIP_TERM_STATUSES.include?(sip_term_status)
-    return phone_call.cancel!               if NOT_ANSWERED_SIP_TERM_STATUSES.include?(sip_invite_failure_status)
+    if answer_epoch.to_i.positive?
+      unless phone_call.completed?
+        phone_call.complete!
+        create_interaction
+      end
+    elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(sip_term_status)
+      phone_call.mark_as_not_answered!
+    elsif BUSY_SIP_TERM_STATUSES.include?(sip_term_status)
+      phone_call.mark_as_busy!
+    elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(sip_invite_failure_status)
+      phone_call.cancel!
+    else
+      phone_call.fail!
+    end
+  end
 
-    phone_call.fail!
+  def create_interaction
+    Interaction.create_or_find_by!(interactable: phone_call) do |interaction|
+      interaction.attributes = {
+        carrier: phone_call.carrier,
+        account: phone_call.account,
+        beneficiary_country_code: phone_call.beneficiary_country_code,
+        beneficiary_fingerprint: phone_call.beneficiary_fingerprint
+      }
+    end
   end
 end

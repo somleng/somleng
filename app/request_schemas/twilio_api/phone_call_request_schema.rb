@@ -23,7 +23,7 @@ module TwilioAPI
     rule(:To) do |context:|
       next if schema_error?(:To)
 
-      destination_rules = DestinationRules.new(account: account, destination: value)
+      destination_rules = DestinationRules.new(account:, destination: value)
       unless destination_rules.calling_code_allowed?
         next base.failure(text: "Call blocked by block list", code: "13225")
       end
@@ -38,7 +38,11 @@ module TwilioAPI
     end
 
     rule(:Twiml) do
-      Nokogiri::XML(value) { |c| c.options = Nokogiri::XML::ParseOptions::STRICT } if key? && value.present?
+      if key? && value.present?
+        Nokogiri::XML(value) do |c|
+          c.options = Nokogiri::XML::ParseOptions::STRICT
+        end
+      end
     rescue Nokogiri::XML::SyntaxError
       key.failure("is invalid")
     end
@@ -54,7 +58,7 @@ module TwilioAPI
       caller_id = "+#{caller_id}" if input_params.fetch(:From).starts_with?("+")
 
       {
-        account: account,
+        account:,
         carrier: account.carrier,
         outbound_sip_trunk: context.fetch(:outbound_sip_trunk),
         dial_string: DialString.new(
@@ -63,7 +67,7 @@ module TwilioAPI
         ).to_s,
         to: params.fetch(:To),
         from: params.fetch(:From),
-        caller_id: caller_id,
+        caller_id:,
         voice_url: params[:Url],
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
         status_callback_url: params[:StatusCallback],

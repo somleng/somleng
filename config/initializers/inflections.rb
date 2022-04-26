@@ -23,4 +23,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "IP"
   inflect.acronym "ID"
   inflect.acronym "OAuth"
+  inflect.acronym "SHA256"
 end

@@ -39,10 +39,22 @@ RSpec.describe "Twilio API Authentication" do
 
   it "denies access to a disabled account" do
     account = create(:account, :disabled)
-    phone_call = create(:phone_call, account: account)
+    phone_call = create(:phone_call, account:)
 
     get(
       twilio_api_account_phone_call_path(account, phone_call),
+      headers: build_api_authorization_headers(account)
+    )
+
+    expect(response.code).to eq("401")
+  end
+
+  it "denies access for carriers that are not in good standing" do
+    carrier = create_restricted_carrier
+    account = create(:account, carrier:)
+
+    get(
+      twilio_api_account_phone_calls_path(account),
       headers: build_api_authorization_headers(account)
     )
 

@@ -41,7 +41,7 @@ RSpec.describe UpdatePhoneCallStatus do
   end
 
   it "handles completed events" do
-    phone_call = create(:phone_call, :answered)
+    phone_call = create(:phone_call, :outbound, :answered, to: "855715400235")
 
     UpdatePhoneCallStatus.call(
       phone_call,
@@ -51,6 +51,7 @@ RSpec.describe UpdatePhoneCallStatus do
     )
 
     expect(phone_call.status).to eq("completed")
+    expect(phone_call.reload.interaction).to be_present
   end
 
   it "handles completed events with not answered" do

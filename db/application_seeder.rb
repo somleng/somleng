@@ -6,6 +6,7 @@ class ApplicationSeeder
     carrier ||= OnboardCarrier.call(
       name: "My Carrier",
       country_code: "KH",
+      restricted: false,
       owner: {
         email: "johndoe@carrier.com",
         name: "John Doe",

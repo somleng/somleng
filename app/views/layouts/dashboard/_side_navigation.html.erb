@@ -52,4 +52,10 @@
       <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fas fa-file-download") %>
     <% end %>
   </ul>
+
+  <% if current_organization.carrier? && current_carrier.restricted? %>
+    <div class="c-sidebar-footer">
+      <%= render "shared/restricted_carrier_usage" %>
+    </div>
+  <% end %>
 </div>

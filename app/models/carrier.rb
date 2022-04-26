@@ -8,6 +8,7 @@ class Carrier < ApplicationRecord
   has_many :phone_numbers
   has_many :phone_calls
   has_many :events
+  has_many :interactions
   has_one :oauth_application, as: :owner
   has_one :webhook_endpoint, through: :oauth_application
 

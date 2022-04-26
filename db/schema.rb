@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_22_053524) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_25_071805) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -107,6 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_22_053524) do
     t.datetime "updated_at", null: false
     t.string "country_code", null: false
     t.string "website"
+    t.boolean "restricted", default: false, null: false
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
   end
 
@@ -162,6 +163,25 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_22_053524) do
     t.index ["carrier_id"], name: "index_inbound_sip_trunks_on_carrier_id"
     t.index ["sequence_number"], name: "index_inbound_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["source_ip"], name: "index_inbound_sip_trunks_on_source_ip", unique: true
+  end
+
+  create_table "interactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "interactable_type", null: false
+    t.uuid "interactable_id", null: false
+    t.uuid "carrier_id", null: false
+    t.uuid "account_id", null: false
+    t.string "beneficiary_fingerprint", null: false
+    t.string "beneficiary_country_code", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_interactions_on_account_id"
+    t.index ["beneficiary_country_code"], name: "index_interactions_on_beneficiary_country_code"
+    t.index ["beneficiary_fingerprint"], name: "index_interactions_on_beneficiary_fingerprint"
+    t.index ["carrier_id"], name: "index_interactions_on_carrier_id"
+    t.index ["created_at"], name: "index_interactions_on_created_at"
+    t.index ["interactable_type", "interactable_id"], name: "index_interactions_on_interactable", unique: true
+    t.index ["sequence_number"], name: "index_interactions_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -263,7 +283,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_22_053524) do
     t.decimal "price", precision: 10, scale: 4
     t.string "price_unit"
     t.string "caller_id"
+    t.string "beneficiary_country_code"
+    t.string "beneficiary_fingerprint"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
+    t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
+    t.index ["beneficiary_fingerprint"], name: "index_phone_calls_on_beneficiary_fingerprint"
     t.index ["carrier_id"], name: "index_phone_calls_on_carrier_id"
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
@@ -404,6 +428,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_22_053524) do
   add_foreign_key "imports", "carriers", on_delete: :cascade
   add_foreign_key "imports", "users", on_delete: :cascade
   add_foreign_key "inbound_sip_trunks", "carriers"
+  add_foreign_key "interactions", "accounts"
+  add_foreign_key "interactions", "carriers"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "carriers", column: "owner_id"

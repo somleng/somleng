@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   extend Enumerize
-  EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\z/.freeze
+  EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\z/
 
   enumerize :carrier_role, in: %i[owner admin member], predicates: true
 
