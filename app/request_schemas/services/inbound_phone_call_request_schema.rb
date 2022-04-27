@@ -3,7 +3,7 @@ module Services
     params do
       required(:to).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
       required(:source_ip).filled(:str?)
-      required(:from).filled(:str?)
+      required(:from).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
       required(:external_id).filled(:str?)
       optional(:variables).maybe(:hash)
     end
@@ -20,13 +20,24 @@ module Services
       context[:phone_number] = phone_numbers.find_by(number: value)
 
       if context[:phone_number].blank?
-        key("to").failure("doesn't exist")
+        key.failure("doesn't exist")
       elsif !context[:phone_number].assigned?
-        key("to").failure("is unassigned")
+        key.failure("is unassigned")
       elsif !context[:phone_number].configured?
-        key("to").failure("is unconfigured")
+        key.failure("is unconfigured")
       elsif !context[:phone_number].enabled?
-        key("to").failure("is disabled")
+        key.failure("is disabled")
+      end
+    end
+
+    rule(:from) do |context:|
+      next if context[:inbound_sip_trunk].blank?
+
+      context[:from] = normalize_from(value, context[:inbound_sip_trunk].trunk_prefix_replacement)
+      unless Phony.plausible?(context[:from])
+        key.failure(
+          "is invalid. It must be an E.164 formatted phone number and must include the country code"
+        )
       end
     end
 
@@ -56,10 +67,7 @@ module Services
       result[:status_callback_url] = phone_number.configuration.status_callback_url
       result[:status_callback_method] = phone_number.configuration.status_callback_method
       result[:twiml] = route_to_sip_domain(phone_number) if phone_number.configuration.sip_domain.present?
-      result[:from] = normalize_from(
-        params.fetch(:from),
-        result[:inbound_sip_trunk].trunk_prefix_replacement
-      )
+      result[:from] = context[:from]
 
       result
     end
