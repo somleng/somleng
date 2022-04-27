@@ -2,15 +2,17 @@ namespace :db do
   namespace :data_migrate do
     task create_interactions: :environment do
       PhoneCall.completed.where(beneficiary_fingerprint: nil).find_each do |phone_call|
-        phone_call.transaction do
-          beneficiary = phone_call.outbound? ? phone_call.to : phone_call.from
+        beneficiary = phone_call.outbound? ? phone_call.to : phone_call.from
+        beneficiary_country = ResolvePhoneNumberCountry.call(
+          beneficiary,
+          fallback_country: phone_call.carrier.country
+        )
+        next if beneficiary_country.blank?
 
+        phone_call.transaction do
           phone_call.update_columns(
             beneficiary_fingerprint: beneficiary,
-            beneficiary_country_code: ResolvePhoneNumberCountry.call(
-              beneficiary,
-              fallback_country: phone_call.carrier.country
-            ).alpha2
+            beneficiary_country_code: beneficiary_country.alpha2
           )
 
           Interaction.create!(
