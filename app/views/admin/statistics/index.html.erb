@@ -1,3 +1,7 @@
+<% content_for(:title) do %>
+  Statistics
+<% end %>
+
 <header class="main-content__header" role="banner">
   <h1 class="main-content__page-title" id="page-title">
      Statistics for <%= @dashboard.filter %>
@@ -16,28 +20,28 @@
   <p>
     <dl>
       <dt class="attribute-label">Interactions:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.interactions_count %></dd>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.interactions_count) %></dd>
 
       <dt class="attribute-label">Beneficiaries:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.beneficiaries_count %></dd>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.beneficiaries_count) %></dd>
 
       <dt class="attribute-label">Beneficiary Countries:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.beneficiary_countries_count %></dd>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.beneficiary_countries_count) %></dd>
 
       <dt class="attribute-label">Beneficiary Countries:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.beneficiary_country_names %></dd>
+      <dd class="attribute-data attribute-data--string"><%= @dashboard.beneficiary_country_names.join(", ") %></dd>
 
       <dt class="attribute-label">Carriers:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.carriers_count %></dd>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.carriers_count) %></dd>
 
       <dt class="attribute-label">Carrier Countries:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.carrier_countries_count %></dd>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.carrier_countries_count) %></dd>
 
       <dt class="attribute-label">Carrier Countries:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.carrier_country_names %></dd>
+      <dd class="attribute-data attribute-data--string"><%= @dashboard.carrier_country_names.join(", ") %></dd>
 
       <dt class="attribute-label">Accounts:</dt>
-      <dd class="attribute-data attribute-data--string"><%= @dashboard.accounts_count %></dd>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.accounts_count) %></dd>
     </dl>
   </p>
 </div>
