@@ -18,7 +18,11 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-6">
-          <%= image_tag "logo.png", class: "img-fluid mx-auto px-5 my-3 d-block" %>
+          <% if content_for?(:logo) %>
+            <%= yield(:logo) %>
+          <% else %>
+            <%= image_tag carrier_logo(nil), class: "img-fluid mx-auto px-5 my-3 d-block w-50" %>
+          <% end %>
 
           <div class="card-group">
             <div class="card p-4">
