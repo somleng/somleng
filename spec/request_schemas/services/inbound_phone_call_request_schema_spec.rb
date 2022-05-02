@@ -89,9 +89,44 @@ module Services
       ).not_to have_valid_schema(error_message: "carrier is not in good standing")
     end
 
+    it "validates from" do
+      carrier = create(:carrier)
+      inbound_sip_trunk = create(:inbound_sip_trunk, carrier:)
+      inbound_sip_trunk_with_trunk_prefix_replacement = create(
+        :inbound_sip_trunk, carrier:, trunk_prefix_replacement: "52"
+      )
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            from: "abc",
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
+      ).not_to have_valid_field(:from)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            from: "8188888888",
+            source_ip: inbound_sip_trunk.source_ip.to_s
+          }
+        )
+      ).not_to have_valid_field(:from)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            from: "8188888888",
+            source_ip: inbound_sip_trunk_with_trunk_prefix_replacement.source_ip.to_s
+          }
+        )
+      ).to have_valid_field(:from)
+    end
+
     it "normalizes the output" do
       carrier = create(:carrier)
-      inbound_sip_trunk = create(:inbound_sip_trunk, carrier:, source_ip: "175.100.7.240")
+      inbound_sip_trunk = create(:inbound_sip_trunk, carrier:)
       account = create(:account)
       phone_number = create(:phone_number, account:, carrier:, number: "2442")
       create(
@@ -105,7 +140,7 @@ module Services
 
       schema = validate_request_schema(
         input_params: {
-          source_ip: "175.100.7.240",
+          source_ip: inbound_sip_trunk.source_ip.to_s,
           to: "2442",
           from: "855716100230",
           external_id: "external-id",
