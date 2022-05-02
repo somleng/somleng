@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_04_25_071805) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_26_084955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -78,10 +78,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_25_071805) do
 
   create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "phone_call_id", null: false
-    t.string "file_id"
-    t.string "file_filename"
-    t.integer "file_size"
-    t.string "file_content_type"
     t.integer "bill_sec", null: false
     t.integer "duration_sec", null: false
     t.string "direction", null: false
@@ -283,8 +279,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_04_25_071805) do
     t.decimal "price", precision: 10, scale: 4
     t.string "price_unit"
     t.string "caller_id"
-    t.string "beneficiary_country_code"
-    t.string "beneficiary_fingerprint"
+    t.string "beneficiary_country_code", null: false
+    t.string "beneficiary_fingerprint", null: false
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
     t.index ["beneficiary_fingerprint"], name: "index_phone_calls_on_beneficiary_fingerprint"
