@@ -1,3 +1,7 @@
+<% content_for(:logo) do %>
+  <%= image_tag "logo.png", class: "img-fluid mx-auto px-5 my-3 d-block w-50" %>
+<% end %>
+
 <h1>Sign up</h1>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>

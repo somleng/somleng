@@ -3,7 +3,7 @@
     <span class="c-header-toggler-icon"></span>
   </button>
   <%= link_to dashboard_root_path, class: "c-header-brand d-lg-none c-header-brand-sm-up-center" do %>
-    <%= image_tag("logo.png", class: "c-sidebar-brand-full", height: 46) %>
+    <%= image_tag(carrier_logo(current_organization.carrier), class: "c-sidebar-brand-full", height: 46) %>
   <% end %>
   <button class="c-header-toggler c-class-toggler mfs-3 d-md-down-none" type="button" data-target="#sidebar" data-class="c-sidebar-lg-show" responsive="true">
     <span class="c-header-toggler-icon"></span>

@@ -60,6 +60,10 @@ module UserAuthorization
     def account?
       __getobj__.is_a?(Account)
     end
+
+    def carrier
+      account? ? __getobj__.carrier : __getobj__
+    end
   end
 
   class BlankOrganization
@@ -74,6 +78,8 @@ module UserAuthorization
     def present?
       false
     end
+
+    def carrier; end
   end
 
   class BlankAccountMembership
