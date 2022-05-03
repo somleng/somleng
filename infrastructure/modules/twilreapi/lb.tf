@@ -35,3 +35,25 @@ resource "aws_lb_listener_rule" "this" {
     ignore_changes = [action]
   }
 }
+
+resource "aws_lb_listener_rule" "custom_domain" {
+  priority = 16
+
+  listener_arn = var.listener_arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.this[0].id
+  }
+
+  condition {
+    http_header {
+      http_header_name = "X-Somleng-Host"
+      values           = [aws_route53_record.api.fqdn, aws_route53_record.dashboard.fqdn]
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [action]
+  }
+}
