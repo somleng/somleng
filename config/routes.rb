@@ -70,7 +70,7 @@ Rails.application.routes.draw do
       resources :recordings, only: :show
       resources :statistics, only: :index
 
-      root to: "phone_calls#index"
+      root to: "statistics#index"
     end
   end
 
