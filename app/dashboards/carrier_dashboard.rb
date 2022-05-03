@@ -11,8 +11,8 @@ class CarrierDashboard < Administrate::BaseDashboard
     logo: Field::ActiveStorage.with_options(show_preview_size: [150, 150], export: false),
     id: Field::String,
     name: Field::String,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime,
     country_code: Field::String
   }.freeze
 

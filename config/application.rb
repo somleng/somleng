@@ -38,3 +38,4 @@ module Somleng
 end
 
 require "call_service"
+require "administrate_extensions"

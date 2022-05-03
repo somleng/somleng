@@ -7,8 +7,8 @@ class InboundSIPTrunkDashboard < Administrate::BaseDashboard
     name: Field::String,
     trunk_prefix_replacement: Field::String,
     source_ip: Field::String.with_options(searchable: false),
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[

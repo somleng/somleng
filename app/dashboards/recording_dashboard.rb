@@ -9,8 +9,8 @@ class RecordingDashboard < Administrate::BaseDashboard
     status_callback_url: Field::String,
     status_callback_method: Field::String,
     file: Field::ActiveStorage.with_options(export: false),
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[

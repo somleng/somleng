@@ -10,8 +10,8 @@ class OutboundSIPTrunkDashboard < Administrate::BaseDashboard
     dial_string_prefix: Field::String,
     trunk_prefix: Field::Boolean,
     plus_prefix: Field::Boolean,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[

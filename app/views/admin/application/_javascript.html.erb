@@ -1,0 +1,31 @@
+<%#
+# Javascript Partial
+This partial imports the necessary javascript on each page.
+By default, it includes the application JS,
+but each page can define additional JS sources
+by providing a `content_for(:javascript)` block.
+%>
+
+<% Administrate::Engine.javascripts.each do |js_path| %>
+  <%= javascript_include_tag js_path %>
+<% end %>
+
+<%= yield :javascript %>
+
+<% if Rails.env.test? %>
+  <%= javascript_tag do %>
+    $.fx.off = true;
+    $.ajaxSetup({ async: false });
+  <% end %>
+<% end %>
+
+<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script type="application/javascript">
+  jQuery(function() {
+    $('time[data-behavior~=local-time]').each(function() {
+      $(this).text(
+        moment($(this).text()).format("lll (Z)")
+      )
+    })
+  })
+</script>
