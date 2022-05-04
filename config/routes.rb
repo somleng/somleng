@@ -3,15 +3,25 @@ Rails.application.routes.draw do
     devise_for :users, skip: %i[registrations invitations]
 
     devise_scope :user do
+      constraints(NoCustomDomainConstraint.new) do
+        resource(
+          :registration,
+          only: %i[new create],
+          controller: "users/registrations",
+          as: :user_registration,
+          path: "users",
+          path_names: {
+            new: "sign_up"
+          }
+        )
+      end
+
       resource(
         :registration,
-        only: %i[edit update new create],
+        only: %i[edit update],
         controller: "users/registrations",
         as: :user_registration,
-        path: "users",
-        path_names: {
-          new: "sign_up"
-        }
+        path: "users"
       )
 
       resource(
@@ -50,7 +60,7 @@ Rails.application.routes.draw do
       root to: "home#show"
     end
 
-    namespace :admin do
+    namespace :admin, constraints: NoCustomDomainConstraint.new do
       concern :exportable do
         get :export, on: :collection
       end

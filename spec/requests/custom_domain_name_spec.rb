@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Custom Domain Name", type: :request do
+RSpec.describe "Custom Domain Name" do
   it "makes request to api.somleng.org" do
     account = create(:account)
 
@@ -25,6 +25,30 @@ RSpec.describe "Custom Domain Name", type: :request do
     )
 
     expect(response.code).to eq("200")
+  end
+
+  it "blocks requests to admin panel for custom domains" do
+    expect {
+      get(
+        admin_root_path,
+        headers: {
+          "HOST" => "dashboard.somleng.org",
+          "X-Forwarded-Host" => "xyz.example.com"
+        }
+      )
+    }.to raise_error(ActionController::RoutingError)
+  end
+
+  it "blocks requests to sign up for custom domains" do
+    expect {
+      get(
+        new_user_registration_path,
+        headers: {
+          "HOST" => "dashboard.somleng.org",
+          "X-Forwarded-Host" => "xyz.example.com"
+        }
+      )
+    }.to raise_error(ActionController::RoutingError)
   end
 
   it "displays carrier's logo under their custom domain name" do
