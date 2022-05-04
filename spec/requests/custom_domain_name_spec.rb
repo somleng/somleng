@@ -31,11 +31,15 @@ RSpec.describe "Custom Domain Name", type: :request do
     carrier = create(:carrier, :with_logo)
     create(:custom_domain_name, :dashboard, :verified, carrier:, host: "xyz.example.com")
 
-    get new_user_session_path, headers: {
-      "HOST" => "dashboard.somleng.org",
-      "X-Forwarded-Host" => "xyz.example.com"
-    }
+    get(
+      new_user_session_path,
+      headers: {
+        "HOST" => "dashboard.somleng.org",
+        "X-Forwarded-Host" => "xyz.example.com"
+      }
+    )
 
-    binding.pry
+    page = Capybara.string(response.body)
+    expect(page).to have_css("img[alt=#{carrier.name}]")
   end
 end
