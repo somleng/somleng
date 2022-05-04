@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Proxy subdomain constraint", type: :request do
+RSpec.describe "Custom Domain Name", type: :request do
   it "makes request to api.somleng.org" do
     account = create(:account)
 
@@ -25,5 +25,17 @@ RSpec.describe "Proxy subdomain constraint", type: :request do
     )
 
     expect(response.code).to eq("200")
+  end
+
+  it "displays carrier's logo under their custom domain name" do
+    carrier = create(:carrier, :with_logo)
+    create(:custom_domain_name, :dashboard, :verified, carrier:, host: "xyz.example.com")
+
+    get new_user_session_path, headers: {
+      "HOST" => "dashboard.somleng.org",
+      "X-Forwarded-Host" => "xyz.example.com"
+    }
+
+    binding.pry
   end
 end

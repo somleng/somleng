@@ -51,6 +51,9 @@ FactoryBot.define do
       restricted { true }
     end
 
+    trait :with_logo do
+      association :logo, factory: :active_storage_attachment, filename: "carrier_logo.jpeg"
+    end
 
     trait :with_oauth_application do
       after(:build) do |carrier|
@@ -366,6 +369,17 @@ FactoryBot.define do
       status { :completed }
 
       association :file, factory: :active_storage_attachment, filename: "recording.wav"
+    end
+  end
+
+  factory :custom_domain_name do
+    carrier
+    dashboard
+    verification_token { SecureRandom.alphanumeric }
+
+    traits_for_enum :type, CustomDomainName.type.values
+    trait :verified do
+      verified { true }
     end
   end
 end
