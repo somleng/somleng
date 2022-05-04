@@ -11,8 +11,8 @@ class Carrier < ApplicationRecord
   has_many :interactions
   has_one :oauth_application, as: :owner
   has_one :webhook_endpoint, through: :oauth_application
-  has_one :api_custom_domain_name, -> { where(type: :api) }, class_name: "CustomDomainName"
-  has_one :dashboard_custom_domain_name, -> { where(type: :dashboard) }, class_name: "CustomDomainName"
+  has_one :custom_dashboard_domain, -> { where(type: :dashboard) }, class_name: "CustomDomain"
+  has_one :custom_api_domain, -> { where(type: :api) }, class_name: "CustomDomain"
 
   has_one_attached :logo
 

@@ -13,10 +13,7 @@ module ApplicationHelper
     tag.time(time.utc.iso8601, data: { behavior: "local-time" })
   end
 
-  def find_carrier_from_domain_name
-    CustomDomainName.where(
-      host: request.host,
-      verified: true
-    ).first&.carrier
+  def find_carrier_from_domain
+    CustomDomain.find_by(host: request.host, verified: true)&.carrier
   end
 end

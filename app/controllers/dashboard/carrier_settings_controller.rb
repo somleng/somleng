@@ -19,7 +19,10 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:carrier_settings).permit(:name, :country, :logo, :webhook_url, :enable_webhooks)
+      params.require(:carrier_settings).permit(
+        :name, :country, :logo, :webhook_url, :enable_webhooks,
+        :custom_dashboard_host, :custom_api_host
+      )
     end
 
     def policy_class

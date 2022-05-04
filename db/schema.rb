@@ -107,7 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_065256) do
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "custom_domain_names", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "custom_domains", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "host", null: false
     t.boolean "verified", default: false, null: false
@@ -116,8 +116,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_065256) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["carrier_id"], name: "index_custom_domain_names_on_carrier_id", unique: true
-    t.index ["sequence_number"], name: "index_custom_domain_names_on_sequence_number", unique: true, order: :desc
+    t.index ["carrier_id", "type"], name: "index_custom_domains_on_carrier_id_and_type", unique: true
+    t.index ["carrier_id"], name: "index_custom_domains_on_carrier_id"
+    t.index ["sequence_number"], name: "index_custom_domains_on_sequence_number", unique: true, order: :desc
+    t.index ["verification_token"], name: "index_custom_domains_on_verification_token", unique: true
   end
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -432,7 +434,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_065256) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
-  add_foreign_key "custom_domain_names", "carriers"
+  add_foreign_key "custom_domains", "carriers"
   add_foreign_key "events", "carriers"
   add_foreign_key "exports", "users"
   add_foreign_key "imports", "carriers", on_delete: :cascade

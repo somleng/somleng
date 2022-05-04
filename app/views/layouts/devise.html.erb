@@ -21,8 +21,7 @@
           <% if content_for?(:logo) %>
             <%= yield(:logo) %>
           <% else %>
-            <% carrier = find_carrier_from_domain_name %>
-            <%= carrier_logo(carrier, class: "img-fluid mx-auto px-5 my-3 d-block w-50") %>
+            <%= carrier_logo(find_carrier_from_domain, class: "img-fluid mx-auto px-5 my-3 d-block w-50") %>
           <% end %>
 
           <div class="card-group">

@@ -372,12 +372,12 @@ FactoryBot.define do
     end
   end
 
-  factory :custom_domain_name do
+  factory :custom_domain do
     carrier
     dashboard
     verification_token { SecureRandom.alphanumeric }
 
-    traits_for_enum :type, CustomDomainName.type.values
+    traits_for_enum :type, CustomDomain.type.values
     trait :verified do
       verified { true }
     end

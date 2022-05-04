@@ -39,4 +39,22 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_content("Carrier Settings were successfully updated")
     expect(page).not_to have_content("Webhook URL")
   end
+
+  it "setup custom domains" do
+    carrier = create(:carrier, :with_oauth_application)
+    user = create(:user, :carrier, :owner, carrier:)
+
+    sign_in(user)
+    visit dashboard_carrier_settings_path
+
+    click_link("Edit")
+
+    fill_in("Custom dashboard host", with: "xyz-dashboard.example.com")
+    fill_in("Custom API host", with: "xyz-api.example.com")
+
+    click_button("Update Carrier Settings")
+
+    expect(page).to have_content("xyz-dashboard.example.com")
+    expect(page).to have_content("xyz-api.example.com")
+  end
 end

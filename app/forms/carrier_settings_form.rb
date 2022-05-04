@@ -10,6 +10,8 @@ class CarrierSettingsForm
   attribute :logo
   attribute :webhook_url
   attribute :enable_webhooks, :boolean, default: true
+  attribute :custom_dashboard_host
+  attribute :custom_api_host
 
   delegate :persisted?, :id, to: :carrier
 
@@ -28,7 +30,9 @@ class CarrierSettingsForm
       country: carrier.country_code,
       logo: carrier.logo,
       webhook_url: carrier.webhook_endpoint&.url,
-      enable_webhooks: carrier.webhooks_enabled?
+      enable_webhooks: carrier.webhooks_enabled?,
+      custom_dashboard_host: carrier.custom_dashboard_domain&.host,
+      custom_api_host: carrier.custom_api_domain&.host
     )
   end
 
@@ -45,9 +49,14 @@ class CarrierSettingsForm
 
     carrier.logo.attach(logo) if logo.present?
 
+    custom_dashboard_domain.host = custom_dashboard_host if custom_dashboard_host.present?
+    custom_api_domain.host = custom_api_host if custom_api_host.present?
+
     Carrier.transaction do
       carrier.save!
       webhook_endpoint.save! if update_webhook_endpoint?
+      custom_dashboard_domain.save! if custom_dashboard_host.present?
+      custom_api_domain.save! if custom_api_host.present?
     end
   end
 
@@ -60,6 +69,14 @@ class CarrierSettingsForm
   end
 
   private
+
+  def custom_dashboard_domain
+    @custom_dashboard_domain ||= carrier.custom_dashboard_domain || carrier.build_custom_dashboard_domain
+  end
+
+  def custom_api_domain
+    @custom_api_domain ||= carrier.custom_api_domain || carrier.build_custom_api_domain
+  end
 
   def webhook_endpoint
     @webhook_endpoint ||= carrier.webhook_endpoint || WebhookEndpoint.new(oauth_application: carrier.oauth_application)

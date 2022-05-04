@@ -32,6 +32,15 @@
     <%= f.attribute :logo do %>
       <%= image_thumbnail(@resource.logo) %>
     <% end %>
+
+    <% if @resource.custom_dashboard_domain.present? %>
+      <%= f.attribute :custom_dashboard_domain, value: @resource.custom_dashboard_domain.host %>
+    <% end %>
+
+    <% if @resource.custom_api_domain.present? %>
+      <%= f.attribute :custom_api_domain, value: @resource.custom_api_domain.host %>
+    <% end %>
+
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

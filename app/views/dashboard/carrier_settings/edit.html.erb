@@ -1,7 +1,7 @@
 <%= page_title(title: "Edit Carrier Settings") %>
 
-<div class="card-body">
-  <%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group) do |f| %>
+<%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group) do |f| %>
+  <div class="card-body">
     <div class="row">
       <div class="col-sm-6">
         <%= f.input :name, maxlength: 128, hint: "Your company's name" %>
@@ -26,6 +26,19 @@
 
     <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
 
+    <h4>Custom Domain Settings</h4>
+
+    <% host_placeholder = URI.parse(current_carrier.website || "https://example.com").host %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :custom_dashboard_host, placeholder: "dashboard.#{host_placeholder}" %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input :custom_api_host, placeholder: "api.#{host_placeholder}" %>
+      </div>
+    </div>
+
     <%= f.button :submit %>
-  <% end %>
-</div>
+  </div>
+<% end %>

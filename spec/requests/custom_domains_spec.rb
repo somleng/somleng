@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe "Custom Domain Name" do
-  it "makes request to api.somleng.org" do
+RSpec.describe "Custom Domains" do
+  it "makes requests to api.somleng.org" do
     account = create(:account)
 
     get(
@@ -15,7 +15,7 @@ RSpec.describe "Custom Domain Name" do
     expect(response.code).to eq("200")
   end
 
-  it "makes request to dashboard.somleng.org" do
+  it "makes requests to dashboard.somleng.org" do
     get(
       new_user_session_path,
       headers: {
@@ -53,7 +53,7 @@ RSpec.describe "Custom Domain Name" do
 
   it "displays carrier's logo under their custom domain name" do
     carrier = create(:carrier, :with_logo)
-    create(:custom_domain_name, :dashboard, :verified, carrier:, host: "xyz.example.com")
+    create(:custom_domain, :dashboard, :verified, carrier:, host: "xyz.example.com")
 
     get(
       new_user_session_path,
