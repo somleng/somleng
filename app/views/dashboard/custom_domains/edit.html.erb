@@ -1,0 +1,19 @@
+<%= page_title(title: "Configure Custom Domain") %>
+
+<div class="card-body">
+  <%= simple_form_for(@resource, url: dashboard_custom_domain_path, wrapper: :input_group) do |f| %>
+      <% host_placeholder = URI.parse(current_carrier.website || "https://example.com").host %>
+      <div class="row">
+        <div class="col-sm-6">
+          <%= f.input :dashboard_host, placeholder: "dashboard.#{host_placeholder}" %>
+        </div>
+
+        <div class="col-sm-6">
+          <%= f.input :api_host, placeholder: "api.#{host_placeholder}" %>
+        </div>
+      </div>
+
+      <%= f.button :submit %>
+    </div>
+  <% end %>
+</div>

@@ -26,19 +26,6 @@
 
     <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
 
-    <h4>Custom Domain Settings</h4>
-
-    <% host_placeholder = URI.parse(current_carrier.website || "https://example.com").host %>
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :custom_dashboard_host, placeholder: "dashboard.#{host_placeholder}" %>
-      </div>
-
-      <div class="col-sm-6">
-        <%= f.input :custom_api_host, placeholder: "api.#{host_placeholder}" %>
-      </div>
-    </div>
-
     <%= f.button :submit %>
   </div>
 <% end %>

@@ -55,6 +55,13 @@ FactoryBot.define do
       association :logo, factory: :active_storage_attachment, filename: "carrier_logo.jpeg"
     end
 
+    trait :with_custom_domain do
+      after(:build) do |carrier|
+        carrier.custom_dashboard_domain ||= build(:custom_domain, :dashboard, carrier:)
+        carrier.custom_dashboard_domain ||= build(:custom_domain, :api, carrier:)
+      end
+    end
+
     trait :with_oauth_application do
       after(:build) do |carrier|
         carrier.oauth_application ||= build(:oauth_application, owner: carrier)
@@ -376,8 +383,10 @@ FactoryBot.define do
     carrier
     dashboard
     verification_token { SecureRandom.alphanumeric }
+    sequence(:host) { |n| "custom-host-#{n}.example.com" }
 
     traits_for_enum :type, CustomDomain.type.values
+
     trait :verified do
       verified { true }
     end
