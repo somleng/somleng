@@ -48,4 +48,4 @@ test:
   <<: *development
   ahn_host: "https://ahn.somleng.org"
   api_url_host: "https://api.somleng.org"
-  dashboard_url_host: "https://dashboard.somleng.org"
+  dashboard_url_host: "http://dashboard.lvh.me"

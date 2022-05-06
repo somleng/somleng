@@ -1,6 +1,6 @@
 require "selenium/webdriver"
 
-Capybara.app_host = "http://dashboard.lvh.me"
+Capybara.app_host = Rails.configuration.app_settings.dashboard_url_host
 
 RSpec.configure do |config|
   config.before(:each, type: :system) do

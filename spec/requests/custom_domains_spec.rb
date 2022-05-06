@@ -1,27 +1,23 @@
 require "rails_helper"
 
 RSpec.describe "Custom Domains" do
-  it "makes requests to api.somleng.org" do
+  it "makes api requests" do
     account = create(:account)
 
     get(
       twilio_api_account_phone_calls_path(account),
       headers: build_api_authorization_headers(account).merge(
-        "HOST" => "api.somleng.org",
-        "X-Forwarded-Host" => "xyz.example.com"
+        headers_for_custom_domain(:api)
       )
     )
 
     expect(response.code).to eq("200")
   end
 
-  it "makes requests to dashboard.somleng.org" do
+  it "makes dashboard requests" do
     get(
       new_user_session_path,
-      headers: {
-        "HOST" => "dashboard.somleng.org",
-        "X-Forwarded-Host" => "xyz.example.com"
-      }
+      headers: headers_for_custom_domain(:dashboard)
     )
 
     expect(response.code).to eq("200")
@@ -31,10 +27,7 @@ RSpec.describe "Custom Domains" do
     expect {
       get(
         admin_root_path,
-        headers: {
-          "HOST" => "dashboard.somleng.org",
-          "X-Forwarded-Host" => "xyz.example.com"
-        }
+        headers: headers_for_custom_domain(:dashboard)
       )
     }.to raise_error(ActionController::RoutingError)
   end
@@ -43,10 +36,7 @@ RSpec.describe "Custom Domains" do
     expect {
       get(
         new_user_registration_path,
-        headers: {
-          "HOST" => "dashboard.somleng.org",
-          "X-Forwarded-Host" => "xyz.example.com"
-        }
+        headers: headers_for_custom_domain(:dashboard)
       )
     }.to raise_error(ActionController::RoutingError)
   end
@@ -57,13 +47,21 @@ RSpec.describe "Custom Domains" do
 
     get(
       new_user_session_path,
-      headers: {
-        "HOST" => "dashboard.somleng.org",
+      headers: headers_for_custom_domain(
+        :dashboard,
         "X-Forwarded-Host" => "xyz.example.com"
-      }
+      )
     )
 
     page = Capybara.string(response.body)
     expect(page).to have_css("img[alt=#{carrier.name}]")
+  end
+
+  def headers_for_custom_domain(type, headers = {})
+    host = URI(Rails.configuration.app_settings.fetch(:"#{type}_url_host")).host
+    headers.reverse_merge(
+      "Host" => host,
+      "X-Forwarded-Host" => "xyz.example.com"
+    )
   end
 end

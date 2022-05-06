@@ -6,6 +6,8 @@ class CreateCustomDomains < ActiveRecord::Migration[7.0]
       t.boolean :verified, default: false, null: false
       t.string :verification_token, null: false
       t.string :type, null: false
+      t.datetime :verification_started_at
+      t.datetime :verified_at
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
       t.timestamps
@@ -13,5 +15,9 @@ class CreateCustomDomains < ActiveRecord::Migration[7.0]
 
     add_index :custom_domains, %i[carrier_id type], unique: true
     add_index :custom_domains, :verification_token, unique: true
+    add_index :custom_domains, :type
+    add_index :custom_domains, :verified
+    add_index :custom_domains, :verification_started_at
+    add_index :custom_domains, :verified_at
   end
 end

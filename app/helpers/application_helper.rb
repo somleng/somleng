@@ -14,6 +14,6 @@ module ApplicationHelper
   end
 
   def find_carrier_from_domain
-    CustomDomain.find_by(host: request.host, verified: true)&.carrier
+    CustomDomain.find_by(host: request.host, verified: true, type: :dashboard)&.carrier
   end
 end

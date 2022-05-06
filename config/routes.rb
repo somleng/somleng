@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  constraints(ProxySubdomainConstraint.new("dashboard")) do
+  constraints(
+    CustomDomainSubdomainConstraint.new(
+      host: URI(Rails.configuration.app_settings.dashboard_url_host).host
+    )
+  ) do
     devise_for :users, skip: %i[registrations invitations]
 
     devise_scope :user do
@@ -84,7 +88,11 @@ Rails.application.routes.draw do
     end
   end
 
-  constraints(ProxySubdomainConstraint.new("api")) do
+  constraints(
+    CustomDomainSubdomainConstraint.new(
+      host: URI(Rails.configuration.app_settings.api_url_host).host
+    )
+  ) do
     namespace :services, defaults: { format: "json" } do
       resources :inbound_phone_calls, only: :create
       resources :phone_call_events, only: :create
