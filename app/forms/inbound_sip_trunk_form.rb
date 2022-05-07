@@ -22,7 +22,7 @@ class InboundSIPTrunkForm
 
   def self.initialize_with(inbound_sip_trunk)
     new(
-      inbound_sip_trunk: inbound_sip_trunk,
+      inbound_sip_trunk:,
       name: inbound_sip_trunk.name,
       source_ip: inbound_sip_trunk.source_ip,
       trunk_prefix_replacement: inbound_sip_trunk.trunk_prefix_replacement
@@ -33,9 +33,9 @@ class InboundSIPTrunkForm
     return false if invalid?
 
     inbound_sip_trunk.attributes = {
-      name: name,
-      carrier: carrier,
-      source_ip: source_ip,
+      name:,
+      carrier:,
+      source_ip:,
       trunk_prefix_replacement: trunk_prefix_replacement.presence
     }
 
@@ -47,7 +47,7 @@ class InboundSIPTrunkForm
   def validate_source_ip
     return if errors[:source_ip].any?
     return if inbound_sip_trunk.source_ip == source_ip
-    return unless InboundSIPTrunk.exists?(source_ip: source_ip)
+    return unless InboundSIPTrunk.exists?(source_ip:)
 
     errors.add(:source_ip, :taken)
   end

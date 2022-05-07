@@ -11,8 +11,7 @@ class Carrier < ApplicationRecord
   has_many :interactions
   has_one :oauth_application, as: :owner
   has_one :webhook_endpoint, through: :oauth_application
-  has_one :custom_dashboard_domain, -> { where(type: :dashboard) }, class_name: "CustomDomain"
-  has_one :custom_api_domain, -> { where(type: :api) }, class_name: "CustomDomain"
+  has_many :custom_domains
 
   has_one_attached :logo
 
@@ -26,5 +25,9 @@ class Carrier < ApplicationRecord
 
   def webhooks_enabled?
     webhook_endpoint&.enabled?
+  end
+
+  def custom_domain(type)
+    custom_domains.find_by(type:)
   end
 end

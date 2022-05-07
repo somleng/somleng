@@ -1,7 +1,9 @@
 module Dashboard
   class CustomDomainsController < DashboardController
     def show
-      @resource = current_carrier
+      @custom_domains = current_carrier.custom_domains
+
+      raise ActiveRecord::RecordNotFound if @custom_domains.blank?
     end
 
     def edit
@@ -13,7 +15,12 @@ module Dashboard
       @resource.carrier = current_carrier
       @resource.save
 
-      respond_with(@resource, location: dashboard_carrier_settings_path)
+      respond_with(@resource, location: dashboard_carrier_settings_custom_domain_path)
+    end
+
+    def destroy
+      current_carrier.custom_domains.destroy_all
+      respond_with(CustomDomain.new, location: dashboard_carrier_settings_path)
     end
 
     private
@@ -24,6 +31,10 @@ module Dashboard
 
     def policy_class
       CustomDomainPolicy
+    end
+
+    def record
+      @record ||= current_carrier
     end
   end
 end

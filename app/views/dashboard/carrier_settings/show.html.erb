@@ -33,12 +33,14 @@
       <%= image_thumbnail(@resource.logo) %>
     <% end %>
 
-    <% if @resource.custom_dashboard_domain.present? %>
-      <%= f.attribute :custom_dashboard_domain, value: @resource.custom_dashboard_domain.host %>
-    <% end %>
-
-    <% if @resource.custom_api_domain.present? %>
-      <%= f.attribute :custom_api_domain, value: @resource.custom_api_domain.host %>
+    <%= f.attribute :custom_domain do %>
+      <div id="custom-domain-configuration">
+        <% if @resource.custom_domains.any? %>
+          <%= external_link_to("Manage", dashboard_carrier_settings_custom_domain_path) %>
+        <% else %>
+          <%= external_link_to("Setup", edit_dashboard_carrier_settings_custom_domain_path) %>
+        <% end %>
+      </div>
     <% end %>
 
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>

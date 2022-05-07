@@ -57,8 +57,12 @@ FactoryBot.define do
 
     trait :with_custom_domain do
       after(:build) do |carrier|
-        carrier.custom_dashboard_domain ||= build(:custom_domain, :dashboard, carrier:)
-        carrier.custom_dashboard_domain ||= build(:custom_domain, :api, carrier:)
+        carrier.custom_domain(:dashboard) || carrier.custom_domains << build(
+          :custom_domain, :dashboard, carrier:
+        )
+        carrier.custom_domain(:api) || carrier.custom_domains << build(
+          :custom_domain, :api, carrier:
+        )
       end
     end
 
@@ -383,12 +387,13 @@ FactoryBot.define do
     carrier
     dashboard
     verification_token { SecureRandom.alphanumeric }
+    verification_started_at { Time.current }
     sequence(:host) { |n| "custom-host-#{n}.example.com" }
 
     traits_for_enum :type, CustomDomain.type.values
 
     trait :verified do
-      verified { true }
+      verified_at { Time.current }
     end
   end
 end

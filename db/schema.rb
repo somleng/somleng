@@ -110,7 +110,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_065256) do
   create_table "custom_domains", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "host", null: false
-    t.boolean "verified", default: false, null: false
     t.string "verification_token", null: false
     t.string "type", null: false
     t.datetime "verification_started_at"
@@ -118,13 +117,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_065256) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["carrier_id", "host"], name: "index_custom_domains_on_carrier_id_and_host", unique: true
     t.index ["carrier_id", "type"], name: "index_custom_domains_on_carrier_id_and_type", unique: true
     t.index ["carrier_id"], name: "index_custom_domains_on_carrier_id"
+    t.index ["host"], name: "index_custom_domains_on_host", unique: true, where: "(verified_at IS NOT NULL)"
     t.index ["sequence_number"], name: "index_custom_domains_on_sequence_number", unique: true, order: :desc
     t.index ["type"], name: "index_custom_domains_on_type"
     t.index ["verification_started_at"], name: "index_custom_domains_on_verification_started_at"
     t.index ["verification_token"], name: "index_custom_domains_on_verification_token", unique: true
-    t.index ["verified"], name: "index_custom_domains_on_verified"
     t.index ["verified_at"], name: "index_custom_domains_on_verified_at"
   end
 

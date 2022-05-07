@@ -12,6 +12,7 @@ RSpec.describe HostnameType do
     expect(klass.new(hostname: nil).hostname).to eq(nil)
     expect(klass.new(hostname: "foo").hostname).to eq("foo")
     expect(klass.new(hostname: "foobar.com").hostname).to eq("foobar.com")
+    expect(klass.new(hostname: "foo bar.com").hostname).to eq("foo bar.com")
     expect(klass.new(hostname: "https://foobar.com").hostname).to eq("foobar.com")
     expect(klass.new(hostname: "https://foobar.com:5003").hostname).to eq("foobar.com")
   end

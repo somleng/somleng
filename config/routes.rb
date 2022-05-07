@@ -51,14 +51,15 @@ Rails.application.routes.draw do
       resources :imports, only: %i[index create]
       resource :account_session, only: :create
       resource :account_settings, only: %i[show edit update]
-      resource :carrier_settings, only: %i[show edit update]
+      resource :carrier_settings, only: %i[show edit update] do
+        resource :custom_domain, only: %i[show edit update destroy]
+      end
       resource :home, only: :show
       resources :user_invitations, only: :update
       resources :phone_numbers do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
         patch :release, on: :member
       end
-      resource :custom_domain, only: %i[edit update]
       resources :inbound_sip_trunks
       resources :phone_calls, only: %i[index show]
 
