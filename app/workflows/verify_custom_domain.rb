@@ -10,6 +10,7 @@ class VerifyCustomDomain < ApplicationWorkflow
 
   def call
     return if custom_domain.verified?
+    return if CustomDomain.verified.exists?(host: custom_domain.host)
     return reschedule_verification unless resolve_dns_record?
 
     custom_domain.verify!

@@ -10,6 +10,17 @@ RSpec.describe VerifyCustomDomain do
     expect(ScheduledJob).not_to have_been_enqueued
   end
 
+  it "handles duplicate hosts" do
+    existing_custom_domain = create(:custom_domain)
+    custom_domain = create(:custom_domain, host: existing_custom_domain.host)
+    existing_custom_domain.verify!
+
+    VerifyCustomDomain.call(custom_domain)
+
+    expect(custom_domain.verified?).to eq(false)
+    expect(ScheduledJob).not_to have_been_enqueued
+  end
+
   it "reschedules a verification" do
     custom_domain = create(:custom_domain, host: "example.com")
 
