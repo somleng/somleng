@@ -23,6 +23,18 @@ module Dashboard
       respond_with(CustomDomain.new, location: dashboard_carrier_settings_path)
     end
 
+    def verify
+      current_carrier.custom_domains.where(verified_at: nil).each do |custom_domain|
+        VerifyCustomDomainJob.perform_later(custom_domain, reverify: false)
+      end
+
+      respond_with(
+        @resource,
+        location: dashboard_carrier_settings_custom_domain_path,
+        notice: "Manual domain verification enqueued."
+      )
+    end
+
     private
 
     def permitted_params

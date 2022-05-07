@@ -29,6 +29,21 @@ RSpec.describe "Custom Domains" do
     end
   end
 
+  it "Manually verify a custom domain" do
+    carrier = create(:carrier, :with_oauth_application)
+    create(:custom_domain, carrier:, host: "example.com")
+    user = create(:user, :carrier, :owner, carrier:)
+
+    sign_in(user)
+    visit dashboard_carrier_settings_custom_domain_path
+
+    perform_enqueued_jobs do
+      click_link("Verify")
+    end
+
+    expect(page).to have_content("Manual domain verification enqueued")
+  end
+
   it "Remove a custom domain" do
     carrier = create(:carrier, :with_oauth_application, :with_custom_domain)
     user = create(:user, :carrier, :owner, carrier:)

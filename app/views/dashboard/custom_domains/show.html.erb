@@ -3,6 +3,12 @@
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_carrier_settings_custom_domain_path) %>
   <% end %>
 
+  <% if CustomDomainPolicy.new(pundit_user, current_carrier).verify? %>
+    <%= link_to(verify_dashboard_carrier_settings_custom_domain_path, method: :post, class: "btn btn-success", title: "Verify") do %>
+      <i class="fas fa-check-circle"></i>
+    <% end %>
+  <% end %>
+
   <% if CustomDomainPolicy.new(pundit_user, current_carrier).destroy? %>
     <%= render("shared/destroy_resource_page_action", path: dashboard_carrier_settings_custom_domain_path) %>
   <% end %>

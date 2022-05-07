@@ -22,9 +22,9 @@ RSpec.describe VerifyCustomDomain do
   end
 
   it "reschedules a verification" do
-    custom_domain = create(:custom_domain, host: "example.com")
-
     travel_to(Time.zone.local(2022, 12, 1, 12, 0, 0)) do
+      custom_domain = create(:custom_domain, host: "example.com")
+
       VerifyCustomDomain.call(custom_domain)
 
       expect(
@@ -35,6 +35,26 @@ RSpec.describe VerifyCustomDomain do
         wait_until: Time.zone.local(2022, 12, 1, 12, 15).to_f
       )
     end
+  end
+
+  it "does not reschedule verifications forever" do
+    custom_domain = create(
+      :custom_domain,
+      host: "example.com",
+      verification_started_at: 11.days.ago
+    )
+
+    VerifyCustomDomain.call(custom_domain)
+
+    expect(ScheduledJob).not_to have_been_enqueued
+  end
+
+  it "does not reschedule verifications if explicitly turned off" do
+    custom_domain = create(:custom_domain, host: "example.com")
+
+    VerifyCustomDomain.call(custom_domain, reverify: false)
+
+    expect(ScheduledJob).not_to have_been_enqueued
   end
 
   it "handles deleted domains" do

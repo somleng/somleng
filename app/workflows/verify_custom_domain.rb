@@ -1,19 +1,25 @@
 require "resolv"
 
 class VerifyCustomDomain < ApplicationWorkflow
-  attr_reader :custom_domain, :verification_token
+  MAX_VERIFICATION_PERIOD = 10.days
 
-  def initialize(custom_domain, verification_token: nil)
+  attr_reader :custom_domain, :reverify, :verification_token
+
+  def initialize(custom_domain, reverify: true, verification_token: nil)
     @custom_domain = custom_domain
+    @reverify = reverify
     @verification_token = verification_token || custom_domain.verification_token
   end
 
   def call
     return if custom_domain.verified?
     return if CustomDomain.verified.exists?(host: custom_domain.host)
-    return reschedule_verification unless resolve_dns_record?
 
-    custom_domain.verify!
+    if resolve_dns_record?
+      custom_domain.verify!
+    elsif reverify && custom_domain.verification_started_at > MAX_VERIFICATION_PERIOD.ago
+      reschedule_verification
+    end
   end
 
   private
