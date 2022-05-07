@@ -3,6 +3,7 @@ class DashboardController < ApplicationController
   respond_to :html
 
   include UserAuthorization
+  include CustomDomainAuthorization
 
   prepend_before_action :find_record, only: %i[show edit update destroy]
   prepend_before_action :authenticate_user!
@@ -36,4 +37,8 @@ class DashboardController < ApplicationController
   end
 
   def record; end
+
+  def custom_domain_scope
+    :dashboard
+  end
 end

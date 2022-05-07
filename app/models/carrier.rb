@@ -15,6 +15,12 @@ class Carrier < ApplicationRecord
 
   has_one_attached :logo
 
+  def self.from_domain(host:, type:)
+    joins(:custom_domains)
+      .where(custom_domains: { host:, type: })
+      .merge(CustomDomain.verified).first
+  end
+
   def country
     ISO3166::Country.new(country_code)
   end

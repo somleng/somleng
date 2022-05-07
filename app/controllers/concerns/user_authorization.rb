@@ -40,6 +40,10 @@ module UserAuthorization
     @current_carrier ||= current_user.carrier
   end
 
+  def authorized_carrier
+    current_organization.carrier
+  end
+
   def current_account_membership
     @current_account_membership ||= begin
       session[:current_account_membership] ||= current_user.current_account_membership_id

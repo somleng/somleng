@@ -21,6 +21,10 @@ class CarrierAPIController < APIController
     @current_carrier ||= doorkeeper_token.application.owner
   end
 
+  def authorized_carrier
+    current_carrier
+  end
+
   def respond_with_resource(resource, options = {})
     respond_with(:carrier_api, :v1, resource, **options)
   end

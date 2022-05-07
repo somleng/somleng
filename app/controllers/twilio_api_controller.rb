@@ -25,6 +25,10 @@ class TwilioAPIController < APIController
     @current_account ||= Account.find(doorkeeper_token.resource_owner_id)
   end
 
+  def authorized_carrier
+    current_carrier
+  end
+
   def deny_access!
     render(unauthorized_render_options)
   end

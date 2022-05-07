@@ -13,7 +13,7 @@ module ApplicationHelper
     tag.time(time.utc.iso8601, data: { behavior: "local-time" })
   end
 
-  def find_carrier_from_domain
-    CustomDomain.verified.find_by(host: request.host, type: :dashboard)&.carrier
+  def carrier_from_domain
+    @carrier_from_domain ||= Carrier.from_domain(host: request.host, type: :dashboard)
   end
 end

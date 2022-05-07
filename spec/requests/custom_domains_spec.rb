@@ -14,6 +14,25 @@ RSpec.describe "Custom Domains" do
     expect(response.code).to eq("200")
   end
 
+  it "blocks cross-carrier API requests" do
+    other_carrier = create(:carrier)
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    create(:custom_domain, :api, :verified, carrier: other_carrier, host: "xyz.example.com")
+
+    get(
+      twilio_api_account_phone_calls_path(account),
+      headers: build_api_authorization_headers(account).merge(
+        headers_for_custom_domain(
+          :api,
+          "X-Forwarded-Host" => "xyz.example.com"
+        )
+      )
+    )
+
+    expect(response.code).to eq("401")
+  end
+
   it "makes dashboard requests" do
     get(
       new_user_session_path,
@@ -21,6 +40,25 @@ RSpec.describe "Custom Domains" do
     )
 
     expect(response.code).to eq("200")
+  end
+
+  it "blocks cross-carrier dashboard requests" do
+    other_carrier = create(:carrier)
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+    create(:custom_domain, :dashboard, :verified, carrier: other_carrier, host: "xyz.example.com")
+
+    sign_in(user)
+
+    get(
+      dashboard_accounts_path,
+      headers: headers_for_custom_domain(
+        :dashboard,
+        "X-Forwarded-Host" => "xyz.example.com"
+      )
+    )
+
+    expect(response.code).to eq("401")
   end
 
   it "blocks requests to admin panel for custom domains" do

@@ -1,6 +1,8 @@
 class APIController < ActionController::API
   self.responder = APIResponder
 
+  include CustomDomainAuthorization
+
   respond_to :json
 
   private
@@ -8,7 +10,7 @@ class APIController < ActionController::API
   def validate_request_schema(with:, **options, &_block)
     schema_options = options.delete(:schema_options) || {}
     input_params = options.delete(:input_params) || request.request_parameters
-    schema = with.new(input_params: input_params, options: schema_options)
+    schema = with.new(input_params:, options: schema_options)
     if schema.success?
       resource = yield(schema.output)
       respond_with_resource(resource, options)
@@ -23,5 +25,9 @@ class APIController < ActionController::API
 
   def respond_with_errors(object, **options)
     respond_with(object, responder: InvalidRequestSchemaResponder, **options)
+  end
+
+  def custom_domain_scope
+    :api
   end
 end
