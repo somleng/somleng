@@ -8,7 +8,7 @@ RSpec.describe "Custom Domains" do
     sign_in(user)
     visit dashboard_carrier_settings_path
     within("#custom-domain-configuration") do
-      click_link("Setup")
+      click_link("Configure")
     end
 
     fill_in("Dashboard host", with: "xyz-dashboard.example.com")
@@ -35,7 +35,7 @@ RSpec.describe "Custom Domains" do
     user = create(:user, :carrier, :owner, carrier:)
 
     sign_in(user)
-    visit dashboard_carrier_settings_custom_domain_path
+    visit edit_dashboard_carrier_settings_custom_domain_path
 
     perform_enqueued_jobs do
       click_link("Verify")
@@ -49,16 +49,9 @@ RSpec.describe "Custom Domains" do
     user = create(:user, :carrier, :owner, carrier:)
 
     sign_in(user)
-    visit dashboard_carrier_settings_path
-    within("#custom-domain-configuration") do
-      click_link("Manage")
-    end
-
+    visit edit_dashboard_carrier_settings_custom_domain_path
     click_link("Delete")
 
     expect(page).to have_content("Custom domain was successfully destroyed")
-    within("#custom-domain-configuration") do
-      expect(page).to have_link("Setup")
-    end
   end
 end

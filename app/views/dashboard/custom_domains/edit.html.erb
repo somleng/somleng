@@ -1,19 +1,21 @@
-<%= page_title(title: "Configure Custom Domain") %>
+<%= page_title(title: "Configure Custom Domain") do %>
+  <% if CustomDomainPolicy.new(pundit_user, current_carrier).verify? %>
+    <%= link_to(verify_dashboard_carrier_settings_custom_domain_path, method: :post, class: "btn btn-success", title: "Verify") do %>
+      <i class="fas fa-check-circle"></i>
+    <% end %>
+  <% end %>
+
+  <% if CustomDomainPolicy.new(pundit_user, current_carrier).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_carrier_settings_custom_domain_path) %>
+  <% end %>
+<% end %>
 
 <div class="card-body">
-  <%= simple_form_for(@resource, url: dashboard_carrier_settings_custom_domain_path, wrapper: :input_group) do |f| %>
-      <% host_placeholder = URI.parse(current_carrier.website || "https://example.com").host %>
-      <div class="row">
-        <div class="col-sm-6">
-          <%= f.input :dashboard_host, placeholder: "dashboard.#{host_placeholder}" %>
-        </div>
+  <% custom_domains = current_carrier.custom_domains %>
 
-        <div class="col-sm-6">
-          <%= f.input :api_host, placeholder: "api.#{host_placeholder}" %>
-        </div>
-      </div>
-
-      <%= f.button :submit %>
-    </div>
+  <% if custom_domains.any? %>
+    <%= render("custom_domains", custom_domains: custom_domains) %>
+  <% else %>
+     <%= render("form") %>
   <% end %>
 </div>

@@ -35,11 +35,7 @@
 
     <%= f.attribute :custom_domain do %>
       <div id="custom-domain-configuration">
-        <% if @resource.custom_domains.any? %>
-          <%= external_link_to("Manage", dashboard_carrier_settings_custom_domain_path) %>
-        <% else %>
-          <%= external_link_to("Setup", edit_dashboard_carrier_settings_custom_domain_path) %>
-        <% end %>
+        <%= external_link_to("Configure", edit_dashboard_carrier_settings_custom_domain_path) %>
       </div>
     <% end %>
 

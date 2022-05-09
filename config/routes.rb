@@ -52,7 +52,7 @@ Rails.application.routes.draw do
       resource :account_session, only: :create
       resource :account_settings, only: %i[show edit update]
       resource :carrier_settings, only: %i[show edit update] do
-        resource :custom_domain, only: %i[show edit update destroy] do
+        resource :custom_domain, only: %i[edit update destroy] do
           post :verify, on: :member
         end
       end

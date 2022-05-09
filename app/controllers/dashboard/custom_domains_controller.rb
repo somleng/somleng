@@ -1,11 +1,5 @@
 module Dashboard
   class CustomDomainsController < DashboardController
-    def show
-      @custom_domains = current_carrier.custom_domains
-
-      raise ActiveRecord::RecordNotFound if @custom_domains.blank?
-    end
-
     def edit
       @resource = CustomDomainForm.initialize_with(current_carrier)
     end
@@ -15,12 +9,12 @@ module Dashboard
       @resource.carrier = current_carrier
       @resource.save
 
-      respond_with(@resource, location: dashboard_carrier_settings_custom_domain_path)
+      respond_with(@resource, location: edit_dashboard_carrier_settings_custom_domain_path)
     end
 
     def destroy
       current_carrier.custom_domains.destroy_all
-      respond_with(CustomDomain.new, location: dashboard_carrier_settings_path)
+      respond_with(CustomDomain.new, location: edit_dashboard_carrier_settings_custom_domain_path)
     end
 
     def verify
@@ -30,7 +24,7 @@ module Dashboard
 
       respond_with(
         @resource,
-        location: dashboard_carrier_settings_custom_domain_path,
+        location: edit_dashboard_carrier_settings_custom_domain_path,
         notice: "Manual domain verification enqueued."
       )
     end
