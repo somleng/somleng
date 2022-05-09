@@ -127,8 +127,9 @@ FactoryBot.define do
 
       after(:build) do |account|
         if account.account_memberships.empty?
-          account.account_memberships << build(:account_membership,
-                                               account:)
+          account.account_memberships << build(
+            :account_membership, account:
+          )
         end
       end
     end
@@ -150,11 +151,11 @@ FactoryBot.define do
     password { "super secret password" }
     otp_required_for_login { true }
     confirmed
+    carrier
 
     traits_for_enum :carrier_role, %i[owner admin member]
 
     trait :carrier do
-      carrier
       admin
     end
 
@@ -179,7 +180,7 @@ FactoryBot.define do
     trait :with_account_membership do
       transient do
         account_role { :owner }
-        account { build(:account) }
+        account { build(:account, carrier:) }
       end
 
       after(:build) do |user, evaluator|
@@ -196,8 +197,12 @@ FactoryBot.define do
   end
 
   factory :account_membership do
-    user
-    account
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    account { association :account, carrier: }
+    user { association :user, carrier: }
     admin
 
     traits_for_enum :role, %i[owner admin member]

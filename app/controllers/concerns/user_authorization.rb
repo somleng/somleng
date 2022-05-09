@@ -27,8 +27,12 @@ module UserAuthorization
 
   def current_organization
     @current_organization ||= begin
-      current_account_or_carrier = current_account_membership&.account || current_carrier
-      current_account_or_carrier.present? ? Organization.new(current_account_or_carrier) : BlankOrganization.new
+      if current_user.carrier_role.present?
+        Organization.new(current_carrier)
+      else
+        current_account = current_account_membership&.account
+        current_account.present? ? Organization.new(current_account) : BlankOrganization.new
+      end
     end
   end
 
@@ -37,11 +41,11 @@ module UserAuthorization
   end
 
   def current_carrier
-    @current_carrier ||= current_user.carrier
+    current_user.carrier
   end
 
   def authorized_carrier
-    current_organization.carrier
+    current_carrier
   end
 
   def current_account_membership

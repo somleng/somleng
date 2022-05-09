@@ -57,10 +57,11 @@ RSpec.describe "Authentication" do
     account = create(:account)
     perform_enqueued_jobs do
       user = User.invite!(
+        carrier: account.carrier,
         email: "johndoe@example.com",
         name: "John Doe"
       )
-      create(:account_membership, account: account, user: user)
+      create(:account_membership, account:, user:)
     end
 
     open_email("johndoe@example.com")

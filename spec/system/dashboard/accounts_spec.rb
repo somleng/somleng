@@ -3,11 +3,11 @@ require "rails_helper"
 RSpec.describe "Accounts" do
   it "List and filter accounts", :js do
     carrier = create(:carrier)
-    user = create(:user, :carrier, carrier: carrier)
+    user = create(:user, :carrier, carrier:)
     create(
       :account,
       name: "Rocket Rides",
-      carrier: carrier,
+      carrier:,
       created_at: Time.utc(2021, 12, 1),
       metadata: {
         "customer" => {
@@ -16,9 +16,9 @@ RSpec.describe "Accounts" do
       }
     )
 
-    create(:account, name: "Garry Gas", carrier: carrier, created_at: Time.utc(2021, 12, 10))
-    create(:account, name: "Alice Apples", carrier: carrier, created_at: Time.utc(2021, 10, 1))
-    create(:account, :disabled, name: "Disabled Account", carrier: carrier, created_at: Time.utc(2021, 12, 10))
+    create(:account, name: "Garry Gas", carrier:, created_at: Time.utc(2021, 12, 10))
+    create(:account, name: "Alice Apples", carrier:, created_at: Time.utc(2021, 10, 1))
+    create(:account, :disabled, name: "Disabled Account", carrier:, created_at: Time.utc(2021, 12, 10))
 
     sign_in(user)
     visit dashboard_accounts_path(

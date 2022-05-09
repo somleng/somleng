@@ -26,7 +26,7 @@ class TwilioAPIController < APIController
   end
 
   def authorized_carrier
-    current_carrier
+    current_account.carrier
   end
 
   def deny_access!

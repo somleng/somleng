@@ -67,7 +67,7 @@ class AccountForm
     return errors.add(:owner_email, :blank) if owner_name.present? && owner_email.blank?
     return errors.add(:owner_name, :blank) if owner_email.present? && owner_name.blank?
     return errors.add(:owners_email, :invalid) if customer_managed?
-    return errors.add(:owner_email, :taken) if User.carrier.exists?(email: owner_email)
+    return errors.add(:owner_email, :taken) if User.exists?(carrier:, email: owner_email)
   end
 
   def validate_name
@@ -77,7 +77,7 @@ class AccountForm
   def invite_owner!
     AccountMembership.create!(
       account:,
-      user: User.invite!({ email: owner_email, name: owner_name }, current_user),
+      user: User.invite!({ carrier:, email: owner_email, name: owner_name }, current_user),
       role: :owner
     )
   end

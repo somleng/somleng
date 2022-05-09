@@ -2,9 +2,10 @@ require "rails_helper"
 
 RSpec.describe "Account Switcher" do
   it "User can switch between accounts", :js do
-    user = create(:user, name: "John Doe")
-    create_account_membership(user: user, name: "Rocket Rides")
-    create_account_membership(user: user, name: "Bob's Bananas")
+    carrier = create(:carrier)
+    user = create(:user, name: "John Doe", carrier:)
+    create_account_membership(user:, carrier:, name: "Rocket Rides")
+    create_account_membership(user:, carrier:, name: "Bob's Bananas")
 
     sign_in(user)
     visit dashboard_root_path
@@ -33,6 +34,6 @@ RSpec.describe "Account Switcher" do
 
   def create_account_membership(user:, **account_attributes)
     account = create(:account, account_attributes)
-    create(:account_membership, user: user, account: account)
+    create(:account_membership, user:, account:)
   end
 end

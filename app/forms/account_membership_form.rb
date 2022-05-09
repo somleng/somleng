@@ -14,7 +14,7 @@ class AccountMembershipForm
   attribute :account_membership, default: -> { AccountMembership.new }
 
   validates :name, presence: true, unless: :persisted?
-  validates :email, format: User::EMAIL_FORMAT, allow_nil: true, allow_blank: true
+  validates :email, email_format: true, allow_nil: true, allow_blank: true
   validates :email, presence: true, unless: :persisted?
   validates :role, presence: true
   validate  :validate_email
@@ -27,7 +27,7 @@ class AccountMembershipForm
 
   def self.initialize_with(account_membership)
     new(
-      account_membership: account_membership,
+      account_membership:,
       account: account_membership.account,
       name: account_membership.user.name,
       email: account_membership.user.email,
@@ -51,10 +51,10 @@ class AccountMembershipForm
   def validate_email
     return if errors[:email].any?
 
-    errors.add(:email, :taken) if account.users.exists?(email: email) || User.carrier.exists?(email: email)
+    errors.add(:email, :taken) if User.exists?(email:, carrier: account.carrier)
   end
 
   def invite_user!
-    User.invite!({ name: name, email: email }, current_user)
+    User.invite!({ carrier: account.carrier, name:, email: }, current_user)
   end
 end
