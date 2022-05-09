@@ -14,6 +14,17 @@ RSpec.describe AccountMembershipForm do
       expect(form.errors[:email]).to be_present
     end
 
+    it "validates the user is not a carrier user" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      user = create(:user, :carrier, carrier:)
+
+      form = AccountMembershipForm.new(account:, email: user.email)
+
+      expect(form).to be_invalid
+      expect(form.errors[:email]).to be_present
+    end
+
     it "allows users to be members of multiple accounts" do
       carrier = create(:carrier)
       account = create(:account, carrier:)

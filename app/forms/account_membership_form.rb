@@ -51,7 +51,15 @@ class AccountMembershipForm
   def validate_email
     return if errors[:email].any?
 
-    errors.add(:email, :taken) if User.exists?(email:, carrier: account.carrier)
+    errors.add(:email, :taken) if account_membership_exists? || carrier_user_exists?
+  end
+
+  def carrier_user_exists?
+    account.carrier.carrier_users.exists?(email:)
+  end
+
+  def account_membership_exists?
+    AccountMembership.where(account:).joins(:user).exists?(users: { email: })
   end
 
   def invite_user!

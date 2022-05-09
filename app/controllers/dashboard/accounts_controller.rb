@@ -41,7 +41,7 @@ module Dashboard
 
     def initialize_form(params = {})
       @resource = AccountForm.new(params)
-      @resource.carrier = carrier
+      @resource.carrier = current_carrier
       @resource.current_user = current_user
       @resource
     end
