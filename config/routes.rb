@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   constraints(
-    CustomDomainSubdomainConstraint.new(
+    CustomDomainConstraint.new(
       host: URI(Rails.configuration.app_settings.dashboard_url_host).host
     )
   ) do
@@ -93,7 +93,7 @@ Rails.application.routes.draw do
   end
 
   constraints(
-    CustomDomainSubdomainConstraint.new(
+    CustomDomainConstraint.new(
       host: URI(Rails.configuration.app_settings.api_url_host).host
     )
   ) do

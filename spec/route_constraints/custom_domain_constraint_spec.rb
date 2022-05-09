@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe CustomDomainSubdomainConstraint do
+RSpec.describe CustomDomainConstraint do
   it "handles normal hosts" do
-    constraint = CustomDomainSubdomainConstraint.new(
+    constraint = CustomDomainConstraint.new(
       host: "api.somleng.org"
     )
     request = stub_request(
@@ -15,7 +15,7 @@ RSpec.describe CustomDomainSubdomainConstraint do
   end
 
   it "handles hosts with port" do
-    constraint = CustomDomainSubdomainConstraint.new(
+    constraint = CustomDomainConstraint.new(
       host: "api.somleng.org"
     )
     request = stub_request(
@@ -28,7 +28,7 @@ RSpec.describe CustomDomainSubdomainConstraint do
   end
 
   it "handles custom domains" do
-    constraint = CustomDomainSubdomainConstraint.new(
+    constraint = CustomDomainConstraint.new(
       host: "api.somleng.org"
     )
     request = stub_request(
@@ -42,7 +42,7 @@ RSpec.describe CustomDomainSubdomainConstraint do
   end
 
   it "rejects invalid subdomains" do
-    constraint = CustomDomainSubdomainConstraint.new(
+    constraint = CustomDomainConstraint.new(
       host: "api.somleng.org"
     )
     request = stub_request(
@@ -56,7 +56,7 @@ RSpec.describe CustomDomainSubdomainConstraint do
   end
 
   it "handles multi-level hosts" do
-    constraint = CustomDomainSubdomainConstraint.new(
+    constraint = CustomDomainConstraint.new(
       host: "custom-api.product-name.telco.com"
     )
     request = stub_request(
