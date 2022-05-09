@@ -18,14 +18,18 @@ module Dashboard
     end
 
     def verify
-      current_carrier.custom_domains.where(verified_at: nil).each do |custom_domain|
-        VerifyCustomDomainJob.perform_later(custom_domain, reverify: false)
+      unverified_domains = current_carrier.custom_domains.unverified
+      verified = unverified_domains.all? { |domain| VerifyCustomDomain.call(domain) }
+
+      if verified
+        flash[:notice] = "All domains were verified successfully."
+      else
+        flash[:alert] = "Not all domains were verified successfully. Please check your DNS settings and try again later."
       end
 
       respond_with(
         @resource,
-        location: edit_dashboard_carrier_settings_custom_domain_path,
-        notice: "Manual domain verification enqueued."
+        location: edit_dashboard_carrier_settings_custom_domain_path
       )
     end
 

@@ -35,9 +35,9 @@
 
         <td>
           <% if custom_domain.verified? %>
-            Verified <i class="fas fa-check-circle"></i>
+            Verified <i class="fas fa-check-circle text-success" title="Verified at: <%= custom_domain.verified_at %>"></i>
           <% else %>
-            Pending Verification <i class="fas fa-exclamation-circle"></i>
+            Pending Verification <i class="fas fa-exclamation-circle text-warning"></i>
           <% end %>
         </td>
       </tr>

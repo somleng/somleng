@@ -12,11 +12,15 @@ class CustomDomain < ApplicationRecord
     where.not(verified_at: nil)
   end
 
+  def self.unverified
+    where(verified_at: nil)
+  end
+
   def verified?
     verified_at.present?
   end
 
-  def verify!
+  def mark_as_verified!
     touch(:verified_at)
   end
 

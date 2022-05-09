@@ -1,6 +1,6 @@
 class CustomDomainPolicy < ApplicationPolicy
   def verify?
-    manage? && custom_domains.where(verified_at: nil).any?
+    manage? && custom_domains.unverified.any?
   end
 
   def destroy?

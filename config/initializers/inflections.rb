@@ -25,4 +25,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "OAuth"
   inflect.acronym "SHA256"
   inflect.acronym "TXT"
+  inflect.acronym "DNS"
 end

@@ -1,41 +1,27 @@
 require "resolv"
 
 class VerifyCustomDomain < ApplicationWorkflow
-  MAX_VERIFICATION_PERIOD = 10.days
+  attr_reader :custom_domain, :dns_resolver
 
-  attr_reader :custom_domain, :reverify, :verification_token
-
-  def initialize(custom_domain, reverify: true, verification_token: nil)
+  def initialize(custom_domain, dns_resolver: DNSResolver.new)
     @custom_domain = custom_domain
-    @reverify = reverify
-    @verification_token = verification_token || custom_domain.verification_token
+    @dns_resolver = dns_resolver
   end
 
   def call
-    return if custom_domain.verified?
-    return if CustomDomain.verified.exists?(host: custom_domain.host)
+    return true if custom_domain.verified?
+    return false if verified_domain_exists?
 
-    if resolve_dns_record?
-      custom_domain.verify!
-    elsif reverify && custom_domain.verification_started_at > MAX_VERIFICATION_PERIOD.ago
-      reschedule_verification
-    end
+    custom_domain.mark_as_verified! if resolve_dns_record?
   end
 
   private
 
-  def resolve_dns_record?
-    Resolv::DNS.open do |dns|
-      records = dns.getresources(custom_domain.host, Resolv::DNS::Resource::IN::TXT)
-      records.find { |record| record.data == verification_token }
-    end
+  def verified_domain_exists?
+    CustomDomain.verified.exists?(host: custom_domain.host)
   end
 
-  def reschedule_verification
-    ScheduledJob.perform_later(
-      VerifyCustomDomainJob.to_s,
-      custom_domain,
-      wait_until: 15.minutes.from_now.to_f
-    )
+  def resolve_dns_record?
+    dns_resolver.resolve?(host: custom_domain.host, record_value: custom_domain.txt_record)
   end
 end

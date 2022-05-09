@@ -72,4 +72,19 @@ RSpec.describe "Authentication" do
 
     expect(page).to have_content("Setup Two Factor Authentication")
   end
+
+  it "Blocks cross-domain login" do
+    carrier = create(:carrier)
+    user = create(:user, carrier:, password: "Super Secret")
+
+    create(:custom_domain, :verified, :dashboard, host: "dashboard.example.com")
+    Capybara.current_session.driver.header("X-Forwarded-Host", "dashboard.example.com")
+
+    visit(new_user_session_path)
+    fill_in("Email", with: user.email)
+    fill_in("Password", with: "Super Secret")
+    click_button("Login")
+
+    expect(page).to have_content("Invalid email or password")
+  end
 end

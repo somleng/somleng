@@ -36,12 +36,9 @@ RSpec.describe "Custom Domains" do
 
     sign_in(user)
     visit edit_dashboard_carrier_settings_custom_domain_path
+    click_link("Verify")
 
-    perform_enqueued_jobs do
-      click_link("Verify")
-    end
-
-    expect(page).to have_content("Manual domain verification enqueued")
+    expect(page).to have_content("Not all domains were verified successfully. Please check your DNS settings and try again later")
   end
 
   it "Remove a custom domain" do
