@@ -89,6 +89,22 @@ RSpec.describe "Custom Domains" do
     expect(page).to have_css("img[alt=#{carrier.name}]")
   end
 
+  it "displays customized carrier documentation" do
+    carrier = create(:carrier, :with_logo, name: "AT&T")
+    create(:custom_domain, :api, :verified, carrier:, host: "xyz-api.example.com")
+
+    get(
+      docs_path,
+      headers: headers_for_custom_domain(
+        :api,
+        "X-Forwarded-Host" => "xyz-api.example.com"
+      )
+    )
+
+    page = Capybara.string(response.body)
+    expect(page).to have_css("img[alt='#{carrier.name}']")
+  end
+
   def headers_for_custom_domain(type, headers = {})
     host = URI(Rails.configuration.app_settings.fetch(:"#{type}_url_host")).host
     headers.reverse_merge(
