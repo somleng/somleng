@@ -4,12 +4,12 @@ class CustomDomainAuthenticationStrategy < Devise::Strategies::DatabaseAuthentic
   def authenticate!
     resource = mapping.to.find_for_database_authentication(authentication_hash)
 
-    return success!(resource) if CustomDomainAuthorizationPolicy.new(
+    return pass if CustomDomainAuthorizationPolicy.new(
       carrier: resource.carrier,
       host: request.hostname,
       context: :dashboard
     ).authorized?
 
-    fail!("Invalid email or password")
+    fail!(:not_found_in_database)
   end
 end

@@ -1,8 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   include UserAuthorization
-  include CustomDomainAuthorization
 
-  skip_before_action :authorize_custom_domain!, only: %i[new create]
   skip_before_action :authorize_user!, only: %i[new create]
   skip_after_action :verify_authorized, only: %i[new create]
   before_action :configure_account_update_parameters, only: :update

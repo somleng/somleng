@@ -279,7 +279,7 @@ Devise.setup do |config|
   #
   config.warden do |manager|
     manager.strategies.add(:custom_domain_authentication, CustomDomainAuthenticationStrategy)
-    manager.default_strategies(scope: :user) << :custom_domain_authentication
+    manager.default_strategies(scope: :user).unshift :custom_domain_authentication
   end
 
   # ==> Mountable engine configurations
