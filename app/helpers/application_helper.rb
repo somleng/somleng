@@ -14,6 +14,6 @@ module ApplicationHelper
   end
 
   def carrier_from_domain
-    @carrier_from_domain ||= Carrier.from_domain(host: request.host, type: :dashboard)
+    @carrier_from_domain ||= Carrier.from_domain(host: request.hostname, type: :dashboard)
   end
 end
