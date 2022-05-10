@@ -12,7 +12,7 @@ class CustomDomainConstraint
   end
 
   def matches?(request)
-    request.extend(HostAuthorityRequest)
+    request = request.dup.extend(HostAuthorityRequest)
     host == request.hostname
   end
 end

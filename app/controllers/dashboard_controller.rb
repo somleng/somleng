@@ -38,7 +38,7 @@ class DashboardController < ApplicationController
 
   def record; end
 
-  def custom_domain_scope
+  def custom_domain_context
     :dashboard
   end
 end

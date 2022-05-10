@@ -58,7 +58,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     user_signed_in? ? "dashboard" : "devise"
   end
 
-  def custom_domain_scope
+  def custom_domain_context
     :dashboard
   end
 end

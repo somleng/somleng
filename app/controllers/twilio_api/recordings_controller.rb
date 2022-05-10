@@ -5,6 +5,7 @@ module TwilioAPI
 
     skip_before_action :doorkeeper_authorize!, only: :show
     skip_before_action :authorize_account!, only: :show
+    skip_before_action :authorize_custom_domain!, only: :show
 
     def index
       recordings = parent_resource.recordings.page(params[:Page]).per(params[:PageSize])

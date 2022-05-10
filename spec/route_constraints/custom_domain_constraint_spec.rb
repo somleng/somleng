@@ -68,6 +68,20 @@ RSpec.describe CustomDomainConstraint do
     expect(result).to eq(true)
   end
 
+  it "does not modify the original request" do
+    constraint = CustomDomainConstraint.new(
+      host: "api.somleng.org"
+    )
+    request = stub_request(
+      "HTTP_HOST" => "api.somleng.org",
+      "HTTP_X_FORWARDED_HOST" => "xyz.example.com"
+    )
+
+    constraint.matches?(request)
+
+    expect(request.hostname).to eq("xyz.example.com")
+  end
+
   def stub_request(headers)
     ActionDispatch::TestRequest.create(headers)
   end

@@ -1,8 +1,6 @@
 class APIController < ActionController::API
   self.responder = APIResponder
 
-  include CustomDomainAuthorization
-
   respond_to :json
 
   private
@@ -25,9 +23,5 @@ class APIController < ActionController::API
 
   def respond_with_errors(object, **options)
     respond_with(object, responder: InvalidRequestSchemaResponder, **options)
-  end
-
-  def custom_domain_scope
-    :api
   end
 end

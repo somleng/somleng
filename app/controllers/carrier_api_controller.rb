@@ -3,6 +3,8 @@ class CarrierAPIController < APIController
 
   before_action -> { doorkeeper_authorize!(:carrier_api) }
 
+  include CustomDomainAuthorization
+
   private
 
   def validate_request_schema(with:, **options, &block)
@@ -21,11 +23,15 @@ class CarrierAPIController < APIController
     @current_carrier ||= doorkeeper_token.application.owner
   end
 
+  def respond_with_resource(resource, options = {})
+    respond_with(:carrier_api, :v1, resource, **options)
+  end
+
   def authorized_carrier
     current_carrier
   end
 
-  def respond_with_resource(resource, options = {})
-    respond_with(:carrier_api, :v1, resource, **options)
+  def custom_domain_context
+    :api
   end
 end
