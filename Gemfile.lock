@@ -585,6 +585,7 @@ DEPENDENCIES
   aws-sdk-ec2
   aws-sdk-rails
   aws-sdk-s3
+  aws-sdk-ses
   aws-sdk-sqs
   bootsnap
   capybara

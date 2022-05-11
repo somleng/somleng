@@ -13,6 +13,7 @@ RSpec.describe "Custom Domains" do
 
     fill_in("Dashboard host", with: "xyz-dashboard.example.com")
     fill_in("API host", with: "xyz-api.example.com")
+    fill_in("Mail host", with: "example.com")
 
     perform_enqueued_jobs(only: VerifyCustomDomainJob) do
       click_button("Save Custom Domain")
@@ -25,6 +26,11 @@ RSpec.describe "Custom Domains" do
 
     within("#api-domain-settings") do
       expect(page).to have_content("xyz-api.example.com")
+      expect(page).to have_content("Pending Verification")
+    end
+
+    within("#mail-domain-settings") do
+      expect(page).to have_content("example.com")
       expect(page).to have_content("Pending Verification")
     end
   end

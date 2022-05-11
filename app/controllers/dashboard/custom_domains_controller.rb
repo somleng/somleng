@@ -36,7 +36,7 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:custom_domain).permit(:dashboard_host, :api_host)
+      params.require(:custom_domain).permit(:dashboard_host, :api_host, :mail_host)
     end
 
     def policy_class

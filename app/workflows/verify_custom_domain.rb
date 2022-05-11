@@ -1,11 +1,11 @@
 require "resolv"
 
 class VerifyCustomDomain < ApplicationWorkflow
-  attr_reader :custom_domain, :dns_resolver
+  attr_reader :custom_domain, :domain_verifier
 
-  def initialize(custom_domain, dns_resolver: DNSResolver.new)
+  def initialize(custom_domain, domain_verifier: DNSRecordVerifier.new)
     @custom_domain = custom_domain
-    @dns_resolver = dns_resolver
+    @domain_verifier = domain_verifier
   end
 
   def call
@@ -22,6 +22,6 @@ class VerifyCustomDomain < ApplicationWorkflow
   end
 
   def resolve_dns_record?
-    dns_resolver.resolve?(host: custom_domain.host, record_value: custom_domain.txt_record)
+    domain_verifier.verify(host: custom_domain.host, record_value: custom_domain.txt_record)
   end
 end

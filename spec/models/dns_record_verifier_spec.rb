@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe DNSResolver do
+RSpec.describe DNSRecordVerifier do
   it "verifies a record" do
     expect(
-      DNSResolver.new.resolve?(
+      DNSRecordVerifier.new.verify(
         host: "example.com",
         record_value: "wgyf8z8cgvm2qmxpnbnldrcltvk4xqfn"
       )
@@ -12,7 +12,7 @@ RSpec.describe DNSResolver do
 
   it "handles invalid records" do
     expect(
-      DNSResolver.new.resolve?(
+      DNSRecordVerifier.new.verify(
         host: "example.com",
         record_value: "invalid"
       )
