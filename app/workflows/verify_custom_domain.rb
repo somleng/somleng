@@ -22,6 +22,6 @@ class VerifyCustomDomain < ApplicationWorkflow
   end
 
   def resolve_dns_record?
-    domain_verifier.verify(host: custom_domain.host, record_value: custom_domain.txt_record)
+    domain_verifier.verify(host: custom_domain.host, record_value: custom_domain.record_value)
   end
 end

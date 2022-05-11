@@ -10,6 +10,12 @@ class CreateEmailIdentity < ApplicationWorkflow
 
   def call
     response = client.create_email_identity(email_identity: custom_domain.host)
-    custom_domain.update!(verification_data: { dkim_tokens: response.dkim_attributes.tokens })
+    custom_domain.update!(
+      verification_data: {
+        dkim_provider: "amazonses",
+        type: :dkim,
+        dkim_tokens: response.dkim_attributes.tokens
+      }
+    )
   end
 end

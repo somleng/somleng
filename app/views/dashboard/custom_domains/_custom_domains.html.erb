@@ -24,12 +24,12 @@
         </td>
 
         <td>
-          <%= external_link_to(custom_domain.host, "https://#{custom_domain.host}", target: "_blank") %>
+          <%= external_link_to(custom_domain.record_name, "https://#{custom_domain.record_name}", target: "_blank") %>
         </td>
 
         <td>
           <code>
-            <%= custom_domain.txt_record %>
+            <%= custom_domain.record_value %>
           </code>
         </td>
 
