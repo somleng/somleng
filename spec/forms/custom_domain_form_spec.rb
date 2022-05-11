@@ -60,16 +60,22 @@ RSpec.describe CustomDomainForm do
       expect(result).to eq(true)
       expect(carrier.custom_domain(:dashboard)).to have_attributes(
         host: "dashboard.example.com",
+        type: "dashboard",
+        dns_record_type: "txt",
         verification_started_at: be_present,
         verified_at: be_blank
       )
       expect(carrier.custom_domain(:api)).to have_attributes(
         host: "api.example.com",
+        type: "api",
+        dns_record_type: "txt",
         verification_started_at: be_present,
         verified_at: be_blank
       )
       expect(carrier.custom_domain(:mail)).to have_attributes(
         host: "example.com",
+        type: "mail",
+        dns_record_type: "cname",
         verification_started_at: be_present,
         verified_at: be_blank
       )

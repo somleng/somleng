@@ -395,7 +395,20 @@ FactoryBot.define do
     verification_started_at { Time.current }
     sequence(:host) { |n| "custom-host-#{n}.example.com" }
 
-    traits_for_enum :type, CustomDomain.type.values
+    trait :dashboard do
+      type { "dashboard" }
+      dns_record_type { "txt" }
+    end
+
+    trait :api do
+      type { "api" }
+      dns_record_type { "txt" }
+    end
+
+    trait :mail do
+      type { "mail" }
+      dns_record_type { "cname" }
+    end
 
     trait :verified do
       verified_at { Time.current }

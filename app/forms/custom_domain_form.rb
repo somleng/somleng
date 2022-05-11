@@ -47,8 +47,8 @@ class CustomDomainForm
     return false if invalid?
 
     CustomDomain.transaction do
-      configure_custom_domain!(:dashboard, host: dashboard_host)
-      configure_custom_domain!(:api, host: api_host)
+      configure_custom_domain!(type: :dashboard, host: dashboard_host, dns_record_type: :txt)
+      configure_custom_domain!(type: :api, host: api_host, dns_record_type: :txt)
       configure_mail_domain!
     end
 
@@ -57,22 +57,23 @@ class CustomDomainForm
 
   private
 
-  def configure_custom_domain!(type, host:)
-    domain = create_custom_domain!(type, host:)
+  def configure_custom_domain!(type:, host:, dns_record_type:)
+    domain = create_custom_domain!(type:, host:, dns_record_type:)
     VerifyCustomDomainJob.perform_later(domain)
   end
 
-  def create_custom_domain!(type, host:)
+  def create_custom_domain!(type:, host:, dns_record_type:)
     CustomDomain.create!(
       carrier:,
       type:,
       host:,
+      dns_record_type:,
       verification_started_at: Time.current
     )
   end
 
   def configure_mail_domain!
-    domain = create_custom_domain!(:mail, host: mail_host)
+    domain = create_custom_domain!(type: :mail, host: mail_host, dns_record_type: :cname)
     ExecuteWorkflowJob.perform_later(CreateEmailIdentity.to_s, domain)
     VerifyEmailIdentityJob.perform_later(domain)
   end

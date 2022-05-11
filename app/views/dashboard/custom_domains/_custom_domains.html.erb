@@ -2,13 +2,13 @@
   <thead>
     <tr role="row">
       <th>
-        Type
+        Record Type
       </th>
       <th>
         Host
       </th>
       <th>
-        TXT Record
+        Value
       </th>
       <th>
         Status
@@ -20,7 +20,7 @@
     <% custom_domains.each do |custom_domain| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>" id="<%= custom_domain.type %>-domain-settings">
         <td>
-          <%= custom_domain.type.humanize %>
+          <%= custom_domain.dns_record_type.upcase %>
         </td>
 
         <td>
@@ -42,5 +42,6 @@
         </td>
       </tr>
     <% end %>
+
   </tbody>
 </table>

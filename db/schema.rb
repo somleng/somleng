@@ -115,6 +115,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_09_011934) do
     t.datetime "verification_started_at"
     t.datetime "verified_at"
     t.jsonb "verification_data", default: {}, null: false
+    t.string "dns_record_type", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -8,6 +8,7 @@ class CreateCustomDomains < ActiveRecord::Migration[7.0]
       t.datetime :verification_started_at
       t.datetime :verified_at
       t.jsonb :verification_data, default: {}, null: false
+      t.string :dns_record_type, null: false
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
       t.timestamps
