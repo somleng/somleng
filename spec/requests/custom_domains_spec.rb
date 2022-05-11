@@ -91,18 +91,20 @@ RSpec.describe "Custom Domains" do
 
   it "displays customized carrier documentation" do
     carrier = create(:carrier, :with_logo, name: "AT&T")
-    create(:custom_domain, :api, :verified, carrier:, host: "xyz-api.example.com")
+    create(:custom_domain, :api, :verified, carrier:, host: "api.att.com")
 
     get(
       docs_path,
       headers: headers_for_custom_domain(
         :api,
-        "X-Forwarded-Host" => "xyz-api.example.com"
+        "X-Forwarded-Host" => "api.att.com"
       )
     )
 
     page = Capybara.string(response.body)
-    expect(page).to have_css("img[alt='#{carrier.name}']")
+    expect(page).to have_css("img[alt='AT&T']")
+    expect(page).to have_content("AT&T API Documentation")
+    expect(page).to have_content("api.att.com")
   end
 
   def headers_for_custom_domain(type, headers = {})
