@@ -148,6 +148,9 @@ GEM
     aws-sdk-ses (1.47.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-sesv2 (1.27.0)
+      aws-sdk-core (~> 3, >= 3.127.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-sqs (1.51.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
@@ -585,7 +588,7 @@ DEPENDENCIES
   aws-sdk-ec2
   aws-sdk-rails
   aws-sdk-s3
-  aws-sdk-ses
+  aws-sdk-sesv2
   aws-sdk-sqs
   bootsnap
   capybara

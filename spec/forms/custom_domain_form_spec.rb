@@ -20,7 +20,7 @@ RSpec.describe CustomDomainForm do
       expect(form.errors[:api_host]).to be_present
     end
 
-    it "validates the dashboard and api hosts are different" do
+    it "validates the hosts are unique" do
       form = CustomDomainForm.new(
         dashboard_host: "example.com",
         api_host: "example.com"
@@ -50,7 +50,8 @@ RSpec.describe CustomDomainForm do
       carrier = create(:carrier)
       form = CustomDomainForm.new(
         dashboard_host: "dashboard.example.com",
-        api_host: "api.example.com"
+        api_host: "api.example.com",
+        mail_host: "example.com"
       )
       form.carrier = carrier
 
@@ -67,11 +68,22 @@ RSpec.describe CustomDomainForm do
         verification_started_at: be_present,
         verified_at: be_blank
       )
+      expect(carrier.custom_domain(:mail)).to have_attributes(
+        host: "example.com",
+        verification_started_at: be_present,
+        verified_at: be_blank
+      )
       expect(VerifyCustomDomainJob).to have_been_enqueued.with(
         carrier.custom_domain(:dashboard)
       )
       expect(VerifyCustomDomainJob).to have_been_enqueued.with(
         carrier.custom_domain(:api)
+      )
+      expect(ExecuteWorkflowJob).to have_been_enqueued.with(
+        "CreateEmailIdentity", carrier.custom_domain(:mail)
+      )
+      expect(VerifyEmailIdentityJob).to have_been_enqueued.with(
+        carrier.custom_domain(:mail)
       )
     end
   end

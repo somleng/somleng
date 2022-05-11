@@ -8,7 +8,7 @@ RSpec.describe AuthorizeSecurityGroupIP do
       security_group_id: "security-group-id",
       ip: "175.100.7.240",
       description: "Security Group Rule",
-      client: client
+      client:
     )
 
     authorize_rule_request = client.api_requests.first

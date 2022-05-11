@@ -1,11 +1,11 @@
 class SESIdentityVerifier
   def verify(host:, client: nil, **_options)
     client ||= Aws::SESV2::Client.new(
-      region: Rails.application.app_settings.fetch(:ses_region)
+      region: Rails.configuration.app_settings.fetch(:aws_ses_region)
     )
 
-    resp = client.get_email_identity(
-      email_identity: "Identity", # required
-    )
+    response = client.get_email_identity(email_identity: host)
+
+    response.verified_for_sending_status
   end
 end

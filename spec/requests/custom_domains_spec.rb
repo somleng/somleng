@@ -107,6 +107,27 @@ RSpec.describe "Custom Domains" do
     expect(page).to have_content("api.att.com")
   end
 
+  it "returns 404 for unverified domains" do
+    carrier = create(:carrier, :with_logo, name: "AT&T")
+    create(:custom_domain, :api, carrier:, host: "api.att.com")
+
+    get(
+      docs_path,
+      headers: headers_for_custom_domain(
+        :api,
+        "X-Forwarded-Host" => "api.att.com"
+      )
+    )
+
+    expect(response.code).to eq("404")
+  end
+
+  it "redirects for requests to somleng.org" do
+    get(docs_path)
+
+    expect(response).to redirect_to("https://www.somleng.org/docs.html")
+  end
+
   def headers_for_custom_domain(type, headers = {})
     host = URI(Rails.configuration.app_settings.fetch(:"#{type}_url_host")).host
     headers.reverse_merge(

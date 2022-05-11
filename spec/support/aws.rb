@@ -6,3 +6,10 @@ Aws.config[:ec2] ||= {
     authorize_security_group_ingress: Aws::EC2::Client.new.stub_data(:authorize_security_group_ingress)
   }
 }
+
+Aws.config[:sesv2] ||= {
+  stub_responses: {
+    create_email_identity: Aws::SESV2::Client.new.stub_data(:create_email_identity),
+    get_email_identity: Aws::SESV2::Client.new.stub_data(:get_email_identity)
+  }
+}

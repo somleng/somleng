@@ -1,4 +1,4 @@
-class VerifyCustomDomainJob < ApplicationJob
+class VerifyEmailIdentityJob < ApplicationJob
   MAX_VERIFICATION_PERIOD = 72.hours
 
   rescue_from(ActiveJob::DeserializationError) do |e|
@@ -20,7 +20,7 @@ class VerifyCustomDomainJob < ApplicationJob
 
   def reschedule_verification(custom_domain)
     ScheduledJob.perform_later(
-      VerifyMailIdentityJob.to_s,
+      VerifyEmailIdentityJob.to_s,
       custom_domain,
       wait_until: 15.minutes.from_now.to_f
     )

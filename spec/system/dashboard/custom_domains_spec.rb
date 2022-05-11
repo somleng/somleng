@@ -15,7 +15,7 @@ RSpec.describe "Custom Domains" do
     fill_in("API host", with: "xyz-api.example.com")
     fill_in("Mail host", with: "example.com")
 
-    perform_enqueued_jobs(only: VerifyCustomDomainJob) do
+    perform_enqueued_jobs(except: ScheduledJob) do
       click_button("Save Custom Domain")
     end
 

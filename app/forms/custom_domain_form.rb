@@ -49,7 +49,7 @@ class CustomDomainForm
     CustomDomain.transaction do
       configure_custom_domain!(:dashboard, host: dashboard_host)
       configure_custom_domain!(:api, host: api_host)
-      configure_custom_domain!(:mail, host: mail_host, verify_with: VerifyMailIdentityJob)
+      configure_mail_domain!
     end
 
     true
@@ -57,14 +57,24 @@ class CustomDomainForm
 
   private
 
-  def configure_custom_domain!(type, host:, verify_with: VerifyCustomDomainJob)
-    domain = CustomDomain.create!(
+  def configure_custom_domain!(type, host:)
+    domain = create_custom_domain!(type, host:)
+    VerifyCustomDomainJob.perform_later(domain)
+  end
+
+  def create_custom_domain!(type, host:)
+    CustomDomain.create!(
       carrier:,
       type:,
       host:,
       verification_started_at: Time.current
     )
-    verify_with.perform_later(domain)
+  end
+
+  def configure_mail_domain!
+    domain = create_custom_domain!(:mail, host: mail_host)
+    ExecuteWorkflowJob.perform_later(CreateEmailIdentity.to_s, domain)
+    VerifyEmailIdentityJob.perform_later(domain)
   end
 
   def validate_hosts

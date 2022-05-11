@@ -1,18 +1,16 @@
 class DocumentationRenderer
-  attr_reader :content, :custom_domain
+  attr_reader :template, :custom_domain
 
-  def initialize(content:, custom_domain: nil)
-    @content = content.dup
+  def initialize(template:, custom_domain:)
+    @template = template
     @custom_domain = custom_domain
   end
 
   def render
-    return content if custom_domain.blank?
-
     set_logo
     set_carrier_name
 
-    content.html_safe
+    content
   end
 
   private
@@ -22,7 +20,7 @@ class DocumentationRenderer
   end
 
   def set_logo
-    return if carrier.logo.blank?
+    return unless carrier.logo.attached?
 
     html_doc = Nokogiri::HTML(content)
     logo = html_doc.at_css(".logo")
@@ -38,5 +36,9 @@ class DocumentationRenderer
 
   def url_helpers
     @url_helpers ||= Rails.application.routes.url_helpers
+  end
+
+  def content
+    @content ||= template.read
   end
 end

@@ -5,7 +5,7 @@ class CustomDomain < ApplicationRecord
 
   belongs_to :carrier
 
-  enumerize :type, in: %i[dashboard api]
+  enumerize :type, in: %i[dashboard api mail]
   has_secure_token :verification_token
 
   def self.verified
