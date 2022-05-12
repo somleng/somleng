@@ -1,3 +1,7 @@
+%center
+  %h1
+    Welcome to @organization_name
+
 <p>Welcome <%= @resource.name %>!</p>
 
 <p>You can confirm your account email through the link below:</p>
