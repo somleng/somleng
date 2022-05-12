@@ -63,6 +63,10 @@ FactoryBot.define do
         carrier.custom_domain(:api) || carrier.custom_domains << build(
           :custom_domain, :api, carrier:
         )
+
+        carrier.custom_domain(:mail) || carrier.custom_domains << build(
+          :custom_domain, :mail, carrier:
+        )
       end
     end
 

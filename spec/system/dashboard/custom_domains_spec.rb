@@ -53,7 +53,10 @@ RSpec.describe "Custom Domains" do
 
     sign_in(user)
     visit edit_dashboard_carrier_settings_custom_domain_path
-    click_link("Delete")
+
+    perform_enqueued_jobs do
+      click_link("Delete")
+    end
 
     expect(page).to have_content("Custom domain was successfully destroyed")
   end

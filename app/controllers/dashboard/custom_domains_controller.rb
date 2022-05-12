@@ -19,7 +19,7 @@ module Dashboard
 
     def verify
       unverified_domains = current_carrier.custom_domains.unverified
-      verified = unverified_domains.all? { |domain| VerifyCustomDomain.call(domain) }
+      verified = unverified_domains.all?(&:verify!)
 
       if verified
         flash[:notice] = "All domains were verified successfully."

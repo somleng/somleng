@@ -79,18 +79,9 @@ RSpec.describe CustomDomainForm do
         verification_started_at: be_present,
         verified_at: be_blank
       )
-      expect(VerifyCustomDomainJob).to have_been_enqueued.with(
-        carrier.custom_domain(:dashboard)
-      )
-      expect(VerifyCustomDomainJob).to have_been_enqueued.with(
-        carrier.custom_domain(:api)
-      )
-      expect(ExecuteWorkflowJob).to have_been_enqueued.with(
-        "CreateEmailIdentity", carrier.custom_domain(:mail)
-      )
-      expect(VerifyEmailIdentityJob).to have_been_enqueued.with(
-        carrier.custom_domain(:mail)
-      )
+      expect(VerifyCustomDomainJob).to have_been_enqueued.with(carrier.custom_domain(:dashboard))
+      expect(VerifyCustomDomainJob).to have_been_enqueued.with(carrier.custom_domain(:api))
+      expect(VerifyCustomDomainJob).to have_been_enqueued.with(carrier.custom_domain(:mail))
     end
   end
 end

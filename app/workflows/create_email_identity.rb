@@ -9,7 +9,15 @@ class CreateEmailIdentity < ApplicationWorkflow
   end
 
   def call
-    response = client.create_email_identity(email_identity: custom_domain.host)
+    response = client.create_email_identity(
+      email_identity: custom_domain.host,
+      tags: [
+        {
+          key: "ManagedBy",
+          value: "somleng"
+        }
+      ]
+    )
     custom_domain.update!(
       verification_data: {
         dkim_provider: "amazonses",

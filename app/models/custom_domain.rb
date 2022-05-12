@@ -9,6 +9,8 @@ class CustomDomain < ApplicationRecord
   enumerize :dns_record_type, in: %i[txt cname]
   has_secure_token :verification_token
 
+  after_commit :delete_email_identity, on: :destroy
+
   def self.verified
     where.not(verified_at: nil)
   end
@@ -23,6 +25,14 @@ class CustomDomain < ApplicationRecord
 
   def mark_as_verified!
     touch(:verified_at)
+  end
+
+  def verify!
+    if dns_record_type.txt?
+      VerifyCustomDomain.call(self, domain_verifier: DNSRecordVerifier.new(host:, record_value:))
+    elsif dkim? && dkim_provider == "amazonses"
+      VerifyCustomDomain.call(self, domain_verifier: SESIdentityVerifier.new(host:))
+    end
   end
 
   def record_name
@@ -53,5 +63,11 @@ class CustomDomain < ApplicationRecord
 
   def dkim_provider
     verification_data["dkim_provider"]
+  end
+
+  def delete_email_identity
+    return unless type.mail?
+
+    ExecuteWorkflowJob.perform_later(DeleteEmailIdentity.to_s, host)
   end
 end

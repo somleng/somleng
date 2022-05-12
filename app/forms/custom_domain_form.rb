@@ -8,6 +8,12 @@ class CustomDomainForm
     end
   end
 
+  RESERVED_HOSTS = [
+    URI(Rails.configuration.app_settings.fetch(:dashboard_url_host)).host,
+    URI(Rails.configuration.app_settings.fetch(:api_url_host)).host,
+    Rails.configuration.app_settings.fetch(:mail_host)
+  ].freeze
+
   include ActiveModel::Model
   include ActiveModel::Attributes
 
@@ -21,17 +27,20 @@ class CustomDomainForm
   validates :dashboard_host,
             presence: true,
             hostname: true,
-            host_uniqueness: true
+            host_uniqueness: true,
+            exclusion: { in: RESERVED_HOSTS }
 
   validates :api_host,
             presence: true,
             hostname: true,
-            host_uniqueness: true
+            host_uniqueness: true,
+            exclusion: { in: RESERVED_HOSTS }
 
   validates :mail_host,
             presence: true,
             hostname: true,
-            host_uniqueness: true
+            host_uniqueness: true,
+            exclusion: { in: RESERVED_HOSTS }
 
   validate :validate_hosts
 
@@ -49,7 +58,9 @@ class CustomDomainForm
     CustomDomain.transaction do
       configure_custom_domain!(type: :dashboard, host: dashboard_host, dns_record_type: :txt)
       configure_custom_domain!(type: :api, host: api_host, dns_record_type: :txt)
-      configure_mail_domain!
+      configure_custom_domain!(type: :mail, host: mail_host, dns_record_type: :cname) do |custom_domain|
+        CreateEmailIdentity.call(custom_domain)
+      end
     end
 
     true
@@ -58,31 +69,26 @@ class CustomDomainForm
   private
 
   def configure_custom_domain!(type:, host:, dns_record_type:)
-    domain = create_custom_domain!(type:, host:, dns_record_type:)
-    VerifyCustomDomainJob.perform_later(domain)
-  end
-
-  def create_custom_domain!(type:, host:, dns_record_type:)
-    CustomDomain.create!(
+    custom_domain = CustomDomain.create!(
       carrier:,
       type:,
       host:,
       dns_record_type:,
       verification_started_at: Time.current
     )
-  end
 
-  def configure_mail_domain!
-    domain = create_custom_domain!(type: :mail, host: mail_host, dns_record_type: :cname)
-    ExecuteWorkflowJob.perform_later(CreateEmailIdentity.to_s, domain)
-    VerifyEmailIdentityJob.perform_later(domain)
+    yield(custom_domain) if block_given?
+
+    VerifyCustomDomainJob.set(wait: 15.minutes).perform_later(
+      custom_domain
+    )
   end
 
   def validate_hosts
     hosts = { mail_host:, api_host:, dashboard_host: }.compact
-    duplicate_host = hosts.find { |_key, host| hosts.values.count(host) > 1 }
-    return if duplicate_host.blank?
+    duplicate_hosts = hosts.find { |_key, host| hosts.values.count(host) > 1 }
+    return if duplicate_hosts.blank?
 
-    errors.add(duplicate_host[0], :other_than, count: duplicate_host[1])
+    errors.add(duplicate_hosts[0], :other_than, count: duplicate_hosts[1])
   end
 end

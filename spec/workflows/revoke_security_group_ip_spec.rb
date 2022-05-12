@@ -7,7 +7,7 @@ RSpec.describe RevokeSecurityGroupIP do
     RevokeSecurityGroupIP.call(
       security_group_id: "security-group-id",
       ip: "175.100.7.240",
-      client: client
+      client:
     )
 
     revoke_rule_request = client.api_requests.first
@@ -26,18 +26,18 @@ RSpec.describe RevokeSecurityGroupIP do
     client = Aws::EC2::Client.new(stub_responses: true)
     client.stub_responses(:revoke_security_group_ingress, "InvalidPermissionNotFound")
 
-    expect {
+    expect do
       RevokeSecurityGroupIP.call(
         security_group_id: "security-group-id",
         ip: "175.100.7.240",
-        client: client
+        client:
       )
-    }.not_to raise_error
+    end.not_to raise_error
   end
 
   def aws_request(operation_name:, security_group_id:, ip_ranges:, ip_permissions: {})
     hash_including(
-      operation_name: operation_name,
+      operation_name:,
       params: hash_including(
         group_id: security_group_id,
         ip_permissions: [

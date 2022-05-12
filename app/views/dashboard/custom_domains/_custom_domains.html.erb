@@ -24,20 +24,28 @@
         </td>
 
         <td>
-          <%= external_link_to(custom_domain.record_name, "https://#{custom_domain.record_name}", target: "_blank") %>
+          <code>
+            <% Array(custom_domain.record_name).each do |record_name| -%>
+              <%= record_name %>
+              <br/>
+            <% end %>
+          </code>
         </td>
 
         <td>
           <code>
-            <%= custom_domain.record_value %>
+            <% Array(custom_domain.record_value).each do |record_value| -%>
+              <%= record_value %>
+              <br/>
+            <% end %>
           </code>
         </td>
 
         <td>
           <% if custom_domain.verified? %>
-            Verified <i class="fas fa-check-circle text-success" title="Verified at: <%= custom_domain.verified_at %>"></i>
+            <span class="text-success">Verified <i class="fas fa-check-circle" title="Verified at: <%= custom_domain.verified_at %>"></i></span>
           <% else %>
-            Pending Verification <i class="fas fa-exclamation-circle text-warning"></i>
+            <span class="text-warning">Pending Verification <i class="fas fa-exclamation-circle text-warning"></i></span>
           <% end %>
         </td>
       </tr>
