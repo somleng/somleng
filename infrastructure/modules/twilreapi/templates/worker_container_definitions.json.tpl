@@ -63,6 +63,10 @@
         "value": "${region}"
       },
       {
+        "name": "AWS_SES_REGION",
+        "value": "${aws_ses_region}"
+      },
+      {
         "name": "DATABASE_NAME",
         "value": "${database_name}"
       },
