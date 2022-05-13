@@ -7,11 +7,7 @@ module TwilioAPI
         return redirect_to("https://www.somleng.org/docs.html", allow_other_host: true)
       end
 
-      custom_domain = CustomDomain.verified.find_by!(
-        host: custom_domain_request.custom_domain_hostname,
-        type: :api
-      )
-
+      custom_domain = custom_domain_request.find_custom_domain!(:api)
       renderer = DocumentationRenderer.new(
         custom_domain:,
         template: Rails.root.join("public/docs/twilio_api/index.html")

@@ -21,10 +21,7 @@ module TwilioAPI
 
     def show
       if custom_domain_request.custom_domain_request?
-        CustomDomain.verified.find_by!(
-          host: custom_domain_request.custom_domain_hostname,
-          type: :api
-        )
+        custom_domain_request.find_custom_domain!(:api)
       end
 
       account = Account.find(params[:account_id])

@@ -13,6 +13,16 @@ class CustomDomainRequest < SimpleDelegator
     request.hostname
   end
 
+  def find_custom_domain!(context, options = {})
+    return unless custom_domain_request?
+
+    CustomDomain.verified.find_by!(
+      host: custom_domain_hostname,
+      type: context,
+      **options
+    )
+  end
+
   private
 
   def request

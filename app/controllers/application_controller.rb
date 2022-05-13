@@ -8,10 +8,7 @@ class ApplicationController < ActionController::Base
   def verify_custom_domain!
     return unless custom_domain_request.custom_domain_request?
 
-    CustomDomain.verified.find_by!(
-      host: custom_domain_request.custom_domain_hostname,
-      type: :dashboard
-    )
+    custom_domain_request.find_custom_domain!(:dashboard)
   end
 
   def custom_domain_request

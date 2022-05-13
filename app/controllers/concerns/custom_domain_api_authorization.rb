@@ -10,11 +10,7 @@ module CustomDomainAPIAuthorization
   def verify_custom_domain!
     return unless custom_domain_request.custom_domain_request?
 
-    CustomDomain.verified.find_by!(
-      host: custom_domain_request.custom_domain_hostname,
-      type: :api,
-      carrier: authorized_carrier
-    )
+    custom_domain_request.find_custom_domain!(:api, carrier: authorized_carrier)
   end
 
   def custom_domain_request
