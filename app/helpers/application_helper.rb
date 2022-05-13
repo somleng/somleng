@@ -12,8 +12,4 @@ module ApplicationHelper
 
     tag.time(time.utc.iso8601, data: { behavior: "local-time" })
   end
-
-  def carrier_from_domain
-    @carrier_from_domain ||= Carrier.from_domain(host: request.hostname, type: :dashboard)
-  end
 end

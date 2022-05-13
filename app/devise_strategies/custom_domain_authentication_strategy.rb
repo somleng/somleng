@@ -6,8 +6,8 @@ class CustomDomainAuthenticationStrategy < Devise::Strategies::TwoFactorAuthenti
   def authentication_hash
     return super unless custom_domain_request.custom_domain_request?
 
-    carrier = Carrier.from_domain(host: custom_domain_request.custom_domain_hostname, type: :dashboard)
-    super.merge(carrier_id: carrier.id)
+    custom_domain = custom_domain_request.find_custom_domain!(:dashboard)
+    super.merge(carrier_id: custom_domain.carrier_id)
   end
 
   def custom_domain_request

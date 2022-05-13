@@ -14,9 +14,16 @@ class CustomDomainRequest < SimpleDelegator
   end
 
   def find_custom_domain!(context, options = {})
+    custom_domain = find_custom_domain(context, options)
+    raise ActiveRecord::RecordNotFound if custom_domain.blank?
+
+    custom_domain
+  end
+
+  def find_custom_domain(context, options = {})
     return unless custom_domain_request?
 
-    CustomDomain.verified.find_by!(
+    CustomDomain.verified.find_by(
       host: custom_domain_hostname,
       type: context,
       **options
