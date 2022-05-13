@@ -23,8 +23,8 @@ RSpec.describe DeviseMailer, type: :mailer do
       mail = DeviseMailer.confirmation_instructions(user, "abc")
 
       expect(mail).to have_attributes(
-        from: ["contact@example.com"],
-        reply_to: ["contact@example.com"]
+        from: ["no-reply@example.com"],
+        reply_to: ["no-reply@example.com"]
       )
       mail_body = Capybara.string(mail.body.encoded)
       expect(mail_body).to have_link("Confirm my account", href: "http://dashboard.example.com/users/confirmation?confirmation_token=abc")

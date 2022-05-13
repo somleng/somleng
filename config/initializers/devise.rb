@@ -278,9 +278,7 @@ Devise.setup do |config|
   # change the failure app, you can configure them inside the config.warden block.
   #
   config.warden do |manager|
-    manager.strategies.add(:custom_domain_authentication, CustomDomainAuthenticationStrategy)
-    p manager.default_strategies(scope: :user)._strategies
-    # manager.default_strategies(scope: :user).unshift :custom_domain_authentication
+    manager.strategies.add(:two_factor_authenticatable, CustomDomainAuthenticationStrategy)
   end
 
   # ==> Mountable engine configurations

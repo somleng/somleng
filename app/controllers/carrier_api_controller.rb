@@ -3,7 +3,7 @@ class CarrierAPIController < APIController
 
   before_action -> { doorkeeper_authorize!(:carrier_api) }
 
-  include CustomDomainAuthorization
+  include CustomDomainAPIAuthorization
 
   private
 
@@ -29,9 +29,5 @@ class CarrierAPIController < APIController
 
   def authorized_carrier
     current_carrier
-  end
-
-  def custom_domain_context
-    :api
   end
 end

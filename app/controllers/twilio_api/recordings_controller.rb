@@ -5,7 +5,7 @@ module TwilioAPI
 
     skip_before_action :doorkeeper_authorize!, only: :show
     skip_before_action :authorize_account!, only: :show
-    skip_before_action :authorize_custom_domain!, only: :show
+    skip_before_action :verify_custom_domain!, only: :show
 
     def index
       recordings = parent_resource.recordings.page(params[:Page]).per(params[:PageSize])
@@ -20,6 +20,13 @@ module TwilioAPI
     end
 
     def show
+      if custom_domain_request.custom_domain_request?
+        CustomDomain.verified.find_by!(
+          host: custom_domain_request.custom_domain_hostname,
+          type: :api
+        )
+      end
+
       account = Account.find(params[:account_id])
       recording = account.recordings.find(params[:id])
 

@@ -1,13 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Custom Domains" do
-  it "makes api requests" do
-    account = create(:account)
+  it "makes api requests on custom domains" do
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    create(:custom_domain, :api, :verified, carrier:, host: "api.example.com")
 
     get(
       twilio_api_account_phone_calls_path(account),
       headers: build_api_authorization_headers(account).merge(
-        headers_for_custom_domain(:api)
+        headers_for_custom_domain(:api, "X-Forwarded-Host" => "api.example.com")
       )
     )
 
@@ -33,26 +35,17 @@ RSpec.describe "Custom Domains" do
     account = create(:account, carrier:)
     create(:custom_domain, :api, :verified, carrier: other_carrier, host: "xyz.example.com")
 
-    get(
-      twilio_api_account_phone_calls_path(account),
-      headers: build_api_authorization_headers(account).merge(
-        headers_for_custom_domain(
-          :api,
-          "X-Forwarded-Host" => "xyz.example.com"
+    expect {
+      get(
+        twilio_api_account_phone_calls_path(account),
+        headers: build_api_authorization_headers(account).merge(
+          headers_for_custom_domain(
+            :api,
+            "X-Forwarded-Host" => "xyz.example.com"
+          )
         )
       )
-    )
-
-    expect(response.code).to eq("401")
-  end
-
-  it "makes dashboard requests" do
-    get(
-      new_user_session_path,
-      headers: headers_for_custom_domain(:dashboard)
-    )
-
-    expect(response.code).to eq("200")
+    }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "blocks requests to admin panel for custom domains" do
@@ -109,17 +102,17 @@ RSpec.describe "Custom Domains" do
 
   it "returns 404 for unverified domains" do
     carrier = create(:carrier, :with_logo, name: "AT&T")
-    create(:custom_domain, :api, carrier:, host: "api.att.com")
+    create(:custom_domain, :unverified, :api, carrier:, host: "api.att.com")
 
-    get(
-      docs_path,
-      headers: headers_for_custom_domain(
-        :api,
-        "X-Forwarded-Host" => "api.att.com"
+    expect {
+      get(
+        docs_path,
+        headers: headers_for_custom_domain(
+          :api,
+          "X-Forwarded-Host" => "api.att.com"
+        )
       )
-    )
-
-    expect(response.code).to eq("404")
+    }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "redirects for requests to somleng.org" do
@@ -149,30 +142,22 @@ RSpec.describe "Custom Domains" do
     )
 
     page = Capybara.string(response.body)
-    expect(page).to have_content("Invalid Email, Carrier or password")
+    expect(page).to have_content("Invalid Email or password")
   end
 
-  it "Blocks unverified cross-domain login" do
+  it "Blocks unverified cross-domain requests" do
     carrier = create(:carrier)
-    user = create(:user, carrier:, password: "Super Secret")
     create(:custom_domain, :unverified, :dashboard, carrier:, host: "dashboard.example.com")
-    post(
-      user_session_path,
-      params: {
-        user: {
-          email: user.email,
-          password: "Super Secret",
-          otp_attempt: user.current_otp
-        }
-      },
-      headers: headers_for_custom_domain(
-        :dashboard,
-        "X-Forwarded-Host" => "dashboard.example.com"
-      )
-    )
 
-    page = Capybara.string(response.body)
-    expect(page).to have_content("Invalid Email, Carrier or password")
+    expect {
+      get(
+        new_user_session_path,
+        headers: headers_for_custom_domain(
+          :dashboard,
+          "X-Forwarded-Host" => "dashboard.example.com"
+        )
+      )
+    }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "handles two users with the same email different carrier" do

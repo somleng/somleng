@@ -31,7 +31,7 @@ class CustomDomain < ApplicationRecord
     if dns_record_type.txt?
       VerifyCustomDomain.call(self, domain_verifier: DNSRecordVerifier.new(host:, record_value:))
     elsif dkim? && dkim_provider == "amazonses"
-      VerifyCustomDomain.call(self, domain_verifier: SESIdentityVerifier.new(host:))
+      VerifyCustomDomain.call(self, domain_verifier: SESEmailIdentityVerifier.new(host:))
     end
   end
 

@@ -6,7 +6,6 @@ class CustomDomainConstraint
   end
 
   def matches?(request)
-    request = ActionDispatch::Request.new(request.env.except("HTTP_X_FORWARDED_HOST"))
-    host == request.hostname
+    host == CustomDomainRequest.new(request).app_hostname
   end
 end

@@ -4,9 +4,7 @@ Rails.application.routes.draw do
       host: URI(Rails.configuration.app_settings.dashboard_url_host).host
     )
   ) do
-    devise_for :users,
-      skip: %i[registrations invitations],
-      controllers: { sessions: "users/sessions" }
+    devise_for :users, skip: %i[registrations invitations]
 
     devise_scope :user do
       constraints(NoCustomDomainConstraint.new) do

@@ -1,7 +1,9 @@
-class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
+module CustomDomainAPIAuthorization
+  extend ActiveSupport::Concern
 
-  before_action :verify_custom_domain!
+  included do
+    before_action :verify_custom_domain!
+  end
 
   private
 
@@ -10,7 +12,8 @@ class ApplicationController < ActionController::Base
 
     CustomDomain.verified.find_by!(
       host: custom_domain_request.custom_domain_hostname,
-      type: :dashboard
+      type: :api,
+      carrier: authorized_carrier
     )
   end
 
