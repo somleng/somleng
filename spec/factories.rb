@@ -398,6 +398,7 @@ FactoryBot.define do
     verification_token { SecureRandom.alphanumeric }
     verification_started_at { Time.current }
     sequence(:host) { |n| "custom-host-#{n}.example.com" }
+    unverified
 
     trait :dashboard do
       type { "dashboard" }
@@ -412,6 +413,10 @@ FactoryBot.define do
     trait :mail do
       type { "mail" }
       dns_record_type { "cname" }
+    end
+
+    trait :unverified do
+      verified_at { nil }
     end
 
     trait :verified do

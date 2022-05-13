@@ -128,6 +128,80 @@ RSpec.describe "Custom Domains" do
     expect(response).to redirect_to("https://www.somleng.org/docs.html")
   end
 
+  it "Blocks cross-domain login" do
+    carrier = create(:carrier)
+    user = create(:user, carrier:, password: "Super Secret")
+
+    _other_carrier_domain = create(:custom_domain, :verified, :dashboard, host: "dashboard.example.com")
+    post(
+      user_session_path,
+      params: {
+        user: {
+          email: user.email,
+          password: "Super Secret",
+          otp_attempt: user.current_otp
+        }
+      },
+      headers: headers_for_custom_domain(
+        :dashboard,
+        "X-Forwarded-Host" => "dashboard.example.com"
+      )
+    )
+
+    page = Capybara.string(response.body)
+    expect(page).to have_content("Invalid Email, Carrier or password")
+  end
+
+  it "Blocks unverified cross-domain login" do
+    carrier = create(:carrier)
+    user = create(:user, carrier:, password: "Super Secret")
+    create(:custom_domain, :unverified, :dashboard, carrier:, host: "dashboard.example.com")
+    post(
+      user_session_path,
+      params: {
+        user: {
+          email: user.email,
+          password: "Super Secret",
+          otp_attempt: user.current_otp
+        }
+      },
+      headers: headers_for_custom_domain(
+        :dashboard,
+        "X-Forwarded-Host" => "dashboard.example.com"
+      )
+    )
+
+    page = Capybara.string(response.body)
+    expect(page).to have_content("Invalid Email, Carrier or password")
+  end
+
+  it "handles two users with the same email different carrier" do
+    carrier1 = create(:carrier)
+    carrier2 = create(:carrier)
+    user1 = create(:user, name: "User1", carrier: carrier1, password: "Super Secret")
+    user2 = create(:user, name: "User2", carrier: carrier2, email: user1.email, password: "Super Secret")
+
+    create(:custom_domain, :verified, :dashboard, carrier: carrier1, host: "dashboard.another-example.com")
+    create(:custom_domain, :verified, :dashboard, carrier: carrier2, host: "dashboard.example.com")
+
+    post(
+      user_session_path,
+      params: {
+        user: {
+          email: user2.email,
+          password: "Super Secret",
+          otp_attempt: user2.current_otp
+        }
+      },
+      headers: headers_for_custom_domain(
+        :dashboard,
+        "X-Forwarded-Host" => "dashboard.example.com"
+      )
+    )
+
+    expect(response).to redirect_to("http://dashboard.example.com/")
+  end
+
   def headers_for_custom_domain(type, headers = {})
     host = URI(Rails.configuration.app_settings.fetch(:"#{type}_url_host")).host
     headers.reverse_merge(

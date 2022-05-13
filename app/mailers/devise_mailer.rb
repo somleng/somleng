@@ -1,16 +1,23 @@
 class DeviseMailer < Devise::Mailer
-  def confirmation_instructions(record, token, opts = {})
+  private
+
+  def devise_mail(record, action, opts = {}, &block)
+    @host = resolve_host(record)
+    @carrier = record.carrier
     sender = resolve_sender(record)
-    @host = custom_domain_from(record, type: :dashboard)&.host
     opts.merge!(from: sender, reply_to: sender) if sender.present?
+
     super
   end
 
-  private
-
   def resolve_sender(record)
     custom_domain = custom_domain_from(record, type: :mail)
-    "contact@#{custom_domain.host}" if custom_domain.present?
+    "no-reply@#{custom_domain.host}" if custom_domain.present?
+  end
+
+  def resolve_host(record)
+    custom_domain = custom_domain_from(record, type: :dashboard)
+    custom_domain ? custom_domain.host : Rails.configuration.app_settings.fetch(:dashboard_url_host)
   end
 
   def custom_domain_from(record, type:)
