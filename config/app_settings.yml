@@ -1,7 +1,6 @@
 default: &default
   api_url_host: <%= ENV.fetch("API_URL_HOST", "http://api.lvh.me:3000") %>
   dashboard_url_host: <%= ENV.fetch("DASHBOARD_URL_HOST", "http://dashboard.lvh.me:3000") %>
-  mail_host:  <%= ENV.fetch("MAIL_HOST", "somleng.org") %>
   mailer_sender: "no-reply@somleng.org"
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
   aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>

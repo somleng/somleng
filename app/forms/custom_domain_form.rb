@@ -11,7 +11,7 @@ class CustomDomainForm
   RESERVED_HOSTS = [
     URI(Rails.configuration.app_settings.fetch(:dashboard_url_host)).host,
     URI(Rails.configuration.app_settings.fetch(:api_url_host)).host,
-    Rails.configuration.app_settings.fetch(:mail_host)
+    Mail::Address.new(Rails.configuration.app_settings.fetch(:mailer_sender)).domain
   ].freeze
 
   include ActiveModel::Model
