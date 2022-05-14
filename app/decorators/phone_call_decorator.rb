@@ -27,11 +27,11 @@ class PhoneCallDecorator < SimpleDelegator
   end
 
   def from
-    format_number(super, spaces: "")
+    format_number(super, format: :e164)
   end
 
   def to
-    format_number(super, spaces: "")
+    format_number(super, format: :e164)
   end
 
   def sid
@@ -85,7 +85,11 @@ class PhoneCallDecorator < SimpleDelegator
   def format_number(value, options = {})
     return value unless Phony.plausible?(value)
 
-    Phony.format(value, options)
+    if options[:format] == :e164
+      "+#{value}"
+    else
+      Phony.format(value, options)
+    end
   end
 
   def object
