@@ -8,7 +8,7 @@ RSpec.describe "Services" do
         :phone_number,
         :assigned_to_account,
         carrier:,
-        number: "855716200876"
+        number: "16189124649"
       )
       create(
         :phone_number_configuration,
@@ -24,8 +24,8 @@ RSpec.describe "Services" do
         services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
-          "to" => "855716200876",
-          "from" => "85512234567",
+          "to" => "16189124649",
+          "from" => "16189124650",
           "external_id" => SecureRandom.uuid,
           "variables" => {
             "sip_from_host" => "103.9.189.2"
@@ -37,8 +37,8 @@ RSpec.describe "Services" do
       expect(response.code).to eq("201")
       expect(response.body).to match_api_response_schema("services/phone_call")
       expect(json_response(response.body)).to include(
-        "to" => "+855716200876",
-        "from" => "+85512234567",
+        "to" => "+16189124649",
+        "from" => "+16189124650",
         "voice_url" => "https://example.com/voice.xml",
         "voice_method" => "POST",
         "status_callback_url" => "https://example.com/status_callback",
