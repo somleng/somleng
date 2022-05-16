@@ -1,6 +1,6 @@
 class CustomDomainPolicy < ApplicationPolicy
   def verify?
-    manage? && custom_domains.unverified.any?
+    manage? && custom_domains.any?(&:verifiable?)
   end
 
   def regenerate?
@@ -18,6 +18,6 @@ class CustomDomainPolicy < ApplicationPolicy
   private
 
   def custom_domains
-    user.carrier.custom_domains
+    user.carrier.custom_domains.map { |domain| CustomDomain.wrap(domain) }
   end
 end

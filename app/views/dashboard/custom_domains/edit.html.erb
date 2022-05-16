@@ -11,7 +11,7 @@
 <% end %>
 
 <div class="card-body">
-  <% custom_domains = current_carrier.custom_domains.map { |domain| CustomDomain.wrap(domain) } %>
+  <% custom_domains = current_carrier.custom_domains.order(sequence_number: :asc).map { |domain| CustomDomain.wrap(domain) } %>
 
   <% if custom_domains.any? %>
     <%= render("custom_domains", custom_domains: custom_domains) %>

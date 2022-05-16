@@ -45,8 +45,15 @@
           <% if custom_domain.verified? %>
             <span class="text-success">Verified <i class="fas fa-check-circle" title="Verified at: <%= custom_domain.verified_at %>"></i></span>
           <% elsif custom_domain.type.mail? && custom_domain.expired? %>
-            <span class="text-danger">Expired <i class="fas fa-times-circle"></i></span> |
-            <%= link_to "Regenerate", regenerate_dashboard_carrier_settings_custom_domain_path, class: "btn btn-success btn-sm", method: :post %>
+            <span class="text-danger">Expired <i class="fas fa-times-circle"></i></span>
+            <p>
+              <br />
+              <span class="text-muted">Verification period has expired, you must restart the verification process.</span>
+              <%= link_to regenerate_dashboard_carrier_settings_custom_domain_path, class: "btn btn-info btn-sm", method: :post, title: "Restart" do %>
+                <i class="fas fa-redo"></i>
+              <% end %>
+            </p>
+
           <% else %>
             <span class="text-warning">Pending Verification <i class="fas fa-exclamation-circle text-warning"></i></span>
           <% end %>
