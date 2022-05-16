@@ -1,4 +1,7 @@
 class DeviseMailer < Devise::Mailer
+  layout "mailer"
+  helper ApplicationHelper
+
   private
 
   def devise_mail(record, action, opts = {}, &block)
