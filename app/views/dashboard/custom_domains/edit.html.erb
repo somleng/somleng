@@ -11,11 +11,11 @@
 <% end %>
 
 <div class="card-body">
-  <% custom_domains = current_carrier.custom_domains %>
+  <% custom_domains = current_carrier.custom_domains.map { |domain| CustomDomain.wrap(domain) } %>
 
   <% if custom_domains.any? %>
     <%= render("custom_domains", custom_domains: custom_domains) %>
-    <% if custom_domains.unverified.any? %>
+    <% unless custom_domains.all?(&:verified?) %>
       <p class="text-muted">
         Note: DNS changes may take time to take effect. If your domain is not verified, wait a day and try again to verify.
       </p>

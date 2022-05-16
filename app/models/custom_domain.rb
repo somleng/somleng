@@ -3,16 +3,15 @@ class CustomDomain < ApplicationRecord
 
   extend Enumerize
 
-  # https://docs.aws.amazon.com/ses/latest/APIReference/API_VerifyDomainIdentity.html
-  MAX_SES_VERIFICATION_PERIOD = 72.hours
-
   belongs_to :carrier
 
   enumerize :type, in: %i[dashboard api mail]
   enumerize :dns_record_type, in: %i[txt cname]
   has_secure_token :verification_token
 
-  after_commit :delete_email_identity, on: :destroy
+  def self.wrap(custom_domain)
+    custom_domain.type.mail? ? MailCustomDomain.new(custom_domain) : custom_domain
+  end
 
   def self.verified
     where.not(verified_at: nil)
@@ -22,14 +21,12 @@ class CustomDomain < ApplicationRecord
     where(verified_at: nil)
   end
 
-  def verified?
-    verified_at.present?
+  def verifiable?
+    !verified?
   end
 
-  def expired?
-    return false unless type.mail?
-
-    verification_started_at < MAX_SES_VERIFICATION_PERIOD.ago
+  def verified?
+    verified_at.present?
   end
 
   def mark_as_verified!
@@ -37,46 +34,14 @@ class CustomDomain < ApplicationRecord
   end
 
   def verify!
-    if dns_record_type.txt?
-      VerifyCustomDomain.call(self, domain_verifier: DNSRecordVerifier.new(host:, record_value:))
-    elsif dkim? && dkim_provider == "amazonses"
-      VerifyCustomDomain.call(self, domain_verifier: SESEmailIdentityVerifier.new(host:))
-    end
+    VerifyCustomDomain.call(self, domain_verifier: DNSRecordVerifier.new(host:, record_value:))
   end
 
   def record_name
-    if dns_record_type.cname? && dkim?
-      dkim_tokens.map { |token| "#{token}._domainkey.#{host}" }
-    else
-      host
-    end
+    host
   end
 
   def record_value
-    if dns_record_type.txt?
-      "somleng-domain-verification=#{verification_token}"
-    elsif dkim? && dkim_provider == "amazonses"
-      dkim_tokens.map { |token|  "#{token}.dkim.amazonses.com" }
-    end
-  end
-
-  private
-
-  def dkim?
-    verification_data["type"] == "dkim"
-  end
-
-  def dkim_tokens
-    verification_data["dkim_tokens"]
-  end
-
-  def dkim_provider
-    verification_data["dkim_provider"]
-  end
-
-  def delete_email_identity
-    return unless type.mail?
-
-    ExecuteWorkflowJob.perform_later(DeleteEmailIdentity.to_s, host)
+    "somleng-domain-verification=#{verification_token}"
   end
 end

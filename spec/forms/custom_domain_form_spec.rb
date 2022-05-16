@@ -93,10 +93,7 @@ RSpec.describe CustomDomainForm do
       form = CustomDomainForm.initialize_with(carrier)
       form.regenerate_mail_domain_identity
 
-      expect(custom_domain.reload.expired?).to eq(false)
+      expect(CustomDomain.wrap(custom_domain.reload).expired?).to eq(false)
     end
   end
 end
-
-
-

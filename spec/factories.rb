@@ -417,6 +417,13 @@ FactoryBot.define do
     trait :mail do
       type { "mail" }
       dns_record_type { "cname" }
+      verification_data do
+        {
+          dkim_provider: "amazonses",
+          type: :dkim,
+          dkim_tokens: ["token1", "token2", "token3"]
+        }
+      end
     end
 
     trait :unverified do

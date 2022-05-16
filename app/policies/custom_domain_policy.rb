@@ -4,7 +4,7 @@ class CustomDomainPolicy < ApplicationPolicy
   end
 
   def regenerate?
-    manage? && user.carrier.custom_domain(:mail).expired?
+    manage? && CustomDomain.wrap(user.carrier.custom_domain(:mail)).expired?
   end
 
   def destroy?
