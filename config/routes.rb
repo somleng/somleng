@@ -54,6 +54,7 @@ Rails.application.routes.draw do
       resource :carrier_settings, only: %i[show edit update] do
         resource :custom_domain, only: %i[edit update destroy] do
           post :verify, on: :member
+          post :regenerate, on: :member
         end
       end
       resource :home, only: :show

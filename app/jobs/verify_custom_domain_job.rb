@@ -1,12 +1,13 @@
 class VerifyCustomDomainJob < ApplicationJob
-  # https://docs.aws.amazon.com/ses/latest/APIReference/API_VerifyDomainIdentity.html
-  MAX_VERIFICATION_PERIOD = 72.hours
+  MAX_VERIFICATION_PERIOD = 7.days
 
   rescue_from(ActiveJob::DeserializationError) do |e|
     Rails.logger.warn(e.message)
   end
 
   def perform(custom_domain)
+    return unless custom_domain.verified?
+    return if custom_domain.expired?
     return if verification_period_expired?(custom_domain)
 
     reschedule_verification(custom_domain) unless custom_domain.verify!

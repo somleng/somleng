@@ -84,4 +84,19 @@ RSpec.describe CustomDomainForm do
       expect(VerifyCustomDomainJob).to have_been_enqueued.with(carrier.custom_domain(:mail))
     end
   end
+
+  describe "#regenerate" do
+    it "regenerates a mail custom domain" do
+      carrier = create(:carrier)
+      custom_domain = create(:custom_domain, :mail, :expired, carrier:)
+
+      form = CustomDomainForm.initialize_with(carrier)
+      form.regenerate_mail_domain_identity
+
+      expect(custom_domain.reload.expired?).to eq(false)
+    end
+  end
 end
+
+
+

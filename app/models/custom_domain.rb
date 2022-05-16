@@ -3,6 +3,9 @@ class CustomDomain < ApplicationRecord
 
   extend Enumerize
 
+  # https://docs.aws.amazon.com/ses/latest/APIReference/API_VerifyDomainIdentity.html
+  MAX_SES_VERIFICATION_PERIOD = 72.hours
+
   belongs_to :carrier
 
   enumerize :type, in: %i[dashboard api mail]
@@ -21,6 +24,12 @@ class CustomDomain < ApplicationRecord
 
   def verified?
     verified_at.present?
+  end
+
+  def expired?
+    return false unless type.mail?
+
+    verification_started_at < MAX_SES_VERIFICATION_PERIOD.ago
   end
 
   def mark_as_verified!

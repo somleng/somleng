@@ -33,6 +33,16 @@ module Dashboard
       )
     end
 
+    def regenerate
+      @resource = CustomDomainForm.initialize_with(current_carrier)
+      @resource.regenerate_mail_domain_identity
+
+      respond_with(
+        @resource,
+        location: edit_dashboard_carrier_settings_custom_domain_path
+      )
+    end
+
     private
 
     def permitted_params

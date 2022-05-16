@@ -3,6 +3,10 @@ class CustomDomainPolicy < ApplicationPolicy
     manage? && custom_domains.unverified.any?
   end
 
+  def regenerate?
+    manage? && user.carrier.custom_domain(:mail).expired?
+  end
+
   def destroy?
     super && custom_domains.any?
   end

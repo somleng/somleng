@@ -19,6 +19,7 @@ class CreateEmailIdentity < ApplicationWorkflow
       ]
     )
     custom_domain.update!(
+      verification_started_at: Time.current,
       verification_data: {
         dkim_provider: "amazonses",
         type: :dkim,

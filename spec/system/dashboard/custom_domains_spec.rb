@@ -60,4 +60,17 @@ RSpec.describe "Custom Domains" do
 
     expect(page).to have_content("Custom domain was successfully destroyed")
   end
+
+  it "Regenerates an expired mail custom domain" do
+    carrier = create(:carrier, :with_oauth_application)
+    create(:custom_domain, :mail, :expired, carrier:)
+    user = create(:user, :carrier, :owner, carrier:)
+
+    sign_in(user)
+    visit edit_dashboard_carrier_settings_custom_domain_path
+
+    click_link("Regenerate")
+
+    expect(page).to have_content("Custom domain was successfully regenerated")
+  end
 end

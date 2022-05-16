@@ -410,6 +410,10 @@ FactoryBot.define do
       dns_record_type { "txt" }
     end
 
+    trait :expired do
+      verification_started_at { 72.hours.ago }
+    end
+
     trait :mail do
       type { "mail" }
       dns_record_type { "cname" }

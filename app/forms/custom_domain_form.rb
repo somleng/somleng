@@ -66,6 +66,12 @@ class CustomDomainForm
     true
   end
 
+  def regenerate_mail_domain_identity
+    mail_custom_domain = carrier.custom_domain(:mail)
+    DeleteEmailIdentity.call(mail_custom_domain.host)
+    CreateEmailIdentity.call(mail_custom_domain)
+  end
+
   private
 
   def configure_custom_domain!(type:, host:, dns_record_type:)
