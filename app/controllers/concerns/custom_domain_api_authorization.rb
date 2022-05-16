@@ -8,12 +8,12 @@ module CustomDomainAPIAuthorization
   private
 
   def verify_custom_domain!
-    return unless custom_domain_request.custom_domain_request?
+    return unless app_request.custom_domain_request?
 
-    custom_domain_request.find_custom_domain!(:api, carrier: authorized_carrier)
+    app_request.find_custom_domain!(:api, carrier: authorized_carrier)
   end
 
-  def custom_domain_request
-    @custom_domain_request ||= CustomDomainRequest.new(request)
+  def app_request
+    @app_request ||= AppRequest.new(request)
   end
 end

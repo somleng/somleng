@@ -20,8 +20,8 @@ module TwilioAPI
     end
 
     def show
-      if custom_domain_request.custom_domain_request?
-        custom_domain_request.find_custom_domain!(:api)
+      if app_request.custom_domain_request?
+        app_request.find_custom_domain!(:api)
       end
 
       account = Account.find(params[:account_id])

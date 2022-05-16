@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>
-      <% if custom_domain_request.custom_domain_request? %>
+      <% if app_request.custom_domain_request? %>
         <%= carrier_from_custom_domain.name %>
       <% else %>
         Somleng

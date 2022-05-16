@@ -4,13 +4,13 @@ class CustomDomainAuthenticationStrategy < Devise::Strategies::TwoFactorAuthenti
   private
 
   def authentication_hash
-    return super unless custom_domain_request.custom_domain_request?
+    return super unless app_request.custom_domain_request?
 
-    custom_domain = custom_domain_request.find_custom_domain!(:dashboard)
+    custom_domain = app_request.find_custom_domain!(:dashboard)
     super.merge(carrier_id: custom_domain.carrier_id)
   end
 
-  def custom_domain_request
-    @custom_domain_request ||= CustomDomainRequest.new(request)
+  def app_request
+    @app_request ||= AppRequest.new(request)
   end
 end

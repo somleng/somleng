@@ -3,22 +3,22 @@ class ApplicationController < ActionController::Base
 
   before_action :verify_custom_domain!
 
-  helper_method :custom_domain_request
+  helper_method :app_request
   helper_method :carrier_from_custom_domain
 
   private
 
   def verify_custom_domain!
-    return unless custom_domain_request.custom_domain_request?
+    return unless app_request.custom_domain_request?
 
-    custom_domain_request.find_custom_domain!(:dashboard)
+    app_request.find_custom_domain!(:dashboard)
   end
 
-  def custom_domain_request
-    @custom_domain_request ||= CustomDomainRequest.new(request)
+  def app_request
+    @app_request ||= AppRequest.new(request)
   end
 
   def carrier_from_custom_domain
-    custom_domain_request.find_custom_domain(:dashboard)&.carrier
+    app_request.find_custom_domain(:dashboard)&.carrier
   end
 end

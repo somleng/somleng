@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
   constraints(
-    CustomDomainConstraint.new(
-      host: URI(Rails.configuration.app_settings.dashboard_url_host).host
-    )
+    ->(request) { URI(Rails.configuration.app_settings.dashboard_url_host).host == AppRequest.new(request).app_hostname }
   ) do
     devise_for :users, skip: %i[registrations invitations]
 
@@ -94,9 +92,7 @@ Rails.application.routes.draw do
   end
 
   constraints(
-    CustomDomainConstraint.new(
-      host: URI(Rails.configuration.app_settings.api_url_host).host
-    )
+    ->(request) { URI(Rails.configuration.app_settings.api_url_host).host == AppRequest.new(request).app_hostname }
   ) do
     namespace :services, defaults: { format: "json" } do
       resources :inbound_phone_calls, only: :create

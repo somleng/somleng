@@ -1,7 +1,5 @@
 class NoCustomDomainConstraint
-  attr_reader :host
-
   def matches?(request)
-    request.host == request.headers.fetch("HOST")
+    !AppRequest.new(request).custom_domain_request?
   end
 end

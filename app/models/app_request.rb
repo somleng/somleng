@@ -1,4 +1,4 @@
-class CustomDomainRequest < SimpleDelegator
+class AppRequest < SimpleDelegator
   def custom_domain_request?
     request.headers.key?("HTTP_X_FORWARDED_HOST")
   end
