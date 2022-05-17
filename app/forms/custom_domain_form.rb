@@ -8,11 +8,21 @@ class CustomDomainForm
     end
   end
 
-  RESERVED_HOSTS = [
-    URI(Rails.configuration.app_settings.fetch(:dashboard_url_host)).host,
-    URI(Rails.configuration.app_settings.fetch(:api_url_host)).host,
-    Mail::Address.new(Rails.configuration.app_settings.fetch(:mailer_sender)).domain
-  ].freeze
+  class HostnameValidator < ActiveModel::EachValidator
+    RESTRICTED_DOMAINS = [
+      Addressable::URI.parse(Rails.configuration.app_settings.fetch(:dashboard_url_host)).domain,
+      Addressable::URI.parse(Rails.configuration.app_settings.fetch(:api_url_host)).domain,
+      Mail::Address.new(Rails.configuration.app_settings.fetch(:mailer_sender)).domain
+    ].freeze
+
+    def validate_each(record, attribute, value)
+      return unless Addressable::URI.parse("//#{value}").domain.in?(RESTRICTED_DOMAINS)
+
+      record.errors.add(attribute, options.fetch(:message, :exclusion))
+    rescue Addressable::URI::InvalidURIError
+      record.errors.add(attribute, :invalid)
+    end
+  end
 
   include ActiveModel::Model
   include ActiveModel::Attributes
@@ -27,20 +37,17 @@ class CustomDomainForm
   validates :dashboard_host,
             presence: true,
             hostname: true,
-            host_uniqueness: true,
-            exclusion: { in: RESERVED_HOSTS }
+            host_uniqueness: true
 
   validates :api_host,
             presence: true,
             hostname: true,
-            host_uniqueness: true,
-            exclusion: { in: RESERVED_HOSTS }
+            host_uniqueness: true
 
   validates :mail_host,
             presence: true,
             hostname: true,
-            host_uniqueness: true,
-            exclusion: { in: RESERVED_HOSTS }
+            host_uniqueness: true
 
   validate :validate_hosts
 

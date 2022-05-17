@@ -1,3 +1,5 @@
+require "resolv"
+
 class DNSRecordVerifier
   attr_reader :host, :record_value
 

@@ -55,8 +55,4 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def resolve_layout
     user_signed_in? ? "dashboard" : "devise"
   end
-
-  def custom_domain_context
-    :dashboard
-  end
 end

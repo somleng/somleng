@@ -1,5 +1,3 @@
-require "resolv"
-
 class VerifyCustomDomain < ApplicationWorkflow
   attr_reader :custom_domain, :domain_verifier
 

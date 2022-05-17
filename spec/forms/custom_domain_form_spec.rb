@@ -43,6 +43,15 @@ RSpec.describe CustomDomainForm do
       expect(form.errors[:dashboard_host]).to be_present
       expect(form.errors[:api_host]).not_to be_present
     end
+
+    it "validates the host is not restricted" do
+      form = CustomDomainForm.new(
+        dashboard_host: "foobar.somleng.org"
+      )
+
+      expect(form).to be_invalid
+      expect(form.errors[:dashboard_host]).to be_present
+    end
   end
 
   describe "#save" do

@@ -594,6 +594,7 @@ PLATFORMS
 DEPENDENCIES
   aasm
   active_storage_validations
+  addressable
   administrate
   administrate-field-active_storage
   administrate_exportable
