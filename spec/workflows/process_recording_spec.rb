@@ -30,7 +30,7 @@ RSpec.describe ProcessRecording do
           recording.account,
           recording.phone_call,
           recording,
-          subdomain: "api"
+          host: Rails.configuration.app_settings.fetch(:api_url_host)
         ),
         "RecordingDuration" => be_present
       )

@@ -19,7 +19,9 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:carrier_settings).permit(:name, :country, :logo, :webhook_url, :enable_webhooks)
+      params.require(:carrier_settings).permit(
+        :name, :country, :logo, :webhook_url, :enable_webhooks
+      )
     end
 
     def policy_class

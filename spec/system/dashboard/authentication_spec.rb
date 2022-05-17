@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Authentication" do
   it "Sign in with OTP" do
     carrier = create(:carrier, :with_oauth_application)
-    user = create(:user, carrier: carrier, password: "Super Secret")
+    user = create(:user, carrier:, password: "Super Secret")
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
@@ -14,9 +14,22 @@ RSpec.describe "Authentication" do
     expect(page).to have_content("Signed in successfully")
   end
 
+  it "Requires a valid OTP" do
+    carrier = create(:carrier)
+    user = create(:user, carrier:, password: "Super Secret")
+
+    visit(new_user_session_path)
+    fill_in("Email", with: user.email)
+    fill_in("Password", with: "Super Secret")
+    fill_in("OTP Code", with: "wrong-otp")
+    click_button("Login")
+
+    expect(page).to have_content("Invalid Email or password")
+  end
+
   it "Sign in without OTP" do
     carrier = create(:carrier, :with_oauth_application)
-    user = create(:user, carrier: carrier, password: "Super Secret", otp_required_for_login: false)
+    user = create(:user, carrier:, password: "Super Secret", otp_required_for_login: false)
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
@@ -38,7 +51,7 @@ RSpec.describe "Authentication" do
         email: "new_user@example.com",
         name: "John Doe",
         carrier_role: :member,
-        carrier: carrier
+        carrier:
       )
     end
 
@@ -57,10 +70,11 @@ RSpec.describe "Authentication" do
     account = create(:account)
     perform_enqueued_jobs do
       user = User.invite!(
+        carrier: account.carrier,
         email: "johndoe@example.com",
         name: "John Doe"
       )
-      create(:account_membership, account: account, user: user)
+      create(:account_membership, account:, user:)
     end
 
     open_email("johndoe@example.com")

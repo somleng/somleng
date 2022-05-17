@@ -9,8 +9,8 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     number: Field::String,
     enabled: Field::String,
     configuration: Field::HasOne,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[

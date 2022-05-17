@@ -27,12 +27,11 @@ RspecApiDocumentation.configure do |config|
     conf.api_explanation = <<~HEREDOC
       # Introduction
 
-      Somleng is an Open Source Cloud Communications Platform as a Service (CPaaS). It contains an open source implementation of [Twilio's REST API](https://www.twilio.com/docs/voice/api).
-      Currently it only supports a tiny subset of Twilio's REST API. More features may be added in the future.
+      Dive into our full API Reference Documentation and seamlessly integrate Voice functionalities into your website or application.
+      This API uses HTTP verbs and a RESTful endpoint structure. Your Account SID and Auth Token is used as the API Authorization framework.
+      Request and response payloads are formatted as JSON using UTF-8 encoding and URL encoded values.
 
-      This API documentation is intended for users of the REST API.
-
-      ## Make an HTTP Request to Somleng
+      ## Make an HTTP Request
 
       There are a lot of ways you can make an HTTP request to Somleng.
       You can make a raw HTTP request in your code (for example, using a module like [got in NodeJS](https://www.npmjs.com/package/got)) or by using a tool like [Postman](https://www.postman.com/).

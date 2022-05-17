@@ -1,0 +1,26 @@
+<%= page_title(title: "Configure Custom Domain") do %>
+  <% if CustomDomainPolicy.new(pundit_user, current_carrier).verify? %>
+    <%= link_to(verify_dashboard_carrier_settings_custom_domain_path, method: :post, class: "btn btn-success", title: "Verify") do %>
+      <i class="fas fa-check-circle"></i>
+    <% end %>
+  <% end %>
+
+  <% if CustomDomainPolicy.new(pundit_user, current_carrier).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_carrier_settings_custom_domain_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <% custom_domains = current_carrier.custom_domains.order(sequence_number: :asc) %>
+
+  <% if custom_domains.any? %>
+    <%= render("custom_domains", custom_domains: custom_domains) %>
+    <% unless custom_domains.all?(&:verified?) %>
+      <p class="text-muted">
+        Note: DNS changes may take time to take effect. If your domain is not verified, wait a day and try again to verify.
+      </p>
+    <% end %>
+  <% else %>
+     <%= render("form") %>
+  <% end %>
+</div>

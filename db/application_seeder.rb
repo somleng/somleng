@@ -25,7 +25,7 @@ class ApplicationSeeder
       Auth Token:            #{account.auth_token}
       Inbound Phone Number:  #{phone_number.number}
       ---------------------------------------------
-      Carrier User Email:    #{carrier.users.first.email}
+      Carrier User Email:    #{carrier.carrier_users.first.email}
       Carrier User Password: #{USER_PASSWORD}
       Carrier API Key:       #{carrier.api_key}
     INFO

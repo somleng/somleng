@@ -13,10 +13,12 @@ gem "image_processing"
 
 gem "aasm"
 gem "active_storage_validations"
+gem "addressable"
 gem "after_commit_everywhere"
 gem "aws-sdk-ec2"
 gem "aws-sdk-rails"
 gem "aws-sdk-s3"
+gem "aws-sdk-sesv2"
 gem "aws-sdk-sqs"
 gem "country_select"
 gem "cursor_paginator"
@@ -52,6 +54,9 @@ gem "turbolinks"
 gem "twilio-ruby"
 gem "tzinfo-data"
 gem "webpacker"
+
+gem "inky-rb", require: "inky"
+gem "premailer-rails"
 
 # https://github.com/tinfoil/devise-two-factor/issues/192#issuecomment-1022504126
 gem "devise-two-factor", github: "cybersecuricy/devise-two-factor", branch: "securicy-fixes-rails-7"

@@ -54,7 +54,7 @@ module Dashboard
     end
 
     def users_scope
-      current_carrier.users
+      current_carrier.carrier_users
     end
 
     def record

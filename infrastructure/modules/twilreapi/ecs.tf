@@ -13,6 +13,7 @@ data "template_file" "appserver_container_definitions" {
     webserver_container_name = var.webserver_container_name
     webserver_container_port = var.webserver_container_port
     region = var.aws_region
+    aws_ses_region = var.aws_ses_region
     aws_sqs_high_priority_queue_name = aws_sqs_queue.high_priority.name
     aws_sqs_default_queue_name = aws_sqs_queue.default.name
     aws_sqs_low_priority_queue_name = aws_sqs_queue.low_priority.name
@@ -96,6 +97,7 @@ data "template_file" "worker_container_definitions" {
     name = var.app_identifier
     app_image      = var.app_image
     region = var.aws_region
+    aws_ses_region = var.aws_ses_region
     aws_sqs_high_priority_queue_name = aws_sqs_queue.high_priority.name
     aws_sqs_default_queue_name = aws_sqs_queue.default.name
     aws_sqs_low_priority_queue_name = aws_sqs_queue.low_priority.name

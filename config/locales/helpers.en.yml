@@ -5,3 +5,5 @@ en:
         update: "Update Account Settings"
       carrier_settings:
         update: "Update Carrier Settings"
+      custom_domain:
+        update: "Save Custom Domain"

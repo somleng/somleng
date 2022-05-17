@@ -10,8 +10,8 @@ class AccountDashboard < Administrate::BaseDashboard
     phone_numbers: Field::HasMany,
     id: Field::String,
     name: Field::String,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime,
     status: Field::String,
     allowed_calling_codes: Field::String,
     metadata: Field::JSON.with_options(searchable: false)

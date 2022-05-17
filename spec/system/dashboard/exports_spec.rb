@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe "Exports" do
   it "Export CSV as a carrier member" do
     carrier = create(:carrier)
-    user = create(:user, carrier: carrier)
-    create(:account, name: "Rocket Rides", created_at: Time.utc(2021, 12, 1), carrier: carrier)
-    create(:account, name: "Alice Apples", created_at: Time.utc(2021, 10, 1), carrier: carrier)
+    user = create(:user, :carrier, carrier:)
+    create(:account, name: "Rocket Rides", created_at: Time.utc(2021, 12, 1), carrier:)
+    create(:account, name: "Alice Apples", created_at: Time.utc(2021, 10, 1), carrier:)
     create(:account, name: "Bob Bananas")
 
     sign_in(user)

@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Somleng</title>
+    <title>
+      <% if app_request.custom_domain_request? %>
+        <%= carrier_from_custom_domain.name %>
+      <% else %>
+        Somleng
+      <% end %>
+    </title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
     <%= csrf_meta_tags %>
@@ -21,7 +27,7 @@
           <% if content_for?(:logo) %>
             <%= yield(:logo) %>
           <% else %>
-            <%= image_tag carrier_logo(nil), class: "img-fluid mx-auto px-5 my-3 d-block w-50" %>
+            <%= carrier_logo(carrier_from_custom_domain, class: "img-fluid mx-auto px-5 my-3 d-block w-50") %>
           <% end %>
 
           <div class="card-group">

@@ -32,6 +32,13 @@
     <%= f.attribute :logo do %>
       <%= image_thumbnail(@resource.logo) %>
     <% end %>
+
+    <%= f.attribute :custom_domain do %>
+      <div id="custom-domain-configuration">
+        <%= external_link_to("Configure", edit_dashboard_carrier_settings_custom_domain_path) %>
+      </div>
+    <% end %>
+
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

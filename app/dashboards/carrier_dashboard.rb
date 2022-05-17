@@ -7,12 +7,13 @@ class CarrierDashboard < Administrate::BaseDashboard
     outbound_sip_trunks: Field::HasMany,
     phone_numbers: Field::HasMany,
     phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
-    users: Field::HasMany,
+    carrier_users: Field::HasMany,
+    account_users: Field::HasMany,
     logo: Field::ActiveStorage.with_options(show_preview_size: [150, 150], export: false),
     id: Field::String,
     name: Field::String,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime,
     country_code: Field::String
   }.freeze
 
@@ -34,7 +35,8 @@ class CarrierDashboard < Administrate::BaseDashboard
     outbound_sip_trunks
     phone_numbers
     phone_calls
-    users
+    carrier_users
+    account_users
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze

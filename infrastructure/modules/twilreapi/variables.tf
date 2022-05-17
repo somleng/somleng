@@ -6,6 +6,7 @@ variable "nginx_image" {}
 variable "memory" {}
 variable "cpu" {}
 variable "aws_region" {}
+variable "aws_ses_region" {}
 variable "container_instance_subnets" {}
 variable "vpc_id" {}
 variable "codedeploy_role" {}

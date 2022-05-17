@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Somleng - <%= yield(:page_title) %></title>
+    <title>
+      <% if current_organization.carrier.present? %>
+        <%= current_organization.carrier.name %> - <%= yield(:page_title) %>
+      <% else %>
+        <%= yield(:page_title) %>
+      <% end %>
+    </title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
     <%= csrf_meta_tags %>

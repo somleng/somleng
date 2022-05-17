@@ -6,8 +6,8 @@ class PhoneCallEventDashboard < Administrate::BaseDashboard
     id: Field::String,
     params: Field::JSON.with_options(searchable: false),
     type: Field::String,
-    created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    created_at: Field::LocalTime,
+    updated_at: Field::LocalTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[

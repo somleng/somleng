@@ -26,11 +26,11 @@ module DashboardHelper
     end
   end
 
-  def sidebar_nav(text, path, icon_class:)
+  def sidebar_nav(text, path, icon_class:, link_options: {})
     content_tag(:li, class: "c-sidebar-nav-item") do
       sidebar_nav_class = "c-sidebar-nav-link"
       sidebar_nav_class += " c-active" if request.path == path
-      link_to(path, class: sidebar_nav_class) do
+      link_to(path, class: sidebar_nav_class, **link_options) do
         content = "".html_safe
         content += content_tag(:i, nil, class: "c-sidebar-nav-icon #{icon_class}")
         content + " " + text
@@ -85,12 +85,6 @@ module DashboardHelper
         content_tag(:i, nil, class: "fas fa-eye")
       end
     end
-  end
-
-  def local_time(time)
-    return if time.blank?
-
-    tag.time(time.utc.iso8601, data: { behavior: "local-time" })
   end
 
   def image_thumbnail(image)

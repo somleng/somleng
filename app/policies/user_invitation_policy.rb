@@ -19,7 +19,7 @@ class UserInvitationPolicy < ApplicationPolicy
   end
 
   def carrier_users
-    user.carrier.users
+    user.carrier.carrier_users
   end
 
   def account_users

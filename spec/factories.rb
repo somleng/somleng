@@ -51,6 +51,24 @@ FactoryBot.define do
       restricted { true }
     end
 
+    trait :with_logo do
+      association :logo, factory: :active_storage_attachment, filename: "carrier_logo.jpeg"
+    end
+
+    trait :with_custom_domain do
+      after(:build) do |carrier|
+        carrier.custom_domain(:dashboard) || carrier.custom_domains << build(
+          :custom_domain, :verified, :dashboard, carrier:
+        )
+        carrier.custom_domain(:api) || carrier.custom_domains << build(
+          :custom_domain, :verified, :api, carrier:
+        )
+
+        carrier.custom_domain(:mail) || carrier.custom_domains << build(
+          :custom_domain, :verified, :mail, carrier:
+        )
+      end
+    end
 
     trait :with_oauth_application do
       after(:build) do |carrier|
@@ -113,8 +131,9 @@ FactoryBot.define do
 
       after(:build) do |account|
         if account.account_memberships.empty?
-          account.account_memberships << build(:account_membership,
-                                               account:)
+          account.account_memberships << build(
+            :account_membership, account:
+          )
         end
       end
     end
@@ -136,11 +155,11 @@ FactoryBot.define do
     password { "super secret password" }
     otp_required_for_login { true }
     confirmed
+    carrier
 
     traits_for_enum :carrier_role, %i[owner admin member]
 
     trait :carrier do
-      carrier
       admin
     end
 
@@ -165,7 +184,7 @@ FactoryBot.define do
     trait :with_account_membership do
       transient do
         account_role { :owner }
-        account { build(:account) }
+        account { build(:account, carrier:) }
       end
 
       after(:build) do |user, evaluator|
@@ -182,8 +201,12 @@ FactoryBot.define do
   end
 
   factory :account_membership do
-    user
-    account
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    account { association :account, carrier: }
+    user { association :user, carrier: }
     admin
 
     traits_for_enum :role, %i[owner admin member]
@@ -366,6 +389,52 @@ FactoryBot.define do
       status { :completed }
 
       association :file, factory: :active_storage_attachment, filename: "recording.wav"
+    end
+  end
+
+  factory :custom_domain do
+    carrier
+    dashboard
+    verification_token { SecureRandom.alphanumeric }
+    verification_started_at { Time.current }
+    sequence(:host) { |n| "custom-host-#{n}.example.com" }
+    unverified
+
+    type { "CustomDomain" }
+
+    trait :dashboard do
+      host_type { "dashboard" }
+      dns_record_type { "txt" }
+    end
+
+    trait :api do
+      host_type { "api" }
+      dns_record_type { "txt" }
+    end
+
+    trait :expired do
+      verification_started_at { 72.hours.ago }
+    end
+
+    trait :mail do
+      type { "MailCustomDomain" }
+      host_type { "mail" }
+      dns_record_type { "cname" }
+      verification_data do
+        {
+          dkim_provider: "amazonses",
+          type: :dkim,
+          dkim_tokens: %w[token1 token2 token3]
+        }
+      end
+    end
+
+    trait :unverified do
+      verified_at { nil }
+    end
+
+    trait :verified do
+      verified_at { Time.current }
     end
   end
 end

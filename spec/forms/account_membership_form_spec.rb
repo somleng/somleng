@@ -2,22 +2,35 @@ require "rails_helper"
 
 RSpec.describe AccountMembershipForm do
   describe "validations" do
-    it "validates the user is not already a member of the account" do
-      account = create(:account)
-      user = create(:user, email: "johndoe@example.com")
-      create(:account_membership, account: account, user: user)
+    it "validates the user is not already a member" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      user = create(:user, carrier:, email: "johndoe@example.com")
+      create(:account_membership, carrier:, account:, user:)
 
-      form = AccountMembershipForm.new(account: account, email: "johndoe@example.com")
+      form = AccountMembershipForm.new(account:, email: "johndoe@example.com")
+
+      expect(form).to be_invalid
+      expect(form.errors[:email]).to be_present
+    end
+
+    it "validates the user is not a carrier user" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      user = create(:user, :carrier, carrier:)
+
+      form = AccountMembershipForm.new(account:, email: user.email)
 
       expect(form).to be_invalid
       expect(form.errors[:email]).to be_present
     end
 
     it "allows users to be members of multiple accounts" do
-      account = create(:account)
-      user = create(:user, email: "johndoe@example.com")
-      create(:account_membership, account: account, user: user)
-      other_account = create(:account)
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      user = create(:user, carrier:, email: "johndoe@example.com")
+      create(:account_membership, carrier:, account:, user:)
+      other_account = create(:account, carrier:)
       form = AccountMembershipForm.new(account: other_account, email: "johndoe@example.com")
 
       form.valid?

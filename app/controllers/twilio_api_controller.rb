@@ -6,6 +6,8 @@ class TwilioAPIController < APIController
   before_action :doorkeeper_authorize!
   before_action :authorize_account!
 
+  include CustomDomainAPIAuthorization
+
   private
 
   def authorize_account!
@@ -48,5 +50,9 @@ class TwilioAPIController < APIController
       },
       status: :unauthorized
     }
+  end
+
+  def authorized_carrier
+    current_account.carrier
   end
 end

@@ -51,7 +51,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
     it "allows access for carrier owners" do
       user_context = build_user_context_for_carrier
-      carrier_user = create(:user, :otp_required_for_login, carrier: user_context.carrier)
+      carrier_user = create(:user, :otp_required_for_login, :carrier, carrier: user_context.carrier)
 
       policy = TwoFactorAuthenticationPolicy.new(user_context, carrier_user)
 

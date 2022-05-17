@@ -48,7 +48,7 @@ class CarrierForm
       }
     )
 
-    self.user = carrier.users.first
+    self.user = carrier.carrier_users.first
 
     true
   end

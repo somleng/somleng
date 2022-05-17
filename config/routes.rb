@@ -1,17 +1,29 @@
 Rails.application.routes.draw do
-  devise_for :users, skip: %i[registrations invitations]
+  constraints(
+    ->(request) { URI(Rails.configuration.app_settings.dashboard_url_host).host == AppRequest.new(request).app_hostname }
+  ) do
+    devise_for :users, skip: %i[registrations invitations]
 
-  constraints subdomain: "dashboard" do
     devise_scope :user do
+      constraints(NoCustomDomainConstraint.new) do
+        resource(
+          :registration,
+          only: %i[new create],
+          controller: "users/registrations",
+          as: :user_registration,
+          path: "users",
+          path_names: {
+            new: "sign_up"
+          }
+        )
+      end
+
       resource(
         :registration,
-        only: %i[edit update new create],
+        only: %i[edit update],
         controller: "users/registrations",
         as: :user_registration,
-        path: "users",
-        path_names: {
-          new: "sign_up"
-        }
+        path: "users"
       )
 
       resource(
@@ -37,7 +49,12 @@ Rails.application.routes.draw do
       resources :imports, only: %i[index create]
       resource :account_session, only: :create
       resource :account_settings, only: %i[show edit update]
-      resource :carrier_settings, only: %i[show edit update]
+      resource :carrier_settings, only: %i[show edit update] do
+        resource :custom_domain, only: %i[edit update destroy] do
+          post :verify, on: :member
+          post :regenerate, on: :member
+        end
+      end
       resource :home, only: :show
       resources :user_invitations, only: :update
       resources :phone_numbers do
@@ -50,7 +67,7 @@ Rails.application.routes.draw do
       root to: "home#show"
     end
 
-    namespace :admin do
+    namespace :admin, constraints: NoCustomDomainConstraint.new do
       concern :exportable do
         get :export, on: :collection
       end
@@ -70,11 +87,13 @@ Rails.application.routes.draw do
       resources :recordings, only: :show
       resources :statistics, only: :index
 
-      root to: "phone_calls#index"
+      root to: "statistics#index"
     end
   end
 
-  constraints subdomain: %w[api] do
+  constraints(
+    ->(request) { URI(Rails.configuration.app_settings.api_url_host).host == AppRequest.new(request).app_hostname }
+  ) do
     namespace :services, defaults: { format: "json" } do
       resources :inbound_phone_calls, only: :create
       resources :phone_call_events, only: :create
@@ -108,5 +127,7 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    get "docs" => "twilio_api/documentation#show"
   end
 end

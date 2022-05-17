@@ -84,8 +84,26 @@ resource "aws_iam_policy" "ecs_task_policy" {
     },
     {
       "Effect": "Allow",
-      "Action":"ses:SendRawEmail",
+      "Action": "ses:SendRawEmail",
       "Resource":"*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ses:CreateEmailIdentity"
+      ],
+      "Resource":"*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ses:GetEmailIdentity",
+        "ses:DeleteEmailIdentity"
+      ],
+      "Resource":"*",
+      "Condition": {
+        "StringEquals": {"aws:ResourceTag/ManagedBy": "somleng"}
+      }
     },
     {
       "Effect": "Allow",

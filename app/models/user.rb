@@ -4,7 +4,7 @@ class User < ApplicationRecord
 
   enumerize :carrier_role, in: %i[owner admin member], predicates: true
 
-  belongs_to :carrier, optional: true
+  belongs_to :carrier
   belongs_to :current_account_membership, optional: true, class_name: "AccountMembership"
   has_many :exports
   has_many :imports
@@ -12,9 +12,19 @@ class User < ApplicationRecord
   has_many :accounts, through: :account_memberships
 
   devise :invitable, :registerable, :confirmable,
-         :recoverable, :validatable, :trackable, :rememberable,
+         :recoverable, :trackable, :rememberable,
          :two_factor_authenticatable,
          reconfirmable: true
+
+  validates :email,
+            presence: true,
+            uniqueness: { scope: :carrier_id, allow_blank: true, if: :email_changed? },
+            format: { with: Devise.email_regexp, allow_blank: true, if: :email_changed? }
+
+  validates :password,
+            presence: { if: :password_required? },
+            confirmation: { if: :password_required? },
+            length: { within: Devise.password_length, allow_blank: true }
 
   before_create :generate_otp_secret
 
@@ -22,15 +32,15 @@ class User < ApplicationRecord
     CarrierUserPolicy
   end
 
-  def self.carrier
-    where.not(carrier_id: nil)
-  end
-
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
   end
 
   private
+
+  def password_required?
+    !persisted? || !password.nil? || !password_confirmation.nil?
+  end
 
   def generate_otp_secret
     self.otp_secret ||= User.generate_otp_secret

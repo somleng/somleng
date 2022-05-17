@@ -8,11 +8,11 @@ class UserDashboard < Administrate::BaseDashboard
     carrier_role: Field::String,
     carrier: Field::BelongsTo,
     sign_in_count: Field::String,
-    last_sign_in_at: Field::DateTime,
-    confirmation_sent_at: Field::DateTime,
-    confirmed_at: Field::DateTime,
-    invitation_sent_at: Field::DateTime,
-    invitation_accepted_at: Field::DateTime,
+    last_sign_in_at: Field::LocalTime,
+    confirmation_sent_at: Field::LocalTime,
+    confirmed_at: Field::LocalTime,
+    invitation_sent_at: Field::LocalTime,
+    invitation_accepted_at: Field::LocalTime,
     invited_by: Field::Polymorphic,
     account_memberships: Field::HasMany
   }.freeze

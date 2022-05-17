@@ -18,7 +18,7 @@ RSpec.describe OnboardCarrier do
       api_key: be_present,
       oauth_application: be_present,
       restricted: true,
-      users: [
+      carrier_users: [
         have_attributes(
           name: "John Doe",
           email: "johndoe@example.com"

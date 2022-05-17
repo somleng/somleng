@@ -62,7 +62,9 @@ class CarrierSettingsForm
   private
 
   def webhook_endpoint
-    @webhook_endpoint ||= carrier.webhook_endpoint || WebhookEndpoint.new(oauth_application: carrier.oauth_application)
+    @webhook_endpoint ||= carrier.webhook_endpoint || WebhookEndpoint.new(
+      oauth_application: carrier.oauth_application
+    )
   end
 
   def update_webhook_endpoint?

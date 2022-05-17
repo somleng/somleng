@@ -20,3 +20,6 @@ en:
       phone_numbers:
         release:
           notice: '%{resource_name} was successfully released.'
+      custom_domains:
+        regenerate:
+          notice: '%{resource_name} was successfully regenerated.'

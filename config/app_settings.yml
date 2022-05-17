@@ -1,11 +1,12 @@
 default: &default
-  api_url_host: <%= ENV.fetch("API_URL_HOST", "http://localhost:3000") %>
-  dashboard_url_host: <%= ENV.fetch("DASHBOARD_URL_HOST", "http://localhost:3000") %>
-  mailer_sender: "support@somleng.org"
+  api_url_host: <%= ENV.fetch("API_URL_HOST", "http://api.lvh.me:3000") %>
+  dashboard_url_host: <%= ENV.fetch("DASHBOARD_URL_HOST", "http://dashboard.lvh.me:3000") %>
+  mailer_sender: "no-reply@somleng.org"
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
   aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_LOW_PRIORITY_QUEUE_NAME", "low-priority") %>
   aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
+  aws_ses_region: <%= ENV.fetch("AWS_SES_REGION", "ap-southeast-1") %>
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
   uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "upload-bucket") %>
   raw_recordings_bucket: <%= ENV.fetch("RAW_RECORDINGS_BUCKET", "raw-recordings-bucket") %>
@@ -48,4 +49,4 @@ test:
   <<: *development
   ahn_host: "https://ahn.somleng.org"
   api_url_host: "https://api.somleng.org"
-  dashboard_url_host: "https://dashboard.somleng.org"
+  dashboard_url_host: "http://dashboard.lvh.me"
