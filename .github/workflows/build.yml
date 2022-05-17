@@ -148,5 +148,5 @@ jobs:
           name: api_documentation
           path: doc/build
 
-      - name: Check source
-        run: ls -lat doc/build
+      - name: Copy document
+        run: ls -latR doc/build
