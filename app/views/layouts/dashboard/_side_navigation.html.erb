@@ -56,7 +56,7 @@
     <% if current_organization.carrier? %>
       <%= sidebar_nav("Documentation", "https://www.somleng.org/carrier_documentation.html", icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
     <% elsif app_request.custom_domain_request? %>
-      <%= sidebar_nav("API Documentation", docs_url(host: current_organization.carrier.custom_domain(:api).host), icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+      <%= sidebar_nav("API Documentation", docs_url(host: current_carrier.custom_domain(:api).host), icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
     <% end %>
   </ul>
 
