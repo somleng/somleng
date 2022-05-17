@@ -54,11 +54,9 @@ RSpec.describe "Custom Domains" do
     sign_in(user)
     visit edit_dashboard_carrier_settings_custom_domain_path
 
-    click_link("Delete")
-
-    expect(ExecuteWorkflowJob).to have_been_enqueued.with("DeleteEmailIdentity", any_args)
-
-    perform_enqueued_jobs
+    perform_enqueued_jobs do
+      click_link("Delete")
+    end
 
     expect(page).to have_content("Custom domain was successfully destroyed")
   end

@@ -25,7 +25,7 @@ class AppRequest < SimpleDelegator
 
     CustomDomain.verified.find_by(
       host: custom_domain_hostname,
-      type: context,
+      host_type: context,
       **options
     )
   end

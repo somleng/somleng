@@ -56,9 +56,9 @@ class CustomDomainForm
     return false if invalid?
 
     CustomDomain.transaction do
-      configure_custom_domain!(type: :dashboard, host: dashboard_host, dns_record_type: :txt)
-      configure_custom_domain!(type: :api, host: api_host, dns_record_type: :txt)
-      configure_custom_domain!(type: :mail, host: mail_host, dns_record_type: :cname) do |custom_domain|
+      configure_custom_domain!(host_type: :dashboard, type: CustomDomain, host: dashboard_host, dns_record_type: :txt)
+      configure_custom_domain!(host_type: :api, type: CustomDomain, host: api_host, dns_record_type: :txt)
+      configure_custom_domain!(host_type: :mail, type: MailCustomDomain, host: mail_host, dns_record_type: :cname) do |custom_domain|
         CreateEmailIdentity.call(custom_domain)
       end
     end
@@ -74,13 +74,11 @@ class CustomDomainForm
 
   private
 
-  def configure_custom_domain!(type:, host:, dns_record_type:)
+  def configure_custom_domain!(attributes)
     custom_domain = CustomDomain.create!(
+      verification_started_at: Time.current,
       carrier:,
-      type:,
-      host:,
-      dns_record_type:,
-      verification_started_at: Time.current
+      **attributes
     )
 
     yield(custom_domain) if block_given?

@@ -27,7 +27,7 @@ class Carrier < ApplicationRecord
     webhook_endpoint&.enabled?
   end
 
-  def custom_domain(type)
-    custom_domains.find_by(type:)
+  def custom_domain(host_type)
+    custom_domains.find_by(host_type:)
   end
 end

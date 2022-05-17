@@ -60,21 +60,21 @@ RSpec.describe CustomDomainForm do
       expect(result).to eq(true)
       expect(carrier.custom_domain(:dashboard)).to have_attributes(
         host: "dashboard.example.com",
-        type: "dashboard",
+        host_type: "dashboard",
         dns_record_type: "txt",
         verification_started_at: be_present,
         verified_at: be_blank
       )
       expect(carrier.custom_domain(:api)).to have_attributes(
         host: "api.example.com",
-        type: "api",
+        host_type: "api",
         dns_record_type: "txt",
         verification_started_at: be_present,
         verified_at: be_blank
       )
       expect(carrier.custom_domain(:mail)).to have_attributes(
         host: "example.com",
-        type: "mail",
+        host_type: "mail",
         dns_record_type: "cname",
         verification_started_at: be_present,
         verified_at: be_blank
@@ -88,12 +88,12 @@ RSpec.describe CustomDomainForm do
   describe "#regenerate" do
     it "regenerates a mail custom domain" do
       carrier = create(:carrier)
-      custom_domain = create(:custom_domain, :mail, :expired, carrier:)
+      create(:custom_domain, :mail, :expired, carrier:)
 
       form = CustomDomainForm.initialize_with(carrier)
       form.regenerate_mail_domain_identity
 
-      expect(CustomDomain.wrap(custom_domain.reload).expired?).to eq(false)
+      expect(carrier.custom_domain(:mail).expired?).to eq(false)
     end
   end
 end

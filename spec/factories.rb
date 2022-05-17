@@ -400,13 +400,15 @@ FactoryBot.define do
     sequence(:host) { |n| "custom-host-#{n}.example.com" }
     unverified
 
+    type { "CustomDomain" }
+
     trait :dashboard do
-      type { "dashboard" }
+      host_type { "dashboard" }
       dns_record_type { "txt" }
     end
 
     trait :api do
-      type { "api" }
+      host_type { "api" }
       dns_record_type { "txt" }
     end
 
@@ -415,13 +417,14 @@ FactoryBot.define do
     end
 
     trait :mail do
-      type { "mail" }
+      type { "MailCustomDomain" }
+      host_type { "mail" }
       dns_record_type { "cname" }
       verification_data do
         {
           dkim_provider: "amazonses",
           type: :dkim,
-          dkim_tokens: ["token1", "token2", "token3"]
+          dkim_tokens: %w[token1 token2 token3]
         }
       end
     end

@@ -13,16 +13,14 @@ module Dashboard
     end
 
     def destroy
-      mail_custom_domain = current_carrier.custom_domain(:mail)
       current_carrier.custom_domains.destroy_all
-      ExecuteWorkflowJob.perform_later(DeleteEmailIdentity.to_s, mail_custom_domain.host)
 
       respond_with(CustomDomain.new, location: edit_dashboard_carrier_settings_custom_domain_path)
     end
 
     def verify
-      unverified_domains = current_carrier.custom_domains.unverified.map { |domain| CustomDomain.wrap(domain) }
-      verified = unverified_domains.all?(&:verify!)
+      unverified_domains = current_carrier.custom_domains.select(&:verifiable?)
+      verified = unverified_domains.all? { |custom_domain| VerifyCustomDomain.call(custom_domain) }
 
       if verified
         flash[:notice] = "All domains were verified successfully."

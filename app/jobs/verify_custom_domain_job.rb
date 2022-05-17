@@ -6,11 +6,10 @@ class VerifyCustomDomainJob < ApplicationJob
   end
 
   def perform(custom_domain)
-    wrapped_custom_domain = CustomDomain.wrap(custom_domain)
-    return unless wrapped_custom_domain.verifiable?
-    return if verification_period_expired?(wrapped_custom_domain)
+    return unless custom_domain.verifiable?
+    return if verification_period_expired?(custom_domain)
 
-    reschedule_verification(custom_domain) unless wrapped_custom_domain.verify!
+    reschedule_verification(custom_domain) unless VerifyCustomDomain.call(custom_domain)
   end
 
   private

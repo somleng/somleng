@@ -3,9 +3,9 @@ require "resolv"
 class VerifyCustomDomain < ApplicationWorkflow
   attr_reader :custom_domain, :domain_verifier
 
-  def initialize(custom_domain, domain_verifier:)
+  def initialize(custom_domain, domain_verifier: nil)
     @custom_domain = custom_domain
-    @domain_verifier = domain_verifier
+    @domain_verifier = domain_verifier || resolve_domain_verifier
   end
 
   def call
@@ -23,5 +23,13 @@ class VerifyCustomDomain < ApplicationWorkflow
 
   def resolve_dns_record?
     domain_verifier.verify
+  end
+
+  def resolve_domain_verifier
+    if custom_domain.is_a?(MailCustomDomain)
+      DNSRecordVerifier.new(host: custom_domain.host, record_value: custom_domain.record_value)
+    else
+      SESEmailIdentityVerifier.new(host: custom_domain.host)
+    end
   end
 end
