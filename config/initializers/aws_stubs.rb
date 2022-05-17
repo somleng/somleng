@@ -1,4 +1,6 @@
 if Rails.env.development? || Rails.env.test?
+  ENV["AWS_DEFAULT_REGION"] ||= "ap-southeast-1"
+
   sesv2_client = Aws::SESV2::Client.new
   create_email_identity_response = sesv2_client.stub_data(:create_email_identity)
   create_email_identity_response.dkim_attributes.tokens = %w[token-1 token-2 token-3]
