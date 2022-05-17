@@ -69,12 +69,12 @@ jobs:
           language: Ruby
 
       - name: Prepare Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/support_custom_domains'
         run: |
           cp app/assets/images/logo_documentation.png doc/logo.png
 
       - name: Upload Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/support_custom_domains'
         uses: actions/upload-artifact@v3
         with:
           name: documentation_source
