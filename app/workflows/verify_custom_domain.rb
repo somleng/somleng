@@ -25,9 +25,9 @@ class VerifyCustomDomain < ApplicationWorkflow
 
   def resolve_domain_verifier
     if custom_domain.is_a?(MailCustomDomain)
-      DNSRecordVerifier.new(host: custom_domain.host, record_value: custom_domain.record_value)
-    else
       SESEmailIdentityVerifier.new(host: custom_domain.host)
+    else
+      DNSRecordVerifier.new(host: custom_domain.host, record_value: custom_domain.record_value)
     end
   end
 end
