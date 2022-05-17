@@ -31,7 +31,7 @@ class DocumentationRenderer
 
   def set_carrier_name
     content.gsub!("api.somleng.org", custom_domain.host)
-    content.gsub!(/somleng/i, carrier.name)
+    content.gsub!(/Somleng/, carrier.name)
   end
 
   def url_helpers
