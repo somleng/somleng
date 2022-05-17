@@ -90,9 +90,10 @@ resource "aws_iam_policy" "ecs_task_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "ses:CreateEmailIdentity"
+        "ses:CreateEmailIdentity",
+        "ses:TagResource"
       ],
-      "Resource":"*"
+      "Resource": "*"
     },
     {
       "Effect": "Allow",
@@ -100,10 +101,15 @@ resource "aws_iam_policy" "ecs_task_policy" {
         "ses:GetEmailIdentity",
         "ses:DeleteEmailIdentity"
       ],
-      "Resource":"*",
-      "Condition": {
-        "StringEquals": {"aws:ResourceTag/ManagedBy": "somleng"}
-      }
+      "Resource": "*"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "ses:GetEmailIdentity",
+        "ses:DeleteEmailIdentity"
+      ],
+      "Resource": "arn:aws:ses:*:*:identity/somleng.org"
     },
     {
       "Effect": "Allow",

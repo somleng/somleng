@@ -13,7 +13,7 @@ resource "aws_cloudfront_response_headers_policy" "cors" {
 
   cors_config {
     access_control_allow_origins {
-      items = [aws_route53_record.dashboard.fqdn]
+      items = ["*"]
     }
 
     access_control_allow_headers {
