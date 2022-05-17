@@ -50,6 +50,14 @@
     <% if policy(:export).index? %>
       <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fas fa-file-download") %>
     <% end %>
+
+    <li class="c-sidebar-nav-item"><hr/></li>
+
+    <% if current_organization.carrier? %>
+      <%= sidebar_nav("Documentation", "https://www.somleng.org/carrier_documentation.html", icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+    <% elsif app_request.custom_domain_request? %>
+      <%= sidebar_nav("API Documentation", docs_url(host: current_organization.carrier.custom_domain(:api).host), icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+    <% end %>
   </ul>
 
   <% if current_organization.carrier? && current_carrier.restricted? %>

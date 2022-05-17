@@ -73,4 +73,19 @@ RSpec.describe "Custom Domains" do
 
     expect(page).to have_content("Custom domain was successfully regenerated")
   end
+
+  it "Account owner can login to a custom domain" do
+    carrier = create(:carrier, :with_logo, name: "Test Carrier")
+    user = create(:user, :with_account_membership, carrier:)
+    create(:custom_domain, :verified, :api, carrier:, host: "api.example.com")
+    create(:custom_domain, :verified, :dashboard, carrier:, host: "dashboard.example.com")
+
+    page.driver.header("X-Forwarded-Host", "dashboard.example.com")
+
+    sign_in(user)
+    visit dashboard_phone_calls_path
+
+    expect(page).to have_css("img[alt='Test Carrier']")
+    expect(page).to have_link("API Documentation", href: "http://api.example.com/docs")
+  end
 end

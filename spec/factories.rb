@@ -58,14 +58,14 @@ FactoryBot.define do
     trait :with_custom_domain do
       after(:build) do |carrier|
         carrier.custom_domain(:dashboard) || carrier.custom_domains << build(
-          :custom_domain, :dashboard, carrier:
+          :custom_domain, :verified, :dashboard, carrier:
         )
         carrier.custom_domain(:api) || carrier.custom_domains << build(
-          :custom_domain, :api, carrier:
+          :custom_domain, :verified, :api, carrier:
         )
 
         carrier.custom_domain(:mail) || carrier.custom_domains << build(
-          :custom_domain, :mail, carrier:
+          :custom_domain, :verified, :mail, carrier:
         )
       end
     end
