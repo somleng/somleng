@@ -16,7 +16,7 @@ RSpec.describe "Authentication" do
 
   it "Requires a valid OTP" do
     carrier = create(:carrier)
-    user = create(:user, carrier:, carrier:, password: "Super Secret")
+    user = create(:user, carrier:, password: "Super Secret")
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)

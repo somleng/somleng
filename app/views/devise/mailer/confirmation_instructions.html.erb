@@ -6,6 +6,4 @@
 
 <p>You can confirm your account email through the link below:</p>
 
-<a class="btn btn-primary p-3 fw-700 ax-center" href="<%= confirmation_url(@resource, confirmation_token: @token, host: @host) %>">
-  Confirm my account
-</a>
+<%= link_to "Confirm my account", confirmation_url(@resource, confirmation_token: @token, host: @host), class: "btn btn-primary p-3 fw-700 ax-center" %>
