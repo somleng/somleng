@@ -1,54 +1,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
   <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <meta content="width=device-width" name="viewport"/>
-    <%= stylesheet_link_tag "foundation_emails" %>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
   </head>
-  <body>
-    <table class="body">
-      <tr>
-        <td align="center" class="center" valign="top">
-          <center>
-            <container>
-              <row class="body-border">
-                <columns small="1"></columns>
-                <columns small="10">
-                  <spacer size="32"></spacer>
-                  <center>
-                    <%= carrier_logo(@carrier, height: 60) %>
-                  </center>
-                  <spacer size="16"></spacer>
-                  <%= yield %>
-                  <spacer size="16"></spacer>
-                  <hr/>
-                </columns>
-                <columns small="1"></columns>
-              </row>
-              <row class="footer">
-                <columns small="1"></columns>
-                <columns small="10">
-                  <p></p>
-                  <center>
-                    <small><%= @carrier.name %></small>
-                  </center>
-                  <p></p>
-                  <center>
-                    <small>
-                      <%= @carrier.website %>
-                    </small>
-                  </center>
-                </columns>
-                <columns small="1">
-                  <spacer size="16"></spacer>
-                  <hr/>
-                </columns>
-                <columns small="1"></columns>
-              </row>
-            </container>
-          </center>
-        </td>
-      </tr>
-    </table>
-  </body>
+    <body class="bg-light">
+      <div class="container">
+        <%= carrier_logo(@carrier, class: "ax-center my-10 w-24") %>
+        <div class="card p-6 p-lg-10 space-y-4">
+          <% if content_for?(:title) %>
+            <h1 class="h3 fw-700 ax-center">
+              <%= yield(:title) %>
+            </h1>
+          <% end %>
+          <p>
+            <%= yield %>
+          </p>
+        </div>
+        <div class="text-muted text-center my-6">
+          <small><%= @carrier.name %></small><br/>
+          <small><%= link_to(@carrier.website, @carrier.website) if @carrier.website.present? %></small>
+        </div>
+      </div>
+    </body>
 </html>
