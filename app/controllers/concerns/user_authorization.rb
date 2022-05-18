@@ -1,6 +1,7 @@
 module UserAuthorization
   extend ActiveSupport::Concern
   include Pundit::Authorization
+  include Devise::Controllers::SignInOut
 
   included do
     helper_method :current_carrier
@@ -8,6 +9,7 @@ module UserAuthorization
     helper_method :current_account
     helper_method :current_account_membership
 
+    before_action :select_account_membership!
     before_action :authorize_user!
     after_action :verify_authorized
     rescue_from Pundit::NotAuthorizedError do
@@ -21,23 +23,36 @@ module UserAuthorization
     authorize(@record, policy_class:)
   end
 
+  def select_account_membership!
+    return if current_user.carrier_role.present?
+    return if current_user.current_account_membership.present?
+
+    if current_user.account_memberships.blank?
+      sign_out(current_user)
+      redirect_to(new_user_session_path, alert: "You are not a member of any accounts")
+    else
+      current_user.update!(current_account_membership: current_user.account_memberships.first!)
+    end
+  end
+
   def policy_class
     "#{controller_name.classify}Policy".constantize
   end
 
   def current_organization
-    @current_organization ||= begin
-      if current_user.carrier_role.present?
-        Organization.new(current_carrier)
-      else
-        current_account = current_account_membership&.account
-        current_account.present? ? Organization.new(current_account) : BlankOrganization.new
-      end
-    end
+    @current_organization ||= if current_user.carrier_role.present?
+                                Organization.new(current_carrier)
+                              else
+                                Organization.new(current_account)
+                              end
+  end
+
+  def current_account_membership
+    current_user.current_account_membership
   end
 
   def current_account
-    @current_account ||= current_account_membership.account
+    current_account_membership.account
   end
 
   def current_carrier
@@ -46,14 +61,6 @@ module UserAuthorization
 
   def authorized_carrier
     current_carrier
-  end
-
-  def current_account_membership
-    @current_account_membership ||= begin
-      session[:current_account_membership] ||= current_user.current_account_membership_id
-      account_membership = current_user.account_memberships.find_by(id: session[:current_account_membership])
-      account_membership.present? ? account_membership : BlankAccountMembership.new
-    end
   end
 
   def pundit_user
@@ -72,31 +79,5 @@ module UserAuthorization
     def carrier
       account? ? __getobj__.carrier : __getobj__
     end
-  end
-
-  class BlankOrganization
-    def carrier?
-      false
-    end
-
-    def account?
-      false
-    end
-
-    def present?
-      false
-    end
-
-    def carrier; end
-  end
-
-  class BlankAccountMembership
-    def owner?
-      false
-    end
-
-    def account; end
-
-    def user; end
   end
 end

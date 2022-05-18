@@ -7,7 +7,8 @@ class CustomDomainAuthenticationStrategy < Devise::Strategies::TwoFactorAuthenti
     return super unless app_request.custom_domain_request?
 
     custom_domain = app_request.find_custom_domain!(:dashboard)
-    super.merge(carrier_id: custom_domain.carrier_id)
+    result = super
+    result.key?(:email) ? result.merge(carrier_id: custom_domain.carrier_id) : result
   end
 
   def app_request

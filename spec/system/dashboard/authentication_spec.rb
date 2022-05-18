@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Authentication" do
   it "Sign in with OTP" do
     carrier = create(:carrier, :with_oauth_application)
-    user = create(:user, carrier:, password: "Super Secret")
+    user = create(:user, :carrier, carrier:, password: "Super Secret")
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
@@ -16,7 +16,7 @@ RSpec.describe "Authentication" do
 
   it "Requires a valid OTP" do
     carrier = create(:carrier)
-    user = create(:user, carrier:, password: "Super Secret")
+    user = create(:user, carrier:, carrier:, password: "Super Secret")
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
@@ -29,7 +29,7 @@ RSpec.describe "Authentication" do
 
   it "Sign in without OTP" do
     carrier = create(:carrier, :with_oauth_application)
-    user = create(:user, carrier:, password: "Super Secret", otp_required_for_login: false)
+    user = create(:user, :carrier, carrier:, password: "Super Secret", otp_required_for_login: false)
 
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
@@ -84,5 +84,28 @@ RSpec.describe "Authentication" do
     click_button("Set my password")
 
     expect(page).to have_content("Setup Two Factor Authentication")
+  end
+
+  it "Handles users with with no account memberships" do
+    user = create(:user)
+
+    sign_in(user)
+    visit(dashboard_root_path)
+
+    expect(page).to have_current_path(new_user_session_path)
+    expect(page).to have_content("You are not a member of any accounts")
+  end
+
+  it "Handles users without a default account membership" do
+    carrier = create(:carrier)
+    user = create(:user, carrier:)
+    account = create(:account, carrier:, name: "Rocket Rides")
+    create(:account_membership, user:, account:)
+
+    sign_in(user)
+    visit(dashboard_root_path)
+
+    expect(page).to have_current_path(dashboard_account_settings_path)
+    expect(page).to have_content("Rocket Rides")
   end
 end

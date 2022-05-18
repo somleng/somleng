@@ -2,22 +2,16 @@
   <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-cloud mfe-2"></i>
-        <% if current_organization.present? %>
-          <%= current_organization.name %>
-        <% else %>
-          Select Account
-        <% end %>
+      <%= current_organization.name %>
     </button>
 
     <div class="dropdown-menu">
-      <% account_memberships = (current_user.account_memberships.includes(:account) - [current_account_membership]) %>
+      <div class="dropdown-header bg-light py-2">
+        <strong>My Accounts</strong>
+      </div>
 
-      <% if account_memberships.any? %>
-        <div class="dropdown-header bg-light py-2">
-          <strong>My Accounts</strong>
-        </div>
-
-        <% account_memberships.each do |account_membership| %>
+      <% current_user.account_memberships.includes(:account).each do |account_membership| %>
+        <% unless account_membership == current_account_membership %>
           <%= link_to(dashboard_account_session_path(account_membership: { id: account_membership.id }), method: :post, class: "dropdown-item") do %>
             <i class="fas fa-cloud mfe-2"></i> <%= account_membership.account.name %>
           <% end %>

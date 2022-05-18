@@ -1,6 +1,6 @@
 class TwoFactorAuthenticationPolicy < ApplicationPolicy
   def create?
-    true
+    !user.otp_required_for_login?
   end
 
   def destroy?

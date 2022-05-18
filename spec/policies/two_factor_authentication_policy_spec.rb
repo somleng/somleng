@@ -3,10 +3,20 @@ require "rails_helper"
 RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
   describe "#new?" do
     it "allows access" do
-      user_context = build_stubbed(:user_context)
+      user = build_stubbed(:user, otp_required_for_login: false)
+      user_context = build_stubbed(:user_context, user:)
       policy = TwoFactorAuthenticationPolicy.new(user_context, nil)
 
       expect(policy.new?).to eq(true)
+    end
+
+    it "denies access" do
+      user = build_stubbed(:user, otp_required_for_login: true)
+      user_context = build_stubbed(:user_context, user:)
+
+      policy = TwoFactorAuthenticationPolicy.new(user_context, nil)
+
+      expect(policy.new?).to eq(false)
     end
   end
 

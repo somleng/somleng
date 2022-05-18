@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe "User profile" do
   it "Update user profile" do
-    user = create(:user, name: "John Doe", email: "johndoe@example.com", password: "current password")
+    carrier = create(:carrier, :with_oauth_application)
+    user = create(:user, :carrier, carrier:, name: "John Doe", email: "johndoe@example.com", password: "current password")
 
     sign_in(user)
     visit(dashboard_root_path)
