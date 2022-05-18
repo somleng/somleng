@@ -1,15 +1,15 @@
 <%= simple_form_for(@resource, url: dashboard_carrier_settings_custom_domain_path, wrapper: :input_group) do |f| %>
   <div class="row">
     <div class="col-sm-6">
-      <%= f.input :dashboard_host, placeholder: "dashboard.example.com" %>
+      <%= f.input :dashboard_host, placeholder: "dashboard.example.com", hint: "Access the dashboard at this host" %>
     </div>
 
     <div class="col-sm-6">
-      <%= f.input :api_host, placeholder: "api.example.com" %>
+      <%= f.input :api_host, placeholder: "api.example.com", hint: "Access the API at this host"  %>
     </div>
 
     <div class="col-sm-6">
-      <%= f.input :mail_host, placeholder: "example.com" %>
+      <%= f.input :mail_host, placeholder: "example.com", hint: "The domain which you send emails from" %>
     </div>
   </div>
 

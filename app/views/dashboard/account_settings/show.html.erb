@@ -4,7 +4,7 @@
   <% end %>
 <% end %>
 
-<div class="card-body">
+<div class="card-body" id="accountSettings">
   <%= show_for(@resource) do |f| %>
     <%= f.attribute :name, value: @resource.name %>
     <%= f.attribute :id, label: "SID" do %>

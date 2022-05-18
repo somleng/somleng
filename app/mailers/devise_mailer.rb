@@ -5,12 +5,14 @@ class DeviseMailer < Devise::Mailer
   private
 
   def devise_mail(record, action, opts = {}, &block)
+    initialize_from_record(record)
+
     @host = resolve_host(record)
     @carrier = record.carrier
     sender = resolve_sender(record)
     opts.merge!(from: sender, reply_to: sender) if sender.present?
 
-    super
+    bootstrap_mail(headers_for(action, opts), &block)
   end
 
   def resolve_sender(record)

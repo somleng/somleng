@@ -4,36 +4,26 @@ RSpec.describe "Account Switcher" do
   it "User can switch between accounts", :js do
     carrier = create(:carrier)
     user = create(:user, name: "John Doe", carrier:)
-    create_account_membership(user:, carrier:, name: "Rocket Rides")
+    create_account_membership(user:, carrier:, name: "Rocket Rides", current_membership: true)
     create_account_membership(user:, carrier:, name: "Bob's Bananas")
 
     sign_in(user)
-    visit dashboard_root_path
-
-    within("#accountSwitcher") do
-      click_button("Select Account")
-      expect(page).to have_content("My Accounts")
-      expect(page).to have_content("Rocket Rides")
-      expect(page).to have_content("Bob's Bananas")
-      click_link("Rocket Rides")
-    end
-
-    expect(page).to have_current_path(dashboard_account_settings_path)
-    expect(page).to have_content("Rocket Rides")
+    visit dashboard_account_settings_path
 
     within("#accountSwitcher") do
       click_button("Rocket Rides")
-      expect(page).to have_content("My Accounts")
-      expect(page).to have_content("Bob's Bananas")
       click_link("Bob's Bananas")
     end
 
-    expect(page).to have_current_path(dashboard_account_settings_path)
-    expect(page).to have_content("Bob's Bananas")
+    within("#accountSettings") do
+      expect(page).to have_content("Bob's Bananas")
+    end
   end
 
-  def create_account_membership(user:, **account_attributes)
+  def create_account_membership(user:, current_membership: false, **account_attributes)
     account = create(:account, account_attributes)
-    create(:account_membership, user:, account:)
+    account_membership = create(:account_membership, user:, account:)
+    user.update!(current_account_membership: account_membership) if current_membership
+    account_membership
   end
 end

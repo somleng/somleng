@@ -29,7 +29,7 @@ Rails.application.routes.draw do
       resource(
         :invitation,
         only: :update,
-        controller: "users/invitations",
+        controller: "devise/invitations",
         as: :user_invitation,
         path: "users/invitation"
       ) do

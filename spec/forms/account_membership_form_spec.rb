@@ -49,14 +49,14 @@ RSpec.describe AccountMembershipForm do
   describe "#save" do
     it "creates an account membership" do
       account = create(:account)
-      form = AccountMembershipForm.new(account: account, name: "John Doe", email: "johndoe@example.com", role: "admin")
+      form = AccountMembershipForm.new(account:, name: "John Doe", email: "johndoe@example.com", role: "admin")
 
       result = form.save
 
       expect(result).to eq(true)
       expect(form.account_membership).to have_attributes(
         user: have_attributes(name: "John Doe"),
-        account: account,
+        account:,
         role: "admin"
       )
     end
@@ -72,7 +72,7 @@ RSpec.describe AccountMembershipForm do
       expect(result).to eq(true)
       expect(form.account_membership).to have_attributes(
         user: have_attributes(name: "John Doe"),
-        account: account,
+        account:,
         role: "member"
       )
     end

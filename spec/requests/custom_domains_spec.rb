@@ -187,6 +187,31 @@ RSpec.describe "Custom Domains" do
     expect(response).to redirect_to("http://dashboard.example.com/")
   end
 
+  it "handles OTP correctly for cross domain requests" do
+    carrier = create(:carrier)
+    create(:custom_domain, :verified, :dashboard, carrier:, host: "dashboard.example.com")
+    carrier_user = create(:user, :carrier, carrier:, password: "Super Secret")
+    account_user = create(:user, carrier:, password: "Super Secret")
+
+    post(
+      user_session_path,
+      params: {
+        user: {
+          email: account_user.email,
+          password: "Super Secret",
+          otp_attempt: carrier_user.current_otp
+        }
+      },
+      headers: headers_for_custom_domain(
+        :dashboard,
+        "X-Forwarded-Host" => "dashboard.example.com"
+      )
+    )
+
+    page = Capybara.string(response.body)
+    expect(page).to have_content("Invalid Email or password")
+  end
+
   def headers_for_custom_domain(type, headers = {})
     host = URI(Rails.configuration.app_settings.fetch(:"#{type}_url_host")).host
     headers.reverse_merge(
