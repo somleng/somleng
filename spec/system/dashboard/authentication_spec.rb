@@ -86,6 +86,26 @@ RSpec.describe "Authentication" do
     expect(page).to have_content("Setup Two Factor Authentication")
   end
 
+  it "User can reset their password" do
+    carrier = create(:carrier, :with_oauth_application)
+    user = create(:user, :carrier, carrier:, email: "user@example.com")
+
+    visit(new_user_session_path)
+    click_link("Forgot your password?")
+    fill_in("Email", with: user.email)
+    perform_enqueued_jobs do
+      click_button("Send me reset password instructions")
+    end
+
+    open_email("user@example.com")
+    visit_in_email("Change my password")
+    fill_in("New password", with: "Super Secret")
+    fill_in("Confirm your new password", with: "Super Secret")
+    click_button("Change my password")
+
+    expect(page).to have_content("Your password has been changed successfully. You are now signed in")
+  end
+
   it "Handles users with with no account memberships" do
     user = create(:user)
 

@@ -302,6 +302,10 @@ Devise.setup do |config|
     include Turbolinks::Controller
   end
 
+  ActiveSupport.on_load(:devise_controller) do
+    prepend CustomDomainDeviseController
+  end
+
   # ==> Configuration for :registerable
 
   # When set to false, does not sign a user in automatically after their password is

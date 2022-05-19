@@ -212,6 +212,28 @@ RSpec.describe "Custom Domains" do
     expect(page).to have_content("Invalid Email or password")
   end
 
+  it "handles cross-domain password resets" do
+    create(:custom_domain, :verified, :dashboard, host: "dashboard.example.com")
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+
+    post(
+      user_password_path,
+      params: {
+        user: {
+          email: user.email
+        }
+      },
+      headers: headers_for_custom_domain(
+        :dashboard,
+        "X-Forwarded-Host" => "dashboard.example.com"
+      )
+    )
+
+    page = Capybara.string(response.body)
+    expect(page).to have_content("Email not found")
+  end
+
   def headers_for_custom_domain(type, headers = {})
     host = URI(Rails.configuration.app_settings.fetch(:"#{type}_url_host")).host
     headers.reverse_merge(
