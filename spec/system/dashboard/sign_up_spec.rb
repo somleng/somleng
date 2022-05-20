@@ -19,7 +19,7 @@ RSpec.describe "Signup" do
     expect(page).to have_content("A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.")
 
     open_email("johndoe@att.com")
-    visit_full_link_in_email(user_confirmation_url(subdomain: "at-t"))
+    visit_full_link_in_email("Confirm my account")
 
     expect(page.current_url).to eq(new_user_session_url(subdomain: "at-t"))
     expect(page).to have_content("Your email address has been successfully confirmed.")

@@ -56,7 +56,7 @@ RSpec.describe "Authentication" do
     end
 
     open_email("new_user@example.com")
-    visit_full_link_in_email(accept_invitation_url_for(carrier))
+    visit_full_link_in_email("Accept invitation")
 
     fill_in("Password", with: "password123")
     fill_in("Password confirmation", with: "password123")
@@ -79,7 +79,7 @@ RSpec.describe "Authentication" do
     end
 
     open_email("johndoe@example.com")
-    visit_full_link_in_email(accept_invitation_url_for(carrier))
+    visit_full_link_in_email("Accept invitation")
     fill_in("Password", with: "password123")
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
@@ -100,7 +100,7 @@ RSpec.describe "Authentication" do
     end
 
     open_email("user@example.com")
-    visit_full_link_in_email(reset_password_url_for(carrier))
+    visit_full_link_in_email("Change my password")
     fill_in("New password", with: "Super Secret")
     fill_in("Confirm your new password", with: "Super Secret")
     click_button("Change my password")
@@ -136,16 +136,8 @@ RSpec.describe "Authentication" do
     new_user_session_url(subdomain: carrier.subdomain)
   end
 
-  def accept_invitation_url_for(carrier)
-    accept_user_invitation_url(subdomain: carrier.subdomain)
-  end
-
   def two_factor_authentication_url_for(carrier)
     new_dashboard_two_factor_authentication_url(subdomain: carrier.subdomain)
-  end
-
-  def reset_password_url_for(carrier)
-    edit_user_password_url(subdomain: carrier.subdomain)
   end
 
   def carrier_settings_url_for(carrier)
