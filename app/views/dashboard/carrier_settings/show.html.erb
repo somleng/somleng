@@ -6,11 +6,18 @@
 
 <div class="card-body">
   <%= show_for(@resource) do |f| %>
-    <%= f.attribute :name, value: @resource.name %>
+    <%= f.attribute :name %>
+    <%= f.attribute :subdomain %>
     <%= f.attribute :country do %>
       <%= @resource.country.emoji_flag %>
       <%= @resource.country.iso_short_name %>
     <% end %>
+    <%= f.attribute :website %>
+
+    <%= f.attribute :logo do %>
+      <%= image_thumbnail(@resource.logo) %>
+    <% end %>
+
     <%= f.attribute :api_key, label: "API Key" do %>
       <%= mask_content(@resource.api_key) if @resource.api_key.present? %>
     <% end %>
@@ -27,10 +34,6 @@
       <%= f.attribute :webhook_signing_secret do %>
         <%= mask_content(@resource.webhook_endpoint.signing_secret) %>
       <% end %>
-    <% end %>
-
-    <%= f.attribute :logo do %>
-      <%= image_thumbnail(@resource.logo) %>
     <% end %>
 
     <%= f.attribute :custom_domain do %>

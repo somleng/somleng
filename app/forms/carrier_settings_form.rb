@@ -17,7 +17,7 @@ class CarrierSettingsForm
   validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
   validates :website, presence: true, url_format: { allow_blank: true }
   validates :webhook_url, url_format: { allow_http: true }, allow_blank: true
-  validates :website
+  validates :subdomain, subdomain: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "CarrierSettings")

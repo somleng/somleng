@@ -20,7 +20,7 @@ module Dashboard
 
     def permitted_params
       params.require(:carrier_settings).permit(
-        :name, :country, :logo, :webhook_url, :enable_webhooks
+        :name, :country, :logo, :webhook_url, :enable_webhooks, :website, :subdomain
       )
     end
 

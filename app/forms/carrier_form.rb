@@ -2,18 +2,6 @@ class CarrierForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  RESTRICTED_SUBDOMAINS = %w[
-    api mail scfm docs dashboard switch somleng
-  ].freeze
-
-  class SubdomainUniquenessValidator < ActiveModel::EachValidator
-    def validate_each(record, attribute, value)
-      return unless Carrier.exists?(subdomain: value)
-
-      record.errors.add(attribute, options.fetch(:message, :taken))
-    end
-  end
-
   attribute :company
   attribute :name
   attribute :work_email
@@ -38,7 +26,7 @@ class CarrierForm
   validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
   validates :website, url_format: { allow_http: true }, allow_blank: true
   validates :password, confirmation: true
-  validates :subdomain, subdomain_uniqueness: true, exclusion: RESTRICTED_SUBDOMAINS
+  validates :subdomain, subdomain: true
 
   delegate :persisted?, to: :user
 

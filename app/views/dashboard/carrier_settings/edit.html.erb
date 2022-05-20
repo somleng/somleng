@@ -8,9 +8,21 @@
       </div>
 
       <div class="col-sm-6">
-        <%= f.input :country %>
+        <%= f.input :subdomain, maxlength: 128, hint: "Company identifier which is used to login to your dashboard" %>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :country %>
+      </div>
+
+      <div class="col-6">
+        <%= f.input :website, hint: "Must start with https or http" %>
+      </div>
+    </div>
+
+    <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
 
     <% unless @resource.webhooks_disabled? %>
       <div class="row">
@@ -23,8 +35,6 @@
     <% if @resource.webhook_configured? %>
       <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
     <% end %>
-
-    <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
 
     <%= f.button :submit %>
   <% end %>
