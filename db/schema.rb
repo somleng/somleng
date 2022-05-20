@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_09_011934) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_20_014519) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -403,6 +403,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_09_011934) do
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
     t.index ["current_account_membership_id"], name: "index_users_on_current_account_membership_id"
     t.index ["email", "carrier_id"], name: "index_users_on_email_and_carrier_id", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true, where: "(carrier_role IS NOT NULL)"
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"

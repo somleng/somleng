@@ -125,7 +125,12 @@ RSpec.describe "Custom Domains" do
     carrier = create(:carrier)
     user = create(:user, carrier:, password: "Super Secret")
 
-    _other_carrier_domain = create(:custom_domain, :verified, :dashboard, host: "dashboard.example.com")
+    _other_carrier_domain = create(
+      :custom_domain,
+      :verified,
+      :dashboard,
+      host: "dashboard.example.com"
+    )
     post(
       user_session_path,
       params: {
