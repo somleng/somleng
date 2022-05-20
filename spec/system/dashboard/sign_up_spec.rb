@@ -6,6 +6,7 @@ RSpec.describe "Signup" do
     fill_in("Name", with: "John Doe")
     fill_in("Work email", with: "johndoe@att.com")
     fill_in("Company", with: "AT&T")
+    fill_in("Subdomain", with: "at-t")
     select("Indonesia", from: "Country")
     fill_in("Website", with: "https://www.att.com")
     fill_in("Password", with: "Super Secret", match: :prefer_exact)
@@ -14,11 +15,13 @@ RSpec.describe "Signup" do
     perform_enqueued_jobs do
       click_button("Sign up")
     end
+    expect(page.current_url).to eq(new_user_session_url(subdomain: "at-t"))
     expect(page).to have_content("A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.")
 
     open_email("johndoe@att.com")
-    visit_in_email("Confirm my account")
+    visit_full_link_in_email(user_confirmation_url(subdomain: "at-t"))
 
+    expect(page.current_url).to eq(new_user_session_url(subdomain: "at-t"))
     expect(page).to have_content("Your email address has been successfully confirmed.")
   end
 

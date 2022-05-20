@@ -9,6 +9,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   layout :resolve_layout
 
+  self.raise_on_open_redirects = false
+
   def create
     if verify_recaptcha(action: "sign_up", minimum_score: 0.5)
       super do |form|
@@ -33,6 +35,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         name
         work_email
         company
+        subdomain
         country
         website
       ]
@@ -43,8 +46,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
     sign_in_after_change_password? ? edit_user_registration_path : new_session_path(resource_name)
   end
 
-  def after_inactive_sign_up_path_for(_resource)
-    new_session_path(resource_name)
+  def after_inactive_sign_up_path_for(resource)
+    new_session_url(resource_name, subdomain: resource.subdomain)
   end
 
   def build_resource(hash = {})

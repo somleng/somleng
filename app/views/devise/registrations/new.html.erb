@@ -19,7 +19,14 @@
     </div>
   </div>
 
-  <%= f.input :website, hint: "Must start with https or http" %>
+  <div class="row">
+    <div class="col-6">
+      <%= f.input :website, hint: "Must start with https or http" %>
+    </div>
+    <div class="col-6">
+      <%= f.input :subdomain, hint: "Access the dashboard through this subdomain" %>
+    </div>
+  </div>
 
   <%= f.input :password,
               hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),

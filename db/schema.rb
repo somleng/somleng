@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_20_014519) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_20_060927) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -104,7 +105,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_20_014519) do
     t.string "country_code", null: false
     t.string "website"
     t.boolean "restricted", default: false, null: false
+    t.citext "subdomain", null: false
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
+    t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
   end
 
   create_table "custom_domains", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -403,7 +406,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_20_014519) do
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
     t.index ["current_account_membership_id"], name: "index_users_on_current_account_membership_id"
     t.index ["email", "carrier_id"], name: "index_users_on_email_and_carrier_id", unique: true
-    t.index ["email"], name: "index_users_on_email", unique: true, where: "(carrier_role IS NOT NULL)"
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"

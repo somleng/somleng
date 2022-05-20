@@ -1,94 +1,90 @@
 Rails.application.routes.draw do
-  constraints(
-    ->(request) { URI(Rails.configuration.app_settings.dashboard_url_host).host == AppRequest.new(request).app_hostname }
-  ) do
-    devise_for :users, skip: %i[registrations invitations]
+  devise_for :users, skip: %i[registrations invitations]
 
-    devise_scope :user do
-      constraints(NoCustomDomainConstraint.new) do
-        resource(
-          :registration,
-          only: %i[new create],
-          controller: "users/registrations",
-          as: :user_registration,
-          path: "users",
-          path_names: {
-            new: "sign_up"
-          }
-        )
-      end
-
+  devise_scope :user do
+    constraints(NoCustomDomainConstraint.new) do
       resource(
         :registration,
-        only: %i[edit update],
+        only: %i[new create],
         controller: "users/registrations",
         as: :user_registration,
-        path: "users"
+        path: "users",
+        path_names: {
+          new: "sign_up"
+        }
       )
-
-      resource(
-        :invitation,
-        only: :update,
-        controller: "devise/invitations",
-        as: :user_invitation,
-        path: "users/invitation"
-      ) do
-        get :accept, action: :edit
-      end
-
-      root to: "dashboard/home#show"
     end
 
-    scope "/", module: :dashboard, as: :dashboard do
-      resources :two_factor_authentications, only: %i[new create destroy]
-      resources :accounts
-      resources :account_memberships
-      resources :outbound_sip_trunks
-      resources :carrier_users
-      resources :exports, only: %i[index create]
-      resources :imports, only: %i[index create]
-      resource :account_session, only: :create
-      resource :account_settings, only: %i[show edit update]
-      resource :carrier_settings, only: %i[show edit update] do
-        resource :custom_domain, only: %i[edit update destroy] do
-          post :verify, on: :member
-          post :regenerate, on: :member
-        end
-      end
-      resource :home, only: :show
-      resources :user_invitations, only: :update
-      resources :phone_numbers do
-        resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
-        patch :release, on: :member
-      end
-      resources :inbound_sip_trunks
-      resources :phone_calls, only: %i[index show]
+    resource(
+      :registration,
+      only: %i[edit update],
+      controller: "users/registrations",
+      as: :user_registration,
+      path: "users"
+    )
 
-      root to: "home#show"
+    resource(
+      :invitation,
+      only: :update,
+      controller: "devise/invitations",
+      as: :user_invitation,
+      path: "users/invitation"
+    ) do
+      get :accept, action: :edit
     end
 
-    namespace :admin, constraints: NoCustomDomainConstraint.new do
-      concern :exportable do
-        get :export, on: :collection
+    root to: "dashboard/home#show"
+  end
+
+  scope "/", module: :dashboard, as: :dashboard do
+    resources :two_factor_authentications, only: %i[new create destroy]
+    resources :accounts
+    resources :account_memberships
+    resources :outbound_sip_trunks
+    resources :carrier_users
+    resources :exports, only: %i[index create]
+    resources :imports, only: %i[index create]
+    resource :account_session, only: :create
+    resource :account_settings, only: %i[show edit update]
+    resource :carrier_settings, only: %i[show edit update] do
+      resource :custom_domain, only: %i[edit update destroy] do
+        post :verify, on: :member
+        post :regenerate, on: :member
       end
-
-      resources :carriers, only: %i[show index], concerns: :exportable
-      resources :accounts, only: %i[show index], concerns: :exportable
-      resources :phone_calls, only: %i[show index], concerns: :exportable
-      resources :users, only: %i[show index], concerns: :exportable
-
-      resources :account_memberships, only: :show
-      resources :inbound_sip_trunks, only: :show
-      resources :outbound_sip_trunks, only: :show
-      resources :phone_numbers, only: :show
-      resources :phone_number_configurations, only: :show
-      resources :phone_call_events, only: :show
-      resources :call_data_records, only: :show
-      resources :recordings, only: :show
-      resources :statistics, only: :index
-
-      root to: "statistics#index"
     end
+    resource :home, only: :show
+    resources :user_invitations, only: :update
+    resources :phone_numbers do
+      resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
+      patch :release, on: :member
+    end
+    resources :inbound_sip_trunks
+    resources :phone_calls, only: %i[index show]
+
+    root to: "home#show"
+  end
+
+  namespace :admin, constraints: NoCustomDomainConstraint.new do
+    concern :exportable do
+      get :export, on: :collection
+    end
+
+    resources :carriers, only: %i[show index], concerns: :exportable
+    resources :accounts, only: %i[show index], concerns: :exportable
+    resources :phone_calls, only: %i[show index], concerns: :exportable
+    resources :users, only: %i[show index], concerns: :exportable
+
+    resources :account_memberships, only: :show
+    resources :inbound_sip_trunks, only: :show
+    resources :outbound_sip_trunks, only: :show
+    resources :phone_numbers, only: :show
+    resources :phone_number_configurations, only: :show
+    resources :phone_call_events, only: :show
+    resources :call_data_records, only: :show
+    resources :recordings, only: :show
+    resources :statistics, only: :index
+
+    root to: "statistics#index"
   end
 
   constraints(

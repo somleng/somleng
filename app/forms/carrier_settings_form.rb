@@ -2,11 +2,11 @@ class CarrierSettingsForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[https])}\z/
-
   attribute :carrier
   attribute :name
   attribute :country
+  attribute :website
+  attribute :subdomain, SubdomainType.new
   attribute :logo
   attribute :webhook_url
   attribute :enable_webhooks, :boolean, default: true
@@ -15,7 +15,9 @@ class CarrierSettingsForm
 
   validates :name, presence: true
   validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
-  validates :webhook_url, format: URL_FORMAT, allow_blank: true
+  validates :website, presence: true, url_format: { allow_blank: true }
+  validates :webhook_url, url_format: { allow_http: true }, allow_blank: true
+  validates :website
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "CarrierSettings")
@@ -25,6 +27,8 @@ class CarrierSettingsForm
     new(
       carrier:,
       name: carrier.name,
+      subdomain: carrier.subdomain,
+      website: carrier.website,
       country: carrier.country_code,
       logo: carrier.logo,
       webhook_url: carrier.webhook_endpoint&.url,
@@ -37,6 +41,8 @@ class CarrierSettingsForm
 
     carrier.attributes = {
       name:,
+      website:,
+      subdomain:,
       country_code: country
     }
 

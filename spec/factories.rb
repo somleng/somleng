@@ -45,8 +45,11 @@ FactoryBot.define do
   end
 
   factory :carrier do
-    name { "Somleng" }
+    name { "AT&T" }
     country_code { "KH" }
+    subdomain { "at-t" }
+    website { "https://at-t.com" }
+
     trait :restricted do
       restricted { true }
     end

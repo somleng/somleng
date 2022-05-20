@@ -39,19 +39,21 @@ class User < ApplicationRecord
 
   before_create :generate_otp_secret
 
+  delegate :subdomain, to: :carrier
+
   def self.policy_class
     CarrierUserPolicy
   end
 
-  def send_devise_notification(notification, *args)
-    devise_mailer.send(notification, self, *args).deliver_later
+  def self.find_for_authentication(warden_conditions)
+    joins(:carrier).where(
+      email: warden_conditions[:email],
+      carriers: { subdomain: warden_conditions[:subdomain] }
+    ).first
   end
 
-  def self.find_first_by_auth_conditions(tainted_conditions, opts = {})
-    return super unless tainted_conditions.key?(:carrier_id)
-
-    tainted_conditions.delete(:carrier_id) if tainted_conditions.fetch(:carrier_id) == "__missing__"
-    super
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
   end
 
   private

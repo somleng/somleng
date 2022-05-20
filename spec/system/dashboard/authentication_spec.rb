@@ -5,7 +5,7 @@ RSpec.describe "Authentication" do
     carrier = create(:carrier, :with_oauth_application)
     user = create(:user, :carrier, carrier:, password: "Super Secret")
 
-    visit(new_user_session_path)
+    visit(sign_in_url_for(carrier))
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: user.current_otp)
@@ -18,7 +18,7 @@ RSpec.describe "Authentication" do
     carrier = create(:carrier)
     user = create(:user, carrier:, password: "Super Secret")
 
-    visit(new_user_session_path)
+    visit(sign_in_url_for(carrier))
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: "wrong-otp")
@@ -31,7 +31,7 @@ RSpec.describe "Authentication" do
     carrier = create(:carrier, :with_oauth_application)
     user = create(:user, :carrier, carrier:, password: "Super Secret", otp_required_for_login: false)
 
-    visit(new_user_session_path)
+    visit(sign_in_url_for(carrier))
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     click_button("Login")
@@ -56,18 +56,19 @@ RSpec.describe "Authentication" do
     end
 
     open_email("new_user@example.com")
-    visit_in_email("Accept invitation")
-    expect(current_url).to match("dashboard")
+    visit_full_link_in_email(accept_invitation_url_for(carrier))
 
     fill_in("Password", with: "password123")
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
 
+    expect(current_url).to eq(two_factor_authentication_url_for(carrier))
     expect(page).to have_content("Setup Two Factor Authentication")
   end
 
   it "Accept an invitation from an account owner" do
-    account = create(:account)
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
     perform_enqueued_jobs do
       user = User.invite!(
         carrier: account.carrier,
@@ -78,11 +79,12 @@ RSpec.describe "Authentication" do
     end
 
     open_email("johndoe@example.com")
-    visit_in_email("Accept invitation")
+    visit_full_link_in_email(accept_invitation_url_for(carrier))
     fill_in("Password", with: "password123")
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
 
+    expect(current_url).to eq(two_factor_authentication_url_for(carrier))
     expect(page).to have_content("Setup Two Factor Authentication")
   end
 
@@ -98,11 +100,12 @@ RSpec.describe "Authentication" do
     end
 
     open_email("user@example.com")
-    visit_in_email("Change my password")
+    visit_full_link_in_email(reset_password_url_for(carrier))
     fill_in("New password", with: "Super Secret")
     fill_in("Confirm your new password", with: "Super Secret")
     click_button("Change my password")
 
+    expect(current_url).to eq(carrier_settings_url_for(carrier))
     expect(page).to have_content("Your password has been changed successfully. You are now signed in")
   end
 
@@ -127,5 +130,25 @@ RSpec.describe "Authentication" do
 
     expect(page).to have_current_path(dashboard_account_settings_path)
     expect(page).to have_content("Rocket Rides")
+  end
+
+  def sign_in_url_for(carrier)
+    new_user_session_url(subdomain: carrier.subdomain)
+  end
+
+  def accept_invitation_url_for(carrier)
+    accept_user_invitation_url(subdomain: carrier.subdomain)
+  end
+
+  def two_factor_authentication_url_for(carrier)
+    new_dashboard_two_factor_authentication_url(subdomain: carrier.subdomain)
+  end
+
+  def reset_password_url_for(carrier)
+    edit_user_password_url(subdomain: carrier.subdomain)
+  end
+
+  def carrier_settings_url_for(carrier)
+    dashboard_carrier_settings_url(subdomain: carrier.subdomain)
   end
 end

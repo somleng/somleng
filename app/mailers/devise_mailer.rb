@@ -22,7 +22,11 @@ class DeviseMailer < Devise::Mailer
 
   def resolve_host(record)
     custom_domain = custom_domain_from(record, type: :dashboard)
-    custom_domain ? custom_domain.host : Rails.configuration.app_settings.fetch(:dashboard_url_host)
+    custom_domain ? custom_domain.host : default_host(record)
+  end
+
+  def default_host(record)
+    URI(dashboard_root_url(subdomain: record.subdomain)).host
   end
 
   def custom_domain_from(record, type:)
