@@ -49,12 +49,9 @@ class User < ApplicationRecord
 
   def self.find_first_by_auth_conditions(tainted_conditions, opts = {})
     return super unless tainted_conditions.key?(:carrier_id)
-    return super unless tainted_conditions.fetch(:carrier_id) == "__missing__"
 
-    tainted_conditions.delete(:carrier_id)
-    result = super
-
-    return result if result.carrier_role.present?
+    tainted_conditions.delete(:carrier_id) if tainted_conditions.fetch(:carrier_id) == "__missing__"
+    super
   end
 
   private
