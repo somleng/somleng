@@ -6,10 +6,6 @@
       <div class="col-sm-6">
         <%= f.input :name, maxlength: 128, hint: "Your company's name" %>
       </div>
-
-      <div class="col-sm-6">
-        <%= f.input :subdomain, maxlength: 128, hint: "Company identifier which is used to login to your dashboard" %>
-      </div>
     </div>
 
     <div class="row">
@@ -35,6 +31,17 @@
     <% if @resource.webhook_configured? %>
       <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
     <% end %>
+
+    <div class="card border-danger mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Danger Zone</h5>
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :subdomain, maxlength: 128, hint: "Updating your subdomain will affect other signed in users. If you have a custom domain setup you'll also need to update your DNS settings." %>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <%= f.button :submit %>
   <% end %>

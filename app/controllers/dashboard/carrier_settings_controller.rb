@@ -1,5 +1,7 @@
 module Dashboard
   class CarrierSettingsController < DashboardController
+    self.raise_on_open_redirects = false
+
     def show
       @resource = current_carrier
     end
@@ -13,7 +15,10 @@ module Dashboard
       @resource.carrier = current_carrier
       @resource.save
 
-      respond_with(@resource, location: dashboard_carrier_settings_path)
+      respond_with(
+        @resource,
+        location: dashboard_carrier_settings_url(subdomain: current_carrier.subdomain)
+      )
     end
 
     private

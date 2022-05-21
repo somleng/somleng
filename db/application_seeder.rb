@@ -7,6 +7,7 @@ class ApplicationSeeder
       name: "My Carrier",
       country_code: "KH",
       restricted: false,
+      subdomain: "my-carrier",
       website: "https://example.com",
       owner: {
         email: "johndoe@carrier.com",

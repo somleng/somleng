@@ -25,6 +25,7 @@ RSpec.describe CarrierForm do
         name: "John Doe",
         work_email: "johndoe@example.com",
         company: "AT&T",
+        subdomain: "at-t",
         country: "KH",
         website: "https://example.com",
         password: "Super Secret",
