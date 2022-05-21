@@ -67,29 +67,29 @@ Rails.application.routes.draw do
 
       root to: "home#show"
     end
+  end
 
-    namespace :admin, constraints: NoCustomDomainConstraint.new do
-      concern :exportable do
-        get :export, on: :collection
-      end
-
-      resources :carriers, only: %i[show index], concerns: :exportable
-      resources :accounts, only: %i[show index], concerns: :exportable
-      resources :phone_calls, only: %i[show index], concerns: :exportable
-      resources :users, only: %i[show index], concerns: :exportable
-
-      resources :account_memberships, only: :show
-      resources :inbound_sip_trunks, only: :show
-      resources :outbound_sip_trunks, only: :show
-      resources :phone_numbers, only: :show
-      resources :phone_number_configurations, only: :show
-      resources :phone_call_events, only: :show
-      resources :call_data_records, only: :show
-      resources :recordings, only: :show
-      resources :statistics, only: :index
-
-      root to: "statistics#index"
+  namespace :admin, constraints: { subdomain: "dashboard" } do
+    concern :exportable do
+      get :export, on: :collection
     end
+
+    resources :carriers, only: %i[show index], concerns: :exportable
+    resources :accounts, only: %i[show index], concerns: :exportable
+    resources :phone_calls, only: %i[show index], concerns: :exportable
+    resources :users, only: %i[show index], concerns: :exportable
+
+    resources :account_memberships, only: :show
+    resources :inbound_sip_trunks, only: :show
+    resources :outbound_sip_trunks, only: :show
+    resources :phone_numbers, only: :show
+    resources :phone_number_configurations, only: :show
+    resources :phone_call_events, only: :show
+    resources :call_data_records, only: :show
+    resources :recordings, only: :show
+    resources :statistics, only: :index
+
+    root to: "statistics#index"
   end
 
   constraints(
