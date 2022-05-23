@@ -3,5 +3,5 @@
 Rails.application.config.session_store(
   :cookie_store,
   key: "_somleng_session",
-  domain: Addressable::URI.parse(Rails.configuration.app_settings.fetch(:dashboard_url_host)).domain
+  domain: Rails.configuration.app_settings.fetch(:host)
 )

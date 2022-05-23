@@ -1,4 +1,5 @@
 default: &default
+  host: <%= ENV.fetch("HOST", "http://lvh.me:3000") %>
   api_url_host: <%= ENV.fetch("API_URL_HOST", "http://api.lvh.me:3000") %>
   dashboard_url_host: <%= ENV.fetch("DASHBOARD_URL_HOST", "http://dashboard.lvh.me:3000") %>
   mailer_sender: "no-reply@somleng.org"
@@ -26,6 +27,7 @@ default: &default
 
 production: &production
   <<: *default
+  host: "somleng.org"
   api_url_host: "https://api.somleng.org"
   dashboard_url_host: "https://dashboard.somleng.org"
   asset_url_host: "https://cdn.somleng.org"

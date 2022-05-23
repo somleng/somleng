@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Custom Domains" do
+RSpec.xdescribe "Custom Domains" do
   it "makes api requests on custom domains" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
