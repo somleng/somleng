@@ -48,7 +48,7 @@ class User < ApplicationRecord
   def self.find_for_authentication(warden_conditions)
     joins(:carrier).where(
       email: warden_conditions[:email],
-      carriers: { subdomain: warden_conditions[:subdomain] }
+      carriers: { subdomain: warden_conditions[:subdomains].first }
     ).first
   end
 

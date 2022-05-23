@@ -28,7 +28,8 @@ module Somleng
     config.eager_load_paths << Rails.root.join("lib")
     config.app_settings = config_for(:app_settings)
     config.active_job.default_queue_name = config.app_settings.fetch(:aws_sqs_default_queue_name)
-    Rails.application.routes.default_url_options[:host] = config.app_settings.fetch(:dashboard_url_host)
+    Rails.application.routes.default_url_options[:host] = config.app_settings.fetch(:app_url_host)
+    config.action_mailer.default_url_options = { host: config.app_settings.fetch(:app_url_host) }
 
     encryption_config = config.app_settings.fetch(:active_record_encryption)
     config.active_record.encryption.primary_key = encryption_config.fetch(:primary_key)

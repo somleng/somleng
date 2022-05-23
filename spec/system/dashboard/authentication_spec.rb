@@ -5,7 +5,7 @@ RSpec.describe "Authentication" do
     carrier = create(:carrier, :with_oauth_application)
     user = create(:user, :carrier, carrier:, password: "Super Secret")
 
-    visit(sign_in_url_for(carrier))
+    visit(new_user_session_url(host: carrier.app_host))
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: user.current_otp)
@@ -18,7 +18,7 @@ RSpec.describe "Authentication" do
     carrier = create(:carrier)
     user = create(:user, carrier:, password: "Super Secret")
 
-    visit(sign_in_url_for(carrier))
+    visit(new_user_session_url(host: carrier.app_host))
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: "wrong-otp")
@@ -31,7 +31,7 @@ RSpec.describe "Authentication" do
     carrier = create(:carrier, :with_oauth_application)
     user = create(:user, :carrier, carrier:, password: "Super Secret", otp_required_for_login: false)
 
-    visit(sign_in_url_for(carrier))
+    visit(new_user_session_url(host: carrier.app_host))
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     click_button("Login")
@@ -62,7 +62,7 @@ RSpec.describe "Authentication" do
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
 
-    expect(current_url).to eq(two_factor_authentication_url_for(carrier))
+    expect(current_url).to eq(new_dashboard_two_factor_authentication_url(host: carrier.app_host))
     expect(page).to have_content("Setup Two Factor Authentication")
   end
 
@@ -84,7 +84,7 @@ RSpec.describe "Authentication" do
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
 
-    expect(current_url).to eq(two_factor_authentication_url_for(carrier))
+    expect(current_url).to eq(new_dashboard_two_factor_authentication_url(host: carrier.app_host))
     expect(page).to have_content("Setup Two Factor Authentication")
   end
 
@@ -92,7 +92,7 @@ RSpec.describe "Authentication" do
     carrier = create(:carrier, :with_oauth_application)
     user = create(:user, :carrier, carrier:, email: "user@example.com")
 
-    visit(new_user_session_path)
+    visit(new_user_session_url(host: carrier.app_host))
     click_link("Forgot your password?")
     fill_in("Email", with: user.email)
     perform_enqueued_jobs do
@@ -105,7 +105,7 @@ RSpec.describe "Authentication" do
     fill_in("Confirm your new password", with: "Super Secret")
     click_button("Change my password")
 
-    expect(current_url).to eq(carrier_settings_url_for(carrier))
+    expect(current_url).to eq(dashboard_carrier_settings_url(host: carrier.app_host))
     expect(page).to have_content("Your password has been changed successfully. You are now signed in")
   end
 
@@ -113,7 +113,7 @@ RSpec.describe "Authentication" do
     user = create(:user)
 
     sign_in(user)
-    visit(dashboard_root_path)
+    visit(dashboard_root_url(host: user.carrier.app_host))
 
     expect(page).to have_current_path(new_user_session_path)
     expect(page).to have_content("You are not a member of any accounts")
@@ -126,21 +126,9 @@ RSpec.describe "Authentication" do
     create(:account_membership, user:, account:)
 
     sign_in(user)
-    visit(dashboard_root_path)
+    visit(dashboard_root_url(host: carrier.app_host))
 
     expect(page).to have_current_path(dashboard_account_settings_path)
     expect(page).to have_content("Rocket Rides")
-  end
-
-  def sign_in_url_for(carrier)
-    new_user_session_url(subdomain: carrier.subdomain)
-  end
-
-  def two_factor_authentication_url_for(carrier)
-    new_dashboard_two_factor_authentication_url(subdomain: carrier.subdomain)
-  end
-
-  def carrier_settings_url_for(carrier)
-    dashboard_carrier_settings_url(subdomain: carrier.subdomain)
   end
 end

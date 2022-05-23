@@ -1,24 +1,42 @@
 Rails.application.routes.draw do
-  constraints(
-    ->(request) { Carrier.find_by!(subdomain: request.subdomain) }
-  ) do
+  scope(as: :api, constraints: { subdomain: "api" }, defaults: { format: "json" } ) do
+    concern :recordings do
+      resources :recordings, only: %i[index], path: "Recordings"
+      resources :recordings, only: %i[show], path: "Recordings", defaults: { format: "wav" }
+    end
 
+    scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_account do
+      concerns :recordings
+
+      resources :phone_calls, only: %i[index create show update], path: "Calls", concerns: :recordings
+      post "Calls/:id" => "phone_calls#update"
+    end
+
+    scope "/carrier", as: :carrier, module: :carrier_api do
+      namespace :v1, defaults: { format: :json } do
+        resources :accounts, only: %i[create show update index destroy]
+        resources :events, only: %i[index show]
+
+        resources :phone_calls, only: %i[index show update]
+        resources :phone_numbers, only: %i[index create show update destroy] do
+          patch :release, on: :member
+        end
+      end
+    end
+
+    namespace :services do
+      resources :inbound_phone_calls, only: :create
+      resources :phone_call_events, only: :create
+      resources :call_data_records, only: :create
+      resources :recordings, only: %i[create update]
+      resource :dial_string, only: :create
+    end
+  end
+
+  constraints(AppSubdomainConstraint.new) do
     devise_for :users, skip: %i[registrations invitations]
 
     devise_scope :user do
-      constraints(NoCustomDomainConstraint.new) do
-        resource(
-          :registration,
-          only: %i[new create],
-          controller: "users/registrations",
-          as: :user_registration,
-          path: "users",
-          path_names: {
-            new: "sign_up"
-          }
-        )
-      end
-
       resource(
         :registration,
         only: %i[edit update],
@@ -40,7 +58,7 @@ Rails.application.routes.draw do
       root to: "dashboard/home#show"
     end
 
-    scope "/", module: :dashboard, as: :dashboard do
+    scope module: :dashboard, as: :dashboard do
       resources :two_factor_authentications, only: %i[new create destroy]
       resources :accounts
       resources :account_memberships
@@ -69,7 +87,22 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :admin, constraints: { subdomain: "dashboard" } do
+  constraints(subdomain: "app") do
+    devise_scope :user do
+      resource(
+        :registration,
+        only: %i[new create],
+        controller: "users/registrations",
+        as: :user_registration,
+        path: "users",
+        path_names: {
+          new: "sign_up"
+        }
+      )
+    end
+  end
+
+  namespace :admin, constraints: { subdomain: "app" } do
     concern :exportable do
       get :export, on: :collection
     end
@@ -90,45 +123,5 @@ Rails.application.routes.draw do
     resources :statistics, only: :index
 
     root to: "statistics#index"
-  end
-
-  constraints(
-    ->(request) { URI(Rails.configuration.app_settings.api_url_host).host == AppRequest.new(request).app_hostname }
-  ) do
-    namespace :services, defaults: { format: "json" } do
-      resources :inbound_phone_calls, only: :create
-      resources :phone_call_events, only: :create
-      resources :call_data_records, only: :create
-      resources :recordings, only: %i[create update]
-      resource :dial_string, only: :create
-    end
-
-    concern :recordings do
-      resources :recordings, only: %i[index], path: "Recordings"
-      resources :recordings, only: %i[show], path: "Recordings", defaults: { format: "wav" }
-    end
-
-    scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_api_account,
-                                              defaults: { format: "json" } do
-      concerns :recordings
-
-      resources :phone_calls, only: %i[index create show update], path: "Calls",
-                              concerns: :recordings
-      post "Calls/:id" => "phone_calls#update"
-    end
-
-    scope :carrier, as: :carrier_api, module: :carrier_api do
-      namespace :v1, defaults: { format: :json } do
-        resources :accounts, only: %i[create show update index destroy]
-        resources :events, only: %i[index show]
-
-        resources :phone_calls, only: %i[index show update]
-        resources :phone_numbers, only: %i[index create show update destroy] do
-          patch :release, on: :member
-        end
-      end
-    end
-
-    get "docs" => "twilio_api/documentation#show"
   end
 end

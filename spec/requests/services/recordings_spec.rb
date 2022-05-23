@@ -6,14 +6,14 @@ RSpec.describe "Services" do
       phone_call = create(:phone_call)
 
       post(
-        services_recordings_path,
+        api_services_recordings_path,
         params: { phone_call_id: phone_call.id },
         headers: build_authorization_headers("services", "password")
       )
 
       expect(response.code).to eq("201")
       expect(response.body).to match_api_response_schema("services/recording")
-      expect(json_response(response.body).fetch("url")).to start_with("https://api.somleng.org")
+      expect(json_response(response.body).fetch("url")).to start_with("http://api.lvh.me")
     end
   end
 
@@ -22,7 +22,7 @@ RSpec.describe "Services" do
       recording = create(:recording, :in_progress)
 
       patch(
-        services_recording_path(recording),
+        api_services_recording_path(recording),
         params: {
           raw_recording_url: "https://raw-recordings.s3.amazonaws.com/recording.wav",
           external_id: "external-id"

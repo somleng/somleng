@@ -5,7 +5,7 @@ RSpec.describe "Twilio API Authentication" do
     account = create(:account)
 
     post(
-      twilio_api_account_phone_calls_path(account)
+      api_twilio_account_phone_calls_path(account)
     )
 
     expect(response.code).to eq("401")
@@ -18,7 +18,7 @@ RSpec.describe "Twilio API Authentication" do
     account = create(:account)
 
     post(
-      twilio_api_account_phone_calls_path(account),
+      api_twilio_account_phone_calls_path(account),
       headers: build_authorization_headers("account", "wrong-password")
     )
 
@@ -30,7 +30,7 @@ RSpec.describe "Twilio API Authentication" do
     account = create(:account)
 
     post(
-      twilio_api_account_phone_calls_path(account),
+      api_twilio_account_phone_calls_path(account),
       headers: build_authorization_headers("wrong-account-id", account.auth_token)
     )
 
@@ -42,7 +42,7 @@ RSpec.describe "Twilio API Authentication" do
     phone_call = create(:phone_call, account:)
 
     get(
-      twilio_api_account_phone_call_path(account, phone_call),
+      api_twilio_account_phone_call_path(account, phone_call),
       headers: build_api_authorization_headers(account)
     )
 
@@ -54,7 +54,7 @@ RSpec.describe "Twilio API Authentication" do
     account = create(:account, carrier:)
 
     get(
-      twilio_api_account_phone_calls_path(account),
+      api_twilio_account_phone_calls_path(account),
       headers: build_api_authorization_headers(account)
     )
 

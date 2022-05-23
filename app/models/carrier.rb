@@ -25,4 +25,16 @@ class Carrier < ApplicationRecord
   def webhooks_enabled?
     webhook_endpoint&.enabled?
   end
+
+  def app_host
+    return custom_domain if custom_domain.present?
+
+    URI(url_helpers.root_url(subdomain: "#{subdomain}.app")).host
+  end
+
+  private
+
+  def url_helpers
+    @url_helpers ||= Rails.application.routes.url_helpers
+  end
 end

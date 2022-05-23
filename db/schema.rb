@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_23_064005) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_23_102923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -106,6 +106,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_23_064005) do
     t.string "website"
     t.boolean "restricted", default: false, null: false
     t.citext "subdomain", null: false
+    t.citext "custom_domain"
+    t.index ["custom_domain"], name: "index_carriers_on_custom_domain", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
   end
