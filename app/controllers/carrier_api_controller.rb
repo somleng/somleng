@@ -3,8 +3,6 @@ class CarrierAPIController < APIController
 
   before_action -> { doorkeeper_authorize!(:carrier_api) }
 
-  include CustomDomainAPIAuthorization
-
   private
 
   def validate_request_schema(with:, **options, &block)

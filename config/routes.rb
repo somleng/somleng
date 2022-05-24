@@ -68,12 +68,7 @@ Rails.application.routes.draw do
       resources :imports, only: %i[index create]
       resource :account_session, only: :create
       resource :account_settings, only: %i[show edit update]
-      resource :carrier_settings, only: %i[show edit update] do
-        resource :custom_domain, only: %i[edit update destroy] do
-          post :verify, on: :member
-          post :regenerate, on: :member
-        end
-      end
+      resource :carrier_settings, only: %i[show edit update]
       resource :home, only: :show
       resources :user_invitations, only: :update
       resources :phone_numbers do
