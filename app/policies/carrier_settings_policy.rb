@@ -8,6 +8,6 @@ class CarrierSettingsPolicy < ApplicationPolicy
   end
 
   def manage?
-    user.current_organization.carrier?
+    managing_carrier?
   end
 end

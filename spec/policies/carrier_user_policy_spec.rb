@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe CarrierUserPolicy, type: :policy do
   it "denies access to users managing themselves" do
-    user_context = build_user_context_for_carrier(role: :owner)
+    user = build_stubbed(:user, :owner)
 
-    policy = CarrierUserPolicy.new(user_context, user_context)
+    policy = CarrierUserPolicy.new(user, user)
 
     expect(policy.update?).to eq(false)
     expect(policy.destroy?).to eq(false)
@@ -12,19 +12,19 @@ RSpec.describe CarrierUserPolicy, type: :policy do
 
   it "grants access to carrier owners" do
     carrier = create(:carrier)
-    user_context = build_user_context_for_carrier(role: :owner, carrier: carrier)
-    managed_user = create(:user, carrier: carrier)
+    user = create(:user, :owner, carrier:)
+    managed_user = create(:user, carrier:)
 
-    policy = CarrierUserPolicy.new(user_context, managed_user)
+    policy = CarrierUserPolicy.new(user, managed_user)
 
     expect(policy.update?).to eq(true)
     expect(policy.destroy?).to eq(true)
   end
 
   it "denies access to carrier admins" do
-    user_context = build_user_context_for_carrier(role: :admin)
+    user = create(:user, :admin)
 
-    policy = CarrierUserPolicy.new(user_context)
+    policy = CarrierUserPolicy.new(user)
 
     expect(policy.index?).to eq(true)
     expect(policy.create?).to eq(false)

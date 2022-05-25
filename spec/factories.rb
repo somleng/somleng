@@ -129,18 +129,6 @@ FactoryBot.define do
       with_access_token
     end
 
-    trait :customer_managed do
-      with_access_token
-
-      after(:build) do |account|
-        if account.account_memberships.empty?
-          account.account_memberships << build(
-            :account_membership, account:
-          )
-        end
-      end
-    end
-
     trait :with_access_token do
       after(:build) do |account|
         account.access_token ||= build(:oauth_access_token, resource_owner_id: account.id)
@@ -213,6 +201,14 @@ FactoryBot.define do
     admin
 
     traits_for_enum :role, %i[owner admin member]
+
+    after(:stub) do |account_membership|
+      account_membership.user.current_account_membership ||= account_membership
+    end
+
+    after(:build) do |account_membership|
+      account_membership.user.current_account_membership ||= account_membership
+    end
   end
 
   factory :import do
@@ -360,22 +356,6 @@ FactoryBot.define do
       failed { true }
       http_status_code { "500" }
     end
-  end
-
-  factory :user_context do
-    user
-    association :current_organization, factory: :organization
-    association :current_account_membership, factory: :account_membership
-
-    initialize_with { new(user, current_organization, current_account_membership) }
-  end
-
-  factory :organization, class: "UserAuthorization::Organization" do
-    transient do
-      organization { build(:account) }
-    end
-
-    initialize_with { new(organization) }
   end
 
   factory :recording do

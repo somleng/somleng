@@ -1,4 +1,4 @@
-class AddStatusCallbackUrlAndStatusCallbackMethodToRecordings < ActiveRecord::Migration[7.0]
+class AddStatusCallbackURLAndStatusCallbackMethodToRecordings < ActiveRecord::Migration[7.0]
   def change
     change_table :recordings do |t|
       t.text :status_callback_url

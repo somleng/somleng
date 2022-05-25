@@ -5,7 +5,7 @@ RSpec.describe "Imports" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_numbers_path
     click_button("Import")
     attach_file("File", file_fixture("phone_numbers.csv"))

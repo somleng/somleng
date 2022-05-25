@@ -1,6 +1,6 @@
 class CarrierUserPolicy < ApplicationPolicy
   def read?
-    user.current_organization.carrier?
+    managing_carrier?
   end
 
   def destroy?

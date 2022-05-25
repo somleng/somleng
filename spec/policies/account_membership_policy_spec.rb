@@ -2,10 +2,9 @@ require "rails_helper"
 
 RSpec.describe AccountMembershipPolicy, type: :policy do
   it "denies access to users managing their own membership" do
-    account_membership = create(:account_membership, :owner)
-    user_context = build_user_context_for_account(role: :owner, account_membership: account_membership)
+    account_membership = build_stubbed(:account_membership, :owner)
 
-    policy = AccountMembershipPolicy.new(user_context, account_membership)
+    policy = AccountMembershipPolicy.new(account_membership.user, account_membership)
 
     expect(policy.update?).to eq(false)
     expect(policy.destroy?).to eq(false)
@@ -13,19 +12,18 @@ RSpec.describe AccountMembershipPolicy, type: :policy do
 
   it "grants access to account owners" do
     account_membership = create(:account_membership, :owner)
-    user_context = build_user_context_for_account(account_membership: account_membership)
     managed_account_membership = create(:account_membership, account: account_membership.account)
 
-    policy = AccountMembershipPolicy.new(user_context, managed_account_membership)
+    policy = AccountMembershipPolicy.new(account_membership.user, managed_account_membership)
 
     expect(policy.update?).to eq(true)
     expect(policy.destroy?).to eq(true)
   end
 
   it "denies access to account admins" do
-    user_context = build_user_context_for_account(role: :admin)
+    account_membership = build_stubbed(:account_membership, :admin)
 
-    policy = AccountMembershipPolicy.new(user_context)
+    policy = AccountMembershipPolicy.new(account_membership.user)
 
     expect(policy.index?).to eq(true)
     expect(policy.create?).to eq(false)

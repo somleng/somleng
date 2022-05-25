@@ -17,7 +17,7 @@ RSpec.describe "Inbound SIP Trunks" do
       created_at: Time.utc(2021, 10, 10)
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_inbound_sip_trunks_path(
       filter: { from_date: "01/12/2021", to_date: "15/12/2021" }
     )
@@ -29,7 +29,7 @@ RSpec.describe "Inbound SIP Trunks" do
   it "Create an inbound SIP Trunk" do
     user = create(:user, :carrier, :admin)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_inbound_sip_trunks_path
     click_link("New")
     fill_in("Name", with: "Main SIP Trunk")
@@ -44,7 +44,7 @@ RSpec.describe "Inbound SIP Trunks" do
   it "Handles validations" do
     user = create(:user, :carrier, :admin)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit new_dashboard_inbound_sip_trunk_path
     click_button "Create Inbound SIP trunk"
 
@@ -61,7 +61,7 @@ RSpec.describe "Inbound SIP Trunks" do
       source_ip: "175.100.7.111"
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_inbound_sip_trunk_path(inbound_sip_trunk)
 
     click_link("Edit")
@@ -83,7 +83,7 @@ RSpec.describe "Inbound SIP Trunks" do
     inbound_sip_trunk = create(:inbound_sip_trunk, carrier:, name: "My SIP Trunk")
     create(:phone_call, :inbound, carrier:, inbound_sip_trunk:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_inbound_sip_trunk_path(inbound_sip_trunk)
 
     click_link("Delete")

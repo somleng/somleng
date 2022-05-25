@@ -12,7 +12,7 @@ module Dashboard
     private
 
     def phone_calls_scope
-      current_organization.phone_calls
+      parent_scope.phone_calls
     end
 
     def record

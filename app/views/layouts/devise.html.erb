@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>
-      <% if app_request.custom_domain_request? %>
-        <%= carrier_from_custom_domain.name %>
+      <% if app_request.carrier_subdomain_request? %>
+        <%= current_carrier.name %>
       <% else %>
         Somleng
       <% end %>
@@ -24,14 +24,10 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-6">
-          <% if content_for?(:logo) %>
-            <%= yield(:logo) %>
+          <% if app_request.carrier_subdomain_request? %>
+            <%= carrier_logo(current_carrier, class: "img-fluid mx-auto px-5 my-3 d-block w-50") %>
           <% else %>
-            <% if app_request.custom_domain_request? %>
-              <%= carrier_logo(carrier_from_custom_domain, class: "img-fluid mx-auto px-5 my-3 d-block w-50") %>
-            <% else %>
-              <%= image_tag "logo.png", class: "img-fluid mx-auto px-5 my-3 d-block w-50" %>
-            <% end %>
+            <%= image_tag "logo.png", class: "img-fluid mx-auto px-5 my-3 d-block w-50" %>
           <% end %>
 
           <div class="card-group">

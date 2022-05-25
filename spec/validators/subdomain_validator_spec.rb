@@ -17,7 +17,6 @@ RSpec.describe SubdomainValidator do
     expect(validatable_klass.new("my-company").valid?).to eq(true)
     expect(validatable_klass.new(existing_carrier.subdomain).valid?).to eq(false)
     expect(validatable_klass.new(nil).valid?).to eq(false)
-    expect(validatable_klass.new("somleng").valid?).to eq(false)
     expect(validatable_klass.new("a").valid?).to eq(false)
   end
 end

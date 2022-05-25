@@ -1,22 +1,23 @@
 require "rails_helper"
 
-RSpec.describe NoCustomDomainConstraint do
-  it "handles normal domains" do
-    constraint = NoCustomDomainConstraint.new
+RSpec.describe AppSubdomainConstraint do
+  it "handles handles app subdomains" do
+    create(:carrier, subdomain: "foobar")
+    constraint = AppSubdomainConstraint.new
     request = stub_request(
-      "HTTP_HOST" => "dashboard.somleng.org"
+      "HTTP_HOST" => "foobar.app.somleng.org"
     )
 
     result = constraint.matches?(request)
 
-    expect(result).to eq(true)
+    expect(result).to be(true)
   end
 
-  it "rejects custom domains" do
-    constraint = NoCustomDomainConstraint.new
+  it "rejects other subdomains" do
+    create(:carrier, subdomain: "foobar")
+    constraint = AppSubdomainConstraint.new
     request = stub_request(
-      "HTTP_HOST" => "dashboard.somleng.org",
-      "HTTP_X_FORWARDED_HOST" => "xyz.example.com"
+      "HTTP_HOST" => "foobar.baz.somleng.org"
     )
 
     result = constraint.matches?(request)

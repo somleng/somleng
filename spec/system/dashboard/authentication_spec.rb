@@ -2,10 +2,10 @@ require "rails_helper"
 
 RSpec.describe "Authentication" do
   it "Sign in with OTP" do
-    carrier = create(:carrier, :with_oauth_application)
+    carrier = create_carrier(:with_oauth_application)
     user = create(:user, :carrier, carrier:, password: "Super Secret")
 
-    visit(new_user_session_url(host: carrier.app_host))
+    visit(new_user_session_path)
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: user.current_otp)
@@ -15,10 +15,10 @@ RSpec.describe "Authentication" do
   end
 
   it "Requires a valid OTP" do
-    carrier = create(:carrier)
+    carrier = create_carrier
     user = create(:user, carrier:, password: "Super Secret")
 
-    visit(new_user_session_url(host: carrier.app_host))
+    visit(new_user_session_path)
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: "wrong-otp")
@@ -28,10 +28,10 @@ RSpec.describe "Authentication" do
   end
 
   it "Sign in without OTP" do
-    carrier = create(:carrier, :with_oauth_application)
+    carrier = create_carrier(:with_oauth_application)
     user = create(:user, :carrier, carrier:, password: "Super Secret", otp_required_for_login: false)
 
-    visit(new_user_session_url(host: carrier.app_host))
+    visit(new_user_session_path)
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     click_button("Login")
@@ -45,7 +45,7 @@ RSpec.describe "Authentication" do
   end
 
   it "Accept an invitation from a carrier" do
-    carrier = create(:carrier)
+    carrier = create_carrier
     perform_enqueued_jobs do
       User.invite!(
         email: "new_user@example.com",
@@ -62,12 +62,11 @@ RSpec.describe "Authentication" do
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
 
-    expect(current_url).to eq(new_dashboard_two_factor_authentication_url(host: carrier.app_host))
     expect(page).to have_content("Setup Two Factor Authentication")
   end
 
   it "Accept an invitation from an account owner" do
-    carrier = create(:carrier)
+    carrier = create_carrier
     account = create(:account, carrier:)
     perform_enqueued_jobs do
       user = User.invite!(
@@ -84,15 +83,14 @@ RSpec.describe "Authentication" do
     fill_in("Password confirmation", with: "password123")
     click_button("Set my password")
 
-    expect(current_url).to eq(new_dashboard_two_factor_authentication_url(host: carrier.app_host))
     expect(page).to have_content("Setup Two Factor Authentication")
   end
 
   it "User can reset their password" do
-    carrier = create(:carrier, :with_oauth_application)
+    carrier = create_carrier(:with_oauth_application)
     user = create(:user, :carrier, carrier:, email: "user@example.com")
 
-    visit(new_user_session_url(host: carrier.app_host))
+    visit(new_user_session_path)
     click_link("Forgot your password?")
     fill_in("Email", with: user.email)
     perform_enqueued_jobs do
@@ -105,15 +103,14 @@ RSpec.describe "Authentication" do
     fill_in("Confirm your new password", with: "Super Secret")
     click_button("Change my password")
 
-    expect(current_url).to eq(dashboard_carrier_settings_url(host: carrier.app_host))
     expect(page).to have_content("Your password has been changed successfully. You are now signed in")
   end
 
   it "Handles users with with no account memberships" do
     user = create(:user)
 
-    sign_in(user)
-    visit(dashboard_root_url(host: user.carrier.app_host))
+    carrier_sign_in(user)
+    visit(dashboard_root_path)
 
     expect(page).to have_current_path(new_user_session_path)
     expect(page).to have_content("You are not a member of any accounts")
@@ -125,10 +122,29 @@ RSpec.describe "Authentication" do
     account = create(:account, carrier:, name: "Rocket Rides")
     create(:account_membership, user:, account:)
 
-    sign_in(user)
-    visit(dashboard_root_url(host: carrier.app_host))
+    carrier_sign_in(user)
+    visit(dashboard_root_path)
 
     expect(page).to have_current_path(dashboard_account_settings_path)
     expect(page).to have_content("Rocket Rides")
+  end
+
+  it "Blocks cross domain logins" do
+    carrier = create(:carrier)
+    user = create(:user, carrier:, email: "user@carrier.com", password: "password123")
+    create_carrier
+
+    visit(new_user_session_path)
+    fill_in("Email", with: user.email)
+    fill_in("Password", with: "password123")
+    click_button("Login")
+
+    expect(page).to have_content("Invalid Email or password")
+  end
+
+  def create_carrier(*args)
+    carrier = create(:carrier, *args)
+    Capybara.app_host = "http://#{carrier.subdomain_host}"
+    carrier
   end
 end

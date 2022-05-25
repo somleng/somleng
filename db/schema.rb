@@ -106,8 +106,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_23_102923) do
     t.string "website"
     t.boolean "restricted", default: false, null: false
     t.citext "subdomain", null: false
-    t.citext "custom_domain"
-    t.index ["custom_domain"], name: "index_carriers_on_custom_domain", unique: true
+    t.citext "custom_app_host"
+    t.citext "custom_api_host"
+    t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
+    t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
   end

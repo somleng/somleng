@@ -1,7 +1,7 @@
 <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
   <div class="c-sidebar-brand">
     <%= link_to dashboard_root_path do %>
-      <%= carrier_logo(current_organization.carrier, class: "c-sidebar-brand-full", height: 46) %>
+      <%= carrier_logo(current_carrier, class: "c-sidebar-brand-full", height: 46) %>
     <% end %>
   </div>
   <ul class="c-sidebar-nav">
@@ -53,14 +53,14 @@
 
     <li class="c-sidebar-nav-item"><hr/></li>
 
-    <% if current_organization.carrier? %>
-      <%= sidebar_nav("Documentation", "https://www.somleng.org/carrier_documentation.html", icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
-    <% elsif app_request.custom_domain_request? %>
-      <%= sidebar_nav("API Documentation", docs_url(host: current_carrier.custom_domain(:api).host), icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+    <% if current_user.carrier_user? %>
+      <%= sidebar_nav("Documentation", docs_path, icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+    <% else %>
+      <%= sidebar_nav("API Documentation", docs_twilio_api_url(host: current_carrier.account_host), icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
     <% end %>
   </ul>
 
-  <% if current_organization.carrier? && current_carrier.restricted? %>
+  <% if current_user.carrier_user? && current_carrier.restricted? %>
     <div class="c-sidebar-footer">
       <%= render "shared/restricted_carrier_usage" %>
     </div>

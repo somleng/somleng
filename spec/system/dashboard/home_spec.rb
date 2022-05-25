@@ -5,7 +5,7 @@ RSpec.describe "Dashboard Home" do
     carrier = create(:carrier, :with_oauth_application)
     user = create(:user, :carrier, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_root_path
 
     expect(page).to have_current_path(dashboard_carrier_settings_path)
@@ -17,7 +17,7 @@ RSpec.describe "Dashboard Home" do
       :user, :with_account_membership, account_role: :member, account:
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_root_path
 
     expect(page).to have_current_path(dashboard_account_settings_path)

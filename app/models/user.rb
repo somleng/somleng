@@ -29,7 +29,7 @@ class User < ApplicationRecord
   validates :email,
             uniqueness: {
               allow_blank: true,
-              if: ->(user) { user.email_changed? && user.carrier_role.present? }
+              if: ->(user) { user.email_changed? && user.carrier_user? }
             }
 
   validates :password,
@@ -54,6 +54,10 @@ class User < ApplicationRecord
 
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
+  end
+
+  def carrier_user?
+    carrier_role.present?
   end
 
   private

@@ -2,42 +2,101 @@
 
 <div class="card-body">
   <%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group) do |f| %>
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :name, maxlength: 128, hint: "Your company's name" %>
-      </div>
-    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
 
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :country %>
-      </div>
+        <div class="row">
+          <div class="col-6">
+            <%= f.input :name, maxlength: 128, hint: "Your company's name" %>
+          </div>
 
-      <div class="col-6">
-        <%= f.input :website, hint: "Must start with https or http" %>
-      </div>
-    </div>
+          <div class="col-6">
+            <%= f.input :website, hint: "Must start with https or http" %>
+          </div>
+        </div>
 
-    <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
+        <div class="row">
+          <div class="col-sm">
+            <%= f.input :country %>
+          </div>
 
-    <% unless @resource.webhooks_disabled? %>
-      <div class="row">
-        <div class="col-sm-6">
-          <%= f.input :webhook_url, hint: "Must start with https" %>
+          <div class="col-sm">
+            <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
+          </div>
         </div>
       </div>
-    <% end %>
+    </div>
 
-    <% if @resource.webhook_configured? %>
-      <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
-    <% end %>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Webhooks</h5>
+
+        <% if @resource.webhook_configured? %>
+          <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
+        <% end %>
+
+        <% unless @resource.webhooks_disabled? %>
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :webhook_url, hint: "Must start with https" %>
+            </div>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">
+          Custom Domain
+          <%= link_to(docs_path(anchor: "custom-domains")) do %>
+            <i class="fas fa-question-circle fa-sm"></i>
+          <% end %>
+        </h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :custom_app_host,
+                label: "Dashboard host",
+                maxlength: 128,
+                placeholder: "dashboard.example.com",
+                hint: "Optionally specify a custom host which is used to access the dashboard."
+              )
+            %>
+          </div>
+
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :custom_api_host,
+                label: "API host",
+                maxlength: 128,
+                placeholder: "api.example.com",
+                hint: "Optionally specify a custom host which is used to access the API."
+              )
+            %>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="card border-danger mb-3">
       <div class="card-body">
         <h5 class="card-title">Danger Zone</h5>
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :subdomain, maxlength: 128, hint: "Updating your subdomain will affect other signed in users. If you have a custom domain setup you'll also need to update your DNS settings." %>
+            <%=
+              f.input(
+                :subdomain,
+                maxlength: 128,
+                hint: "Updating your subdomain will affect other signed in users. If you have a custom domain setup you'll also need to update your DNS settings.",
+                append: ".#{URI(Rails.configuration.app_settings.fetch(:app_url_host)).host}"
+              )
+            %>
           </div>
         </div>
       </div>
@@ -46,4 +105,3 @@
     <%= f.button :submit %>
   <% end %>
 </div>
-

@@ -49,8 +49,4 @@ class TwilioAPIController < APIController
       status: :unauthorized
     }
   end
-
-  def authorized_carrier
-    current_account.carrier
-  end
 end

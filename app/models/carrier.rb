@@ -26,10 +26,13 @@ class Carrier < ApplicationRecord
     webhook_endpoint&.enabled?
   end
 
-  def app_host
-    return custom_domain if custom_domain.present?
+  def subdomain_host
+    uri = Addressable::URI.parse(url_helpers.root_url(subdomain: "#{subdomain}.app"))
+    uri.port.present? ? "#{uri.host}:#{uri.port}" : uri.host
+  end
 
-    URI(url_helpers.root_url(subdomain: "#{subdomain}.app")).host
+  def account_host
+    custom_app_host.present? ? custom_app_host : subdomain_host
   end
 
   private

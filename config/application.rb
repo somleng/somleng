@@ -40,3 +40,4 @@ end
 
 require "call_service"
 require "administrate_extensions"
+require "simple_form_components"

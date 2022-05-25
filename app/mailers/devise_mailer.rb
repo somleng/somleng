@@ -7,7 +7,7 @@ class DeviseMailer < Devise::Mailer
   def devise_mail(record, action, opts = {}, &block)
     initialize_from_record(record)
     @carrier = record.carrier
-    @host = record.carrier.app_host
+    @host = record.carrier_user? ? record.carrier.subdomain_host : record.carrier.account_host
 
     bootstrap_mail(headers_for(action, opts), &block)
   end

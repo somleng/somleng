@@ -17,7 +17,7 @@ RSpec.describe "Outbound SIP Trunks" do
       created_at: Time.utc(2021, 10, 10)
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_outbound_sip_trunks_path(
       filter: { from_date: "01/12/2021", to_date: "15/12/2021" }
     )
@@ -30,7 +30,7 @@ RSpec.describe "Outbound SIP Trunks" do
     carrier = create(:carrier, country_code: "KH")
     user = create(:user, :carrier, :admin, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_outbound_sip_trunks_path
     click_link("New")
     fill_in("Name", with: "Main SIP Trunk")
@@ -57,7 +57,7 @@ RSpec.describe "Outbound SIP Trunks" do
       plus_prefix: true
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_outbound_sip_trunk_path(outbound_sip_trunk)
     click_link("Edit")
     fill_in("Name", with: "Main Trunk")
@@ -79,7 +79,7 @@ RSpec.describe "Outbound SIP Trunks" do
     create(:account, outbound_sip_trunk:)
     create(:phone_call, carrier:, outbound_sip_trunk:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_outbound_sip_trunk_path(outbound_sip_trunk)
     click_link("Delete")
 

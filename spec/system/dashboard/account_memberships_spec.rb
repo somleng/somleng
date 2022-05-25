@@ -11,8 +11,8 @@ RSpec.describe "Account Memberships" do
     create_account_membership(account:, role: :owner, name: "John Doe")
     create_account_membership(account: other_account, role: :owner, name: "Bob Chann")
 
-    sign_in(user)
-    visit dashboard_account_memberships_url(subdomain: carrier.subdomain)
+    carrier_sign_in(user)
+    visit dashboard_account_memberships_path
 
     expect(page).to have_content("Joe Bloggs")
     expect(page).to have_content("John Doe")
@@ -23,8 +23,8 @@ RSpec.describe "Account Memberships" do
     carrier = create(:carrier)
     user = create(:user, :with_account_membership, carrier:, account_role: :owner)
 
-    sign_in(user)
-    visit dashboard_account_memberships_url(subdomain: carrier.subdomain)
+    carrier_sign_in(user)
+    visit dashboard_account_memberships_path
 
     click_link("New")
     fill_in("Name", with: "John Doe")
@@ -40,8 +40,8 @@ RSpec.describe "Account Memberships" do
     carrier = create(:carrier)
     user = create(:user, :with_account_membership, carrier:, account_role: :owner)
 
-    sign_in(user)
-    visit new_dashboard_account_membership_url(subdomain: carrier.subdomain)
+    carrier_sign_in(user)
+    visit new_dashboard_account_membership_path
     click_button "Send an Invitation"
 
     expect(page).to have_content("can't be blank")
@@ -53,8 +53,8 @@ RSpec.describe "Account Memberships" do
     user = create(:user, :with_account_membership, account_role: :owner, account:, carrier:)
     account_membership = create_account_membership(account:, role: :admin)
 
-    sign_in(user)
-    visit dashboard_account_membership_url(account_membership, subdomain: carrier.subdomain)
+    carrier_sign_in(user)
+    visit dashboard_account_membership_path(account_membership)
     click_link("Edit")
 
     select("Owner", from: "Role")
@@ -71,8 +71,8 @@ RSpec.describe "Account Memberships" do
     account_member = create(:user, :invited, name: "Bob Chann", carrier:)
     account_membership = create(:account_membership, account:, user: account_member)
 
-    sign_in(user)
-    visit dashboard_account_membership_url(account_membership, subdomain: carrier.subdomain)
+    carrier_sign_in(user)
+    visit dashboard_account_membership_path(account_membership)
     click_link("Delete")
 
     expect(page).to have_content("Account membership was successfully destroyed")
@@ -86,8 +86,8 @@ RSpec.describe "Account Memberships" do
     invited_user = create(:user, :invited, email: "johndoe@example.com", carrier:)
     account_membership = create(:account_membership, account:, user: invited_user)
 
-    sign_in(user)
-    visit dashboard_account_membership_url(account_membership, subdomain: carrier.subdomain)
+    carrier_sign_in(user)
+    visit dashboard_account_membership_path(account_membership)
 
     expect(page).to have_content("The user has not yet accepted their invite.")
 
@@ -105,7 +105,7 @@ RSpec.describe "Account Memberships" do
     user = create(:user, :with_account_membership, account:, account_role: :owner)
     account_membership = create_account_membership(account:, email: "johndoe@example.com")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
     click_link("Reset 2FA")
 

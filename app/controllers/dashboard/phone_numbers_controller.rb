@@ -53,7 +53,7 @@ module Dashboard
     end
 
     def phone_numbers_scope
-      current_organization.phone_numbers
+      parent_scope.phone_numbers
     end
 
     def initialize_form(params = {})

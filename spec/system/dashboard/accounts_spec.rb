@@ -20,7 +20,7 @@ RSpec.describe "Accounts" do
     create(:account, name: "Alice Apples", carrier:, created_at: Time.utc(2021, 10, 1))
     create(:account, :disabled, name: "Disabled Account", carrier:, created_at: Time.utc(2021, 12, 10))
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_accounts_path(
       filter: {
         from_date: "01/12/2021",
@@ -46,7 +46,7 @@ RSpec.describe "Accounts" do
   it "Create an account" do
     user = create(:user, :carrier)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_accounts_path
     click_link("New")
 
@@ -64,7 +64,7 @@ RSpec.describe "Accounts" do
   it "Handle validation errors" do
     user = create(:user, :carrier)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit new_dashboard_account_path
     click_button "Create Account"
 
@@ -80,7 +80,7 @@ RSpec.describe "Accounts" do
     )
     outbound_sip_trunk = create(:outbound_sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_link("Edit")
     uncheck("Enabled")
@@ -109,7 +109,7 @@ RSpec.describe "Accounts" do
     invited_user = create(:user, :invited, email: "johndoe@example.com")
     create(:account_membership, :owner, account: account, user: invited_user)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_path(account)
 
     expect(page).to have_content("The account owner has not yet accepted their invite.")
@@ -131,7 +131,7 @@ RSpec.describe "Accounts" do
       carrier: user.carrier
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_path(account)
 
     click_link "Delete"

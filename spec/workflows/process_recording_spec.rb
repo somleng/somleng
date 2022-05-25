@@ -26,11 +26,11 @@ RSpec.describe ProcessRecording do
       payload = Rack::Utils.parse_nested_query(request.body)
 
       expect(payload).to include(
-        "RecordingUrl" => Rails.application.routes.url_helpers.twilio_api_account_phone_call_recording_url(
+        "RecordingUrl" => Rails.application.routes.url_helpers.api_twilio_account_phone_call_recording_url(
           recording.account,
           recording.phone_call,
           recording,
-          host: Rails.configuration.app_settings.fetch(:api_url_host)
+          subdomain: "api"
         ),
         "RecordingDuration" => be_present
       )

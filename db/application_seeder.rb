@@ -27,6 +27,7 @@ class ApplicationSeeder
       Auth Token:            #{account.auth_token}
       Inbound Phone Number:  #{phone_number.number}
       ---------------------------------------------
+      URL:                   #{url_helpers.dashboard_root_url(host: carrier.subdomain_host)}
       Carrier User Email:    #{carrier.carrier_users.first.email}
       Carrier User Password: #{USER_PASSWORD}
       Carrier API Key:       #{carrier.api_key}
@@ -67,5 +68,9 @@ class ApplicationSeeder
         voice_method: "GET"
       )
     end
+  end
+
+  def url_helpers
+    @url_helpers ||= Rails.application.routes.url_helpers
   end
 end

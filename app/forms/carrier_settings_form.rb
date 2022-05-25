@@ -2,11 +2,32 @@ class CarrierSettingsForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  class HostnameValidator < ActiveModel::EachValidator
+    RESTRICTED_DOMAINS = [
+      Addressable::URI.parse(Rails.configuration.app_settings.fetch(:app_url_host)).domain
+    ].freeze
+
+    def validate_each(record, attribute, value)
+      return if value.blank?
+
+      if Addressable::URI.parse("//#{value}").domain.in?(RESTRICTED_DOMAINS)
+        return record.errors.add(attribute, :exclusion)
+      end
+
+      scope = options.fetch(:scope) { ->(_) { Carrier } }
+      return record.errors.add(attribute, :taken) if scope.call(record).exists?(attribute => value)
+    rescue Addressable::URI::InvalidURIError
+      record.errors.add(attribute, :invalid)
+    end
+  end
+
   attribute :carrier
   attribute :name
   attribute :country
   attribute :website
   attribute :subdomain, SubdomainType.new
+  attribute :custom_app_host, HostnameType.new
+  attribute :custom_api_host, HostnameType.new
   attribute :logo
   attribute :webhook_url
   attribute :enable_webhooks, :boolean, default: true
@@ -17,7 +38,14 @@ class CarrierSettingsForm
   validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
   validates :website, presence: true, url_format: { allow_blank: true }
   validates :webhook_url, url_format: { allow_http: true }, allow_blank: true
-  validates :subdomain, subdomain: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }
+  validates :subdomain, presence: true,
+                        subdomain: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }
+
+  validates :custom_app_host,
+            :custom_api_host,
+            hostname: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }
+
+  validates :custom_api_host, comparison: { other_than: :custom_app_host, allow_blank: true }
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "CarrierSettings")
@@ -32,7 +60,9 @@ class CarrierSettingsForm
       country: carrier.country_code,
       logo: carrier.logo,
       webhook_url: carrier.webhook_endpoint&.url,
-      enable_webhooks: carrier.webhooks_enabled?
+      enable_webhooks: carrier.webhooks_enabled?,
+      custom_app_host: carrier.custom_app_host,
+      custom_api_host: carrier.custom_api_host
     )
   end
 
@@ -43,6 +73,8 @@ class CarrierSettingsForm
       name:,
       website:,
       subdomain:,
+      custom_app_host:,
+      custom_api_host:,
       country_code: country
     }
 

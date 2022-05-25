@@ -8,7 +8,7 @@ RSpec.describe "Carrier users" do
     create(:user, :carrier, name: "Joe Bloggs", carrier:,
                             created_at: Time.utc(2021, 10, 10))
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_carrier_users_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
 
     expect(page).to have_content("John Doe")
@@ -18,7 +18,7 @@ RSpec.describe "Carrier users" do
   it "Carrier owner invites another user" do
     user = create(:user, :carrier, :owner)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_carrier_users_path
     click_link("New")
     fill_in("Name", with: "John Doe")
@@ -35,7 +35,7 @@ RSpec.describe "Carrier users" do
   it "Handle validation errors" do
     user = create(:user, :carrier, :owner)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit new_dashboard_carrier_user_path
     click_button "Send an invitation"
 
@@ -47,7 +47,7 @@ RSpec.describe "Carrier users" do
     user = create(:user, :carrier, :owner, carrier:)
     managed_user = create(:user, :carrier, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_carrier_user_path(managed_user)
     click_link("Edit")
 
@@ -70,7 +70,7 @@ RSpec.describe "Carrier users" do
       email: "johndoe@example.com"
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_carrier_user_path(invited_user)
 
     expect(page).to have_content("The user has not yet accepted their invite.")
@@ -96,7 +96,7 @@ RSpec.describe "Carrier users" do
       email: "johndoe@example.com"
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_carrier_user_path(other_user)
 
     click_link("Reset 2FA")
@@ -114,7 +114,7 @@ RSpec.describe "Carrier users" do
       carrier: user.carrier
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_carrier_user_path(other_user)
 
     click_link "Delete"

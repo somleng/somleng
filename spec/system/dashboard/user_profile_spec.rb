@@ -5,7 +5,7 @@ RSpec.describe "User profile" do
     carrier = create(:carrier, :with_oauth_application)
     user = create(:user, :carrier, carrier:, name: "John Doe", email: "johndoe@example.com", password: "current password")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit(dashboard_root_path)
 
     click_link("Profile")

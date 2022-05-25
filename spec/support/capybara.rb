@@ -1,11 +1,10 @@
 require "selenium/webdriver"
 
-Capybara.app_host = Rails.configuration.app_settings.app_url_host
-
 RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by :rack_test
 
+    Capybara.app_host = Rails.configuration.app_settings.fetch(:app_url_host)
     Capybara.server = :puma, { Silent: true }
   end
 

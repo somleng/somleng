@@ -7,7 +7,9 @@
 <div class="card-body">
   <%= show_for(@resource) do |f| %>
     <%= f.attribute :name %>
-    <%= f.attribute :subdomain %>
+    <%= f.attribute :subdomain_host %>
+    <%= f.attribute :custom_app_host %>
+    <%= f.attribute :custom_api_host %>
     <%= f.attribute :country do %>
       <%= @resource.country.emoji_flag %>
       <%= @resource.country.iso_short_name %>
@@ -34,12 +36,6 @@
       <%= f.attribute :webhook_signing_secret do %>
         <%= mask_content(@resource.webhook_endpoint.signing_secret) %>
       <% end %>
-    <% end %>
-
-    <%= f.attribute :custom_domain do %>
-      <div id="custom-domain-configuration">
-        <%= external_link_to("Configure", edit_dashboard_carrier_settings_custom_domain_path) %>
-      </div>
     <% end %>
 
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
