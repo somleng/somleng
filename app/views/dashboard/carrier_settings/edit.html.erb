@@ -12,7 +12,7 @@
           </div>
 
           <div class="col-6">
-            <%= f.input :website, hint: "Must start with https or http" %>
+            <%= f.input :website, hint: "Must start with http or https" %>
           </div>
         </div>
 
@@ -94,7 +94,7 @@
                 :subdomain,
                 maxlength: 128,
                 hint: "Updating your subdomain will affect other signed in users. If you have a custom domain setup you'll also need to update your DNS settings.",
-                append: ".#{URI(Rails.configuration.app_settings.fetch(:app_url_host)).host}"
+                append: ".#{AppSettings.app_uri.host}"
               )
             %>
           </div>

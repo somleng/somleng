@@ -4,7 +4,7 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by :rack_test
 
-    Capybara.app_host = Rails.configuration.app_settings.fetch(:app_url_host)
+    Capybara.app_host = AppSettings.config_for(:app_url_host)
     Capybara.server = :puma, { Silent: true }
   end
 

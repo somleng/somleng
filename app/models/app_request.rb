@@ -15,6 +15,8 @@ class AppRequest
   end
 
   def find_carrier!
+    raise ActiveRecord::RecordNotFound unless carrier_subdomain_request?
+
     Carrier.find_by!(subdomain: carrier_subdomain)
   end
 

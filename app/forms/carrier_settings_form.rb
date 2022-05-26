@@ -4,7 +4,7 @@ class CarrierSettingsForm
 
   class HostnameValidator < ActiveModel::EachValidator
     RESTRICTED_DOMAINS = [
-      Addressable::URI.parse(Rails.configuration.app_settings.fetch(:app_url_host)).domain
+      AppSettings.app_uri.domain
     ].freeze
 
     def validate_each(record, attribute, value)

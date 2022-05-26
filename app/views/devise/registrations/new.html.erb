@@ -1,35 +1,49 @@
 <h1>Sign up</h1>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), wrapper: :input_group) do |f| %>
   <%= recaptcha_v3(action: "sign_up") %>
 
-  <%= f.input :name, autofocus: true %>
-  <%= f.input :work_email %>
+  <%= f.input :name, autofocus: true, prepend: "<i class='fas fa-user-edit'></i>".html_safe %>
+  <%= f.input :work_email, prepend: "<i class='fas fa-at'></i>".html_safe %>
 
   <div class="row">
     <div class="col-6">
-      <%= f.input :company %>
+      <%= f.input :company, prepend: "<i class='fas fa-building'></i>".html_safe %>
     </div>
     <div class="col-6">
-      <%= f.input :country %>
+      <%= f.input :country, prepend: "<i class='fas fa-flag'></i>".html_safe %>
     </div>
   </div>
 
   <div class="row">
     <div class="col-6">
-      <%= f.input :website, hint: "Must start with https or http" %>
+      <%= f.input :website, hint: "Must start with http or https", prepend: "<i class='fas fa-globe'></i>".html_safe %>
     </div>
     <div class="col-6">
-      <%= f.input :subdomain, hint: "Access the dashboard through this subdomain" %>
+      <%=
+        f.input(
+          :subdomain,
+          maxlength: 128,
+          hint: "Access the dashboard through this subdomain",
+          append: ".#{AppSettings.app_uri.host}"
+        ) %>
     </div>
   </div>
 
-  <%= f.input :password,
-              hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-              input_html: { autocomplete: "new-password" } %>
+  <%= f.input(
+      :password,
+      hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
+      input_html: { autocomplete: "new-password" },
+      prepend: "<i class='fas fa-lock'></i>".html_safe
+    )
+  %>
 
-  <%= f.input :password_confirmation,
-              input_html: { autocomplete: "new-password" } %>
+  <%= f.input(
+      :password_confirmation,
+      input_html: { autocomplete: "new-password" },
+      prepend: "<i class='fas fa-lock'></i>".html_safe
+    )
+  %>
 
   <div class="row">
     <div class="col-6">
