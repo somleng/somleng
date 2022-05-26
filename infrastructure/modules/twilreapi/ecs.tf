@@ -1,7 +1,3 @@
-locals {
-  database_name = replace(var.app_identifier, "-", "_")
-}
-
 data "template_file" "appserver_container_definitions" {
   template = file("${path.module}/templates/appserver_container_definitions.json.tpl")
 
@@ -26,7 +22,7 @@ data "template_file" "appserver_container_definitions" {
     rails_master_key_parameter_arn = aws_ssm_parameter.rails_master_key.arn
     services_password_parameter_arn = aws_ssm_parameter.services_password.arn
     database_password_parameter_arn = var.db_password_parameter_arn
-    database_name = local.database_name
+    database_name = var.db_name
     database_username = var.db_username
     database_host = var.db_host
     database_port = var.db_port
@@ -109,7 +105,7 @@ data "template_file" "worker_container_definitions" {
     rails_master_key_parameter_arn = aws_ssm_parameter.rails_master_key.arn
     services_password_parameter_arn = aws_ssm_parameter.services_password.arn
     database_password_parameter_arn = var.db_password_parameter_arn
-    database_name = local.database_name
+    database_name = var.db_name
     database_username = var.db_username
     database_host = var.db_host
     database_port = var.db_port

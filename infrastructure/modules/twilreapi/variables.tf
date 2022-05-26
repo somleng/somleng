@@ -44,6 +44,9 @@ variable "db_host" {
 variable "db_port" {
 }
 
+variable "db_name" {
+}
+
 variable "db_pool" {
   default = 48
 }
