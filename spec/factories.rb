@@ -49,6 +49,7 @@ FactoryBot.define do
     country_code { "KH" }
     sequence(:subdomain) { |n| "at-t#{n}" }
     website { "https://at-t.com" }
+    with_oauth_application
 
     trait :restricted do
       restricted { true }
@@ -56,21 +57,6 @@ FactoryBot.define do
 
     trait :with_logo do
       association :logo, factory: :active_storage_attachment, filename: "carrier_logo.jpeg"
-    end
-
-    trait :with_custom_domain do
-      after(:build) do |carrier|
-        carrier.custom_domain(:dashboard) || carrier.custom_domains << build(
-          :custom_domain, :verified, :dashboard, carrier:
-        )
-        carrier.custom_domain(:api) || carrier.custom_domains << build(
-          :custom_domain, :verified, :api, carrier:
-        )
-
-        carrier.custom_domain(:mail) || carrier.custom_domains << build(
-          :custom_domain, :verified, :mail, carrier:
-        )
-      end
     end
 
     trait :with_oauth_application do

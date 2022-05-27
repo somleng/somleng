@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Carrier Settings" do
   it "Update carrier settings" do
-    carrier = create(:carrier, :with_oauth_application, name: "My Carrier")
+    carrier = create(:carrier, name: "My Carrier")
     user = create(:user, :carrier, :owner, carrier:)
 
     carrier_sign_in(user)
@@ -30,7 +30,7 @@ RSpec.describe "Carrier Settings" do
   end
 
   it "Disable webhooks" do
-    carrier = create(:carrier, :with_oauth_application)
+    carrier = create(:carrier)
     create(:webhook_endpoint, oauth_application: carrier.oauth_application)
     user = create(:user, :carrier, :owner, carrier: carrier)
 

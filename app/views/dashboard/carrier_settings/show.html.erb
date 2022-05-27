@@ -5,40 +5,58 @@
 <% end %>
 
 <div class="card-body">
-  <%= show_for(@resource) do |f| %>
-    <%= f.attribute :name %>
-    <%= f.attribute :subdomain_host %>
-    <%= f.attribute :custom_app_host %>
-    <%= f.attribute :custom_api_host %>
-    <%= f.attribute :country do %>
-      <%= @resource.country.emoji_flag %>
-      <%= @resource.country.iso_short_name %>
-    <% end %>
-    <%= f.attribute :website %>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">General</h5>
 
-    <%= f.attribute :logo do %>
-      <%= image_thumbnail(@resource.logo) %>
-    <% end %>
-
-    <%= f.attribute :api_key, label: "API Key" do %>
-      <%= mask_content(@resource.api_key) if @resource.api_key.present? %>
-    <% end %>
-
-    <% if @resource.webhooks_enabled? %>
-      <%= f.attribute :webhook_url, label: "Webhook URL" do %>
-        <code>
-          <%= @resource.webhook_endpoint.url %>
-        </code>
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute :name %>
+        <%= f.attribute :subdomain_host, label: "Subdomain" %>
+        <%= f.attribute :website do %>
+          <%= external_link_to(@resource.website, @resource.website, target: "_blank") %>
+        <% end %>
+        <%= f.attribute :country do %>
+          <%= @resource.country.emoji_flag %>
+          <%= @resource.country.iso_short_name %>
+        <% end %>
+        <%= f.attribute :logo do %>
+          <%= image_thumbnail(@resource.logo) %>
+        <% end %>
       <% end %>
-    <% end %>
+    </div>
+  </div>
 
-    <% if @resource.webhooks_enabled? %>
-      <%= f.attribute :webhook_signing_secret do %>
-        <%= mask_content(@resource.webhook_endpoint.signing_secret) %>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Custom Domain</h5>
+
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute :custom_app_host, label: "Dashboard host" %>
+        <%= f.attribute :custom_api_host, label: "API host" %>
       <% end %>
-    <% end %>
+    </div>
+  </div>
 
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
-  <% end %>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Developer</h5>
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute :api_key, label: "API Key" do %>
+          <%= mask_content(@resource.api_key) %>
+        <% end %>
+
+        <%= f.attribute :webhook_url, label: "Webhook URL" do %>
+          <% if @resource.webhooks_enabled? %>
+            <code>
+              <%= @resource.webhook_endpoint.url %>
+            </code>
+          <% end %>
+        <% end %>
+
+        <%= f.attribute :webhook_signing_secret do %>
+          <%= mask_content(@resource.webhook_endpoint.signing_secret) if @resource.webhooks_enabled? %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 </div>

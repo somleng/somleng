@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Dashboard Home" do
   it "Redirects a carrier user to the carrier home page" do
-    carrier = create(:carrier, :with_oauth_application)
+    carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)

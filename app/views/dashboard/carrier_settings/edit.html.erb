@@ -30,25 +30,6 @@
 
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Webhooks</h5>
-
-        <% if @resource.webhook_configured? %>
-          <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
-        <% end %>
-
-        <% unless @resource.webhooks_disabled? %>
-          <div class="row">
-            <div class="col-sm-6">
-              <%= f.input :webhook_url, hint: "Must start with https" %>
-            </div>
-          </div>
-        <% end %>
-
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-body">
         <h5 class="card-title">
           Custom Domain
           <%= link_to(docs_path(anchor: "custom-domains")) do %>
@@ -81,6 +62,24 @@
             %>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Developer</h5>
+
+        <% if @resource.webhook_configured? %>
+          <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
+        <% end %>
+
+        <% unless @resource.webhooks_disabled? %>
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :webhook_url, hint: "Must start with https" %>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
 

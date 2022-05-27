@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_23_102923) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_27_025454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -103,7 +103,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_23_102923) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "country_code", null: false
-    t.string "website"
+    t.string "website", null: false
     t.boolean "restricted", default: false, null: false
     t.citext "subdomain", null: false
     t.citext "custom_app_host"

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Authentication" do
   it "Sign in with OTP" do
-    carrier = create_carrier(:with_oauth_application)
+    carrier = create_carrier
     user = create(:user, :carrier, carrier:, password: "Super Secret")
 
     visit(new_user_session_path)
@@ -28,7 +28,7 @@ RSpec.describe "Authentication" do
   end
 
   it "Sign in without OTP" do
-    carrier = create_carrier(:with_oauth_application)
+    carrier = create_carrier
     user = create(:user, :carrier, carrier:, password: "Super Secret", otp_required_for_login: false)
 
     visit(new_user_session_path)
@@ -87,7 +87,7 @@ RSpec.describe "Authentication" do
   end
 
   it "User can reset their password" do
-    carrier = create_carrier(:with_oauth_application)
+    carrier = create_carrier
     user = create(:user, :carrier, carrier:, email: "user@example.com")
 
     visit(new_user_session_path)
