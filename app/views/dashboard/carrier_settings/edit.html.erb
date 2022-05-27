@@ -101,6 +101,13 @@
       </div>
     </div>
 
-    <%= f.button :submit %>
+    <div class="row">
+      <div class="col-6">
+        <%= f.button :submit %>
+      </div>
+      <div class="col-6 text-right">
+        <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
+      </div>
+    </div>
   <% end %>
 </div>

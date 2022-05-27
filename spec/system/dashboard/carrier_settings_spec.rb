@@ -31,19 +31,23 @@ RSpec.describe "Carrier Settings" do
 
   it "Disable webhooks" do
     carrier = create(:carrier)
-    create(:webhook_endpoint, oauth_application: carrier.oauth_application)
-    user = create(:user, :carrier, :owner, carrier: carrier)
+    create(
+      :webhook_endpoint,
+      oauth_application: carrier.oauth_application,
+      url: "https://www.example.com/webhooks"
+    )
+    user = create(:user, :carrier, :owner, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_carrier_settings_path
 
-    expect(page).to have_content("Webhook URL")
+    expect(page).to have_content("https://www.example.com/webhooks")
 
     click_link("Edit")
     uncheck("Enable webhooks")
     click_button("Update Carrier Settings")
 
     expect(page).to have_content("Carrier Settings were successfully updated")
-    expect(page).not_to have_content("Webhook URL")
+    expect(page).not_to have_content("https://www.example.com/webhooks")
   end
 end

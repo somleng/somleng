@@ -5,6 +5,7 @@ RSpec.describe OnboardCarrier do
     carrier = OnboardCarrier.call(
       name: "AT&T",
       country_code: "US",
+      website: "https://www.att.com",
       restricted: true,
       subdomain: "at-t",
       owner: {

@@ -6,7 +6,7 @@ class OnboardCarrier < ApplicationWorkflow
     @country_code = params.fetch(:country_code)
     @restricted = params.fetch(:restricted)
     @subdomain = params.fetch(:subdomain)
-    @website = params[:website]
+    @website = params.fetch(:website)
     @owner = params.fetch(:owner)
   end
 
