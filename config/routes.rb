@@ -101,6 +101,11 @@ Rails.application.routes.draw do
       )
     end
 
+    resource :forgot_subdomain, only: [], controller: "users/forgot_subdomain", path: "users" do
+      get   :new,     path: "forgot_subdomain", as: "new"
+      post  :create,  path: "forgot_subdomain"
+    end
+
     namespace :admin do
       concern :exportable do
         get :export, on: :collection
@@ -124,6 +129,6 @@ Rails.application.routes.draw do
       root to: "statistics#index"
     end
 
-    root to: redirect("https://www.somleng.org"), as: :app_root
+    root to: redirect("/users/forgot_subdomain"), as: :app_root
   end
 end

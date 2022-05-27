@@ -1,6 +1,10 @@
 class DeviseMailer < Devise::Mailer
-  layout "mailer"
+  layout "carrier_mailer"
   helper ApplicationHelper
+
+  def forgot_subdomain(user)
+    devise_mail(user, :forgot_subdomain)
+  end
 
   private
 

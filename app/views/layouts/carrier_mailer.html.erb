@@ -9,7 +9,7 @@
   </head>
     <body class="bg-light">
       <div class="container">
-        <%= image_tag("logo.png", class: "ax-center my-10 w-24") %>
+        <%= carrier_logo(@carrier, class: "ax-center my-10 w-24") %>
         <div class="card p-6 p-lg-10 space-y-4">
           <% if content_for?(:title) %>
             <h1 class="h3 fw-700 ax-center">
@@ -21,8 +21,8 @@
           </p>
         </div>
         <div class="text-muted text-center my-6">
-          <small>Somleng</small><br/>
-          <small><%= link_to("https://www.somleng.org", "https://www.somleng.org") %></small>
+          <small><%= @carrier.name %></small><br/>
+          <small><%= link_to(@carrier.website, @carrier.website) %></small>
         </div>
       </div>
     </body>
