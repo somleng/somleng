@@ -7,6 +7,9 @@
       <% else %>
         Somleng
       <% end %>
+      <% if content_for?(:page_title) %>
+        - <%= yield(:page_title) %>
+      <% end %>
     </title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
 

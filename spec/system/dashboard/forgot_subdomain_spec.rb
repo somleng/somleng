@@ -12,7 +12,7 @@ RSpec.describe "Forgot subdomain" do
       click_button("Send me login instructions")
     end
 
-    expect(page).to have_content("You will receive an email with your subdomain in a few minutes")
+    expect(page).to have_content("You will receive an email with login instructions in a few minutes")
 
     open_email("johndoe@att.com")
     visit_full_link_in_email("AT&T")

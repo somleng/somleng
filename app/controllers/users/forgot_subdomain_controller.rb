@@ -10,7 +10,7 @@ module Users
     def create
       @resource = ForgotSubdomainForm.new(permitted_params)
       if @resource.save
-        flash[:notice] = "You will receive an email with your subdomain in a few minutes."
+        flash[:notice] = "You will receive an email with login instructions in a few minutes."
       end
 
       respond_with(@resource, location: new_forgot_subdomain_path)
