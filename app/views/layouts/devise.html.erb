@@ -37,6 +37,7 @@
             <div class="card p-4">
               <div class="card-body">
                 <%= render "shared/alerts" %>
+                <%= yield(:flash) if content_for?(:flash) %>
 
                 <%= yield %>
               </div>

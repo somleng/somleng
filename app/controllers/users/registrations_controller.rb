@@ -47,7 +47,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def after_inactive_sign_up_path_for(resource)
-    new_session_url(resource_name, host: resource.carrier.subdomain_host)
+    new_session_url(resource_name, host: resource.carrier.subdomain_host, after_sign_up: true)
   end
 
   def build_resource(hash = {})

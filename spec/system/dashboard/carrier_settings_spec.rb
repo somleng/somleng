@@ -15,7 +15,6 @@ RSpec.describe "Carrier Settings" do
     fill_in("Webhook URL", with: "https://example.com/webhook_endpoint")
     fill_in("Dashboard host", with: "dashboard.t-mobile.example.com")
     fill_in("API host", with: "api.t-mobile.example.com")
-    fill_in("Subdomain", with: "t-mobile")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
     click_button("Update Carrier Settings")
 
@@ -26,7 +25,19 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_content("Webhook signing secret")
     expect(page).to have_content("dashboard.t-mobile.example.com")
     expect(page).to have_content("api.t-mobile.example.com")
-    expect(page).to have_content("t-mobile.app.lvh.me")
+  end
+
+  it "Update carrier subdomain" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, :owner, carrier:)
+
+    carrier_sign_in(user)
+    visit edit_dashboard_carrier_settings_path
+    fill_in("Subdomain", with: "t-mobile")
+    click_button("Update Carrier Settings")
+
+    expect(page.current_host).to eq("http://t-mobile.app.lvh.me")
+    expect(page).to have_current_path(new_user_session_path)
   end
 
   it "Disable webhooks" do

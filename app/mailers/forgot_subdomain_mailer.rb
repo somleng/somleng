@@ -1,7 +1,7 @@
 class ForgotSubdomainMailer < ApplicationMailer
-  def forgot_subdomain(user)
-    @user = user
-    @carriers = Carrier.joins(:carrier_users).where(users: { email: user.email })
-    bootstrap_mail(to: user.email, subject: "Somleng - Forgot Subdomain")
+  def forgot_subdomain(email:, carriers:)
+    @email = email
+    @carriers = carriers
+    bootstrap_mail(to: email, subject: "Somleng - Forgot Subdomain")
   end
 end

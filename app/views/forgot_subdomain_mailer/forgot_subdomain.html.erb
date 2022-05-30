@@ -1,17 +1,26 @@
 <p>
-  Hello <%= @user.email %>!
+  Hello <%= @email %>!
 </p>
 
-<p>
-  Choose a subdomain below to login to your account.
-</p>
+<% if @carriers.one? %>
+  <p>
+    Click the link below to login to your account.
+  </p>
 
-<ul>
-  <% @carriers.each do |carrier| %>
-    <li>
-      <%= link_to(carrier.name, new_user_session_url(host: carrier.subdomain_host)) %>
-    </li>
-  <% end %>
-</ul>
+  <% carrier = @carriers.first %>
+  <%= link_to(carrier.name, new_user_session_url(host: carrier.subdomain_host), class: "btn btn-primary p-3 fw-700 ax-center") %>
+<% else %>
+  <p>
+    Choose a subdomain below to login to your account.
+  </p>
+
+  <ul>
+    <% @carriers.each do |carrier| %>
+      <li>
+        <%= link_to(carrier.name, new_user_session_url(host: carrier.subdomain_host)) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
 
 <p class="text-muted">If you didn't request this, please ignore this email.</p>

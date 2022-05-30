@@ -14,8 +14,9 @@ class ForgotSubdomainForm
   def save
     return false if invalid?
 
-    user = User.find_by!(email:)
-    ForgotSubdomainMailer.forgot_subdomain(user).deliver_later
+    carriers = Carrier.joins(:carrier_users).where(users: { email: })
+    ForgotSubdomainMailer.forgot_subdomain(email:, carriers:).deliver_later
+
     true
   end
 
