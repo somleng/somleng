@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Forgot subdomain", :js, :selenium_chrome do
+RSpec.describe "Forgot subdomain" do
   it "Handles forgotten subdomains" do
     carrier = create(:carrier, name: "AT&T", subdomain: "at-t")
     user = create(:user, :carrier, carrier:, email: "johndoe@att.com")
