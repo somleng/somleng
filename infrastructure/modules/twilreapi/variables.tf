@@ -15,7 +15,6 @@ variable "load_balancer" {}
 variable "listener_arn" {}
 variable "route53_zone" {}
 variable "cdn_certificate" {}
-variable "dashboard_subdomain" {}
 variable "app_subdomain" {}
 variable "api_subdomain" {}
 

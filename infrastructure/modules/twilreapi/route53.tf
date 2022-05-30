@@ -12,7 +12,7 @@ resource "aws_route53_record" "api" {
 
 resource "aws_route53_record" "dashboard" {
   zone_id = var.route53_zone.zone_id
-  name    = var.dashboard_subdomain
+  name    = "dashboard"
   type    = "A"
 
   alias {
