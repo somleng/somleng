@@ -28,15 +28,19 @@ RSpec.describe "Carrier Settings" do
   end
 
   it "Update carrier subdomain" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, subdomain: "t-mobile")
     user = create(:user, :carrier, :owner, carrier:)
 
     carrier_sign_in(user)
     visit edit_dashboard_carrier_settings_path
-    fill_in("Subdomain", with: "t-mobile")
+    fill_in("Subdomain", with: "t-mobile2")
     click_button("Update Carrier Settings")
 
-    expect(page.current_host).to eq("http://t-mobile.app.lvh.me")
+    expect(page.current_host).to eq("http://t-mobile2.app.lvh.me")
+    expect(page).to have_current_path(new_user_session_path)
+
+    create(:carrier, subdomain: "t-mobile")
+    visit dashboard_root_url(subdomain: "t-mobile.app")
     expect(page).to have_current_path(new_user_session_path)
   end
 

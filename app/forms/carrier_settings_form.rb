@@ -87,6 +87,8 @@ class CarrierSettingsForm
       carrier.save!
       webhook_endpoint.save! if update_webhook_endpoint?
     end
+
+    true
   end
 
   def webhook_configured?
