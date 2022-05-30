@@ -90,30 +90,6 @@ resource "aws_iam_policy" "ecs_task_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "ses:CreateEmailIdentity",
-        "ses:TagResource"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ses:GetEmailIdentity",
-        "ses:DeleteEmailIdentity"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Deny",
-      "Action": [
-        "ses:GetEmailIdentity",
-        "ses:DeleteEmailIdentity"
-      ],
-      "Resource": "arn:aws:ses:*:*:identity/somleng.org"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
         "ec2:AuthorizeSecurityGroupIngress",
         "ec2:RevokeSecurityGroupIngress"
       ],
