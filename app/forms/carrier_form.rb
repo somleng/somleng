@@ -2,6 +2,8 @@ class CarrierForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
+
   attribute :company
   attribute :name
   attribute :work_email
@@ -23,7 +25,7 @@ class CarrierForm
             presence: true
 
   validates :work_email, email_format: true, email_uniqueness: true, allow_blank: true
-  validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
+  validates :country, inclusion: { in: COUNTRIES }
   validates :website, url_format: { allow_http: true }, allow_blank: true
   validates :password, confirmation: true
   validates :subdomain, subdomain: true

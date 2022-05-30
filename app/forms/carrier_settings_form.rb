@@ -2,6 +2,8 @@ class CarrierSettingsForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
+
   class HostnameValidator < ActiveModel::EachValidator
     RESTRICTED_DOMAINS = [
       AppSettings.app_uri.domain
@@ -35,7 +37,7 @@ class CarrierSettingsForm
   delegate :persisted?, :id, to: :carrier
 
   validates :name, presence: true
-  validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
+  validates :country, inclusion: { in: COUNTRIES }
   validates :website, presence: true, url_format: { allow_blank: true }
   validates :webhook_url, url_format: { allow_http: true }, allow_blank: true
   validates :subdomain, presence: true,

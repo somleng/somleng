@@ -22,14 +22,9 @@ class User < ApplicationRecord
 
   validates :email,
             uniqueness: {
-              scope: :carrier_id, allow_blank: true,
-              if: ->(user) { user.email_changed? && user.carrier_role.blank? }
-            }
-
-  validates :email,
-            uniqueness: {
+              scope: :carrier_id,
               allow_blank: true,
-              if: ->(user) { user.email_changed? && user.carrier_user? }
+              if: :email_changed?
             }
 
   validates :password,
@@ -38,8 +33,6 @@ class User < ApplicationRecord
             length: { within: Devise.password_length, allow_blank: true }
 
   before_create :generate_otp_secret
-
-  delegate :subdomain, to: :carrier
 
   def self.policy_class
     CarrierUserPolicy
