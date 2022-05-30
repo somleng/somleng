@@ -27,7 +27,7 @@ RSpec.describe "Phone Calls" do
     ]
     user = create(:user, :carrier, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_calls_path(
       filter: {
         from_date: "01/12/2021",
@@ -86,7 +86,7 @@ RSpec.describe "Phone Calls" do
     create(:call_data_record, bill_sec: 5, phone_call:)
     user = create(:user, :carrier, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_call_path(phone_call)
 
     expect(page).to have_content(phone_call.id)

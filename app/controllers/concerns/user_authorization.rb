@@ -5,7 +5,6 @@ module UserAuthorization
 
   included do
     helper_method :current_carrier
-    helper_method :current_organization
     helper_method :current_account
     helper_method :current_account_membership
 
@@ -24,7 +23,7 @@ module UserAuthorization
   end
 
   def select_account_membership!
-    return if current_user.carrier_role.present?
+    return if current_user.carrier_user?
     return if current_user.current_account_membership.present?
 
     if current_user.account_memberships.blank?
@@ -39,14 +38,6 @@ module UserAuthorization
     "#{controller_name.classify}Policy".constantize
   end
 
-  def current_organization
-    @current_organization ||= if current_user.carrier_role.present?
-                                Organization.new(current_carrier)
-                              else
-                                Organization.new(current_account)
-                              end
-  end
-
   def current_account_membership
     current_user.current_account_membership
   end
@@ -55,29 +46,7 @@ module UserAuthorization
     current_account_membership.account
   end
 
-  def current_carrier
-    current_user.carrier
-  end
-
-  def authorized_carrier
-    current_carrier
-  end
-
-  def pundit_user
-    UserContext.new(current_user, current_organization, current_account_membership)
-  end
-
-  class Organization < SimpleDelegator
-    def carrier?
-      __getobj__.is_a?(Carrier)
-    end
-
-    def account?
-      __getobj__.is_a?(Account)
-    end
-
-    def carrier
-      account? ? __getobj__.carrier : __getobj__
-    end
+  def parent_scope
+    current_user.carrier_user? ? current_carrier : current_account
   end
 end

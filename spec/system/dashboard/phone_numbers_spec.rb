@@ -24,7 +24,7 @@ RSpec.describe "Phone Numbers" do
       created_at: Time.utc(2021, 12, 1)
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_numbers_path(
       filter: { from_date: "01/12/2021", to_date: "15/12/2021", enabled: true }
     )
@@ -42,7 +42,7 @@ RSpec.describe "Phone Numbers" do
     create(:phone_number, account: other_account, carrier:, number: "9876")
     user = create(:user, :with_account_membership, account:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_numbers_path
 
     expect(page).to have_content("1234")
@@ -54,7 +54,7 @@ RSpec.describe "Phone Numbers" do
     user = create(:user, :carrier, :admin, carrier:)
     create(:account, carrier:, name: "Rocket Rides")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_numbers_path
 
     click_link("New")
@@ -70,7 +70,7 @@ RSpec.describe "Phone Numbers" do
   it "Handles validations" do
     user = create(:user, :carrier, :admin)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit new_dashboard_phone_number_path
     click_button("Create Phone number")
 
@@ -83,7 +83,7 @@ RSpec.describe "Phone Numbers" do
     user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
     click_link("Edit")
@@ -100,7 +100,7 @@ RSpec.describe "Phone Numbers" do
     phone_number = create(:phone_number, carrier:, number: "1234")
     create(:phone_call, :inbound, carrier:, phone_number:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
     click_link("Delete")
@@ -114,7 +114,7 @@ RSpec.describe "Phone Numbers" do
     account = create(:account, carrier:, name: "Rocket Rides")
     phone_number = create(:phone_number, carrier:, account:, number: "1234")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
     click_link("Release")

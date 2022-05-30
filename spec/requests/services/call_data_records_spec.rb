@@ -21,7 +21,7 @@ RSpec.describe "Services" do
 
       perform_enqueued_jobs do
         post(
-          services_call_data_records_path,
+          api_services_call_data_records_path,
           params: JSON.parse(freeswitch_cdr),
           headers: build_authorization_headers("services", "password")
         )

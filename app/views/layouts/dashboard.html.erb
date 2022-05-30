@@ -2,11 +2,7 @@
 <html>
   <head>
     <title>
-      <% if current_organization.carrier.present? %>
-        <%= current_organization.carrier.name %> - <%= yield(:page_title) %>
-      <% else %>
-        <%= yield(:page_title) %>
-      <% end %>
+      <%= current_carrier.name %> - <%= yield(:page_title) %>
     </title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
 

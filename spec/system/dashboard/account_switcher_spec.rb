@@ -7,7 +7,7 @@ RSpec.describe "Account Switcher" do
     create_account_membership(user:, carrier:, name: "Rocket Rides", current_membership: true)
     create_account_membership(user:, carrier:, name: "Bob's Bananas")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_settings_path
 
     within("#accountSwitcher") do

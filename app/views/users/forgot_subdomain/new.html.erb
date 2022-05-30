@@ -1,0 +1,20 @@
+<%= content_for(:page_title, "Forgot Subdomain?") %>
+
+<h2>Forgot Subdomain?</h2>
+
+<p>
+  Enter your email address below and we'll help to find your subdomain.
+</p>
+
+<%= simple_form_for(@resource, url: forgot_subdomain_path, html: { method: :post }) do |f| %>
+  <div class="form-inputs">
+    <%= f.input :email,
+                required: true,
+                autofocus: true,
+                input_html: { autocomplete: "email" } %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Send me login instructions" %>
+  </div>
+<% end %>

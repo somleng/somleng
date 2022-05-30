@@ -45,29 +45,18 @@ FactoryBot.define do
   end
 
   factory :carrier do
-    name { "Somleng" }
+    name { "AT&T" }
     country_code { "KH" }
+    sequence(:subdomain) { |n| "at-t#{n}" }
+    website { "https://at-t.com" }
+    with_oauth_application
+
     trait :restricted do
       restricted { true }
     end
 
     trait :with_logo do
       association :logo, factory: :active_storage_attachment, filename: "carrier_logo.jpeg"
-    end
-
-    trait :with_custom_domain do
-      after(:build) do |carrier|
-        carrier.custom_domain(:dashboard) || carrier.custom_domains << build(
-          :custom_domain, :verified, :dashboard, carrier:
-        )
-        carrier.custom_domain(:api) || carrier.custom_domains << build(
-          :custom_domain, :verified, :api, carrier:
-        )
-
-        carrier.custom_domain(:mail) || carrier.custom_domains << build(
-          :custom_domain, :verified, :mail, carrier:
-        )
-      end
     end
 
     trait :with_oauth_application do
@@ -124,18 +113,6 @@ FactoryBot.define do
 
     trait :carrier_managed do
       with_access_token
-    end
-
-    trait :customer_managed do
-      with_access_token
-
-      after(:build) do |account|
-        if account.account_memberships.empty?
-          account.account_memberships << build(
-            :account_membership, account:
-          )
-        end
-      end
     end
 
     trait :with_access_token do
@@ -210,6 +187,14 @@ FactoryBot.define do
     admin
 
     traits_for_enum :role, %i[owner admin member]
+
+    after(:stub) do |account_membership|
+      account_membership.user.current_account_membership ||= account_membership
+    end
+
+    after(:build) do |account_membership|
+      account_membership.user.current_account_membership ||= account_membership
+    end
   end
 
   factory :import do
@@ -359,22 +344,6 @@ FactoryBot.define do
     end
   end
 
-  factory :user_context do
-    user
-    association :current_organization, factory: :organization
-    association :current_account_membership, factory: :account_membership
-
-    initialize_with { new(user, current_organization, current_account_membership) }
-  end
-
-  factory :organization, class: "UserAuthorization::Organization" do
-    transient do
-      organization { build(:account) }
-    end
-
-    initialize_with { new(organization) }
-  end
-
   factory :recording do
     phone_call
     account { phone_call.account }
@@ -389,52 +358,6 @@ FactoryBot.define do
       status { :completed }
 
       association :file, factory: :active_storage_attachment, filename: "recording.wav"
-    end
-  end
-
-  factory :custom_domain do
-    carrier
-    dashboard
-    verification_token { SecureRandom.alphanumeric }
-    verification_started_at { Time.current }
-    sequence(:host) { |n| "custom-host-#{n}.example.com" }
-    unverified
-
-    type { "CustomDomain" }
-
-    trait :dashboard do
-      host_type { "dashboard" }
-      dns_record_type { "txt" }
-    end
-
-    trait :api do
-      host_type { "api" }
-      dns_record_type { "txt" }
-    end
-
-    trait :expired do
-      verification_started_at { 72.hours.ago }
-    end
-
-    trait :mail do
-      type { "MailCustomDomain" }
-      host_type { "mail" }
-      dns_record_type { "cname" }
-      verification_data do
-        {
-          dkim_provider: "amazonses",
-          type: :dkim,
-          dkim_tokens: %w[token1 token2 token3]
-        }
-      end
-    end
-
-    trait :unverified do
-      verified_at { nil }
-    end
-
-    trait :verified do
-      verified_at { Time.current }
     end
   end
 end

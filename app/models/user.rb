@@ -18,8 +18,14 @@ class User < ApplicationRecord
 
   validates :email,
             presence: true,
-            uniqueness: { scope: :carrier_id, allow_blank: true, if: :email_changed? },
             format: { with: Devise.email_regexp, allow_blank: true, if: :email_changed? }
+
+  validates :email,
+            uniqueness: {
+              scope: :carrier_id,
+              allow_blank: true,
+              if: :email_changed?
+            }
 
   validates :password,
             presence: { if: :password_required? },
@@ -32,8 +38,23 @@ class User < ApplicationRecord
     CarrierUserPolicy
   end
 
+  def self.find_for_authentication(warden_conditions)
+    joins(:carrier).where(
+      email: warden_conditions[:email],
+      carriers: { subdomain: warden_conditions[:subdomains].first }
+    ).first
+  end
+
+  def self.carrier
+    where.not(carrier_role: nil)
+  end
+
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
+  end
+
+  def carrier_user?
+    carrier_role.present?
   end
 
   private

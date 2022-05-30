@@ -8,7 +8,7 @@ RSpec.describe "Exports" do
     create(:account, name: "Alice Apples", created_at: Time.utc(2021, 10, 1), carrier:)
     create(:account, name: "Bob Bananas")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_accounts_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
     perform_enqueued_jobs do
       click_link("Export")
@@ -37,7 +37,7 @@ RSpec.describe "Exports" do
     create(:phone_number, account: other_account, carrier: carrier, number: "9876")
     user = create(:user, :with_account_membership, account: account)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_numbers_path
     perform_enqueued_jobs do
       click_link("Export")

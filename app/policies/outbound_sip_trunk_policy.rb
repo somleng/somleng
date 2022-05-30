@@ -4,6 +4,6 @@ class OutboundSIPTrunkPolicy < ApplicationPolicy
   end
 
   def read?
-    user.current_organization.carrier?
+    managing_carrier?
   end
 end

@@ -25,10 +25,10 @@ RSpec.resource "Pagination", document: :twilio_api do
       expect(json_response).to include(
         "page" => 0,
         "page_size" => 2,
-        "uri" => twilio_api_account_phone_calls_path(account, PageSize: 2),
-        "first_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2),
-        "next_page_uri" => twilio_api_account_phone_calls_path(account, Page: 1, PageSize: 2, PageToken: "PA#{newer.id}"),
-        "previous_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2, PageToken: "PB#{newest.id}")
+        "uri" => api_twilio_account_phone_calls_path(account, PageSize: 2),
+        "first_page_uri" => api_twilio_account_phone_calls_path(account, Page: 0, PageSize: 2),
+        "next_page_uri" => api_twilio_account_phone_calls_path(account, Page: 1, PageSize: 2, PageToken: "PA#{newer.id}"),
+        "previous_page_uri" => api_twilio_account_phone_calls_path(account, Page: 0, PageSize: 2, PageToken: "PB#{newest.id}")
       )
     end
 
@@ -47,10 +47,10 @@ RSpec.resource "Pagination", document: :twilio_api do
       expect(json_response).to include(
         "page" => 0,
         "page_size" => 2,
-        "uri" => twilio_api_account_phone_calls_path(account, PageSize: 2, PageToken: "PA#{newest.id}"),
-        "first_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2),
+        "uri" => api_twilio_account_phone_calls_path(account, PageSize: 2, PageToken: "PA#{newest.id}"),
+        "first_page_uri" => api_twilio_account_phone_calls_path(account, Page: 0, PageSize: 2),
         "next_page_uri" => nil,
-        "previous_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2, PageToken: "PB#{newer.id}")
+        "previous_page_uri" => api_twilio_account_phone_calls_path(account, Page: 0, PageSize: 2, PageToken: "PB#{newer.id}")
       )
     end
 
@@ -69,9 +69,9 @@ RSpec.resource "Pagination", document: :twilio_api do
       expect(json_response).to include(
         "page" => 0,
         "page_size" => 2,
-        "uri" => twilio_api_account_phone_calls_path(account, PageSize: 2, PageToken: "PB#{older.id}"),
-        "first_page_uri" => twilio_api_account_phone_calls_path(account, Page: 0, PageSize: 2),
-        "next_page_uri" => twilio_api_account_phone_calls_path(account, Page: 1, PageSize: 2, PageToken: "PA#{newer.id}"),
+        "uri" => api_twilio_account_phone_calls_path(account, PageSize: 2, PageToken: "PB#{older.id}"),
+        "first_page_uri" => api_twilio_account_phone_calls_path(account, Page: 0, PageSize: 2),
+        "next_page_uri" => api_twilio_account_phone_calls_path(account, Page: 1, PageSize: 2, PageToken: "PA#{newer.id}"),
         "previous_page_uri" => nil
       )
     end

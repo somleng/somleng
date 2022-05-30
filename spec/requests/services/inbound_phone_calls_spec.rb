@@ -21,7 +21,7 @@ RSpec.describe "Services" do
       create(:inbound_sip_trunk, carrier:, source_ip: "175.100.7.240")
 
       post(
-        services_inbound_phone_calls_path,
+        api_services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
           "to" => "16189124649",

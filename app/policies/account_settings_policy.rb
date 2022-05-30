@@ -8,6 +8,6 @@ class AccountSettingsPolicy < ApplicationPolicy
   end
 
   def manage?
-    user.current_organization.account?
+    managing_account?
   end
 end

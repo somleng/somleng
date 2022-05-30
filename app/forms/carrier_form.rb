@@ -2,12 +2,13 @@ class CarrierForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[https http])}\z/
+  COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
 
   attribute :company
   attribute :name
   attribute :work_email
   attribute :country
+  attribute :subdomain, SubdomainType.new
   attribute :website
   attribute :password
   attribute :password_confirmation
@@ -17,15 +18,17 @@ class CarrierForm
             :work_email,
             :website,
             :company,
+            :subdomain,
             :country,
             :password,
             :password_confirmation,
             presence: true
 
   validates :work_email, email_format: true, email_uniqueness: true, allow_blank: true
-  validates :country, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
-  validates :website, format: URL_FORMAT, allow_blank: true
+  validates :country, inclusion: { in: COUNTRIES }
+  validates :website, url_format: { allow_http: true }, allow_blank: true
   validates :password, confirmation: true
+  validates :subdomain, subdomain: true
 
   delegate :persisted?, to: :user
 
@@ -40,6 +43,7 @@ class CarrierForm
       name: company,
       country_code: country,
       website:,
+      subdomain:,
       restricted: true,
       owner: {
         name:,

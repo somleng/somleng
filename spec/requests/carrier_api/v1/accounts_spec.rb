@@ -123,8 +123,9 @@ resource "Accounts", document: :carrier_api do
   get "https://api.somleng.org/carrier/v1/accounts" do
     example "List all accounts" do
       carrier = create(:carrier)
-      customer_managed_account = create(:account, :customer_managed, name: "Rocket Rides", carrier: carrier)
-      carrier_managed_account = create(:account, :carrier_managed, name: "Telco Net", carrier: carrier)
+      customer_managed_account = create(:account, name: "Rocket Rides", carrier:)
+      create(:account_membership, account: customer_managed_account)
+      carrier_managed_account = create(:account, :carrier_managed, name: "Telco Net", carrier:)
       _other_account = create(:account)
 
       set_carrier_api_authorization_header(carrier)

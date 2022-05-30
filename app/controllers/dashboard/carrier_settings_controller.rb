@@ -1,5 +1,7 @@
 module Dashboard
   class CarrierSettingsController < DashboardController
+    self.raise_on_open_redirects = false
+
     def show
       @resource = current_carrier
     end
@@ -11,16 +13,24 @@ module Dashboard
     def update
       @resource = CarrierSettingsForm.new(permitted_params)
       @resource.carrier = current_carrier
-      @resource.save
+      subdomain_was = current_carrier.subdomain
 
-      respond_with(@resource, location: dashboard_carrier_settings_path)
+      if @resource.save
+        sign_out(current_user) unless current_carrier.subdomain == subdomain_was
+      end
+
+      respond_with(
+        @resource,
+        location: dashboard_carrier_settings_url(host: current_carrier.subdomain_host)
+      )
     end
 
     private
 
     def permitted_params
       params.require(:carrier_settings).permit(
-        :name, :country, :logo, :webhook_url, :enable_webhooks
+        :name, :country, :logo, :webhook_url, :enable_webhooks, :website, :subdomain,
+        :custom_app_host, :custom_api_host
       )
     end
 

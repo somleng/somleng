@@ -14,7 +14,7 @@ describe ApplicationSeeder do
     end
 
     it "does not create a new account if one already exists" do
-      carrier = create(:carrier, :with_oauth_application)
+      carrier = create(:carrier)
       existing_account = create(:account, :with_access_token, carrier:)
       create(:phone_number, carrier:, account: existing_account)
       create(:user, :carrier, carrier:)

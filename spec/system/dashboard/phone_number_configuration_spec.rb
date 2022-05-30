@@ -7,7 +7,7 @@ RSpec.describe "Phone number configuration" do
     user = create(:user, :with_account_membership, account_role: :admin, account:)
     phone_number = create(:phone_number, account:, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
     click_link("Edit")
 
@@ -30,7 +30,7 @@ RSpec.describe "Phone number configuration" do
     user = create(:user, :with_account_membership, account_role: :admin, account:)
     phone_number = create(:phone_number, account:, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
     click_link("Edit")
 
@@ -47,7 +47,7 @@ RSpec.describe "Phone number configuration" do
     user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:, account:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
     click_link("Configure")
 
@@ -65,7 +65,7 @@ RSpec.describe "Phone number configuration" do
     user = create(:user, :with_account_membership, account_role: :admin, account:)
     phone_number = create(:phone_number, account:, carrier:)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit edit_dashboard_phone_number_configuration_path(phone_number)
 
     fill_in("Voice URL", with: "ftp://invalid-url.com")

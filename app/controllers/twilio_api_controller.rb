@@ -6,8 +6,6 @@ class TwilioAPIController < APIController
   before_action :doorkeeper_authorize!
   before_action :authorize_account!
 
-  include CustomDomainAPIAuthorization
-
   private
 
   def authorize_account!
@@ -20,7 +18,7 @@ class TwilioAPIController < APIController
   end
 
   def respond_with_resource(resource, options = {})
-    respond_with(:twilio_api, resource.account, resource, **options)
+    respond_with(:api, :twilio, resource.account, resource, **options)
   end
 
   def current_account
@@ -50,9 +48,5 @@ class TwilioAPIController < APIController
       },
       status: :unauthorized
     }
-  end
-
-  def authorized_carrier
-    current_account.carrier
   end
 end

@@ -13,7 +13,7 @@ RSpec.describe "Services" do
       account = create(:account, carrier: carrier)
 
       post(
-        services_dial_string_path,
+        api_services_dial_string_path,
         params: {
           phone_number: "+85516701721",
           account_sid: account.id
@@ -34,7 +34,7 @@ RSpec.describe "Services" do
       account = create(:account, carrier: carrier)
 
       post(
-        services_dial_string_path,
+        api_services_dial_string_path,
         params: {
           phone_number: "+81-9082702366",
           account_sid: account.id

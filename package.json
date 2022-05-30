@@ -15,7 +15,8 @@
     "popper.js": "^1.16.1",
     "select2": "^4.0.13",
     "stimulus": "^2.0.0",
-    "turbolinks": "^5.2.0"
+    "turbolinks": "^5.2.0",
+    "url-slug": "^3.0.4"
   },
   "devDependencies": {
     "webpack-dev-server": "^4.6.0"

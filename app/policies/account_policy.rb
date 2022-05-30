@@ -6,7 +6,7 @@ class AccountPolicy < ApplicationPolicy
   end
 
   def read?
-    user.current_organization.carrier?
+    user.carrier_user?
   end
 
   def show_auth_token?

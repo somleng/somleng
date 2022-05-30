@@ -2,15 +2,16 @@ require "rails_helper"
 
 RSpec.describe "Account Memberships" do
   it "List account memberships" do
-    account = create(:account)
-    other_account = create(:account, carrier: account.carrier)
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    other_account = create(:account, carrier:)
     user = create(
       :user, :with_account_membership, account_role: :owner, account:, name: "Joe Bloggs"
     )
     create_account_membership(account:, role: :owner, name: "John Doe")
     create_account_membership(account: other_account, role: :owner, name: "Bob Chann")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_memberships_path
 
     expect(page).to have_content("Joe Bloggs")
@@ -19,9 +20,10 @@ RSpec.describe "Account Memberships" do
   end
 
   it "Invite an account member" do
-    user = create(:user, :with_account_membership, account_role: :owner)
+    carrier = create(:carrier)
+    user = create(:user, :with_account_membership, carrier:, account_role: :owner)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_memberships_path
 
     click_link("New")
@@ -35,9 +37,10 @@ RSpec.describe "Account Memberships" do
   end
 
   it "Handle validation errors" do
-    user = create(:user, :with_account_membership, account_role: :owner)
+    carrier = create(:carrier)
+    user = create(:user, :with_account_membership, carrier:, account_role: :owner)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit new_dashboard_account_membership_path
     click_button "Send an Invitation"
 
@@ -45,28 +48,30 @@ RSpec.describe "Account Memberships" do
   end
 
   it "Update an account membership" do
-    account = create(:account)
-    user = create(:user, :with_account_membership, account_role: :owner, account:)
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    user = create(:user, :with_account_membership, account_role: :owner, account:, carrier:)
     account_membership = create_account_membership(account:, role: :admin)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
     click_link("Edit")
 
     select("Owner", from: "Role")
-    click_button "Update User"
+    click_button("Update User")
 
     expect(page).to have_content("Account membership was successfully updated")
     expect(page).to have_content("Owner")
   end
 
   it "Delete an account membership" do
-    account = create(:account)
-    user = create(:user, :with_account_membership, account_role: :owner, account:)
-    account_member = create(:user, :invited, name: "Bob Chann")
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    user = create(:user, :with_account_membership, account_role: :owner, account:, carrier:)
+    account_member = create(:user, :invited, name: "Bob Chann", carrier:)
     account_membership = create(:account_membership, account:, user: account_member)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
     click_link("Delete")
 
@@ -75,12 +80,13 @@ RSpec.describe "Account Memberships" do
   end
 
   it "Resend invitation" do
-    account = create(:account)
-    user = create(:user, :with_account_membership, account:, account_role: :owner)
-    invited_user = create(:user, :invited, email: "johndoe@example.com")
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    user = create(:user, :with_account_membership, account:, account_role: :owner, carrier:)
+    invited_user = create(:user, :invited, email: "johndoe@example.com", carrier:)
     account_membership = create(:account_membership, account:, user: invited_user)
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
 
     expect(page).to have_content("The user has not yet accepted their invite.")
@@ -99,7 +105,7 @@ RSpec.describe "Account Memberships" do
     user = create(:user, :with_account_membership, account:, account_role: :owner)
     account_membership = create_account_membership(account:, email: "johndoe@example.com")
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
     click_link("Reset 2FA")
 

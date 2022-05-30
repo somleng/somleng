@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_09_011934) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_27_025454) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -102,34 +103,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_09_011934) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "country_code", null: false
-    t.string "website"
+    t.string "website", null: false
     t.boolean "restricted", default: false, null: false
+    t.citext "subdomain", null: false
+    t.citext "custom_app_host"
+    t.citext "custom_api_host"
+    t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
+    t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
-  end
-
-  create_table "custom_domains", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "carrier_id", null: false
-    t.string "host", null: false
-    t.string "verification_token", null: false
-    t.string "type", null: false
-    t.string "host_type", null: false
-    t.datetime "verification_started_at"
-    t.datetime "verified_at"
-    t.jsonb "verification_data", default: {}, null: false
-    t.string "dns_record_type", null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["carrier_id", "host"], name: "index_custom_domains_on_carrier_id_and_host", unique: true
-    t.index ["carrier_id", "host_type"], name: "index_custom_domains_on_carrier_id_and_host_type", unique: true
-    t.index ["carrier_id"], name: "index_custom_domains_on_carrier_id"
-    t.index ["host"], name: "index_custom_domains_on_host", unique: true, where: "(verified_at IS NOT NULL)"
-    t.index ["host_type"], name: "index_custom_domains_on_host_type"
-    t.index ["sequence_number"], name: "index_custom_domains_on_sequence_number", unique: true, order: :desc
-    t.index ["type"], name: "index_custom_domains_on_type"
-    t.index ["verification_started_at"], name: "index_custom_domains_on_verification_started_at"
-    t.index ["verification_token"], name: "index_custom_domains_on_verification_token", unique: true
-    t.index ["verified_at"], name: "index_custom_domains_on_verified_at"
+    t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
   end
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -444,7 +426,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_09_011934) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
-  add_foreign_key "custom_domains", "carriers"
   add_foreign_key "events", "carriers"
   add_foreign_key "exports", "users"
   add_foreign_key "imports", "carriers", on_delete: :cascade

@@ -6755,6 +6755,11 @@ urix@^0.1.0:
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
 
+url-slug@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/url-slug/-/url-slug-3.0.4.tgz#3278b556666389cd88d9210a12e7577dafac6d57"
+  integrity sha512-C880WJTo68O4J59i+w9Yp4P0iDUrMeCAVwNvHAYjSc59XsO4pkPfe8bsEHEyZrEfWWy8BDyxMQi6BPVHp/GEbg==
+
 url@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/url/-/url-0.11.0.tgz#3838e97cfc60521eb73c525a8e55bfdd9e2e28f1"

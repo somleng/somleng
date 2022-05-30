@@ -1,7 +1,7 @@
 <%= page_title(title: "Phone Number") do %>
   <% phone_number_policy = PhoneNumberPolicy.new(pundit_user, @resource) %>
   <% phone_number_configuration_policy = PhoneNumberConfigurationPolicy.new(pundit_user, @resource) %>
-  <% display_dropdown = current_organization.carrier? && phone_number_configuration_policy.edit? %>
+  <% display_dropdown = current_user.carrier_user? && phone_number_configuration_policy.edit? %>
 
   <% if display_dropdown %>
     <div class="btn-group">

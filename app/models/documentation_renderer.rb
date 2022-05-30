@@ -1,23 +1,20 @@
 class DocumentationRenderer
-  attr_reader :template, :custom_domain
+  attr_reader :template, :carrier
 
-  def initialize(template:, custom_domain:)
+  def initialize(template:, carrier:)
     @template = template
-    @custom_domain = custom_domain
+    @carrier = carrier
   end
 
   def render
     set_logo
     set_carrier_name
+    set_api_host
 
     content
   end
 
   private
-
-  def carrier
-    custom_domain.carrier
-  end
 
   def set_logo
     return unless carrier.logo.attached?
@@ -30,8 +27,11 @@ class DocumentationRenderer
   end
 
   def set_carrier_name
-    content.gsub!("api.somleng.org", custom_domain.host)
     content.gsub!(/Somleng/, carrier.name)
+  end
+
+  def set_api_host
+    content.gsub!("api.somleng.org", carrier.custom_api_host) if carrier.custom_api_host.present?
   end
 
   def url_helpers

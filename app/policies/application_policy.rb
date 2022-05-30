@@ -39,7 +39,7 @@ class ApplicationPolicy
   end
 
   def read?
-    user.current_organization.present?
+    true
   end
 
   private
@@ -61,10 +61,10 @@ class ApplicationPolicy
   end
 
   def managing_account?
-    user.current_organization.account?
+    !managing_carrier?
   end
 
   def managing_carrier?
-    user.current_organization.carrier?
+    user.carrier_user?
   end
 end

@@ -1,38 +1,28 @@
-class AppRequest < SimpleDelegator
-  def custom_domain_request?
-    request.headers.key?("HTTP_X_FORWARDED_HOST")
+class AppRequest
+  attr_reader :request
+
+  def initialize(request)
+    @request = request
   end
 
-  def app_hostname
-    ActionDispatch::Request.new(
-      request.env.except("HTTP_X_FORWARDED_HOST")
-    ).hostname
+  def carrier_subdomain_request?
+    _subdomain, *namespace = request.subdomains
+    namespace == ["app"]
   end
 
-  def custom_domain_hostname
-    request.hostname
+  def find_carrier
+    Carrier.find_by(subdomain: carrier_subdomain) if carrier_subdomain_request?
   end
 
-  def find_custom_domain!(context, options = {})
-    custom_domain = find_custom_domain(context, options)
-    raise ActiveRecord::RecordNotFound if custom_domain.blank?
+  def find_carrier!
+    raise ActiveRecord::RecordNotFound unless carrier_subdomain_request?
 
-    custom_domain
-  end
-
-  def find_custom_domain(context, options = {})
-    return unless custom_domain_request?
-
-    CustomDomain.verified.find_by(
-      host: custom_domain_hostname,
-      host_type: context,
-      **options
-    )
+    Carrier.find_by!(subdomain: carrier_subdomain)
   end
 
   private
 
-  def request
-    __getobj__
+  def carrier_subdomain
+    request.subdomains.first
   end
 end

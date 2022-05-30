@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe ApplicationPolicy do
   it "has a default policy" do
-    user_context = build_stubbed(:user_context)
+    user = build_stubbed(:user)
 
-    policy = ApplicationPolicy.new(user_context)
+    policy = ApplicationPolicy.new(user)
 
     expect(policy.index?).to eq(true)
     expect(policy.show?).to eq(true)

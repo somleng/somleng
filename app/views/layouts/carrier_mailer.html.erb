@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+  </head>
+    <body class="bg-light">
+      <div class="container">
+        <%= carrier_logo(@carrier, class: "ax-center my-10 w-24") %>
+        <div class="card p-6 p-lg-10 space-y-4">
+          <% if content_for?(:title) %>
+            <h1 class="h3 fw-700 ax-center">
+              <%= yield(:title) %>
+            </h1>
+          <% end %>
+          <p>
+            <%= yield %>
+          </p>
+        </div>
+        <div class="text-muted text-center my-6">
+          <small><%= @carrier.name %></small><br/>
+          <small><%= link_to(@carrier.website, @carrier.website) %></small>
+        </div>
+      </div>
+    </body>
+</html>

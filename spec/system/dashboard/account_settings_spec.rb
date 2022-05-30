@@ -7,7 +7,7 @@ RSpec.describe "Account Settings" do
       :user, :with_account_membership, account_role: :member, account: account
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_settings_path
 
     expect(page).to have_content("Rocket Rides")
@@ -26,7 +26,7 @@ RSpec.describe "Account Settings" do
       :user, :with_account_membership, account_role: :owner, account: account
     )
 
-    sign_in(user)
+    carrier_sign_in(user)
     visit dashboard_account_settings_path
     click_link("Edit")
     fill_in("Name", with: "Car Rides")

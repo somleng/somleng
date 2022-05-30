@@ -11,7 +11,6 @@ class Carrier < ApplicationRecord
   has_many :interactions
   has_one :oauth_application, as: :owner
   has_one :webhook_endpoint, through: :oauth_application
-  has_many :custom_domains
 
   has_one_attached :logo
 
@@ -27,7 +26,18 @@ class Carrier < ApplicationRecord
     webhook_endpoint&.enabled?
   end
 
-  def custom_domain(host_type)
-    custom_domains.find_by(host_type:)
+  def subdomain_host
+    uri = Addressable::URI.parse(url_helpers.root_url(subdomain: "#{subdomain}.app"))
+    uri.port.present? ? "#{uri.host}:#{uri.port}" : uri.host
+  end
+
+  def account_host
+    custom_app_host.present? ? custom_app_host : subdomain_host
+  end
+
+  private
+
+  def url_helpers
+    @url_helpers ||= Rails.application.routes.url_helpers
   end
 end

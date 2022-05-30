@@ -11,7 +11,7 @@ RSpec.describe "Services" do
 
       perform_enqueued_jobs do
         post(
-          services_phone_call_events_path,
+          api_services_phone_call_events_path,
           params: {
             phone_call: phone_call.external_id,
             type: "completed",
@@ -30,7 +30,7 @@ RSpec.describe "Services" do
 
     it "handles invalid requests" do
       post(
-        services_phone_call_events_path,
+        api_services_phone_call_events_path,
         headers: build_authorization_headers("services", "password")
       )
 
