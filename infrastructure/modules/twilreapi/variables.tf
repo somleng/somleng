@@ -16,6 +16,7 @@ variable "listener_arn" {}
 variable "route53_zone" {}
 variable "cdn_certificate" {}
 variable "dashboard_subdomain" {}
+variable "app_subdomain" {}
 variable "api_subdomain" {}
 
 variable "inbound_sip_trunks_security_group_name" {}

@@ -1,5 +1,6 @@
 module "twilreapi" {
   source = "../modules/twilreapi"
+  app_subdomain = "app"
   dashboard_subdomain = "dashboard"
   api_subdomain = "api"
 
