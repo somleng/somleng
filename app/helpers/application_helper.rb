@@ -7,6 +7,14 @@ module ApplicationHelper
     end
   end
 
+  def carrier_favicon_url(carrier)
+    if carrier&.logo&.attached?
+      url_for(carrier.logo)
+    else
+      image_path("placeholder_logo.png")
+    end
+  end
+
   def local_time(time)
     return if time.blank?
 

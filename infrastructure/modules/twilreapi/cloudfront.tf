@@ -29,10 +29,10 @@ resource "aws_cloudfront_response_headers_policy" "cors" {
   }
 }
 
-resource "aws_cloudfront_distribution" "dashboard" {
+resource "aws_cloudfront_distribution" "app" {
   origin {
-    domain_name = aws_route53_record.dashboard.fqdn
-    origin_id   = aws_route53_record.dashboard.fqdn
+    domain_name = aws_route53_record.app.fqdn
+    origin_id   = aws_route53_record.app.fqdn
 
     custom_origin_config {
       http_port              = "80"
@@ -50,7 +50,7 @@ resource "aws_cloudfront_distribution" "dashboard" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = aws_route53_record.dashboard.fqdn
+    target_origin_id = aws_route53_record.app.fqdn
 
     viewer_protocol_policy = "redirect-to-https"
     compress = true

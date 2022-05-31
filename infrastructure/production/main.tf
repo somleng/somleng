@@ -1,6 +1,6 @@
 module "twilreapi" {
   source = "../modules/twilreapi"
-  dashboard_subdomain = "dashboard"
+  app_subdomain = "app"
   api_subdomain = "api"
 
   ecs_cluster = data.terraform_remote_state.core_infrastructure.outputs.ecs_cluster

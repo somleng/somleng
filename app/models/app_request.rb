@@ -2,7 +2,7 @@ class AppRequest
   attr_reader :request
 
   def initialize(request)
-    @request = request
+    @request = ActionDispatch::Request.new(request.env.except("HTTP_X_FORWARDED_HOST"))
   end
 
   def carrier_subdomain_request?
@@ -19,8 +19,6 @@ class AppRequest
 
     Carrier.find_by!(subdomain: carrier_subdomain)
   end
-
-  private
 
   def carrier_subdomain
     request.subdomains.first

@@ -70,10 +70,6 @@ class PhoneCall < ApplicationRecord
   before_create :normalize_phone_numbers
   before_create :set_beneficiary_data
 
-  def fire_event!(event)
-    aasm.fire!(event)
-  end
-
   private
 
   def normalize_phone_numbers

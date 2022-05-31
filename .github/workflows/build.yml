@@ -166,8 +166,8 @@ jobs:
 
       - name: Copy API Documentation public
         run: |
-          cp -R doc/build/twilio_api/* public/
-          mv public/index.html public/docs/twilio_api/
+          cp -R doc/build/twilio_api/* public/docs/
+          mv public/docs/index.html public/docs/twilio_api/
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
