@@ -13,11 +13,7 @@ module Dashboard
     def update
       @resource = CarrierSettingsForm.new(permitted_params)
       @resource.carrier = current_carrier
-      subdomain_was = current_carrier.subdomain
-
-      if @resource.save
-        sign_out(current_user) unless current_carrier.subdomain == subdomain_was
-      end
+      @resource.save
 
       respond_with(
         @resource,

@@ -9,6 +9,7 @@ module UserAuthorization
     helper_method :current_account_membership
 
     before_action :select_account_membership!
+    before_action :authorize_carrier!
     before_action :authorize_user!
     after_action :verify_authorized
     rescue_from Pundit::NotAuthorizedError do
@@ -20,6 +21,13 @@ module UserAuthorization
 
   def authorize_user!
     authorize(@record, policy_class:)
+  end
+
+  def authorize_carrier!
+    return if current_carrier == current_user.carrier
+
+    sign_out(current_user)
+    redirect_to(new_user_session_url(host: current_carrier.subdomain_host))
   end
 
   def select_account_membership!

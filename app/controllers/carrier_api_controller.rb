@@ -24,8 +24,4 @@ class CarrierAPIController < APIController
   def respond_with_resource(resource, options = {})
     respond_with(:api, :carrier, :v1, resource, **options)
   end
-
-  def authorized_carrier
-    current_carrier
-  end
 end
