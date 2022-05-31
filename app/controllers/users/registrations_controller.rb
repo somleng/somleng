@@ -3,6 +3,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   skip_before_action :select_account_membership!, only: %i[new create]
   skip_before_action :authorize_user!, only: %i[new create]
+  skip_before_action :authorize_carrier!, only: %i[new create]
   skip_after_action :verify_authorized, only: %i[new create]
   before_action :configure_account_update_parameters, only: :update
   before_action :configure_sign_up_parameters, only: :create
