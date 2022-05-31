@@ -55,12 +55,12 @@ Rails.application.routes.draw do
         get :accept, action: :edit
       end
 
-      scope "/docs", as: :docs do
-        get "/", to: redirect("https://www.somleng.org/carrier_documentation.html")
-        get "/api", to: "twilio_api/documentation#show", as: :twilio_api
-      end
-
       root to: "dashboard/home#show"
+    end
+
+    scope "/docs", as: :docs do
+      get "/", to: redirect("https://www.somleng.org/carrier_documentation.html")
+      get "/api", to: "twilio_api/documentation#show", as: :twilio_api
     end
 
     scope module: :dashboard, as: :dashboard do

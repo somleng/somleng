@@ -21,6 +21,20 @@ RSpec.describe "Routes" do
     expect(response).to redirect_to("https://www.somleng.org/carrier_documentation.html")
   end
 
+  it "serves customized documentation" do
+    create(:carrier, subdomain: "at-t")
+
+    get(
+      docs_twilio_api_path,
+      headers: {
+        "Host" => "at-t.app.somleng.org",
+        "X-Forwarded-Host" => "example.com"
+      }
+    )
+
+    expect(response.code).to eq("200")
+  end
+
   it "Allows login to a custom domain" do
     carrier = create(:carrier, subdomain: "at-t")
     user = create(:user, :carrier, carrier:, password: "Super Secret")

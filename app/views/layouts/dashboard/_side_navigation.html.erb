@@ -56,7 +56,7 @@
     <% if current_user.carrier_user? %>
       <%= sidebar_nav("Documentation", docs_path, icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
     <% else %>
-      <%= sidebar_nav("API Documentation", docs_twilio_api_url(host: current_carrier.account_host), icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+      <%= sidebar_nav("API Documentation", docs_twilio_api_path, icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
     <% end %>
   </ul>
 
