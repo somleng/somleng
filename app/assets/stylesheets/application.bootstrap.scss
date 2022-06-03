@@ -1,0 +1,12 @@
+@import "@coreui/coreui/scss/coreui";
+
+#filters {
+  .dropdown-menu {
+    width: 15rem;
+  }
+
+  .form-check-label {
+    cursor: pointer;
+    font-weight: bold;
+  }
+}

@@ -1,67 +1,67 @@
-<div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
-  <div class="c-sidebar-brand">
+<div class="sidebar sidebar-fixed" id="sidebar">
+  <div class="sidebar-brand">
     <%= link_to dashboard_root_path do %>
-      <%= carrier_logo(current_carrier, class: "c-sidebar-brand-full", height: 46) %>
+      <%= carrier_logo(current_carrier, class: "sidebar-brand-full", height: 46) %>
     <% end %>
   </div>
-  <ul class="c-sidebar-nav">
+  <ul class="sidebar-nav">
     <% if policy(:account_settings).show? %>
-      <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fas fa-cloud") %>
+      <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
     <% if policy(:carrier_settings).show? %>
-      <%= sidebar_nav("Carrier Settings", dashboard_carrier_settings_path, icon_class: "fas fa-broadcast-tower") %>
+      <%= sidebar_nav("Carrier Settings", dashboard_carrier_settings_path, icon_class: "fa-solid fa-tower-broadcast") %>
     <% end %>
 
     <% if policy(:account).index? %>
-      <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fas fa-cloud") %>
+      <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
     <% if policy(:inbound_sip_trunk).index? %>
-      <%= sidebar_nav("Inbound SIP Trunks", dashboard_inbound_sip_trunks_path, icon_class: "fas fa-sort-amount-down") %>
+      <%= sidebar_nav("Inbound SIP Trunks", dashboard_inbound_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-down") %>
     <% end %>
 
     <% if policy(:outbound_sip_trunk).index? %>
-      <%= sidebar_nav("Outbound SIP Trunks", dashboard_outbound_sip_trunks_path, icon_class: "fas fa-sort-amount-up") %>
+      <%= sidebar_nav("Outbound SIP Trunks", dashboard_outbound_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-up") %>
     <% end %>
 
     <% if policy(:phone_number).index? %>
-      <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fas fa-hashtag") %>
+      <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-hashtag") %>
     <% end %>
 
     <% if policy(:phone_call).index? %>
-      <%= sidebar_nav("Phone Calls", dashboard_phone_calls_path, icon_class: "fas fa-phone") %>
+      <%= sidebar_nav("Phone Calls", dashboard_phone_calls_path, icon_class: "fa-solid fa-phone") %>
     <% end %>
 
     <% if policy(:carrier_user).index? %>
-      <%= sidebar_nav("Users", dashboard_carrier_users_path, icon_class: "fas fa-users") %>
+      <%= sidebar_nav("Users", dashboard_carrier_users_path, icon_class: "fa-solid fa-users") %>
     <% end %>
 
     <% if policy(:account_membership).index? %>
-      <%= sidebar_nav("Users", dashboard_account_memberships_path, icon_class: "fas fa-users") %>
+      <%= sidebar_nav("Users", dashboard_account_memberships_path, icon_class: "fa-solid fa-users") %>
     <% end %>
 
-    <li class="c-sidebar-nav-item"><hr/></li>
+    <li class="nav-item"><hr/></li>
 
     <% if policy(:import).index? %>
-      <%= sidebar_nav("Imports", dashboard_imports_path, icon_class: "fas fa-file-upload") %>
+      <%= sidebar_nav("Imports", dashboard_imports_path, icon_class: "fa-solid fa-file-upload") %>
     <% end %>
 
     <% if policy(:export).index? %>
-      <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fas fa-file-download") %>
+      <%= sidebar_nav("Exports", dashboard_exports_path, icon_class: "fa-solid fa-file-download") %>
     <% end %>
 
-    <li class="c-sidebar-nav-item"><hr/></li>
+    <li class="nav-item"><hr/></li>
 
     <% if current_user.carrier_user? %>
-      <%= sidebar_nav("Documentation", docs_path, icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+      <%= sidebar_nav("Documentation", docs_path, icon_class: "fa-solid fa-book", link_options: { target: "_blank" }) %>
     <% else %>
-      <%= sidebar_nav("API Documentation", docs_twilio_api_path, icon_class: "fas fa-book", link_options: { target: "_blank" }) %>
+      <%= sidebar_nav("API Documentation", docs_twilio_api_path, icon_class: "fa-solid fa-book", link_options: { target: "_blank" }) %>
     <% end %>
   </ul>
 
   <% if current_user.carrier_user? && current_carrier.restricted? %>
-    <div class="c-sidebar-footer">
+    <div class="sidebar-footer">
       <%= render "shared/restricted_carrier_usage" %>
     </div>
   <% end %>

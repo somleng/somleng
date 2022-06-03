@@ -1,24 +1,18 @@
-<header class="c-header c-header-light c-header-fixed c-header-with-subheader">
-  <button class="c-header-toggler c-class-toggler d-lg-none" type="button" data-target="#sidebar" data-class="c-sidebar-show">
-    <span class="c-header-toggler-icon"></span>
-  </button>
-  <%= link_to dashboard_root_path, class: "c-header-brand d-lg-none c-header-brand-sm-up-center" do %>
-    <%= carrier_logo(current_carrier, class: "c-sidebar-brand-full", height: 46) %>
+<header class="header header-sticky mb-4">
+  <%= link_to dashboard_root_path, class: "header-brand d-lg-none header-brand-sm-up-center" do %>
+    <%= carrier_logo(current_carrier, class: "sidebar-brand-full", height: 46) %>
   <% end %>
-  <button class="c-header-toggler c-class-toggler mfs-3 d-md-down-none" type="button" data-target="#sidebar" data-class="c-sidebar-lg-show" responsive="true">
-    <span class="c-header-toggler-icon"></span>
-  </button>
-  <ul class="c-header-nav mr-auto">
+  <ul class="header-nav mr-auto">
   </ul>
-  <ul class="c-header-nav">
+  <ul class="header-nav">
     <% if policy(:account_session).manage? %>
       <%= render("shared/account_switcher") %>
     <% end %>
 
-    <li class="c-header-nav-item dropdown">
-      <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <div class="c-avatar">
-          <%= image_tag(user_profile_image_url(current_user), class: "c-avatar-img") %>
+    <li class="nav-item dropdown">
+      <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <div class="avatar">
+          <%= image_tag(user_profile_image_url(current_user), class: "avatar-img") %>
         </div>
       </a>
       <div class="dropdown-menu dropdown-menu-right pt-0">
@@ -26,13 +20,13 @@
           <strong>Settings</strong>
         </div>
         <%= link_to(edit_user_registration_path, class: "dropdown-item") do %>
-          <i class="fas fa-user-cog mfe-2"></i> Profile
+          <i class="fa-solid fa-user-cog mfe-2"></i> Profile
         <% end %>
 
         <div class="dropdown-divider"></div>
 
         <%= link_to(destroy_user_session_path, method: :delete, class: "dropdown-item") do %>
-          <i class="fas fa-sign-out-alt mfe-2"></i>
+          <i class="fa-solid fa-sign-out-alt mfe-2"></i>
           Logout
         <% end %>
       </div>

@@ -5,8 +5,8 @@
 
   <% if TwoFactorAuthenticationPolicy.new(pundit_user, @resource.user).destroy? %>
     <div class="btn-group">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-account-membership-actions" data-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-cog"></i>
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-account-membership-actions" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-cog"></i>
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdown-menu-account-membership-actions">
         <%= render("shared/reset_2fa_page_action", user: @resource.user) %>
@@ -22,7 +22,7 @@
 <div class="card-body">
   <% if UserInvitationPolicy.new(pundit_user, @resource.user).update? %>
     <div class="alert alert-info" role="alert">
-      <i class="fas fa-info-circle"></i> The user has not yet accepted their invite.
+      <i class="fa-solid fa-info-circle"></i> The user has not yet accepted their invite.
       <%= link_to("Resend", dashboard_user_invitation_path(@resource.user), method: :patch) %>
     </div>
   <% end %>

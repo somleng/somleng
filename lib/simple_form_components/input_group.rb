@@ -1,13 +1,12 @@
+# custom component requires input group wrapper
 module SimpleFormComponents
   module InputGroup
     def prepend(_wrapper_options = nil)
-      span_tag = content_tag(:span, options[:prepend], class: "input-group-text")
-      template.content_tag(:div, span_tag, class: "input-group-prepend")
+      template.content_tag(:span, options[:prepend], class: "input-group-text")
     end
 
     def append(_wrapper_options = nil)
-      span_tag = content_tag(:span, options[:append], class: "input-group-text")
-      template.content_tag(:div, span_tag, class: "input-group-append")
+      template.content_tag(:span, options[:append], class: "input-group-text")
     end
   end
 end

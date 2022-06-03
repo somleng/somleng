@@ -3,14 +3,14 @@
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), wrapper: :input_group, data: { controller: "sign-up" }) do |f| %>
   <%= recaptcha_v3(action: "sign_up") %>
 
-  <%= f.input :name, autofocus: true, prepend: "<i class='fas fa-user-edit'></i>".html_safe %>
-  <%= f.input :work_email, prepend: "<i class='fas fa-at'></i>".html_safe %>
+  <%= f.input :name, autofocus: true, prepend: "<i class='fa-solid fa-user-edit'></i>".html_safe %>
+  <%= f.input :work_email, prepend: "<i class='fa-solid fa-at'></i>".html_safe %>
 
   <div class="row">
     <div class="col-6">
       <%= f.input(
         :company,
-        prepend: "<i class='fas fa-building'></i>".html_safe,
+        prepend: "<i class='fa-solid fa-building'></i>".html_safe,
         input_html: {
           data: {
             "sign-up-target" => "companyInput",
@@ -20,13 +20,13 @@
       ) %>
     </div>
     <div class="col-6">
-      <%= f.input :country, prepend: "<i class='fas fa-flag'></i>".html_safe %>
+      <%= f.input :country, prepend: "<i class='fa-solid fa-flag'></i>".html_safe %>
     </div>
   </div>
 
   <div class="row">
     <div class="col-6">
-      <%= f.input :website, hint: "Must start with http or https", prepend: "<i class='fas fa-globe'></i>".html_safe %>
+      <%= f.input :website, hint: "Must start with http or https", prepend: "<i class='fa-solid fa-globe'></i>".html_safe %>
     </div>
     <div class="col-6">
       <%=
@@ -48,24 +48,18 @@
       :password,
       hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
       input_html: { autocomplete: "new-password" },
-      prepend: "<i class='fas fa-lock'></i>".html_safe
+      prepend: "<i class='fa-solid fa-lock'></i>".html_safe
     )
   %>
 
   <%= f.input(
       :password_confirmation,
       input_html: { autocomplete: "new-password" },
-      prepend: "<i class='fas fa-lock'></i>".html_safe
+      prepend: "<i class='fa-solid fa-lock'></i>".html_safe
     )
   %>
 
-  <div class="row">
-    <div class="col-6">
-      <%= f.button :submit, "Sign up" %>
-    </div>
-    <div class="col-6 text-right">
-      <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
-    </div>
-  </div>
+  <%= f.button :submit, "Sign up" %>
+  <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
 <% end %>
 

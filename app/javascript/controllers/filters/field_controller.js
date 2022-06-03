@@ -1,7 +1,6 @@
-import { Controller } from "stimulus"
-import $ from "jquery"
-import "bootstrap/js/dist/util"
-import "bootstrap/js/dist/collapse"
+import { Controller } from "@hotwired/stimulus"
+import * as bootstrap from "bootstrap"
+
 
 export default class extends Controller {
   static targets = [ "switcher", "fieldInputsContainer" ]
@@ -11,7 +10,8 @@ export default class extends Controller {
   }
 
   toggle() {
-    $(this.fieldInputsContainerTarget).collapse(this.enabled ? "show" : "hide")
+    let bsCollapse = new bootstrap.Collapse(this.fieldInputsContainerTarget)
+    this.enabled ? bsCollapse.show() : bsCollapse.hide();
     this.fieldInputsContainerTarget.querySelectorAll("input, select, textarea").forEach((element) => {
       element.disabled = !this.enabled
     })

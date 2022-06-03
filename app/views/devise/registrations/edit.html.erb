@@ -3,7 +3,7 @@
 <div class="card-body">
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
     <div class="alert alert-info" role="alert">
-      <i class="fas fa-info-circle"></i> Currently waiting confirmation for: <%= resource.unconfirmed_email %>
+      <i class="fa-solid fa-info-circle"></i> Currently waiting confirmation for: <%= resource.unconfirmed_email %>
     </div>
   <% end %>
 
