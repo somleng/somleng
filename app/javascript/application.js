@@ -5,7 +5,8 @@ import '@fortawesome/fontawesome-free/js/all'
 import * as bootstrap from "bootstrap"
 import '@coreui/coreui';
 require("@rails/activestorage").start()
-
+// import "select2";
+import moment from "moment";
 
 import jquery from 'jquery'
 window.jQuery = jquery
@@ -23,17 +24,17 @@ popoverTriggerList.map(function (popoverTriggerEl) {
   return new bootstrap.Popover(popoverTriggerEl)
 })
 
-$('[data-behavior~=select2-input]').select2({
-  theme: 'bootstrap4',
-})
+// $('[data-behavior~=select2-input]').select2({
+//   theme: 'bootstrap4',
+// })
 
 // This is useful when attempting to render Select2 correctly inside of modals and other small containers.
 // https://select2.org/dropdown#dropdown-placement
 
-$('[data-behavior~=select2-filter-input]').select2({
-  theme: 'bootstrap4',
-  dropdownParent: $("#filters")
-})
+// $('[data-behavior~=select2-filter-input]').select2({
+//   theme: 'bootstrap4',
+//   dropdownParent: $("#filters")
+// })
 
 $('time[data-behavior~=local-time]').each(function() {
   $(this).text(
