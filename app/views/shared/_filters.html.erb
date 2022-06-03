@@ -1,6 +1,6 @@
 <div class="dropdown d-inline" id="filters" data-controller="filters">
-  <button class="btn btn-secondary" data-bs-toggle="dropdown">
-    <i class="fa-solid fa-filter"></i> Filter <span class="badge badge-light" data-filters-target="badge">0</span>
+  <button class="btn btn-outline-info" data-bs-toggle="dropdown">
+    <i class="fa-solid fa-filter"></i> Filter <span class="badge bg-info" data-filters-target="badge">0</span>
   </button>
   <div class="dropdown-menu pb-0">
     <%= form_with url: url_for(action: :index), scope: :filter, method: :get, local: true, builder: FilterFormBuilder do |form| %>

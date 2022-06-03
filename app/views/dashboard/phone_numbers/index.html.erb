@@ -15,8 +15,8 @@
     <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>
   <% end %>
 
-  <%= render("shared/import_action", import_params: { resource_type: "PhoneNumber" }, title: "Import Phone Numbers" ) %>
   <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>
+  <%= render("shared/import_action", import_params: { resource_type: "PhoneNumber" }, title: "Import Phone Numbers" ) %>
   <% if policy(:phone_number).new? %>
     <%= render("shared/new_resource_page_action", path: new_dashboard_phone_number_path) %>
   <% end %>

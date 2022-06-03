@@ -5,7 +5,7 @@
     export: export_params.reverse_merge(filter_params: filter_params)
   ),
   method: :post,
-  class: "btn btn-info",
+  class: "btn btn-outline-info",
   data: { confirm: ("You haven't selected any filters. Are you sure you still want to export all records?" if filter_params.blank?) },
   title: "Export"
   ) do %>

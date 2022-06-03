@@ -75,7 +75,7 @@ module DashboardHelper
       content += " "
       content += content_tag(
         :button,
-        class: "btn btn-secondary btn-sm",
+        class: "btn btn-light btn-sm",
         title: "Reveal",
         data: {
           "action" => "masked-content#reveal",
