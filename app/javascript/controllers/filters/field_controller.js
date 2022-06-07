@@ -10,8 +10,9 @@ export default class extends Controller {
   }
 
   toggle() {
-    let bsCollapse = new bootstrap.Collapse(this.fieldInputsContainerTarget)
+    let bsCollapse = new bootstrap.Collapse(this.fieldInputsContainerTarget, { toggle: false })
     this.enabled ? bsCollapse.show() : bsCollapse.hide();
+
     this.fieldInputsContainerTarget.querySelectorAll("input, select, textarea").forEach((element) => {
       element.disabled = !this.enabled
     })

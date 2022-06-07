@@ -5,39 +5,26 @@ import '@fortawesome/fontawesome-free/js/all'
 import * as bootstrap from "bootstrap"
 import '@coreui/coreui';
 require("@rails/activestorage").start()
-// import "select2";
 import moment from "moment";
-
-import jquery from 'jquery'
-window.jQuery = jquery
-window.$ = jquery
+import Choices from "choices.js";
 
 import "./controllers"
 
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
+document.addEventListener("turbo:load", function() {
+  [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(function (element) {
+    return new bootstrap.Tooltip(element)
+  });
 
-var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-popoverTriggerList.map(function (popoverTriggerEl) {
-  return new bootstrap.Popover(popoverTriggerEl)
-})
+  [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]')).map(function (element) {
+    return new bootstrap.Popover(element)
+  });
 
-// $('[data-behavior~=select2-input]').select2({
-//   theme: 'bootstrap4',
-// })
+  [].slice.call(document.querySelectorAll('time[data-behavior~=local-time]')).map(function (element) {
+    element.textContent = moment(element.textContent).format("lll (Z)")
+  });
+});
 
-// This is useful when attempting to render Select2 correctly inside of modals and other small containers.
-// https://select2.org/dropdown#dropdown-placement
+[].slice.call(document.querySelectorAll('[data-behavior~=choices-input]')).map(function (element) {
+  return new Choices(element);
+});
 
-// $('[data-behavior~=select2-filter-input]').select2({
-//   theme: 'bootstrap4',
-//   dropdownParent: $("#filters")
-// })
-
-$('time[data-behavior~=local-time]').each(function() {
-  $(this).text(
-    moment($(this).text()).format("lll (Z)")
-  )
-})

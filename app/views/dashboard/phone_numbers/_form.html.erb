@@ -20,7 +20,7 @@
                       selected: resource.account_id,
                       disabled: resource.assigned?,
                       prompt: "",
-                      input_html: { data: { behavior: "select2-input", data: resource.account_options_for_select, "allow-clear" => true, placeholder: "Select an Account" } } %>
+                      input_html: { data: { behavior: "choices-input", data: resource.account_options_for_select, "allow-clear" => true, placeholder: "Select an Account" } } %>
       </div>
     </div>
 

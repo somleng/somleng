@@ -3,29 +3,42 @@ import $ from "jquery";
 import "daterangepicker/daterangepicker.js"
 import moment from "moment"
 
+import { easepick } from '@easepick/bundle';
+import { RangePlugin } from '@easepick/range-plugin';
+
 const FORMAT = "DD/MM/YYYY"
 
 export default class extends Controller {
   static targets = ["dateRangePicker", "fromDate", "toDate"]
 
   connect() {
-    $(this.dateRangePickerTarget).daterangepicker({
-      autoApply: true,
-      opens: 'left',
-      locale: {
-        format: FORMAT,
-        separator: " to ",
-        cancelLabel: 'Reset'
-      },
-      ranges: {
-        'Today': [moment(), moment()],
-        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'This Month': [moment().startOf('month'), moment().endOf('month')],
-        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-      }
+    new easepick.create({
+      element: this.dateRangePickerTarget,
+      css: [
+        'https://cdn.jsdelivr.net/npm/@easepick/core@1.2.0/dist/index.css',
+        'https://cdn.jsdelivr.net/npm/@easepick/range-plugin@1.2.0/dist/index.css',
+      ],
+      plugins: [RangePlugin],
+      RangePlugin: { tooltip: true },
+      zIndex: 100
     })
+    // $(this.dateRangePickerTarget).daterangepicker({
+    //   autoApply: true,
+    //   opens: 'left',
+    //   locale: {
+    //     format: FORMAT,
+    //     separator: " to ",
+    //     cancelLabel: 'Reset'
+    //   },
+    //   ranges: {
+    //     'Today': [moment(), moment()],
+    //     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    //     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    //     'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    //   }
+    // })
 
     // after calling daterangepicker function to prevent closing parent Bootstrap dropdown
     $("div.daterangepicker").on("click", (e) => {
