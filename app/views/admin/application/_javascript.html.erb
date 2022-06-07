@@ -19,13 +19,11 @@ by providing a `content_for(:javascript)` block.
   <% end %>
 <% end %>
 
-<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
 <script type="application/javascript">
-  jQuery(function() {
-    $('time[data-behavior~=local-time]').each(function() {
-      $(this).text(
-        moment($(this).text()).format("lll (Z)")
-      )
-    })
+  document.addEventListener("DOMContentLoaded", function() {
+    [].slice.call(document.querySelectorAll('time[data-behavior~=local-time]')).map(function (element) {
+      element.textContent = moment(element.textContent).format("lll (Z)")
+    });
   })
 </script>

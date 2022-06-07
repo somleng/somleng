@@ -1,73 +1,39 @@
 import { Controller } from "@hotwired/stimulus"
-import $ from "jquery";
-import "daterangepicker/daterangepicker.js"
 import moment from "moment"
 
-import { easepick } from '@easepick/bundle';
-import { RangePlugin } from '@easepick/range-plugin';
-
-const FORMAT = "DD/MM/YYYY"
+import AirDatepicker from 'air-datepicker';
+import localeEn from 'air-datepicker/locale/en';
 
 export default class extends Controller {
   static targets = ["dateRangePicker", "fromDate", "toDate"]
 
   connect() {
-    new easepick.create({
-      element: this.dateRangePickerTarget,
-      css: [
-        'https://cdn.jsdelivr.net/npm/@easepick/core@1.2.0/dist/index.css',
-        'https://cdn.jsdelivr.net/npm/@easepick/range-plugin@1.2.0/dist/index.css',
-      ],
-      plugins: [RangePlugin],
-      RangePlugin: { tooltip: true },
-      zIndex: 100
-    })
-    // $(this.dateRangePickerTarget).daterangepicker({
-    //   autoApply: true,
-    //   opens: 'left',
-    //   locale: {
-    //     format: FORMAT,
-    //     separator: " to ",
-    //     cancelLabel: 'Reset'
-    //   },
-    //   ranges: {
-    //     'Today': [moment(), moment()],
-    //     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    //     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    //     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    //     'This Month': [moment().startOf('month'), moment().endOf('month')],
-    //     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    //   }
-    // })
+    const picker = new AirDatepicker(
+      this.dateRangePickerTarget,
+      {
+        container: "#filters",
+        locale: localeEn,
+        range: true,
+        buttons: ["clear"],
+        toggleSelected: false,
+        multipleDatesSeparator: " to ",
+        autoClose: true,
+        dateFormat: "dd/MM/yyyy",
+        selectedDates: [
+          moment(this.fromDateTarget.value, "DD/MM/YYYY"),
+          moment(this.toDateTarget.value, "DD/MM/YYYY")
+        ],
+        onSelect: ({formattedDate}) => {
+          if (formattedDate.length == 1) { return; }
 
-    // after calling daterangepicker function to prevent closing parent Bootstrap dropdown
-    $("div.daterangepicker").on("click", (e) => {
-      e.stopPropagation()
-    })
+          const [fromDate, toDate] = formattedDate;
+          this.fromDateTarget.value = fromDate
+          this.toDateTarget.value   = toDate
+        }
+      }
+    );
 
-    if(this.validateDates(this.fromDateTarget.value, this.toDateTarget.value)) {
-      let pickerData = $(this.dateRangePickerTarget).data("daterangepicker")
-
-      pickerData.setStartDate(this.fromDateTarget.value)
-      pickerData.setEndDate(this.toDateTarget.value)
-    } else {
-      this.dateRangePickerTarget.value = ""
-    }
-
-    $(this.dateRangePickerTarget).on("apply.daterangepicker", (event, picker) => {
-      this.fromDateTarget.value = picker.startDate.format(FORMAT)
-      this.toDateTarget.value   = picker.endDate.format(FORMAT)
-    })
-
-    $(this.dateRangePickerTarget).on("cancel.daterangepicker", () => {
-      this.dateRangePickerTarget.value = ""
-
-      $(this.fromDateTarget).remove()
-      $(this.toDateTarget).remove()
-    })
-  }
-
-  validateDates(fromDate, toDate){
-    return moment(fromDate, FORMAT).isValid() && moment(toDate, FORMAT).isValid()
+    // after calling AirDatepicker function to prevent closing parent Bootstrap dropdown
+    picker.$datepicker.addEventListener("click", (e) => e.stopPropagation());
   }
 }

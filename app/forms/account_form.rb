@@ -52,12 +52,7 @@ class AccountForm
   end
 
   def outbound_sip_trunk_options_for_select
-    carrier.outbound_sip_trunks.map do |outbound_sip_trunk|
-      {
-        id: outbound_sip_trunk.id,
-        text: outbound_sip_trunk.name
-      }
-    end
+    carrier.outbound_sip_trunks.map { |item| [item.name, item.id] }
   end
 
   private

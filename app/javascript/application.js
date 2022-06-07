@@ -24,7 +24,7 @@ document.addEventListener("turbo:load", function() {
   });
 });
 
+// It doesn't work with Turbo's events
 [].slice.call(document.querySelectorAll('[data-behavior~=choices-input]')).map(function (element) {
   return new Choices(element);
 });
-
