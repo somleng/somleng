@@ -33,7 +33,7 @@ module Dashboard
       @resource.account_membership = record
       @resource.save
 
-      respond_with(:dashboard, @resource)
+      respond_with(:dashboard, @resource, status: :see_other)
     end
 
     def destroy

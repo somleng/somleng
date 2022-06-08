@@ -8,7 +8,7 @@ RSpec.configure do |config|
     Capybara.server = :puma, { Silent: true }
   end
 
-  config.before(:each, type: :system) do
+  config.before(:each, type: :system, js: true) do
     driven_by :selenium_chrome_headless
   end
 

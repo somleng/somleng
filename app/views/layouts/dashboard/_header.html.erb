@@ -25,7 +25,7 @@
 
         <div class="dropdown-divider"></div>
 
-        <%= link_to(destroy_user_session_path, method: :delete, class: "dropdown-item") do %>
+        <%= link_to(destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item") do %>
           <i class="fa-solid fa-sign-out-alt mfe-2"></i>
           Logout
         <% end %>

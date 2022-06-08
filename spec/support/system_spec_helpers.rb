@@ -7,6 +7,10 @@ module SystemSpecHelpers
   def set_app_host(carrier)
     Capybara.app_host = "http://#{carrier.subdomain_host}"
   end
+
+  def accept_confirm(*)
+    Capybara.current_driver == :rack_test ? yield : super
+  end
 end
 
 RSpec.configure do |config|

@@ -73,9 +73,9 @@ RSpec.describe "Account Memberships" do
 
     carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
-    click_button("Delete")
-
-    page.driver.browser.switch_to.alert.accept
+    accept_confirm do
+      click_link("Delete")
+    end
 
     expect(page).to have_content("Account membership was successfully destroyed")
     expect(page).not_to have_content("Bob Chann")
@@ -94,7 +94,7 @@ RSpec.describe "Account Memberships" do
     expect(page).to have_content("The user has not yet accepted their invite.")
 
     perform_enqueued_jobs do
-      click_button("Resend")
+      click_link("Resend")
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")

@@ -75,8 +75,6 @@ end
 
 group :development do
   gem "foreman", require: false
-  gem "spring"
-  gem "spring-commands-rspec"
   gem "squasher", require: false
 end
 

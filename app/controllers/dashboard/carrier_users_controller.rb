@@ -21,7 +21,7 @@ module Dashboard
       respond_with(
         @resource,
         notice: "An invitation email has been sent to #{@resource.email}.",
-        location: dashboard_carrier_user_path(@resource)
+        location: -> { dashboard_carrier_user_path(@resource) }
       )
     end
 
@@ -34,7 +34,7 @@ module Dashboard
       @resource.user = record
       @resource.save
 
-      respond_with(:dashboard, @resource)
+      respond_with(@resource, location: dashboard_carrier_user_path(@resource))
     end
 
     def destroy

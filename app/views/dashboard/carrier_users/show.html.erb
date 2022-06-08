@@ -23,7 +23,7 @@
   <% if UserInvitationPolicy.new(pundit_user, @resource).update? %>
     <div class="alert alert-info" role="alert">
       <i class="fa-solid fa-info-circle"></i> The user has not yet accepted their invite.
-      <%= link_to("Resend", dashboard_user_invitation_path(@resource.id), method: :patch) %>
+      <%= link_to("Resend", dashboard_user_invitation_path(@resource.id), data: { turbo_method: :patch }) %>
     </div>
   <% end %>
 

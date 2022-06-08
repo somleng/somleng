@@ -4,7 +4,8 @@ module Dashboard
       record.invite!(current_user)
       redirect_back(
         fallback_location: dashboard_root_url,
-        notice: "An invitation email has been sent to #{record.email}."
+        notice: "An invitation email has been sent to #{record.email}.",
+        status: :see_other
       )
     end
 
