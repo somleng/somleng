@@ -3,7 +3,7 @@
   method: :delete,
   class: "dropdown-item",
   title: "The user will be prompted to reset their 2FA next time they log in",
-  data: { toggle: "tooltip", placement: "top", confirm: "Are you sure?" }
+  data: { turbo_method: :delete, toggle: "tooltip", placement: "top", turbo_confirm: "Are you sure?" }
 ) do %>
   <i class="fa-solid fa-lock-open mfe-2"></i> Reset 2FA
 <% end %>

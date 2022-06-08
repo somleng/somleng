@@ -4,9 +4,8 @@
   dashboard_exports_path(
     export: export_params.reverse_merge(filter_params: filter_params)
   ),
-  method: :post,
   class: "btn btn-outline-info",
-  data: { confirm: ("You haven't selected any filters. Are you sure you still want to export all records?" if filter_params.blank?) },
+  data: { turbo_method: :post, turbo_confirm: ("You haven't selected any filters. Are you sure you still want to export all records?" if filter_params.blank?) },
   title: "Export"
   ) do %>
   <i class="fa-solid fa-file-download"></i>

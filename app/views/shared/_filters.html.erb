@@ -1,17 +1,17 @@
-<div class="dropdown d-inline" id="filters" data-controller="filters">
+<div class="btn-group dropstart" id="filters" data-controller="filters">
   <button class="btn btn-outline-info" data-bs-auto-close="outside" data-bs-toggle="dropdown">
     <i class="fa-solid fa-filter"></i> Filter <span class="badge bg-info" data-filters-target="badge">0</span>
   </button>
-  <div class="dropdown-menu pb-0">
+  <ul class="dropdown-menu pb-0 dropdown-menu-end">
     <%= form_with url: url_for(action: :index), scope: :filter, method: :get, local: true, builder: FilterFormBuilder do |form| %>
-      <div class="px-2 clearfix">
+      <li class="px-2 clearfix">
         <%= link_to "Clear", url_for(action: :index), class: "btn btn-secondary float-left" %>
         <%= form.submit "Done", name: nil, class: "btn btn-primary float-right" %>
-      </div>
+      </li>
 
-      <div class="dropdown-divider mb-0"></div>
+      <li class="dropdown-divider mb-0"></li>
 
       <%= yield form %>
     <% end %>
-  </div>
+  </ul>
 </div>

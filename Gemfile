@@ -22,6 +22,7 @@ gem "aws-sdk-sesv2"
 gem "aws-sdk-sqs"
 gem "bootstrap-email"
 gem "country_select"
+gem "cssbundling-rails"
 gem "cursor_paginator"
 gem "devise"
 gem "devise_invitable"
@@ -42,7 +43,7 @@ gem "phony"
 gem "puma"
 gem "pundit"
 gem "recaptcha"
-gem "responders"
+gem "responders", github: "heartcombo/responders"
 gem "rqrcode"
 gem "sassc-rails"
 gem "sentry-rails"
@@ -73,10 +74,10 @@ group :development, :test do
 end
 
 group :development do
+  gem "foreman", require: false
   gem "spring"
   gem "spring-commands-rspec"
   gem "squasher", require: false
-  gem "foreman", require: false
 end
 
 group :test do

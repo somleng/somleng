@@ -16,7 +16,7 @@ export default class extends Controller {
         range: true,
         buttons: ["clear"],
         toggleSelected: false,
-        multipleDatesSeparator: " to ",
+        multipleDatesSeparator: "-",
         autoClose: true,
         dateFormat: "dd/MM/yyyy",
         selectedDates: [

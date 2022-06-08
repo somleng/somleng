@@ -9,6 +9,14 @@ GIT
       rotp (~> 6.0)
 
 GIT
+  remote: https://github.com/heartcombo/responders.git
+  revision: 161f205b649489d740821425560eecd355fa02be
+  specs:
+    responders (3.0.1)
+      actionpack (>= 5.2)
+      railties (>= 5.2)
+
+GIT
   remote: https://github.com/zipmark/rspec_api_documentation.git
   revision: d3892cc7388460a98476734963face5a7a2ac158
   specs:
@@ -192,6 +200,8 @@ GEM
     crass (1.0.6)
     css_parser (1.11.0)
       addressable
+    cssbundling-rails (1.1.0)
+      railties (>= 6.0.0)
     cursor_paginator (0.1.0)
       activesupport (>= 3)
     datetime_picker_rails (0.0.7)
@@ -430,9 +440,6 @@ GEM
     regexp_parser (2.3.0)
     request_store (1.5.1)
       rack (>= 1.4)
-    responders (3.0.1)
-      actionpack (>= 5.0)
-      railties (>= 5.0)
     rexml (3.2.5)
     rotp (6.2.0)
     rqrcode (2.1.1)
@@ -602,6 +609,7 @@ DEPENDENCIES
   bootstrap-email
   capybara
   country_select
+  cssbundling-rails
   cursor_paginator
   devise
   devise-two-factor!
@@ -629,7 +637,7 @@ DEPENDENCIES
   pundit
   rails (~> 7.0.0)
   recaptcha
-  responders
+  responders!
   rqrcode
   rspec-rails
   rspec_api_documentation!

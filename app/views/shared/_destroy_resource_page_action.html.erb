@@ -1,3 +1,3 @@
-<%= link_to(path, method: :delete, class: "btn btn-outline-danger", title: "Delete", data: { confirm: "This action cannot be undone. Are you sure you want to continue?" }) do %>
+<%= button_to(path, method: :delete, class: "btn btn-outline-danger", title: "Delete", form_class: "d-inline", form: { data: { turbo_confirm: "This action cannot be undone. Are you sure you want to continue?" }}) do %>
   <i class="fa-solid fa-trash-alt"></i>
 <% end %>
