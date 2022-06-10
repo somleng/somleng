@@ -1,6 +1,6 @@
 <h2>Resend confirmation instructions</h2>
 
-<%= simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+<%= simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, data: { turbo: false } }) do |f| %>
   <% if resource.errors[:confirmation_token].any? %>
     <div class="alert alert-danger" role="alert">
       <%= f.full_error :confirmation_token %>

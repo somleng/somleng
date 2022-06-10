@@ -7,7 +7,7 @@
     </div>
   <% end %>
 
-  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, data: { turbo: false } }) do |f| %>
     <%= f.input :name, required: false, autofocus: true %>
     <%= f.input :email %>
 
