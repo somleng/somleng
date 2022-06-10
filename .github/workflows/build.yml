@@ -59,6 +59,7 @@ jobs:
 
       - name: Run Specs
         run: |
+          bundle exec rails spec:prepare
           bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
       - name: Run codacy-coverage-reporter
