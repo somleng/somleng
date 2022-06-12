@@ -26,18 +26,14 @@ module DashboardHelper
     end
   end
 
-  def sidebar_nav(text, path, icon_class: nil, link_options: {})
+  def sidebar_nav(text, path, icon_class:, link_options: {})
     content_tag(:li, class: "nav-item") do
       sidebar_nav_class = "nav-link"
       sidebar_nav_class += " c-active" if request.path == path
       link_to(path, class: sidebar_nav_class, **link_options) do
-        if icon_class
-          content = "".html_safe
-          content += content_tag(:i, nil, class: "nav-icon #{icon_class}")
-          content + " " + text
-        else
-          text
-        end
+        content = "".html_safe
+        content += content_tag(:i, nil, class: "nav-icon #{icon_class}")
+        content + " " + text
       end
     end
   end
