@@ -3,10 +3,11 @@
 import "@hotwired/turbo-rails"
 import '@fortawesome/fontawesome-free/js/all'
 import * as bootstrap from "bootstrap"
-import '@coreui/coreui';
+import * as coreui from '@coreui/coreui';
 require("@rails/activestorage").start()
 import moment from "moment";
 import Choices from "choices.js";
+import "simplebar";
 
 import "./controllers"
 
@@ -17,6 +18,10 @@ document.addEventListener("turbo:load", function() {
 
   [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]')).map(function (element) {
     return new bootstrap.Popover(element)
+  });
+
+  [].slice.call(document.querySelectorAll('[data-coreui="navigation"]')).map(function (element) {
+    return new coreui.Navigation(element);
   });
 
   [].slice.call(document.querySelectorAll('time[data-behavior~=local-time]')).map(function (element) {

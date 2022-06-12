@@ -4,7 +4,7 @@
       <%= carrier_logo(current_carrier, class: "sidebar-brand-full", height: 46) %>
     <% end %>
   </div>
-  <ul class="sidebar-nav">
+  <ul class="sidebar-nav" data-simplebar>
     <% if policy(:account_settings).show? %>
       <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
@@ -54,9 +54,18 @@
     <li class="nav-item"><hr/></li>
 
     <% if current_user.carrier_user? %>
-      <%= sidebar_nav("Documentation", docs_path, icon_class: "fa-solid fa-book", link_options: { target: "_blank" }) %>
+      <li class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-book"></i> Documentation
+        </a>
+
+        <ul class="nav-group-items">
+          <%= sidebar_nav("Carrier Docs", docs_path, icon_class: "fa-solid fa-arrow-up-right-from-square", link_options: { target: "_blank" }) %>
+          <%= sidebar_nav("Account API Docs", docs_twilio_api_path, icon_class: "fa-solid fa-arrow-up-right-from-square", link_options: { target: "_blank" }) %>
+        </ul>
+      </li>
     <% else %>
-      <%= sidebar_nav("API Documentation", docs_twilio_api_path, icon_class: "fa-solid fa-book", link_options: { target: "_blank" }) %>
+      <%= sidebar_nav("API Documentation", docs_twilio_api_path, icon_class: "fa-solid fa-arrow-up-right-from-square", link_options: { target: "_blank" }) %>
     <% end %>
   </ul>
 

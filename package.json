@@ -13,10 +13,11 @@
     "esbuild": "^0.14.42",
     "moment": "^2.29.1",
     "sass": "^1.52.2",
+    "simplebar": "^5.3.8",
     "url-slug": "^3.0.4"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
-    "build:css": "sass ./app/assets/stylesheets/application.bootstrap.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
+    "build:css": "sass ./app/assets/stylesheets/application.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
   }
 }
