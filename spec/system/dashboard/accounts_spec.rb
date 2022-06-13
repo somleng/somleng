@@ -115,7 +115,7 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("The account owner has not yet accepted their invite.")
 
     perform_enqueued_jobs do
-      click_link("Resend")
+      click_on("Resend")
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
@@ -134,7 +134,7 @@ RSpec.describe "Accounts" do
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
-    click_link "Delete"
+    click_on "Delete"
 
     expect(page).not_to have_content("Rocket Rides")
   end

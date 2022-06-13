@@ -27,7 +27,7 @@
   <% end %>
 
   <% if phone_number_policy.release? %>
-    <%= link_to(release_dashboard_phone_number_path(@resource), class: "btn btn-warning", title: "Release", data: { turbo_method: :patch, turbo_confirm: "This action cannot be undone. Are you sure you want to release the number?" }) do %>
+    <%= button_to(release_dashboard_phone_number_path(@resource), class: "btn btn-warning", title: "Release", form_class: "d-inline", method: :patch, form: { data: { turbo_confirm: "This action cannot be undone. Are you sure you want to release the number?" }}) do %>
       <i class="fa-solid fa-unlink"></i>
     <% end %>
   <% end %>

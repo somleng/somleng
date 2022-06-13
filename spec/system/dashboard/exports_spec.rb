@@ -11,7 +11,7 @@ RSpec.describe "Exports" do
     carrier_sign_in(user)
     visit dashboard_accounts_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
     perform_enqueued_jobs do
-      click_link("Export")
+      click_on("Export")
     end
 
     expect(page).to have_current_path(dashboard_accounts_path, ignore_query: true)
@@ -40,7 +40,7 @@ RSpec.describe "Exports" do
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path
     perform_enqueued_jobs do
-      click_link("Export")
+      click_on("Export")
     end
     within(".alert") do
       expect(page).to have_content("Your export is being processed")

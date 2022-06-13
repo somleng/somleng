@@ -1,8 +1,11 @@
-<%= link_to(
+<%= button_to(
   dashboard_two_factor_authentication_path(user),
-  class: "dropdown-item",
+  class: "btn btn-outline-danger",
+  form_class: "d-inline",
   title: "The user will be prompted to reset their 2FA next time they log in",
-  data: { turbo_method: :delete, toggle: "tooltip", placement: "top", turbo_confirm: "Are you sure?" }
-) do %>
+  data: { toggle: "tooltip", placement: "top" },
+  method: :delete,
+  form: { data: { turbo_confirm: "Are you sure?" }}
+  ) do %>
   <i class="fa-solid fa-lock-open mfe-2"></i> Reset 2FA
 <% end %>

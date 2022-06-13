@@ -13,7 +13,7 @@ module UserAuthorization
     before_action :authorize_user!
     after_action :verify_authorized
     rescue_from Pundit::NotAuthorizedError do
-      redirect_to dashboard_root_path, alert: "You are not authorized to perform this action"
+      redirect_to dashboard_root_path, alert: "You are not authorized to perform this action", status: :see_other
     end
   end
 
@@ -27,7 +27,7 @@ module UserAuthorization
     return if current_carrier == current_user.carrier
 
     sign_out(current_user)
-    redirect_to(new_user_session_url(host: current_carrier.subdomain_host))
+    redirect_to(new_user_session_url(host: current_carrier.subdomain_host), status: :see_other)
   end
 
   def select_account_membership!
@@ -36,7 +36,7 @@ module UserAuthorization
 
     if current_user.account_memberships.blank?
       sign_out(current_user)
-      redirect_to(new_user_session_path, alert: "You are not a member of any accounts")
+      redirect_to(new_user_session_path, alert: "You are not a member of any accounts", status: :see_other)
     else
       current_user.update!(current_account_membership: current_user.account_memberships.first!)
     end

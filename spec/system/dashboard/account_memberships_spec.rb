@@ -74,7 +74,7 @@ RSpec.describe "Account Memberships" do
     carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
     accept_confirm do
-      click_link("Delete")
+      click_on("Delete")
     end
 
     expect(page).to have_content("Account membership was successfully destroyed")
@@ -94,7 +94,7 @@ RSpec.describe "Account Memberships" do
     expect(page).to have_content("The user has not yet accepted their invite.")
 
     perform_enqueued_jobs do
-      click_link("Resend")
+      click_on("Resend")
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
@@ -109,7 +109,7 @@ RSpec.describe "Account Memberships" do
 
     carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
-    click_link("Reset 2FA")
+    click_on("Reset 2FA")
 
     expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
     expect(page).to have_current_path(dashboard_account_membership_path(account_membership))
