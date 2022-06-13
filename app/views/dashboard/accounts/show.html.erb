@@ -12,7 +12,7 @@
   <% if UserInvitationPolicy.new(pundit_user, @resource.owner).update? %>
     <div class="alert alert-info" role="alert">
       <i class="fa-solid fa-info-circle"></i> The account owner has not yet accepted their invite.
-      <%= button_to("Resend", dashboard_user_invitation_path(@resource.owner), class: "btn btn-link", form_class: "d-inline", method: :patch) %>
+      <%= button_to("Resend", dashboard_user_invitation_path(@resource.owner), class: "btn btn-link p-0", form_class: "d-inline", method: :patch) %>
     </div>
   <% end %>
 
