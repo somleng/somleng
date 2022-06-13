@@ -22,6 +22,7 @@ gem "aws-sdk-sesv2"
 gem "aws-sdk-sqs"
 gem "bootstrap-email"
 gem "country_select"
+gem "cssbundling-rails"
 gem "cursor_paginator"
 gem "devise"
 gem "devise_invitable"
@@ -30,7 +31,7 @@ gem "dry-validation"
 gem "enumerize"
 gem "faraday"
 gem "http"
-gem "importmap-rails"
+gem "jsbundling-rails"
 gem "jsonapi-serializer"
 gem "jwt"
 gem "kaminari"
@@ -42,7 +43,7 @@ gem "phony"
 gem "puma"
 gem "pundit"
 gem "recaptcha"
-gem "responders"
+gem "responders", github: "heartcombo/responders"
 gem "rqrcode"
 gem "sassc-rails"
 gem "sentry-rails"
@@ -51,10 +52,10 @@ gem "shoryuken"
 gem "show_for"
 gem "simple_form"
 gem "skylight"
-gem "turbolinks"
+gem "stimulus-rails"
+gem "turbo-rails"
 gem "twilio-ruby"
 gem "tzinfo-data"
-gem "webpacker"
 
 # https://github.com/tinfoil/devise-two-factor/issues/192#issuecomment-1022504126
 gem "devise-two-factor", github: "cybersecuricy/devise-two-factor", branch: "securicy-fixes-rails-7"
@@ -73,8 +74,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "spring"
-  gem "spring-commands-rspec"
+  gem "foreman", require: false
   gem "squasher", require: false
 end
 

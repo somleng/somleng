@@ -5,8 +5,8 @@
 
   <% if display_dropdown %>
     <div class="btn-group">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-phone-number-actions" data-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-cog"></i>
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-phone-number-actions" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-cog"></i>
       </button>
 
       <div class="dropdown-menu" aria-labelledby="dropdown-menu-phone-number-actions">
@@ -14,7 +14,7 @@
           edit_dashboard_phone_number_configuration_path(@resource),
           class: "dropdown-item"
         ) do %>
-          <i class="fas fa-tools mfe-2"></i> Configure
+          <i class="fa-solid fa-tools mfe-2"></i> Configure
         <% end %>
       </div>
     </div>
@@ -27,8 +27,8 @@
   <% end %>
 
   <% if phone_number_policy.release? %>
-    <%= link_to(release_dashboard_phone_number_path(@resource), method: :patch, class: "btn btn-warning", title: "Release", data: { confirm: "This action cannot be undone. Are you sure you want to release the number?" }) do %>
-      <i class="fas fa-unlink"></i>
+    <%= link_to(release_dashboard_phone_number_path(@resource), class: "btn btn-warning", title: "Release", data: { turbo_method: :patch, turbo_confirm: "This action cannot be undone. Are you sure you want to release the number?" }) do %>
+      <i class="fa-solid fa-unlink"></i>
     <% end %>
   <% end %>
 

@@ -11,8 +11,8 @@
 <div class="card-body">
   <% if UserInvitationPolicy.new(pundit_user, @resource.owner).update? %>
     <div class="alert alert-info" role="alert">
-      <i class="fas fa-info-circle"></i> The account owner has not yet accepted their invite.
-      <%= link_to("Resend", dashboard_user_invitation_path(@resource.owner), method: :patch) %>
+      <i class="fa-solid fa-info-circle"></i> The account owner has not yet accepted their invite.
+      <%= link_to("Resend", dashboard_user_invitation_path(@resource.owner), data: { turbo_method: :patch }) %>
     </div>
   <% end %>
 

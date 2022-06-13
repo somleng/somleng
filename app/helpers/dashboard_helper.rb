@@ -7,7 +7,7 @@ module DashboardHelper
   def page_title(title:, subtitle: nil, &block)
     content_for(:page_title, title)
 
-    content_tag(:div, class: "card-header") do
+    content_tag(:div, class: "card-header d-flex justify-content-between align-items-center") do
       content = "".html_safe
       content += content_tag(:span, title, class: "h2")
 
@@ -27,12 +27,12 @@ module DashboardHelper
   end
 
   def sidebar_nav(text, path, icon_class:, link_options: {})
-    content_tag(:li, class: "c-sidebar-nav-item") do
-      sidebar_nav_class = "c-sidebar-nav-link"
+    content_tag(:li, class: "nav-item") do
+      sidebar_nav_class = "nav-link"
       sidebar_nav_class += " c-active" if request.path == path
       link_to(path, class: sidebar_nav_class, **link_options) do
         content = "".html_safe
-        content += content_tag(:i, nil, class: "c-sidebar-nav-icon #{icon_class}")
+        content += content_tag(:i, nil, class: "nav-icon #{icon_class}")
         content + " " + text
       end
     end
@@ -40,7 +40,7 @@ module DashboardHelper
 
   def external_link_to(text, *args)
     link_to(*args) do
-      "".html_safe + text + " " + content_tag(:i, nil, class: "fas fa-external-link-alt")
+      "".html_safe + text + " " + content_tag(:i, nil, class: "fa-solid fa-external-link-alt")
     end
   end
 
@@ -75,14 +75,14 @@ module DashboardHelper
       content += " "
       content += content_tag(
         :button,
-        class: "btn btn-secondary btn-sm",
+        class: "btn btn-light btn-sm",
         title: "Reveal",
         data: {
           "action" => "masked-content#reveal",
           "masked-content-target" => "revealButton"
         }
       ) do
-        content_tag(:i, nil, class: "fas fa-eye")
+        content_tag(:i, nil, class: "fa-solid fa-eye")
       end
     end
   end

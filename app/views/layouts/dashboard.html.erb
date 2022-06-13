@@ -9,35 +9,26 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-
-    <%= javascript_importmap_tags %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
     <%= render "shared/favicon" %>
   </head>
 
-  <body class="c-app">
+  <body>
     <%= render "layouts/dashboard/side_navigation" %>
 
-    <div class="c-wrapper">
+    <div class="wrapper">
       <%= render "layouts/dashboard/header" %>
 
-      <div class="c-body">
-        <main class="c-main">
-          <div class="container-fluid">
-            <%= render "shared/alerts" %>
+      <div class="body">
+        <div class="container-lg">
+          <%= render "shared/alerts" %>
 
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="card">
-                  <%= yield %>
-                </div>
-              </div>
-            </div>
+          <div class="card">
+            <%= yield %>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   </body>

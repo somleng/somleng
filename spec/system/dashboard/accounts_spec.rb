@@ -71,7 +71,7 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("can't be blank")
   end
 
-  it "Update an account", :js do
+  it "Update an account" do
     user = create(:user, :carrier)
     account = create(
       :account,

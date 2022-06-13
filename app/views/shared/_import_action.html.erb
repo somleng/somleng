@@ -1,5 +1,5 @@
-<button type="button" class="btn btn-primary" title="Import" data-toggle="modal" data-target="#importModal">
-  <i class="fas fa-file-upload"></i>
+<button type="button" class="btn btn-outline-primary" title="Import" data-bs-toggle="modal" data-bs-target="#importModal">
+  <i class="fa-solid fa-file-upload"></i>
 </button>
 
 <%= simple_form_for [:dashboard, Import.new(import_params)], html: { class: "d-inline-block" } do |f| %>
@@ -8,16 +8,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="importModalLabel"><%= title %></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <%= f.input :resource_type, as: :hidden %>
           <%= f.input :file, input_html: { accept: "text/csv", direct_upload: true }, hint: link_to("Sample CSV file", asset_url("phone_number_import_template.csv"), download: "phone_number_import.csv") %>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <%= f.button :submit, "Upload" %>
         </div>
       </div>

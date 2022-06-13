@@ -73,7 +73,9 @@ RSpec.describe "Account Memberships" do
 
     carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
-    click_link("Delete")
+    accept_confirm do
+      click_link("Delete")
+    end
 
     expect(page).to have_content("Account membership was successfully destroyed")
     expect(page).not_to have_content("Bob Chann")

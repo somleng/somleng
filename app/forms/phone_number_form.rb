@@ -44,12 +44,7 @@ class PhoneNumberForm
   end
 
   def account_options_for_select
-    carrier.accounts.map do |account|
-      {
-        id: account.id,
-        text: account.name
-      }
-    end
+    carrier.accounts.map { |account| [account.name, account.id] }
   end
 
   private

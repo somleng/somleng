@@ -3,11 +3,11 @@
 <div class="card-body">
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
     <div class="alert alert-info" role="alert">
-      <i class="fas fa-info-circle"></i> Currently waiting confirmation for: <%= resource.unconfirmed_email %>
+      <i class="fa-solid fa-info-circle"></i> Currently waiting confirmation for: <%= resource.unconfirmed_email %>
     </div>
   <% end %>
 
-  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, data: { turbo: false } }) do |f| %>
     <%= f.input :name, required: false, autofocus: true %>
     <%= f.input :email %>
 

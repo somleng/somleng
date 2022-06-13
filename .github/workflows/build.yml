@@ -14,7 +14,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:12
+        image: postgres:13
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ""
@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: '16.x'
 
       - name: Get yarn cache directory
         id: get-yarn-cache-dir
@@ -53,12 +53,12 @@ jobs:
 
       - name: Install yarn dependencies
         run: yarn install
-
       - name: Setup DB
         run: bundle exec rails db:create db:schema:load
 
       - name: Run Specs
         run: |
+          bundle exec rails spec:prepare
           bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
       - name: Run codacy-coverage-reporter

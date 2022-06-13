@@ -1,6 +1,5 @@
+import { Controller } from "@hotwired/stimulus"
 import urlSlug from 'url-slug'
-
-import { Controller } from "stimulus"
 
 export default class extends Controller {
   static targets = [ "companyInput", "subdomainInput" ]
