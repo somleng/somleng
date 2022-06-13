@@ -12,7 +12,7 @@ RSpec.describe "Account Switcher" do
 
     within("#accountSwitcher") do
       click_button("Rocket Rides")
-      click_link("Bob's Bananas")
+      click_on("Bob's Bananas")
     end
 
     within("#accountSettings") do

@@ -15,7 +15,8 @@ class DashboardController < ApplicationController
 
     redirect_to(
       new_dashboard_two_factor_authentication_path,
-      alert: "Two Factor Authentication Required"
+      alert: "Two Factor Authentication Required",
+      status: :see_other
     )
   end
 

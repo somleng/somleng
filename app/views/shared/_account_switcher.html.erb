@@ -12,8 +12,8 @@
 
       <% current_user.account_memberships.includes(:account).each do |account_membership| %>
         <% unless account_membership == current_account_membership %>
-          <%= link_to(dashboard_account_session_path(account_membership: { id: account_membership.id }), data: { turbo_method: :post }, class: "dropdown-item") do %>
-            <i class="fa-solid fa-cloud mfe-2"></i> <%= account_membership.account.name %>
+          <%= button_to(dashboard_account_session_path(account_membership: { id: account_membership.id }), class: "dropdown-item", method: :post) do %>
+          <i class="fa-solid fa-cloud mfe-2"></i> <%= account_membership.account.name %>
           <% end %>
         <% end %>
       <% end %>

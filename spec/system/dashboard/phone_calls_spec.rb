@@ -46,7 +46,7 @@ RSpec.describe "Phone Calls" do
     end
 
     perform_enqueued_jobs do
-      click_link("Export")
+      click_on("Export")
     end
 
     within(".alert") do

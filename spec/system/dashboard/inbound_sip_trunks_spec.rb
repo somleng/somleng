@@ -86,7 +86,7 @@ RSpec.describe "Inbound SIP Trunks" do
     carrier_sign_in(user)
     visit dashboard_inbound_sip_trunk_path(inbound_sip_trunk)
 
-    click_link("Delete")
+    click_on("Delete")
 
     expect(page).to have_content("Inbound SIP trunk was successfully destroyed")
     expect(page).not_to have_content("My SIP Trunk")

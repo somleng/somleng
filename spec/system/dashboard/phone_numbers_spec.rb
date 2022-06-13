@@ -103,7 +103,7 @@ RSpec.describe "Phone Numbers" do
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
-    click_link("Delete")
+    click_on("Delete")
     expect(page).to have_content("Phone number was successfully destroyed")
     expect(page).not_to have_content("1234")
   end
@@ -117,7 +117,7 @@ RSpec.describe "Phone Numbers" do
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
-    click_link("Release")
+    click_on("Release")
     expect(page).to have_content("Phone number was successfully released")
     expect(page).not_to have_content("Rocket Rides")
   end

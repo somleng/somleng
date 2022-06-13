@@ -76,7 +76,7 @@ RSpec.describe "Carrier users" do
     expect(page).to have_content("The user has not yet accepted their invite.")
 
     perform_enqueued_jobs do
-      click_link("Resend")
+      click_on("Resend")
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
@@ -99,7 +99,7 @@ RSpec.describe "Carrier users" do
     carrier_sign_in(user)
     visit dashboard_carrier_user_path(other_user)
 
-    click_link("Reset 2FA")
+    click_on("Reset 2FA")
 
     expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
     expect(page).to have_current_path(dashboard_carrier_user_path(other_user))
@@ -117,7 +117,7 @@ RSpec.describe "Carrier users" do
     carrier_sign_in(user)
     visit dashboard_carrier_user_path(other_user)
 
-    click_link "Delete"
+    click_on "Delete"
 
     expect(page).not_to have_content("Joe Bloggs")
   end
