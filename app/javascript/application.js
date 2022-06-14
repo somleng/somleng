@@ -9,6 +9,7 @@ import moment from "moment";
 import Choices from "choices.js";
 import "simplebar";
 
+import "./components/direct_upload"
 import "./controllers"
 
 document.addEventListener("turbo:load", function() {

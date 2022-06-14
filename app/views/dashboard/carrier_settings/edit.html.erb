@@ -1,8 +1,8 @@
 <%= page_title(title: "Edit Carrier Settings") %>
 
 <div class="card-body">
-  <%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group) do |f| %>
-    <div class="card">
+  <%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group, html: { data: { turbo: false }}) do |f| %>
+    <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">General</h5>
 
@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">
           Custom Domain
@@ -65,7 +65,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Developer</h5>
 
@@ -102,10 +102,8 @@
     </div>
 
     <div class="row">
-      <div class="col-6">
+      <div class="col">
         <%= f.button :submit %>
-      </div>
-      <div class="col-6 text-right">
         <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
       </div>
     </div>

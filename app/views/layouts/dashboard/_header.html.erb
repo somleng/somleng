@@ -1,35 +1,43 @@
 <header class="header header-sticky mb-4">
-  <%= link_to dashboard_root_path, class: "header-brand d-lg-none header-brand-sm-up-center" do %>
-    <%= carrier_logo(current_carrier, class: "sidebar-brand-full", height: 46) %>
-  <% end %>
-  <ul class="header-nav mr-auto">
-  </ul>
-  <ul class="header-nav">
-    <% if policy(:account_session).manage? %>
-      <%= render("shared/account_switcher") %>
+  <div class="container-fluid">
+    <button class="header-toggler px-md-0 me-md-3" type="button" data-action="sidebar#toggle">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <%= link_to dashboard_root_path, class: "header-brand d-lg-none header-brand-sm-up-center" do %>
+      <%= carrier_logo(current_carrier, class: "sidebar-brand-full", height: 46) %>
     <% end %>
 
-    <li class="nav-item dropdown">
-      <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <div class="avatar">
-          <%= image_tag(user_profile_image_url(current_user), class: "avatar-img") %>
-        </div>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right pt-0">
-        <div class="dropdown-header bg-light py-2">
-          <strong>Settings</strong>
-        </div>
-        <%= link_to(edit_user_registration_path, class: "dropdown-item") do %>
-          <i class="fa-solid fa-user-cog mfe-2"></i> Profile
-        <% end %>
+    <ul class="header-nav mr-auto">
+    </ul>
 
-        <div class="dropdown-divider"></div>
+    <ul class="header-nav">
+      <% if policy(:account_session).manage? %>
+        <%= render("shared/account_switcher") %>
+      <% end %>
 
-        <%= button_to(destroy_user_session_path, class: "dropdown-item", method: :delete, form: { data: { turbo: false } }) do %>
-          <i class="fa-solid fa-sign-out-alt mfe-2"></i>
-          Logout
-        <% end %>
-      </div>
-    </li>
-  </ul>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+          <div class="avatar">
+            <%= image_tag(user_profile_image_url(current_user), class: "avatar-img") %>
+          </div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right pt-0">
+          <div class="dropdown-header bg-light py-2">
+            <strong>Settings</strong>
+          </div>
+          <%= link_to(edit_user_registration_path, class: "dropdown-item") do %>
+            <i class="fa-solid fa-user-cog mfe-2"></i> Profile
+          <% end %>
+
+          <div class="dropdown-divider"></div>
+
+          <%= button_to(destroy_user_session_path, class: "dropdown-item", method: :delete, form: { data: { turbo: false } }) do %>
+            <i class="fa-solid fa-sign-out-alt mfe-2"></i>
+            Logout
+          <% end %>
+        </div>
+      </li>
+    </ul>
+  </div>
 </header>
