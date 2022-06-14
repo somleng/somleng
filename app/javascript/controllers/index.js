@@ -16,5 +16,8 @@ application.register("filters", FiltersController)
 import MaskedContentController from "./masked_content_controller.js"
 application.register("masked-content", MaskedContentController)
 
+import SidebarController from "./sidebar_controller.js"
+application.register("sidebar", SidebarController)
+
 import SignUpController from "./sign_up_controller.js"
 application.register("sign-up", SignUpController)
