@@ -5,6 +5,6 @@ export default class extends Controller {
   static targets = [ "sidebar" ]
 
   toggle() {
-    coreui.Sidebar.getInstance(this.sidebarTarget).toggle()
+    coreui.Sidebar.getOrCreateInstance(this.sidebarTarget).toggle()
   }
 }
