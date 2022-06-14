@@ -22,11 +22,15 @@ document.addEventListener("turbo:load", function() {
   });
 
   [].slice.call(document.querySelectorAll('[data-coreui="navigation"]')).map(function (element) {
-    return new coreui.Navigation(element);
+    return coreui.Navigation.getOrCreateInstance(element);
   });
 
   [].slice.call(document.querySelectorAll('time[data-behavior~=local-time]')).map(function (element) {
     element.textContent = moment(element.textContent).format("lll (Z)")
+  });
+
+  [].slice.call(document.querySelectorAll('.sidebar')).map(function (element) {
+    return coreui.Sidebar.getOrCreateInstance(element);
   });
 });
 
