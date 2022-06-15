@@ -28,6 +28,9 @@ module TwilioAPI
         format.wav do
           if recording.file.attached?
             redirect_to(recording.file.url, allow_other_host: true)
+          elsif recording.raw_recording_url.present?
+            presigned_url = RawRecordingPresignedURL.new(recording.raw_recording_url).presigned_url
+            redirect_to(presigned_url, allow_other_host: true)
           else
             head :not_found
           end

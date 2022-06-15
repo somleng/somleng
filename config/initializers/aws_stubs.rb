@@ -1,5 +1,7 @@
 if Rails.env.development? || Rails.env.test?
   ENV["AWS_DEFAULT_REGION"] ||= "ap-southeast-1"
+  ENV["AWS_ACCESS_KEY_ID"] ||= "access-key-id"
+  ENV["AWS_SECRET_ACCESS_KEY"] ||= "secret-key"
 
   sesv2_client = Aws::SESV2::Client.new
   create_email_identity_response = sesv2_client.stub_data(:create_email_identity)

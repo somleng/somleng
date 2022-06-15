@@ -42,6 +42,17 @@ RSpec.resource "Recordings", document: :twilio_api do
       expect(response_headers["Location"]).to end_with(".wav")
     end
 
+    example "Fetch raw recording", document: false do
+      recording = create(:recording, :in_progress, raw_recording_url: "https://raw-recordings.s3.amazonaws.com/folder/recording.wav")
+
+      do_request(account_sid: recording.account_id, sid: recording.id)
+
+      expect(response_status).to eq(302)
+      expect(response_headers["Location"]).to start_with(
+        "https://raw-recordings-bucket.s3.ap-southeast-1.amazonaws.com/folder/recording.wav"
+      )
+    end
+
     example "404 when the file is not ready", document: false do
       recording = create(:recording, :in_progress)
 
