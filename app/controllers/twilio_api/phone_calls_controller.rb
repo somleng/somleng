@@ -11,7 +11,13 @@ module TwilioAPI
         **serializer_options
       ) do |permitted_params|
         phone_call = phone_calls_scope.create!(permitted_params)
-        OutboundCallJob.perform_later(phone_call)
+
+        ScheduledJob.perform_later(
+          OutboundCallJob.to_s,
+          phone_call,
+          wait_until: (phone_calls_scope.queued.count.to_f / current_account.calls_per_second).seconds.from_now
+        )
+
         phone_call
       end
     end

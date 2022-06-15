@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_27_025454) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_15_064153) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -40,6 +40,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_27_025454) do
     t.string "name", null: false
     t.integer "account_memberships_count", default: 0, null: false
     t.jsonb "metadata", default: {}, null: false
+    t.integer "calls_per_second", default: 1, null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
