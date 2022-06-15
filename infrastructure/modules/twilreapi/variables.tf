@@ -83,10 +83,6 @@ variable "ecs_as_cpu_high_threshold_per" {
   default = "70"
 }
 
-variable "scheduler_schedule" {
-  default = "cron(* * * * ? *)"
-}
-
 variable "sqs_visibility_timeout_seconds" {
   default = 1800
 }

@@ -18,6 +18,7 @@ resource "aws_sqs_queue" "low_priority" {
 
 resource "aws_sqs_queue" "scheduler" {
   name = "${var.app_identifier}-scheduler"
+  redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.dead_letter.arn}\",\"maxReceiveCount\":10}"
   visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
 }
 
