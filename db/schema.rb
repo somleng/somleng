@@ -289,7 +289,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_101717) do
     t.string "caller_id"
     t.string "beneficiary_country_code", null: false
     t.string "beneficiary_fingerprint", null: false
-    t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status", where: "((status)::text = 'queued'::text)"
+    t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
     t.index ["beneficiary_fingerprint"], name: "index_phone_calls_on_beneficiary_fingerprint"
