@@ -11,13 +11,7 @@ module TwilioAPI
         **serializer_options
       ) do |permitted_params|
         phone_call = phone_calls_scope.create!(permitted_params)
-
-        ScheduledJob.perform_later(
-          OutboundCallJob.to_s,
-          phone_call,
-          wait_until: (phone_calls_scope.queued.count.to_f / current_account.calls_per_second).seconds.from_now
-        )
-
+        ScheduleOutboundCall.call(phone_call)
         phone_call
       end
     end
@@ -27,7 +21,7 @@ module TwilioAPI
 
       validate_request_schema(
         with: UpdatePhoneCallRequestSchema,
-        schema_options: { account: current_account, phone_call: phone_call },
+        schema_options: { account: current_account, phone_call: },
         status: :ok,
         **serializer_options
       ) do |permitted_params|
