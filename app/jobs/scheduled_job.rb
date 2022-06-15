@@ -1,4 +1,6 @@
 class ScheduledJob < ApplicationJob
+  queue_as Rails.configuration.app_settings.fetch(:aws_sqs_high_priority_queue_name)
+
   # Jobs cannot be scheduled more than 15 minutes into the future for SQS.
   # See http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html
   MAX_DELAY = 15.minutes

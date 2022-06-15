@@ -28,6 +28,7 @@
     <% end %>
     <%= f.attribute :type, value: @resource.type.humanize %>
     <%= f.attribute :status, value: @resource.status.humanize %>
+    <%= f.attribute :calls_per_second %>
     <%= f.attribute :owner_name, value: @resource.owner&.name %>
     <%= f.attribute :owner_email, value: @resource.owner&.email %>
     <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>

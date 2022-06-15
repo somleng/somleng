@@ -51,9 +51,11 @@ RSpec.describe "Accounts" do
     click_link("New")
 
     fill_in "Name", with: "Rocket Rides"
+    fill_in "Calls per second", with: 2
     click_button "Create Account"
 
     expect(page).to have_content("Account was successfully created")
+    expect(page).to have_content("Calls per second2")
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("Enabled")
     expect(page).to have_link("Edit")

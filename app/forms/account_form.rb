@@ -10,11 +10,19 @@ class AccountForm
   attribute :owner_name
   attribute :owner_email
   attribute :current_user
+  attribute :calls_per_second, :integer, default: 1
 
   delegate :persisted?, :id, :customer_managed?, to: :account
 
   validates :name, presence: true, unless: :persisted?
   validates :owner_email, format: User::EMAIL_FORMAT, allow_blank: true, allow_nil: true
+  validates :calls_per_second,
+            presence: true,
+            numericality: {
+              greater_than_or_equal_to: 1,
+              only_integer: true
+            }
+
   validate :validate_owner
 
   def self.model_name
@@ -28,6 +36,7 @@ class AccountForm
       name: account.name,
       outbound_sip_trunk_id: account.outbound_sip_trunk_id,
       enabled: account.enabled?,
+      calls_per_second: account.calls_per_second,
       owner_name: account.owner&.name,
       owner_email: account.owner&.email
     )
@@ -39,6 +48,7 @@ class AccountForm
     account.carrier = carrier
     account.status = enabled ? "enabled" : "disabled"
     account.name = name if name.present?
+    account.calls_per_second = calls_per_second
 
     if outbound_sip_trunk_id.present?
       account.outbound_sip_trunk = carrier.outbound_sip_trunks.find(outbound_sip_trunk_id)

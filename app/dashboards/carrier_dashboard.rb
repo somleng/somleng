@@ -14,7 +14,11 @@ class CarrierDashboard < Administrate::BaseDashboard
     name: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime,
-    country_code: Field::String
+    country_code: Field::String,
+    subdomain: Field::String,
+    website: Field::String,
+    custom_app_host: Field::String,
+    custom_api_host: Field::String
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -28,6 +32,10 @@ class CarrierDashboard < Administrate::BaseDashboard
     name
     logo
     country_code
+    website
+    subdomain
+    custom_app_host
+    custom_api_host
     created_at
     updated_at
     accounts
