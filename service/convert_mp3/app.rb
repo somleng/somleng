@@ -2,7 +2,7 @@ require "aws-sdk-s3"
 require "open3"
 require "securerandom"
 
-module LambdaFunction
+module App
   class Handler
     def self.process(event:,context:)
       bucket = event.dig("Records", 0, "s3", "bucket", "name")
