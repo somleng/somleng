@@ -52,6 +52,7 @@ module Dashboard
         :owner_name,
         :owner_email,
         :outbound_sip_trunk_id,
+        :calls_per_second,
         :enabled
       )
     end

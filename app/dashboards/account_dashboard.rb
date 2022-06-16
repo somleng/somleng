@@ -13,6 +13,7 @@ class AccountDashboard < Administrate::BaseDashboard
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime,
     status: Field::String,
+    calls_per_second: Field::String,
     allowed_calling_codes: Field::String,
     metadata: Field::JSON.with_options(searchable: false)
   }.freeze
@@ -29,6 +30,7 @@ class AccountDashboard < Administrate::BaseDashboard
     id
     name
     status
+    calls_per_second
     outbound_sip_trunk
     created_at
     updated_at

@@ -25,6 +25,10 @@
                       prompt: "",
                       input_html: { data: { behavior: "choices-input" } } %>
       </div>
+
+      <div class="col-sm-6">
+        <%= f.input :calls_per_second, as: :numeric, hint: "Restrict the number of calls per second for the account" %>
+      </div>
     </div>
 
     <div class="row">

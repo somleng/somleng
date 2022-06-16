@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_27_025454) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_15_101717) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -40,6 +40,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_27_025454) do
     t.string "name", null: false
     t.integer "account_memberships_count", default: 0, null: false
     t.jsonb "metadata", default: {}, null: false
+    t.integer "calls_per_second", default: 1, null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
@@ -288,6 +289,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_27_025454) do
     t.string "caller_id"
     t.string "beneficiary_country_code", null: false
     t.string "beneficiary_fingerprint", null: false
+    t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
     t.index ["beneficiary_fingerprint"], name: "index_phone_calls_on_beneficiary_fingerprint"

@@ -20,12 +20,19 @@ RSpec.describe AccountForm do
       expect(form).to be_invalid
       expect(form.errors[:owner_email]).to be_present
     end
+
+    it "validates the calls_per_second" do
+      form = AccountForm.new(calls_per_second: 0)
+
+      expect(form).to be_invalid
+      expect(form.errors[:calls_per_second]).to be_present
+    end
   end
 
   describe "#save" do
     it "creates an account without an owner" do
       carrier = create(:carrier)
-      form = AccountForm.new(name: "Rocket Rides", enabled: true)
+      form = AccountForm.new(name: "Rocket Rides", enabled: true, calls_per_second: 2)
       form.carrier = carrier
 
       result = form.save
@@ -34,7 +41,8 @@ RSpec.describe AccountForm do
       expect(form.account).to have_attributes(
         access_token: be_present,
         name: "Rocket Rides",
-        enabled?: true
+        enabled?: true,
+        calls_per_second: 2
       )
     end
 

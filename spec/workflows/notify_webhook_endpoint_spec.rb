@@ -10,8 +10,8 @@ RSpec.describe NotifyWebhookEndpoint do
       _first_log_for_failed_request = create(
         :webhook_request_log,
         :failed,
-        event: event,
-        webhook_endpoint: webhook_endpoint
+        event:,
+        webhook_endpoint:
       )
 
       webhook_request_log = NotifyWebhookEndpoint.call(webhook_endpoint, event)
