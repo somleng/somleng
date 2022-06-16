@@ -7,7 +7,6 @@ RSpec.resource "Recordings", document: :twilio_api do
       recording = create(:recording, :completed, phone_call:)
       _other_recording = create(:recording)
 
-      binding.pry
       set_twilio_api_authorization_header(phone_call.account)
       do_request(account_sid: phone_call.account_id, call_sid: phone_call.id)
 
