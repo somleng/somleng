@@ -3,6 +3,7 @@ class Recording < ApplicationRecord
   include AASM
 
   has_one_attached :file
+  has_one_attached :mp3
 
   belongs_to :phone_call
   belongs_to :account
