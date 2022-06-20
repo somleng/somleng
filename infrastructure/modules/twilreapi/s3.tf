@@ -10,7 +10,6 @@ resource "aws_s3_bucket" "uploads" {
   }
 }
 
-
 data "aws_s3_bucket" "raw_recordings" {
   bucket = var.raw_recordings_bucket_name
 }
