@@ -22,6 +22,7 @@ RSpec.describe ProcessRecording do
 
     expect(recording.completed?).to eq(true)
     expect(recording.file.attached?).to eq(true)
+    expect(recording.mp3_file.attached?).to eq(true)
     expect(WebMock).to have_requested(:post, recording.status_callback_url).with { |request|
       payload = Rack::Utils.parse_nested_query(request.body)
 
