@@ -62,6 +62,28 @@ RSpec.resource "Recordings", document: :twilio_api do
     end
   end
 
+  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Recordings/:sid.mp3" do
+    example "Fetch a recording as mp3" do
+      recording = create(:recording, :completed)
+
+      do_request(account_sid: recording.account_id, sid: recording.id)
+
+      expect(response_status).to eq(302)
+      expect(response_headers["Location"]).to end_with(".mp3")
+    end
+
+    example "Fetch raw recording as mp3", document: false do
+      recording = create(:recording, :in_progress, raw_recording_url: "https://raw-recordings.s3.amazonaws.com/folder/recording.wav")
+
+      do_request(account_sid: recording.account_id, sid: recording.id)
+
+      expect(response_status).to eq(302)
+      expect(response_headers["Location"]).to start_with(
+        "https://raw-recordings-bucket.s3.ap-southeast-1.amazonaws.com/folder/recording.mp3"
+      )
+    end
+  end
+
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Recordings/:sid.json" do
     example "Fetch a recording resource" do
       recording = create(:recording)

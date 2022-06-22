@@ -25,20 +25,27 @@ module TwilioAPI
       respond_to do |format|
         format.json { respond_with_resource(recording, serializer_options) }
 
-        format.wav do
-          if recording.file.attached?
-            redirect_to(recording.file.url, allow_other_host: true)
-          elsif recording.raw_recording_url.present?
-            presigned_url = RawRecordingPresignedURL.new(recording.raw_recording_url).presigned_url
-            redirect_to(presigned_url, allow_other_host: true)
-          else
-            head :not_found
-          end
+        if recording.file.attached?
+          format.wav { redirect_to(recording.file.url, allow_other_host: true) }
+          format.mp3 { redirect_to(recording.mp3_file.url, allow_other_host: true) }
+        elsif recording.raw_recording_url.present?
+          raw_recording_object_key = URI(recording.raw_recording_url).path.delete_prefix("/")
+          mp3_raw_recording_object_key = Pathname(raw_recording_object_key).sub_ext(".mp3").to_s
+
+          format.wav { respond_with_raw_recording(raw_recording_object_key) }
+          format.mp3 { respond_with_raw_recording(mp3_raw_recording_object_key) }
+        else
+          format.any { head :not_found }
         end
       end
     end
 
     private
+
+    def respond_with_raw_recording(object_key)
+      presigned_url = RawRecordingPresignedURL.new(object_key).presigned_url
+      redirect_to(presigned_url, allow_other_host: true)
+    end
 
     def parent_resource
       if params.key?(:phone_call_id)

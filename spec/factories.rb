@@ -358,6 +358,7 @@ FactoryBot.define do
       status { :completed }
 
       association :file, factory: :active_storage_attachment, filename: "recording.wav"
+      association :mp3_file, factory: :active_storage_attachment, filename: "recording.mp3"
     end
   end
 end
