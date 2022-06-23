@@ -28,7 +28,7 @@ RSpec.describe "Services" do
           "from" => "16189124650",
           "external_id" => SecureRandom.uuid,
           "variables" => {
-            "sip_from_host" => "103.9.189.2"
+            "sip_from_host" => "1.1.1.1"
           }
         },
         headers: build_authorization_headers("services", "password")
@@ -43,6 +43,30 @@ RSpec.describe "Services" do
         "voice_method" => "POST",
         "status_callback_url" => "https://example.com/status_callback",
         "status_callback_method" => "POST"
+      )
+    end
+
+    it "handles phone numbers which aren't assigned to an account" do
+      post(
+        api_services_inbound_phone_calls_path,
+        params: {
+          "source_ip" => "175.100.7.240",
+          "to" => "855716200876",
+          "from" => "85512234567",
+          "external_id" => SecureRandom.uuid,
+          "variables" => {
+            "sip_from_host" => "1.1.1.1"
+          }
+        },
+        headers: build_authorization_headers("services", "password")
+      )
+
+      expect(response.code).to eq("422")
+      expect(response.body).to match_api_response_schema("services/api_errors")
+      expect(ErrorLog.last).to have_attributes(
+        carrier: nil,
+        account: nil,
+        error_message: "Inbound SIP trunk does not exist for 175.100.7.240"
       )
     end
   end

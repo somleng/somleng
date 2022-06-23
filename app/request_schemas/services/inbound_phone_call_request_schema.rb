@@ -10,7 +10,10 @@ module Services
 
     rule(:source_ip) do |context:|
       context[:inbound_sip_trunk] = InboundSIPTrunk.find_by(source_ip: value)
-      key("source_ip").failure("doesn't exist") if context[:inbound_sip_trunk].blank?
+      if context[:inbound_sip_trunk].blank?
+        key("source_ip").failure("doesn't exist")
+        context[:error_log_messages] << "Inbound SIP trunk does not exist for #{value}"
+      end
     end
 
     rule(:to) do |context:|
@@ -21,12 +24,16 @@ module Services
 
       if context[:phone_number].blank?
         key.failure("doesn't exist")
+        context[:error_log_messages] << "Phone number #{value} does not exist"
       elsif !context[:phone_number].assigned?
         key.failure("is unassigned")
+        context[:error_log_messages] << "Phone number #{value} is unassigned"
       elsif !context[:phone_number].configured?
         key.failure("is unconfigured")
+        context[:error_log_messages] << "Phone number #{value} is unconfigured"
       elsif !context[:phone_number].enabled?
         key.failure("is disabled")
+        context[:error_log_messages] << "Phone number #{value} is disabled"
       end
     end
 
@@ -38,14 +45,19 @@ module Services
         key.failure(
           "is invalid. It must be an E.164 formatted phone number and must include the country code"
         )
+        context[:error_log_messages] << "From #{value} is invalid. It must be an E.164 formatted phone number and must include the country code"
       end
     end
 
     rule do |context:|
+      context[:carrier] = context[:inbound_sip_trunk]&.carrier
+      context[:account] = context[:phone_number]&.account
+
       next if context[:phone_number].blank?
       next if CarrierStanding.new(context[:phone_number].carrier).good_standing?
 
       base.failure("carrier is not in good standing")
+      context[:error_log_messages] << "Carrier is not in good standing"
     end
 
     def output
