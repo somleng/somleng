@@ -5,7 +5,7 @@ module Services
         with: InboundPhoneCallRequestSchema,
         serializer_class: PhoneCallSerializer,
         location: nil,
-        schema_options: { default_context: { error_log_messages: [] }},
+        schema_options: { error_log_messages: },
         on_error: ->(schema) { handle_errors(schema) }
       ) do |permitted_params|
         ApplicationRecord.transaction do
@@ -16,14 +16,18 @@ module Services
       end
     end
 
-    def handle_errors(schema)
-      return if schema.context.fetch(:error_log_messages).empty?
+    def handle_errors(_schema)
+      return if error_log_messages.empty?
 
       ErrorLog.create!(
-        carrier: schema.context[:carrier],
-        account: schema.context[:account],
-        error_message: schema.context.fetch(:error_log_messages).to_sentence
+        carrier: error_log_messages.carrier,
+        account: error_log_messages.account,
+        error_message: error_log_messages.messages.to_sentence
       )
+    end
+
+    def error_log_messages
+      @error_log_messages ||= ErrorLogMessages.new
     end
   end
 end
