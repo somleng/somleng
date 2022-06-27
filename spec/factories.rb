@@ -361,4 +361,8 @@ FactoryBot.define do
       association :mp3_file, factory: :active_storage_attachment, filename: "recording.mp3"
     end
   end
+
+  factory :error_log do
+    error_message { "error message" }
+  end
 end

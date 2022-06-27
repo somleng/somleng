@@ -13,6 +13,9 @@ class APIController < ActionController::API
       resource = yield(schema.output)
       respond_with_resource(resource, options)
     else
+      on_error = options.delete(:on_error)
+      on_error&.call(schema)
+
       respond_with_errors(schema, **options)
     end
   end

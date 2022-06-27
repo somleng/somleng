@@ -17,6 +17,7 @@ class Account < ApplicationRecord
   has_many :account_memberships, dependent: :restrict_with_error
   has_many :users, through: :account_memberships
   has_many :recordings
+  has_many :error_logs
 
   def self.customer_managed
     where(arel_table[:account_memberships_count].gt(0))
