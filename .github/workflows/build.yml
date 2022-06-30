@@ -28,6 +28,35 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
+      # Adapted from
+      # https://stackoverflow.com/a/65434401
+      - name: Set Deployment Matrix
+        id: set-deployment-matrix
+        run: |
+          branchName=$(echo '${{ github.ref }}' | sed 's,refs/heads/,,g')
+          matrixSource=$(cat << EOF
+          [
+            {
+              "identifier": "somleng-staging",
+              "branch": "deploy_staging_infra",
+              "task_definition": "deploy/staging/ecs_task_definition.json",
+              "image_tag": "staging",
+              "ecs_cluster": "somleng"
+            },
+            {
+              "identifier": "twilreapi",
+              "branch": "master",
+              "task_definition": "deploy/production/ecs_task_definition.json",
+              "image_tag": "latest",
+              "ecs_cluster": "somleng"
+            }
+          ]
+          EOF
+          )
+          matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
+          echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
+          echo ::set-output name=matrixLength::$(echo $matrix | jq length)
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -61,45 +90,16 @@ jobs:
           language: Ruby
 
       - name: Prepare Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: steps.set-deployment-matrix.outputs.matrixLength > 0
         run: |
           cp app/assets/images/logo_documentation.png doc/logo.png
 
       - name: Upload Documentation Source
-        if: github.ref == 'refs/heads/master'
+        if: steps.set-deployment-matrix.outputs.matrixLength > 0
         uses: actions/upload-artifact@v3
         with:
           name: documentation_source
           path: doc/
-
-      # Adapted from
-      # https://stackoverflow.com/a/65434401
-      - name: Set Deployment Matrix
-        id: set-deployment-matrix
-        run: |
-          branchName=$(echo '${{ github.ref }}' | sed 's,refs/heads/,,g')
-          matrixSource=$(cat << EOF
-          [
-            {
-              "identifier": "somleng-staging",
-              "branch": "deploy_staging_infra",
-              "task_definition": "deploy/staging/ecs_task_definition.json",
-              "image_tag": "staging",
-              "ecs_cluster": "somleng"
-            },
-            {
-              "identifier": "twilreapi",
-              "branch": "master",
-              "task_definition": "deploy/production/ecs_task_definition.json",
-              "image_tag": "latest",
-              "ecs_cluster": "somleng"
-            }
-          ]
-          EOF
-          )
-          matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
-          echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
-          echo ::set-output name=matrixLength::$(echo $matrix | jq length)
 
   build_documentation:
     name: Build Documentation
