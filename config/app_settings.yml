@@ -49,7 +49,7 @@ staging:
   api_subdomain: "api-staging"
   app_url_host: "https://app-staging.somleng.org"
   asset_url_host: "https://cdn-staging.somleng.org"
-  ahn_host: "https://ahn-staging.somleng.org"
+  ahn_host: "https://switch-staging.somleng.org"
 
 development: &development
   <<: *default
