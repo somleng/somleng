@@ -36,6 +36,8 @@ module Somleng
     config.active_record.encryption.primary_key = encryption_config.fetch(:primary_key)
     config.active_record.encryption.deterministic_key = encryption_config.fetch(:deterministic_key)
     config.active_record.encryption.key_derivation_salt = encryption_config.fetch(:key_derivation_salt)
+
+    config.skylight.environments << "staging"
   end
 end
 
