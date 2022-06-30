@@ -1,10 +1,11 @@
 module "twilreapi" {
   source = "../modules/twilreapi"
-  app_identifier = "twilreapi"
-  app_environment = "production"
-  app_subdomain = "app"
-  cdn_subdomain = "cdn"
-  api_subdomain = "api"
+
+  app_identifier = "somleng-staging"
+  app_environment = "staging"
+  app_subdomain = "app-staging"
+  cdn_subdomain = "cdn-staging"
+  api_subdomain = "api-staging"
 
   ecs_cluster = data.terraform_remote_state.core_infrastructure.outputs.ecs_cluster
   codedeploy_role = data.terraform_remote_state.core_infrastructure.outputs.codedeploy_role
@@ -20,17 +21,17 @@ module "twilreapi" {
   cdn_certificate = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
   container_instance_subnets = data.terraform_remote_state.core_infrastructure.outputs.vpc.private_subnets
   vpc_id = data.terraform_remote_state.core_infrastructure.outputs.vpc.vpc_id
-  uploads_bucket = "uploads.twilreapi.somleng.org"
+  uploads_bucket = "uploads-staging.somleng.org"
 
-  db_name = "somleng"
+  db_name = "somleng_staging"
   db_username = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.master_username
   db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db_master_password_parameter.arn
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
-  inbound_sip_trunks_security_group_name = "somleng-inbound-sip-trunks"
+  inbound_sip_trunks_security_group_name = "somleng-inbound-sip-trunks-staging"
   ecs_worker_autoscale_min_instances = 1
   ecs_worker_autoscale_max_instances = 10
 
-  raw_recordings_bucket_name = "raw-recordings.somleng.org"
+  raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
 }

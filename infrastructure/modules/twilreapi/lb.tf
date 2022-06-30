@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "this" {
 }
 
 resource "aws_lb_listener_rule" "this" {
-  priority = 15
+  priority = var.app_environment == "production" ? 15 : 115
 
   listener_arn = var.listener_arn
 
@@ -32,31 +32,6 @@ resource "aws_lb_listener_rule" "this" {
         aws_route53_record.app.fqdn,
         "*.${aws_route53_record.app.fqdn}"
       ]
-    }
-  }
-
-  lifecycle {
-    ignore_changes = [action]
-  }
-}
-
-resource "aws_lb_listener_rule" "dashboard" {
-  priority = 16
-
-  listener_arn = var.listener_arn
-
-  action {
-    type = "redirect"
-
-    redirect {
-      host = aws_route53_record.app.fqdn
-      status_code = "HTTP_301"
-    }
-  }
-
-  condition {
-    host_header {
-      values = [aws_route53_record.dashboard.fqdn]
     }
   }
 
