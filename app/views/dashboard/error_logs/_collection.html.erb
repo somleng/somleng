@@ -1,0 +1,41 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+      <th>
+        Error Message
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |error_log| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <% if policy(:account).show? %>
+          <td>
+            <% if error_log.account.present? %>
+              <%= external_link_to(error_log.account.name, dashboard_account_path(error_log.account)) %>
+            <% else %>
+              <%= t("show_for.blank") %>
+            <% end %>
+          </td>
+        <% end %>
+
+        <td>
+          <code><%= error_log.error_message %></code>
+        </td>
+
+        <td>
+          <%= local_time(error_log.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

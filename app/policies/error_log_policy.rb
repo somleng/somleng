@@ -1,0 +1,2 @@
+class ErrorLogPolicy < ApplicationPolicy
+end

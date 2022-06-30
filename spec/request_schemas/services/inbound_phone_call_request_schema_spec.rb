@@ -226,8 +226,9 @@ module Services
       )
     end
 
-    def validate_request_schema(...)
-      InboundPhoneCallRequestSchema.new(...)
+    def validate_request_schema(input_params: {}, options: {})
+      options.reverse_merge!(error_log_messages: ErrorLogMessages.new)
+      InboundPhoneCallRequestSchema.new(input_params:, options:)
     end
   end
 end
