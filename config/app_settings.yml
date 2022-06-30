@@ -29,16 +29,26 @@ production: &production
   asset_url_host: "https://cdn.somleng.org"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= ENV['SERVICES_PASSWORD'] %>"
-  admin_password: "<%= Rails.application.credentials.admin_password %>"
+  admin_password: "<%= Rails.application.credentials.production.admin_password %>"
   ahn_host: "https://ahn.somleng.org"
-  ahn_password: "<%= Rails.application.credentials.ahn_password %>"
+  ahn_password: "<%= Rails.application.credentials.production.ahn_password %>"
   inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
   recaptcha_site_key: "<%= Rails.application.credentials.recaptcha_site_key %>"
   recaptcha_secret_key: "<%= Rails.application.credentials.recaptcha_secret_key %>"
+  skylight_authentication_token: "<%= Rails.application.credentials.production.skylight_authentication_token %>"
   active_record_encryption:
     primary_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :primary_key) %>"
     deterministic_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) %>"
     key_derivation_salt: "<%= Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) %>"
+
+staging:
+  <<: *production
+  app_url_host: "https://app-staging.somleng.org"
+  asset_url_host: "https://cdn-staging.somleng.org"
+  ahn_host: "https://ahn-staging.somleng.org"
+  ahn_password: "<%= Rails.application.credentials.staging.ahn_password %>"
+  admin_password: "<%= Rails.application.credentials.staging.admin_password %>"
+  skylight_authentication_token: "<%= Rails.application.credentials.staging.skylight_authentication_token %>"
 
 development: &development
   <<: *default

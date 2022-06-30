@@ -3,4 +3,7 @@ ignored_endpoints:
   - OkComputer::OkComputerController#index
 
 production: &production
-  authentication: <%= Rails.application.credentials.skylight_authentication_token %>
+  authentication: <%= Rails.application.app_settings.skylight_authentication_token %>
+
+staging: &staging
+  <<: *production
