@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  scope(as: :api, constraints: { subdomain: "api" }, defaults: { format: "json" } ) do
+  scope(as: :api, constraints: { subdomain: AppSettings.config_for(:api_subdomain) }, defaults: { format: "json" } ) do
     concern :recordings do
       resources :recordings, only: %i[index], path: "Recordings"
       resources :recordings, only: %i[show], path: "Recordings", defaults: { format: "wav" }
@@ -87,7 +87,7 @@ Rails.application.routes.draw do
     end
   end
 
-  constraints(subdomain: "app") do
+  constraints(subdomain: AppSettings.config_for(:app_subdomain)) do
     devise_scope :user do
       resource(
         :registration,
