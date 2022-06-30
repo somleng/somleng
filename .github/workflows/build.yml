@@ -39,14 +39,14 @@ jobs:
             {
               "identifier": "somleng-staging",
               "branch": "deploy_staging_infra",
-              "task_definition": "deploy/staging/ecs_task_definition.json",
+              "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng"
             },
             {
               "identifier": "twilreapi",
               "branch": "master",
-              "task_definition": "deploy/production/ecs_task_definition.json",
+              "environment": "production",
               "image_tag": "latest",
               "ecs_cluster": "somleng"
             }
@@ -247,7 +247,7 @@ jobs:
         id: render-nginx-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: deploy/production/appserver_task_definition.json
+          task-definition: deploy/${{ matrix.enviornment }}/appserver_task_definition.json
           container-name: nginx
           image: ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
@@ -263,7 +263,7 @@ jobs:
         id: render-worker-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: deploy/production/worker_task_definition.json
+          task-definition: deploy/${{ matrix.enviornment }}/worker_task_definition.json
           container-name: worker
           image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
