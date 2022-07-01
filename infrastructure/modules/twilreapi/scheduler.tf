@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_event_rule" "scheduler_daily" {
-  name                = "somleng-SchedulerJob-daily"
+  name                = "somleng-${var.app_environment}-SchedulerJob-daily"
   schedule_expression =  "cron(0 0 * * ? *)"
 }
 

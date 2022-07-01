@@ -10,18 +10,6 @@ resource "aws_route53_record" "api" {
   }
 }
 
-resource "aws_route53_record" "dashboard" {
-  zone_id = var.route53_zone.zone_id
-  name    = "dashboard"
-  type    = "A"
-
-  alias {
-    name                   = var.load_balancer.dns_name
-    zone_id                = var.load_balancer.zone_id
-    evaluate_target_health = true
-  }
-}
-
 resource "aws_route53_record" "app" {
   zone_id = var.route53_zone.zone_id
   name    = var.app_subdomain
@@ -48,7 +36,7 @@ resource "aws_route53_record" "app_subdomains" {
 
 resource "aws_route53_record" "cdn" {
   zone_id = var.route53_zone.zone_id
-  name    = "cdn"
+  name    = var.cdn_subdomain
   type    = "A"
 
   alias {

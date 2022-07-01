@@ -42,7 +42,7 @@ resource "aws_cloudfront_distribution" "app" {
     }
   }
 
-  aliases = ["cdn.somleng.org"]
+  aliases = ["${var.cdn_subdomain}.somleng.org"]
 
   enabled         = true
   is_ipv6_enabled = false

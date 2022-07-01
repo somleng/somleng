@@ -1,5 +1,7 @@
 default: &default
-  app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app.lvh.me:3000") %>
+  app_subdomain: "app"
+  api_subdomain: "api"
+  app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
   mailer_sender: "no-reply@somleng.org"
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
   aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>
@@ -29,16 +31,25 @@ production: &production
   asset_url_host: "https://cdn.somleng.org"
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= ENV['SERVICES_PASSWORD'] %>"
-  admin_password: "<%= Rails.application.credentials.admin_password %>"
   ahn_host: "https://ahn.somleng.org"
-  ahn_password: "<%= Rails.application.credentials.ahn_password %>"
   inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
   recaptcha_site_key: "<%= Rails.application.credentials.recaptcha_site_key %>"
   recaptcha_secret_key: "<%= Rails.application.credentials.recaptcha_secret_key %>"
+  admin_password: "<%= Rails.application.credentials.admin_password %>"
+  ahn_password: "<%= Rails.application.credentials.ahn_password %>"
+  skylight_authentication_token: "<%= Rails.application.credentials.skylight_authentication_token %>"
   active_record_encryption:
     primary_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :primary_key) %>"
     deterministic_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) %>"
     key_derivation_salt: "<%= Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) %>"
+
+staging:
+  <<: *production
+  app_subdomain: "app-staging"
+  api_subdomain: "api-staging"
+  app_url_host: "https://app-staging.somleng.org"
+  asset_url_host: "https://cdn-staging.somleng.org"
+  ahn_host: "https://switch-staging.somleng.org"
 
 development: &development
   <<: *default
