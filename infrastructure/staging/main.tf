@@ -30,8 +30,8 @@ module "twilreapi" {
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
   inbound_sip_trunks_security_group_name = "somleng-inbound-sip-trunks-staging"
-  ecs_appserver_autoscale_min_instances = 1
-  ecs_worker_autoscale_min_instances = 1
+  ecs_appserver_autoscale_min_instances = 0
+  ecs_worker_autoscale_min_instances = 0
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
 }
