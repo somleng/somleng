@@ -38,7 +38,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "deploy_staging_infra",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng"
