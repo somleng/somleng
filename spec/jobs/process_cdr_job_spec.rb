@@ -28,6 +28,20 @@ RSpec.describe ProcessCDRJob do
     expect(ExecuteWorkflowJob).to have_been_enqueued.with("NotifyPhoneCallStatusCallback", phone_call)
   end
 
+  it "creates a call data record for an outbound call" do
+    raw_freeswitch_cdr = file_fixture("freeswitch_cdr_outbound.json").read
+    freeswitch_cdr = JSON.parse(raw_freeswitch_cdr)
+
+    phone_call = create(
+      :phone_call, :initiated, :with_status_callback_url,
+      id: freeswitch_cdr.dig("variables", "sip_h_X-Somleng-CallSid")
+    )
+
+    ProcessCDRJob.perform_now(freeswitch_cdr)
+
+    expect(phone_call.call_data_record).to be_present
+  end
+
   it "creates an event" do
     raw_freeswitch_cdr = file_fixture("freeswitch_cdr.json").read
     freeswitch_cdr = JSON.parse(raw_freeswitch_cdr)

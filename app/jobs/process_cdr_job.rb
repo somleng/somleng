@@ -12,7 +12,7 @@ class ProcessCDRJob < ApplicationJob
 
   def create_call_data_record(cdr)
     cdr_variables = cdr.fetch("variables")
-    phone_call_id = cdr_variables.fetch("sip_rh_X-Somleng-CallSid")
+    phone_call_id = cdr_variables["sip_rh_X-Somleng-CallSid"] || cdr_variables["sip_h_X-Somleng-CallSid"]
     phone_call = PhoneCall.find(phone_call_id)
 
     CallDataRecord.create!(
