@@ -12,8 +12,8 @@ class ProcessCDRJob < ApplicationJob
 
   def create_call_data_record(cdr)
     cdr_variables = cdr.fetch("variables")
-    phone_call_id = call_leg_B?(cdr) ? cdr_variables.fetch("bridge_uuid") : cdr_variables.fetch("uuid")
-    phone_call = PhoneCall.find_by!(external_id: phone_call_id)
+    phone_call_id = cdr_variables.fetch("sip_rh_X-Somleng-CallSid")
+    phone_call = PhoneCall.find(phone_call_id)
 
     CallDataRecord.create!(
       phone_call:,

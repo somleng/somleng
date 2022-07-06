@@ -11,7 +11,7 @@ RSpec.describe ProcessCDRJob do
 
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
-      external_id: freeswitch_cdr.dig("variables", "uuid")
+      id: freeswitch_cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
 
     ProcessCDRJob.perform_now(freeswitch_cdr)
@@ -34,7 +34,7 @@ RSpec.describe ProcessCDRJob do
 
     phone_call = create(
       :phone_call, :initiated,
-      external_id: freeswitch_cdr.dig("variables", "uuid")
+      id: freeswitch_cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
 
     ProcessCDRJob.perform_now(freeswitch_cdr)
@@ -52,7 +52,7 @@ RSpec.describe ProcessCDRJob do
 
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
-      external_id: freeswitch_cdr.dig("variables", "uuid")
+      id: freeswitch_cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
 
     ProcessCDRJob.perform_now(freeswitch_cdr)
@@ -70,7 +70,7 @@ RSpec.describe ProcessCDRJob do
 
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
-      external_id: freeswitch_cdr_call_leg_a.dig("variables", "uuid")
+      id: freeswitch_cdr_call_leg_a.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
     call_data_record_call_leg_a = create(:call_data_record, call_leg: "A", phone_call: phone_call)
 
