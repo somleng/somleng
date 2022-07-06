@@ -2,7 +2,7 @@ class OutboundCallJob < ApplicationJob
   class RetryJob < StandardError; end
 
   def perform(phone_call, call_service_client: CallService::Client.new)
-    return if phone_call.canceled?
+    return unless phone_call.queued?
 
     phone_call = PhoneCallDecorator.new(phone_call)
     response = call_service_client.create_call(

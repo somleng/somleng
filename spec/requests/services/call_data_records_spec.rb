@@ -11,9 +11,9 @@ RSpec.describe "Services" do
       account = create(:account, :with_access_token, carrier: carrier)
       phone_call = create(
         :phone_call, :initiated, :with_status_callback_url,
-        account: account,
-        carrier: carrier,
-        external_id: "1b17f1e5-becb-4daa-8cb8-1ec822dd4297"
+        account:,
+        carrier:,
+        id: "ffafbad1-9861-4522-be15-c797524bc621"
       )
 
       stub_request(:post, phone_call.status_callback_url)
@@ -28,7 +28,7 @@ RSpec.describe "Services" do
       end
 
       expect(response.code).to eq("204")
-      expect(phone_call.reload).to be_not_answered
+      expect(phone_call.reload.status).to eq("completed")
       expect(WebMock).to have_requested(
         :post, phone_call.status_callback_url
       )
