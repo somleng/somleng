@@ -13,7 +13,8 @@ class NotifyWebhookEndpoint < ApplicationWorkflow
     response = notify_webhook_endpoint
 
     webhook_request_log = WebhookRequestLog.create!(
-      event: event,
+      event:,
+      carrier: event.carrier,
       url: webhook_endpoint.url,
       webhook_endpoint: webhook_endpoint,
       http_status_code: response.status,

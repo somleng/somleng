@@ -1,0 +1,43 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        ID
+      </th>
+      <th>
+        Event Type
+      </th>
+      <th>
+        HTTP Status Code
+      </th>
+      <th>
+        Failed
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |request_log| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to request_log.id, dashboard_webhook_request_log_path(request_log) %>
+        </td>
+        <td>
+          <code><%= request_log.event.type %></code>
+        </td>
+        <td>
+          <span class="badge bg-<%= request_log.failed? ? "danger" : "success" %>"><%= request_log.http_status_code %></span>
+        </td>
+        <td>
+          <%= request_log.failed? ? t("show_for.yes") : t("show_for.no") %>
+        </td>
+        <td>
+          <%= local_time(request_log.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

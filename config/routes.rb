@@ -83,6 +83,7 @@ Rails.application.routes.draw do
       resources :inbound_sip_trunks
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
+      resources :webhook_request_logs, only: %i[index show]
 
       root to: "home#show"
     end
@@ -118,6 +119,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[show index], concerns: :exportable
       resources :statistics, only: :index
       resources :error_logs, only: %i[show index]
+      resources :webhook_request_logs, only: %i[index show]
 
       resources :account_memberships, only: :show
       resources :inbound_sip_trunks, only: :show

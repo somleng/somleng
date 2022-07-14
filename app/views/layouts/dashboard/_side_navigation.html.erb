@@ -64,10 +64,20 @@
           <%= sidebar_nav("Account API Docs", docs_twilio_api_path, icon_class: "fa-solid fa-arrow-up-right-from-square", link_options: { target: "_blank" }) %>
         </ul>
       </li>
+
+      <li class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-laptop-code"></i> Developers
+        </a>
+
+        <ul class="nav-group-items">
+          <%= sidebar_nav("Error Logs", dashboard_error_logs_path, icon_class: "fa-solid fa-bug") %>
+          <%= sidebar_nav("Webhook Logs", dashboard_webhook_request_logs_path, icon_class: "fa-solid fa-clock-rotate-left") %>
+        </ul>
+      </li>
     <% else %>
       <%= sidebar_nav("API Documentation", docs_twilio_api_path, icon_class: "fa-solid fa-arrow-up-right-from-square", link_options: { target: "_blank" }) %>
     <% end %>
-    <%= sidebar_nav("Error Logs", dashboard_error_logs_path, icon_class: "fa-solid fa-bug") %>
   </ul>
 
   <% if current_user.carrier_user? && current_carrier.restricted? %>

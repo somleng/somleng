@@ -12,6 +12,7 @@ class Carrier < ApplicationRecord
   has_many :interactions
   has_one :oauth_application, as: :owner
   has_one :webhook_endpoint, through: :oauth_application
+  has_many :webhook_request_logs
 
   has_one_attached :logo
 
