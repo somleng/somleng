@@ -332,6 +332,7 @@ FactoryBot.define do
   end
 
   factory :webhook_request_log do
+    carrier { event.carrier }
     event
     webhook_endpoint
     url { webhook_endpoint.url }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_23_053632) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -428,6 +428,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_23_053632) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "carrier_id", null: false
+    t.index ["carrier_id"], name: "index_webhook_request_logs_on_carrier_id"
     t.index ["event_id"], name: "index_webhook_request_logs_on_event_id"
     t.index ["sequence_number"], name: "index_webhook_request_logs_on_sequence_number", unique: true, order: :desc
     t.index ["webhook_endpoint_id"], name: "index_webhook_request_logs_on_webhook_endpoint_id"
