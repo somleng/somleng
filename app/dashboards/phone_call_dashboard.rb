@@ -15,6 +15,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
       transform_on_export: ->(field) { field.data&.id }
     ),
     phone_call_events: Field::HasMany,
+    events: Field::HasMany,
     recordings: Field::HasMany,
     id: Field::String,
     to: Field::String,
@@ -62,6 +63,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     updated_at
     inbound_sip_trunk
     call_data_record
+    events
     phone_call_events
     recordings
   ].freeze

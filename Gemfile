@@ -20,12 +20,13 @@ gem "aws-sdk-rails"
 gem "aws-sdk-s3"
 gem "aws-sdk-sesv2"
 gem "aws-sdk-sqs"
-gem "bootstrap-email"
+gem "bootstrap-email", "1.1.6"
 gem "country_select"
 gem "cssbundling-rails"
 gem "cursor_paginator"
 gem "devise"
 gem "devise_invitable"
+gem "devise-two-factor"
 gem "doorkeeper"
 gem "dry-validation"
 gem "enumerize"
@@ -56,9 +57,6 @@ gem "stimulus-rails"
 gem "turbo-rails"
 gem "twilio-ruby"
 gem "tzinfo-data"
-
-# https://github.com/tinfoil/devise-two-factor/issues/192#issuecomment-1022504126
-gem "devise-two-factor", github: "cybersecuricy/devise-two-factor", branch: "securicy-fixes-rails-7"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false

@@ -2,8 +2,9 @@ require "administrate/base_dashboard"
 
 class WebhookRequestLogDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
-    carrier: Field::BelongsTo,
     id: Field::String,
+    event: Field::BelongsTo,
+    carrier: Field::BelongsTo,
     url: Field::String,
     http_status_code: Field::String,
     failed: Field::String,
@@ -14,6 +15,7 @@ class WebhookRequestLogDashboard < Administrate::BaseDashboard
 
   COLLECTION_ATTRIBUTES = %i[
     carrier
+    event
     url
     http_status_code
     failed
@@ -22,6 +24,7 @@ class WebhookRequestLogDashboard < Administrate::BaseDashboard
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    event
     carrier
     url
     http_status_code
@@ -31,5 +34,7 @@ class WebhookRequestLogDashboard < Administrate::BaseDashboard
     updated_at
   ].freeze
 
-  COLLECTION_FILTERS = {}.freeze
+  COLLECTION_FILTERS = {
+    failed: ->(resources) { resources.failed }
+  }.freeze
 end

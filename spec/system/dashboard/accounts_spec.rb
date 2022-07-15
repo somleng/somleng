@@ -109,7 +109,7 @@ RSpec.describe "Accounts" do
     user = create(:user, :carrier, :admin)
     account = create(:account, carrier: user.carrier)
     invited_user = create(:user, :invited, email: "johndoe@example.com")
-    create(:account_membership, :owner, account: account, user: invited_user)
+    create(:account_membership, :owner, account:, user: invited_user)
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)

@@ -11,5 +11,17 @@ class WebhookRequestLogFilter < ResourceFilter
     end
   end
 
-  filter_with FailedFilter, DateFilter
+  class EventFilter < ApplicationFilter
+    filter_params do
+      optional(:event_id).value(:string)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.where(event_id: filter_params.fetch(:event_id))
+    end
+  end
+
+  filter_with FailedFilter, EventFilter, DateFilter
 end

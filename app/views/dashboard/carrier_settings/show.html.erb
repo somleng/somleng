@@ -39,7 +39,7 @@
 
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Developer</h5>
+      <h5 class="card-title">Developers</h5>
       <%= show_for(@resource) do |f| %>
         <%= f.attribute :api_key, label: "API Key" do %>
           <%= mask_content(@resource.api_key) %>

@@ -1,0 +1,37 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        ID
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Resource
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |event| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(event.id, dashboard_event_path(event)) %>
+        </td>
+        <td>
+          <code><%= event.type %></code>
+        </td>
+        <td>
+           <%= external_link_to("#{event.eventable_type.titleize} (#{event.eventable_id})", polymorphic_path([:dashboard, event.eventable])) %>
+        </td>
+        <td>
+          <%= local_time(event.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

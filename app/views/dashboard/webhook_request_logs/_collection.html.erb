@@ -23,7 +23,7 @@
     <% resources.each do |request_log| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to request_log.id, dashboard_webhook_request_log_path(request_log) %>
+          <%= link_to(request_log.id, dashboard_webhook_request_log_path(request_log)) %>
         </td>
         <td>
           <code><%= request_log.event.type %></code>

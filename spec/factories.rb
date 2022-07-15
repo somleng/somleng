@@ -96,9 +96,15 @@ FactoryBot.define do
   end
 
   factory :event do
+    phone_call_completed
+
+    trait :phone_call_completed do
+      association :eventable, factory: :phone_call
+      type { "phone_call.completed" }
+    end
+
     carrier { eventable.carrier }
-    association :eventable, factory: :phone_call
-    type { "phone_call.completed" }
+
     details do
       eventable.jsonapi_serializer_class.new(eventable.decorated).as_json
     end
