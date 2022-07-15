@@ -11,7 +11,7 @@
     "bootstrap-icons": "^1.8.3",
     "choices.js": "^10.1.0",
     "esbuild": "^0.14.42",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "sass": "^1.52.2",
     "simplebar": "^5.3.8",
     "url-slug": "^3.0.4"
