@@ -10,6 +10,7 @@
     <%= f.attribute :event_type do %>
       <code><%= @resource.event.type %></code>
     <% end %>
+    <%= f.attribute :event, value: external_link_to(@resource.event.id, dashboard_event_path(@resource.event)) %>
     <%= f.attribute :url %>
     <%= f.attribute :http_status_code do %>
       <span class="badge bg-<%= @resource.failed? ? "danger" : "success" %>"><%= @resource.http_status_code %></span>

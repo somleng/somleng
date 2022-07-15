@@ -17,6 +17,7 @@ class PhoneCall < ApplicationRecord
 
   has_one    :call_data_record, -> { where(call_leg: :A) }
   has_one    :interaction, as: :interactable
+  has_many   :events, as: :eventable
   has_many   :phone_call_events
   has_many   :recordings
 
