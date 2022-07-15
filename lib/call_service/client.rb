@@ -23,7 +23,12 @@ module CallService
 
         conn.adapter Faraday.default_adapter
 
-        conn.request :basic_auth, CallService.configuration.username, CallService.configuration.password
+        conn.request(
+          :authorization,
+          :basic,
+          CallService.configuration.username,
+          CallService.configuration.password
+        )
       end
     end
   end
