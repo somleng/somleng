@@ -1,14 +1,4 @@
 GIT
-  remote: https://github.com/cybersecuricy/devise-two-factor.git
-  revision: 87036f3b2e3cf60e8f84bb77c381d61bd9b76dbf
-  branch: securicy-fixes-rails-7
-  specs:
-    devise-two-factor (4.0.1)
-      devise (~> 4.0)
-      rails (< 8)
-      rotp (~> 6.0)
-
-GIT
   remote: https://github.com/heartcombo/responders.git
   revision: 161f205b649489d740821425560eecd355fa02be
   specs:
@@ -210,6 +200,11 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise-two-factor (5.0.0)
+      activesupport (~> 7.0)
+      devise (~> 4.0)
+      railties (~> 7.0)
+      rotp (~> 6.0)
     devise_invitable (2.0.6)
       actionmailer (>= 5.0)
       devise (>= 4.6)
@@ -583,7 +578,7 @@ DEPENDENCIES
   cssbundling-rails
   cursor_paginator
   devise
-  devise-two-factor!
+  devise-two-factor
   devise_invitable
   doorkeeper
   dry-validation
