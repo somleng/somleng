@@ -20,6 +20,7 @@ default: &default
   ahn_password: "password"
   admin_username: "admin"
   admin_password: "password"
+  sip_port: 5060
   active_record_encryption:
     primary_key: 5Owbop0UTpEsYwX0wK56VM1eg4xl7LXX
     deterministic_key: 5J0sxNi4YDp5cZnfV9BhXpujwgoOvhgV
@@ -50,6 +51,7 @@ staging:
   app_url_host: "https://app-staging.somleng.org"
   asset_url_host: "https://cdn-staging.somleng.org"
   ahn_host: "https://switch-staging.somleng.org"
+  sip_port: 6060
 
 development: &development
   <<: *default

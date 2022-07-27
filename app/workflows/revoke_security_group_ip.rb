@@ -13,8 +13,8 @@ class RevokeSecurityGroupIP < ApplicationWorkflow
       ip_permissions: [
         {
           ip_protocol: "UDP",
-          from_port: 5060,
-          to_port: 5060,
+          from_port: sip_port,
+          to_port: sip_port,
           ip_ranges: [
             {
               cidr_ip: "#{ip}/32"
@@ -25,5 +25,11 @@ class RevokeSecurityGroupIP < ApplicationWorkflow
     )
   rescue Aws::EC2::Errors::InvalidPermissionNotFound => e
     Rails.logger.warn("#{e.message} - IP: #{ip}")
+  end
+
+  private
+
+  def sip_port
+    Rails.configuration.app_settings.fetch(:sip_port)
   end
 end

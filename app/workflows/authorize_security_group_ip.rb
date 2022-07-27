@@ -14,8 +14,8 @@ class AuthorizeSecurityGroupIP < ApplicationWorkflow
       ip_permissions: [
         {
           ip_protocol: "UDP",
-          from_port: 5060,
-          to_port: 5060,
+          from_port: sip_port,
+          to_port: sip_port,
           ip_ranges: [
             {
               cidr_ip: "#{ip}/32",
@@ -25,5 +25,11 @@ class AuthorizeSecurityGroupIP < ApplicationWorkflow
         }
       ]
     )
+  end
+
+  private
+
+  def sip_port
+    Rails.configuration.app_settings.fetch(:sip_port)
   end
 end
