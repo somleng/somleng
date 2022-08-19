@@ -19,7 +19,7 @@ variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}
 
-variable "inbound_sip_trunks_security_group_name" {}
+variable "switch_services_queue_name" {}
 variable "raw_recordings_bucket_name" {}
 
 variable "webserver_container_name" {
