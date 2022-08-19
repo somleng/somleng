@@ -2,9 +2,11 @@ module SourceIPCallbacks
   extend ActiveSupport::Concern
 
   included do
-    after_commit :authorize_source_ip, on: :create
-    after_commit :revoke_source_ip, on: :destroy
-    after_commit :update_source_ip, on: :update
+    after_create :authorize_source_ip
+    after_destroy :revoke_source_ip
+    after_update :update_source_ip
+
+    attribute :inbound_sip_trunk_authorization, default: InboundSIPTrunkAuthorization.new
   end
 
   private
@@ -18,25 +20,11 @@ module SourceIPCallbacks
     authorize_source_ip
   end
 
-  def authorize_source_ip(ip: source_ip)
-    update_security_group_rule(
-      "AuthorizeSecurityGroupIP",
-      ip: ip.to_s,
-      description: "#{carrier.name} - #{name}"
-    )
+  def authorize_source_ip
+    inbound_sip_trunk_authorization.add_permission(source_ip)
   end
 
   def revoke_source_ip(ip: source_ip)
-    update_security_group_rule("RevokeSecurityGroupIP", ip: ip.to_s)
-  end
-
-  def update_security_group_rule(type, params)
-    return if Rails.configuration.app_settings[:inbound_sip_trunks_security_group_id].blank?
-
-    ExecuteWorkflowJob.perform_later(
-      type,
-      security_group_id: Rails.configuration.app_settings.fetch(:inbound_sip_trunks_security_group_id),
-      **params
-    )
+    inbound_sip_trunk_authorization.remove_permission(ip)
   end
 end
