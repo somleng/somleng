@@ -245,7 +245,7 @@ jobs:
 
       - name: Get current task definition
         run: |
-          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}" --query 'taskDefinition' > task-definition.json
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-appserver" --query 'taskDefinition' > task-definition.json
           cat task-definition.json
 
       - name: Prepare nginx task definition
@@ -264,11 +264,16 @@ jobs:
           container-name: app
           image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
+      - name: Get current task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker" --query 'taskDefinition' > task-definition.json
+          cat task-definition.json
+
       - name: Prepare worker task definition
         id: render-worker-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: deploy/${{ matrix.environment }}/worker_task_definition.json
+          task-definition: task-definition.json
           container-name: worker
           image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
