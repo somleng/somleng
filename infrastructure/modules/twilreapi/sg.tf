@@ -1,10 +1,3 @@
-data "aws_security_group" "inbound_sip_trunks" {
-  filter {
-    name   = "group-name"
-    values = [var.inbound_sip_trunks_security_group_name]
-  }
-}
-
 resource "aws_security_group" "appserver" {
   name   = "${var.app_identifier}-appserver"
   vpc_id = var.vpc_id

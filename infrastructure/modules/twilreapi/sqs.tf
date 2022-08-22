@@ -47,4 +47,8 @@ resource "aws_sqs_queue" "dead_letter" {
   name = "${var.app_identifier}-dead-letter"
 }
 
+data "aws_sqs_queue" "switch_services" {
+  name = var.switch_services_queue_name
+}
+
 
