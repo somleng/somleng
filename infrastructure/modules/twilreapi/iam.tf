@@ -78,6 +78,15 @@ resource "aws_iam_policy" "ecs_task_policy" {
     {
       "Effect": "Allow",
       "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "${data.aws_sqs_queue.switch_services.arn}"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "sqs:ListQueues"
       ],
       "Resource": "*"
@@ -86,16 +95,6 @@ resource "aws_iam_policy" "ecs_task_policy" {
       "Effect": "Allow",
       "Action": "ses:SendRawEmail",
       "Resource":"*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:AuthorizeSecurityGroupIngress",
-        "ec2:RevokeSecurityGroupIngress"
-      ],
-      "Resource": [
-        "${data.aws_security_group.inbound_sip_trunks.arn}"
-      ]
     }
   ]
 }

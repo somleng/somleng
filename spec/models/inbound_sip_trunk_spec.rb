@@ -2,53 +2,61 @@ require "rails_helper"
 
 RSpec.describe InboundSIPTrunk do
   it "revokes the source IP on destroy" do
-    stub_app_settings(inbound_sip_trunks_security_group_id: "security-group-id")
-    inbound_sip_trunk = create(:inbound_sip_trunk, source_ip: "175.100.7.240")
-
-    expect {
-      inbound_sip_trunk.destroy!
-    }.to have_enqueued_job(ExecuteWorkflowJob).with(
-      "RevokeSecurityGroupIP",
-      hash_including(security_group_id: "security-group-id", ip: "175.100.7.240")
+    fake_inbound_sip_trunk_authorization = build_fake_inbound_sip_trunk_authorization
+    inbound_sip_trunk = create(
+      :inbound_sip_trunk,
+      source_ip: "175.100.7.240",
+      inbound_sip_trunk_authorization: fake_inbound_sip_trunk_authorization
     )
+
+    inbound_sip_trunk.destroy!
+
+    expect(fake_inbound_sip_trunk_authorization.ip_addresses).to be_empty
   end
 
   it "authorizes the source IP on create" do
-    stub_app_settings(inbound_sip_trunks_security_group_id: "security-group-id")
-    carrier = create(:carrier, name: "My Carrier")
-
-    expect {
-      create(:inbound_sip_trunk, carrier: carrier, source_ip: "175.100.7.240", name: "My SIP Trunk")
-    }.to have_enqueued_job(ExecuteWorkflowJob).with(
-      "AuthorizeSecurityGroupIP",
-      hash_including(
-        ip: "175.100.7.240",
-        description: "My Carrier - My SIP Trunk"
-      )
+    fake_inbound_sip_trunk_authorization = build_fake_inbound_sip_trunk_authorization
+    inbound_sip_trunk = build(
+      :inbound_sip_trunk,
+      source_ip: "175.100.7.240",
+      inbound_sip_trunk_authorization: fake_inbound_sip_trunk_authorization
     )
+
+    inbound_sip_trunk.save!
+
+    expect(fake_inbound_sip_trunk_authorization.ip_addresses).to eq(["175.100.7.240"])
   end
 
   it "revokes the old and authorizes the new source IP on update" do
-    stub_app_settings(inbound_sip_trunks_security_group_id: "security-group-id")
-    carrier = create(:carrier, name: "My Carrier")
+    fake_inbound_sip_trunk_authorization = build_fake_inbound_sip_trunk_authorization
     inbound_sip_trunk = create(
       :inbound_sip_trunk,
-      carrier: carrier,
       source_ip: "175.100.7.240",
-      name: "My SIP Trunk"
+      inbound_sip_trunk_authorization: fake_inbound_sip_trunk_authorization
     )
 
     inbound_sip_trunk.update!(source_ip: "175.100.7.241")
-    expect(ExecuteWorkflowJob).to have_been_enqueued.with(
-      "RevokeSecurityGroupIP",
-      hash_including(ip: "175.100.7.240")
-    )
-    expect(ExecuteWorkflowJob).to have_been_enqueued.with(
-      "AuthorizeSecurityGroupIP",
-      hash_including(
-        ip: "175.100.7.241",
-        description: "My Carrier - My SIP Trunk"
-      )
-    )
+
+    expect(fake_inbound_sip_trunk_authorization.ip_addresses).to eq(["175.100.7.241"])
+  end
+
+  def build_fake_inbound_sip_trunk_authorization
+    klass = Class.new do
+      attr_reader :ip_addresses
+
+      def initialize
+        @ip_addresses = []
+      end
+
+      def add_permission(ip)
+        ip_addresses << ip
+      end
+
+      def remove_permission(ip)
+        ip_addresses.delete(ip)
+      end
+    end
+
+    klass.new
   end
 end

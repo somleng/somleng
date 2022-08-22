@@ -95,8 +95,8 @@
         "value": "${uploads_bucket}"
       },
       {
-        "name": "INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID",
-        "value": "${inbound_sip_trunks_security_group_id}"
+        "name": "SWITCH_SERVICES_QUEUE_URL",
+        "value": "${switch_services_queue_url}"
       },
       {
         "name": "RAW_RECORDINGS_BUCKET",

@@ -1,6 +1,7 @@
 default: &default
   app_subdomain: "app"
   api_subdomain: "api"
+  switch_services_queue_url: <%= ENV.fetch("SWITCH_SERVICES_QUEUE_URL", "https://amazonaws.com/12345/switch_services") %>
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
   mailer_sender: "no-reply@somleng.org"
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
@@ -33,7 +34,6 @@ production: &production
   sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
   services_password: "<%= ENV['SERVICES_PASSWORD'] %>"
   ahn_host: "https://ahn.somleng.org"
-  inbound_sip_trunks_security_group_id: <%= ENV["INBOUND_SIP_TRUNKS_SECURITY_GROUP_ID"] %>
   recaptcha_site_key: "<%= Rails.application.credentials.recaptcha_site_key %>"
   recaptcha_secret_key: "<%= Rails.application.credentials.recaptcha_secret_key %>"
   admin_password: "<%= Rails.application.credentials.admin_password %>"

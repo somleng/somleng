@@ -28,7 +28,7 @@ data "template_file" "appserver_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    inbound_sip_trunks_security_group_id = data.aws_security_group.inbound_sip_trunks.id
+    switch_services_queue_url = data.aws_sqs_queue.switch_services.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }
@@ -42,23 +42,6 @@ resource "aws_ecs_task_definition" "appserver" {
   execution_role_arn = aws_iam_role.task_execution_role.arn
   cpu = var.cpu
   memory = var.memory
-}
-
-resource "local_file" "appserver_task_definition" {
-  filename = "${path.module}/../../../deploy/${var.app_environment}/appserver_task_definition.json"
-  file_permission = "644"
-  content = <<EOF
-{
-  "family": "${aws_ecs_task_definition.appserver.family}",
-  "networkMode": "${aws_ecs_task_definition.appserver.network_mode}",
-  "cpu": "${aws_ecs_task_definition.appserver.cpu}",
-  "memory": "${aws_ecs_task_definition.appserver.memory}",
-  "executionRoleArn": "${aws_ecs_task_definition.appserver.execution_role_arn}",
-  "taskRoleArn": "${aws_ecs_task_definition.appserver.task_role_arn}",
-  "requiresCompatibilities": ["${var.launch_type}"],
-  "containerDefinitions": ${aws_ecs_task_definition.appserver.container_definitions}
-}
-EOF
 }
 
 resource "aws_ecs_service" "appserver" {
@@ -111,7 +94,7 @@ data "template_file" "worker_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    inbound_sip_trunks_security_group_id = data.aws_security_group.inbound_sip_trunks.id
+    switch_services_queue_url = data.aws_sqs_queue.switch_services.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }
@@ -125,23 +108,6 @@ resource "aws_ecs_task_definition" "worker" {
   execution_role_arn = aws_iam_role.task_execution_role.arn
   cpu = var.cpu
   memory = var.memory
-}
-
-resource "local_file" "worker_task_definition" {
-  filename = "${path.module}/../../../deploy/${var.app_environment}/worker_task_definition.json"
-  file_permission = "644"
-  content = <<EOF
-{
-  "family": "${aws_ecs_task_definition.worker.family}",
-  "networkMode": "${aws_ecs_task_definition.worker.network_mode}",
-  "cpu": "${aws_ecs_task_definition.worker.cpu}",
-  "memory": "${aws_ecs_task_definition.worker.memory}",
-  "executionRoleArn": "${aws_ecs_task_definition.worker.execution_role_arn}",
-  "taskRoleArn": "${aws_ecs_task_definition.worker.task_role_arn}",
-  "requiresCompatibilities": ["${var.launch_type}"],
-  "containerDefinitions": ${aws_ecs_task_definition.worker.container_definitions}
-}
-EOF
 }
 
 resource "aws_ecs_service" "worker" {
