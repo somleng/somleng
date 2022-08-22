@@ -25,6 +25,7 @@ class PhoneCall < ApplicationRecord
 
   aasm column: :status do
     state :queued, initial: true
+    state :initiating
     state :initiated
     state :ringing
     state :answered
@@ -35,7 +36,11 @@ class PhoneCall < ApplicationRecord
     state :canceled
 
     event :initiate do
-      transitions from: :queued, to: :initiated, guard: :external_id?
+      transitions from: %i[queued initiating], to: :initiating
+    end
+
+    event :mark_as_initiated do
+      transitions from: %i[queued initiating], to: :initiated, guard: :external_id?
     end
 
     event :cancel do

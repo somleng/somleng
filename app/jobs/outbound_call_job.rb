@@ -2,7 +2,9 @@ class OutboundCallJob < ApplicationJob
   class RetryJob < StandardError; end
 
   def perform(phone_call, call_service_client: CallService::Client.new)
-    return unless phone_call.queued?
+    return unless phone_call.status.in?(%w[queued initiating])
+
+    phone_call.initiate!
 
     phone_call = PhoneCallDecorator.new(phone_call)
     response = call_service_client.create_call(
@@ -26,6 +28,6 @@ class OutboundCallJob < ApplicationJob
     raise RetryJob, "Response body: #{response.body}" unless response.success?
 
     phone_call.external_id = response.fetch(:id)
-    phone_call.initiate!
+    phone_call.mark_as_initiated!
   end
 end
