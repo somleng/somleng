@@ -3,6 +3,7 @@ class PhoneCallDecorator < SimpleDelegator
 
   TWILIO_CALL_STATUS_MAPPINGS = {
     "queued" => "queued",
+    "initiating" => "queued",
     "initiated" => "queued",
     "ringing" => "ringing",
     "answered" => "in-progress",

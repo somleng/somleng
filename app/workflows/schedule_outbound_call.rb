@@ -20,7 +20,7 @@ class ScheduleOutboundCall < ApplicationWorkflow
   end
 
   def queued_phone_calls
-    account.phone_calls.where(switch_error: false).queued
+    account.phone_calls.queued
   end
 
   def calculate_delay
