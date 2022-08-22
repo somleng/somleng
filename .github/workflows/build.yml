@@ -38,7 +38,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "remove_inbound_sip_trunks_security_group",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng"
