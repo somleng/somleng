@@ -7,7 +7,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem "rails", "~> 7.0.0"
 
 gem "administrate"
-gem "administrate_exportable"
 gem "administrate-field-active_storage"
 gem "image_processing"
 

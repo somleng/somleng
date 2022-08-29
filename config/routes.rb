@@ -110,14 +110,10 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      concern :exportable do
-        get :export, on: :collection
-      end
-
-      resources :carriers, only: %i[show index], concerns: :exportable
-      resources :accounts, only: %i[show index], concerns: :exportable
-      resources :phone_calls, only: %i[show index], concerns: :exportable
-      resources :users, only: %i[show index], concerns: :exportable
+      resources :carriers, only: %i[show index]
+      resources :accounts, only: %i[show index]
+      resources :phone_calls, only: %i[show index]
+      resources :users, only: %i[show index]
       resources :statistics, only: :index
       resources :error_logs, only: %i[show index]
       resources :events, only: %i[index show]
