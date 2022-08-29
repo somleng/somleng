@@ -92,24 +92,17 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    administrate (0.17.0)
+    administrate (0.18.0)
       actionpack (>= 5.0)
       actionview (>= 5.0)
       activerecord (>= 5.0)
-      datetime_picker_rails (~> 0.0.7)
       jquery-rails (>= 4.0)
       kaminari (>= 1.0)
-      momentjs-rails (~> 2.8)
       sassc-rails (~> 2.1)
       selectize-rails (~> 0.6)
     administrate-field-active_storage (0.4.1)
       administrate (>= 0.2.2)
       rails (>= 7.0)
-    administrate_exportable (0.6.0)
-      actionview (>= 5.2.2.1)
-      administrate (>= 0.17.0)
-      rails (>= 4.2)
-      railties (>= 5.2.2.1)
     after_commit_everywhere (1.2.2)
       activerecord (>= 4.2)
       activesupport
@@ -192,8 +185,6 @@ GEM
       railties (>= 6.0.0)
     cursor_paginator (0.1.0)
       activesupport (>= 3)
-    datetime_picker_rails (0.0.7)
-      momentjs-rails (>= 2.8.1)
     devise (4.8.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -252,7 +243,7 @@ GEM
       mail (~> 2.7)
     enumerize (2.5.0)
       activesupport (>= 3.2)
-    erubi (1.10.0)
+    erubi (1.11.0)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
@@ -329,9 +320,7 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.16.2)
-    momentjs-rails (2.29.1.1)
-      railties (>= 3.1)
+    minitest (5.16.3)
     money (6.16.0)
       i18n (>= 0.6.4, <= 2)
     msgpack (1.5.3)
@@ -351,7 +340,7 @@ GEM
       net-protocol
       timeout
     nio4r (2.5.8)
-    nokogiri (1.13.7)
+    nokogiri (1.13.8)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     okcomputer (1.18.4)
@@ -519,7 +508,7 @@ GEM
       railties (>= 6.0.0)
     strscan (3.0.3)
     thor (1.2.1)
-    tilt (2.0.10)
+    tilt (2.0.11)
     timeout (0.3.0)
     turbo-rails (1.1.1)
       actionpack (>= 6.0.0)
@@ -529,7 +518,7 @@ GEM
       faraday (>= 0.9, < 3.0)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2022.1)
       tzinfo (>= 1.0.0)
@@ -564,7 +553,6 @@ DEPENDENCIES
   addressable
   administrate
   administrate-field-active_storage
-  administrate_exportable
   after_commit_everywhere
   aws-sdk-ec2
   aws-sdk-rails

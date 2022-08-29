@@ -1,6 +1,5 @@
 module Admin
   class ApplicationController < Administrate::ApplicationController
-    include AdministrateExportable::Exporter
     helper ApplicationHelper
 
     http_basic_authenticate_with(
@@ -16,6 +15,10 @@ module Admin
 
     def default_sorting_direction
       :desc
+    end
+
+    def paginate_resources(resources)
+      super.without_count
     end
   end
 end
