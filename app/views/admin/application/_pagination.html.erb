@@ -1,2 +1,9 @@
-<%= link_to_prev_page(resources, "Previous Page") %>
-<%= link_to_next_page(resources, "Next Page") %>
+<nav class="pagination" role="navigation" aria-label="pager">
+  <span class="prev">
+    <%= link_to_prev_page(resources, raw(t 'views.pagination.previous'), rel: 'prev', param_name: '_page') %>
+  </span>
+
+  <span class="next">
+    <%= link_to_next_page(resources, raw(t 'views.pagination.next'), rel: 'next', param_name: '_page') %>
+  </span>
+</nav>
