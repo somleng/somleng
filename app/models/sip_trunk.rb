@@ -4,6 +4,8 @@ class SIPTrunk < ApplicationRecord
   belongs_to :carrier
 
   def outbound_example_dial_string
+    return if outbound_host.blank?
+
     format(
       "%{plus_prefix}%{dial_string_prefix}%{national_prefix}%{local_number}@%{host}",
       plus_prefix: outbound_plus_prefix? ? "+" : "",

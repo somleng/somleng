@@ -91,7 +91,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.131")
   end
 
-  it "Delete an inbound SIP Trunk" do
+  it "Delete a SIP Trunk" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
     sip_trunk = create(:sip_trunk, carrier:, name: "My SIP Trunk")

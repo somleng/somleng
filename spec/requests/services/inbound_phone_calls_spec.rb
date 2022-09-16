@@ -66,7 +66,7 @@ RSpec.describe "Services" do
       expect(ErrorLog.last).to have_attributes(
         carrier: nil,
         account: nil,
-        error_message: "Inbound SIP trunk does not exist for 175.100.7.240"
+        error_message: "SIP trunk does not exist for 175.100.7.240"
       )
     end
 

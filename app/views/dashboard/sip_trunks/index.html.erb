@@ -1,4 +1,4 @@
-<%= page_title(title: "Inbound SIP Trunks") do %>
+<%= page_title(title: "SIP Trunks") do %>
   <%= render("shared/filters") do |form| %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

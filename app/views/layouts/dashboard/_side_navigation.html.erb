@@ -6,11 +6,11 @@
   </div>
   <ul class="sidebar-nav" data-simplebar>
     <% if policy(:account_settings).show? %>
-      <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fa-solid fa-cloud") %>
+      <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fa-solid fa-gear") %>
     <% end %>
 
     <% if policy(:carrier_settings).show? %>
-      <%= sidebar_nav("Carrier Settings", dashboard_carrier_settings_path, icon_class: "fa-solid fa-tower-broadcast") %>
+      <%= sidebar_nav("Carrier Settings", dashboard_carrier_settings_path, icon_class: "fa-solid fa-gear") %>
     <% end %>
 
     <% if policy(:account).index? %>
@@ -18,7 +18,7 @@
     <% end %>
 
     <% if policy(:sip_trunk).index? %>
-      <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-down") %>
+      <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-tower-cell") %>
     <% end %>
 
     <% if policy(:phone_number).index? %>

@@ -14,7 +14,7 @@ module Services
       context[:sip_trunk] = SIPTrunk.find_by(inbound_source_ip: value)
       if context[:sip_trunk].blank?
         key("source_ip").failure("doesn't exist")
-        error_log_messages << "Inbound SIP trunk does not exist for #{value}"
+        error_log_messages << "SIP trunk does not exist for #{value}"
       end
     end
 

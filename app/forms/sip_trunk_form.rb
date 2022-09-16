@@ -19,13 +19,12 @@ class SIPTrunkForm
 
   delegate :persisted?, :id, to: :sip_trunk
 
-  validates :name, :source_ip, presence: true
-  validates :source_ip, format: Resolv::IPv4::Regex
+  validates :name, presence: true
+  validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
   validate :validate_source_ip
 
   validates :name, presence: true
-  validates :host, presence: true
-  validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_nil: true, allow_blank: true
+  validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "SIPTrunk")
@@ -35,7 +34,7 @@ class SIPTrunkForm
     new(
       sip_trunk:,
       name: sip_trunk.name,
-      source_ip: sip_trunk.inbound_source_ip,
+      source_ip: sip_trunk.inbound_source_ip.presence,
       trunk_prefix_replacement: sip_trunk.inbound_trunk_prefix_replacement,
       host: sip_trunk.outbound_host,
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
@@ -64,6 +63,7 @@ class SIPTrunkForm
   private
 
   def validate_source_ip
+    return if source_ip.blank?
     return if errors[:source_ip].any?
     return if sip_trunk.inbound_source_ip == source_ip
     return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
