@@ -1,4 +1,6 @@
-class OutboundSIPTrunk < ApplicationRecord
+class SIPTrunk < ApplicationRecord
+  include InboundSourceIPCallbacks
+
   belongs_to :carrier
 
   def example_dial_string
@@ -8,7 +10,7 @@ class OutboundSIPTrunk < ApplicationRecord
       dial_string_prefix: dial_string_prefix,
       national_prefix: trunk_prefix? ? "0" : "X" * carrier.country.country_code.to_s.length,
       local_number: "X" * carrier.country.national_number_lengths.last,
-      host: host
+      host: outbound_host
     )
   end
 end

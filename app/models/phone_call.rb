@@ -12,8 +12,7 @@ class PhoneCall < ApplicationRecord
   belongs_to :carrier
   belongs_to :account
   belongs_to :phone_number, optional: true
-  belongs_to :inbound_sip_trunk, optional: true
-  belongs_to :outbound_sip_trunk, optional: true
+  belongs_to :sip_trunk, optional: true
 
   has_one    :call_data_record, -> { where(call_leg: :A) }
   has_one    :interaction, as: :interactable

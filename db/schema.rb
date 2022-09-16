@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_16_053123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -35,15 +35,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
     t.string "status", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
-    t.uuid "outbound_sip_trunk_id"
     t.string "allowed_calling_codes", default: [], null: false, array: true
     t.string "name", null: false
     t.integer "account_memberships_count", default: 0, null: false
     t.jsonb "metadata", default: {}, null: false
     t.integer "calls_per_second", default: 1, null: false
+    t.uuid "sip_trunk_id"
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
-    t.index ["outbound_sip_trunk_id"], name: "index_accounts_on_outbound_sip_trunk_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
+    t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -168,19 +168,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
     t.index ["user_id"], name: "index_imports_on_user_id"
   end
 
-  create_table "inbound_sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "carrier_id", null: false
-    t.string "name", null: false
-    t.string "trunk_prefix_replacement"
-    t.inet "source_ip", null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["carrier_id"], name: "index_inbound_sip_trunks_on_carrier_id"
-    t.index ["sequence_number"], name: "index_inbound_sip_trunks_on_sequence_number", unique: true, order: :desc
-    t.index ["source_ip"], name: "index_inbound_sip_trunks_on_source_ip", unique: true
-  end
-
   create_table "interactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "interactable_type", null: false
     t.uuid "interactable_id", null: false
@@ -248,22 +235,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "outbound_sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "carrier_id", null: false
-    t.string "name", null: false
-    t.string "host", null: false
-    t.string "route_prefixes", default: [], null: false, array: true
-    t.string "dial_string_prefix"
-    t.boolean "trunk_prefix", default: false, null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "nat_supported", default: true, null: false
-    t.boolean "plus_prefix", default: false, null: false
-    t.index ["carrier_id"], name: "index_outbound_sip_trunks_on_carrier_id"
-    t.index ["sequence_number"], name: "index_outbound_sip_trunks_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "phone_call_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "phone_call_id", null: false
     t.json "params", default: {}, null: false
@@ -291,9 +262,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
     t.json "variables", default: {}, null: false
     t.string "direction", null: false
     t.bigserial "sequence_number", null: false
-    t.uuid "inbound_sip_trunk_id"
     t.text "twiml"
-    t.uuid "outbound_sip_trunk_id"
     t.uuid "carrier_id", null: false
     t.string "dial_string"
     t.decimal "price", precision: 10, scale: 4
@@ -301,6 +270,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
     t.string "caller_id"
     t.string "beneficiary_country_code", null: false
     t.string "beneficiary_fingerprint", null: false
+    t.uuid "sip_trunk_id"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
@@ -309,10 +279,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
     t.index ["from"], name: "index_phone_calls_on_from"
-    t.index ["inbound_sip_trunk_id"], name: "index_phone_calls_on_inbound_sip_trunk_id"
-    t.index ["outbound_sip_trunk_id"], name: "index_phone_calls_on_outbound_sip_trunk_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
+    t.index ["sip_trunk_id"], name: "index_phone_calls_on_sip_trunk_id"
     t.index ["status"], name: "index_phone_calls_on_status"
     t.index ["to"], name: "index_phone_calls_on_to"
   end
@@ -361,6 +330,25 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
     t.index ["account_id"], name: "index_recordings_on_account_id"
     t.index ["phone_call_id"], name: "index_recordings_on_phone_call_id"
     t.index ["sequence_number"], name: "index_recordings_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "name", null: false
+    t.string "outbound_host"
+    t.inet "inbound_source_ip"
+    t.string "trunk_prefix_replacement"
+    t.string "route_prefixes", default: [], null: false, array: true
+    t.string "dial_string_prefix"
+    t.boolean "trunk_prefix", default: false, null: false
+    t.boolean "plus_prefix", default: false, null: false
+    t.boolean "symmetric_latching_supported", default: true, null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
+    t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
+    t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -438,7 +426,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
   add_foreign_key "account_memberships", "accounts", on_delete: :cascade
   add_foreign_key "account_memberships", "users", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
-  add_foreign_key "accounts", "outbound_sip_trunks", on_delete: :nullify
+  add_foreign_key "accounts", "sip_trunks"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
@@ -448,24 +436,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_14_074029) do
   add_foreign_key "exports", "users"
   add_foreign_key "imports", "carriers", on_delete: :cascade
   add_foreign_key "imports", "users", on_delete: :cascade
-  add_foreign_key "inbound_sip_trunks", "carriers"
   add_foreign_key "interactions", "accounts"
   add_foreign_key "interactions", "carriers"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "carriers", column: "owner_id"
-  add_foreign_key "outbound_sip_trunks", "carriers"
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "carriers"
-  add_foreign_key "phone_calls", "inbound_sip_trunks", on_delete: :nullify
-  add_foreign_key "phone_calls", "outbound_sip_trunks", on_delete: :nullify
   add_foreign_key "phone_calls", "phone_numbers", on_delete: :nullify
+  add_foreign_key "phone_calls", "sip_trunks"
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
+  add_foreign_key "sip_trunks", "carriers"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
   add_foreign_key "webhook_endpoints", "oauth_applications"

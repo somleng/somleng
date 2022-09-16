@@ -83,16 +83,17 @@ FactoryBot.define do
     end
   end
 
-  factory :outbound_sip_trunk do
+  factory :sip_trunk do
     carrier
     name { "My SIP trunk" }
-    host { "sip.example.com" }
-  end
 
-  factory :inbound_sip_trunk do
-    carrier
-    name { "My SIP trunk" }
-    source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
+    trait :inbound do
+      inbound_source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
+    end
+
+    trait :outbound do
+      outbound_host { "sip.example.com" }
+    end
   end
 
   factory :event do
@@ -128,7 +129,7 @@ FactoryBot.define do
     end
 
     trait :with_outbound_sip_trunk do
-      outbound_sip_trunk { build(:outbound_sip_trunk, carrier:) }
+      sip_trunk { build(:sip_trunk, :outbound, carrier:) }
     end
   end
 
@@ -286,7 +287,7 @@ FactoryBot.define do
       direction { :inbound }
 
       after(:build) do |phone_call|
-        phone_call.inbound_sip_trunk ||= build(:inbound_sip_trunk, carrier: phone_call.carrier)
+        phone_call.sip_trunk ||= build(:sip_trunk, :inbound, carrier: phone_call.carrier)
         phone_call.phone_number ||= build(
           :phone_number, number: phone_call.to, carrier: phone_call.carrier
         )
@@ -297,8 +298,8 @@ FactoryBot.define do
       direction { :outbound }
 
       after(:build) do |phone_call|
-        phone_call.outbound_sip_trunk ||= build(:outbound_sip_trunk, carrier: phone_call.carrier)
-        phone_call.dial_string ||= "#{phone_call.to}@#{phone_call.outbound_sip_trunk.host}"
+        phone_call.sip_trunk ||= build(:sip_trunk, :outbound, carrier: phone_call.carrier)
+        phone_call.dial_string ||= "#{phone_call.to}@#{phone_call.sip_trunk.outbound_host}"
       end
     end
 
