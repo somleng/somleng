@@ -6,23 +6,19 @@
   </div>
   <ul class="sidebar-nav" data-simplebar>
     <% if policy(:account_settings).show? %>
-      <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fa-solid fa-cloud") %>
+      <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fa-solid fa-gear") %>
     <% end %>
 
     <% if policy(:carrier_settings).show? %>
-      <%= sidebar_nav("Carrier Settings", dashboard_carrier_settings_path, icon_class: "fa-solid fa-tower-broadcast") %>
+      <%= sidebar_nav("Carrier Settings", dashboard_carrier_settings_path, icon_class: "fa-solid fa-gear") %>
     <% end %>
 
     <% if policy(:account).index? %>
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
-    <% if policy(:inbound_sip_trunk).index? %>
-      <%= sidebar_nav("Inbound SIP Trunks", dashboard_inbound_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-down") %>
-    <% end %>
-
-    <% if policy(:outbound_sip_trunk).index? %>
-      <%= sidebar_nav("Outbound SIP Trunks", dashboard_outbound_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-up") %>
+    <% if policy(:sip_trunk).index? %>
+      <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-tower-cell") %>
     <% end %>
 
     <% if policy(:phone_number).index? %>

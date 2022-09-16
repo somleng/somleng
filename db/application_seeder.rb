@@ -17,8 +17,7 @@ class ApplicationSeeder
         confirmed_at: Time.current
       }
     )
-    create_outbound_sip_trunk(carrier:)
-    create_inbound_sip_trunk(carrier:)
+    create_sip_trunk(carrier:)
     account = create_account(carrier:)
     phone_number = create_phone_number(carrier:, account:)
 
@@ -36,20 +35,12 @@ class ApplicationSeeder
 
   private
 
-  def create_outbound_sip_trunk(params)
-    OutboundSIPTrunk.first_or_create!(
+  def create_sip_trunk(params)
+    SIPTrunk.first_or_create!(
       params.reverse_merge(
         name: "My SIP Trunk",
-        host: "host.docker.internal:5061"
-      )
-    )
-  end
-
-  def create_inbound_sip_trunk(params)
-    InboundSIPTrunk.first_or_create!(
-      params.reverse_merge(
-        name: "My SIP Trunk",
-        source_ip: ENV.fetch("HOST_IP", "127.0.0.1")
+        outbound_host: "host.docker.internal:5061",
+        inbound_source_ip: ENV.fetch("HOST_IP", "127.0.0.1")
       )
     )
   end

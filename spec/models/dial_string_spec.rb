@@ -3,13 +3,13 @@ require "rails_helper"
 RSpec.describe DialString do
   it "handles trunk prefixes" do
     sip_trunk = create(
-      :outbound_sip_trunk,
-      host: "96.9.66.131",
-      trunk_prefix: true
+      :sip_trunk,
+      outbound_host: "96.9.66.131",
+      outbound_trunk_prefix: true
     )
 
     result = DialString.new(
-      outbound_sip_trunk: sip_trunk,
+      sip_trunk:,
       destination: "2609702120780"
     ).to_s
 
@@ -18,13 +18,13 @@ RSpec.describe DialString do
 
   it "handles dial string prefixes" do
     sip_trunk = create(
-      :outbound_sip_trunk,
-      host: "96.9.66.131",
-      dial_string_prefix: "69980"
+      :sip_trunk,
+      outbound_host: "96.9.66.131",
+      outbound_dial_string_prefix: "69980"
     )
 
     result = DialString.new(
-      outbound_sip_trunk: sip_trunk,
+      sip_trunk:,
       destination: "855715100970"
     ).to_s
 
@@ -33,13 +33,13 @@ RSpec.describe DialString do
 
   it "handles plus prefixes" do
     sip_trunk = create(
-      :outbound_sip_trunk,
-      host: "96.9.66.131",
-      plus_prefix: true
+      :sip_trunk,
+      outbound_host: "96.9.66.131",
+      outbound_plus_prefix: true
     )
 
     result = DialString.new(
-      outbound_sip_trunk: sip_trunk,
+      sip_trunk:,
       destination: "855715100970"
     ).to_s
 

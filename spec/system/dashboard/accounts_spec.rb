@@ -80,13 +80,13 @@ RSpec.describe "Accounts" do
       :enabled,
       carrier: user.carrier
     )
-    outbound_sip_trunk = create(:outbound_sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
+    sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_link("Edit")
     uncheck("Enabled")
-    select("Main SIP Trunk", from: "Outbound SIP trunk")
+    select("Main SIP Trunk", from: "SIP trunk")
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
 
@@ -96,7 +96,7 @@ RSpec.describe "Accounts" do
 
     expect(page).to have_content("Account was successfully updated")
     expect(page).to have_link(
-      "Main SIP Trunk", href: dashboard_outbound_sip_trunk_path(outbound_sip_trunk)
+      "Main SIP Trunk", href: dashboard_sip_trunk_path(sip_trunk)
     )
     expect(page).to have_content("Disabled")
     expect(page).to have_content("Customer managed")

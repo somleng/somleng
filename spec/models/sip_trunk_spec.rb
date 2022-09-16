@@ -1,41 +1,41 @@
 require "rails_helper"
 
-RSpec.describe InboundSIPTrunk do
+RSpec.describe SIPTrunk do
   it "revokes the source IP on destroy" do
     fake_inbound_sip_trunk_authorization = build_fake_inbound_sip_trunk_authorization
-    inbound_sip_trunk = create(
-      :inbound_sip_trunk,
-      source_ip: "175.100.7.240",
+    sip_trunk = create(
+      :sip_trunk,
+      inbound_source_ip: "175.100.7.240",
       inbound_sip_trunk_authorization: fake_inbound_sip_trunk_authorization
     )
 
-    inbound_sip_trunk.destroy!
+    sip_trunk.destroy!
 
     expect(fake_inbound_sip_trunk_authorization.ip_addresses).to be_empty
   end
 
   it "authorizes the source IP on create" do
     fake_inbound_sip_trunk_authorization = build_fake_inbound_sip_trunk_authorization
-    inbound_sip_trunk = build(
-      :inbound_sip_trunk,
-      source_ip: "175.100.7.240",
+    sip_trunk = build(
+      :sip_trunk,
+      inbound_source_ip: "175.100.7.240",
       inbound_sip_trunk_authorization: fake_inbound_sip_trunk_authorization
     )
 
-    inbound_sip_trunk.save!
+    sip_trunk.save!
 
     expect(fake_inbound_sip_trunk_authorization.ip_addresses).to eq(["175.100.7.240"])
   end
 
   it "revokes the old and authorizes the new source IP on update" do
     fake_inbound_sip_trunk_authorization = build_fake_inbound_sip_trunk_authorization
-    inbound_sip_trunk = create(
-      :inbound_sip_trunk,
-      source_ip: "175.100.7.240",
+    sip_trunk = create(
+      :sip_trunk,
+      inbound_source_ip: "175.100.7.240",
       inbound_sip_trunk_authorization: fake_inbound_sip_trunk_authorization
     )
 
-    inbound_sip_trunk.update!(source_ip: "175.100.7.241")
+    sip_trunk.update!(inbound_source_ip: "175.100.7.241")
 
     expect(fake_inbound_sip_trunk_authorization.ip_addresses).to eq(["175.100.7.241"])
   end

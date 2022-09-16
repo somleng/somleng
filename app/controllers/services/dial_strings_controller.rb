@@ -3,16 +3,16 @@ module Services
     def create
       account = Account.find(params.fetch(:account_sid))
       destination = Phony.normalize(params.fetch(:phone_number))
-      destination_rules = DestinationRules.new(account: account, destination: destination)
+      destination_rules = DestinationRules.new(account:, destination:)
 
       if destination_rules.valid?
-        outbound_sip_trunk = destination_rules.sip_trunk
-        dial_string = DialString.new(outbound_sip_trunk: outbound_sip_trunk, destination: destination)
+        sip_trunk = destination_rules.sip_trunk
+        dial_string = DialString.new(sip_trunk:, destination:)
 
         render(
           json: {
             dial_string: dial_string.to_s,
-            nat_supported: outbound_sip_trunk.nat_supported
+            nat_supported: sip_trunk.outbound_symmetric_latching_supported
           },
           status: :created
         )

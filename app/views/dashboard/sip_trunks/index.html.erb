@@ -1,9 +1,9 @@
-<%= page_title(title: "Outbound SIP Trunks") do %>
+<%= page_title(title: "SIP Trunks") do %>
   <%= render("shared/filters") do |form| %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
-  <% if policy(:outbound_sip_trunk).new? %>
-    <%= render("shared/new_resource_page_action", path: new_dashboard_outbound_sip_trunk_path) %>
+  <% if policy(:sip_trunk).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_sip_trunk_path) %>
   <% end %>
 <% end %>
 

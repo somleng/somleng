@@ -33,9 +33,9 @@
     <%= f.attribute :owner_email, value: @resource.owner&.email %>
     <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>
     <%= f.attribute :phone_calls, value: external_link_to("Manage", dashboard_phone_calls_path(filter: {account_id: @resource.id}), title: "Manage phone calls") %>
-    <%= f.attribute :outbound_sip_trunk do %>
-      <% if @resource.outbound_sip_trunk.present? %>
-        <%= external_link_to(@resource.outbound_sip_trunk.name, dashboard_outbound_sip_trunk_path(@resource.outbound_sip_trunk)) %>
+    <%= f.attribute :sip_trunk do %>
+      <% if @resource.sip_trunk.present? %>
+        <%= external_link_to(@resource.sip_trunk.name, dashboard_sip_trunk_path(@resource.sip_trunk)) %>
       <% end %>
     <% end %>
 

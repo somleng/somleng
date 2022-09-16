@@ -67,7 +67,7 @@ Rails.application.routes.draw do
       resources :two_factor_authentications, only: %i[new create destroy]
       resources :accounts
       resources :account_memberships
-      resources :outbound_sip_trunks
+      resources :sip_trunks
       resources :carrier_users
       resources :exports, only: %i[index create]
       resources :imports, only: %i[index create]
@@ -80,7 +80,6 @@ Rails.application.routes.draw do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
         patch :release, on: :member
       end
-      resources :inbound_sip_trunks
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
       resources :events, only: %i[index show]
@@ -120,8 +119,7 @@ Rails.application.routes.draw do
       resources :webhook_request_logs, only: %i[index show]
 
       resources :account_memberships, only: :show
-      resources :inbound_sip_trunks, only: :show
-      resources :outbound_sip_trunks, only: :show
+      resources :sip_trunks, only: :show
       resources :phone_numbers, only: :show
       resources :phone_number_configurations, only: :show
       resources :phone_call_events, only: :show

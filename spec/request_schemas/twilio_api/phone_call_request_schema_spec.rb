@@ -5,22 +5,26 @@ module TwilioAPI
     it "validates To" do
       account = create(:account, allowed_calling_codes: ["855"])
       account_with_no_sip_trunks = create(:account)
-      create(:outbound_sip_trunk, carrier: account.carrier)
+      create(:sip_trunk, carrier: account.carrier)
       expect(
-        validate_request_schema(input_params: { To: "855716100235" }, options: { account: account })
+        validate_request_schema(input_params: { To: "855716100235" }, options: { account: })
       ).to have_valid_field(:To)
 
       expect(
-        validate_request_schema(input_params: { To: "8557199999999" }, options: { account: account })
+        validate_request_schema(input_params: { To: "8557199999999" },
+                                options: { account: })
       ).not_to have_valid_field(:To, error_message: "is invalid")
 
       expect(
-        validate_request_schema(input_params: { To: "61428234567" }, options: { account: account })
+        validate_request_schema(input_params: { To: "61428234567" }, options: { account: })
       ).not_to have_valid_schema(error_message: "Call blocked by block list", error_code: "13225")
 
       expect(
-        validate_request_schema(input_params: { To: "855716100235" }, options: { account: account_with_no_sip_trunks })
-      ).not_to have_valid_schema(error_message: "Calling this number is unsupported or the number is invalid", error_code: "13224")
+        validate_request_schema(input_params: { To: "855716100235" },
+                                options: { account: account_with_no_sip_trunks })
+      ).not_to have_valid_schema(
+        error_message: "Calling this number is unsupported or the number is invalid", error_code: "13224"
+      )
     end
 
     it "validates Url" do
@@ -37,7 +41,7 @@ module TwilioAPI
       ).not_to have_valid_field(:Url)
 
       expect(
-        validate_request_schema(input_params: { })
+        validate_request_schema(input_params: {})
       ).not_to have_valid_field(:Url)
     end
 
@@ -87,10 +91,10 @@ module TwilioAPI
 
     it "handles post processing" do
       account = create(:account)
-      outbound_sip_trunk = create(
-        :outbound_sip_trunk,
+      sip_trunk = create(
+        :sip_trunk,
         carrier: account.carrier,
-        host: "sip.example.com"
+        outbound_host: "sip.example.com"
       )
       schema = validate_request_schema(
         input_params: {
@@ -103,7 +107,7 @@ module TwilioAPI
           StatusCallbackMethod: "GET"
         },
         options: {
-          account: account
+          account:
         }
       )
 
@@ -111,9 +115,9 @@ module TwilioAPI
         to: "855716100235",
         from: "855716100234",
         caller_id: "+855716100234",
-        account: account,
+        account:,
         carrier: account.carrier,
-        outbound_sip_trunk: outbound_sip_trunk,
+        sip_trunk:,
         dial_string: "855716100235@sip.example.com",
         voice_url: "https://www.example.com/voice_url.xml",
         voice_method: "GET",
@@ -127,7 +131,7 @@ module TwilioAPI
     it "handles post processing when passing TwiML" do
       account = create(:account)
       create(
-        :outbound_sip_trunk,
+        :sip_trunk,
         carrier: account.carrier
       )
       schema = validate_request_schema(
@@ -137,7 +141,7 @@ module TwilioAPI
           Twiml: "<Response><Say>Ahoy there!</Say></Response>"
         },
         options: {
-          account: account
+          account:
         }
       )
 
@@ -151,7 +155,7 @@ module TwilioAPI
     def validate_request_schema(input_params:, options: {})
       options[:account] ||= build_stubbed(:account)
 
-      PhoneCallRequestSchema.new(input_params: input_params, options: options)
+      PhoneCallRequestSchema.new(input_params:, options:)
     end
   end
 end

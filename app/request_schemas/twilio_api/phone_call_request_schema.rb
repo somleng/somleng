@@ -28,8 +28,8 @@ module TwilioAPI
         next base.failure(text: "Call blocked by block list", code: "13225")
       end
 
-      context[:outbound_sip_trunk] = destination_rules.sip_trunk
-      if context[:outbound_sip_trunk].blank?
+      context[:sip_trunk] = destination_rules.sip_trunk
+      if context[:sip_trunk].blank?
         base.failure(
           text: "Calling this number is unsupported or the number is invalid",
           code: "13224"
@@ -60,9 +60,9 @@ module TwilioAPI
       {
         account:,
         carrier: account.carrier,
-        outbound_sip_trunk: context.fetch(:outbound_sip_trunk),
+        sip_trunk: context.fetch(:sip_trunk),
         dial_string: DialString.new(
-          outbound_sip_trunk: context.fetch(:outbound_sip_trunk),
+          sip_trunk: context.fetch(:sip_trunk),
           destination: params.fetch(:To)
         ).to_s,
         to: params.fetch(:To),

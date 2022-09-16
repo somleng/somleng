@@ -3,9 +3,7 @@ require "administrate/base_dashboard"
 class AccountDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
-    outbound_sip_trunk: Field::BelongsTo.with_options(
-      transform_on_export: ->(field) { field.data&.id }
-    ),
+    sip_trunk: Field::BelongsTo,
     phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
     phone_numbers: Field::HasMany,
     id: Field::String,
@@ -31,7 +29,7 @@ class AccountDashboard < Administrate::BaseDashboard
     name
     status
     calls_per_second
-    outbound_sip_trunk
+    sip_trunk
     created_at
     updated_at
     phone_calls

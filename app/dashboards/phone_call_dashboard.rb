@@ -5,12 +5,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     account: Field::BelongsTo.with_options(
       transform_on_export: ->(field) { field.data.id }
     ),
-    inbound_sip_trunk: Field::BelongsTo.with_options(
-      transform_on_export: ->(field) { field.data&.id }
-    ),
-    outbound_sip_trunk: Field::BelongsTo.with_options(
-      transform_on_export: ->(field) { field.data&.id }
-    ),
+    sip_trunk: Field::BelongsTo,
     call_data_record: Field::BelongsTo.with_options(
       transform_on_export: ->(field) { field.data&.id }
     ),
@@ -61,7 +56,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     status_callback_method
     created_at
     updated_at
-    inbound_sip_trunk
+    sip_trunk
     call_data_record
     events
     phone_call_events

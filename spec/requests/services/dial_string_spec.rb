@@ -5,12 +5,12 @@ RSpec.describe "Services" do
     it "generates a dial string" do
       carrier = create(:carrier)
       _sip_trunk = create(
-        :outbound_sip_trunk,
-        carrier: carrier,
-        nat_supported: true,
-        host: "27.109.112.141"
+        :sip_trunk,
+        carrier:,
+        outbound_symmetric_latching_supported: true,
+        outbound_host: "27.109.112.141"
       )
-      account = create(:account, carrier: carrier)
+      account = create(:account, carrier:)
 
       post(
         api_services_dial_string_path,
@@ -30,8 +30,10 @@ RSpec.describe "Services" do
 
     it "handles an unsupported number" do
       carrier = create(:carrier)
-      _sip_trunk = create(:outbound_sip_trunk, carrier: carrier, host: "27.109.112.141", route_prefixes: ["85512"])
-      account = create(:account, carrier: carrier)
+      _sip_trunk = create(
+        :sip_trunk, carrier:, outbound_host: "27.109.112.141", outbound_route_prefixes: ["85512"]
+      )
+      account = create(:account, carrier:)
 
       post(
         api_services_dial_string_path,

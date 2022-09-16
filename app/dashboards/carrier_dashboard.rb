@@ -3,8 +3,7 @@ require "administrate/base_dashboard"
 class CarrierDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     accounts: Field::HasMany,
-    inbound_sip_trunks: Field::HasMany,
-    outbound_sip_trunks: Field::HasMany,
+    sip_trunks: Field::HasMany,
     phone_numbers: Field::HasMany,
     phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
     carrier_users: Field::HasMany,
@@ -39,8 +38,7 @@ class CarrierDashboard < Administrate::BaseDashboard
     created_at
     updated_at
     accounts
-    inbound_sip_trunks
-    outbound_sip_trunks
+    sip_trunks
     phone_numbers
     phone_calls
     carrier_users

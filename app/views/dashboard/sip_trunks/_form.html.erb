@@ -1,0 +1,65 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource]) do |f| %>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :name, placeholder: "Main SIP Trunk", maxlength: 128, hint: "A friendly name for the SIP Trunk" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Inbound Dialing</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :source_ip, placeholder: "175.100.7.240", hint: "The source IP address for inbound calls" %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input :trunk_prefix_replacement, placeholder: current_carrier.country.country_code, hint: "Only required if your trunk is configured for local dialing. The leading 0 will be replaced by this value" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Outbound Dialing</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :host, placeholder: "sip.example.com:5061", hint: "Can be either an IP Address or FQDN" %>
+          </div>
+
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :dial_string_prefix,
+                as: :numeric,
+                hint: "Numeric prefix applied to the beginning of the dial string"
+              ) %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :trunk_prefix, as: :boolean, wrapper: :custom_boolean_switch, hint: "Replaces the country code with a 0. Use for local dialing." %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input :plus_prefix, as: :boolean, wrapper: :custom_boolean_switch, hint: "Prefixes the dial string with a plus (+)." %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

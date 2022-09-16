@@ -6,7 +6,7 @@ class AccountForm
   attribute :name
   attribute :enabled, :boolean, default: true
   attribute :account, default: -> { Account.new(access_token: Doorkeeper::AccessToken.new) }
-  attribute :outbound_sip_trunk_id
+  attribute :sip_trunk_id
   attribute :owner_name
   attribute :owner_email
   attribute :current_user
@@ -35,7 +35,7 @@ class AccountForm
       account:,
       carrier: account.carrier,
       name: account.name,
-      outbound_sip_trunk_id: account.outbound_sip_trunk_id,
+      sip_trunk_id: account.sip_trunk_id,
       enabled: account.enabled?,
       calls_per_second: account.calls_per_second,
       owner_name: account.owner&.name,
@@ -51,9 +51,7 @@ class AccountForm
     account.name = name if name.present?
     account.calls_per_second = calls_per_second
 
-    if outbound_sip_trunk_id.present?
-      account.outbound_sip_trunk = carrier.outbound_sip_trunks.find(outbound_sip_trunk_id)
-    end
+    account.sip_trunk = carrier.sip_trunks.find(sip_trunk_id) if sip_trunk_id.present?
 
     Account.transaction do
       account.save!
@@ -62,8 +60,9 @@ class AccountForm
     end
   end
 
-  def outbound_sip_trunk_options_for_select
-    carrier.outbound_sip_trunks.map { |item| [item.name, item.id] }
+  def sip_trunk_options_for_select
+    sip_trunks = carrier.sip_trunks.select(&:configured_for_outbound_dialing?)
+    sip_trunks.map { |item| [item.name, item.id] }
   end
 
   private
