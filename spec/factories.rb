@@ -130,8 +130,8 @@ FactoryBot.define do
       end
     end
 
-    trait :with_outbound_sip_trunk do
-      sip_trunk { build(:sip_trunk, :outbound, carrier:) }
+    trait :with_sip_trunk do
+      sip_trunk { build(:sip_trunk, carrier:) }
     end
   end
 
@@ -275,7 +275,7 @@ FactoryBot.define do
     external_id { SecureRandom.uuid }
 
     trait :routable do
-      association :account, factory: %i[account with_outbound_sip_trunk]
+      association :account, factory: %i[account with_sip_trunk]
     end
 
     trait :queued do
@@ -289,7 +289,7 @@ FactoryBot.define do
       direction { :inbound }
 
       after(:build) do |phone_call|
-        phone_call.sip_trunk ||= build(:sip_trunk, :inbound, carrier: phone_call.carrier)
+        phone_call.sip_trunk ||= build(:sip_trunk, carrier: phone_call.carrier)
         phone_call.phone_number ||= build(
           :phone_number, number: phone_call.to, carrier: phone_call.carrier
         )
@@ -300,7 +300,7 @@ FactoryBot.define do
       direction { :outbound }
 
       after(:build) do |phone_call|
-        phone_call.sip_trunk ||= build(:sip_trunk, :outbound, carrier: phone_call.carrier)
+        phone_call.sip_trunk ||= build(:sip_trunk, carrier: phone_call.carrier)
         phone_call.dial_string ||= "#{phone_call.to}@#{phone_call.sip_trunk.outbound_host}"
       end
     end

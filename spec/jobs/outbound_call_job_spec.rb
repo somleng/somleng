@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe OutboundCallJob do
   it "initiates an outbound call" do
     carrier = create(:carrier)
-    sip_trunk = create(:sip_trunk, :outbound, outbound_symmetric_latching_supported: false, carrier:)
+    sip_trunk = create(:sip_trunk, outbound_symmetric_latching_supported: false, carrier:)
 
     phone_call = create(
       :phone_call,
