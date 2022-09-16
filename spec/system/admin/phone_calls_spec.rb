@@ -2,10 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Admin/Phone Calls" do
   it "Inspect phone calls" do
+    sip_trunk = create(:sip_trunk)
     phone_call = create(
       :phone_call,
+      sip_trunk:,
+      carrier: sip_trunk.carrier,
       status_callback_url: "https://example.com/call-status-callback",
-      to: "855718224112"
+      to: "855718224112",
     )
     recording = create(
       :recording,
