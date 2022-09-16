@@ -9,7 +9,7 @@ RSpec.describe DialString do
     )
 
     result = DialString.new(
-      sip_trunk: sip_trunk,
+      sip_trunk:,
       destination: "2609702120780"
     ).to_s
 
