@@ -11,17 +11,17 @@ module Services
     end
 
     rule(:source_ip) do |context:|
-      context[:inbound_sip_trunk] = InboundSIPTrunk.find_by(source_ip: value)
-      if context[:inbound_sip_trunk].blank?
+      context[:sip_trunk] = SIPTrunk.find_by(inbound_source_ip: value)
+      if context[:sip_trunk].blank?
         key("source_ip").failure("doesn't exist")
         error_log_messages << "Inbound SIP trunk does not exist for #{value}"
       end
     end
 
     rule(:to) do |context:|
-      next if context[:inbound_sip_trunk].blank?
+      next if context[:sip_trunk].blank?
 
-      phone_numbers = context[:inbound_sip_trunk].carrier.phone_numbers
+      phone_numbers = context[:sip_trunk].carrier.phone_numbers
       context[:phone_number] = phone_numbers.find_by(number: value)
 
       if context[:phone_number].blank?
@@ -40,9 +40,9 @@ module Services
     end
 
     rule(:from) do |context:|
-      next if context[:inbound_sip_trunk].blank?
+      next if context[:sip_trunk].blank?
 
-      context[:from] = normalize_from(value, context[:inbound_sip_trunk].trunk_prefix_replacement)
+      context[:from] = normalize_from(value, context[:sip_trunk].inbound_trunk_prefix_replacement)
       unless Phony.plausible?(context[:from])
         key.failure(
           "is invalid. It must be an E.164 formatted phone number and must include the country code"
@@ -52,7 +52,7 @@ module Services
     end
 
     rule do |context:|
-      error_log_messages.carrier = context[:inbound_sip_trunk]&.carrier
+      error_log_messages.carrier = context[:sip_trunk]&.carrier
       error_log_messages.account = context[:phone_number]&.account
 
       next if context[:phone_number].blank?
@@ -72,7 +72,7 @@ module Services
 
       phone_number = context.fetch(:phone_number)
       result[:phone_number] = phone_number
-      result[:inbound_sip_trunk] = context.fetch(:inbound_sip_trunk)
+      result[:sip_trunk] = context.fetch(:sip_trunk)
       result[:direction] = :inbound
       result[:account] = phone_number.account
       result[:carrier] = phone_number.carrier

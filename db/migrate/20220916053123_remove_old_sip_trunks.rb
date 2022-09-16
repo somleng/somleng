@@ -5,25 +5,21 @@ class RemoveOldSIPTrunks < ActiveRecord::Migration[7.0]
   class InboundSIPTrunk < ActiveRecord::Base
   end
 
-  def change
-    reversible do |dir|
-      dir.up do
-        ApplicationRecord.transaction do
-          migrate_sip_trunks
-        end
-      end
+  def up
+    ApplicationRecord.transaction do
+      migrate_sip_trunks
     end
 
     remove_column :phone_calls, :outbound_sip_trunk_id, :uuid
     remove_column :phone_calls, :inbound_sip_trunk_id, :uuid
     remove_column :accounts, :outbound_sip_trunk_id, :uuid
 
-    reversible do |dir|
-      dir.up do
-        drop_table :outbound_sip_trunks
-        drop_table :inbound_sip_trunks
-      end
-    end
+    drop_table :outbound_sip_trunks
+    drop_table :inbound_sip_trunks
+  end
+
+  def down
+    raise ActiveRecord::IrreversibleMigration
   end
 
   private
@@ -39,12 +35,12 @@ class RemoveOldSIPTrunks < ActiveRecord::Migration[7.0]
 
       if existing_sip_trunk.is_a?(OutboundSIPTrunk)
         sip_trunk.outbound_host = existing_sip_trunk.host
-        sip_trunk.route_prefixes = existing_sip_trunk.route_prefixes
-        sip_trunk.trunk_prefix = existing_sip_trunk.trunk_prefix
-        sip_trunk.plus_prefix = existing_sip_trunk.plus_prefix
-        sip_trunk.symmetric_latching_supported = existing_sip_trunk.nat_supported
+        sip_trunk.outbound_route_prefixes = existing_sip_trunk.route_prefixes
+        sip_trunk.outbound_trunk_prefix = existing_sip_trunk.trunk_prefix
+        sip_trunk.outbound_plus_prefix = existing_sip_trunk.plus_prefix
+        sip_trunk.outbound_symmetric_latching_supported = existing_sip_trunk.nat_supported
       elsif existing_sip_trunk.is_a?(InboundSIPTrunk)
-        sip_trunk.trunk_prefix_replacement = existing_sip_trunk.trunk_prefix_replacement
+        sip_trunk.inbound_trunk_prefix_replacement = existing_sip_trunk.trunk_prefix_replacement
         sip_trunk.inbound_source_ip = existing_sip_trunk.source_ip
       end
 

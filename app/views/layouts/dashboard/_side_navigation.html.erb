@@ -17,12 +17,8 @@
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
-    <% if policy(:inbound_sip_trunk).index? %>
-      <%= sidebar_nav("Inbound SIP Trunks", dashboard_inbound_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-down") %>
-    <% end %>
-
-    <% if policy(:outbound_sip_trunk).index? %>
-      <%= sidebar_nav("Outbound SIP Trunks", dashboard_outbound_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-up") %>
+    <% if policy(:sip_trunk).index? %>
+      <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-sort-amount-down") %>
     <% end %>
 
     <% if policy(:phone_number).index? %>

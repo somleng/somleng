@@ -5,7 +5,10 @@
         Name
       </th>
       <th>
-        Dial string
+        Inbound Source IP
+      </th>
+      <th>
+        Outbound Host
       </th>
       <th>
         Created At
@@ -14,21 +17,27 @@
   </thead>
 
   <tbody>
-    <% resources.each do |outbound_sip_trunk| %>
+    <% resources.each do |sip_trunk| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
 
         <td>
-          <%= link_to(outbound_sip_trunk.name, polymorphic_path([:dashboard, outbound_sip_trunk])) %>
+          <%= link_to(sip_trunk.name, polymorphic_path([:dashboard, sip_trunk])) %>
         </td>
 
         <td>
           <code>
-            <%= outbound_sip_trunk.example_dial_string %>
+            <%= sip_trunk.inbound_source_ip %>
           </code>
         </td>
 
         <td>
-          <%= local_time(outbound_sip_trunk.created_at) %>
+          <code>
+            <%= sip_trunk.outbound_host %>
+          </code>
+        </td>
+
+        <td>
+          <%= local_time(sip_trunk.created_at) %>
         </td>
       </tr>
     <% end %>

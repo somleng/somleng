@@ -3,8 +3,7 @@ class Carrier < ApplicationRecord
   has_many :account_memberships, through: :accounts
   has_many :account_users, through: :accounts, source: :users, class_name: "User"
   has_many :carrier_users, -> { where.not(carrier_role: nil) }, class_name: "User"
-  has_many :inbound_sip_trunks
-  has_many :outbound_sip_trunks
+  has_many :sip_trunks
   has_many :phone_numbers
   has_many :phone_calls
   has_many :events

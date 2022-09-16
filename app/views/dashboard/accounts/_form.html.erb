@@ -18,10 +18,10 @@
 
     <div class="row">
       <div class="col-sm-6">
-         <%= f.input :outbound_sip_trunk_id,
-                      collection: resource.outbound_sip_trunk_options_for_select,
-                      hint: "Optionally specify an outbound SIP trunk which will be used by this account for outbound calls. If left blank outbound calls from this account will be routed automatically.",
-                      selected: resource.outbound_sip_trunk_id,
+         <%= f.input :sip_trunk_id,
+                      collection: resource.sip_trunk_options_for_select,
+                      hint: "Optionally specify a SIP trunk which will be used by this account for outbound calls. If left blank outbound calls from this account will be routed automatically.",
+                      selected: resource.sip_trunk_id,
                       prompt: "",
                       input_html: { data: { behavior: "choices-input" } } %>
       </div>

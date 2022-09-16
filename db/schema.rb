@@ -335,14 +335,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_053123) do
   create_table "sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "name", null: false
-    t.string "outbound_host"
     t.inet "inbound_source_ip"
-    t.string "trunk_prefix_replacement"
-    t.string "route_prefixes", default: [], null: false, array: true
-    t.string "dial_string_prefix"
-    t.boolean "trunk_prefix", default: false, null: false
-    t.boolean "plus_prefix", default: false, null: false
-    t.boolean "symmetric_latching_supported", default: true, null: false
+    t.string "inbound_trunk_prefix_replacement"
+    t.string "outbound_host"
+    t.string "outbound_route_prefixes", default: [], null: false, array: true
+    t.string "outbound_dial_string_prefix"
+    t.boolean "outbound_trunk_prefix", default: false, null: false
+    t.boolean "outbound_plus_prefix", default: false, null: false
+    t.boolean "outbound_symmetric_latching_supported", default: true, null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -426,7 +426,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_053123) do
   add_foreign_key "account_memberships", "accounts", on_delete: :cascade
   add_foreign_key "account_memberships", "users", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
-  add_foreign_key "accounts", "sip_trunks"
+  add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
@@ -445,7 +445,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_053123) do
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "carriers"
   add_foreign_key "phone_calls", "phone_numbers", on_delete: :nullify
-  add_foreign_key "phone_calls", "sip_trunks"
+  add_foreign_key "phone_calls", "sip_trunks", on_delete: :nullify
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"

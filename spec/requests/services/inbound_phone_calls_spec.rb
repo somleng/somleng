@@ -18,7 +18,7 @@ RSpec.describe "Services" do
         status_callback_url: "https://example.com/status_callback",
         status_callback_method: "POST"
       )
-      create(:inbound_sip_trunk, carrier:, source_ip: "175.100.7.240")
+      create(:sip_trunk, carrier:, inbound_source_ip: "175.100.7.240")
 
       post(
         api_services_inbound_phone_calls_path,
@@ -73,7 +73,7 @@ RSpec.describe "Services" do
     it "handles phone numbers which aren't configured" do
       carrier = create(:carrier)
       unconfigured_phone_number = create(:phone_number, :assigned_to_account, carrier:, number: "1234")
-      create(:inbound_sip_trunk, carrier:, source_ip: "175.100.7.240")
+      create(:sip_trunk, carrier:, inbound_source_ip: "175.100.7.240")
 
       post(
         api_services_inbound_phone_calls_path,

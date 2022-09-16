@@ -1,4 +1,4 @@
-class OutboundSIPTrunkPolicy < ApplicationPolicy
+class SIPTrunkPolicy < ApplicationPolicy
   def manage?
     carrier_admin?
   end

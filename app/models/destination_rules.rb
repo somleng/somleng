@@ -23,10 +23,13 @@ class DestinationRules
   private
 
   def find_sip_trunk
-    return account.outbound_sip_trunk if account.outbound_sip_trunk.present?
+    return account.sip_trunk if account.sip_trunk&.configured_for_outbound_dialing?
+    return if account.sip_trunk.present?
 
-    account.carrier.outbound_sip_trunks.sort_by { |sip_trunk| -sip_trunk.route_prefixes.length }.detect do |sip_trunk|
-      sip_trunk.route_prefixes.any? { |prefix| destination =~ /\A#{prefix}/ } || sip_trunk.route_prefixes.empty?
+    outbound_sip_trunks = account.carrier.sip_trunks.select(&:configured_for_outbound_dialing?)
+    outbound_sip_trunks = outbound_sip_trunks.sort_by { |sip_trunk| -sip_trunk.outbound_route_prefixes.length }
+    outbound_sip_trunks.detect do |sip_trunk|
+      sip_trunk.outbound_route_prefixes.any? { |prefix| destination =~ /\A#{prefix}/ } || sip_trunk.outbound_route_prefixes.empty?
     end
   end
 end

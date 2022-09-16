@@ -20,7 +20,7 @@ class OutboundCallJob < ApplicationJob
       from: phone_call.caller_id,
       routing_instructions: {
         dial_string: phone_call.dial_string,
-        nat_supported: phone_call.outbound_sip_trunk.nat_supported
+        nat_supported: phone_call.sip_trunk.outbound_symmetric_latching_supported
       }
     )
 
