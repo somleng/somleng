@@ -27,7 +27,9 @@ class DestinationRules
     return if account.sip_trunk.present?
 
     outbound_sip_trunks = account.carrier.sip_trunks.select(&:configured_for_outbound_dialing?)
-    outbound_sip_trunks = outbound_sip_trunks.sort_by { |sip_trunk| -sip_trunk.outbound_route_prefixes.length }
+    outbound_sip_trunks = outbound_sip_trunks.sort_by do |sip_trunk|
+      -sip_trunk.outbound_route_prefixes.length
+    end
     outbound_sip_trunks.detect do |sip_trunk|
       sip_trunk.outbound_route_prefixes.any? { |prefix| destination =~ /\A#{prefix}/ } || sip_trunk.outbound_route_prefixes.empty?
     end

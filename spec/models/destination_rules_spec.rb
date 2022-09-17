@@ -60,6 +60,16 @@ RSpec.describe DestinationRules do
 
       expect(result).to eq(nil)
     end
+
+    it "handles unconfigured trunks" do
+      carrier = create(:carrier)
+      _sip_trunk = create(:sip_trunk, outbound_host: nil, carrier:)
+      account = create(:account, carrier:)
+
+      result = DestinationRules.new(account:, destination: "855715100970").sip_trunk
+
+      expect(result).to eq(nil)
+    end
   end
 
   describe "#calling_code_allowed?" do
