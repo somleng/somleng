@@ -347,6 +347,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_012147) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "authentication_mode", null: false
+    t.string "username"
+    t.string "password"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc

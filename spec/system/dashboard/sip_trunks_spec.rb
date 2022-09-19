@@ -33,6 +33,7 @@ RSpec.describe "SIP Trunks" do
     visit dashboard_sip_trunks_path
     click_link("New")
     fill_in("Name", with: "Main SIP Trunk")
+    choose("IP address")
     fill_in("Source IP", with: "175.100.7.240")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
@@ -42,6 +43,7 @@ RSpec.describe "SIP Trunks" do
     click_button "Create SIP trunk"
 
     expect(page).to have_content("SIP trunk was successfully created")
+    expect(page).to have_content("IP address")
     expect(page).to have_content("175.100.7.240")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
   end

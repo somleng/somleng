@@ -7,6 +7,12 @@
 
         <div class="row">
           <div class="col-sm-6">
+            <%= f.input :authentication_mode, as: :radio_buttons, wrapper: :vertical_collection_inline, hint: "If you have a dedicated public static IP address you may choose 'IP address authentication', otherwise choose 'SIP registration'."  %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
             <%= f.input :name, placeholder: "Main SIP Trunk", maxlength: 128, hint: "A friendly name for the SIP Trunk" %>
           </div>
         </div>

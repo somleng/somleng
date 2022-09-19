@@ -88,6 +88,7 @@ FactoryBot.define do
     name { "My SIP trunk" }
     inbound
     outbound
+    authentication_mode { :ip_address }
 
     trait :inbound do
       inbound_source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }

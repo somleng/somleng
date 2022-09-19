@@ -1,7 +1,11 @@
 class SIPTrunk < ApplicationRecord
   include InboundSourceIPCallbacks
+  extend Enumerize
 
   belongs_to :carrier
+  encrypts :password
+
+  enumerize :authentication_mode, in: %i[ip_address sip_registration]
 
   def outbound_example_dial_string
     return if outbound_host.blank?

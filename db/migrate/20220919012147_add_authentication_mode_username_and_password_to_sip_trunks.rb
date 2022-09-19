@@ -1,6 +1,8 @@
-class AddAuthenticationModeToSIPTrunks < ActiveRecord::Migration[7.0]
+class AddAuthenticationModeUsernameAndPasswordToSIPTrunks < ActiveRecord::Migration[7.0]
   def change
     add_column(:sip_trunks, :authentication_mode, :string)
+    add_column(:sip_trunks, :username, :string)
+    add_column(:sip_trunks, :password, :string)
 
     reversible do |dir|
       dir.up do
