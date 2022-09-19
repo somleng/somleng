@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_16_053123) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_19_012147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -346,6 +346,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_053123) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "authentication_mode", null: false
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
