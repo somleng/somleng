@@ -21,34 +21,52 @@
     </div>
   </div>
 
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title">Inbound Dialing</h5>
+  <% if @resource.authentication_mode.ip_address? %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Inbound Dialing</h5>
 
-      <%= show_for(@resource) do |f| %>
-        <%= f.attribute :inbound_source_ip, label: "Source IP" %>
-        <% if @resource.inbound_source_ip.present? %>
-          <%= f.attribute :inbound_trunk_prefix_replacement, label: "Trunk prefix replacement" %>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title">Outbound Dialing</h5>
-
-      <%= show_for(@resource) do |f| %>
-        <%= f.attribute :outbound_host, label: "Host" %>
-
-        <% if @resource.outbound_host.present? %>
-          <%= f.attribute :outbound_example_dial_string, label: "Dial string" do %>
-            <code>
-              <%= @resource.outbound_example_dial_string %>
-            </code>
+        <%= show_for(@resource) do |f| %>
+          <%= f.attribute :inbound_source_ip, label: "Source IP" %>
+          <% if @resource.inbound_source_ip.present? %>
+            <%= f.attribute :inbound_trunk_prefix_replacement, label: "Trunk prefix replacement" %>
           <% end %>
         <% end %>
-      <% end %>
+      </div>
     </div>
-  </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Outbound Dialing</h5>
+
+        <%= show_for(@resource) do |f| %>
+          <%= f.attribute :outbound_host, label: "Host" %>
+
+          <% if @resource.outbound_host.present? %>
+            <%= f.attribute :outbound_example_dial_string, label: "Dial string" do %>
+              <code>
+                <%= @resource.outbound_example_dial_string %>
+              </code>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @resource.authentication_mode.client_credentials? %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Client Credentials</h5>
+
+        <%= show_for(@resource) do |f| %>
+          <%= f.attribute :username %>
+          <%= f.attribute :password do %>
+            <%= mask_content(@resource.password) %>
+          <% end %>
+          <%= f.attribute :domain, value: "sip.somleng.org" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>

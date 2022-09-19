@@ -260,6 +260,7 @@ GEM
     foreman (0.87.2)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    haikunator (1.1.1)
     hashdiff (1.0.1)
     htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
@@ -309,7 +310,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.18.0)
+    loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -575,6 +576,7 @@ DEPENDENCIES
   factory_bot_rails
   faraday
   foreman
+  haikunator
   http
   image_processing
   jsbundling-rails

@@ -352,6 +352,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_012147) do
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
+    t.index ["username"], name: "index_sip_trunks_on_username", unique: true
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

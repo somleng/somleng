@@ -29,7 +29,7 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
-  switch_services_queue_name = "somleng-switch-staging-services"
+  call_service_queue_name = "somleng-switch-staging-services"
   ecs_appserver_autoscale_min_instances = 0
   ecs_worker_autoscale_min_instances = 0
 

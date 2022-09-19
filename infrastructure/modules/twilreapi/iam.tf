@@ -81,7 +81,7 @@ resource "aws_iam_policy" "ecs_task_policy" {
         "sqs:SendMessage"
       ],
       "Resource": [
-        "${data.aws_sqs_queue.switch_services.arn}"
+        "${data.aws_sqs_queue.call_service.arn}"
       ]
     },
     {

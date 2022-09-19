@@ -54,13 +54,15 @@ class SIPTrunkForm
   def save
     return false if invalid?
 
+    set_defaults
+
     sip_trunk.attributes = {
       carrier:,
       authentication_mode:,
       name:,
       inbound_source_ip: source_ip,
       inbound_trunk_prefix_replacement: trunk_prefix_replacement.presence,
-      outbound_host: host.strip,
+      outbound_host: host.to_s.strip.presence,
       outbound_dial_string_prefix: dial_string_prefix.presence,
       outbound_trunk_prefix: trunk_prefix,
       outbound_plus_prefix: plus_prefix
@@ -78,5 +80,16 @@ class SIPTrunkForm
     return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
 
     errors.add(:source_ip, :taken)
+  end
+
+  def set_defaults
+    return unless authentication_mode.client_credentials?
+
+    self.source_ip = nil
+    self.trunk_prefix_replacement = carrier.country.country_code
+    self.host = nil
+    self.dial_string_prefix = nil
+    self.trunk_prefix = false
+    self.plus_prefix = true
   end
 end

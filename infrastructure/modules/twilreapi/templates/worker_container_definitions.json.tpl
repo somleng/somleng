@@ -95,8 +95,8 @@
         "value": "${uploads_bucket}"
       },
       {
-        "name": "SWITCH_SERVICES_QUEUE_URL",
-        "value": "${switch_services_queue_url}"
+        "name": "call_service_QUEUE_URL",
+        "value": "${call_service_queue_url}"
       },
       {
         "name": "RAW_RECORDINGS_BUCKET",

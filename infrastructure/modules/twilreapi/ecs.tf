@@ -28,7 +28,7 @@ data "template_file" "appserver_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    switch_services_queue_url = data.aws_sqs_queue.switch_services.url
+    call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }
@@ -94,7 +94,7 @@ data "template_file" "worker_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    switch_services_queue_url = data.aws_sqs_queue.switch_services.url
+    call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }

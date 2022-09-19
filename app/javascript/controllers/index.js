@@ -21,3 +21,6 @@ application.register("sidebar", SidebarController)
 
 import SignUpController from "./sign_up_controller.js"
 application.register("sign-up", SignUpController)
+
+import SipTrunksController from "./sip_trunks_controller.js"
+application.register("sip-trunks", SipTrunksController)
