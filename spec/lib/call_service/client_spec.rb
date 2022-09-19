@@ -11,7 +11,7 @@ module CallService
 
         authorize_rule_request = sqs_client.api_requests.first
         expect(authorize_rule_request).to match(
-          aws_request(
+          sqs_request(
             "175.100.7.240",
             job_class: "CreateOpenSIPSPermissionJob"
           )
@@ -28,7 +28,7 @@ module CallService
 
         authorize_rule_request = sqs_client.api_requests.first
         expect(authorize_rule_request).to match(
-          aws_request(
+          sqs_request(
             "175.100.7.240",
             job_class: "DeleteOpenSIPSPermissionJob"
           )
@@ -36,7 +36,7 @@ module CallService
       end
     end
 
-    def aws_request(*args)
+    def sqs_request(*args)
       options = args.extract_options!
       job_class = options.fetch(:job_class)
 
