@@ -277,9 +277,15 @@ jobs:
           container-name: worker
           image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
+      - name: Register Migration Task Definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
+          service: false
+          cluster: ${{ matrix.ecs_cluster}}
+
       - name: Run DB Migrate
         run: |
-          aws ecs register-task-definition --cli-input-json file://${{ steps.render-worker-task-def.outputs.task-definition }}
           ./bin/ecs_run_task --cluster ${{ matrix.ecs_cluster }} --started-by db_migrate_ci --service ${{ matrix.identifier }}-worker --command "bundle exec rails db:migrate"
 
       - name: Deploy App Server
