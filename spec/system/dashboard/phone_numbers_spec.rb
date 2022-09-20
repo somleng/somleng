@@ -49,7 +49,7 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("9876")
   end
 
-  it "Create a phone number", :js do
+  it "Create a phone number" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
     create(:account, carrier:, name: "Rocket Rides")
@@ -77,7 +77,7 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("can't be blank")
   end
 
-  it "Update a phone number", :js do
+  it "Update a phone number" do
     carrier = create(:carrier)
     create(:account, carrier:, name: "Rocket Rides")
     user = create(:user, :carrier, carrier:)
