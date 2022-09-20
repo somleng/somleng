@@ -98,6 +98,7 @@ FactoryBot.define do
       authentication_mode { :client_credentials }
       inbound_source_ip { nil }
       outbound_host { nil }
+      outbound_plus_prefix { true }
     end
   end
 

@@ -45,4 +45,24 @@ RSpec.describe DialString do
 
     expect(result).to eq("+855715100970@96.9.66.131")
   end
+
+  it "handles client credentials sip trunks" do
+    sip_trunk = create(
+      :sip_trunk,
+      :client_credentials_authentication,
+    )
+
+    fake_call_service_client = instance_double(
+      CallService::Client,
+      build_client_gateway_dial_string: "85516701722@45.118.77.153:1619;fs_path=sip:10.10.0.20:6060"
+    )
+
+    result = DialString.new(
+      sip_trunk:,
+      destination: "85516701722",
+      call_service_client: fake_call_service_client
+    ).to_s
+
+    expect(result).to eq("+85516701722@45.118.77.153:1619;fs_path=sip:10.10.0.20:6060")
+  end
 end

@@ -95,8 +95,12 @@
         "value": "${uploads_bucket}"
       },
       {
-        "name": "call_service_QUEUE_URL",
+        "name": "CALL_SERVICE_QUEUE_URL",
         "value": "${call_service_queue_url}"
+      },
+      {
+        "name": "CALL_SERVICE_FUNCTION_ARN",
+        "value": "${call_service_function_arn}"
       },
       {
         "name": "RAW_RECORDINGS_BUCKET",

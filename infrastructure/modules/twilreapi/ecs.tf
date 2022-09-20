@@ -29,6 +29,7 @@ data "template_file" "appserver_container_definitions" {
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
     call_service_queue_url = data.aws_sqs_queue.call_service.url
+    call_service_function_arn = data.aws_lambda_function.call_service.arn
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }
@@ -95,6 +96,7 @@ data "template_file" "worker_container_definitions" {
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
     call_service_queue_url = data.aws_sqs_queue.call_service.url
+    call_service_function_arn = data.aws_lambda_function.call_service.arn
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }

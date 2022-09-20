@@ -2,6 +2,7 @@ default: &default
   app_subdomain: "app"
   api_subdomain: "api"
   call_service_queue_url: <%= ENV.fetch("CALL_SERVICE_QUEUE_URL", "https://amazonaws.com/12345/call_service_queue") %>
+  call_service_function_arn: <%= ENV.fetch("CALL_SERVICE_FUNCTION_ARN", "arn:aws:lambda:ap-southeast-1:12345:function:function-name") %>
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
   mailer_sender: "no-reply@somleng.org"
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>

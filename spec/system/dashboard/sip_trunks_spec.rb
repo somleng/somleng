@@ -26,7 +26,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).not_to have_content("Old SIP Trunk")
   end
 
-  it "Create a SIP Trunk" do
+  it "Create a SIP Trunk", :js do
     user = create(:user, :carrier, :admin)
 
     carrier_sign_in(user)
@@ -46,6 +46,23 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("IP address")
     expect(page).to have_content("175.100.7.240")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
+  end
+
+  it "Creates a SIP trunk with client credentials", :js do
+    user = create(:user, :carrier, :admin)
+
+    carrier_sign_in(user)
+    visit dashboard_sip_trunks_path
+    click_link("New")
+    choose("Client credentials")
+    fill_in("Name", with: "Main SIP Trunk")
+
+    click_button "Create SIP trunk"
+
+    expect(page).to have_content("SIP trunk was successfully created")
+    expect(page).to have_content("Username")
+    expect(page).to have_content("Password")
+    expect(page).to have_content("sip.somleng.org")
   end
 
   it "Handles validations" do

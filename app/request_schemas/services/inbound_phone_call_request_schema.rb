@@ -7,14 +7,22 @@ module Services
       required(:source_ip).filled(:str?)
       required(:from).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
       required(:external_id).filled(:str?)
+      optional(:username).maybe(:str?)
       optional(:variables).maybe(:hash)
     end
 
-    rule(:source_ip) do |context:|
-      context[:sip_trunk] = SIPTrunk.find_by(inbound_source_ip: value)
+    rule(:username, :source_ip) do |context:|
+      if values[:username].present?
+        source_identity = values.fetch(:username)
+        context[:sip_trunk] = SIPTrunk.find_by(username: source_identity)
+      else
+        source_identity = values.fetch(:source_ip)
+        context[:sip_trunk] = SIPTrunk.find_by(inbound_source_ip: source_identity)
+      end
+
       if context[:sip_trunk].blank?
-        key("source_ip").failure("doesn't exist")
-        error_log_messages << "SIP trunk does not exist for #{value}"
+        base.failure("#{source_identity} doesn't exist")
+        error_log_messages << "SIP trunk does not exist for #{source_identity}"
       end
     end
 
@@ -80,7 +88,10 @@ module Services
       result[:voice_method] = phone_number.configuration.voice_method
       result[:status_callback_url] = phone_number.configuration.status_callback_url
       result[:status_callback_method] = phone_number.configuration.status_callback_method
-      result[:twiml] = route_to_sip_domain(phone_number) if phone_number.configuration.sip_domain.present?
+      if phone_number.configuration.sip_domain.present?
+        result[:twiml] =
+          route_to_sip_domain(phone_number)
+      end
       result[:from] = context[:from]
 
       result
