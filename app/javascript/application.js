@@ -32,9 +32,8 @@ document.addEventListener("turbo:load", function() {
   [].slice.call(document.querySelectorAll('.sidebar')).map(function (element) {
     return coreui.Sidebar.getOrCreateInstance(element);
   });
-});
 
-// It doesn't work with Turbo's events
-[].slice.call(document.querySelectorAll('[data-behavior~=choices-input]')).map(function (element) {
-  return new Choices(element);
+  [].slice.call(document.querySelectorAll('[data-behavior~=choices-input]')).map(function (element) {
+    return new Choices(element);
+  });
 });
