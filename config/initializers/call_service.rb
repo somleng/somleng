@@ -4,5 +4,6 @@ CallService.configure do |config|
   config.password = Rails.configuration.app_settings.fetch(:ahn_password)
   config.queue_url = Rails.configuration.app_settings.fetch(:call_service_queue_url)
   config.function_arn = Rails.configuration.app_settings.fetch(:call_service_function_arn)
+  config.logger = Rails.logger
   config.subscriber_realm = "somleng.org"
 end

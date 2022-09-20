@@ -96,7 +96,15 @@ module CallService
         function_name: CallService.configuration.function_arn,
         payload: payload.to_json
       )
-      JSON.parse(response.payload.read)
+      response_payload = JSON.parse(response.payload.read)
+      log_message("Lambda response payload: #{response_payload}")
+      response_payload
+    end
+
+    def log_message(message)
+      return unless CallService.configuration.logger
+
+      CallService.configuration.logger.info(message)
     end
   end
 end
