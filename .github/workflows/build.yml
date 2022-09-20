@@ -281,8 +281,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
-          service: false
-          cluster: ${{ matrix.ecs_cluster}}
 
       - name: Run DB Migrate
         run: |
