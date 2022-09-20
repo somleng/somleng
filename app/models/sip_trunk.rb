@@ -1,16 +1,24 @@
 class SIPTrunk < ApplicationRecord
   DIAL_STRING_FORMAT = "%<plus_prefix>s%<dial_string_prefix>s%<national_prefix>s%<local_number>s@%<host>s".freeze
 
-  include SIPTrunks::InboundSourceIPCallbacks
-  include SIPTrunks::ClientCredentialsCallbacks
-
   extend Enumerize
 
   belongs_to :carrier
   encrypts :password
 
   enumerize :authentication_mode, in: %i[ip_address client_credentials]
+
   attribute :call_service_client, default: CallService::Client.new
+  attribute :username_generator, default: UsernameGenerator.new
+
+  before_save :generate_client_credentials
+  after_create :create_subscriber
+  after_destroy :delete_subscriber
+  after_update :update_subscriber
+
+  after_create :authorize_inbound_source_ip
+  after_destroy :revoke_inbound_source_ip
+  after_update :update_inbound_source_ip
 
   def outbound_example_dial_string
     return if outbound_host.blank?
@@ -27,5 +35,70 @@ class SIPTrunk < ApplicationRecord
 
   def configured_for_outbound_dialing?
     outbound_host.present?
+  end
+
+  private
+
+  def generate_client_credentials
+    if authentication_mode.client_credentials?
+      return if username.present?
+
+      self.username = generate_username
+      self.password = SecureRandom.alphanumeric(24)
+    else
+      self.username = nil
+      self.password = nil
+    end
+  end
+
+  def generate_username
+    10.times do
+      username = username_generator.random_username
+      return username unless self.class.exists?(username:)
+    end
+
+    raise "Unable to generate unique username"
+  end
+
+  def create_subscriber
+    return if username.blank?
+
+    call_service_client.create_subscriber(username:, password:)
+  end
+
+  def delete_subscriber(username_to_delete: username)
+    return if username_to_delete.blank?
+
+    call_service_client.delete_subscriber(username: username_to_delete)
+  end
+
+  def update_subscriber
+    old_username, new_username = previous_changes[:username]
+
+    return if old_username == new_username
+
+    delete_subscriber(username_to_delete: old_username)
+    create_subscriber
+  end
+
+  def authorize_inbound_source_ip
+    return if inbound_source_ip.blank?
+
+    call_service_client.add_permission(inbound_source_ip)
+  end
+
+  def revoke_inbound_source_ip(ip: inbound_source_ip)
+    return if ip.blank?
+
+    call_service_client.remove_permission(ip)
+  end
+
+  def update_inbound_source_ip
+    old_inbound_source_ip, new_inbound_source_ip = previous_changes[:inbound_source_ip]
+
+    return if old_inbound_source_ip == new_inbound_source_ip
+
+    revoke_inbound_source_ip(ip: old_inbound_source_ip)
+    authorize_inbound_source_ip
   end
 end
