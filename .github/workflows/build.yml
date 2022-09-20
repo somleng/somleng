@@ -279,6 +279,7 @@ jobs:
 
       - name: Run DB Migrate
         run: |
+          aws ecs register-task-definition --cli-input-json file://${{ steps.render-worker-task-def.outputs.task-definition }}
           ./bin/ecs_run_task --cluster ${{ matrix.ecs_cluster }} --started-by db_migrate_ci --service ${{ matrix.identifier }}-worker --command "bundle exec rails db:migrate"
 
       - name: Deploy App Server

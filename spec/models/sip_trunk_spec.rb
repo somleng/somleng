@@ -1,6 +1,18 @@
 require "rails_helper"
 
 RSpec.describe SIPTrunk do
+  describe "#configured_for_outbound_dialing?" do
+    it "returns true for sip trunks configured for outbound dialing" do
+      client_credentials_sip_trunk = build_stubbed(:sip_trunk, :client_credentials_authentication)
+      ip_address_sip_trunk = build_stubbed(:sip_trunk, :ip_address_authentication)
+      unconfigured_sip_trunk = build_stubbed(:sip_trunk, :ip_address_authentication, outbound_host: nil)
+
+      expect(client_credentials_sip_trunk.configured_for_outbound_dialing?).to eq(true)
+      expect(ip_address_sip_trunk.configured_for_outbound_dialing?).to eq(true)
+      expect(unconfigured_sip_trunk.configured_for_outbound_dialing?).to eq(false)
+    end
+  end
+
   it "generates client credentials" do
     sip_trunk = build(:sip_trunk, :client_credentials_authentication)
 

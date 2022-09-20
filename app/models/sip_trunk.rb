@@ -34,7 +34,7 @@ class SIPTrunk < ApplicationRecord
   end
 
   def configured_for_outbound_dialing?
-    outbound_host.present?
+    authentication_mode.client_credentials? || outbound_host.present?
   end
 
   private

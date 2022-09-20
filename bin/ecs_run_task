@@ -49,6 +49,7 @@ describe_services_options = {
   "cluster": options.fetch(:cluster)
 }
 network_configuration = `aws ecs describe-services --cli-input-json '#{describe_services_options.to_json}' --query 'services[0].networkConfiguration'`
+
 run_task_options = {
   "startedBy": options.fetch(:started_by),
   "cluster": options.fetch(:cluster),
