@@ -104,8 +104,8 @@ module CallService
         build_client_gateway_dial_string_request = lambda_client.api_requests.first
         expect(build_client_gateway_dial_string_request).to match(
           lambda_request(
-            service_action: "BuildClientGatewayDialString",
-            parameters: {
+            "serviceAction" => "BuildClientGatewayDialString",
+            "parameters" => {
               client_identifier: "user1",
               destination: "85516701722"
             }

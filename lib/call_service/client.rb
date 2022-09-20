@@ -48,8 +48,8 @@ module CallService
 
     def build_client_gateway_dial_string(username:, destination:)
       response = invoke_lambda(
-        service_action: "BuildClientGatewayDialString",
-        parameters: {
+        "serviceAction" => "BuildClientGatewayDialString",
+        "parameters" => {
           client_identifier: username,
           destination:
         }
