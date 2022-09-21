@@ -20,7 +20,6 @@ variable "cdn_subdomain" {}
 variable "api_subdomain" {}
 
 variable "call_service_queue_name" {}
-variable "call_service_function_name" {}
 variable "raw_recordings_bucket_name" {}
 
 variable "webserver_container_name" {

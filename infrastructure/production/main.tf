@@ -29,7 +29,6 @@ module "twilreapi" {
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
   call_service_queue_name = "somleng-switch-services"
-  call_service_function_name = "somleng-switch_services"
 
   ecs_worker_autoscale_min_instances = 1
   ecs_worker_autoscale_max_instances = 10

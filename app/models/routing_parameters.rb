@@ -1,0 +1,20 @@
+class RoutingParameters
+  attr_reader :sip_trunk, :destination
+
+  def initialize(sip_trunk:, destination:)
+    @sip_trunk = sip_trunk
+    @destination = destination
+  end
+
+  def to_h
+    {
+      destination:,
+      dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
+      plus_prefix: sip_trunk.outbound_plus_prefix?,
+      trunk_prefix: sip_trunk.outbound_trunk_prefix?,
+      host: sip_trunk.outbound_host,
+      username: sip_trunk.username,
+      symmetric_latching: sip_trunk.outbound_symmetric_latching_supported?
+    }
+  end
+end

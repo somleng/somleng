@@ -2,12 +2,11 @@ require "digest"
 
 module CallService
   class Client
-    attr_reader :http_client, :sqs_client, :lambda_client
+    attr_reader :http_client, :sqs_client
 
-    def initialize(http_client: nil, sqs_client: Aws::SQS::Client.new, lambda_client: Aws::Lambda::Client.new)
+    def initialize(http_client: nil, sqs_client: Aws::SQS::Client.new)
       @http_client = http_client || default_http_client
       @sqs_client = sqs_client
-      @lambda_client = lambda_client
     end
 
     def create_call(params)
@@ -46,17 +45,6 @@ module CallService
       enqueue_job("DeleteOpenSIPSPermissionJob", ip)
     end
 
-    def build_client_gateway_dial_string(username:, destination:)
-      response = invoke_lambda(
-        "serviceAction" => "BuildClientGatewayDialString",
-        "parameters" => {
-          client_identifier: username,
-          destination:
-        }
-      )
-      response.fetch("dial_string")
-    end
-
     private
 
     def execute_request(http_method, url, params = {}, headers = {})
@@ -89,22 +77,6 @@ module CallService
           job_args: args
         }.to_json
       )
-    end
-
-    def invoke_lambda(payload)
-      response = lambda_client.invoke(
-        function_name: CallService.configuration.function_arn,
-        payload: payload.to_json
-      )
-      response_payload = JSON.parse(response.payload.read)
-      log_message("Lambda response payload: #{response_payload}")
-      response_payload
-    end
-
-    def log_message(message)
-      return unless CallService.configuration.logger
-
-      CallService.configuration.logger.info(message)
     end
   end
 end

@@ -95,15 +95,6 @@ resource "aws_iam_policy" "ecs_task_policy" {
       "Effect": "Allow",
       "Action": "ses:SendRawEmail",
       "Resource":"*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "lambda:InvokeFunction"
-      ],
-      "Resource": [
-        "${data.aws_lambda_function.call_service.arn}"
-      ]
     }
   ]
 }

@@ -125,9 +125,6 @@ GEM
     aws-sdk-kms (1.57.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-lambda (1.85.0)
-      aws-sdk-core (~> 3, >= 3.127.0)
-      aws-sigv4 (~> 1.1)
     aws-sdk-rails (3.6.2)
       aws-record (~> 2)
       aws-sdk-ses (~> 1)
@@ -559,7 +556,6 @@ DEPENDENCIES
   administrate-field-active_storage
   after_commit_everywhere
   aws-sdk-ec2
-  aws-sdk-lambda
   aws-sdk-rails
   aws-sdk-s3
   aws-sdk-sesv2

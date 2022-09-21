@@ -131,10 +131,6 @@
         "value": "${call_service_queue_url}"
       },
       {
-        "name": "CALL_SERVICE_FUNCTION_ARN",
-        "value": "${call_service_function_arn}"
-      },
-      {
         "name": "RAW_RECORDINGS_BUCKET",
         "value": "${raw_recordings_bucket_name}"
       }
