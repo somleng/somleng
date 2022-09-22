@@ -8,10 +8,6 @@ class ApplicationRequestSchema < Dry::Validation::Contract
   module Types
     include Dry.Types()
 
-    PhoneNumber = String.constructor do |string|
-      Phony.normalize(string.gsub(/\D/, "")) if string.present?
-    end
-
     Number = String.constructor do |string|
       string.gsub(/\D/, "") if string.present?
     end

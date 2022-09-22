@@ -2,7 +2,7 @@ module Services
   class RoutingParametersController < ServicesController
     def create
       account = Account.find(params.fetch(:account_sid))
-      destination = Phony.normalize(params.fetch(:phone_number))
+      destination = params.fetch(:phone_number).gsub(/\D/, "")
       destination_rules = DestinationRules.new(account:, destination:)
 
       if destination_rules.valid?

@@ -15,7 +15,7 @@ RSpec.describe "Services" do
       post(
         api_services_routing_parameters_path,
         params: {
-          phone_number: "+85516701721",
+          phone_number: "+855 16 701 721",
           account_sid: account.id
         },
         headers: build_authorization_headers("services", "password")
