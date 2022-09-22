@@ -1,4 +1,4 @@
-variable "ecs_cluster" {}
+variable "cluster_name" {}
 variable "app_identifier" {}
 variable "app_environment" {}
 variable "app_image" {}

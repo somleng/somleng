@@ -1,3 +1,12 @@
+resource "aws_ecs_cluster" "cluster" {
+  name = var.cluster_name
+
+  setting {
+    name  = "containerInsights"
+    value = "disabled"
+  }
+}
+
 data "template_file" "appserver_container_definitions" {
   template = file("${path.module}/templates/appserver_container_definitions.json.tpl")
 
@@ -46,7 +55,7 @@ resource "aws_ecs_task_definition" "appserver" {
 
 resource "aws_ecs_service" "appserver" {
   name            = "${var.app_identifier}-appserver"
-  cluster         = var.ecs_cluster.id
+  cluster         = aws_ecs_cluster.cluster.id
   task_definition = aws_ecs_task_definition.appserver.arn
   desired_count   = var.ecs_appserver_autoscale_min_instances
   launch_type = var.launch_type
@@ -112,7 +121,7 @@ resource "aws_ecs_task_definition" "worker" {
 
 resource "aws_ecs_service" "worker" {
   name            = "${var.app_identifier}-worker"
-  cluster         = var.ecs_cluster.id
+  cluster         = aws_ecs_cluster.cluster.id
   task_definition = aws_ecs_task_definition.worker.arn
   desired_count   = var.ecs_worker_autoscale_min_instances
   launch_type = var.launch_type

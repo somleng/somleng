@@ -1,12 +1,13 @@
 module "twilreapi" {
   source = "../modules/twilreapi"
+
+  cluster_name = "somleng"
   app_identifier = "twilreapi"
   app_environment = "production"
   app_subdomain = "app"
   cdn_subdomain = "cdn"
   api_subdomain = "api"
 
-  ecs_cluster = data.terraform_remote_state.core_infrastructure.outputs.ecs_cluster
   codedeploy_role = data.terraform_remote_state.core_infrastructure.outputs.codedeploy_role
   app_image = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image = data.terraform_remote_state.core.outputs.nginx_ecr_repository

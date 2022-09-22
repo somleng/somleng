@@ -31,7 +31,7 @@ resource "aws_codedeploy_app" "this" {
   }
 
   ecs_service {
-    cluster_name = var.ecs_cluster.name
+    cluster_name = aws_ecs_cluster.cluster.name
     service_name = aws_ecs_service.appserver.name
   }
 

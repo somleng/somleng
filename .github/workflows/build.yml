@@ -41,7 +41,7 @@ jobs:
               "branch": "support_sip_registrations",
               "environment": "staging",
               "image_tag": "staging",
-              "ecs_cluster": "somleng"
+              "ecs_cluster": "somleng-staging"
             },
             {
               "identifier": "twilreapi",

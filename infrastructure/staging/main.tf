@@ -1,13 +1,13 @@
 module "twilreapi" {
   source = "../modules/twilreapi"
 
+  cluster_name = "somleng-staging"
   app_identifier = "somleng-staging"
   app_environment = "staging"
   app_subdomain = "app-staging"
   cdn_subdomain = "cdn-staging"
   api_subdomain = "api-staging"
 
-  ecs_cluster = data.terraform_remote_state.core_infrastructure.outputs.ecs_cluster
   codedeploy_role = data.terraform_remote_state.core_infrastructure.outputs.codedeploy_role
   app_image = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image = data.terraform_remote_state.core.outputs.nginx_ecr_repository
@@ -31,8 +31,8 @@ module "twilreapi" {
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
   call_service_queue_name = "switch-services-staging"
 
-  ecs_appserver_autoscale_min_instances = 0
-  ecs_worker_autoscale_min_instances = 0
+  ecs_appserver_autoscale_min_instances = 1
+  ecs_worker_autoscale_min_instances = 1
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
 }

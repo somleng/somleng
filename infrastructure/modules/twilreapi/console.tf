@@ -61,7 +61,7 @@ data "aws_ssm_parameter" "console" {
 
 resource "aws_ecs_service" "console" {
   name = "${var.app_identifier}-console"
-  cluster = var.ecs_cluster.name
+  cluster = aws_ecs_cluster.cluster.name
   task_definition = data.aws_ecs_task_definition.console.id
   launch_type = "EC2"
 
@@ -120,6 +120,6 @@ data "template_file" "console_user_data" {
   template = file("${path.module}/templates/console_user_data.sh")
 
   vars = {
-    cluster_name = var.ecs_cluster.name
+    cluster_name = aws_ecs_cluster.cluster.name
   }
 }
