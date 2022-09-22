@@ -14,18 +14,18 @@ module Services
       ).not_to have_valid_schema(error_message: "175.100.7.241 doesn't exist")
     end
 
-    it "validates username" do
+    it "validates client_identifier" do
       sip_trunk = create(:sip_trunk, :client_credentials_authentication)
 
       expect(
         validate_request_schema(
-          input_params: { source_ip: "127.0.0.1", username: sip_trunk.username }
+          input_params: { source_ip: "127.0.0.1", client_identifier: sip_trunk.username }
         )
-      ).to have_valid_field(:username)
+      ).to have_valid_field(:client_identifier)
 
       expect(
         validate_request_schema(
-          input_params: { source_ip: "127.0.0.1", username: "invalid-user" }
+          input_params: { source_ip: "127.0.0.1", client_identifier: "invalid-user" }
         )
       ).not_to have_valid_schema(error_message: "invalid-user doesn't exist")
     end
@@ -157,7 +157,7 @@ module Services
       schema = validate_request_schema(
         input_params: {
           source_ip: "127.0.0.1",
-          username: sip_trunk.username,
+          client_identifier: sip_trunk.username,
           to: "2442",
           from: "855716100230",
           external_id: "external-id",

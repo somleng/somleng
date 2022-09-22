@@ -7,13 +7,13 @@ module Services
       required(:source_ip).filled(:str?)
       required(:from).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
       required(:external_id).filled(:str?)
-      optional(:username).maybe(:str?)
+      optional(:client_identifier).maybe(:str?)
       optional(:variables).maybe(:hash)
     end
 
-    rule(:username, :source_ip) do |context:|
-      if values[:username].present?
-        source_identity = values.fetch(:username)
+    rule(:client_identifier, :source_ip) do |context:|
+      if values[:client_identifier].present?
+        source_identity = values.fetch(:client_identifier)
         context[:sip_trunk] = SIPTrunk.find_by(username: source_identity)
       else
         source_identity = values.fetch(:source_ip)
