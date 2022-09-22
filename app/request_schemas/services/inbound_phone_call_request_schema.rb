@@ -29,33 +29,35 @@ module Services
     rule(:to) do |context:|
       next if context[:sip_trunk].blank?
 
+      context[:to] = normalize_number(value, context[:sip_trunk].inbound_trunk_prefix_replacement)
+
       phone_numbers = context[:sip_trunk].carrier.phone_numbers
-      context[:phone_number] = phone_numbers.find_by(number: value)
+      context[:phone_number] = phone_numbers.find_by(number: context[:to])
 
       if context[:phone_number].blank?
         key.failure("doesn't exist")
-        error_log_messages << "Phone number #{value} does not exist"
+        error_log_messages << "Phone number #{context[:to]} does not exist"
       elsif !context[:phone_number].assigned?
         key.failure("is unassigned")
-        error_log_messages << "Phone number #{value} is unassigned"
+        error_log_messages << "Phone number #{context[:to]} is unassigned"
       elsif !context[:phone_number].configured?
         key.failure("is unconfigured")
-        error_log_messages << "Phone number #{value} is unconfigured"
+        error_log_messages << "Phone number #{context[:to]} is unconfigured"
       elsif !context[:phone_number].enabled?
         key.failure("is disabled")
-        error_log_messages << "Phone number #{value} is disabled"
+        error_log_messages << "Phone number #{context[:to]} is disabled"
       end
     end
 
     rule(:from) do |context:|
       next if context[:sip_trunk].blank?
 
-      context[:from] = normalize_from(value, context[:sip_trunk].inbound_trunk_prefix_replacement)
+      context[:from] = normalize_number(value, context[:sip_trunk].inbound_trunk_prefix_replacement)
       unless Phony.plausible?(context[:from])
         key.failure(
           "is invalid. It must be an E.164 formatted phone number and must include the country code"
         )
-        error_log_messages << "From #{value} is invalid. It must be an E.164 formatted phone number and must include the country code"
+        error_log_messages << "From #{context[:from]} is invalid. It must be an E.164 formatted phone number and must include the country code"
       end
     end
 
@@ -74,7 +76,6 @@ module Services
       params = super
 
       result = {}
-      result[:to] = params.fetch(:to)
       result[:external_id] = params.fetch(:external_id)
       result[:variables] = params.fetch(:variables) if params.key?(:variables)
 
@@ -92,6 +93,7 @@ module Services
         result[:twiml] =
           route_to_sip_domain(phone_number)
       end
+      result[:to] = context[:to]
       result[:from] = context[:from]
 
       result
@@ -99,8 +101,8 @@ module Services
 
     private
 
-    def normalize_from(from, trunk_prefix_replacement)
-      result = from.sub(/\A\+*/, "")
+    def normalize_number(number, trunk_prefix_replacement)
+      result = number.sub(/\A\+*/, "")
 
       return result if trunk_prefix_replacement.blank?
       return result if result.starts_with?(trunk_prefix_replacement)

@@ -184,7 +184,7 @@ module Services
       )
     end
 
-    it "normalizes the from for accounts with a trunk prefix replacement" do
+    it "normalizes the from and to for accounts with a trunk prefix replacement" do
       carrier = create(:carrier)
       _sip_trunk = create(
         :sip_trunk,
@@ -201,13 +201,13 @@ module Services
       schema = validate_request_schema(
         input_params: {
           source_ip: "175.100.7.240",
-          to: "855716100235",
+          to: "0716100235",
           from: "068308531",
           external_id: "external-id"
         }
       )
 
-      expect(schema.output).to include(from: "85568308531")
+      expect(schema.output).to include(from: "85568308531", to: "855716100235")
     end
 
     it "normalizes the twiml for routing to a sip domain" do

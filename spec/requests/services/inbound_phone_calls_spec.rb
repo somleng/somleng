@@ -72,15 +72,22 @@ RSpec.describe "Services" do
 
     it "handles phone numbers which aren't configured" do
       carrier = create(:carrier)
-      unconfigured_phone_number = create(:phone_number, :assigned_to_account, carrier:, number: "1234")
-      create(:sip_trunk, carrier:, inbound_source_ip: "175.100.7.240")
+      unconfigured_phone_number = create(
+        :phone_number, :assigned_to_account, carrier:, number: "85568308532"
+      )
+      create(
+        :sip_trunk,
+        carrier:,
+        inbound_source_ip: "175.100.7.240",
+        inbound_trunk_prefix_replacement: "855"
+      )
 
       post(
         api_services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
-          "to" => "1234",
-          "from" => "85512234567",
+          "to" => "068308532",
+          "from" => "012234567",
           "external_id" => SecureRandom.uuid,
           "variables" => {
             "sip_from_host" => "1.1.1.1"
@@ -94,7 +101,7 @@ RSpec.describe "Services" do
       expect(ErrorLog.last).to have_attributes(
         carrier:,
         account: unconfigured_phone_number.account,
-        error_message: "Phone number 1234 is unconfigured"
+        error_message: "Phone number 85568308532 is unconfigured"
       )
     end
   end
