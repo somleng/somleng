@@ -102,12 +102,9 @@ module Services
     private
 
     def normalize_number(number, trunk_prefix_replacement)
-      result = number.sub(/\A\+*/, "")
+      return number if trunk_prefix_replacement.blank?
 
-      return result if trunk_prefix_replacement.blank?
-      return result if result.starts_with?(trunk_prefix_replacement)
-
-      result.sub(/\A(?:0)?/, "").prepend(trunk_prefix_replacement)
+      number.sub(/\A(?:0)/, trunk_prefix_replacement)
     end
 
     def route_to_sip_domain(phone_number)
