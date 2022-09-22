@@ -7,8 +7,9 @@ export default class extends Controller {
     this.toggleAuthenticationMode();
   }
 
-  toggleAuthenticationMode(event) {
-    if (event.target.value == "client_credentials") {
+  toggleAuthenticationMode() {
+    const element = this.authenticationModeInputTargets.find((element) => element.checked)
+    if (element.value == "client_credentials") {
       this.ipAddressAuthenticationSectionTarget.style.display = 'none';
     } else {
       this.ipAddressAuthenticationSectionTarget.style.display = 'block';
