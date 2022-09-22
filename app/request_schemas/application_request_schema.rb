@@ -12,6 +12,10 @@ class ApplicationRequestSchema < Dry::Validation::Contract
       Phony.normalize(string.gsub(/\D/, "")) if string.present?
     end
 
+    Number = String.constructor do |string|
+      string.gsub(/\D/, "") if string.present?
+    end
+
     UppercaseString = String.constructor do |string|
       string.upcase if string.present?
     end

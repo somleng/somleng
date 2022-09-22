@@ -144,7 +144,7 @@ module Services
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, :client_credentials_authentication, carrier:)
       account = create(:account)
-      phone_number = create(:phone_number, account:, carrier:, number: "2442")
+      phone_number = create(:phone_number, account:, carrier:, number: "068308531")
       create(
         :phone_number_configuration,
         phone_number:,
@@ -158,7 +158,7 @@ module Services
         input_params: {
           source_ip: "127.0.0.1",
           client_identifier: sip_trunk.username,
-          to: "2442",
+          to: "068308531",
           from: "855716100230",
           external_id: "external-id",
           variables: {
@@ -169,7 +169,7 @@ module Services
 
       expect(schema.output).to include(
         account:,
-        to: "2442",
+        to: "068308531",
         from: "855716100230",
         external_id: "external-id",
         phone_number:,
@@ -202,12 +202,12 @@ module Services
         input_params: {
           source_ip: "175.100.7.240",
           to: "855716100235",
-          from: "0716100230",
+          from: "068308531",
           external_id: "external-id"
         }
       )
 
-      expect(schema.output).to include(from: "855716100230")
+      expect(schema.output).to include(from: "85568308531")
     end
 
     it "normalizes the twiml for routing to a sip domain" do

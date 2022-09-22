@@ -3,9 +3,9 @@ module Services
     option(:error_log_messages)
 
     params do
-      required(:to).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
+      required(:to).value(ApplicationRequestSchema::Types::Number, :filled?)
+      required(:from).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:source_ip).filled(:str?)
-      required(:from).value(ApplicationRequestSchema::Types::PhoneNumber, :filled?)
       required(:external_id).filled(:str?)
       optional(:client_identifier).maybe(:str?)
       optional(:variables).maybe(:hash)
