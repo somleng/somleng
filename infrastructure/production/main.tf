@@ -1,12 +1,13 @@
 module "twilreapi" {
   source = "../modules/twilreapi"
+
+  cluster_name = "somleng"
   app_identifier = "twilreapi"
   app_environment = "production"
   app_subdomain = "app"
   cdn_subdomain = "cdn"
   api_subdomain = "api"
 
-  ecs_cluster = data.terraform_remote_state.core_infrastructure.outputs.ecs_cluster
   codedeploy_role = data.terraform_remote_state.core_infrastructure.outputs.codedeploy_role
   app_image = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image = data.terraform_remote_state.core.outputs.nginx_ecr_repository
@@ -28,7 +29,8 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
-  switch_services_queue_name = "somleng-switch-services"
+  call_service_queue_name = "somleng-switch-services"
+
   ecs_worker_autoscale_min_instances = 1
   ecs_worker_autoscale_max_instances = 10
 

@@ -6,7 +6,7 @@ RSpec.describe NotifyPhoneCallStatusCallback do
       :phone_call,
       :not_answered,
       from: "2442",
-      to: "+85512334667",
+      to: "85512334667",
       status_callback_url: "https://www.example.com/status_callback_url?b=2&a=1",
       call_data_record: build(:call_data_record, bill_sec: "15")
     )

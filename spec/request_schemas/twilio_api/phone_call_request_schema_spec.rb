@@ -98,8 +98,8 @@ module TwilioAPI
       )
       schema = validate_request_schema(
         input_params: {
-          To: "+855 716 100235",
-          From: "+855 716 100234",
+          To: "+855 68 308 531",
+          From: "+855 716 100 234",
           Url: "https://www.example.com/voice_url.xml",
           Method: "GET",
           Twiml: "<Response><Say>Ahoy there!</Say></Response>",
@@ -112,19 +112,40 @@ module TwilioAPI
       )
 
       expect(schema.output).to eq(
-        to: "855716100235",
+        to: "85568308531",
         from: "855716100234",
         caller_id: "+855716100234",
         account:,
         carrier: account.carrier,
         sip_trunk:,
-        dial_string: "855716100235@sip.example.com",
+        dial_string: "85568308531@sip.example.com",
         voice_url: "https://www.example.com/voice_url.xml",
         voice_method: "GET",
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "GET",
         twiml: nil,
         direction: :outbound
+      )
+    end
+
+    it "handles normalization of From" do
+      account = create(:account)
+      create(:sip_trunk, carrier: account.carrier)
+
+      schema = validate_request_schema(
+        input_params: {
+          To: "+855 68 308 531",
+          From: "068 308 532"
+        },
+        options: {
+          account:
+        }
+      )
+
+      expect(schema.output).to include(
+        to: "85568308531",
+        from: "068308532",
+        caller_id: "068308532"
       )
     end
 

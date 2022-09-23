@@ -4,27 +4,36 @@ class SIPTrunkForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  DIAL_STRING_PREFIX_FORMAT = /\A\d+\z/.freeze
+  extend Enumerize
+
+  DIAL_STRING_PREFIX_FORMAT = /\A\d+\z/
+  COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
 
   attribute :carrier
   attribute :sip_trunk, default: -> { SIPTrunk.new }
   attribute :name
+  attribute :authentication_mode
+
+  attribute :country
   attribute :source_ip
-  attribute :trunk_prefix_replacement
 
   attribute :host
   attribute :dial_string_prefix
-  attribute :trunk_prefix, :boolean, default: false
+  attribute :national_dialing, :boolean, default: false
   attribute :plus_prefix, :boolean, default: false
 
-  delegate :persisted?, :id, to: :sip_trunk
+  enumerize :authentication_mode, in: SIPTrunk.authentication_mode.values
 
   validates :name, presence: true
+  validates :authentication_mode, presence: true
+  validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
   validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
   validate :validate_source_ip
 
   validates :name, presence: true
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
+
+  delegate :new_record?, :persisted?, :id, to: :sip_trunk
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "SIPTrunk")
@@ -33,12 +42,13 @@ class SIPTrunkForm
   def self.initialize_with(sip_trunk)
     new(
       sip_trunk:,
+      authentication_mode: sip_trunk.authentication_mode,
       name: sip_trunk.name,
+      country: sip_trunk.inbound_country_code,
       source_ip: sip_trunk.inbound_source_ip.presence,
-      trunk_prefix_replacement: sip_trunk.inbound_trunk_prefix_replacement,
       host: sip_trunk.outbound_host,
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
-      trunk_prefix: sip_trunk.outbound_trunk_prefix,
+      national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix
     )
   end
@@ -46,14 +56,17 @@ class SIPTrunkForm
   def save
     return false if invalid?
 
+    set_defaults
+
     sip_trunk.attributes = {
-      name:,
       carrier:,
+      authentication_mode:,
+      name:,
       inbound_source_ip: source_ip,
-      inbound_trunk_prefix_replacement: trunk_prefix_replacement.presence,
-      outbound_host: host.strip,
+      inbound_country_code: country.presence,
+      outbound_host: host.to_s.strip.presence,
       outbound_dial_string_prefix: dial_string_prefix.presence,
-      outbound_trunk_prefix: trunk_prefix,
+      outbound_national_dialing: national_dialing,
       outbound_plus_prefix: plus_prefix
     }
 
@@ -69,5 +82,15 @@ class SIPTrunkForm
     return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
 
     errors.add(:source_ip, :taken)
+  end
+
+  def set_defaults
+    return unless authentication_mode.client_credentials?
+
+    self.source_ip = nil
+    self.host = nil
+    self.dial_string_prefix = nil
+    self.national_dialing = false
+    self.plus_prefix = true
   end
 end

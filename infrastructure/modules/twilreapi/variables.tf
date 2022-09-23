@@ -1,4 +1,4 @@
-variable "ecs_cluster" {}
+variable "cluster_name" {}
 variable "app_identifier" {}
 variable "app_environment" {}
 variable "app_image" {}
@@ -19,7 +19,7 @@ variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}
 
-variable "switch_services_queue_name" {}
+variable "call_service_queue_name" {}
 variable "raw_recordings_bucket_name" {}
 
 variable "webserver_container_name" {

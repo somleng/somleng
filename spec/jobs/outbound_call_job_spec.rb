@@ -3,7 +3,12 @@ require "rails_helper"
 RSpec.describe OutboundCallJob do
   it "initiates an outbound call" do
     carrier = create(:carrier)
-    sip_trunk = create(:sip_trunk, outbound_symmetric_latching_supported: false, carrier:)
+    sip_trunk = create(
+      :sip_trunk,
+      outbound_symmetric_latching_supported: false,
+      outbound_host: "sip.example.com",
+      carrier:
+    )
 
     phone_call = create(
       :phone_call,
@@ -40,6 +45,15 @@ RSpec.describe OutboundCallJob do
         routing_instructions: {
           dial_string: "85516701721@sip.example.com",
           nat_supported: false
+        },
+        routing_parameters: {
+          destination: "85516701721",
+          dial_string_prefix: nil,
+          plus_prefix: false,
+          national_dialing: false,
+          host: "sip.example.com",
+          username: nil,
+          symmetric_latching: false
         }
       }
     )

@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "appserver_cpu_utilization_high" {
   threshold           = var.ecs_as_cpu_high_threshold_per
 
   dimensions = {
-    ClusterName = var.ecs_cluster.name
+    ClusterName = aws_ecs_cluster.cluster.name
     ServiceName = aws_ecs_service.appserver.name
   }
 
@@ -27,7 +27,7 @@ resource "aws_cloudwatch_metric_alarm" "appserver_cpu_utilization_low" {
   threshold           = var.ecs_as_cpu_low_threshold_per
 
   dimensions = {
-    ClusterName = var.ecs_cluster.name
+    ClusterName = aws_ecs_cluster.cluster.name
     ServiceName = aws_ecs_service.appserver.name
   }
 
@@ -260,7 +260,7 @@ resource "aws_appautoscaling_policy" "worker_down" {
 
 resource "aws_appautoscaling_target" "appserver_scale_target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${var.ecs_cluster.name}/${aws_ecs_service.appserver.name}"
+  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.appserver.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   max_capacity       = var.ecs_appserver_autoscale_max_instances
   min_capacity       = var.ecs_appserver_autoscale_min_instances
@@ -268,7 +268,7 @@ resource "aws_appautoscaling_target" "appserver_scale_target" {
 
 resource "aws_appautoscaling_target" "worker_scale_target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${var.ecs_cluster.name}/${aws_ecs_service.worker.name}"
+  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.worker.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   max_capacity       = var.ecs_worker_autoscale_max_instances
   min_capacity       = var.ecs_worker_autoscale_min_instances

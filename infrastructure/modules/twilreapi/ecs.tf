@@ -1,3 +1,12 @@
+resource "aws_ecs_cluster" "cluster" {
+  name = var.cluster_name
+
+  setting {
+    name  = "containerInsights"
+    value = "disabled"
+  }
+}
+
 data "template_file" "appserver_container_definitions" {
   template = file("${path.module}/templates/appserver_container_definitions.json.tpl")
 
@@ -28,7 +37,7 @@ data "template_file" "appserver_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    switch_services_queue_url = data.aws_sqs_queue.switch_services.url
+    call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }
@@ -46,7 +55,7 @@ resource "aws_ecs_task_definition" "appserver" {
 
 resource "aws_ecs_service" "appserver" {
   name            = "${var.app_identifier}-appserver"
-  cluster         = var.ecs_cluster.id
+  cluster         = aws_ecs_cluster.cluster.id
   task_definition = aws_ecs_task_definition.appserver.arn
   desired_count   = var.ecs_appserver_autoscale_min_instances
   launch_type = var.launch_type
@@ -94,7 +103,7 @@ data "template_file" "worker_container_definitions" {
     database_port = var.db_port
     db_pool = var.db_pool
     uploads_bucket = aws_s3_bucket.uploads.id
-    switch_services_queue_url = data.aws_sqs_queue.switch_services.url
+    call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
   }
 }
@@ -112,7 +121,7 @@ resource "aws_ecs_task_definition" "worker" {
 
 resource "aws_ecs_service" "worker" {
   name            = "${var.app_identifier}-worker"
-  cluster         = var.ecs_cluster.id
+  cluster         = aws_ecs_cluster.cluster.id
   task_definition = aws_ecs_task_definition.worker.arn
   desired_count   = var.ecs_worker_autoscale_min_instances
   launch_type = var.launch_type

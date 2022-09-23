@@ -86,15 +86,19 @@ FactoryBot.define do
   factory :sip_trunk do
     carrier
     name { "My SIP trunk" }
-    inbound
-    outbound
+    ip_address_authentication
 
-    trait :inbound do
+    trait :ip_address_authentication do
+      authentication_mode { :ip_address }
       inbound_source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
+      outbound_host { "sip.example.com" }
     end
 
-    trait :outbound do
-      outbound_host { "sip.example.com" }
+    trait :client_credentials_authentication do
+      authentication_mode { :client_credentials }
+      inbound_source_ip { nil }
+      outbound_host { nil }
+      outbound_plus_prefix { true }
     end
   end
 

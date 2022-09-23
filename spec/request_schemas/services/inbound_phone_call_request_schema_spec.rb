@@ -11,7 +11,23 @@ module Services
 
       expect(
         validate_request_schema(input_params: { source_ip: "175.100.7.241" })
-      ).not_to have_valid_field(:source_ip)
+      ).not_to have_valid_schema(error_message: "175.100.7.241 doesn't exist")
+    end
+
+    it "validates client_identifier" do
+      sip_trunk = create(:sip_trunk, :client_credentials_authentication)
+
+      expect(
+        validate_request_schema(
+          input_params: { source_ip: "127.0.0.1", client_identifier: sip_trunk.username }
+        )
+      ).to have_valid_field(:client_identifier)
+
+      expect(
+        validate_request_schema(
+          input_params: { source_ip: "127.0.0.1", client_identifier: "invalid-user" }
+        )
+      ).not_to have_valid_schema(error_message: "invalid-user doesn't exist")
     end
 
     it "validates to" do
@@ -92,8 +108,8 @@ module Services
     it "validates from" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:)
-      sip_trunk_with_trunk_prefix_replacement = create(
-        :sip_trunk, carrier:, inbound_trunk_prefix_replacement: "52"
+      sip_trunk_with_inbound_country = create(
+        :sip_trunk, carrier:, inbound_country_code: "MX"
       )
 
       expect(
@@ -117,8 +133,8 @@ module Services
       expect(
         validate_request_schema(
           input_params: {
-            from: "8188888888",
-            source_ip: sip_trunk_with_trunk_prefix_replacement.inbound_source_ip.to_s
+            from: "018188888888",
+            source_ip: sip_trunk_with_inbound_country.inbound_source_ip.to_s
           }
         )
       ).to have_valid_field(:from)
@@ -126,9 +142,9 @@ module Services
 
     it "normalizes the output" do
       carrier = create(:carrier)
-      sip_trunk = create(:sip_trunk, carrier:)
+      sip_trunk = create(:sip_trunk, :client_credentials_authentication, carrier:)
       account = create(:account)
-      phone_number = create(:phone_number, account:, carrier:, number: "2442")
+      phone_number = create(:phone_number, account:, carrier:, number: "068308531")
       create(
         :phone_number_configuration,
         phone_number:,
@@ -140,8 +156,9 @@ module Services
 
       schema = validate_request_schema(
         input_params: {
-          source_ip: sip_trunk.inbound_source_ip.to_s,
-          to: "2442",
+          source_ip: "127.0.0.1",
+          client_identifier: sip_trunk.username,
+          to: "068308531",
           from: "855716100230",
           external_id: "external-id",
           variables: {
@@ -152,7 +169,7 @@ module Services
 
       expect(schema.output).to include(
         account:,
-        to: "2442",
+        to: "068308531",
         from: "855716100230",
         external_id: "external-id",
         phone_number:,
@@ -167,30 +184,56 @@ module Services
       )
     end
 
-    it "normalizes the from for accounts with a trunk prefix replacement" do
+    it "normalizes from with an inbound country configured" do
       carrier = create(:carrier)
       _sip_trunk = create(
         :sip_trunk,
         carrier:,
         inbound_source_ip: "175.100.7.240",
-        inbound_trunk_prefix_replacement: "855"
+        inbound_country_code: "KH"
       )
       _phone_number = create(
         :phone_number,
         :configured,
-        number: "855716100235",
+        number: "1294",
         carrier:
       )
       schema = validate_request_schema(
         input_params: {
           source_ip: "175.100.7.240",
-          to: "855716100235",
-          from: "0716100230",
+          to: "1294",
+          from: "068308531",
           external_id: "external-id"
         }
       )
 
-      expect(schema.output).to include(from: "855716100230")
+      expect(schema.output).to include(from: "85568308531", to: "1294")
+    end
+
+    it "normalizes to with an inbound country configured" do
+      carrier = create(:carrier)
+      _sip_trunk = create(
+        :sip_trunk,
+        carrier:,
+        inbound_source_ip: "175.100.7.240",
+        inbound_country_code: "KH"
+      )
+      _phone_number = create(
+        :phone_number,
+        :configured,
+        number: "85568308531",
+        carrier:
+      )
+      schema = validate_request_schema(
+        input_params: {
+          source_ip: "175.100.7.240",
+          to: "068308531",
+          from: "068308532",
+          external_id: "external-id"
+        }
+      )
+
+      expect(schema.output).to include(from: "85568308532", to: "85568308531")
     end
 
     it "normalizes the twiml for routing to a sip domain" do

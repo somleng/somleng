@@ -5,7 +5,7 @@ RSpec.describe DialString do
     sip_trunk = create(
       :sip_trunk,
       outbound_host: "96.9.66.131",
-      outbound_trunk_prefix: true
+      outbound_national_dialing: true
     )
 
     result = DialString.new(

@@ -5,10 +5,7 @@
         Name
       </th>
       <th>
-        Inbound Source IP
-      </th>
-      <th>
-        Outbound Host
+        Authentication mode
       </th>
       <th>
         Created At
@@ -25,15 +22,7 @@
         </td>
 
         <td>
-          <code>
-            <%= sip_trunk.inbound_source_ip %>
-          </code>
-        </td>
-
-        <td>
-          <code>
-            <%= sip_trunk.outbound_host %>
-          </code>
+          <%= sip_trunk.authentication_mode.humanize %>
         </td>
 
         <td>

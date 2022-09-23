@@ -13,7 +13,7 @@ class PhoneCallFilter < ResourceFilter
 
   class ToFilter < ApplicationFilter
     filter_params do
-      optional(:to).value(ApplicationRequestSchema::Types::PhoneNumber)
+      optional(:to).value(ApplicationRequestSchema::Types::Number)
     end
 
     def apply
@@ -25,7 +25,7 @@ class PhoneCallFilter < ResourceFilter
 
   class FromFilter < ApplicationFilter
     filter_params do
-      optional(:from).value(ApplicationRequestSchema::Types::PhoneNumber)
+      optional(:from).value(ApplicationRequestSchema::Types::Number)
     end
 
     def apply

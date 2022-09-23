@@ -72,15 +72,9 @@ class PhoneCall < ApplicationRecord
   end
 
   validates :external_id, presence: true, if: :inbound?
-  before_create :normalize_phone_numbers
   before_create :set_beneficiary_data
 
   private
-
-  def normalize_phone_numbers
-    self.from = Phony.normalize(from)
-    self.to = Phony.normalize(to)
-  end
 
   def set_beneficiary_data
     self.beneficiary_fingerprint = beneficiary
