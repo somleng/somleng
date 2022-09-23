@@ -108,8 +108,8 @@ module Services
     it "validates from" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:)
-      sip_trunk_with_trunk_prefix_replacement = create(
-        :sip_trunk, carrier:, inbound_trunk_prefix_replacement: "52"
+      sip_trunk_with_inbound_country = create(
+        :sip_trunk, carrier:, inbound_country_code: "MX"
       )
 
       expect(
@@ -133,8 +133,8 @@ module Services
       expect(
         validate_request_schema(
           input_params: {
-            from: "08188888888",
-            source_ip: sip_trunk_with_trunk_prefix_replacement.inbound_source_ip.to_s
+            from: "018188888888",
+            source_ip: sip_trunk_with_inbound_country.inbound_source_ip.to_s
           }
         )
       ).to have_valid_field(:from)
@@ -184,13 +184,13 @@ module Services
       )
     end
 
-    it "normalizes from with a trunk prefix replacement" do
+    it "normalizes from with an inbound country configured" do
       carrier = create(:carrier)
       _sip_trunk = create(
         :sip_trunk,
         carrier:,
         inbound_source_ip: "175.100.7.240",
-        inbound_trunk_prefix_replacement: "855"
+        inbound_country_code: "KH"
       )
       _phone_number = create(
         :phone_number,
@@ -210,13 +210,13 @@ module Services
       expect(schema.output).to include(from: "85568308531", to: "1294")
     end
 
-    it "normalizes to with a trunk prefix replacement" do
+    it "normalizes to with an inbound country configured" do
       carrier = create(:carrier)
       _sip_trunk = create(
         :sip_trunk,
         carrier:,
         inbound_source_ip: "175.100.7.240",
-        inbound_trunk_prefix_replacement: "855"
+        inbound_country_code: "KH"
       )
       _phone_number = create(
         :phone_number,

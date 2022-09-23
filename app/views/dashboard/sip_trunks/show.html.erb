@@ -21,20 +21,51 @@
     </div>
   </div>
 
-  <% if @resource.authentication_mode.ip_address? %>
+  <% if @resource.authentication_mode.client_credentials? %>
     <div class="card mb-3">
       <div class="card-body">
-        <h5 class="card-title">Inbound Dialing</h5>
+        <h5 class="card-title">Client Credentials</h5>
 
         <%= show_for(@resource) do |f| %>
-          <%= f.attribute :inbound_source_ip, label: "Source IP" %>
-          <% if @resource.inbound_source_ip.present? %>
-            <%= f.attribute :inbound_trunk_prefix_replacement, label: "Trunk prefix replacement" %>
+          <%= f.attribute :username do %>
+            <code>
+              <%= @resource.username %>
+            </code>
+          <% end %>
+          <%= f.attribute :password do %>
+            <%= mask_content(@resource.password) %>
+          <% end %>
+          <%= f.attribute :domain do %>
+            <code>
+              <%= AppSettings.config_for(:client_gateway_domain) %>
+            </code>
           <% end %>
         <% end %>
       </div>
     </div>
+  <% end %>
 
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Inbound Dialing</h5>
+
+      <%= show_for(@resource) do |f| %>
+        <% if @resource.authentication_mode.ip_address? %>
+          <%= f.attribute :inbound_source_ip, label: "Source IP" %>
+        <% end %>
+
+        <% if @resource.inbound_country.present? %>
+          <%= f.attribute :default_country_code do %>
+            <%= "#{@resource.inbound_country.iso_short_name} (#{@resource.inbound_country.country_code})" %>
+          <% end %>
+        <% else %>
+          <%= f.attribute :default_country_code, value: nil %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @resource.authentication_mode.ip_address? %>
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Outbound Dialing</h5>
@@ -43,28 +74,12 @@
           <%= f.attribute :outbound_host, label: "Host" %>
 
           <% if @resource.outbound_host.present? %>
-            <%= f.attribute :outbound_example_dial_string, label: "Dial string" do %>
+            <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
               <code>
                 <%= @resource.outbound_example_dial_string %>
               </code>
             <% end %>
           <% end %>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
-  <% if @resource.authentication_mode.client_credentials? %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Client Credentials</h5>
-
-        <%= show_for(@resource) do |f| %>
-          <%= f.attribute :username %>
-          <%= f.attribute :password do %>
-            <%= mask_content(@resource.password) %>
-          <% end %>
-          <%= f.attribute :domain, value: "sip.somleng.org" %>
         <% end %>
       </div>
     </div>

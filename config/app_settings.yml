@@ -1,6 +1,7 @@
 default: &default
   app_subdomain: "app"
   api_subdomain: "api"
+  client_gateway_domain: "sip.somleng.org"
   call_service_queue_url: <%= ENV.fetch("CALL_SERVICE_QUEUE_URL", "https://amazonaws.com/12345/call_service_queue") %>
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
   mailer_sender: "no-reply@somleng.org"
@@ -52,6 +53,7 @@ staging:
   asset_url_host: "https://cdn-staging.somleng.org"
   ahn_host: "https://switch-staging.somleng.org"
   sip_port: 6060
+  client_gateway_domain: "Connect Via Public IP"
 
 development: &development
   <<: *default

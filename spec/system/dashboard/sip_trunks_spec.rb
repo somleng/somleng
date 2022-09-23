@@ -35,9 +35,10 @@ RSpec.describe "SIP Trunks" do
     fill_in("Name", with: "Main SIP Trunk")
     choose("IP address")
     fill_in("Source IP", with: "175.100.7.240")
+    select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
-    check("Trunk prefix")
+    check("National dialing")
     check("Plus prefix")
 
     click_button "Create SIP trunk"
@@ -45,11 +46,13 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("SIP trunk was successfully created")
     expect(page).to have_content("IP address")
     expect(page).to have_content("175.100.7.240")
+    expect(page).to have_content("Mexico (52)")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
   end
 
   it "Creates a SIP trunk with client credentials", :js do
-    user = create(:user, :carrier, :admin)
+    carrier = create(:carrier, country_code: "KH")
+    user = create(:user, :carrier, :admin, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_sip_trunks_path
@@ -62,6 +65,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("SIP trunk was successfully created")
     expect(page).to have_content("Username")
     expect(page).to have_content("Password")
+    expect(page).to have_content("Cambodia (855)")
     expect(page).to have_content("sip.somleng.org")
   end
 
@@ -85,7 +89,7 @@ RSpec.describe "SIP Trunks" do
       inbound_source_ip: "175.100.7.111",
       outbound_host: "sip.example.com:5061",
       outbound_dial_string_prefix: "1234",
-      outbound_trunk_prefix: true,
+      outbound_national_dialing: true,
       outbound_plus_prefix: true
     )
 
@@ -95,10 +99,10 @@ RSpec.describe "SIP Trunks" do
     click_link("Edit")
     fill_in("Name", with: "Main Trunk")
     fill_in("Source IP", with: "96.9.66.131")
-    fill_in("Trunk prefix replacement", with: "855")
+    select("Cambodia", from: "Default country code")
     fill_in("Host", with: "96.9.66.131")
     fill_in("Dial string prefix", with: "")
-    uncheck("Trunk prefix")
+    uncheck("National dialing")
     uncheck("Plus prefix")
 
     click_button "Update SIP trunk"
@@ -106,7 +110,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("SIP trunk was successfully updated")
     expect(page).to have_content("Main Trunk")
     expect(page).to have_content("96.9.66.131")
-    expect(page).to have_content("855")
+    expect(page).to have_content("Cambodia")
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.131")
   end
 

@@ -79,7 +79,7 @@ RSpec.describe "Services" do
         :sip_trunk,
         carrier:,
         inbound_source_ip: "175.100.7.240",
-        inbound_trunk_prefix_replacement: "855"
+        inbound_country_code: "KH"
       )
 
       post(

@@ -15,7 +15,7 @@ class DialString
   private
 
   def build_dial_string
-    result = sip_trunk.outbound_trunk_prefix? ? Phony.format(destination, format: :national, spaces: "") : destination
+    result = sip_trunk.outbound_national_dialing? ? Phony.format(destination, format: :national, spaces: "") : destination
 
     "#{sip_trunk.outbound_dial_string_prefix}#{result}@#{sip_trunk.outbound_host}"
   end

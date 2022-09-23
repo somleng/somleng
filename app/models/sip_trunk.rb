@@ -20,6 +20,10 @@ class SIPTrunk < ApplicationRecord
   after_destroy :revoke_inbound_source_ip
   after_update :update_inbound_source_ip
 
+  def inbound_country
+    ISO3166::Country.new(inbound_country_code) if inbound_country_code.present?
+  end
+
   def outbound_example_dial_string
     return if outbound_host.blank?
 
@@ -27,7 +31,7 @@ class SIPTrunk < ApplicationRecord
       DIAL_STRING_FORMAT,
       plus_prefix: outbound_plus_prefix? ? "+" : "",
       dial_string_prefix: outbound_dial_string_prefix,
-      national_prefix: outbound_trunk_prefix? ? "0" : "X" * carrier.country.country_code.to_s.length,
+      national_prefix: outbound_national_dialing? ? carrier.country.national_prefix : "X" * carrier.country.country_code.to_s.length,
       local_number: "X" * carrier.country.national_number_lengths.last,
       host: outbound_host
     )

@@ -11,7 +11,7 @@ class RoutingParameters
       destination:,
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
       plus_prefix: sip_trunk.outbound_plus_prefix?,
-      trunk_prefix: sip_trunk.outbound_trunk_prefix?,
+      national_dialing: sip_trunk.outbound_national_dialing?,
       host: sip_trunk.outbound_host,
       username: sip_trunk.username,
       symmetric_latching: sip_trunk.outbound_symmetric_latching_supported?

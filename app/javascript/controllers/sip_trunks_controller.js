@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "authenticationModeInput", "ipAddressAuthenticationSection" ]
+  static targets = [ "authenticationModeInput", "countrySelectInput", "ipAddressAuthenticationSection" ]
 
   connect() {
     this.toggleAuthenticationMode();
@@ -9,10 +9,15 @@ export default class extends Controller {
 
   toggleAuthenticationMode() {
     const element = this.authenticationModeInputTargets.find((element) => element.checked)
+
     if (element.value == "client_credentials") {
-      this.ipAddressAuthenticationSectionTarget.style.display = 'none';
+      if (!("selectedCountry" in this.countrySelectInputTarget.dataset)) {
+        this.countrySelectInputTarget.value = this.countrySelectInputTarget.dataset.defaultCountry
+      }
+      this.ipAddressAuthenticationSectionTargets.forEach((target) => target.style.display = 'none');
     } else {
-      this.ipAddressAuthenticationSectionTarget.style.display = 'block';
+      this.countrySelectInputTarget.value = this.countrySelectInputTarget.dataset.selectedCountry
+      this.ipAddressAuthenticationSectionTargets.forEach((target) => target.style.display = 'block');
     }
   }
 }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_19_012147) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_23_055727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -336,11 +336,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_012147) do
     t.uuid "carrier_id", null: false
     t.string "name", null: false
     t.inet "inbound_source_ip"
-    t.string "inbound_trunk_prefix_replacement"
     t.string "outbound_host"
     t.string "outbound_route_prefixes", default: [], null: false, array: true
     t.string "outbound_dial_string_prefix"
-    t.boolean "outbound_trunk_prefix", default: false, null: false
+    t.boolean "outbound_national_dialing", default: false, null: false
     t.boolean "outbound_plus_prefix", default: false, null: false
     t.boolean "outbound_symmetric_latching_supported", default: true, null: false
     t.bigserial "sequence_number", null: false
@@ -349,6 +348,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_012147) do
     t.string "authentication_mode", null: false
     t.string "username"
     t.string "password"
+    t.string "inbound_country_code"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc

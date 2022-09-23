@@ -48,8 +48,8 @@ module Dashboard
     def permitted_params
       params.require(:sip_trunk).permit(
         :authentication_mode, :name,
-        :source_ip, :trunk_prefix_replacement,
-        :host, :dial_string_prefix, :trunk_prefix, :plus_prefix
+        :source_ip, :country,
+        :host, :dial_string_prefix, :national_dialing, :plus_prefix
       )
     end
 

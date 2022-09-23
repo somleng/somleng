@@ -26,7 +26,7 @@ RSpec.describe "Services" do
         "destination" => "85516701721",
         "dial_string_prefix" => nil,
         "plus_prefix" => false,
-        "trunk_prefix" => false,
+        "national_dialing" => false,
         "host" => "27.109.112.141",
         "username" => nil,
         "symmetric_latching" => true

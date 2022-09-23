@@ -50,7 +50,7 @@ RSpec.describe OutboundCallJob do
           destination: "85516701721",
           dial_string_prefix: nil,
           plus_prefix: false,
-          trunk_prefix: false,
+          national_dialing: false,
           host: "sip.example.com",
           username: nil,
           symmetric_latching: false

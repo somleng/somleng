@@ -29,7 +29,7 @@ module Services
     rule(:to) do |context:|
       next if context[:sip_trunk].blank?
 
-      context[:to] = normalize_number(value, context[:sip_trunk].inbound_trunk_prefix_replacement)
+      context[:to] = normalize_number(value, context[:sip_trunk])
 
       phone_numbers = context[:sip_trunk].carrier.phone_numbers
       context[:phone_number] = phone_numbers.find_by(number: context[:to])
@@ -52,7 +52,7 @@ module Services
     rule(:from) do |context:|
       next if context[:sip_trunk].blank?
 
-      context[:from] = normalize_number(value, context[:sip_trunk].inbound_trunk_prefix_replacement)
+      context[:from] = normalize_number(value, context[:sip_trunk])
       unless Phony.plausible?(context[:from])
         key.failure(
           "is invalid. It must be an E.164 formatted phone number and must include the country code"
@@ -101,10 +101,11 @@ module Services
 
     private
 
-    def normalize_number(number, trunk_prefix_replacement)
-      return number if trunk_prefix_replacement.blank?
+    def normalize_number(number, sip_trunk)
+      country = sip_trunk.inbound_country
+      return number if country.blank?
 
-      number.sub(/\A(?:0)/, trunk_prefix_replacement)
+      number.sub(/\A(?:#{country.national_prefix})/, country.country_code)
     end
 
     def route_to_sip_domain(phone_number)

@@ -11,11 +11,12 @@
               f.input(
                 :authentication_mode,
                 as: :radio_buttons,
+                checked: resource.authentication_mode || SIPTrunk.authentication_mode.values.first,
                 wrapper: :vertical_collection_inline,
                 hint: "If you have a dedicated public static IP address you may choose 'IP address', otherwise choose 'Client credentials'",
                 input_html: {
                   data: {
-                    "sip-trunks-target" => "authenticationModeInput",
+                    sip_trunks_target: "authenticationModeInput",
                     action: "click->sip-trunks#toggleAuthenticationMode"
                   }
                 }
@@ -32,23 +33,42 @@
       </div>
     </div>
 
-    <div data-sip-trunks-target="ipAddressAuthenticationSection">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Inbound Dialing</h5>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Inbound Dialing</h5>
 
-          <div class="row">
-            <div class="col-sm-6">
-              <%= f.input :source_ip, placeholder: "175.100.7.240", hint: "The source IP address for inbound calls" %>
-            </div>
+        <div class="row">
+          <div class="col-sm-6" data-sip-trunks-target="ipAddressAuthenticationSection">
+            <%= f.input(
+                :source_ip,
+                placeholder: "175.100.7.240",
+                hint: "The source IP address for inbound calls"
+              )
+            %>
+          </div>
 
-            <div class="col-sm-6">
-              <%= f.input :trunk_prefix_replacement, placeholder: current_carrier.country.country_code, hint: "Only required if your trunk is configured for local dialing. The leading 0 will be replaced by this value" %>
-            </div>
+          <div class="col-sm-6">
+            <%= f.input(
+                :country,
+                label: "Default country code",
+                format: :with_dialing_country_code,
+                include_blank: true,
+                input_html: {
+                  data: {
+                    sip_trunks_target: "countrySelectInput",
+                    selected_country: resource.country,
+                    default_country: current_carrier.country_code
+                  }
+                },
+                hint: "Set the default country code of the caller. Required if the caller's number is sent in national format instead of E.164"
+              )
+            %>
           </div>
         </div>
       </div>
+    </div>
 
+    <div data-sip-trunks-target="ipAddressAuthenticationSection">
       <div class="card mb-3">
         <div class="card-body">
           <h5 class="card-title">Outbound Dialing</h5>
@@ -70,7 +90,7 @@
 
           <div class="row">
             <div class="col-sm-6">
-              <%= f.input :trunk_prefix, as: :boolean, wrapper: :custom_boolean_switch, hint: "Replaces the country code with a 0. Use for local dialing." %>
+              <%= f.input :national_dialing, as: :boolean, wrapper: :custom_boolean_switch, hint: "Formats the dial string in national dialing format instead of E.164" %>
             </div>
 
             <div class="col-sm-6">
