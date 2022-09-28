@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SIPTrunk do
+RSpec.xdescribe SIPTrunk do
   describe "#configured_for_outbound_dialing?" do
     it "returns true for sip trunks configured for outbound dialing" do
       client_credentials_sip_trunk = build_stubbed(:sip_trunk, :client_credentials_authentication)
