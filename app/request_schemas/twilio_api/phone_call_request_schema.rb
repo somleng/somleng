@@ -1,7 +1,7 @@
 module TwilioAPI
   class PhoneCallRequestSchema < TwilioAPIRequestSchema
     params do
-      required(:To).value(ApplicationRequestSchema::Types::fdiaNumber, :filled?)
+      required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
       optional(:Url).filled(:str?, format?: URL_FORMAT)
       optional(:Method).value(

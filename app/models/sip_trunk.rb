@@ -44,8 +44,6 @@ class SIPTrunk < ApplicationRecord
   private
 
   def generate_client_credentials
-    return if authentication_mode.blank?
-
     if authentication_mode.client_credentials?
       return if username.present?
 
