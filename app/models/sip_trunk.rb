@@ -11,14 +11,14 @@ class SIPTrunk < ApplicationRecord
   attribute :call_service_client, default: CallService::Client.new
   attribute :username_generator, default: UsernameGenerator.new
 
-  # before_save :generate_client_credentials
-  # after_create :create_subscriber
-  # after_destroy :delete_subscriber
-  # after_update :update_subscriber
+  before_save :generate_client_credentials
+  after_create :create_subscriber
+  after_destroy :delete_subscriber
+  after_update :update_subscriber
 
-  # after_create :authorize_inbound_source_ip
-  # after_destroy :revoke_inbound_source_ip
-  # after_update :update_inbound_source_ip
+  after_create :authorize_inbound_source_ip
+  after_destroy :revoke_inbound_source_ip
+  after_update :update_inbound_source_ip
 
   def inbound_country
     ISO3166::Country.new(inbound_country_code) if inbound_country_code.present?
@@ -44,8 +44,6 @@ class SIPTrunk < ApplicationRecord
   private
 
   def generate_client_credentials
-    return if authentication_mode.blank?
-
     if authentication_mode.client_credentials?
       return if username.present?
 

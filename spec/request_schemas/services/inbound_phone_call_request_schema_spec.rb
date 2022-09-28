@@ -140,7 +140,7 @@ module Services
       ).to have_valid_field(:from)
     end
 
-    xit "normalizes the output" do
+    it "normalizes the output" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, :client_credentials_authentication, carrier:)
       account = create(:account)

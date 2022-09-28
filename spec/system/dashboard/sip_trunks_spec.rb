@@ -50,7 +50,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
   end
 
-  xit "Creates a SIP trunk with client credentials", :js do
+  it "Creates a SIP trunk with client credentials", :js do
     carrier = create(:carrier, country_code: "KH")
     user = create(:user, :carrier, :admin, carrier:)
 
