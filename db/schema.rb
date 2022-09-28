@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_23_055727) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_28_031609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -264,7 +264,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_23_055727) do
     t.bigserial "sequence_number", null: false
     t.text "twiml"
     t.uuid "carrier_id", null: false
-    t.string "dial_string"
     t.decimal "price", precision: 10, scale: 4
     t.string "price_unit"
     t.string "caller_id"
