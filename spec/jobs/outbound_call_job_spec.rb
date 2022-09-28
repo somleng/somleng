@@ -18,7 +18,6 @@ RSpec.describe OutboundCallJob do
       carrier:,
       sip_trunk:,
       to: "85516701721",
-      dial_string: "85516701721@sip.example.com",
       from: "1294",
       caller_id: "1294",
       voice_url: "http://example.com/voice_url",
@@ -42,10 +41,6 @@ RSpec.describe OutboundCallJob do
         twiml: nil,
         to: "+85516701721",
         from: "1294",
-        routing_instructions: {
-          dial_string: "85516701721@sip.example.com",
-          nat_supported: false
-        },
         routing_parameters: {
           destination: "85516701721",
           dial_string_prefix: nil,

@@ -29,7 +29,6 @@ Rails.application.routes.draw do
       resources :phone_call_events, only: :create
       resources :call_data_records, only: :create
       resources :recordings, only: %i[create update]
-      resource :dial_string, only: :create
       resource :routing_parameters, only: :create
     end
   end

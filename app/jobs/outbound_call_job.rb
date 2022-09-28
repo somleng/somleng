@@ -18,10 +18,6 @@ class OutboundCallJob < ApplicationJob
       twiml: decorated_phone_call.twiml,
       to: decorated_phone_call.to,
       from: decorated_phone_call.caller_id,
-      routing_instructions: {
-        dial_string: decorated_phone_call.dial_string,
-        nat_supported: decorated_phone_call.sip_trunk.outbound_symmetric_latching_supported
-      },
       routing_parameters: RoutingParameters.new(
         sip_trunk: phone_call.sip_trunk,
         destination: phone_call.to

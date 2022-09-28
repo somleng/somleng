@@ -118,7 +118,6 @@ module TwilioAPI
         account:,
         carrier: account.carrier,
         sip_trunk:,
-        dial_string: "85568308531@sip.example.com",
         voice_url: "https://www.example.com/voice_url.xml",
         voice_method: "GET",
         status_callback_url: "https://example.com/status-callback",
