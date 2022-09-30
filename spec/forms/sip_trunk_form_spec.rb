@@ -9,6 +9,13 @@ RSpec.describe SIPTrunkForm do
       expect(form.errors[:source_ip]).to be_present
     end
 
+    it "validates max channels" do
+      form = SIPTrunkForm.new(max_channels: "0")
+
+      expect(form).to be_invalid
+      expect(form.errors[:max_channels]).to be_present
+    end
+
     it "validates the inbound source IP is unique" do
       create(:sip_trunk, inbound_source_ip: "96.9.66.131")
       form = SIPTrunkForm.new(source_ip: "96.9.66.131")

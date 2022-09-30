@@ -4,6 +4,6 @@ RSpec.describe DailyJob do
   it "enqueues jobs to be run daily" do
     DailyJob.perform_now
 
-    expect(ExecuteWorkflowJob).to have_been_enqueued.with(ExpirePhoneCalls.to_s)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with(ExpireQueuedPhoneCalls.to_s)
   end
 end

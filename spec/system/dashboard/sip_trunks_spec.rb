@@ -48,6 +48,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("175.100.7.240")
     expect(page).to have_content("Mexico (52)")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
+    expect(page).to have_content("Unlimited")
   end
 
   it "Creates a SIP trunk with client credentials", :js do
@@ -59,6 +60,7 @@ RSpec.describe "SIP Trunks" do
     click_link("New")
     choose("Client credentials")
     fill_in("Name", with: "Main SIP Trunk")
+    fill_in("Max channels", with: 32)
 
     click_button "Create SIP trunk"
 
@@ -67,6 +69,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("Password")
     expect(page).to have_content("Cambodia (855)")
     expect(page).to have_content("sip.somleng.org")
+    expect(page).to have_content("32")
   end
 
   it "Handles validations" do

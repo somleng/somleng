@@ -15,6 +15,10 @@
       <%= show_for(@resource) do |f| %>
         <%= f.attribute :name %>
         <%= f.attribute :authentication_mode, value: @resource.authentication_mode.humanize %>
+        <%= f.attribute :max_channels do %>
+          <%= @resource.max_channels.present? ? @resource.max_channels : "Unlimited" %>
+        <% end %>
+
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
       <% end %>
