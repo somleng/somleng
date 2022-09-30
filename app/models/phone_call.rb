@@ -35,7 +35,7 @@ class PhoneCall < ApplicationRecord
     state :canceled
     state :session_timeout
 
-    event :initiate do
+    event :mark_as_initiating do
       transitions from: %i[queued initiating], to: :initiating
     end
 
@@ -77,6 +77,18 @@ class PhoneCall < ApplicationRecord
 
   def self.in_progress
     where(status: %w[initiated ringing answered])
+  end
+
+  def self.in_progress_or_initiating
+    in_progress.or(initiating)
+  end
+
+  def initiate!(&_block)
+    self.initiating_at = Time.current
+    mark_as_initiating!
+    self.external_id = yield
+    self.initiated_at = Time.current
+    mark_as_initiated!
   end
 
   private

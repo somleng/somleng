@@ -104,7 +104,9 @@ FactoryBot.define do
     trait :busy do
       max_channels { 1 }
       after(:build) do |sip_trunk|
-        sip_trunk.phone_calls << build(:phone_call, :initiated, sip_trunk:, carrier: sip_trunk.carrier)
+        sip_trunk.phone_calls << build(
+          :phone_call, :initiated, sip_trunk:, carrier: sip_trunk.carrier
+        )
       end
     end
   end

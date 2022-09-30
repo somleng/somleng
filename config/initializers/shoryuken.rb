@@ -20,7 +20,7 @@ Shoryuken.configure_server do |config|
     Utils.exponential_backoff_delay(
       number_of_attempts: attempts,
       max_retry_period: 12.hours,
-      max_attempts: 10
+      max_attempts: 50
     )
   }
 

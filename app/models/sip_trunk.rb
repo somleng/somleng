@@ -45,7 +45,7 @@ class SIPTrunk < ApplicationRecord
   def channels_available?
     return true if max_channels.blank?
 
-    max_channels > phone_calls.in_progress.count
+    max_channels > phone_calls.in_progress_or_initiating.count
   end
 
   private

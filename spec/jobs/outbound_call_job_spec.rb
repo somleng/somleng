@@ -29,6 +29,9 @@ RSpec.describe OutboundCallJob do
 
     expect(phone_call.external_id).to eq("123456789")
     expect(phone_call.status).to eq("initiated")
+    expect(phone_call.initiating_at.present?).to eq(true)
+    expect(phone_call.initiated_at.present?).to eq(true)
+
     expect(WebMock).to have_requested(:post, "https://ahn.somleng.org/calls").with(
       body: {
         sid: phone_call.id,
@@ -71,6 +74,8 @@ RSpec.describe OutboundCallJob do
     end.to raise_error(OutboundCallJob::RetryJob)
 
     expect(phone_call.status).to eq("initiating")
+    expect(phone_call.initiating_at.present?).to eq(true)
+    expect(phone_call.initiated_at).to eq(nil)
     expect(WebMock).to have_requested(:post, "https://ahn.somleng.org/calls")
   end
 

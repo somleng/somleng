@@ -16,9 +16,9 @@ class NotifyWebhookEndpoint < ApplicationWorkflow
       event:,
       carrier: event.carrier,
       url: webhook_endpoint.url,
-      webhook_endpoint: webhook_endpoint,
+      webhook_endpoint:,
       http_status_code: response.status,
-      payload: payload,
+      payload:,
       failed: !response.success?
     )
 
@@ -81,7 +81,7 @@ class NotifyWebhookEndpoint < ApplicationWorkflow
   end
 
   def failed_attempts_count
-    @failed_attempts_count ||= event.webhook_request_logs.where(webhook_endpoint: webhook_endpoint).failed.count
+    @failed_attempts_count ||= event.webhook_request_logs.where(webhook_endpoint:).failed.count
   end
 
   class ConnectionError

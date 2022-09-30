@@ -17,12 +17,15 @@ RSpec.describe SIPTrunk do
     it "returns channels available" do
       sip_trunk_with_unlimited_channels = build_stubbed(:sip_trunk, max_channels: nil)
       available_sip_trunk = create(:sip_trunk, max_channels: 1)
-      busy_sip_trunk = create(:sip_trunk, max_channels: 1)
+      busy_sip_trunk = create(:sip_trunk, :busy)
+      trying_sip_trunk = create(:sip_trunk, max_channels: 1)
       create(:phone_call, :initiated, sip_trunk: busy_sip_trunk)
+      create(:phone_call, :initiating, sip_trunk: trying_sip_trunk)
 
       expect(sip_trunk_with_unlimited_channels.channels_available?).to eq(true)
       expect(available_sip_trunk.channels_available?).to eq(true)
       expect(busy_sip_trunk.channels_available?).to eq(false)
+      expect(trying_sip_trunk.channels_available?).to eq(false)
     end
   end
 
