@@ -33,6 +33,7 @@ class PhoneCall < ApplicationRecord
     state :not_answered
     state :completed
     state :canceled
+    state :session_timeout
 
     event :initiate do
       transitions from: %i[queued initiating], to: :initiating
@@ -73,6 +74,10 @@ class PhoneCall < ApplicationRecord
 
   validates :external_id, presence: true, if: :inbound?
   before_create :set_beneficiary_data
+
+  def self.in_progress
+    where(status: %w[initiated ringing answered])
+  end
 
   private
 

@@ -9,6 +9,7 @@ class PhoneCallDecorator < SimpleDelegator
     "answered" => "in-progress",
     "busy" => "busy",
     "failed" => "failed",
+    "session_timed_out" => "failed",
     "not_answered" => "no-answer",
     "completed" => "completed",
     "canceled" => "canceled"

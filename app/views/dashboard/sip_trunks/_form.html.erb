@@ -29,6 +29,10 @@
           <div class="col-sm-6">
             <%= f.input :name, placeholder: "Main SIP Trunk", maxlength: 128, hint: "A friendly name for the SIP Trunk" %>
           </div>
+
+          <div class="col-sm-6">
+            <%= f.input :max_channels, hint: "The maximum number of channels/concurrent calls. Leave blank for unlimited channels" %>
+          </div>
         </div>
       </div>
     </div>

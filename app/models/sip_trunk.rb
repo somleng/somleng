@@ -3,6 +3,7 @@ class SIPTrunk < ApplicationRecord
 
   extend Enumerize
 
+  has_many :phone_calls
   belongs_to :carrier
   encrypts :password
 
@@ -39,6 +40,12 @@ class SIPTrunk < ApplicationRecord
 
   def configured_for_outbound_dialing?
     authentication_mode.client_credentials? || outbound_host.present?
+  end
+
+  def channels_available?
+    return true if max_channels.blank?
+
+    max_channels > phone_calls.in_progress.count
   end
 
   private

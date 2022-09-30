@@ -12,6 +12,7 @@ class SIPTrunkForm
   attribute :carrier
   attribute :sip_trunk, default: -> { SIPTrunk.new }
   attribute :name
+  attribute :max_channels
   attribute :authentication_mode
 
   attribute :country
@@ -25,6 +26,7 @@ class SIPTrunkForm
   enumerize :authentication_mode, in: SIPTrunk.authentication_mode.values
 
   validates :name, presence: true
+  validates :max_channels, numericality: { greater_than: 0 }, allow_blank: true
   validates :authentication_mode, presence: true
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
   validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
@@ -44,6 +46,7 @@ class SIPTrunkForm
       sip_trunk:,
       authentication_mode: sip_trunk.authentication_mode,
       name: sip_trunk.name,
+      max_channels: sip_trunk.max_channels,
       country: sip_trunk.inbound_country_code,
       source_ip: sip_trunk.inbound_source_ip.presence,
       host: sip_trunk.outbound_host,
@@ -62,6 +65,7 @@ class SIPTrunkForm
       carrier:,
       authentication_mode:,
       name:,
+      max_channels:,
       inbound_source_ip: source_ip,
       inbound_country_code: country.presence,
       outbound_host: host.to_s.strip.presence,

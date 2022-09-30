@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_28_031609) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_30_093741) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -270,6 +270,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_031609) do
     t.string "beneficiary_country_code", null: false
     t.string "beneficiary_fingerprint", null: false
     t.uuid "sip_trunk_id"
+    t.datetime "initiated_at"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
@@ -278,6 +279,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_031609) do
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
     t.index ["from"], name: "index_phone_calls_on_from"
+    t.index ["initiated_at"], name: "index_phone_calls_on_initiated_at"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_phone_calls_on_sip_trunk_id"
@@ -348,6 +350,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_031609) do
     t.string "username"
     t.string "password"
     t.string "inbound_country_code"
+    t.integer "max_channels"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc

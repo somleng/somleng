@@ -3,6 +3,7 @@ class OutboundCallJob < ApplicationJob
 
   def perform(phone_call, call_service_client: CallService::Client.new)
     return unless phone_call.status.in?(%w[queued initiating])
+    return reschedule(phone_call) unless phone_call.sip_trunk.channels_available?
 
     phone_call.initiate!
 
@@ -28,6 +29,17 @@ class OutboundCallJob < ApplicationJob
     raise RetryJob, "Response body: #{response.body}" unless response.success?
 
     phone_call.external_id = response.fetch(:id)
+    phone_call.initiated_at = Time.current
     phone_call.mark_as_initiated!
+  end
+
+  private
+
+  def reschedule(phone_call)
+    ScheduledJob.perform_later(
+      OutboundCallJob.to_s,
+      phone_call,
+      wait_until: 10.seconds.from_now
+    )
   end
 end

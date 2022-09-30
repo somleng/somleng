@@ -100,6 +100,13 @@ FactoryBot.define do
       outbound_host { nil }
       outbound_plus_prefix { true }
     end
+
+    trait :busy do
+      max_channels { 1 }
+      after(:build) do |sip_trunk|
+        sip_trunk.phone_calls << build(:phone_call, :initiated, sip_trunk:, carrier: sip_trunk.carrier)
+      end
+    end
   end
 
   factory :event do
@@ -287,7 +294,13 @@ FactoryBot.define do
       status { :queued }
     end
 
-    traits_for_enum :status, %i[initiating initiated answered not_answered ringing canceled failed busy]
+    trait :initiated do
+      external_id { SecureRandom.uuid }
+      initiated_at { Time.current }
+      status { :initiated }
+    end
+
+    traits_for_enum :status, %i[initiating answered not_answered ringing canceled failed busy]
 
     trait :inbound do
       direction { :inbound }

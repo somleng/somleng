@@ -74,6 +74,22 @@ RSpec.describe OutboundCallJob do
     expect(WebMock).to have_requested(:post, "https://ahn.somleng.org/calls")
   end
 
+  it "handles max number of channels" do
+    sip_trunk = create(:sip_trunk, :busy)
+    phone_call = create(:phone_call, :outbound, :queued, :routable, sip_trunk:)
+
+    travel_to(Time.current) do
+      OutboundCallJob.perform_now(phone_call)
+
+      expect(phone_call.status).to eq("queued")
+      expect(ScheduledJob).to have_been_enqueued.with(
+        OutboundCallJob.to_s,
+        phone_call,
+        wait_until: 10.seconds.from_now
+      )
+    end
+  end
+
   def stub_switch_request(external_call_id: "ext-id")
     stub_request(
       :post, "https://ahn.somleng.org/calls"
