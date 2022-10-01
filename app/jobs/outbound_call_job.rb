@@ -24,7 +24,6 @@ class OutboundCallJob < ApplicationJob
         ).to_h
       )
 
-      # re-enqueue job with exponential backoff
       raise RetryJob, "Response body: #{response.body}" unless response.success?
 
       response.fetch(:id)

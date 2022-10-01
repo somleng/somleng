@@ -44,10 +44,11 @@ class NotifyWebhookEndpoint < ApplicationWorkflow
   end
 
   def retry_request_webhook_endpoint
-    retry_at = Utils.exponential_backoff_delay(
+    retry_at = ExponentialBackoff.new(
       max_retry_period: RETRY_PERIOD,
-      number_of_attempts: failed_attempts_count,
       max_attempts: MAX_ATTEMPTS
+    ).delay(
+      attempt: failed_attempts_count
     ).seconds.from_now
 
     ScheduledJob.perform_later(
