@@ -3,7 +3,8 @@ class OutboundCallJob < ApplicationJob
 
   def perform(phone_call, call_service_client: CallService::Client.new)
     return unless phone_call.status.in?(%w[queued initiating])
-    return reschedule(phone_call) unless phone_call.sip_trunk.channels_available?
+
+    return reschedule(phone_call) unless phone_call.sip_trunk.allocate_channel!
 
     phone_call.initiate! do
       decorated_phone_call = PhoneCallDecorator.new(phone_call)

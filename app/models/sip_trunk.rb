@@ -42,10 +42,15 @@ class SIPTrunk < ApplicationRecord
     authentication_mode.client_credentials? || outbound_host.present?
   end
 
-  def channels_available?
+  def allocate_channel!
     return true if max_channels.blank?
 
+    self.last_channel_allocated_at = Time.current
+    save!(touch: false)
+
     max_channels > phone_calls.in_progress_or_initiating.count
+  rescue ActiveRecord::StaleObjectError
+    false
   end
 
   private
