@@ -5,6 +5,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     carrier: Field::BelongsTo,
     id: Field::String,
     name: Field::String,
+    max_channels: Field::String,
     inbound_country_code: Field::String,
     inbound_source_ip: Field::String.with_options(searchable: false),
     outbound_host: Field::String,
@@ -26,6 +27,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     carrier
     id
     name
+    max_channels
     inbound_source_ip
     inbound_country_code
     outbound_host

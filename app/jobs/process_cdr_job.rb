@@ -12,8 +12,7 @@ class ProcessCDRJob < ApplicationJob
 
   def create_call_data_record(cdr)
     cdr_variables = cdr.fetch("variables")
-    phone_call_id = cdr_variables["sip_rh_X-Somleng-CallSid"] || cdr_variables["sip_h_X-Somleng-CallSid"]
-    phone_call = PhoneCall.find(phone_call_id)
+    phone_call = find_phone_call(cdr_variables)
 
     CallDataRecord.create!(
       phone_call:,
@@ -67,5 +66,14 @@ class ProcessCDRJob < ApplicationJob
   def parse_epoch(epoch)
     epoch = epoch.to_i
     Time.at(epoch) if epoch.positive?
+  end
+
+  def find_phone_call(cdr_variables)
+    phone_call_id = cdr_variables["sip_rh_X-Somleng-CallSid"]
+    phone_call_id ||= cdr_variables["sip_h_X-Somleng-CallSid"]
+
+    return PhoneCall.find(phone_call_id) if phone_call_id.present?
+
+    PhoneCall.find_by!(external_id: cdr_variables.fetch("uuid"))
   end
 end

@@ -16,7 +16,8 @@ module CarrierAPI
       result = super
 
       if result.key?(:metadata)
-        result[:metadata] = Utils.deep_merge(resource.metadata, result.fetch(:metadata))
+        new_metadata = result.fetch(:metadata).stringify_keys
+        result[:metadata] = resource.metadata.deep_merge(new_metadata)
       end
 
       result

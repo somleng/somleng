@@ -6,27 +6,25 @@ RSpec.describe NotifyWebhookEndpoint do
     webhook_endpoint = create(:webhook_endpoint)
     stub_request(:post, webhook_endpoint.url).to_return(status: 500)
 
-    travel_to(Time.zone.local(2019, 1, 25, 12, 0, 0)) do
-      _first_log_for_failed_request = create(
-        :webhook_request_log,
-        :failed,
-        event:,
-        webhook_endpoint:
-      )
+    _first_log_for_failed_request = create(
+      :webhook_request_log,
+      :failed,
+      event:,
+      webhook_endpoint:
+    )
 
-      webhook_request_log = NotifyWebhookEndpoint.call(webhook_endpoint, event)
+    webhook_request_log = NotifyWebhookEndpoint.call(webhook_endpoint, event)
 
-      expect(webhook_request_log.failed?).to eq(true)
-      expect(
-        ScheduledJob
-      ).to have_been_enqueued.with(
-        ExecuteWorkflowJob.to_s,
-        NotifyWebhookEndpoint.to_s,
-        webhook_endpoint,
-        event,
-        wait_until: Time.zone.local(2019, 1, 25, 12, 0, 17).to_f
-      )
-    end
+    expect(webhook_request_log.failed?).to eq(true)
+    expect(
+      ScheduledJob
+    ).to have_been_enqueued.with(
+      ExecuteWorkflowJob.to_s,
+      NotifyWebhookEndpoint.to_s,
+      webhook_endpoint,
+      event,
+      wait_until: be_present
+    )
   end
 
   it "re-enqueues the job if the connection failed" do

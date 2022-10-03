@@ -16,9 +16,9 @@ class NotifyWebhookEndpoint < ApplicationWorkflow
       event:,
       carrier: event.carrier,
       url: webhook_endpoint.url,
-      webhook_endpoint: webhook_endpoint,
+      webhook_endpoint:,
       http_status_code: response.status,
-      payload: payload,
+      payload:,
       failed: !response.success?
     )
 
@@ -44,10 +44,11 @@ class NotifyWebhookEndpoint < ApplicationWorkflow
   end
 
   def retry_request_webhook_endpoint
-    retry_at = Utils.exponential_backoff_delay(
+    retry_at = ExponentialBackoff.new(
       max_retry_period: RETRY_PERIOD,
-      number_of_attempts: failed_attempts_count,
       max_attempts: MAX_ATTEMPTS
+    ).delay(
+      attempt: failed_attempts_count
     ).seconds.from_now
 
     ScheduledJob.perform_later(
@@ -81,7 +82,7 @@ class NotifyWebhookEndpoint < ApplicationWorkflow
   end
 
   def failed_attempts_count
-    @failed_attempts_count ||= event.webhook_request_logs.where(webhook_endpoint: webhook_endpoint).failed.count
+    @failed_attempts_count ||= event.webhook_request_logs.where(webhook_endpoint:).failed.count
   end
 
   class ConnectionError

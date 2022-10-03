@@ -4,7 +4,7 @@ RSpec.describe PhoneCall do
   it "transitions from queued to initiating" do
     phone_call = create(:phone_call, :queued)
 
-    phone_call.initiate!
+    phone_call.mark_as_initiating!
 
     expect(phone_call.initiating?).to eq(true)
   end
@@ -21,7 +21,7 @@ RSpec.describe PhoneCall do
   it "handles initiating multiple times" do
     phone_call = create(:phone_call, :initiating)
 
-    phone_call.initiate!
+    phone_call.mark_as_initiating!
 
     expect(phone_call.initiating?).to eq(true)
   end
