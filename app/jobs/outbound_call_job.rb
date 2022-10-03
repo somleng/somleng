@@ -27,7 +27,7 @@ class OutboundCallJob < ApplicationJob
 
       raise RetryJob, "Response body: #{response.body}" unless response.success?
 
-      response.fetch(:id)
+      phone_call.external_id = response.fetch(:id)
     end
   end
 

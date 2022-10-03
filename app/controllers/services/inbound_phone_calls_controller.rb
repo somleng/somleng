@@ -10,7 +10,7 @@ module Services
       ) do |permitted_params|
         ApplicationRecord.transaction do
           phone_call = PhoneCall.create!(permitted_params)
-          phone_call.mark_as_initiated!
+          phone_call.initiate!
           phone_call
         end
       end

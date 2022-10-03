@@ -86,7 +86,7 @@ class PhoneCall < ApplicationRecord
   def initiate!(&_block)
     self.initiating_at = Time.current
     mark_as_initiating!
-    self.external_id = yield
+    yield if block_given?
     self.initiated_at = Time.current
     mark_as_initiated!
   end
