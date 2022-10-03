@@ -6,7 +6,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
     example "List phone calls" do
       account = create(:account)
-      phone_call = create(:phone_call, account: account)
+      phone_call = create(:phone_call, account:)
       _other_phone_call = create(:phone_call)
 
       set_twilio_api_authorization_header(account)
@@ -96,7 +96,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "Calling this number is unsupported or the number is invalid",
         "status" => 422,
-        "code" => 13224,
+        "code" => 13_224,
         "more_info" => "https://www.twilio.com/docs/errors/13224"
       )
     end
@@ -107,7 +107,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
     example "Fetch a call" do
       account = create(:account)
-      phone_call = create(:phone_call, account: account)
+      phone_call = create(:phone_call, account:)
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, sid: phone_call.id)
@@ -129,7 +129,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
     example "Update a call" do
       account = create(:account)
-      phone_call = create(:phone_call, :answered, account: account)
+      phone_call = create(:phone_call, :answered, account:)
 
       set_twilio_api_authorization_header(account)
       do_request(
@@ -145,7 +145,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
     example "Cancels a call", document: false do
       account = create(:account)
-      phone_call = create(:phone_call, :queued, account: account)
+      phone_call = create(:phone_call, :queued, account:)
 
       set_twilio_api_authorization_header(account)
       do_request(
@@ -161,7 +161,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
     example "Handles invalid requests", document: false do
       account = create(:account)
-      phone_call = create(:phone_call, :answered, account: account)
+      phone_call = create(:phone_call, :answered, account:)
 
       set_twilio_api_authorization_header(account)
       do_request(

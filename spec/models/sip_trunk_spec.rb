@@ -13,32 +13,6 @@ RSpec.describe SIPTrunk do
     end
   end
 
-  describe "#allocate_channel!" do
-    it "returns true if there are channels available" do
-      sip_trunk_with_unlimited_channels = build_stubbed(:sip_trunk, max_channels: nil)
-      available_sip_trunk = create(:sip_trunk, max_channels: 1)
-      busy_sip_trunk = create(:sip_trunk, :busy)
-      trying_sip_trunk = create(:sip_trunk, max_channels: 1)
-      create(:phone_call, :initiated, sip_trunk: busy_sip_trunk)
-      create(:phone_call, :initiating, sip_trunk: trying_sip_trunk)
-
-      expect(sip_trunk_with_unlimited_channels.allocate_channel!).to eq(true)
-      expect(available_sip_trunk.allocate_channel!).to eq(true)
-      expect(available_sip_trunk.updated_at).to eq(available_sip_trunk.created_at)
-      expect(busy_sip_trunk.allocate_channel!).to eq(false)
-      expect(trying_sip_trunk.allocate_channel!).to eq(false)
-    end
-
-    it "handles race conditions" do
-      sip_trunk = create(:sip_trunk, max_channels: 2)
-      create(:phone_call, :initiating, sip_trunk:)
-      race_condition_sip_trunk = SIPTrunk.find(sip_trunk.id)
-
-      expect(sip_trunk.allocate_channel!).to eq(true)
-      expect(race_condition_sip_trunk.allocate_channel!).to eq(false)
-    end
-  end
-
   it "generates client credentials" do
     sip_trunk = build(:sip_trunk, :client_credentials_authentication)
 
