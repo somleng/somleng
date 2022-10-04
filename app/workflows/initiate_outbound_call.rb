@@ -12,9 +12,9 @@ class InitiateOutboundCall < ApplicationWorkflow
     return unless phone_call.status.in?(%w[queued initiating])
     return reschedule unless initiate!
 
-    remote_id = create_remote_call
+    response = create_remote_call
 
-    mark_as_initiated!(remote_id)
+    mark_as_initiated!(response.fetch(:id))
   end
 
   private
@@ -30,7 +30,7 @@ class InitiateOutboundCall < ApplicationWorkflow
   def initiate!
     return mark_as_initiating! if phone_call.sip_trunk.max_channels.blank?
 
-    AdvisoryLock.allocate_sip_trunk_channel(sip_trunk) do
+    SIPTrunkChannelManager.allocate_sip_trunk_channel(sip_trunk) do
       mark_as_initiating! if channels_available?
     end
 
@@ -57,7 +57,7 @@ class InitiateOutboundCall < ApplicationWorkflow
 
     raise Error, "Response body: #{response.body}" unless response.success?
 
-    response.fetch(:id)
+    response
   end
 
   def channels_available?
