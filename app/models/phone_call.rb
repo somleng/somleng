@@ -83,14 +83,6 @@ class PhoneCall < ApplicationRecord
     in_progress.or(initiating)
   end
 
-  def initiate!(&_block)
-    self.initiating_at = Time.current
-    mark_as_initiating!
-    yield if block_given?
-    self.initiated_at = Time.current
-    mark_as_initiated!
-  end
-
   private
 
   def set_beneficiary_data

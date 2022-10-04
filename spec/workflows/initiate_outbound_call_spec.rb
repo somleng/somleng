@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe OutboundCallJob do
+RSpec.describe InitiateOutboundCall do
   it "initiates an outbound call" do
     carrier = create(:carrier)
     sip_trunk = create(
@@ -25,7 +25,7 @@ RSpec.describe OutboundCallJob do
     )
     stub_switch_request(external_call_id: "123456789")
 
-    OutboundCallJob.perform_now(phone_call)
+    InitiateOutboundCall.call(phone_call)
 
     expect(phone_call.external_id).to eq("123456789")
     expect(phone_call.status).to eq("initiated")
@@ -60,7 +60,7 @@ RSpec.describe OutboundCallJob do
   it "handles already canceled calls" do
     phone_call = create(:phone_call, :outbound, :routable, :canceled, external_id: nil)
 
-    OutboundCallJob.perform_now(phone_call)
+    InitiateOutboundCall.call(phone_call)
 
     expect(WebMock).not_to have_requested(:post, "https://ahn.somleng.org/calls")
   end
@@ -70,8 +70,8 @@ RSpec.describe OutboundCallJob do
     stub_request(:post, "https://ahn.somleng.org/calls").to_return(status: 500)
 
     expect do
-      OutboundCallJob.perform_now(phone_call)
-    end.to raise_error(OutboundCallJob::RetryJob)
+      InitiateOutboundCall.call(phone_call)
+    end.to raise_error(InitiateOutboundCall::Error)
 
     expect(phone_call.status).to eq("initiating")
     expect(phone_call.initiating_at.present?).to eq(true)
@@ -84,7 +84,7 @@ RSpec.describe OutboundCallJob do
     phone_call = create(:phone_call, :outbound, :queued, :routable, sip_trunk:)
 
     travel_to(Time.current) do
-      OutboundCallJob.perform_now(phone_call)
+      InitiateOutboundCall.call(phone_call)
 
       expect(phone_call.status).to eq("queued")
       expect(ScheduledJob).to have_been_enqueued.with(
@@ -95,9 +95,27 @@ RSpec.describe OutboundCallJob do
     end
   end
 
-  def stub_switch_request(external_call_id: "ext-id")
-    stub_request(
-      :post, "https://ahn.somleng.org/calls"
-    ).to_return(body: "{\"id\": \"#{external_call_id}\"}")
+  it "handles channel allocation race conditions" do
+    sip_trunk = create(:sip_trunk, max_channels: 1)
+    phone_calls = create_list(:phone_call, 2, :outbound, sip_trunk:)
+    phone_calls << create(:phone_call, :outbound)
+    stub_switch_request(external_call_id: phone_calls.map { SecureRandom.uuid })
+
+    threads = phone_calls.each_with_object([]) do |phone_call, result|
+      result << Thread.new do
+        InitiateOutboundCall.call(phone_call)
+      end
+    end
+
+    threads.each(&:join)
+
+    phone_calls.each(&:reload)
+    expect(phone_calls.first(2).pluck(:status)).to match_array(%w[initiated queued])
+    expect(phone_calls.last.status).to eq("initiated")
+  end
+
+  def stub_switch_request(external_call_id: SecureRandom.uuid)
+    responses = Array(external_call_id).map { |id| { body: { id: }.to_json } }
+    stub_request(:post, "https://ahn.somleng.org/calls").to_return(responses)
   end
 end
