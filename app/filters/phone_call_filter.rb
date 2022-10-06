@@ -39,7 +39,7 @@ class PhoneCallFilter < ResourceFilter
     return super unless scoped_to.key?(:carrier_id)
 
     carrier_id = scoped_to.delete(:carrier_id)
-    super.joins(:account).where(accounts: { carrier_id: carrier_id })
+    super.joins(:account).where(accounts: { carrier_id: })
   end
 
   filter_with IDFilter, AccountFilter, ToFilter, FromFilter, DateFilter

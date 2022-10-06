@@ -7,12 +7,29 @@ module TwilioAPI
       account_with_no_sip_trunks = create(:account)
       create(:sip_trunk, carrier: account.carrier)
       expect(
-        validate_request_schema(input_params: { To: "855716100235" }, options: { account: })
+        validate_request_schema(
+          input_params: {
+            To: "855716100235"
+          },
+          options: { account: }
+        )
       ).to have_valid_field(:To)
 
       expect(
-        validate_request_schema(input_params: { To: "8557199999999" },
-                                options: { account: })
+        validate_request_schema(
+          input_params: {
+            To: "019515116234"
+          },
+          options: { account: }
+        )
+      ).not_to have_valid_field(:To, error_messagge: "is invalid")
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            To: "8557199999999"
+          },
+          options: { account: })
       ).not_to have_valid_field(:To, error_message: "is invalid")
 
       expect(
@@ -20,8 +37,12 @@ module TwilioAPI
       ).not_to have_valid_schema(error_message: "Call blocked by block list", error_code: "13225")
 
       expect(
-        validate_request_schema(input_params: { To: "855716100235" },
-                                options: { account: account_with_no_sip_trunks })
+        validate_request_schema(
+          input_params: {
+            To: "855716100235"
+          },
+          options: { account: account_with_no_sip_trunks }
+        )
       ).not_to have_valid_schema(
         error_message: "Calling this number is unsupported or the number is invalid", error_code: "13224"
       )

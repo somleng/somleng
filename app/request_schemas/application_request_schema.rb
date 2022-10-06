@@ -17,10 +17,6 @@ class ApplicationRequestSchema < Dry::Validation::Contract
     end
   end
 
-  register_macro(:phone_number_format) do
-    key.failure("is invalid") if key? && !Phony.plausible?(value)
-  end
-
   register_macro(:date_range) do
     if key?
       from_date = value[:from_date]
