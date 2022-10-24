@@ -397,6 +397,7 @@ GEM
     rake (13.0.6)
     recaptcha (5.10.0)
       json
+    redis (4.8.0)
     regexp_parser (2.5.0)
     request_store (1.5.1)
       rack (>= 1.4)
@@ -595,6 +596,7 @@ DEPENDENCIES
   pundit
   rails (~> 7.0.0)
   recaptcha
+  redis
   responders!
   rqrcode
   rspec-rails

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_24_090306) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -358,6 +358,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
+  end
+
+  create_table "sms_gateways", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

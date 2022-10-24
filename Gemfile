@@ -10,6 +10,9 @@ gem "administrate"
 gem "administrate-field-active_storage"
 gem "image_processing"
 
+# Use Redis adapter to run Action Cable in production
+gem "redis"
+
 gem "aasm"
 gem "active_storage_validations"
 gem "addressable"

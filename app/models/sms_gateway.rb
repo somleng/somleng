@@ -1,0 +1,2 @@
+class SMSGateway < ApplicationRecord
+end
