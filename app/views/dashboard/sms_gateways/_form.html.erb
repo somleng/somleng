@@ -1,0 +1,12 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource]) do |f| %>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :name, placeholder: "Main SMS Gateway", maxlength: 128, hint: "A friendly name for the SMS Gateway" %>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

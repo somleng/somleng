@@ -34,6 +34,6 @@ document.addEventListener("turbo:load", function() {
   });
 
   [].slice.call(document.querySelectorAll('[data-behavior~=choices-input]')).map(function (element) {
-    return new Choices(element);
+    return new Choices(element, JSON.parse(element.dataset.choicesOptions || '{}'));
   });
 });

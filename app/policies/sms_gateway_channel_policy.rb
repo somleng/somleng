@@ -1,0 +1,2 @@
+class SMSGatewayChannelPolicy < SMSGatewayPolicy
+end

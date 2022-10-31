@@ -7,3 +7,9 @@ en:
         update: "Update Carrier Settings"
       custom_domain:
         update: "Save Custom Domain"
+      sms_gateway_channel_group:
+        create: "Create Channel group"
+        update: "Update Channel group"
+      sms_gateway_channel:
+        create: "Create Channel"
+        update: "Update Channel"

@@ -1,0 +1,33 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Name
+      </th>
+      <th>
+        SMS Gateway
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |sms_gateway_channel_group| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(sms_gateway_channel_group.name, polymorphic_path([:dashboard, sms_gateway_channel_group])) %>
+        </td>
+
+        <td>
+          <%= link_to(sms_gateway_channel_group.sms_gateway.name, polymorphic_path([:dashboard, sms_gateway_channel_group.sms_gateway])) %>
+        </td>
+
+        <td>
+          <%= local_time(sms_gateway_channel_group.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

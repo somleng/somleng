@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_24_090306) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -360,10 +360,46 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_24_090306) do
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
   end
 
-  create_table "sms_gateways", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "sms_gateway_channel_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "sms_gateway_id", null: false
+    t.string "name", null: false
+    t.string "route_prefixes", default: [], null: false, array: true
+    t.integer "channels_count"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_sms_gateway_channel_groups_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_sms_gateway_channel_groups_on_sms_gateway_id"
+  end
+
+  create_table "sms_gateway_channels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "sms_gateway_id", null: false
+    t.uuid "sms_gateway_channel_group_id"
+    t.uuid "phone_number_id"
+    t.string "name", null: false
+    t.integer "slot_index", limit: 2, null: false
+    t.string "route_prefixes", default: [], null: false, array: true
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phone_number_id"], name: "index_sms_gateway_channels_on_phone_number_id"
+    t.index ["sequence_number"], name: "index_sms_gateway_channels_on_sequence_number", unique: true, order: :desc
+    t.index ["slot_index", "sms_gateway_id"], name: "index_sms_gateway_channels_on_slot_index_and_sms_gateway_id", unique: true
+    t.index ["sms_gateway_channel_group_id"], name: "index_sms_gateway_channels_on_sms_gateway_channel_group_id"
+    t.index ["sms_gateway_id"], name: "index_sms_gateway_channels_on_sms_gateway_id"
+  end
+
+  create_table "sms_gateways", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "name", null: false
+    t.string "device_token", null: false
+    t.integer "channel_groups_count"
+    t.integer "channels_count"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
+    t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
@@ -468,6 +504,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_24_090306) do
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
   add_foreign_key "sip_trunks", "carriers"
+  add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
+  add_foreign_key "sms_gateway_channels", "phone_numbers", on_delete: :nullify
+  add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", on_delete: :nullify
+  add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
+  add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
   add_foreign_key "webhook_endpoints", "oauth_applications"

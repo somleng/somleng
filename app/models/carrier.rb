@@ -4,6 +4,9 @@ class Carrier < ApplicationRecord
   has_many :account_users, through: :accounts, source: :users, class_name: "User"
   has_many :carrier_users, -> { where.not(carrier_role: nil) }, class_name: "User"
   has_many :sip_trunks
+  has_many :sms_gateways
+  has_many :sms_gateway_channel_groups, through: :sms_gateways, source: :channel_groups
+  has_many :sms_gateway_channels, through: :sms_gateways, source: :channels
   has_many :phone_numbers
   has_many :phone_calls
   has_many :events

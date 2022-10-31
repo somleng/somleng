@@ -27,6 +27,9 @@ module Somleng
       g.orm :active_record, primary_key_type: :uuid
     end
 
+    # https://guides.rubyonrails.org/active_record_encryption.html#unique-constraints
+    config.active_record.encryption.extend_queries = true
+
     config.eager_load_paths << Rails.root.join("lib")
     config.app_settings = config_for(:app_settings)
     config.active_job.default_queue_name = config.app_settings.fetch(:aws_sqs_default_queue_name)

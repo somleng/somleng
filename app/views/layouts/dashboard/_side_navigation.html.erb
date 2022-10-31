@@ -17,16 +17,48 @@
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
-    <% if policy(:sip_trunk).index? %>
-      <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-tower-cell") %>
+    <% if policy(:sip_trunk).index? || policy(:phone_call).index? %>
+      <li class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-mobile-retro"></i> Voice
+        </a>
+
+        <ul class="nav-group-items">
+          <% if policy(:sip_trunk).index? %>
+            <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-tower-cell") %>
+          <% end %>
+
+          <% if policy(:phone_call).index? %>
+            <%= sidebar_nav("Phone Calls", dashboard_phone_calls_path, icon_class: "fa-solid fa-phone") %>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel).index? || policy(:sms_gateway_channel_group).index? %>
+      <li class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-comment-sms"></i> SMS
+        </a>
+
+        <ul class="nav-group-items">
+          <% if policy(:sms_gateway).index? %>
+            <%= sidebar_nav("Gateways", dashboard_sms_gateways_path, icon_class: "fa-solid fa-tower-broadcast") %>
+          <% end %>
+
+          <% if policy(:sms_gateway_channel).index? %>
+            <%= sidebar_nav("Channels", dashboard_sms_gateway_channels_path, icon_class: "fa-solid fa-sim-card") %>
+          <% end %>
+
+          <% if policy(:sms_gateway_channel_group).index? %>
+            <%= sidebar_nav("Channel Groups", dashboard_sms_gateway_channel_groups_path, icon_class: "fa-solid fa-object-group") %>
+          <% end %>
+        </ul>
+      </li>
     <% end %>
 
     <% if policy(:phone_number).index? %>
       <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-hashtag") %>
-    <% end %>
-
-    <% if policy(:phone_call).index? %>
-      <%= sidebar_nav("Phone Calls", dashboard_phone_calls_path, icon_class: "fa-solid fa-phone") %>
     <% end %>
 
     <% if policy(:carrier_user).index? %>

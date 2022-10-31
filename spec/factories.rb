@@ -111,6 +111,22 @@ FactoryBot.define do
     end
   end
 
+  factory :sms_gateway do
+    name { "Main SMS Gateway" }
+    carrier
+  end
+
+  factory :sms_gateway_channel_group do
+    name { "Metfone" }
+    sms_gateway
+  end
+
+  factory :sms_gateway_channel do
+    name { "Metfone 1" }
+    sms_gateway
+    sequence(:slot_index)
+  end
+
   factory :event do
     phone_call_completed
 

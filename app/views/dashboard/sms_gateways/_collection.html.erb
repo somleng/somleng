@@ -1,0 +1,27 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Name
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |sms_gateway| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+
+        <td>
+          <%= link_to(sms_gateway.name, polymorphic_path([:dashboard, sms_gateway])) %>
+        </td>
+
+        <td>
+          <%= local_time(sms_gateway.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

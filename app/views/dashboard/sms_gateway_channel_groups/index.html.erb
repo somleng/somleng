@@ -1,0 +1,31 @@
+<%= page_title(title: "Channel Groups") do %>
+  <%= render("shared/filters") do |form| %>
+    <% if policy(:sms_gateway).show? %>
+      <%= form.select(
+          :sms_gateway_id,
+          current_carrier.sms_gateways.map { |sms_gateway| [sms_gateway.name, sms_gateway.id] },
+          { filter_value: params.dig(:filter, :sms_gateway_id) },
+          { data: { behavior: "choices-input" }}
+        )
+      %>
+    <% end %>
+
+    <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if policy(:sms_gateway_channel_group).new? %>
+    <%=
+      render(
+        "shared/new_resource_page_action",
+        path: new_dashboard_sms_gateway_channel_group_path(params.permit(filter: {}))
+      )
+    %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

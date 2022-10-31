@@ -11,12 +11,22 @@ en:
         notice: '%{resource_name} was successfully destroyed.'
         alert: '%{resource_name} could not be destroyed.'
     dashboard:
-      account_settings:
+      sms_gateway_channels:
+        create:
+          notice: Channel was successfully created.
         update:
-          notice: "Account Settings were successfully updated."
-      carrier_settings:
+          notice: Channel was successfully updated.
+        destroy:
+          notice: Channel was successfully destroyed.
+          alert: Channel could not be destroyed.
+      sms_gateway_channel_groups:
+        create:
+          notice: Channel group was successfully created.
         update:
-          notice: "Carrier Settings were successfully updated."
+          notice: Channel group was successfully updated.
+        destroy:
+          notice: Channel group was successfully destroyed.
+          alert: Channel group could not be destroyed.
       phone_numbers:
         release:
           notice: '%{resource_name} was successfully released.'
