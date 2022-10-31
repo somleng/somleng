@@ -364,7 +364,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
     t.uuid "sms_gateway_id", null: false
     t.string "name", null: false
     t.string "route_prefixes", default: [], null: false, array: true
-    t.integer "channels_count"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -393,8 +392,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
     t.uuid "carrier_id", null: false
     t.string "name", null: false
     t.string "device_token", null: false
-    t.integer "channel_groups_count"
-    t.integer "channels_count"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

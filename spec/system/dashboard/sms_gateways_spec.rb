@@ -73,8 +73,8 @@ RSpec.describe "SMS Gateways" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
     sms_gateway = create(:sms_gateway, carrier:, name: "My SMS Gateway")
-    sms_gateway_channel_group = create(:sms_gateway_channel_group, sms_gateway:)
-    create(:sms_gateway_channel, sms_gateway:, sms_gateway_channel_group:)
+    channel_group = create(:sms_gateway_channel_group, sms_gateway:)
+    create(:sms_gateway_channel, sms_gateway:, channel_group:)
 
     carrier_sign_in(user)
     visit dashboard_sms_gateway_path(sms_gateway)

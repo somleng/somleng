@@ -4,8 +4,6 @@ class CreateSMSGateways < ActiveRecord::Migration[7.0]
       t.references :carrier, type: :uuid, null: false, foreign_key: true
       t.string :name, null: false
       t.string :device_token, null: false
-      t.integer :channel_groups_count
-      t.integer :channels_count
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
 
       t.index :device_token, unique: true

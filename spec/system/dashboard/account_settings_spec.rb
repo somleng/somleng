@@ -4,7 +4,7 @@ RSpec.describe "Account Settings" do
   it "View account settings", :js do
     account = create(:account, :with_access_token, name: "Rocket Rides")
     user = create(
-      :user, :with_account_membership, account_role: :member, account: account
+      :user, :with_account_membership, account_role: :member, account:
     )
 
     carrier_sign_in(user)
@@ -23,7 +23,7 @@ RSpec.describe "Account Settings" do
   it "Update account settings" do
     account = create(:account, :with_access_token, name: "Rocket Rides")
     user = create(
-      :user, :with_account_membership, account_role: :owner, account: account
+      :user, :with_account_membership, account_role: :owner, account:
     )
 
     carrier_sign_in(user)
@@ -32,7 +32,7 @@ RSpec.describe "Account Settings" do
     fill_in("Name", with: "Car Rides")
     click_button("Update Account Settings")
 
-    expect(page).to have_content("Account Settings were successfully updated")
+    expect(page).to have_content("Account settings were successfully updated")
     expect(page).to have_content("Car Rides")
   end
 end

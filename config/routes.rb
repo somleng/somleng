@@ -59,7 +59,7 @@ Rails.application.routes.draw do
     end
 
     scope "/docs", as: :docs do
-      get "/", to: redirect("https://www.somleng.org/carrier_documentation.html")
+      get "/", to: redirect("https://www.somleng.org/docs.html")
       get "/api", to: "twilio_api/documentation#show", as: :twilio_api
     end
 

@@ -11,6 +11,12 @@ en:
         notice: '%{resource_name} was successfully destroyed.'
         alert: '%{resource_name} could not be destroyed.'
     dashboard:
+      account_settings:
+        update:
+          notice: Account settings were successfully updated.
+      carrier_settings:
+        update:
+          notice: Carrier settings were successfully updated.
       sms_gateway_channels:
         create:
           notice: Channel was successfully created.
