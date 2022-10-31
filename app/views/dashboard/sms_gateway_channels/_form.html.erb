@@ -3,7 +3,7 @@
 
     <div class="row">
       <div class="col-sm-6">
-        <%= f.input :name, placeholder: "My Channel", maxlength: 128, hint: "A friendly name for the channel" %>
+        <%= f.input :name, maxlength: 128, hint: "A friendly name for the channel" %>
       </div>
 
       <div class="col-sm-6">
@@ -20,6 +20,7 @@
             disabled: resource.persisted?,
             selected: resource.sms_gateway_id || params.dig(:filter, :sms_gateway_id),
             prompt: "Please select",
+            hint: "The SMS gateway to associate this channel with.",
             input_html: { data: { behavior: "choices-input" } }
           )
         %>
@@ -32,7 +33,7 @@
               collection: resource.sms_gateway.channel_groups,
               selected: resource.channel_group_id || params.dig(:filter, :channel_group_id),
               include_blank: true,
-              input_html: { data: { behavior: "choices-input", choices_options: { removeItemButton: true } } }
+              input_html: { data: { behavior: "choices-input", choices_options: { removeItemButton: true } } },
             )
           %>
         </div>
@@ -43,11 +44,11 @@
       <div class="col-sm-6">
         <%= f.input(
             :phone_number_id,
-            label: "Phone number #{link_to('Create new', new_dashboard_phone_number_path, class: "small", target: "_blank")}".html_safe,
             collection: resource.carrier.phone_numbers.map { |phone_number| [phone_number.number, phone_number.id] },
             selected: resource.phone_number_id,
             include_blank: true,
             input_html: { data: { behavior: "choices-input", choices_options: { removeItemButton: true, allowHTML: true } } },
+            hint: "The phone number of the SIM card in this channel slot. #{link_to('Create new', new_dashboard_phone_number_path, target: '_blank')}".html_safe
           )
         %>
       </div>
@@ -57,7 +58,7 @@
           :route_prefixes,
           as: :text,
           placeholder: "#{resource.carrier.country.country_code}15, #{resource.carrier.country.country_code}16",
-          hint: "A comma seperated list of route prefixes. Must include the country code."
+          hint: "An optional comma seperated list of route prefixes. Must include the country code."
         ) %>
       </div>
     </div>
