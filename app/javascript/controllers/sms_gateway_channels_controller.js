@@ -13,6 +13,9 @@ export default class extends Controller {
     if (selectedSMSGateway.value) {
       const attributes = smsGatewayAttributes[selectedSMSGateway.value];
       this.slotIndexInputTarget.value = attributes.next_available_slot_index;
+
+      console.log(attributes.channel_groups);
+      attributes.channel_groups.forEach(channelGroup => this.channelGroupInputTarget.add(new Option(channelGroup[0], channelGroup[1])));
     }
     else {
       const defaultSlotIndexValue = this.slotIndexInputTarget.dataset.defaultValue;

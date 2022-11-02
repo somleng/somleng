@@ -5,7 +5,9 @@
       <div class="col-sm-6">
         <%= f.input :name, maxlength: 128, hint: "A friendly name for the channel" %>
       </div>
+    </div>
 
+    <div class="row">
       <div class="col-sm-6">
         <%= f.input(
             :sms_gateway_id,
@@ -14,30 +16,13 @@
             disabled: resource.persisted?,
             selected: resource.sms_gateway_id || params.dig(:filter, :sms_gateway_id),
             prompt: "Please select",
-            hint: "The SMS gateway to associate this channel with.",
+            hint: "Either select a SMS gateway or channel group to associate this channel with.",
             input_html: {
               data: {
                 behavior: "choices-input",
                 sms_gateway_channels_target: "smsGatewayInput",
                 action: "change->sms-gateway-channels#changeSMSGateway",
                 sms_gateway_attributes: resource.sms_gateway_attributes
-              }
-            }
-          )
-        %>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input(
-            :slot_index,
-            as: :integer,
-            hint: "The SIM card slot index in the SMS gateway",
-            input_html: {
-              data: {
-                default_value: resource.slot_index,
-                sms_gateway_channels_target: "slotIndexInput"
               }
             }
           )
@@ -67,6 +52,21 @@
     <div class="row">
       <div class="col-sm-6">
         <%= f.input(
+            :slot_index,
+            as: :integer,
+            hint: "The SIM card slot index in the SMS gateway",
+            input_html: {
+              data: {
+                default_value: resource.slot_index,
+                sms_gateway_channels_target: "slotIndexInput"
+              }
+            }
+          )
+        %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input(
             :phone_number_id,
             collection: resource.carrier.phone_numbers.map { |phone_number| [phone_number.number, phone_number.id] },
             selected: resource.phone_number_id,
@@ -76,8 +76,10 @@
           )
         %>
       </div>
+    </div>
 
-      <div class="col-sm-6">
+    <div class="row">
+      <div class="col-sm-12">
         <%= f.input(
           :route_prefixes,
           as: :text,
