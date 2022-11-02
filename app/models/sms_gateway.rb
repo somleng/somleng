@@ -7,6 +7,10 @@ class SMSGateway < ApplicationRecord
 
   before_create :create_device_token
 
+  def next_available_slot_index
+    channels.size + 1
+  end
+
   private
 
   def create_device_token

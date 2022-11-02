@@ -37,7 +37,6 @@ RSpec.describe "SMS Gateway Channels" do
 
     fill_in("Name", with: "Smart 1")
     select("My SMS Gateway", from: "SMS gateway")
-    fill_in("Slot index", with: "1")
     select("85516789876", from: "Phone number")
     fill_in("Route prefixes", with: "85515, 85516")
     click_button "Create Channel"

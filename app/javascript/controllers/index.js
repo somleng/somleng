@@ -24,3 +24,6 @@ application.register("sign-up", SignUpController)
 
 import SipTrunksController from "./sip_trunks_controller.js"
 application.register("sip-trunks", SipTrunksController)
+
+import SmsGatewayChannelsController from "./sms_gateway_channels_controller.js"
+application.register("sms-gateway-channels", SmsGatewayChannelsController)

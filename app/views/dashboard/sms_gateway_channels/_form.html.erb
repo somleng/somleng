@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource]) do |f| %>
+  <%= simple_form_for([:dashboard, resource], html: { data: { controller: "sms-gateway-channels", turbo: false } }) do |f| %>
 
     <div class="row">
       <div class="col-sm-6">
@@ -7,37 +7,61 @@
       </div>
 
       <div class="col-sm-6">
-        <%= f.input :slot_index, as: :integer, hint: "The SIM card slot index in the SMS gateway" %>
+        <%= f.input(
+            :sms_gateway_id,
+            required: true,
+            collection: resource.sms_gateways,
+            disabled: resource.persisted?,
+            selected: resource.sms_gateway_id || params.dig(:filter, :sms_gateway_id),
+            prompt: "Please select",
+            hint: "The SMS gateway to associate this channel with.",
+            input_html: {
+              data: {
+                behavior: "choices-input",
+                sms_gateway_channels_target: "smsGatewayInput",
+                action: "change->sms-gateway-channels#changeSMSGateway",
+                sms_gateway_attributes: resource.sms_gateway_attributes
+              }
+            }
+          )
+        %>
       </div>
     </div>
 
     <div class="row">
       <div class="col-sm-6">
         <%= f.input(
-            :sms_gateway_id,
-            required: true,
-            collection: resource.carrier.sms_gateways,
-            disabled: resource.persisted?,
-            selected: resource.sms_gateway_id || params.dig(:filter, :sms_gateway_id),
-            prompt: "Please select",
-            hint: "The SMS gateway to associate this channel with.",
-            input_html: { data: { behavior: "choices-input" } }
+            :slot_index,
+            as: :integer,
+            hint: "The SIM card slot index in the SMS gateway",
+            input_html: {
+              data: {
+                default_value: resource.slot_index,
+                sms_gateway_channels_target: "slotIndexInput"
+              }
+            }
           )
         %>
       </div>
 
-      <% if resource.persisted? %>
-        <div class="col-sm-6">
-          <%= f.input(
-              :channel_group_id,
-              collection: resource.sms_gateway.channel_groups,
-              selected: resource.channel_group_id || params.dig(:filter, :channel_group_id),
-              include_blank: true,
-              input_html: { data: { behavior: "choices-input", choices_options: { removeItemButton: true } } },
-            )
-          %>
-        </div>
-      <% end %>
+      <div class="col-sm-6">
+        <%= f.input(
+            :channel_group_id,
+            collection: resource.carrier.sms_gateway_channel_groups,
+            selected: resource.channel_group_id || params.dig(:filter, :channel_group_id),
+            include_blank: true,
+            input_html: {
+              data: {
+                behavior: "choices-input",
+                choices_options: {
+                  removeItemButton: true
+                },
+                sms_gateway_channels_target: "channelGroupInput"
+              }
+            }
+          )
+        %>
+      </div>
     </div>
 
     <div class="row">

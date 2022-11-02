@@ -52,10 +52,30 @@ class SMSGatewayChannelForm
     sms_gateway_channel.save!
   end
 
+  def sms_gateways
+    carrier.sms_gateways
+  end
+
+  def sms_gateway_attributes
+    attributes = carrier.sms_gateways.map do |sms_gateway|
+      [
+        sms_gateway.id,
+        {
+          next_available_slot_index: sms_gateway.next_available_slot_index,
+          channel_groups: sms_gateway.channel_groups.map do |channel_group|
+            [channel_group.name, channel_group.id]
+          end
+        }
+      ]
+    end
+
+    Hash[attributes]
+  end
+
   private
 
   def find_sms_gateway
-    carrier.sms_gateways.find(sms_gateway_id)
+    sms_gateways.find(sms_gateway_id)
   end
 
   def find_channel_group
