@@ -17,6 +17,7 @@ class SMSGatewayChannelGroupForm
 
   validates :name, presence: true
   validates :sms_gateway_id, presence: true, if: :new_record?
+  validate :validate_channels
 
   delegate :new_record?, :persisted?, :id, to: :channel_group
 
@@ -39,7 +40,7 @@ class SMSGatewayChannelGroupForm
     return false if invalid?
 
     channel_group.name = name
-    channel_group.sms_gateway ||= find_sms_gateway!
+    channel_group.sms_gateway ||= find_sms_gateway
     channel_group.route_prefixes = RoutePrefixesType.new.deserialize(route_prefixes)
 
     SMSGatewayChannelGroup.transaction do
@@ -56,28 +57,22 @@ class SMSGatewayChannelGroupForm
         sms_gateway.id,
         {
           data: {
-            available_channels: available_sms_gateway_channel_slots(sms_gateway)
+            available_channels: channels_options_for_select(sms_gateway)
           }
         }
       ]
     end
   end
 
-  def sms_gateways
-    carrier.sms_gateways
-  end
-
-  def available_sms_gateway_channel_slots(sms_gateway)
-    return [] if sms_gateway.blank?
-
-    sms_gateway.available_channel_slots
-  end
-
-  def channels_options_for_select
-    (available_sms_gateway_channel_slots(channel_group.sms_gateway) + channels).sort
+  def channels_options_for_select(sms_gateway = channel_group.sms_gateway)
+    (sms_gateway.available_channel_slots + channel_group.used_channel_slots).sort
   end
 
   private
+
+  def sms_gateways
+    carrier.sms_gateways
+  end
 
   def channel_records
     @channel_records ||= channels.map do |slot_index|
@@ -89,11 +84,14 @@ class SMSGatewayChannelGroupForm
     end
   end
 
-  def find_sms_gateway!
+  def find_sms_gateway
     sms_gateways.find(sms_gateway_id)
   end
 
-  def find_sms_gateway
-    find_sms_gateway! if sms_gateway_id.present?
+  def validate_channels
+    sms_gateway = channel_group.sms_gateway || find_sms_gateway
+    return if (channels - channels_options_for_select(sms_gateway)).empty?
+
+    errors.add(:channels, :invalid)
   end
 end

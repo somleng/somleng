@@ -42,7 +42,7 @@
       <div class="col-sm-12">
         <%= f.input(
           :channels,
-          collection: resource.channels_options_for_select,
+          collection: resource.persisted? ? resource.channels_options_for_select : [],
           selected: resource.channels,
           input_html: {
             multiple: true,

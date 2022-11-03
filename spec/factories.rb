@@ -124,7 +124,7 @@ FactoryBot.define do
 
   factory :sms_gateway_channel do
     sms_gateway { channel_group.sms_gateway }
-    channel_group
+    association :channel_group, factory: :sms_gateway_channel_group
     sequence(:slot_index)
   end
 

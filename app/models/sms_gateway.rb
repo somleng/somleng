@@ -8,7 +8,7 @@ class SMSGateway < ApplicationRecord
   before_create :create_device_token
 
   def available_channel_slots
-    all_channel_slots - used_channel_slots
+    (all_channel_slots - used_channel_slots).sort
   end
 
   def used_channel_slots
