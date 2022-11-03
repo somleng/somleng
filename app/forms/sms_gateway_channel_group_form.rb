@@ -89,6 +89,8 @@ class SMSGatewayChannelGroupForm
   end
 
   def validate_channels
+    return if errors.any?
+
     sms_gateway = channel_group.sms_gateway || find_sms_gateway
     return if (channels - channels_options_for_select(sms_gateway)).empty?
 

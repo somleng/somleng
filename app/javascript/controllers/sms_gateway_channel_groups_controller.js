@@ -17,7 +17,6 @@ export default class extends Controller {
     }
 
     this.channelsInputChoices.clearStore();
-
     const selectedSMSGateway = this.collectionValue.find((smsGateway) => smsGateway[1] == event.target.value)
     if (selectedSMSGateway) {
       const availableChannels = selectedSMSGateway[2].data.available_channels;
