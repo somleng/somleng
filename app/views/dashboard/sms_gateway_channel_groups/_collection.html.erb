@@ -28,7 +28,7 @@
         </td>
 
         <td>
-          <%= "#{sms_gateway_channel_group.used_channel_slots.size} of #{sms_gateway_channel_group.sms_gateway.max_channels}" %>
+          <%= "#{sms_gateway_channel_group.used_channel_slots.size} of #{sms_gateway_channel_group.sms_gateway.max_channels || 'Unlimited'}" %>
         </td>
 
         <td>

@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource], html: { data: { controller: "sms-gateway-channel-groups", turbo: false } }) do |f| %>
+  <%= simple_form_for([:dashboard, resource], html: { data: { controller: "sms-gateway-channel-groups", sms_gateway_channel_groups_collection_value: resource.sms_gateways_options_for_select, turbo: false } }) do |f| %>
 
     <div class="row">
       <div class="col-sm-6">
@@ -17,9 +17,6 @@
             input_html: {
               data: {
                 behavior: "choices-input",
-                choices_options: {
-                  items: resource.sms_gateways_choices
-                },
                 sms_gateway_channel_groups_target: "smsGatewayInput",
                 action: "addItem->sms-gateway-channel-groups#changeSMSGateway",
               }
@@ -50,7 +47,6 @@
           input_html: {
             multiple: true,
             data: {
-              behavior: "choices-input",
               choices_options: {
                 removeItemButton: true
               },

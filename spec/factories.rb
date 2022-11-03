@@ -113,7 +113,7 @@ FactoryBot.define do
 
   factory :sms_gateway do
     name { "GoIP" }
-    channel_count { 4 }
+    max_channels { 4 }
     carrier
   end
 

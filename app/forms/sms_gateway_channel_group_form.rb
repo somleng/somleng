@@ -49,22 +49,17 @@ class SMSGatewayChannelGroupForm
     end
   end
 
-  def sms_gateways_choices
-    sms_gateways.map do |sms_gateway|
-      {
-        value: sms_gateway.id,
-        label: sms_gateway.name,
-        selected: channel_group.sms_gateway_id == sms_gateway.id,
-        customProperties: {
-          maxChannels: sms_gateway.max_channels
-        }
-      }
-    end
-  end
-
   def sms_gateways_options_for_select
-    sms_gateways.map do |sms_gateway|
-      [sms_gateway.name, sms_gateway.id, { data: { max_channels: sms_gateway.max_channels } }]
+    @sms_gateways_options_for_select ||= sms_gateways.map do |sms_gateway|
+      [
+        sms_gateway.name,
+        sms_gateway.id,
+        {
+          data: {
+            available_channels: available_sms_gateway_channel_slots(sms_gateway)
+          }
+        }
+      ]
     end
   end
 
@@ -72,15 +67,14 @@ class SMSGatewayChannelGroupForm
     carrier.sms_gateways
   end
 
-  def available_sms_gateway_channel_slots
-    sms_gateway = channel_group.sms_gateway || find_sms_gateway
+  def available_sms_gateway_channel_slots(sms_gateway)
     return [] if sms_gateway.blank?
 
     sms_gateway.available_channel_slots
   end
 
   def channels_options_for_select
-    (available_sms_gateway_channel_slots + channels).sort
+    (available_sms_gateway_channel_slots(channel_group.sms_gateway) + channels).sort
   end
 
   private
