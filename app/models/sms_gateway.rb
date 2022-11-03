@@ -7,11 +7,21 @@ class SMSGateway < ApplicationRecord
 
   before_create :create_device_token
 
-  def next_available_slot_index
-    channels.size + 1
+  def available_channel_slots
+    all_channel_slots - used_channel_slots
+  end
+
+  def used_channel_slots
+    channels.pluck(:slot_index).sort
   end
 
   private
+
+  def all_channel_slots
+    return [] if max_channels.blank?
+
+    (1..max_channels).to_a
+  end
 
   def create_device_token
     self.device_token ||= SecureRandom.alphanumeric(24)

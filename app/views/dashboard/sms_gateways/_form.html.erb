@@ -5,6 +5,10 @@
       <div class="col-sm-6">
         <%= f.input :name, maxlength: 128, hint: "A friendly name for the SMS Gateway" %>
       </div>
+
+      <div class="col-sm-6">
+        <%= f.input :max_channels, as: :integer,  hint: "The maximum number of channels your SMS gateway supports. Leave it blank for unlimited channels." %>
+      </div>
     </div>
 
     <%= f.button :submit %>

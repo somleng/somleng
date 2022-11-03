@@ -1,7 +1,7 @@
 module Dashboard
   class SMSGatewayChannelGroupsController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(:sms_gateway))
+      @resources = apply_filters(scope.includes(:sms_gateway, :channels))
       @resources = paginate_resources(@resources)
     end
 
@@ -10,7 +10,7 @@ module Dashboard
     end
 
     def create
-      permitted_params = required_params.permit(:name, :sms_gateway_id, :route_prefixes)
+      permitted_params = required_params.permit(:name, :sms_gateway_id, :route_prefixes, channels: [])
       @resource = initialize_form(permitted_params)
       @resource.save
 
@@ -26,9 +26,9 @@ module Dashboard
     end
 
     def update
-      permitted_params = required_params.permit(:name, :route_prefixes)
+      permitted_params = required_params.permit(:name, :route_prefixes, channels: [])
       @resource = initialize_form(permitted_params)
-      @resource.sms_gateway_channel_group = record
+      @resource.channel_group = record
       @resource.save
 
       respond_with(:dashboard, @resource)

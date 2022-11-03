@@ -14,9 +14,9 @@
     <%= f.attribute :sms_gateway do %>
       <%= external_link_to(@resource.sms_gateway.name, dashboard_sms_gateway_path(@resource.sms_gateway)) %>
     <% end %>
-    <%= f.attribute :channels do %>
-      <%= external_link_to("Manage (#{@resource.channels.count})", dashboard_sms_gateway_channels_path(filter: { channel_group_id: @resource.id })) %>
-    <% end %>
+
+    <%= f.attribute :used_channels, value: "#{@resource.used_channel_slots.size} of #{@resource.sms_gateway.max_channels}" %>
+    <%= f.attribute :channels, value: @resource.used_channel_slots.join(", ")  %>
 
     <% if @resource.route_prefixes.present? %>
       <%= f.attribute :route_prefixes do %>

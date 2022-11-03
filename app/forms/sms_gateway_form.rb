@@ -4,9 +4,17 @@ class SMSGatewayForm
 
   attribute :carrier
   attribute :sms_gateway, default: -> { SMSGateway.new }
+  attribute :max_channels
   attribute :name
 
   validates :name, presence: true
+  validates :max_channels,
+            numericality: {
+              only_integer: true,
+              greater_than: 0,
+              less_than_or_equal_to: 256,
+              allow_blank: true
+            }
 
   delegate :new_record?, :persisted?, :id, to: :sms_gateway
 
@@ -17,7 +25,8 @@ class SMSGatewayForm
   def self.initialize_with(sms_gateway)
     new(
       sms_gateway:,
-      name: sms_gateway.name
+      name: sms_gateway.name,
+      max_channels: sms_gateway.max_channels
     )
   end
 
@@ -26,6 +35,7 @@ class SMSGatewayForm
 
     sms_gateway.attributes = {
       name:,
+      max_channels:,
       carrier:
     }
 

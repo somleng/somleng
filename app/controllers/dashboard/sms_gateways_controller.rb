@@ -1,7 +1,7 @@
 module Dashboard
   class SMSGatewaysController < DashboardController
     def index
-      @resources = apply_filters(sms_gateways_scope)
+      @resources = apply_filters(sms_gateways_scope.includes(:channel_groups, :channels))
       @resources = paginate_resources(@resources)
     end
 
@@ -46,7 +46,7 @@ module Dashboard
     end
 
     def permitted_params
-      params.require(:sms_gateway).permit(:name)
+      params.require(:sms_gateway).permit(:name, :max_channels)
     end
 
     def sms_gateways_scope

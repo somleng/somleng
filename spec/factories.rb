@@ -112,7 +112,8 @@ FactoryBot.define do
   end
 
   factory :sms_gateway do
-    name { "Main SMS Gateway" }
+    name { "GoIP" }
+    channel_count { 4 }
     carrier
   end
 
@@ -122,8 +123,8 @@ FactoryBot.define do
   end
 
   factory :sms_gateway_channel do
-    name { "Metfone 1" }
-    sms_gateway
+    sms_gateway { channel_group.sms_gateway }
+    channel_group
     sequence(:slot_index)
   end
 

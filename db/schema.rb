@@ -373,24 +373,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
 
   create_table "sms_gateway_channels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "sms_gateway_id", null: false
-    t.uuid "sms_gateway_channel_group_id"
-    t.uuid "phone_number_id"
-    t.string "name", null: false
+    t.uuid "channel_group_id", null: false
     t.integer "slot_index", limit: 2, null: false
-    t.string "route_prefixes", default: [], null: false, array: true
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["phone_number_id"], name: "index_sms_gateway_channels_on_phone_number_id"
+    t.index ["channel_group_id"], name: "index_sms_gateway_channels_on_channel_group_id"
     t.index ["sequence_number"], name: "index_sms_gateway_channels_on_sequence_number", unique: true, order: :desc
     t.index ["slot_index", "sms_gateway_id"], name: "index_sms_gateway_channels_on_slot_index_and_sms_gateway_id", unique: true
-    t.index ["sms_gateway_channel_group_id"], name: "index_sms_gateway_channels_on_sms_gateway_channel_group_id"
     t.index ["sms_gateway_id"], name: "index_sms_gateway_channels_on_sms_gateway_id"
   end
 
   create_table "sms_gateways", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "name", null: false
+    t.integer "max_channels", limit: 2
     t.string "device_token", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
@@ -502,8 +499,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
   add_foreign_key "recordings", "phone_calls"
   add_foreign_key "sip_trunks", "carriers"
   add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
-  add_foreign_key "sms_gateway_channels", "phone_numbers", on_delete: :nullify
-  add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", on_delete: :nullify
+  add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify

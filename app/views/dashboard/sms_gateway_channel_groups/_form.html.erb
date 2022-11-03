@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource]) do |f| %>
+  <%= simple_form_for([:dashboard, resource], html: { data: { controller: "sms-gateway-channel-groups", turbo: false } }) do |f| %>
 
     <div class="row">
       <div class="col-sm-6">
@@ -10,11 +10,20 @@
         <%= f.input(
             :sms_gateway_id,
             required: true,
-            collection: resource.carrier.sms_gateways,
-            selected: resource.sms_gateway_id || params.dig(:filter, :sms_gateway_id),
+            collection: resource.sms_gateways_options_for_select,
+            selected: resource.channel_group.sms_gateway_id || params.dig(:filter, :sms_gateway_id),
             prompt: "Please select",
             disabled: resource.persisted?,
-            input_html: { data: { behavior: "choices-input" } },
+            input_html: {
+              data: {
+                behavior: "choices-input",
+                choices_options: {
+                  items: resource.sms_gateways_choices
+                },
+                sms_gateway_channel_groups_target: "smsGatewayInput",
+                action: "addItem->sms-gateway-channel-groups#changeSMSGateway",
+              }
+            },
             hint: "The SMS gateway to associate this channel group with."
           )
         %>
@@ -22,12 +31,33 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-sm-12">
         <%= f.input(
           :route_prefixes,
           as: :text,
           placeholder: "#{resource.carrier.country.country_code}15, #{resource.carrier.country.country_code}16",
           hint: "An optional comma seperated list of route prefixes. Must include the country code."
+        ) %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <%= f.input(
+          :channels,
+          collection: resource.channels_options_for_select,
+          selected: resource.channels,
+          input_html: {
+            multiple: true,
+            data: {
+              behavior: "choices-input",
+              choices_options: {
+                removeItemButton: true
+              },
+              sms_gateway_channel_groups_target: "channelsInput"
+            }
+          },
+          hint: "A list of channels to apply to this channel group"
         ) %>
       </div>
     </div>

@@ -46,10 +46,6 @@
             <%= sidebar_nav("Gateways", dashboard_sms_gateways_path, icon_class: "fa-solid fa-tower-broadcast") %>
           <% end %>
 
-          <% if policy(:sms_gateway_channel).index? %>
-            <%= sidebar_nav("Channels", dashboard_sms_gateway_channels_path, icon_class: "fa-solid fa-sim-card") %>
-          <% end %>
-
           <% if policy(:sms_gateway_channel_group).index? %>
             <%= sidebar_nav("Channel Groups", dashboard_sms_gateway_channel_groups_path, icon_class: "fa-solid fa-object-group") %>
           <% end %>

@@ -8,6 +8,9 @@
         SMS Gateway
       </th>
       <th>
+        Used channels
+      </th>
+      <th>
         Created At
       </th>
     </tr>
@@ -22,6 +25,10 @@
 
         <td>
           <%= link_to(sms_gateway_channel_group.sms_gateway.name, polymorphic_path([:dashboard, sms_gateway_channel_group.sms_gateway])) %>
+        </td>
+
+        <td>
+          <%= "#{sms_gateway_channel_group.used_channel_slots.size} of #{sms_gateway_channel_group.sms_gateway.max_channels}" %>
         </td>
 
         <td>

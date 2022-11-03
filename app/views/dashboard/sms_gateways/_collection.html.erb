@@ -5,6 +5,12 @@
         Name
       </th>
       <th>
+        Channel groups
+      </th>
+      <th>
+        Used channels
+      </th>
+      <th>
         Created At
       </th>
     </tr>
@@ -16,6 +22,14 @@
 
         <td>
           <%= link_to(sms_gateway.name, polymorphic_path([:dashboard, sms_gateway])) %>
+        </td>
+
+        <td>
+          <%= link_to(sms_gateway.channel_groups.size, dashboard_sms_gateway_channel_groups_path(filter: { sms_gateway_id: sms_gateway.id })) %>
+        </td>
+
+        <td>
+          <%= "#{sms_gateway.used_channel_slots.size} of #{sms_gateway.max_channels}" %>
         </td>
 
         <td>

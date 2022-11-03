@@ -14,12 +14,11 @@
     <%= f.attribute :device_token do %>
       <%= mask_content(@resource.device_token) %>
     <% end %>
-    <%= f.attribute :channels do %>
-      <%= external_link_to("Manage (#{@resource.channels.count})", dashboard_sms_gateway_channels_path(filter: { sms_gateway_id: @resource.id })) %>
-    <% end %>
+
     <%= f.attribute :channel_groups do %>
       <%= external_link_to("Manage (#{@resource.channel_groups.count})", dashboard_sms_gateway_channel_groups_path(filter: { sms_gateway_id: @resource.id })) %>
     <% end %>
+    <%= f.attribute :used_channels, value: "#{@resource.used_channel_slots.size} of #{@resource.max_channels}" %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

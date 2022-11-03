@@ -69,7 +69,6 @@ Rails.application.routes.draw do
       resources :account_memberships
       resources :sip_trunks
       resources :sms_gateways
-      resources :sms_gateway_channels
       resources :sms_gateway_channel_groups
       resources :carrier_users
       resources :exports, only: %i[index create]
