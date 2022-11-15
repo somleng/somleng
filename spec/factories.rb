@@ -349,6 +349,17 @@ FactoryBot.define do
     end
   end
 
+  factory :message do
+    account
+    carrier { account.carrier }
+    sms_gateway { association :sms_gateway, carrier: }
+    to { "85512334667" }
+    from { "2442" }
+    direction { :outbound }
+    body { "Hello World" }
+    segments { 1 }
+  end
+
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
     trait :expired do
       expires_in { 1 }

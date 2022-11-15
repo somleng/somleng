@@ -1,5 +1,7 @@
 module TwilioAPI
   class PhoneCallRequestSchema < TwilioAPIRequestSchema
+    option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+
     params do
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -21,7 +23,7 @@ module TwilioAPI
     rule(:To) do |context:|
       next unless key?
 
-      next key.failure("is invalid") if value.starts_with?("0") || !Phony.plausible?(value)
+      next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
       destination_rules = DestinationRules.new(account:, destination: value)
       unless destination_rules.calling_code_allowed?

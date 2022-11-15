@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_15_022743) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -185,6 +185,37 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
     t.index ["created_at"], name: "index_interactions_on_created_at"
     t.index ["interactable_type", "interactable_id"], name: "index_interactions_on_interactable", unique: true
     t.index ["sequence_number"], name: "index_interactions_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "carrier_id", null: false
+    t.uuid "phone_number_id"
+    t.uuid "sms_gateway_id"
+    t.integer "channel"
+    t.text "body", null: false
+    t.integer "segments", null: false
+    t.string "to", null: false
+    t.string "from", null: false
+    t.string "direction", null: false
+    t.string "status", null: false
+    t.string "status_callback_url"
+    t.string "status_callback_method"
+    t.string "beneficiary_country_code", null: false
+    t.string "beneficiary_fingerprint", null: false
+    t.string "error_code"
+    t.string "error_message"
+    t.datetime "sent_at"
+    t.decimal "price", precision: 10, scale: 4
+    t.string "price_unit"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_messages_on_account_id"
+    t.index ["carrier_id"], name: "index_messages_on_carrier_id"
+    t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
+    t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -484,6 +515,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_021603) do
   add_foreign_key "imports", "users", on_delete: :cascade
   add_foreign_key "interactions", "accounts"
   add_foreign_key "interactions", "carriers"
+  add_foreign_key "messages", "accounts"
+  add_foreign_key "messages", "carriers"
+  add_foreign_key "messages", "phone_numbers", on_delete: :nullify
+  add_foreign_key "messages", "sms_gateways", on_delete: :nullify
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "carriers", column: "owner_id"

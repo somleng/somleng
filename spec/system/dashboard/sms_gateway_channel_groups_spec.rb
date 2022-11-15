@@ -58,7 +58,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
     expect(page).to have_content("can't be blank")
   end
 
-  it "Update a channel group", :js do
+  it "Update a channel group" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
     sms_gateway = create(:sms_gateway, carrier:, max_channels: 2)
@@ -75,7 +75,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
     click_link("Edit")
     fill_in("Name", with: "Smart")
     fill_in("Route prefixes", with: "85515")
-    choices_select("2", from: "Channels")
+    select("2", from: "Channels")
 
     click_button "Update Channel group"
 
