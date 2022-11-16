@@ -76,7 +76,7 @@ module TwilioAPI
       channel_resolver = SMSGatewayResolver.new(carrier: account.carrier, destination: value)
       sms_gateway, channel = channel_resolver.resolve
 
-      if context[:sms_gateway].blank?
+      if sms_gateway.blank?
         next base.failure(
           text: "Landline or unreachable carrier",
           code: "30006"
@@ -95,6 +95,7 @@ module TwilioAPI
         carrier: account.carrier,
         sms_gateway: context.fetch(:sms_gateway),
         channel: context.fetch(:channel).to_i,
+        body: params.fetch(:Body),
         to: params.fetch(:To),
         from: params.fetch(:From),
         status_callback_url: params[:StatusCallback],
