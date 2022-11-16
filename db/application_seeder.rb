@@ -52,9 +52,12 @@ class ApplicationSeeder
   end
 
   def create_phone_number(params)
-    PhoneNumber.first_or_create!(
-      params.reverse_merge(number: "1234")
-    ) do |record|
+    attributes = params.reverse_merge(
+      number: "1234",
+      managed_by_carrier: params.fetch(:carrier)
+    )
+
+    PhoneNumber.first_or_create!(attributes) do |record|
       record.build_configuration(
         voice_url: "https://demo.twilio.com/docs/voice.xml",
         voice_method: "GET"

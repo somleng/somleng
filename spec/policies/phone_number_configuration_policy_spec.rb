@@ -19,6 +19,18 @@ RSpec.describe PhoneNumberConfigurationPolicy, type: :policy do
       expect(policy.update?).to eq(true)
     end
 
+    it "allows access to managing carriers if the phone number is carrier managed" do
+      carrier = create(:carrier)
+      managing_carrier = create(:carrier)
+      user = create(:user, :carrier, :admin, carrier: managing_carrier)
+
+      phone_number = create(:phone_number, carrier:, managed_by_carrier: managing_carrier)
+
+      policy = PhoneNumberConfigurationPolicy.new(user, phone_number)
+
+      expect(policy.update?).to eq(true)
+    end
+
     it "denies access to carrier admins if the phone number is customer managed" do
       user = build_stubbed(:user, :admin)
       account = create(:account)
@@ -38,6 +50,10 @@ RSpec.describe PhoneNumberConfigurationPolicy, type: :policy do
       policy = PhoneNumberConfigurationPolicy.new(user, phone_number)
 
       expect(policy.update?).to be_falsey
+    end
+
+    it "denies access to owning carriers if assigned a managing carrier" do
+      pending
     end
   end
 end

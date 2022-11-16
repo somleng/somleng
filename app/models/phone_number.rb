@@ -2,6 +2,7 @@ class PhoneNumber < ApplicationRecord
   NUMBER_FORMAT = /\A\d+\z/
 
   belongs_to :carrier
+  belongs_to :managed_by_carrier, class_name: "Carrier"
   belongs_to :account, optional: true
   has_many :phone_calls
   has_one :configuration, class_name: "PhoneNumberConfiguration"

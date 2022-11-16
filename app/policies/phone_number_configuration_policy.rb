@@ -6,6 +6,10 @@ class PhoneNumberConfigurationPolicy < ApplicationPolicy
   private
 
   def carrier_managed?
-    carrier_admin? && record.account&.carrier_managed?
+    carrier_admin? && managing_phone_number? && record.account&.carrier_managed?
+  end
+
+  def managing_phone_number?
+    user.carrier == record.managed_by_carrier
   end
 end

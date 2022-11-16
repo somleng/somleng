@@ -246,6 +246,7 @@ FactoryBot.define do
 
   factory :phone_number do
     carrier
+    managed_by_carrier { carrier }
 
     trait :assigned_to_account do
       account { association :account, carrier: }

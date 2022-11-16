@@ -36,6 +36,7 @@ class PhoneNumberForm
     return false if invalid?
 
     phone_number.carrier = carrier
+    phone_number.managed_by_carrier = carrier
     phone_number.enabled = enabled
     phone_number.number = number if new_record?
     phone_number.account ||= carrier.accounts.find(account_id) if account_id.present?

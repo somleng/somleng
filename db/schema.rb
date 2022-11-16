@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_16_005617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -312,9 +312,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
     t.boolean "enabled", default: true, null: false
+    t.uuid "managed_by_carrier_id", null: false
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["enabled"], name: "index_phone_numbers_on_enabled"
+    t.index ["managed_by_carrier_id"], name: "index_phone_numbers_on_managed_by_carrier_id"
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
     t.index ["number"], name: "index_phone_numbers_on_number"
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
@@ -458,6 +460,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
+  add_foreign_key "phone_numbers", "carriers", column: "managed_by_carrier_id"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
   add_foreign_key "sip_trunks", "carriers"
