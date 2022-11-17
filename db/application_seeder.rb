@@ -54,7 +54,7 @@ class ApplicationSeeder
   def create_phone_number(params)
     attributes = params.reverse_merge(
       number: "1234",
-      managed_by_carrier: params.fetch(:carrier)
+      managing_carrier: params.fetch(:carrier)
     )
 
     PhoneNumber.first_or_create!(attributes) do |record|

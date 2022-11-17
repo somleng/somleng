@@ -9,7 +9,11 @@ module Dashboard
       @resource.phone_number_configuration = record
       @resource.save
 
-      respond_with(:dashboard, @resource, location: edit_dashboard_phone_number_configuration_path(@resource.phone_number))
+      respond_with(
+        :dashboard,
+        @resource,
+        location: edit_dashboard_phone_number_configuration_path(@resource.phone_number)
+      )
     end
 
     private

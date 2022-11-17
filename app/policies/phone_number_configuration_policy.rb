@@ -10,6 +10,6 @@ class PhoneNumberConfigurationPolicy < ApplicationPolicy
   end
 
   def managing_phone_number?
-    user.carrier == record.managed_by_carrier
+    user.carrier == record.managing_carrier
   end
 end

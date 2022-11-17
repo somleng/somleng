@@ -9,23 +9,22 @@ RSpec.describe PhoneNumberConfigurationPolicy, type: :policy do
       expect(policy.update?).to eq(true)
     end
 
-    it "allows access to carrier admins if the phone number is carrier managed" do
-      user = build_stubbed(:user, :admin)
-      account = create(:account)
-      phone_number = create(:phone_number, account:)
-
+    it "allows access to carrier admins" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      phone_number = create(:phone_number, account:, carrier:)
+      user = build_stubbed(:user, :admin, carrier: account.carrier)
       policy = PhoneNumberConfigurationPolicy.new(user, phone_number)
 
       expect(policy.update?).to eq(true)
     end
 
-    it "allows access to managing carriers if the phone number is carrier managed" do
+    it "allows access to managing carriers" do
       carrier = create(:carrier)
       managing_carrier = create(:carrier)
-      user = create(:user, :carrier, :admin, carrier: managing_carrier)
-
-      phone_number = create(:phone_number, carrier:, managed_by_carrier: managing_carrier)
-
+      account = create(:account, carrier:)
+      phone_number = create(:phone_number, carrier:, managing_carrier:, account:)
+      user = build_stubbed(:user, :carrier, :admin, carrier: managing_carrier)
       policy = PhoneNumberConfigurationPolicy.new(user, phone_number)
 
       expect(policy.update?).to eq(true)
@@ -36,7 +35,6 @@ RSpec.describe PhoneNumberConfigurationPolicy, type: :policy do
       account = create(:account)
       create(:account_membership, account:)
       phone_number = create(:phone_number, account:)
-
       policy = PhoneNumberConfigurationPolicy.new(user, phone_number)
 
       expect(policy.update?).to eq(false)
@@ -46,14 +44,20 @@ RSpec.describe PhoneNumberConfigurationPolicy, type: :policy do
       carrier = create(:carrier)
       user = build_stubbed(:user, :admin, carrier:)
       phone_number = create(:phone_number, carrier: user.carrier)
-
       policy = PhoneNumberConfigurationPolicy.new(user, phone_number)
 
       expect(policy.update?).to be_falsey
     end
 
-    it "denies access to owning carriers if assigned a managing carrier" do
-      pending
+    it "denies access to owning carriers" do
+      carrier = create(:carrier)
+      managing_carrier = create(:carrier)
+      account = create(:account, carrier:)
+      phone_number = create(:phone_number, carrier:, managing_carrier:, account:)
+      user = build_stubbed(:user, :carrier, :admin, carrier:)
+      policy = PhoneNumberConfigurationPolicy.new(user, phone_number)
+
+      expect(policy.update?).to eq(false)
     end
   end
 end
