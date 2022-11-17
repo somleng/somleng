@@ -24,13 +24,13 @@ module Dashboard
       )
     end
 
-    def phone_numbers_scope
-      parent_scope.phone_numbers
+    def scope
+      parent_scope.managing_phone_numbers
     end
 
     def record
       @record ||= begin
-        phone_number = phone_numbers_scope.find(params[:phone_number_id])
+        phone_number = scope.find(params[:phone_number_id])
         phone_number.configuration || phone_number.build_configuration
       end
     end

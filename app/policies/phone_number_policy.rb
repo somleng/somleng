@@ -4,7 +4,7 @@ class PhoneNumberPolicy < ApplicationPolicy
   end
 
   def update?
-    manages_record?
+    carrier_admin? && manages_record?
   end
 
   def release?
@@ -12,16 +12,20 @@ class PhoneNumberPolicy < ApplicationPolicy
   end
 
   def manage?
-    owns_record?
+    carrier_admin? && owns_record?
+  end
+
+  def create?
+    carrier_admin?
   end
 
   private
 
   def owns_record?
-    carrier_admin? && user.carrier == record.carrier
+    user.carrier == record.carrier
   end
 
   def manages_record?
-    carrier_admin? && user.carrier == record.managing_carrier
+    user.carrier == record.managing_carrier
   end
 end

@@ -18,7 +18,7 @@ RSpec.describe "Routes" do
 
     get(docs_url(host: carrier.subdomain_host))
 
-    expect(response).to redirect_to("https://www.somleng.org/carrier_documentation.html")
+    expect(response).to redirect_to("https://www.somleng.org/docs.html")
   end
 
   it "serves customized documentation" do

@@ -12,6 +12,11 @@ class PhoneNumber < ApplicationRecord
             uniqueness: { scope: :carrier_id },
             format: { with: NUMBER_FORMAT, allow_blank: true }
 
+  def carrier=(value)
+    self.managing_carrier ||= value
+    super(value)
+  end
+
   def release!
     transaction do
       update!(account: nil)

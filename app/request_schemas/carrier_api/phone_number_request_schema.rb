@@ -44,7 +44,6 @@ module CarrierAPI
     def output
       result = super
       result[:account] = Account.find(result.fetch(:account)) if result.key?(:account)
-      result[:managing_carrier] = carrier
       result
     end
   end
