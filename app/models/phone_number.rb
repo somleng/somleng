@@ -2,6 +2,7 @@ class PhoneNumber < ApplicationRecord
   NUMBER_FORMAT = /\A\d+\z/
 
   belongs_to :carrier
+  belongs_to :managing_carrier, class_name: "Carrier"
   belongs_to :account, optional: true
   has_many :phone_calls
   has_one :configuration, class_name: "PhoneNumberConfiguration"
@@ -10,6 +11,11 @@ class PhoneNumber < ApplicationRecord
             presence: true,
             uniqueness: { scope: :carrier_id },
             format: { with: NUMBER_FORMAT, allow_blank: true }
+
+  def carrier=(value)
+    self.managing_carrier ||= value
+    super(value)
+  end
 
   def release!
     transaction do

@@ -7,4 +7,5 @@ class PhoneNumberConfiguration < ApplicationRecord
   enumerize :status_callback_method, in: %w[POST GET]
 
   delegate :account, to: :phone_number
+  delegate :managing_carrier, to: :phone_number
 end

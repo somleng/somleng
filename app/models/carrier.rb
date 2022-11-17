@@ -5,6 +5,7 @@ class Carrier < ApplicationRecord
   has_many :carrier_users, -> { where.not(carrier_role: nil) }, class_name: "User"
   has_many :sip_trunks
   has_many :phone_numbers
+  has_many :managing_phone_numbers, foreign_key: :managing_carrier_id, class_name: "PhoneNumber"
   has_many :phone_calls
   has_many :events
   has_many :error_logs

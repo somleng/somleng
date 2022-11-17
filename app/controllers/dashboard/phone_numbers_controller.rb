@@ -1,10 +1,17 @@
 module Dashboard
   class PhoneNumbersController < DashboardController
-    prepend_before_action :find_record, only: %i[show edit update destroy release]
+    skip_before_action :find_record
+    prepend_before_action :find_owner, only: :destroy
+    prepend_before_action :find_manager, only: %i[edit update release]
+    prepend_before_action :find_owner_or_manager, only: :show
 
     def index
-      @resources = apply_filters(phone_numbers_scope.includes(:account))
+      @resources = apply_filters(owners_or_managers.includes(:account))
       @resources = paginate_resources(@resources)
+    end
+
+    def show
+      @resource = record
     end
 
     def new
@@ -18,13 +25,8 @@ module Dashboard
       respond_with(:dashboard, @resource)
     end
 
-    def show
-      @resource = record
-    end
-
     def edit
       @resource = PhoneNumberForm.initialize_with(record)
-      @resource
     end
 
     def update
@@ -48,22 +50,44 @@ module Dashboard
 
     private
 
+    attr_reader :record
+
     def required_params
       params.require(:phone_number)
     end
 
-    def phone_numbers_scope
+    def owners
       parent_scope.phone_numbers
+    end
+
+    def managers
+      parent_scope.managing_phone_numbers
+    end
+
+    def owners_or_managers
+      owners.or(managers)
+    end
+
+    def find_owner
+      @record = find_record(owners)
+    end
+
+    def find_manager
+      @record = find_record(managers)
+    end
+
+    def find_owner_or_manager
+      @record = find_record(owners_or_managers)
+    end
+
+    def find_record(scope)
+      scope.find(params[:id])
     end
 
     def initialize_form(params = {})
       form = PhoneNumberForm.new(params)
       form.carrier = current_carrier
       form
-    end
-
-    def record
-      @record ||= phone_numbers_scope.find(params[:id])
     end
   end
 end

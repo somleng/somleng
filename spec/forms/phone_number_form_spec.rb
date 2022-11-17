@@ -14,4 +14,20 @@ RSpec.describe PhoneNumberForm do
       expect(form.errors[:number]).to be_present
     end
   end
+
+  describe "#save" do
+    it "updates phone numbers" do
+      carrier = create(:carrier)
+      managing_carrier = create(:carrier)
+      phone_number = create(:phone_number, carrier:, managing_carrier:)
+      form = PhoneNumberForm.initialize_with(phone_number)
+      form.enabled = false
+
+      result = form.save
+
+      expect(result).to eq(true)
+      expect(phone_number.enabled).to eq(false)
+      expect(phone_number.managing_carrier).to eq(managing_carrier)
+    end
+  end
 end

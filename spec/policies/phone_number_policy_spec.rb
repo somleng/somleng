@@ -1,8 +1,32 @@
 require "rails_helper"
 
 RSpec.describe PhoneNumberPolicy, type: :policy do
+  context "with a managing carrier" do
+    it "handles access control" do
+      carrier = create(:carrier)
+      managing_carrier = create(:carrier)
+      account = create(:account, carrier: managing_carrier)
+      phone_number = create(:phone_number, carrier:, managing_carrier:, account:)
+      owner_carrier_user = build_stubbed(:user, :admin, carrier:)
+      managing_carrier_user = build_stubbed(:user, :admin, carrier: managing_carrier)
+
+      owner_carrier_policy = PhoneNumberPolicy.new(owner_carrier_user, phone_number)
+      managing_carrier_policy = PhoneNumberPolicy.new(managing_carrier_user, phone_number)
+
+      expect(owner_carrier_policy.read?).to eq(true)
+      expect(owner_carrier_policy.update?).to eq(false)
+      expect(owner_carrier_policy.release?).to eq(false)
+      expect(owner_carrier_policy.destroy?).to eq(true)
+
+      expect(managing_carrier_policy.read?).to eq(true)
+      expect(managing_carrier_policy.update?).to eq(true)
+      expect(managing_carrier_policy.release?).to eq(true)
+      expect(managing_carrier_policy.destroy?).to eq(false)
+    end
+  end
+
   describe "#update?" do
-    it "allows access for carrier admin" do
+    it "allows access to carrier admins" do
       carrier = create(:carrier)
       user = build_stubbed(:user, :admin, carrier:)
       phone_number = build_stubbed(:phone_number, carrier:)
