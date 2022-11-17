@@ -7,7 +7,11 @@ class SMSMessageChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def delivered(data)
-    puts data
+  def sent(data)
+    puts "Delivery Receipt: " + data.to_s
+  end
+
+  def received(data)
+    puts "Received: " + data.to_s
   end
 end
