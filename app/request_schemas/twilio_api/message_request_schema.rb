@@ -96,6 +96,7 @@ module TwilioAPI
         sms_gateway: context.fetch(:sms_gateway),
         channel: context.fetch(:channel).to_i,
         body: params.fetch(:Body),
+        segments: 1,
         to: params.fetch(:To),
         from: params.fetch(:From),
         status_callback_url: params[:StatusCallback],

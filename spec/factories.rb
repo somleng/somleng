@@ -358,6 +358,8 @@ FactoryBot.define do
     direction { :outbound }
     body { "Hello World" }
     segments { 1 }
+
+    traits_for_enum :status, %w[queued initiated sent failed]
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do

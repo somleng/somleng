@@ -9,7 +9,6 @@ class MessageDecorator < SimpleDelegator
 
   TWILIO_MESSAGE_STATUS_MAPPINGS = {
     "queued" => "queued",
-    "initiating" => "sending",
     "initiated" => "sending",
     "sent" => "sent",
     "failed" => "queued"

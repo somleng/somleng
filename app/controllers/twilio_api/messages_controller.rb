@@ -11,7 +11,7 @@ module TwilioAPI
         **serializer_options
       ) do |permitted_params|
         message = scope.create!(permitted_params)
-        ScheduleOutboundMessage.call(message)
+        OutboundMessageJob.perform_later(message)
         message
       end
     end

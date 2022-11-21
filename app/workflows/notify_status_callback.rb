@@ -4,9 +4,9 @@ class NotifyStatusCallback < ApplicationWorkflow
     "POST" => :post
   }.freeze
 
-  attr_reader :phone_call, :callback_url, :callback_http_method, :params
+  attr_reader :account, :callback_url, :callback_http_method, :params
 
-  def initialize(phone_call:, callback_url:, callback_http_method:, params:)
+  def initialize(account:, callback_url:, callback_http_method:, params:)
     @phone_call = phone_call
     @callback_url = callback_url
     @callback_http_method = callback_http_method
@@ -24,7 +24,7 @@ class NotifyStatusCallback < ApplicationWorkflow
         headers: {
           "X-Twilio-Signature" => twilio_signature(
             uri: status_callback_uri,
-            auth_token: phone_call.account.auth_token
+            auth_token: account.auth_token
           )
         }
       )
@@ -35,7 +35,7 @@ class NotifyStatusCallback < ApplicationWorkflow
         headers: {
           "X-Twilio-Signature" => twilio_signature(
             uri: status_callback_uri,
-            auth_token: phone_call.account.auth_token,
+            auth_token: account.auth_token,
             payload: params
           )
         }

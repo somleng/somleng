@@ -90,6 +90,8 @@ RSpec.resource "Messages", document: :twilio_api do
 
       expect(response_status).to eq(201)
       expect(response_body).to match_api_response_schema("twilio_api/message")
+      expect(json_response.fetch("status")).to eq("queued")
+      expect(OutboundMessageJob).to have_been_enqueued
     end
 
     example "Handles invalid requests", document: false do

@@ -8,10 +8,46 @@ class SMSMessageChannel < ApplicationCable::Channel
   end
 
   def sent(data)
-    puts "Delivery Receipt: " + data.to_s
+    message = current_sms_gateway.messages.find(data.fetch("id"))
+    case data.fetch("status")
+    when "sent"
+      message.mark_as_sent!
+    when "failed"
+      message.mark_as_failed!
+    else
+      raise "Unknown message status: #{data.fetch('status')}"
+    end
   end
 
   def received(data)
-    puts "Received: " + data.to_s
+    error_log_messages = ErrorLogMessages.new
+    schema = Services::InboundMessageRequestSchema.new(
+      input_params: data,
+      options: {
+        sms_gateway: current_sms_gateway,
+        error_log_messages:
+      }
+    )
+    if schema.valid?
+      message = Message.create!(schema.output)
+      notify_message_status_callback(message) if message.status_callback_url.present?
+    else
+      ErrorLog.create!(
+        carrier: error_log_messages.carrier,
+        account: error_log_messages.account,
+        error_message: error_log_messages.messages.to_sentence
+      )
+    end
+  end
+
+  def notify_message_status_callback(message)
+    NotifyStatusCallback.call(
+      account: message.account,
+      callback_url: message.status_callback_url,
+      callback_http_method: message.status_callback_method,
+      params: TwilioAPI::MessageStatusCallbackSerializer.new(
+        MessageDecorator.new(message)
+      ).serializable_hash
+    )
   end
 end
