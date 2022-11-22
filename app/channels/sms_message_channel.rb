@@ -31,12 +31,26 @@ class SMSMessageChannel < ApplicationCable::Channel
     if schema.valid?
       message = Message.create!(schema.output)
       notify_message_status_callback(message) if message.status_callback_url.present?
+      create_interaction(message)
     else
       ErrorLog.create!(
         carrier: error_log_messages.carrier,
         account: error_log_messages.account,
         error_message: error_log_messages.messages.to_sentence
       )
+    end
+  end
+
+  private
+
+  def create_interaction(message)
+    Interaction.create_or_find_by!(interactable: message) do |interaction|
+      interaction.attributes = {
+        carrier: message.carrier,
+        account: message.account,
+        beneficiary_country_code: message.beneficiary_country_code,
+        beneficiary_fingerprint: message.beneficiary_fingerprint
+      }
     end
   end
 

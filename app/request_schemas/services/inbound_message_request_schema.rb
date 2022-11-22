@@ -1,6 +1,10 @@
 module Services
   class InboundMessageRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :phone_number_configuration_rules,
+           default: proc { PhoneNumberConfigurationRules.new }
+    option :carrier_standing_rules,
+           default: proc { CarrierStandingRules.new }
     option :sms_gateway
     option :error_log_messages
 
@@ -14,32 +18,25 @@ module Services
       next unless key?
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      phone_number = sms_gateway.carrier.phone_numbers.find_by(number: value)
-      context[:phone_number] = phone_number
+      context[:phone_number] = sms_gateway.carrier.phone_numbers.find_by(number: value)
 
-      if phone_number.blank?
-        key.failure("doesn't exist")
-        error_log_messages << "Phone number #{context[:to]} does not exist"
-      elsif !phone_number.assigned?
-        key.failure("is unassigned")
-        error_log_messages << "Phone number #{context[:to]} is unassigned"
-      elsif !phone_number.configured?
-        key.failure("is unconfigured")
-        error_log_messages << "Phone number #{context[:to]} is unconfigured"
-      elsif !phone_number.enabled?
-        key.failure("is disabled")
-        error_log_messages << "Phone number #{context[:to]} is disabled"
-      end
+      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+
+      error_message = format(phone_number_configuration_rules.error_message, value:)
+      base.failure(error_message)
+      error_log_messages << error_message
+    end
+
+    rule do
+      next if carrier_standing_rules.valid?(carrier: sms_gateway.carrier)
+
+      base.failure(carrier_standing_rules.error_message)
+      error_log_messages << carrier_standing_rules.error_message
     end
 
     rule do |context:|
       error_log_messages.carrier = sms_gateway.carrier
       error_log_messages.account = context[:phone_number]&.account
-
-      next if CarrierStanding.new(sms_gateway.carrier).good_standing?
-
-      base.failure("carrier is not in good standing")
-      error_log_messages << "Carrier is not in good standing"
     end
 
     def output

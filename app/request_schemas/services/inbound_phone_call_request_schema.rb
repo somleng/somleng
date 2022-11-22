@@ -1,6 +1,11 @@
 module Services
   class InboundPhoneCallRequestSchema < ServicesRequestSchema
-    option(:error_log_messages)
+    option :error_log_messages
+    option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :phone_number_configuration_rules,
+           default: proc { PhoneNumberConfigurationRules.new }
+    option :carrier_standing_rules,
+           default: proc { CarrierStandingRules.new }
 
     params do
       required(:to).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -30,30 +35,20 @@ module Services
       next if context[:sip_trunk].blank?
 
       context[:to] = normalize_number(value, context[:sip_trunk])
-
       phone_numbers = context[:sip_trunk].carrier.phone_numbers
       context[:phone_number] = phone_numbers.find_by(number: context[:to])
+      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
 
-      if context[:phone_number].blank?
-        key.failure("doesn't exist")
-        error_log_messages << "Phone number #{context[:to]} does not exist"
-      elsif !context[:phone_number].assigned?
-        key.failure("is unassigned")
-        error_log_messages << "Phone number #{context[:to]} is unassigned"
-      elsif !context[:phone_number].configured?
-        key.failure("is unconfigured")
-        error_log_messages << "Phone number #{context[:to]} is unconfigured"
-      elsif !context[:phone_number].enabled?
-        key.failure("is disabled")
-        error_log_messages << "Phone number #{context[:to]} is disabled"
-      end
+      error_message = format(phone_number_configuration_rules.error_message, value: context[:to])
+      base.failure(error_message)
+      error_log_messages << error_message
     end
 
     rule(:from) do |context:|
       next if context[:sip_trunk].blank?
 
       context[:from] = normalize_number(value, context[:sip_trunk])
-      unless Phony.plausible?(context[:from])
+      unless phone_number_validator.valid?(context[:from])
         key.failure(
           "is invalid. It must be an E.164 formatted phone number and must include the country code"
         )
@@ -64,12 +59,14 @@ module Services
     rule do |context:|
       error_log_messages.carrier = context[:sip_trunk]&.carrier
       error_log_messages.account = context[:phone_number]&.account
+    end
 
+    rule do |context:|
       next if context[:phone_number].blank?
-      next if CarrierStanding.new(context[:phone_number].carrier).good_standing?
+      next if carrier_standing_rules.valid?(carrier: context[:phone_number].carrier)
 
-      base.failure("carrier is not in good standing")
-      error_log_messages << "Carrier is not in good standing"
+      base.failure(carrier_standing_rules.error_message)
+      error_log_messages << carrier_standing_rules.error_message
     end
 
     def output
