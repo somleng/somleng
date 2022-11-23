@@ -11,6 +11,8 @@ class CreateMessages < ActiveRecord::Migration[7.0]
       t.string :to, null: false
       t.string :from, null: false
       t.string :direction, null: false
+      t.string :sms_url
+      t.string :sms_method
       t.string :status, null: false
       t.string :status_callback_url
       t.string :status_callback_method

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_15_022743) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_23_070517) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -198,6 +198,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_15_022743) do
     t.string "to", null: false
     t.string "from", null: false
     t.string "direction", null: false
+    t.string "sms_url"
+    t.string "sms_method"
     t.string "status", null: false
     t.string "status_callback_url"
     t.string "status_callback_method"
@@ -331,6 +333,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_15_022743) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "sms_url"
+    t.string "sms_method"
     t.index ["phone_number_id"], name: "index_phone_number_configurations_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_number_configurations_on_sequence_number", unique: true, order: :desc
   end

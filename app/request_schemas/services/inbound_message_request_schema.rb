@@ -2,7 +2,7 @@ module Services
   class InboundMessageRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: proc { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
-           default: proc { PhoneNumberConfigurationRules.new }
+           default: proc { PhoneNumberConfigurationRules.new(:message) }
     option :carrier_standing_rules,
            default: proc { CarrierStandingRules.new }
     option :sms_gateway
@@ -51,8 +51,8 @@ module Services
         body: params.fetch(:body),
         to: params.fetch(:to),
         from: params.fetch(:from),
-        status_callback_url: phone_number.status_callback_url,
-        status_callback_method: phone_number.status_callback_method,
+        sms_url: phone_number.configuration.sms_url,
+        sms_method: phone_number.configuration.sms_method,
         direction: :inbound,
         status: :received
       }

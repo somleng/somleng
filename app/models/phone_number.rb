@@ -6,6 +6,8 @@ class PhoneNumber < ApplicationRecord
   has_many :phone_calls
   has_one :configuration, class_name: "PhoneNumberConfiguration"
 
+  delegate :configured?, to: :configuration, allow_nil: true
+
   validates :number,
             presence: true,
             uniqueness: { scope: :carrier_id },
@@ -24,9 +26,5 @@ class PhoneNumber < ApplicationRecord
 
   def assigned?
     account_id.present?
-  end
-
-  def configured?
-    configuration.present?
   end
 end

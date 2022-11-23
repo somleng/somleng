@@ -3,7 +3,7 @@ module Services
     option :error_log_messages
     option :phone_number_validator, default: proc { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
-           default: proc { PhoneNumberConfigurationRules.new }
+           default: proc { PhoneNumberConfigurationRules.new(:voice) }
     option :carrier_standing_rules,
            default: proc { CarrierStandingRules.new }
 

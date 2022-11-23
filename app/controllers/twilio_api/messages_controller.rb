@@ -10,7 +10,7 @@ module TwilioAPI
         schema_options: { account: current_account },
         **serializer_options
       ) do |permitted_params|
-        message = scope.create!(permitted_params)
+        message = CreateMessage.call(permitted_params)
         OutboundMessageJob.perform_later(message)
         message
       end

@@ -29,18 +29,14 @@ class SMSMessageChannel < ApplicationCable::Channel
       }
     )
     if schema.valid?
-      message = Message.create!(schema.output)
-      # twiml = synchrounous request (POST/GET)
-      # Switch (TwiML Parser) -> Somleng -> Customer Webhook Endpoint
+      message = CreateMessage.call(schema.output)
 
-      # Add Message verb to switch
-      # Call Internal Somleng API to create outbound message
-
-      # Message Verb on Somleng parser
-      # Create another message resource
-
-      notify_message_status_callback(message) if message.status_callback_url.present?
-      create_interaction(message)
+      ExecuteWorkflowJob.perform_later(
+        "ExecuteMessagingTwiML",
+        message,
+        url: message.url,
+        http_method: message.sms_method
+      )
     else
       ErrorLog.create!(
         carrier: error_log_messages.carrier,
@@ -48,29 +44,5 @@ class SMSMessageChannel < ApplicationCable::Channel
         error_message: error_log_messages.messages.to_sentence
       )
     end
-  end
-
-  private
-
-  def create_interaction(message)
-    Interaction.create_or_find_by!(interactable: message) do |interaction|
-      interaction.attributes = {
-        carrier: message.carrier,
-        account: message.account,
-        beneficiary_country_code: message.beneficiary_country_code,
-        beneficiary_fingerprint: message.beneficiary_fingerprint
-      }
-    end
-  end
-
-  def notify_message_status_callback(message)
-    NotifyStatusCallback.call(
-      account: message.account,
-      callback_url: message.status_callback_url,
-      callback_http_method: message.status_callback_method,
-      params: TwilioAPI::MessageStatusCallbackSerializer.new(
-        MessageDecorator.new(message)
-      ).serializable_hash
-    )
   end
 end

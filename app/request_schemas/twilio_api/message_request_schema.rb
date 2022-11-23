@@ -58,11 +58,11 @@ module TwilioAPI
     # )
 
     params do
-      optional(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
+      required(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:Body).filled(:string)
-      optional(:StatusCallback).filled(:string, format?: URL_FORMAT)
-      optional(:StatusCallbackMethod).value(
+      optional(:StatusCallback).maybe(:string, format?: URL_FORMAT)
+      optional(:StatusCallbackMethod).maybe(
         ApplicationRequestSchema::Types::UppercaseString,
         :filled?,
         included_in?: Message.status_callback_method.values

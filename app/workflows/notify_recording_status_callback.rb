@@ -6,10 +6,10 @@ class NotifyRecordingStatusCallback < ApplicationWorkflow
   end
 
   def call
-    NotifyStatusCallback.call(
+    TwilioAPI::NotifyWebhook.call(
       account: recording.phone_call.account,
-      callback_url: recording.status_callback_url,
-      callback_http_method: recording.status_callback_method,
+      url: recording.status_callback_url,
+      http_method: recording.status_callback_method,
       params: recording_params
     )
   end
