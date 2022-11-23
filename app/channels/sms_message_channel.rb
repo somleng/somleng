@@ -30,6 +30,15 @@ class SMSMessageChannel < ApplicationCable::Channel
     )
     if schema.valid?
       message = Message.create!(schema.output)
+      # twiml = synchrounous request (POST/GET)
+      # Switch (TwiML Parser) -> Somleng -> Customer Webhook Endpoint
+
+      # Add Message verb to switch
+      # Call Internal Somleng API to create outbound message
+
+      # Message Verb on Somleng parser
+      # Create another message resource
+
       notify_message_status_callback(message) if message.status_callback_url.present?
       create_interaction(message)
     else
