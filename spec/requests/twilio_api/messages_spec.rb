@@ -100,9 +100,9 @@ RSpec.resource "Messages", document: :twilio_api do
       set_twilio_api_authorization_header(account)
       do_request(
         account_sid: account.id,
-        "To" => "+299221234",
-        "From" => "1234",
-        "Url" => "https://demo.twilio.com/docs/voice.xml"
+        "To" => "+855716788123",
+        "From" => "+855716788999",
+        "Body" => "Hello World"
       )
 
       expect(response_status).to eq(422)
@@ -110,8 +110,8 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "Calling this number is unsupported or the number is invalid",
         "status" => 422,
-        "code" => 13_224,
-        "more_info" => "https://www.twilio.com/docs/errors/13224"
+        "code" => 30006,
+        "more_info" => "https://www.twilio.com/docs/errors/30006"
       )
     end
   end

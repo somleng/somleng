@@ -498,6 +498,7 @@ GEM
     sixarm_ruby_unaccent (1.2.0)
     skylight (5.3.3)
       activesupport (>= 5.2.0)
+    smstools (0.2.2)
     sprockets (4.1.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -615,6 +616,7 @@ DEPENDENCIES
   simplecov
   simplecov-lcov
   skylight
+  smstools
   squasher
   stimulus-rails
   turbo-rails

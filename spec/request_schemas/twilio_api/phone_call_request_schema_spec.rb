@@ -22,14 +22,15 @@ module TwilioAPI
           },
           options: { account: }
         )
-      ).not_to have_valid_field(:To, error_messagge: "is invalid")
+      ).not_to have_valid_field(:To, error_message: "is invalid")
 
       expect(
         validate_request_schema(
           input_params: {
             To: "8557199999999"
           },
-          options: { account: })
+          options: { account: }
+        )
       ).not_to have_valid_field(:To, error_message: "is invalid")
 
       expect(

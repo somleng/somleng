@@ -1,6 +1,10 @@
 module TwilioAPI
   class MessageRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :phone_number_configuration_rules,
+           default: proc { PhoneNumberConfigurationRules.new }
+    option :sms_encoding,
+           default: proc { SMSEncoding.new }
 
     # parameter(
     #   "From",
@@ -70,7 +74,6 @@ module TwilioAPI
     end
 
     rule(:To) do |context:|
-      next unless key?
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
       channel_resolver = SMSGatewayResolver.new(carrier: account.carrier, destination: value)
@@ -87,16 +90,32 @@ module TwilioAPI
       context[:channel] = channel
     end
 
+    rule(:From) do |context:|
+      context[:phone_number] = account.phone_numbers.find_by(number: value)
+
+      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+
+      base.failure(
+        text: "The 'From' phone number provided is not a valid message-capable phone number for this destination.",
+        code: "21606"
+      )
+    end
+
     def output
       params = super
+
+      body = params.fetch(:Body)
+      encoding_result = sms_encoding.detect(body)
 
       {
         account:,
         carrier: account.carrier,
+        phone_number: context.fetch(:phone_number),
         sms_gateway: context.fetch(:sms_gateway),
-        channel: context.fetch(:channel).to_i,
-        body: params.fetch(:Body),
-        segments: 1,
+        channel: context.fetch(:channel),
+        body:,
+        segments: encoding_result.segments,
+        encoding: encoding_result.encoding,
         to: params.fetch(:To),
         from: params.fetch(:From),
         status_callback_url: params[:StatusCallback],

@@ -8,6 +8,7 @@ class CreateMessages < ActiveRecord::Migration[7.0]
       t.integer :channel
       t.text :body, null: false
       t.integer :segments, null: false
+      t.string :encoding, null: false
       t.string :to, null: false
       t.string :from, null: false
       t.string :direction, null: false

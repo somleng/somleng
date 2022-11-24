@@ -358,6 +358,7 @@ FactoryBot.define do
     direction { :outbound }
     body { "Hello World" }
     segments { 1 }
+    encoding { "GSM" }
 
     traits_for_enum :status, %w[queued initiated sent failed]
   end
