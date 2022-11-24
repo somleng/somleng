@@ -35,7 +35,7 @@
       </li>
     <% end %>
 
-    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel).index? || policy(:sms_gateway_channel_group).index? %>
+    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel_group).index? %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-comment-sms"></i> SMS

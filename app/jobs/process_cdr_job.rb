@@ -59,7 +59,7 @@ class ProcessCDRJob < ApplicationJob
       account: phone_call.account,
       url: phone_call.status_callback_url,
       http_method: phone_call.status_callback_method,
-      params: TwilioAPI::StatusCallbackSerializer.new(
+      params: TwilioAPI::Webhook::VoiceStatusCallbackSerializer.new(
         PhoneCallDecorator.new(phone_call)
       ).serializable_hash
     )

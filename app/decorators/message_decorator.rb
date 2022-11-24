@@ -11,7 +11,7 @@ class MessageDecorator < SimpleDelegator
     "queued" => "queued",
     "initiated" => "sending",
     "sent" => "sent",
-    "failed" => "queued"
+    "failed" => "failed"
   }.freeze
 
   def from

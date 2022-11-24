@@ -15,7 +15,7 @@ class NotifyRecordingStatusCallback < ApplicationWorkflow
   end
 
   def recording_params
-    TwilioAPI::RecordingStatusCallbackSerializer.new(
+    TwilioAPI::Webhook::RecordingStatusCallbackSerializer.new(
       RecordingDecorator.new(recording)
     ).serializable_hash
   end

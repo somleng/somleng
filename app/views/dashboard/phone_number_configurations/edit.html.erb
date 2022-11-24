@@ -2,31 +2,53 @@
 
 <div class="card-body">
   <%= simple_form_for(@resource, url: dashboard_phone_number_configuration_path(@resource.phone_number)) do |f| %>
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :voice_url, hint: "URL which returns TwiML. Must start with http or https" %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Voice</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :voice_url, hint: "URL which returns TwiML. Must start with http or https" %>
+            </div>
+
+            <div class="col-sm-6">
+              <%= f.input :voice_method, collection: PhoneNumberConfiguration.voice_method.values, include_blank: true %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :status_callback_url %>
+            </div>
+
+            <div class="col-sm-6">
+              <%= f.input :status_callback_method, collection: PhoneNumberConfiguration.status_callback_method.values, include_blank: true %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :sip_domain, hint: "Use to route the SIP traffic from the incoming calls to this endpoint" %>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="col-sm-6">
-        <%= f.input :voice_method, collection: PhoneNumberConfiguration.voice_method.values, include_blank: true %>
-      </div>
-    </div>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Messaging</h5>
 
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :status_callback_url %>
-      </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :sms_url, hint: "URL which returns TwiML. Must start with http or https" %>
+            </div>
 
-      <div class="col-sm-6">
-        <%= f.input :status_callback_method, collection: PhoneNumberConfiguration.status_callback_method.values, include_blank: true %>
+            <div class="col-sm-6">
+              <%= f.input :sms_method, collection: PhoneNumberConfiguration.sms_method.values, include_blank: true %>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :sip_domain, hint: "Use to route the SIP traffic from the incoming calls to this endpoint" %>
-      </div>
-    </div>
 
     <%= f.button :submit, "Update Configuration" %>
   <% end %>

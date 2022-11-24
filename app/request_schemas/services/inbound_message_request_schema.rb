@@ -1,10 +1,10 @@
 module Services
   class InboundMessageRequestSchema < TwilioAPIRequestSchema
-    option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
-           default: proc { PhoneNumberConfigurationRules.new(:message) }
-    option :carrier_standing_rules,
-           default: proc { CarrierStandingRules.new }
+           default: -> { PhoneNumberConfigurationRules.new(:message) }
+    option :carrier_standing_rules, default: -> { CarrierStandingRules.new }
+    option :sms_encoding, default: -> { SMSEncoding.new }
     option :sms_gateway
     option :error_log_messages
 
@@ -42,13 +42,16 @@ module Services
     def output
       params = super
       phone_number = context.fetch(:phone_number)
+      body = params.fetch(:body)
+      encoding_result = sms_encoding.detect(body)
 
       {
         account: phone_number.account,
         carrier: sms_gateway.carrier,
         sms_gateway:,
-        segments: 1,
-        body: params.fetch(:body),
+        segments: encoding_result.segments,
+        encoding: encoding_result.encoding,
+        body:,
         to: params.fetch(:to),
         from: params.fetch(:from),
         sms_url: phone_number.configuration.sms_url,

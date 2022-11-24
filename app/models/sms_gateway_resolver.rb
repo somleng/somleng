@@ -7,21 +7,34 @@ class SMSGatewayResolver
   end
 
   def resolve
-    channel = resolve_channel
-    return default_sms_gateway if channel.blank?
+    return [default_sms_gateway, nil] if carrier.sms_gateway_channel_groups.empty?
+    return if matched_route_prefix.blank? && fallback_channel_group.blank?
 
-    [channel.sms_gateway, channel.number]
+    channel_group = matched_route_prefix.present? ? find_channel_group(matched_route_prefix) : fallback_channel_group
+
+    [channel_group.sms_gateway, channel_group.channels.sample]
   end
 
   private
 
-  def resolve_channel
-    channel_groups = carrier.sms_gateway_channel_groups
-    channel_group = channel_groups.first
+  def find_channel_group(route_prefix)
+    channel_groups.detect { |group| group.route_prefixes.include?(route_prefix) }
+  end
 
-    return if channel_group.blank?
+  def matched_route_prefix
+    @matched_route_prefix ||= channel_groups
+                              .flat_map(&:route_prefixes)
+                              .sort_by(&:length)
+                              .reverse
+                              .detect { |prefix| destination =~ /\A#{prefix}/ }
+  end
 
-    channel_group.channels.sample
+  def fallback_channel_group
+    @fallback_channel_group ||= channel_groups.find_by(route_prefixes: [])
+  end
+
+  def channel_groups
+    carrier.sms_gateway_channel_groups
   end
 
   def default_sms_gateway

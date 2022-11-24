@@ -17,6 +17,18 @@ class SMSMessageChannel < ApplicationCable::Channel
     else
       raise "Unknown message status: #{data.fetch('status')}"
     end
+
+    return if message.status_callback_url.blank?
+
+    ExecuteWorkflowJob.perform_later(
+      "TwilioAPI::NotifyWebhook",
+      account: message.account,
+      url: message.status_callback_url,
+      http_method: message.status_callback_method,
+      params: TwilioAPI::Webhook::MessageStatusCallbackSerializer.new(
+        MessageDecorator.new(message)
+      ).serializable_hash
+    )
   end
 
   def received(data)

@@ -15,6 +15,10 @@ RSpec.describe "Phone number configuration" do
     select("POST", from: "Voice method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
     select("POST", from: "Status callback method")
+
+    fill_in("SMS URL", with: "https://www.example.com/sms.xml")
+    select("POST", from: "SMS method")
+
     click_button("Update Configuration")
 
     expect(page).to have_content("Phone number configuration was successfully updated")
@@ -22,6 +26,8 @@ RSpec.describe "Phone number configuration" do
     expect(page).to have_field("Voice method", with: "POST")
     expect(page).to have_field("Status callback URL", with: "https://www.example.com/status_callback.xml")
     expect(page).to have_field("Status callback method", with: "POST")
+    expect(page).to have_field("SMS URL", with: "https://www.example.com/sms.xml")
+    expect(page).to have_field("SMS method", with: "POST")
   end
 
   it "Configure a phone number with sip domain as an account admin" do
