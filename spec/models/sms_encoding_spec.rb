@@ -9,6 +9,8 @@ RSpec.describe SMSEncoding do
 
       expect(result.segments).to eq(1)
       expect(result.encoding).to eq("GSM")
+
+      expect(encoding.detect("å").encoding).to eq("GSM")
       expect(encoding.detect("").segments).to eq(1)
       expect(encoding.detect("a" * 160).segments).to eq(1)
       expect(encoding.detect("a" * 161).segments).to eq(2)

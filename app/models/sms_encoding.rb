@@ -11,15 +11,15 @@ class SMSEncoding
     detector = encoding_detector.new(body)
     Result.new(
       segments: detector.concatenated_parts,
-      encoding: detector.ascii? ? "GSM" : "UCS2"
+      encoding: detector.gsm? ? "GSM" : "UCS2"
     )
   end
 
   private
 
   def default_encoding_detector
-    SmsTools.use_ascii_encoding = true
-    SmsTools.use_gsm_encoding = false
+    SmsTools.use_ascii_encoding = false
+    SmsTools.use_gsm_encoding = true
     SmsTools::EncodingDetection
   end
 end
