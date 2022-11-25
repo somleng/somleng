@@ -2,9 +2,11 @@ module TwilioAPI
   class MessageRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: proc { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
-           default: proc { PhoneNumberConfigurationRules.new }
+           default: -> { PhoneNumberConfigurationRules.new }
     option :sms_encoding,
-           default: proc { SMSEncoding.new }
+           default: -> { SMSEncoding.new }
+    option :sms_gateway_resolver,
+           default: -> { SMSGatewayResolver.new }
 
     # parameter(
     #   "From",
@@ -76,8 +78,10 @@ module TwilioAPI
     rule(:To) do |context:|
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      channel_resolver = SMSGatewayResolver.new(carrier: account.carrier, destination: value)
-      sms_gateway, channel = channel_resolver.resolve
+      sms_gateway, channel = sms_gateway_resolver.resolve(
+        carrier: account.carrier,
+        destination: value
+      )
 
       if sms_gateway.blank?
         next base.failure(

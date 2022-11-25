@@ -1,43 +1,44 @@
 class SMSGatewayResolver
-  attr_reader :carrier, :destination
-
-  def initialize(carrier:, destination:)
-    @carrier = carrier
-    @destination = destination
+  class LoadBalancer
+    def select_channel(channels)
+      channels.sample
+    end
   end
 
-  def resolve
-    return [default_sms_gateway, nil] if carrier.sms_gateway_channel_groups.empty?
-    return if matched_route_prefix.blank? && fallback_channel_group.blank?
+  attr_reader :load_balancer
 
-    channel_group = matched_route_prefix.present? ? find_channel_group(matched_route_prefix) : fallback_channel_group
+  def initialize(load_balancer: LoadBalancer.new)
+    @load_balancer = load_balancer
+  end
 
-    [channel_group.sms_gateway, channel_group.channels.sample]
+  def resolve(carrier:, destination:)
+    channel_groups = carrier.sms_gateway_channel_groups
+    return SMSGateway.find_by(carrier_id: carrier.id) if channel_groups.empty?
+
+    channel_group = find_channel_group(channel_groups, destination)
+
+    return if channel_group.blank?
+
+    [channel_group.sms_gateway, select_channel(channel_group)]
   end
 
   private
 
-  def find_channel_group(route_prefix)
-    channel_groups.detect { |group| group.route_prefixes.include?(route_prefix) }
+  def find_channel_group(channel_groups, destination)
+    route_prefixes = route_prefixes(channel_groups).sort_by { |prefix, _| -prefix.length }
+    route_prefix = route_prefixes.detect { |prefix, _| destination =~ /\A#{prefix}/ }
+    route_prefix&.last || channel_groups.find_by(route_prefixes: [])
   end
 
-  def matched_route_prefix
-    @matched_route_prefix ||= channel_groups
-                              .flat_map(&:route_prefixes)
-                              .sort_by(&:length)
-                              .reverse
-                              .detect { |prefix| destination =~ /\A#{prefix}/ }
+  def route_prefixes(channel_groups)
+    channel_groups.each_with_object({}) do |channel_group, result|
+      channel_group.route_prefixes.each do |route_prefix|
+        result[route_prefix] = channel_group
+      end
+    end
   end
 
-  def fallback_channel_group
-    @fallback_channel_group ||= channel_groups.find_by(route_prefixes: [])
-  end
-
-  def channel_groups
-    carrier.sms_gateway_channel_groups
-  end
-
-  def default_sms_gateway
-    SMSGateway.find_by(carrier_id: carrier.id)
+  def select_channel(channel_group)
+    load_balancer.select_channel(channel_group.channels)&.slot_index
   end
 end
