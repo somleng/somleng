@@ -1,5 +1,5 @@
 module Services
-  class InboundMessageRequestSchema < TwilioAPIRequestSchema
+  class InboundMessageRequestSchema < ServicesRequestSchema
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
            default: -> { PhoneNumberConfigurationRules.new(:message) }
@@ -49,6 +49,7 @@ module Services
         account: phone_number.account,
         carrier: sms_gateway.carrier,
         sms_gateway:,
+        phone_number:,
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         body:,

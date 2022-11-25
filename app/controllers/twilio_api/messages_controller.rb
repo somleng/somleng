@@ -16,6 +16,11 @@ module TwilioAPI
       end
     end
 
+    def show
+      message = scope.find(params[:id])
+      respond_with_resource(message, serializer_options)
+    end
+
     private
 
     def scope

@@ -9,8 +9,10 @@ Rails.application.routes.draw do
       concerns :recordings
 
       resources :phone_calls, only: %i[index create show update], path: "Calls", concerns: :recordings
-      resources :messages, only: %i[index create show], path: "Messages"
       post "Calls/:id" => "phone_calls#update"
+
+      resources :messages, only: %i[index create show], path: "Messages"
+      post "Messages/:id" => "messages#update"
     end
 
     scope "/carrier", as: :carrier, module: :carrier_api do

@@ -39,19 +39,23 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
     attributes = twiml_attributes(verb)
     nested_noun = verb.children.first
     body = nested_noun.content if nested_noun.text? || nested_noun.name == "Body"
+    action = URI.join(url, attributes["action"]).to_s if attributes.key?("action")
 
     schema = TwilioAPI::MessageRequestSchema.new(
       input_params: {
         From: attributes.fetch("from", message.to),
         To: attributes.fetch("to", message.from),
         Body: body,
-        StatusCallback: attributes["action"],
+        StatusCallback: action,
         StatusCallbackMethod: attributes["method"]
+      },
+      options: {
+        account: message.account
       }
     )
 
-    if schema.valid?
-      reply_message = CreateMessage.call(schema.output.merge(direction: "outbound-reply"))
+    if schema.success?
+      reply_message = CreateMessage.call(schema.output.merge(direction: :outbound_reply))
       InitiateOutboundMessage.call(reply_message)
     else
       raise TwiMLError, "Invalid <Message> verb's attributes"
@@ -81,8 +85,7 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
     ExecuteMessagingTwiML.call(
       message:,
       url: URI.join(url, redirect_url).to_s,
-      http_method:,
-      params: message_params
+      http_method:
     )
   end
 
@@ -100,7 +103,7 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
 
     doc.root.children
   rescue Nokogiri::XML::SyntaxError => e
-    raise TwiMLError, "Error while parsing XML: #{e.message}. XML Document: #{content}"
+    raise TwiMLError, "Error while parsing XML: #{e.message}. XML Document: #{twiml}"
   end
 
   def request_twiml
@@ -109,7 +112,7 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
       url:,
       http_method:,
       params: message_params
-    ).body
+    ).body.to_s
   end
 
   def message_params

@@ -78,24 +78,27 @@ RSpec.resource "Messages", document: :twilio_api do
     example "Create a Message" do
       account = create(:account)
       create(:sms_gateway, carrier: account.carrier)
+      create(:phone_number, :configured, account:, number: "855716788999", carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
 
-      do_request(
-        account_sid: account.id,
-        "To" => "+855716788123",
-        "From" => "+855716788999",
-        "Body" => "Hello World"
-      )
+      perform_enqueued_jobs do
+        do_request(
+          account_sid: account.id,
+          "To" => "+855716788123",
+          "From" => "+855716788999",
+          "Body" => "Hello World"
+        )
+      end
 
       expect(response_status).to eq(201)
       expect(response_body).to match_api_response_schema("twilio_api/message")
       expect(json_response.fetch("status")).to eq("queued")
-      expect(OutboundMessageJob).to have_been_enqueued
     end
 
     example "Handles invalid requests", document: false do
       account = create(:account)
+      create(:sms_gateway, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(
@@ -108,26 +111,48 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(response_status).to eq(422)
       expect(response_body).to match_api_response_schema("twilio_api/api_errors")
       expect(json_response).to eq(
-        "message" => "Calling this number is unsupported or the number is invalid",
+        "message" => "The 'From' phone number provided is not a valid message-capable phone number for this destination.",
         "status" => 422,
-        "code" => 30006,
-        "more_info" => "https://www.twilio.com/docs/errors/30006"
+        "code" => 21606,
+        "more_info" => "https://www.twilio.com/docs/errors/21606"
       )
     end
   end
 
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages/:sid" do
-    # https://www.twilio.com/docs/api/rest/call#instance-get
+    # https://www.twilio.com/docs/sms/api/message-resource#fetch-a-message-resource
 
-    example "Fetch a call" do
+    example "Fetch a message" do
       account = create(:account)
-      phone_call = create(:phone_call, account:)
+      message = create(:message, account:)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, sid: phone_call.id)
+      do_request(account_sid: account.id, sid: message.id)
 
       expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_schema("twilio_api/call")
+      expect(response_body).to match_api_response_schema("twilio_api/message")
+    end
+  end
+
+  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages/:sid" do
+    # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
+
+    parameter(
+      "Body",
+      "The text of the message you want to send. Can be up to 1,600 characters in length.",
+      required: false,
+      example: ""
+    )
+
+    parameter(
+      "Status",
+      "When set as canceled, allows a message cancelation request if a message has not yet been sent.",
+      required: false,
+      example: "canceled"
+    )
+
+    example "Update a message" do
+      pending
     end
   end
 end

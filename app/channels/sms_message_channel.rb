@@ -36,18 +36,17 @@ class SMSMessageChannel < ApplicationCable::Channel
     schema = Services::InboundMessageRequestSchema.new(
       input_params: data,
       options: {
-        account: sms_gateway.account,
         sms_gateway: current_sms_gateway,
         error_log_messages:
       }
     )
-    if schema.valid?
+    if schema.success?
       message = CreateMessage.call(schema.output)
 
       ExecuteWorkflowJob.perform_later(
         "ExecuteMessagingTwiML",
-        message,
-        url: message.url,
+        message:,
+        url: message.sms_url,
         http_method: message.sms_method
       )
     else

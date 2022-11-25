@@ -45,6 +45,12 @@ module TwilioAPI
     #   example: "5"
     # )
     # parameter(
+    #   "SmartEncoded",
+    #   "Whether to detect Unicode characters that have a similar GSM-7 character and replace them. Can be: true or false.",
+    #   required: false,
+    #   example: "true"
+    # )
+    # parameter(
     #   "ValidityPeriod",
     #   "How long in seconds the message can remain in our outgoing message queue. After this period elapses, the message fails and we call your status callback. Can be between 1 and the default value of 14,400 seconds. After a message has been accepted by a carrier, however, we cannot guarantee that the message will not be queued after this period. We recommend that this value be at least 5 seconds.",
     #   required: false,
@@ -70,7 +76,6 @@ module TwilioAPI
       optional(:StatusCallback).maybe(:string, format?: URL_FORMAT)
       optional(:StatusCallbackMethod).maybe(
         ApplicationRequestSchema::Types::UppercaseString,
-        :filled?,
         included_in?: Message.status_callback_method.values
       )
     end
@@ -124,7 +129,7 @@ module TwilioAPI
         from: params.fetch(:From),
         status_callback_url: params[:StatusCallback],
         status_callback_method: params[:StatusCallbackMethod],
-        direction: :outbound
+        direction: :outbound_api
       }
     end
   end

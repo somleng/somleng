@@ -8,7 +8,8 @@ class Message < ApplicationRecord
   belongs_to :sms_gateway, optional: true
   belongs_to :phone_number, optional: true
 
-  enumerize :direction, in: %i[inbound outbound], predicates: true, scope: :shallow
+  enumerize :direction, in: %i[inbound outbound_api outbound_call outbound_reply],
+                        predicates: true, scope: :shallow
   enumerize :encoding, in: %w[GSM UCS2]
   enumerize :status_callback_method, in: %w[POST GET]
 
@@ -17,6 +18,7 @@ class Message < ApplicationRecord
     state :initiated
     state :sent
     state :failed
+    state :received
 
     event :mark_as_initiated do
       transitions from: :queued, to: :initiated
@@ -29,5 +31,9 @@ class Message < ApplicationRecord
     event :mark_as_failed do
       transitions from: :initiated, to: :failed
     end
+  end
+
+  def outbound?
+    status.in?(%i[outbound_api outbound_call outbound_reply])
   end
 end

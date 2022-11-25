@@ -292,6 +292,8 @@ FactoryBot.define do
     voice_method { "GET" }
     status_callback_url { "https://example.com/status-callback" }
     status_callback_method { "POST" }
+    sms_url { "https://demo.twilio.com/docs/messaging.xml" }
+    sms_method { "GET" }
   end
 
   factory :phone_call do
@@ -355,10 +357,16 @@ FactoryBot.define do
     sms_gateway { association :sms_gateway, carrier: }
     to { "85512334667" }
     from { "2442" }
-    direction { :outbound }
+    direction { :outbound_api }
     body { "Hello World" }
     segments { 1 }
     encoding { "GSM" }
+
+    trait :inbound do
+      direction { :inbound }
+      sms_url { "https://example.com/messaging.xml" }
+      sms_method { "POST" }
+    end
 
     traits_for_enum :status, %w[queued initiated sent failed]
   end

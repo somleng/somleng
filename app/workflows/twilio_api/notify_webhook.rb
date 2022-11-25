@@ -10,13 +10,12 @@ module TwilioAPI
     def initialize(account:, url:, http_method:, params:)
       @account = account
       @url = url
-      @http_method = http_method
+      @http_method = HTTP_METHODS.fetch(http_method, :post)
       @params = params
     end
 
     def call
       uri = HTTP::URI.parse(url)
-      http_method = HTTP_METHODS.fetch(http_method, :post)
 
       if http_method == :get
         uri.query_values = uri.query_values(Array).to_a.concat(params.to_a)

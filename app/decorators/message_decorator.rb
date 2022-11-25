@@ -1,17 +1,17 @@
 class MessageDecorator < SimpleDelegator
   TWILIO_MESSAGE_DIRECTIONS = {
     "inbound" => "inbound",
-    "outbound" => "outbound-api"
+    "outbound_api" => "outbound-api",
+    "outbound_call" => "outbound-call",
+    "outbound_reply" => "outbound-reply"
   }.freeze
-
-  # accepted, scheduled, canceled, queued, sending, sent, failed, delivered, undelivered, receiving, received, or read (WhatsApp only).
-  # For more information, See https://www.twilio.com/docs/sms/api/message-resource#message-status-values
 
   TWILIO_MESSAGE_STATUS_MAPPINGS = {
     "queued" => "queued",
     "initiated" => "sending",
     "sent" => "sent",
-    "failed" => "failed"
+    "failed" => "failed",
+    "received" => "received"
   }.freeze
 
   def from
