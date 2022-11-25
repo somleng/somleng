@@ -4,12 +4,13 @@ RSpec.describe SMSMessageChannel, type: :channel do
   describe "#sent" do
     it "marks as sent when the message successfully sent" do
       sms_gateway = stub_current_sms_gateway
-      message = create(:message, :initiated, sms_gateway:)
+      message = create(:message, :initiated, sms_gateway:, status_callback_url: nil)
 
       subscribe
       perform :sent, id: message.id, status: "sent"
 
       expect(message.reload.status).to eq("sent")
+      expect(ExecuteWorkflowJob).not_to have_been_enqueued.with("TwilioAPI::NotifyWebhook")
     end
 
     it "handles failed delivery" do
@@ -20,6 +21,32 @@ RSpec.describe SMSMessageChannel, type: :channel do
       perform :sent, id: message.id, status: "failed"
 
       expect(message.reload.status).to eq("failed")
+    end
+
+    it "sends a status callback" do
+      sms_gateway = stub_current_sms_gateway
+      message = create(
+        :message,
+        :initiated,
+        sms_gateway:,
+        status_callback_url: "https://www.example.com/message_status_callback",
+        status_callback_method: "POST"
+      )
+
+      subscribe
+      perform :sent, id: message.id, status: "sent"
+
+      expect(message.reload.status).to eq("sent")
+      expect(ExecuteWorkflowJob).to have_been_enqueued.with(
+        "TwilioAPI::NotifyWebhook",
+        account: message.account,
+        url: "https://www.example.com/message_status_callback",
+        http_method: "POST",
+        params: hash_including(
+          "MessageStatus" => "sent",
+          "MessageSid" => message.id
+        )
+      )
     end
 
     def stub_current_sms_gateway

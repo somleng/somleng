@@ -17,7 +17,7 @@ RSpec.describe SMSGatewayResolver do
     it "returns the gateway and channel with the longest matching prefix" do
       carrier = create(:carrier)
       non_matching_sms_gateway = create(:sms_gateway, carrier:)
-      non_matching_channel_group = create(
+      _non_matching_channel_group = create(
         :sms_gateway_channel_group,
         sms_gateway: non_matching_sms_gateway,
         route_prefixes: ["85512"]
@@ -40,12 +40,6 @@ RSpec.describe SMSGatewayResolver do
         slot_index: 2,
         channel_group: matching_channel_group,
         sms_gateway: matching_sms_gateway
-      )
-      create(
-        :sms_gateway_channel,
-        slot_index: 3,
-        channel_group: non_matching_channel_group,
-        sms_gateway: non_matching_sms_gateway
       )
 
       load_balancer = Class.new do
