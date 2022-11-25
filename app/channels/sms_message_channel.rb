@@ -36,6 +36,7 @@ class SMSMessageChannel < ApplicationCable::Channel
     schema = Services::InboundMessageRequestSchema.new(
       input_params: data,
       options: {
+        account: sms_gateway.account,
         sms_gateway: current_sms_gateway,
         error_log_messages:
       }
