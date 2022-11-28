@@ -20,6 +20,7 @@ class Message < ApplicationRecord
     state :sent
     state :failed
     state :received
+    state :canceled
 
     event :mark_as_initiated do
       transitions from: :queued, to: :initiated
@@ -32,6 +33,10 @@ class Message < ApplicationRecord
     event :mark_as_failed do
       transitions from: :initiated, to: :failed
     end
+
+    event :cancel do
+      transitions from: :queued, to: :canceled
+    end
   end
 
   def outbound?
@@ -40,5 +45,11 @@ class Message < ApplicationRecord
 
   def complete?
     status.in?(%w[sent failed received])
+  end
+
+  def validity_period_expired?
+    return false if validity_period.blank?
+
+    (created_at + validity_period.seconds).past?
   end
 end

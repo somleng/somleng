@@ -27,9 +27,11 @@ module TwilioAPI
       validate_request_schema(
         with: UpdateMessageRequestSchema,
         schema_options: { account: current_account, message: },
+        status: :ok,
         **serializer_options
       ) do |permitted_params|
         message.update!(permitted_params)
+        message
       end
     end
 

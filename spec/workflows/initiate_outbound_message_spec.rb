@@ -28,4 +28,12 @@ RSpec.describe InitiateOutboundMessage do
 
     expect(message.status).to eq("sent")
   end
+
+  it "handles expired validity period" do
+    message = create(:message, :queued, validity_period: 5, created_at: 5.seconds.ago)
+
+    InitiateOutboundMessage.call(message)
+
+    expect(message.status).to eq("canceled")
+  end
 end

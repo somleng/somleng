@@ -86,9 +86,11 @@ module TwilioAPI
         input_params: {
           To: "+855 68 308 531",
           From: "+855 716 100 234",
-          Body: "Hello World",
+          Body: "Hello World ✽",
           StatusCallback: "https://example.com/status-callback",
-          StatusCallbackMethod: "GET"
+          StatusCallbackMethod: "GET",
+          SmartEncoded: "true",
+          ValidityPeriod: "5"
         },
         options: {
           account:
@@ -98,7 +100,7 @@ module TwilioAPI
       expect(schema.output).to eq(
         to: "85568308531",
         from: "855716100234",
-        body: "Hello World",
+        body: "Hello World *",
         channel: nil,
         segments: 1,
         encoding: "GSM",
@@ -108,7 +110,8 @@ module TwilioAPI
         sms_gateway:,
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "GET",
-        direction: :outbound_api
+        direction: :outbound_api,
+        validity_period: 5
       )
     end
 

@@ -7,6 +7,7 @@ class InitiateOutboundMessage < ApplicationWorkflow
 
   def call
     return unless message.status.in?(%w[queued])
+    return message.cancel! if message.validity_period_expired?
 
     SMSMessageChannel.broadcast_to(
       message.sms_gateway,

@@ -19,6 +19,8 @@ RSpec.resource "Messages", document: :twilio_api do
   end
 
   post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages" do
+    # https://www.twilio.com/docs/sms/api/message-resource#create-a-message-resource
+
     parameter(
       "From",
       "A Somleng phone number in E.164 format",
@@ -50,31 +52,20 @@ RSpec.resource "Messages", document: :twilio_api do
       example: "POST"
     )
     parameter(
-      "Attempt",
-      "Total number of attempts made ( including this ) to send out the message regardless of the provider used.",
-      required: false,
-      example: "5"
-    )
-    parameter(
       "ValidityPeriod",
       "How long in seconds the message can remain in our outgoing message queue. After this period elapses, the message fails and we call your status callback. Can be between 1 and the default value of 14,400 seconds. After a message has been accepted by a carrier, however, we cannot guarantee that the message will not be queued after this period. We recommend that this value be at least 5 seconds.",
       required: false,
       example: "60"
     )
     parameter(
-      "ScheduleType",
-      "Indicates your intent to schedule a message. Pass the value `fixed`` to schedule a message at a fixed time.",
+      "SmartEncoded",
+      "Whether to detect Unicode characters that have a similar GSM-7 character and replace them. Can be: `true` or `false`.",
       required: false,
-      example: "fixed"
-    )
-    parameter(
-      "SendAt",
-      "The time that Somleng will send the message. Must be in ISO 8601 format.",
-      required: false,
-      example: 30.days.from_now.iso8601
+      example: true
     )
 
-    # https://www.twilio.com/docs/sms/api/message-resource#create-a-message-resource
+
+
     example "Create a Message" do
       account = create(:account)
       create(:sms_gateway, carrier: account.carrier)
@@ -163,13 +154,6 @@ RSpec.resource "Messages", document: :twilio_api do
       "The text of the message you want to send. Can be up to 1,600 characters in length.",
       required: false,
       example: ""
-    )
-
-    parameter(
-      "Status",
-      "When set as `canceled`, allows a message cancelation request if a message has not yet been sent.",
-      required: false,
-      example: "canceled"
     )
 
     example "Redact a message" do
