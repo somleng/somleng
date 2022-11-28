@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_27_020344) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_28_041208) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -170,7 +170,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_27_020344) do
 
   create_table "interactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "interactable_type", null: false
-    t.uuid "interactable_id", null: false
+    t.uuid "phone_call_id"
     t.uuid "carrier_id", null: false
     t.uuid "account_id", null: false
     t.string "beneficiary_fingerprint", null: false
@@ -178,12 +178,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_27_020344) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "message_id"
     t.index ["account_id"], name: "index_interactions_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_interactions_on_beneficiary_country_code"
     t.index ["beneficiary_fingerprint"], name: "index_interactions_on_beneficiary_fingerprint"
     t.index ["carrier_id"], name: "index_interactions_on_carrier_id"
     t.index ["created_at"], name: "index_interactions_on_created_at"
-    t.index ["interactable_type", "interactable_id"], name: "index_interactions_on_interactable", unique: true
+    t.index ["interactable_type"], name: "index_interactions_on_interactable_type"
+    t.index ["message_id"], name: "index_interactions_on_message_id", unique: true
+    t.index ["phone_call_id"], name: "index_interactions_on_phone_call_id", unique: true
     t.index ["sequence_number"], name: "index_interactions_on_sequence_number", unique: true, order: :desc
   end
 
@@ -520,6 +523,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_27_020344) do
   add_foreign_key "imports", "users", on_delete: :cascade
   add_foreign_key "interactions", "accounts"
   add_foreign_key "interactions", "carriers"
+  add_foreign_key "interactions", "messages", on_delete: :nullify
+  add_foreign_key "interactions", "phone_calls", on_delete: :nullify
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
   add_foreign_key "messages", "phone_numbers", on_delete: :nullify

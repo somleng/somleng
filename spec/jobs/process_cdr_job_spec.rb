@@ -25,10 +25,16 @@ RSpec.describe ProcessCDRJob do
     )
     expect(phone_call.call_data_record.call_leg.A?).to eq(true)
     expect(phone_call.call_data_record.file.attached?).to eq(true)
-    expect(ExecuteWorkflowJob).to have_been_enqueued.with("NotifyPhoneCallStatusCallback", phone_call)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with(
+      "TwilioAPI::NotifyWebhook",
+      account: phone_call.account,
+      url: phone_call.status_callback_url,
+      http_method: phone_call.status_callback_method,
+      params: hash_including("CallStatus" => "no-answer")
+    )
   end
 
-  it "creates a call data record for a failed inound call" do
+  it "creates a call data record for a failed inbound call" do
     raw_freeswitch_cdr = file_fixture("freeswitch_cdr.json").read
     freeswitch_cdr = JSON.parse(raw_freeswitch_cdr)
     freeswitch_cdr["variables"]["uuid"] = SecureRandom.uuid
@@ -88,7 +94,7 @@ RSpec.describe ProcessCDRJob do
     ProcessCDRJob.perform_now(freeswitch_cdr)
 
     expect(phone_call.call_data_record.call_leg.A?).to eq(true)
-    expect(ExecuteWorkflowJob).to have_been_enqueued.with("NotifyPhoneCallStatusCallback", phone_call)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with("TwilioAPI::NotifyWebhook", any_args)
   end
 
   it "creates a call data record for call leg B" do
@@ -102,12 +108,12 @@ RSpec.describe ProcessCDRJob do
       :phone_call, :initiated, :with_status_callback_url,
       id: freeswitch_cdr_call_leg_a.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
-    call_data_record_call_leg_a = create(:call_data_record, call_leg: "A", phone_call: phone_call)
+    call_data_record_call_leg_a = create(:call_data_record, call_leg: "A", phone_call:)
 
     ProcessCDRJob.perform_now(freeswitch_cdr_call_leg_b)
 
     expect(phone_call.call_data_record).to eq(call_data_record_call_leg_a)
-    expect(CallDataRecord.where(phone_call: phone_call).last.call_leg.B?).to eq(true)
-    expect(ExecuteWorkflowJob).not_to have_been_enqueued.with("NotifyPhoneCallStatusCallback", phone_call)
+    expect(CallDataRecord.where(phone_call:).last.call_leg.B?).to eq(true)
+    expect(ExecuteWorkflowJob).not_to have_been_enqueued.with("TwilioAPI::NotifyWebhook", any_args)
   end
 end

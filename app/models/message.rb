@@ -10,6 +10,7 @@ class Message < ApplicationRecord
 
   enumerize :direction, in: %i[inbound outbound_api outbound_call outbound_reply],
                         predicates: true, scope: :shallow
+
   enumerize :encoding, in: %w[GSM UCS2]
   enumerize :status_callback_method, in: %w[POST GET]
 
@@ -34,6 +35,10 @@ class Message < ApplicationRecord
   end
 
   def outbound?
-    status.in?(%i[outbound_api outbound_call outbound_reply])
+    direction.in?(%w[outbound_api outbound_call outbound_reply])
+  end
+
+  def complete?
+    status.in?(%w[sent failed received])
   end
 end

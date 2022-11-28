@@ -12,6 +12,7 @@ class SMSMessageChannel < ApplicationCable::Channel
     case data.fetch("status")
     when "sent"
       message.mark_as_sent!
+      create_interaction(message)
     when "failed"
       message.mark_as_failed!
     else
@@ -41,7 +42,8 @@ class SMSMessageChannel < ApplicationCable::Channel
       }
     )
     if schema.success?
-      message = CreateMessage.call(schema.output)
+      message = Message.create!(schema.output)
+      create_interaction(message)
 
       ExecuteWorkflowJob.perform_later(
         "ExecuteMessagingTwiML",
@@ -55,6 +57,20 @@ class SMSMessageChannel < ApplicationCable::Channel
         account: error_log_messages.account,
         error_message: error_log_messages.messages.to_sentence
       )
+    end
+  end
+
+  private
+
+  def create_interaction(message)
+    Interaction.create_or_find_by!(message:) do |interaction|
+      interaction.attributes = {
+        interactable_type: "Message",
+        carrier: message.carrier,
+        account: message.account,
+        beneficiary_country_code: message.beneficiary_country_code,
+        beneficiary_fingerprint: message.beneficiary_fingerprint
+      }
     end
   end
 end

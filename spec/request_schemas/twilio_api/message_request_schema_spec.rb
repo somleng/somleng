@@ -108,7 +108,7 @@ module TwilioAPI
         sms_gateway:,
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "GET",
-        direction: :outbound
+        direction: :outbound_api
       )
     end
 

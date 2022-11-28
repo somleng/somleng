@@ -72,14 +72,15 @@ FactoryBot.define do
   end
 
   factory :interaction do
-    carrier { interactable.carrier }
-    account { interactable.account }
     for_phone_call
 
     trait :for_phone_call do
-      interactable { association :phone_call, to: generate(:phone_number) }
-      beneficiary_fingerprint { interactable.beneficiary_fingerprint }
-      beneficiary_country_code { interactable.beneficiary_country_code }
+      carrier { phone_call.carrier }
+      account { phone_call.account }
+      interactable_type { "PhoneCall" }
+      phone_call { association :phone_call, to: generate(:phone_number) }
+      beneficiary_fingerprint { phone_call.beneficiary_fingerprint }
+      beneficiary_country_code { phone_call.beneficiary_country_code }
     end
   end
 

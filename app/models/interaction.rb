@@ -1,7 +1,11 @@
 class Interaction < ApplicationRecord
+  extend Enumerize
+  enumerize :interactable_type, in: %w[Message PhoneCall]
+
   belongs_to :account
   belongs_to :carrier
-  belongs_to :interactable, polymorphic: true
+  belongs_to :phone_call, optional: true
+  belongs_to :message, optional: true
 
   attribute :beneficiary_fingerprint, SHA256Type.new
 

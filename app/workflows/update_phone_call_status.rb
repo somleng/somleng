@@ -43,8 +43,9 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
   end
 
   def create_interaction
-    Interaction.create_or_find_by!(interactable: phone_call) do |interaction|
+    Interaction.create_or_find_by!(phone_call:) do |interaction|
       interaction.attributes = {
+        interactable_type: "PhoneCall",
         carrier: phone_call.carrier,
         account: phone_call.account,
         beneficiary_country_code: phone_call.beneficiary_country_code,

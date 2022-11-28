@@ -55,7 +55,7 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
     )
 
     if schema.success?
-      reply_message = CreateMessage.call(schema.output.merge(direction: :outbound_reply))
+      reply_message = Message.create!(schema.output.merge(direction: :outbound_reply))
       InitiateOutboundMessage.call(reply_message)
     else
       raise TwiMLError, "Invalid <Message> verb's attributes"

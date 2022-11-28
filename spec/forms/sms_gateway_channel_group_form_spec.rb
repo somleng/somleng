@@ -4,11 +4,9 @@ RSpec.describe SMSGatewayChannelGroupForm do
   describe "validations" do
     it "validates channel is in range" do
       sms_gateway = create(:sms_gateway, max_channels: 2)
-      form = SMSGatewayChannelGroupForm.new(
-        carrier: sms_gateway.carrier,
-        sms_gateway_id: sms_gateway.id,
-        channels: [3]
-      )
+      channel_group = create(:sms_gateway_channel_group, sms_gateway:)
+      form = SMSGatewayChannelGroupForm.initialize_with(channel_group)
+      form.channels = [3]
 
       form.valid?
 
@@ -17,12 +15,10 @@ RSpec.describe SMSGatewayChannelGroupForm do
 
     it "validates channel is available" do
       sms_gateway = create(:sms_gateway, max_channels: 2)
+      channel_group = create(:sms_gateway_channel_group, sms_gateway:)
       create(:sms_gateway_channel, sms_gateway:, slot_index: 1)
-      form = SMSGatewayChannelGroupForm.new(
-        carrier: sms_gateway.carrier,
-        sms_gateway_id: sms_gateway.id,
-        channels: [1]
-      )
+      form = SMSGatewayChannelGroupForm.initialize_with(channel_group)
+      form.channels = [1]
 
       form.valid?
 

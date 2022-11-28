@@ -113,7 +113,7 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "The 'From' phone number provided is not a valid message-capable phone number for this destination.",
         "status" => 422,
-        "code" => 21606,
+        "code" => 21_606,
         "more_info" => "https://www.twilio.com/docs/errors/21606"
       )
     end
@@ -137,6 +137,27 @@ RSpec.resource "Messages", document: :twilio_api do
   post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages/:sid" do
     # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
 
+    explanation <<~HEREDOC
+      Updates the body of a Message resource.
+
+      This action is primarily used to redact messages: to do so, POST to the above URI and set the
+      `Body` parameter as an empty string: "".
+      This will allow you to effectively redact the text of a message
+      while keeping the other message resource properties intact.
+    HEREDOC
+
+    parameter(
+      "AccountSid",
+      "The SID of the Account that created the Message resources to update.",
+      required: true
+    )
+
+    parameter(
+      "Sid",
+      "The ID that uniquely identifies the Message resource to update.",
+      required: true
+    )
+
     parameter(
       "Body",
       "The text of the message you want to send. Can be up to 1,600 characters in length.",
@@ -146,13 +167,78 @@ RSpec.resource "Messages", document: :twilio_api do
 
     parameter(
       "Status",
-      "When set as canceled, allows a message cancelation request if a message has not yet been sent.",
+      "When set as `canceled`, allows a message cancelation request if a message has not yet been sent.",
       required: false,
       example: "canceled"
     )
 
-    example "Update a message" do
-      pending
+    example "Redact a message" do
+      account = create(:account)
+      message = create(:message, :sent, account:)
+
+      set_twilio_api_authorization_header(account)
+      do_request(
+        account_sid: account.id,
+        sid: message.id,
+        "Body" => ""
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/message")
+      expect(json_response.fetch("body")).to eq("")
+    end
+  end
+
+  delete "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages/:sid" do
+    # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
+
+    explanation <<~HEREDOC
+      Deletes a message record from your account. Once the record is deleted, it will no longer appear in the API and Account Portal logs.
+
+      If successful, returns `HTTP 204` (No Content) with no body.
+
+      Attempting to delete an in-progress message record will result in an error.
+    HEREDOC
+
+    parameter(
+      "AccountSid",
+      "The SID of the Account that created the Message resources to delete.",
+      required: true
+    )
+
+    parameter(
+      "Sid",
+      "The ID that uniquely identifies the Message resource to delete.",
+      required: true
+    )
+
+    example "Delete a message" do
+      account = create(:account)
+      message = create(:message, :sent, account:)
+      create(:interaction, message:, account:, carrier: account.carrier)
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id, sid: message.id)
+
+      expect(response_status).to eq(204)
+      expect(account.interactions.count).to eq(1)
+    end
+
+    example "Does not delete in-progress messages", document: false do
+      account = create(:account)
+      message = create(:message, :initiated, account:)
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id, sid: message.id)
+
+      expect(response_status).to eq(422)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
+      expect(json_response).to eq(
+        "message" => "Cannot delete this resource before it is complete",
+        "status" => 422,
+        "code" => 20_009,
+        "more_info" => "https://www.twilio.com/docs/errors/20009"
+      )
     end
   end
 end

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
       resources :phone_calls, only: %i[index create show update], path: "Calls", concerns: :recordings
       post "Calls/:id" => "phone_calls#update"
 
-      resources :messages, only: %i[index create show], path: "Messages"
+      resources :messages, only: %i[index create show destroy], path: "Messages"
       post "Messages/:id" => "messages#update"
     end
 
