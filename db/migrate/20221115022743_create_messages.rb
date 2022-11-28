@@ -25,6 +25,7 @@ class CreateMessages < ActiveRecord::Migration[7.0]
       t.decimal :price, precision: 10, scale: 4
       t.string :price_unit
       t.integer :validity_period
+      t.boolean :smart_encoded, null: false, default: false
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
 

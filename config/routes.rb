@@ -85,6 +85,7 @@ Rails.application.routes.draw do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
         patch :release, on: :member
       end
+      resources :messages, only: %i[index show]
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
       resources :events, only: %i[index show]

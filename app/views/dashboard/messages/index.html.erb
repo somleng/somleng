@@ -1,4 +1,4 @@
-<%= page_title(title: "Phone Calls") do %>
+<%= page_title(title: "Messages") do %>
   <%= render("shared/filters") do |form| %>
     <%= form.text_field_tag(:id, params.dig(:filter, :id), title: "SID") %>
 
@@ -12,12 +12,12 @@
       %>
     <% end %>
 
-    <%= form.select :status, PhoneCallDecorator.statuses.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
+    <%= form.select :status, MessageDecorator.statuses.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
     <%= form.text_field_tag(:to, params.dig(:filter, :to)) %>
     <%= form.text_field_tag(:from, params.dig(:filter, :from)) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
-  <%= render("shared/export_action", export_params: { resource_type: "PhoneCall" }) %>
+  <%= render("shared/export_action", export_params: { resource_type: "Message" }) %>
 <% end %>
 
 <div class="card-body">

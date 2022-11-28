@@ -11,8 +11,21 @@ class MessageDecorator < SimpleDelegator
     "initiated" => "sending",
     "sent" => "sent",
     "failed" => "failed",
-    "received" => "received"
+    "received" => "received",
+    "canceled" => "canceled"
   }.freeze
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Message")
+  end
+
+  def self.human_attribute_name(*args)
+    Message.human_attribute_name(*args)
+  end
+
+  def self.statuses
+    TWILIO_MESSAGE_STATUS_MAPPINGS.values.uniq
+  end
 
   def from
     phone_number_formatter.format(super, format: :e164)

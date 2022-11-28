@@ -57,7 +57,8 @@ module TwilioAPI
       params = super
 
       body = params.fetch(:Body)
-      body = smart_encoding.encode(body) if params[:SmartEncoded]
+      smart_encoded = params.fetch(:SmartEncoded, false)
+      body = smart_encoding.encode(body) if smart_encoded
       encoding_result = sms_encoding.detect(body)
 
       {
@@ -74,7 +75,8 @@ module TwilioAPI
         status_callback_url: params[:StatusCallback],
         status_callback_method: params[:StatusCallbackMethod],
         direction: :outbound_api,
-        validity_period: params[:ValidityPeriod]
+        validity_period: params[:ValidityPeriod],
+        smart_encoded:
       }
     end
   end

@@ -24,24 +24,28 @@
         </a>
 
         <ul class="nav-group-items">
-          <% if policy(:sip_trunk).index? %>
-            <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-tower-cell") %>
-          <% end %>
-
           <% if policy(:phone_call).index? %>
             <%= sidebar_nav("Phone Calls", dashboard_phone_calls_path, icon_class: "fa-solid fa-phone") %>
+          <% end %>
+
+          <% if policy(:sip_trunk).index? %>
+            <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-tower-cell") %>
           <% end %>
         </ul>
       </li>
     <% end %>
 
-    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel_group).index? %>
+    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel_group).index? || policy(:message).index? %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
-          <i class="nav-icon fa-solid fa-comment-sms"></i> SMS
+          <i class="nav-icon fa-solid fa-comment"></i> Messaging
         </a>
 
         <ul class="nav-group-items">
+          <% if policy(:message).index? %>
+            <%= sidebar_nav("Messages", dashboard_messages_path, icon_class: "fa-solid fa-comment-dots") %>
+          <% end %>
+
           <% if policy(:sms_gateway).index? %>
             <%= sidebar_nav("Gateways", dashboard_sms_gateways_path, icon_class: "fa-solid fa-tower-broadcast") %>
           <% end %>

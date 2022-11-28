@@ -1,9 +1,9 @@
-class PhoneCallFilter < ResourceFilter
+class MessageFilter < ResourceFilter
   class StatusFilter < ApplicationFilter
     filter_params do
       optional(:status).value(
         :string,
-        included_in?: PhoneCallDecorator.statuses
+        included_in?: MessageDecorator.statuses
       )
     end
 
@@ -11,7 +11,7 @@ class PhoneCallFilter < ResourceFilter
       return super if filter_params.blank?
 
       super.where(
-        status: PhoneCallDecorator::TWILIO_CALL_STATUS_MAPPINGS.rassoc(
+        status: MessageDecorator::TWILIO_MESSAGE_STATUS_MAPPINGS.rassoc(
           filter_params.fetch(:status)
         )
       )

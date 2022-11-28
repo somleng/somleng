@@ -28,6 +28,10 @@ class PhoneCallDecorator < SimpleDelegator
     PhoneCall.human_attribute_name(*args)
   end
 
+  def self.statuses
+    TWILIO_CALL_STATUS_MAPPINGS.values.uniq
+  end
+
   def from
     phone_number_formatter.format(super, format: :e164)
   end

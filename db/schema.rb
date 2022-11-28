@@ -215,6 +215,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_28_041208) do
     t.decimal "price", precision: 10, scale: 4
     t.string "price_unit"
     t.integer "validity_period"
+    t.boolean "smart_encoded", default: false, null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

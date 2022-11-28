@@ -1,0 +1,66 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+      <th>
+        Status
+      </th>
+      <th>
+        Direction
+      </th>
+      <th>
+        To
+      </th>
+      <th>
+        From
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |message| %>
+      <% message = MessageDecorator.new(message) %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(message.id, dashboard_message_path(message)) %>
+        </td>
+
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(message.account.name, dashboard_account_path(message.account_id)) %>
+          </td>
+        <% end %>
+
+        <td>
+          <%= message.status.humanize %>
+        </td>
+
+        <td>
+          <%= message.direction.humanize %>
+        </td>
+
+        <td>
+          <%= message.to %>
+        </td>
+
+        <td>
+          <%= message.from %>
+        </td>
+
+        <td>
+          <%= local_time(message.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

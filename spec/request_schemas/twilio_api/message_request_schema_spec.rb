@@ -111,7 +111,8 @@ module TwilioAPI
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "GET",
         direction: :outbound_api,
-        validity_period: 5
+        validity_period: 5,
+        smart_encoded: true
       )
     end
 
