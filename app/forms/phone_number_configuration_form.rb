@@ -2,8 +2,6 @@ class PhoneNumberConfigurationForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/.freeze
-
   attribute :voice_url
   attribute :voice_method
   attribute :status_callback_url
@@ -13,8 +11,8 @@ class PhoneNumberConfigurationForm
   attribute :sms_method
   attribute :phone_number_configuration
 
-  validates :voice_url, :sms_url, format: URL_FORMAT, allow_blank: true
-  validates :status_callback_url, format: URL_FORMAT, allow_blank: true
+  validates :voice_url, :sms_url, url_format: { allow_http: true }, allow_blank: true
+  validates :status_callback_url, url_format: { allow_http: true }, allow_blank: true
   validates :voice_method,
             inclusion: { in: PhoneNumberConfiguration.voice_method.values },
             allow_blank: true

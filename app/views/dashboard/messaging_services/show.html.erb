@@ -1,0 +1,49 @@
+<%= page_title(title: "Messaging Service") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_messaging_service_path(@resource)) %>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_messaging_service_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= @resource.id %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :name %>
+
+    <% if policy(:account).show? %>
+      <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
+    <% end %>
+
+    <%= f.attribute :inbound_request_url %>
+    <%= f.attribute :inbound_request_method %>
+    <%= f.attribute :status_callback_url %>
+    <%= f.attribute :status_callback_method %>
+    <%= f.attribute :smart_encoding %>
+    <% if @resource.senders.any? %>
+      <%= f.attribute :senders do %>
+        <ul class="list-unstyled">
+          <% @resource.senders.includes(:phone_number).each do |sender| %>
+            <li>
+              <%= link_to(
+                sender.phone_number.number,
+                dashboard_phone_number_path(sender.phone_number)
+              ) %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% else %>
+      <%= f.attribute :senders %>
+    <% end %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

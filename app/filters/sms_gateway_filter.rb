@@ -1,3 +1,3 @@
 class SMSGatewayFilter < ResourceFilter
-  filter_with NameFilter, DateFilter
+  filter_with :name_filter, :date_filter
 end

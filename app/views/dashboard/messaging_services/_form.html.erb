@@ -1,0 +1,103 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource]) do |f| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Properties</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :name,
+                hint: "A friendly name for the messaging service"
+              ) %>
+          </div>
+
+          <% if current_user.carrier_user? %>
+            <div class="col-sm-6">
+                <%= f.input :account_id,
+                            collection: resource.account_options_for_select,
+                            selected: resource.account,
+                            disabled: resource.persisted?,
+                            prompt: "",
+                            input_html: { data: { behavior: "choices-input" } } %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <% if resource.persisted? %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Sender Pool</h5>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <%= f.input(
+                :phone_numbers,
+                collection: resource.phone_numbers_options_for_select,
+                selected: resource.phone_numbers.pluck(:id),
+                input_html: {
+                  multiple: true,
+                  data: {
+                    behavior: "choices-input",
+                    choices_options: {
+                      removeItemButton: true
+                    }
+                  }
+                },
+                hint: "A list of phone numbers to add to your messaging service"
+              ) %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Integration</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :inbound_request_url, hint: "Invoke an HTTP webhook for all incoming messages. Must start with http or https" %>
+            </div>
+
+            <div class="col-sm-6">
+              <%= f.input :inbound_request_method, collection: MessagingService.inbound_request_method.values, include_blank: true %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :status_callback_url, hint: "Provide a URL to call via webhook to let you know the delivery status of your message. Must start with http or https" %>
+            </div>
+
+            <div class="col-sm-6">
+              <%= f.input :status_callback_method, collection: MessagingService.status_callback_method.values, include_blank: true %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Content Settings</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input(
+                :smart_encoding,
+                as: :boolean,
+                wrapper: :custom_boolean_switch,
+                hint: "Smart encoding detects Unicode characters that are easy to miss and replaces them with similar GSM encoded characters. This substitution helps ensure that your messages are segmented properly at 160 characters"
+              ) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

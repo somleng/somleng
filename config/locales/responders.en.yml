@@ -39,3 +39,6 @@ en:
       custom_domains:
         regenerate:
           notice: '%{resource_name} was successfully regenerated.'
+      messaging_services:
+        create:
+          notice: ""

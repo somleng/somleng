@@ -372,6 +372,21 @@ FactoryBot.define do
     traits_for_enum :status, %w[queued initiated sent failed]
   end
 
+  factory :messaging_service do
+    account
+    carrier { account.carrier }
+    name { "My Messaging Service" }
+  end
+
+  factory :messaging_service_sender do
+    transient do
+      number { generate(:phone_number) }
+    end
+
+    messaging_service
+    phone_number { association :phone_number, carrier: messaging_service.carrier, number: }
+  end
+
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
     trait :expired do
       expires_in { 1 }

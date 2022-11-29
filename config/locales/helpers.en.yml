@@ -13,3 +13,6 @@ en:
       sms_gateway_channel:
         create: "Create Channel"
         update: "Update Channel"
+      messaging_service:
+        create: "Next"
+        update: "Save"

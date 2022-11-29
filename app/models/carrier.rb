@@ -9,6 +9,7 @@ class Carrier < ApplicationRecord
   has_many :sms_gateway_channels, through: :sms_gateways, source: :channels
   has_many :phone_numbers
   has_many :messages
+  has_many :messaging_services
   has_many :phone_calls
   has_many :events
   has_many :error_logs

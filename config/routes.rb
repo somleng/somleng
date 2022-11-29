@@ -87,6 +87,7 @@ Rails.application.routes.draw do
         patch :release, on: :member
       end
       resources :messages, only: %i[index show]
+      resources :messaging_services, only: %i[index show new create edit update]
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
       resources :events, only: %i[index show]

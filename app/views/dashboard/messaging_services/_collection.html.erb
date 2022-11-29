@@ -1,0 +1,51 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+      <th>
+        Senders
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |messaging_service| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(messaging_service.id, dashboard_messaging_service_path(messaging_service)) %>
+        </td>
+
+        <td>
+          <%= messaging_service.name %>
+        </td>
+
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(messaging_service.account.name, dashboard_account_path(messaging_service.account_id)) %>
+          </td>
+        <% end %>
+
+        <td>
+          <%= messaging_service.senders.size %>
+        </td>
+
+        <td>
+          <%= local_time(messaging_service.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

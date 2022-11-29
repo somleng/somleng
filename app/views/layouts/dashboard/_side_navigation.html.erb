@@ -35,7 +35,7 @@
       </li>
     <% end %>
 
-    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel_group).index? || policy(:message).index? %>
+    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel_group).index? || policy(:message).index? || policy(:messaging_service).index? %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-comment"></i> Messaging
@@ -53,6 +53,10 @@
 
           <% if policy(:sms_gateway_channel_group).index? %>
             <%= sidebar_nav("Channel Groups", dashboard_sms_gateway_channel_groups_path, icon_class: "fa-solid fa-object-group") %>
+          <% end %>
+
+          <% if policy(:messaging_service).index? %>
+            <%= sidebar_nav("Services", dashboard_messaging_services_path, icon_class: "fa-solid fa-rectangle-list") %>
           <% end %>
         </ul>
       </li>
