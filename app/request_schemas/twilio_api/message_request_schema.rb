@@ -13,7 +13,7 @@ module TwilioAPI
     params do
       required(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
-      required(:Body).filled(:string)
+      required(:Body).filled(:string, max_size?: 1600)
       optional(:StatusCallback).maybe(:string, format?: URL_FORMAT)
       optional(:StatusCallbackMethod).maybe(
         ApplicationRequestSchema::Types::UppercaseString,
@@ -57,8 +57,7 @@ module TwilioAPI
       params = super
 
       body = params.fetch(:Body)
-      smart_encoded = params.fetch(:SmartEncoded, false)
-      body = smart_encoding.encode(body) if smart_encoded
+      body, smart_encoded = smart_encode(body) if params.fetch(:SmartEncoded, false)
       encoding_result = sms_encoding.detect(body)
 
       {
@@ -76,8 +75,16 @@ module TwilioAPI
         status_callback_method: params[:StatusCallbackMethod],
         direction: :outbound_api,
         validity_period: params[:ValidityPeriod],
-        smart_encoded:
+        smart_encoded: smart_encoded.present?
       }
+    end
+
+    private
+
+    def smart_encode(body)
+      smart_encoding_result = smart_encoding.encode(body)
+
+      [smart_encoding_result.to_s, smart_encoding_result.smart_encoded?]
     end
   end
 end

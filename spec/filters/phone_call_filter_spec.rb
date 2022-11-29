@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe PhoneCallFilter do
-  it "Filters by account" do
+  it "filters by account" do
     carrier = create(:carrier)
-    account = create(:account, carrier: carrier)
-    phone_call = create(:phone_call, account: account)
+    account = create(:account, carrier:)
+    phone_call = create(:phone_call, account:)
     _other_phone_call = create(:phone_call)
     filter = PhoneCallFilter.new(
       resources_scope: PhoneCall,
@@ -17,10 +17,10 @@ RSpec.describe PhoneCallFilter do
     expect(result).to eq([phone_call])
   end
 
-  it "Filters by carrier" do
+  it "filters by carrier" do
     carrier = create(:carrier)
-    account = create(:account, carrier: carrier)
-    phone_call = create(:phone_call, account: account)
+    account = create(:account, carrier:)
+    phone_call = create(:phone_call, account:)
     _other_phone_call = create(:phone_call)
     filter = PhoneCallFilter.new(
       resources_scope: PhoneCall,
@@ -31,5 +31,23 @@ RSpec.describe PhoneCallFilter do
     result = filter.apply
 
     expect(result).to eq([phone_call])
+  end
+
+  it "filters by status" do
+    queued_phone_call = create(:phone_call, :queued)
+    initiated_phone_call = create(:phone_call, :initiated)
+    _failed_phone_call = create(:phone_call, :failed)
+    filter = PhoneCallFilter.new(
+      resources_scope: PhoneCall,
+      input_params: {
+        filter: {
+          status: "queued"
+        }
+      }
+    )
+
+    result = filter.apply
+
+    expect(result).to match_array([queued_phone_call, initiated_phone_call])
   end
 end

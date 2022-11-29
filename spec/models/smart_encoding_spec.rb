@@ -7,7 +7,13 @@ RSpec.describe SmartEncoding do
 
       result = smart_encoding.encode("«✽» foobar")
 
-      expect(result).to eq('"*" foobar')
+      expect(result.to_s).to eq('"*" foobar')
+      expect(result.smart_encoded?).to eq(true)
+
+      result = smart_encoding.encode("foobar")
+
+      expect(result.to_s).to eq("foobar")
+      expect(result.smart_encoded?).to eq(false)
     end
   end
 end

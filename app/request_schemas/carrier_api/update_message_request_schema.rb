@@ -1,11 +1,11 @@
 module CarrierAPI
-  class UpdatePhoneCallRequestSchema < CarrierAPIRequestSchema
+  class UpdateMessageRequestSchema < CarrierAPIRequestSchema
     option :update_interaction_rules,
            default: -> { SchemaRules::UpdateInteraction.new }
 
     params do
       required(:data).value(:hash).schema do
-        required(:type).filled(:string, eql?: "phone_call")
+        required(:type).filled(:string, eql?: "message")
         required(:id).filled(:string)
         required(:attributes).value(:hash).schema do
           optional(:price).filled(:decimal, lteq?: 0)

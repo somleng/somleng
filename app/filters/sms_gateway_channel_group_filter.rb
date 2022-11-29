@@ -11,5 +11,5 @@ class SMSGatewayChannelGroupFilter < ResourceFilter
     end
   end
 
-  filter_with SMSGatewayFilter, NameFilter, DateFilter
+  filter_with SMSGatewayFilter, :name_filter, :date_filter
 end

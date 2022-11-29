@@ -272,9 +272,17 @@ class SmartEncoding
     "\u2022" => "-" # Bullet
   }.freeze
 
+  Result = Struct.new(:value, :smart_encoded?, keyword_init: true) do
+    def to_s
+      value
+    end
+  end
+
   def encode(value)
-    CHARACTERS.each_with_object(value.dup) do |(character, replacement), result|
+    encoded_value = CHARACTERS.each_with_object(value.dup) do |(character, replacement), result|
       result.gsub!(character, replacement)
     end
+
+    Result.new(value: encoded_value, smart_encoded?: encoded_value != value)
   end
 end

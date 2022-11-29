@@ -55,6 +55,24 @@ module TwilioAPI
       ).not_to have_valid_schema(error_message: "The 'From' phone number provided is not a valid message-capable phone number for this destination.")
     end
 
+    it "validates body" do
+      expect(
+        validate_request_schema(
+          input_params: {
+            Body: "a" * 1600
+          }
+        )
+      ).to have_valid_field(:Body)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            Body: "a" * 1601
+          }
+        )
+      ).not_to have_valid_field(:Body)
+    end
+
     it "validates StatusCallback" do
       expect(
         validate_request_schema(input_params: { StatusCallback: "https://www.example.com" })

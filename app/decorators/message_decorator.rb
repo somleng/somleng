@@ -27,6 +27,18 @@ class MessageDecorator < SimpleDelegator
     TWILIO_MESSAGE_STATUS_MAPPINGS.values.uniq
   end
 
+  def self.directions
+    TWILIO_MESSAGE_DIRECTIONS.values.uniq
+  end
+
+  def self.status_from(twilio_status)
+    TWILIO_MESSAGE_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
+  end
+
+  def self.direction_from(twilio_status)
+    TWILIO_MESSAGE_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+  end
+
   def from
     phone_number_formatter.format(super, format: :e164)
   end

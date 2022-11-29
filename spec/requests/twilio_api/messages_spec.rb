@@ -64,8 +64,6 @@ RSpec.resource "Messages", document: :twilio_api do
       example: true
     )
 
-
-
     example "Create a Message" do
       account = create(:account)
       create(:sms_gateway, carrier: account.carrier)

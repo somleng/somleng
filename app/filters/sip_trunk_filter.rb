@@ -1,3 +1,3 @@
 class SIPTrunkFilter < ResourceFilter
-  filter_with DateFilter
+  filter_with :name_filter, :date_filter
 end

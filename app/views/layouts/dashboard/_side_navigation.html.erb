@@ -42,6 +42,7 @@
         </a>
 
         <ul class="nav-group-items">
+
           <% if policy(:message).index? %>
             <%= sidebar_nav("Messages", dashboard_messages_path, icon_class: "fa-solid fa-comment-dots") %>
           <% end %>

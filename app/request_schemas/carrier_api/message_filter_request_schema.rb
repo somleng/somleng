@@ -1,7 +1,7 @@
 module CarrierAPI
-  class PhoneCallFilterRequestSchema < ApplicationRequestSchema
+  class MessageFilterRequestSchema < ApplicationRequestSchema
     option :interaction_filter,
-           default: -> { SchemaRules::InteractionFilter.new(decorator_class: PhoneCallDecorator) }
+           default: -> { SchemaRules::InteractionFilter.new(decorator_class: MessageDecorator) }
 
     params do
       optional(:filter).value(:hash).hash do
@@ -9,10 +9,10 @@ module CarrierAPI
         optional(:from_date).value(:time)
         optional(:to_date).value(:time)
         optional(:direction).filled(
-          :str?, included_in?: PhoneCallDecorator.directions
+          :str?, included_in?: MessageDecorator.directions
         )
         optional(:status).filled(
-          :str?, included_in?: PhoneCallDecorator.statuses
+          :str?, included_in?: MessageDecorator.statuses
         )
       end
     end

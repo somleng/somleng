@@ -23,5 +23,5 @@ class EventFilter < ResourceFilter
     end
   end
 
-  filter_with TypeFilter, EventableFilter, DateFilter
+  filter_with TypeFilter, EventableFilter, :date_filter
 end

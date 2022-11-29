@@ -29,10 +29,13 @@
       <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { eventable_id: message.id }), title: "View events") %>
     <% end %>
 
+    <%= f.attribute :body %>
     <%= f.attribute :from, value: message.from %>
     <%= f.attribute :to, value: message.to %>
     <%= f.attribute :status, value: message.status.humanize %>
     <%= f.attribute :direction, value: message.direction.humanize %>
+    <%= f.attribute :encoding %>
+    <%= f.attribute :smart_encoded %>
     <%= f.attribute :price, value: message.price_formatted %>
     <%= f.attribute :price_unit %>
     <%= f.attribute :status_callback_url %>

@@ -58,6 +58,28 @@ module CarrierAPI
       ).not_to have_valid_field(:filter, :direction)
     end
 
+    it "validates status" do
+      expect(
+        validate_request_schema(
+          input_params: {
+            filter: {
+              status: "queued"
+            }
+          }
+        )
+      ).to have_valid_field(:filter, :status)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            filter: {
+              status: "invalid"
+            }
+          }
+        )
+      ).not_to have_valid_field(:filter, :status)
+    end
+
     it "normalizes the output" do
       schema = validate_request_schema(
         input_params: {
@@ -65,14 +87,16 @@ module CarrierAPI
             from_date: Time.utc(2021, 11, 1).iso8601,
             to_date: Time.utc(2021, 11, 30).iso8601,
             account: "account-id",
-            direction: "outbound-api"
+            direction: "outbound-api",
+            status: "queued"
           }
         }
       )
 
       expect(schema.output).to include(
         account_id: "account-id",
-        direction: "outbound"
+        direction: ["outbound"],
+        status: match_array(%w[queued initiating initiated])
       )
     end
 
