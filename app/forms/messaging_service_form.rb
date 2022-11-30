@@ -1,4 +1,10 @@
 class MessagingServiceForm
+  class PhoneNumberArrayType < ActiveRecord::Type::String
+    def cast(value)
+      Array(value).reject(&:blank?)
+    end
+  end
+
   include ActiveModel::Model
   include ActiveModel::Attributes
 
@@ -7,17 +13,17 @@ class MessagingServiceForm
   attribute :carrier
   attribute :account_id
   attribute :account
-  attribute :phone_numbers, default: []
+  attribute :phone_number_ids, PhoneNumberArrayType.new, default: []
   attribute :name
   attribute :inbound_request_url
   attribute :inbound_request_method
   attribute :status_callback_url
-  attribute :status_callback_method
   attribute :messaging_service, default: -> { MessagingService.new }
-  attribute :smart_encoding, :boolean
+  attribute :smart_encoding, :boolean, default: true
 
   validates :name, presence: true
-  validates :account_id, presence: true, if: :new_record?
+  validates :account_id, presence: true, if: :validate_account_id?
+  validate :validate_phone_numbers, if: :persisted?
 
   validates :inbound_request_url,
             :status_callback_url,
@@ -26,10 +32,6 @@ class MessagingServiceForm
 
   validates :inbound_request_method,
             inclusion: { in: MessagingService.inbound_request_method.values },
-            allow_blank: true
-
-  validates :status_callback_method,
-            inclusion: { in: MessagingService.status_callback_method.values },
             allow_blank: true
 
   delegate :persisted?, :new_record?, :id, to: :messaging_service
@@ -44,11 +46,10 @@ class MessagingServiceForm
       name: messaging_service.name,
       account: messaging_service.account,
       carrier: messaging_service.carrier,
-      phone_numbers: messaging_service.phone_numbers,
+      phone_number_ids: messaging_service.phone_number_ids,
       inbound_request_url: messaging_service.inbound_request_url,
       inbound_request_method: messaging_service.inbound_request_method,
       status_callback_url: messaging_service.status_callback_url,
-      status_callback_method: messaging_service.status_callback_method,
       smart_encoding: messaging_service.smart_encoding
     )
   end
@@ -59,14 +60,17 @@ class MessagingServiceForm
     messaging_service.carrier = carrier
     messaging_service.name = name
     messaging_service.account ||= find_account
-    messaging_service.phone_number_ids = phone_numbers.reject(&:blank?)
     messaging_service.inbound_request_url = inbound_request_url.presence
     messaging_service.inbound_request_method = inbound_request_method
     messaging_service.status_callback_url = status_callback_url.presence
-    messaging_service.status_callback_method = status_callback_method
     messaging_service.smart_encoding = smart_encoding
 
-    messaging_service.save!
+    MessagingService.transaction do
+      messaging_service.save!
+      update_senders!
+    end
+
+    messaging_service
   end
 
   def account_options_for_select
@@ -74,15 +78,19 @@ class MessagingServiceForm
   end
 
   def phone_numbers_options_for_select
-    (phone_numbers_scope + phone_numbers).map do |phone_number|
-      [phone_number.number, phone_number.id]
-    end
+    available_phone_numbers.map { |phone_number| [phone_number.number, phone_number.id] }
   end
 
   private
 
+  def available_phone_numbers
+    (phone_numbers_scope + messaging_service.phone_numbers)
+  end
+
   def find_account
-    accounts_scope.find(account_id)
+    return account if account.present?
+
+    self.account = accounts_scope.find(account_id)
   end
 
   def accounts_scope
@@ -90,6 +98,47 @@ class MessagingServiceForm
   end
 
   def phone_numbers_scope
-    account.phone_numbers.where.not(id: account.messaging_service_senders.select(:phone_number_id))
+    account.phone_numbers.left_joins(:configuration)
+           .where(phone_number_configurations: { messaging_service_id: nil })
+  end
+
+  def validate_account_id?
+    account.blank? && new_record?
+  end
+
+  def validate_phone_numbers
+    return if errors.any?
+    return if (phone_number_ids - available_phone_numbers.pluck(:id)).empty?
+
+    errors.add(:phone_number_ids, :invalid)
+  end
+
+  def update_senders!
+    attributes = build_phone_number_configuration_attributes
+    return if attributes.empty?
+
+    PhoneNumberConfiguration.upsert_all(attributes, unique_by: :phone_number_id)
+  end
+
+  def build_phone_number_configuration_attributes
+    attributes = phone_number_ids_to_remove.map do |phone_number_id|
+      { phone_number_id:, messaging_service_id: nil }
+    end
+
+    attributes + phone_number_ids_to_add.map do |phone_number_id|
+      { phone_number_id:, messaging_service_id: messaging_service.id }
+    end
+  end
+
+  def phone_number_ids_to_remove
+    existing_phone_number_ids - phone_number_ids
+  end
+
+  def phone_number_ids_to_add
+    phone_number_ids - existing_phone_number_ids
+  end
+
+  def existing_phone_number_ids
+    messaging_service.phone_numbers.pluck(:id)
   end
 end

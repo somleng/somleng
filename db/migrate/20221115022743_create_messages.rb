@@ -16,7 +16,6 @@ class CreateMessages < ActiveRecord::Migration[7.0]
       t.string :sms_method
       t.string :status, null: false
       t.string :status_callback_url
-      t.string :status_callback_method
       t.string :beneficiary_country_code, null: false
       t.string :beneficiary_fingerprint, null: false
       t.string :error_code

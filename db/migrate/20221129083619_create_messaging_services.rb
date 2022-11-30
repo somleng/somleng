@@ -5,7 +5,6 @@ class CreateMessagingServices < ActiveRecord::Migration[7.0]
       t.references :carrier, type: :uuid, null: false, foreign_key: { on_delete: :cascade }
       t.string :name, null: false
       t.string :status_callback_url
-      t.string :status_callback_method
       t.string :inbound_request_url
       t.string :inbound_request_method
       t.boolean :smart_encoding, null: false, default: false

@@ -25,7 +25,7 @@ class SMSMessageChannel < ApplicationCable::Channel
       "TwilioAPI::NotifyWebhook",
       account: message.account,
       url: message.status_callback_url,
-      http_method: message.status_callback_method,
+      http_method: "POST",
       params: TwilioAPI::Webhook::MessageStatusCallbackSerializer.new(
         MessageDecorator.new(message)
       ).serializable_hash

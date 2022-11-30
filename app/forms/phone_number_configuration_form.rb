@@ -7,6 +7,7 @@ class PhoneNumberConfigurationForm
   attribute :status_callback_url
   attribute :status_callback_method
   attribute :sip_domain
+  attribute :messaging_service
   attribute :sms_url
   attribute :sms_method
   attribute :phone_number_configuration
@@ -60,5 +61,9 @@ class PhoneNumberConfigurationForm
       sms_url: sms_url.presence,
       sms_method: sms_method.presence
     )
+  end
+
+  def messaging_service_options_for_select
+    phone_number.account.messaging_services
   end
 end

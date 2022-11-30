@@ -29,8 +29,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
         :message,
         :initiated,
         sms_gateway:,
-        status_callback_url: "https://www.example.com/message_status_callback",
-        status_callback_method: "POST"
+        status_callback_url: "https://www.example.com/message_status_callback"
       )
       stub_request(:post, "https://www.example.com/message_status_callback")
 

@@ -114,8 +114,7 @@ RSpec.describe ExecuteMessagingTwiML do
         to: "85512999999",
         body: "Hello world",
         status: "initiated",
-        status_callback_url: "https://www.example.com/message_status_callback.xml",
-        status_callback_method: "GET"
+        status_callback_url: "https://www.example.com/message_status_callback.xml"
       )
     end
   end

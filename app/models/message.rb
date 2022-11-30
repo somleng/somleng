@@ -7,12 +7,12 @@ class Message < ApplicationRecord
   belongs_to :account
   belongs_to :sms_gateway, optional: true
   belongs_to :phone_number, optional: true
+  belongs_to :messaging_service, optional: true
 
   enumerize :direction, in: %i[inbound outbound_api outbound_call outbound_reply],
                         predicates: true, scope: :shallow
 
   enumerize :encoding, in: %w[GSM UCS2]
-  enumerize :status_callback_method, in: %w[POST GET]
 
   aasm column: :status do
     state :queued, initial: true

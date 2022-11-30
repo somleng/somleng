@@ -83,16 +83,6 @@ module TwilioAPI
       ).not_to have_valid_field(:StatusCallback)
     end
 
-    it "validates StatusCallbackMethod" do
-      expect(
-        validate_request_schema(input_params: { StatusCallbackMethod: "GET" })
-      ).to have_valid_field(:StatusCallbackMethod)
-
-      expect(
-        validate_request_schema(input_params: { StatusCallbackMethod: "HEAD" })
-      ).not_to have_valid_field(:StatusCallbackMethod)
-    end
-
     it "handles post processing" do
       account = create(:account)
       phone_number = create(:phone_number, account:, number: "855716100234")
@@ -106,7 +96,6 @@ module TwilioAPI
           From: "+855 716 100 234",
           Body: "Hello World ✽",
           StatusCallback: "https://example.com/status-callback",
-          StatusCallbackMethod: "GET",
           SmartEncoded: "true",
           ValidityPeriod: "5"
         },
@@ -127,7 +116,6 @@ module TwilioAPI
         phone_number:,
         sms_gateway:,
         status_callback_url: "https://example.com/status-callback",
-        status_callback_method: "GET",
         direction: :outbound_api,
         validity_period: 5,
         smart_encoded: true

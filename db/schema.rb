@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_29_090045) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_29_234914) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -206,7 +206,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_090045) do
     t.string "sms_method"
     t.string "status", null: false
     t.string "status_callback_url"
-    t.string "status_callback_method"
     t.string "beneficiary_country_code", null: false
     t.string "beneficiary_fingerprint", null: false
     t.string "error_code"
@@ -219,22 +218,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_090045) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "messaging_service_id"
     t.index ["account_id"], name: "index_messages_on_account_id"
     t.index ["carrier_id"], name: "index_messages_on_carrier_id"
+    t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
     t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
-  end
-
-  create_table "messaging_service_senders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "phone_number_id", null: false
-    t.uuid "messaging_service_id", null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["messaging_service_id"], name: "index_messaging_service_senders_on_messaging_service_id"
-    t.index ["phone_number_id"], name: "index_messaging_service_senders_on_phone_number_id", unique: true
-    t.index ["sequence_number"], name: "index_messaging_service_senders_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "messaging_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -242,7 +232,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_090045) do
     t.uuid "carrier_id", null: false
     t.string "name", null: false
     t.string "status_callback_url"
-    t.string "status_callback_method"
     t.string "inbound_request_url"
     t.string "inbound_request_method"
     t.boolean "smart_encoding", default: false, null: false
@@ -370,6 +359,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_090045) do
     t.datetime "updated_at", null: false
     t.string "sms_url"
     t.string "sms_method"
+    t.uuid "messaging_service_id"
+    t.index ["messaging_service_id"], name: "index_phone_number_configurations_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_phone_number_configurations_on_phone_number_id", unique: true
     t.index ["sequence_number"], name: "index_phone_number_configurations_on_sequence_number", unique: true, order: :desc
   end
@@ -558,10 +549,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_090045) do
   add_foreign_key "interactions", "phone_calls", on_delete: :nullify
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
+  add_foreign_key "messages", "messaging_services", on_delete: :nullify
   add_foreign_key "messages", "phone_numbers", on_delete: :nullify
   add_foreign_key "messages", "sms_gateways", on_delete: :nullify
-  add_foreign_key "messaging_service_senders", "messaging_services", on_delete: :cascade
-  add_foreign_key "messaging_service_senders", "phone_numbers", on_delete: :cascade
   add_foreign_key "messaging_services", "accounts", on_delete: :cascade
   add_foreign_key "messaging_services", "carriers", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
@@ -572,6 +562,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_090045) do
   add_foreign_key "phone_calls", "carriers"
   add_foreign_key "phone_calls", "phone_numbers", on_delete: :nullify
   add_foreign_key "phone_calls", "sip_trunks", on_delete: :nullify
+  add_foreign_key "phone_number_configurations", "messaging_services", on_delete: :nullify
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"

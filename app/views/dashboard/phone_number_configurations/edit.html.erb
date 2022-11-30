@@ -40,6 +40,17 @@
 
           <div class="row">
             <div class="col-sm-6">
+                <%= f.input :messaging_service_id,
+                            collection: @resource.messaging_service_options_for_select,
+                            selected: @resource.messaging_service,
+                            prompt: "Select a messaging service",
+                            hint: "Optionally select a messaging service",
+                            input_html: { data: { behavior: "choices-input" } } %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
               <%= f.input :sms_url, hint: "URL which returns TwiML. Must start with http or https" %>
             </div>
 

@@ -25,23 +25,9 @@
     <%= f.attribute :inbound_request_url %>
     <%= f.attribute :inbound_request_method %>
     <%= f.attribute :status_callback_url %>
-    <%= f.attribute :status_callback_method %>
     <%= f.attribute :smart_encoding %>
-    <% if @resource.senders.any? %>
-      <%= f.attribute :senders do %>
-        <ul class="list-unstyled">
-          <% @resource.senders.includes(:phone_number).each do |sender| %>
-            <li>
-              <%= link_to(
-                sender.phone_number.number,
-                dashboard_phone_number_path(sender.phone_number)
-              ) %>
-            </li>
-          <% end %>
-        </ul>
-      <% end %>
-    <% else %>
-      <%= f.attribute :senders %>
+    <%= f.association(:phone_numbers, label: "Sender pool", collection_tag: :ul, collection_html: { class: "list-unstyled" }) do |phone_number| %>
+      <li><%= link_to(phone_number.number, dashboard_phone_number_path(phone_number)) %></li>
     <% end %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>

@@ -35,9 +35,10 @@
           <div class="row">
             <div class="col-sm-12">
               <%= f.input(
-                :phone_numbers,
+                :phone_number_ids,
+                label: "Phone numbers",
                 collection: resource.phone_numbers_options_for_select,
-                selected: resource.phone_numbers.pluck(:id),
+                selected: resource.phone_number_ids,
                 input_html: {
                   multiple: true,
                   data: {
@@ -71,10 +72,6 @@
           <div class="row">
             <div class="col-sm-6">
               <%= f.input :status_callback_url, hint: "Provide a URL to call via webhook to let you know the delivery status of your message. Must start with http or https" %>
-            </div>
-
-            <div class="col-sm-6">
-              <%= f.input :status_callback_method, collection: MessagingService.status_callback_method.values, include_blank: true %>
             </div>
           </div>
         </div>

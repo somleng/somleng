@@ -7,7 +7,7 @@ module TwilioAPI
     end
 
     rule do
-      next if message.completed?
+      next if message.complete?
 
       base.failure(
         text: "Cannot update this resource before it is complete",

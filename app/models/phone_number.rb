@@ -3,6 +3,7 @@ class PhoneNumber < ApplicationRecord
 
   belongs_to :carrier
   belongs_to :account, optional: true
+  belongs_to :messaging_service, optional: true
   has_many :phone_calls
   has_one :configuration, class_name: "PhoneNumberConfiguration"
 

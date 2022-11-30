@@ -15,10 +15,6 @@ module TwilioAPI
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:Body).filled(:string, max_size?: 1600)
       optional(:StatusCallback).maybe(:string, format?: URL_FORMAT)
-      optional(:StatusCallbackMethod).maybe(
-        ApplicationRequestSchema::Types::UppercaseString,
-        included_in?: Message.status_callback_method.values
-      )
       optional(:ValidityPeriod).maybe(:integer, gteq?: 1, lteq?: 14_400)
       optional(:SmartEncoded).maybe(:bool)
     end
@@ -72,7 +68,6 @@ module TwilioAPI
         to: params.fetch(:To),
         from: params.fetch(:From),
         status_callback_url: params[:StatusCallback],
-        status_callback_method: params[:StatusCallbackMethod],
         direction: :outbound_api,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?

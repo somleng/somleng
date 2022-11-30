@@ -276,9 +276,15 @@ FactoryBot.define do
     trait :configured do
       assigned_to_account
 
-      after(:build) do |phone_number|
+      transient do
+        messaging_service { nil }
+      end
+
+      after(:build) do |phone_number, evaluator|
         phone_number.configuration ||= build(
-          :phone_number_configuration, phone_number:
+          :phone_number_configuration,
+          phone_number:,
+          messaging_service: evaluator.messaging_service
         )
       end
     end
@@ -376,15 +382,6 @@ FactoryBot.define do
     account
     carrier { account.carrier }
     name { "My Messaging Service" }
-  end
-
-  factory :messaging_service_sender do
-    transient do
-      number { generate(:phone_number) }
-    end
-
-    messaging_service
-    phone_number { association :phone_number, carrier: messaging_service.carrier, number: }
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do

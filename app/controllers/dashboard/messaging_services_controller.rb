@@ -1,7 +1,7 @@
 module Dashboard
   class MessagingServicesController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(:account, :senders))
+      @resources = apply_filters(scope.includes(:account, :phone_numbers))
       @resources = paginate_resources(@resources)
     end
 
@@ -19,9 +19,8 @@ module Dashboard
         :inbound_request_url,
         :inbound_request_method,
         :status_callback_url,
-        :status_callback_method,
         :smart_encoding,
-        phone_numbers: []
+        phone_number_ids: []
       )
       @resource = initialize_form(permitted_params)
       @resource.account = record.account
@@ -37,7 +36,6 @@ module Dashboard
 
     def create
       @resource = initialize_form(required_params.permit(:name, :account_id))
-      @resource.account = current_account unless current_user.carrier_user?
       @resource.save
 
       respond_with(
@@ -47,11 +45,17 @@ module Dashboard
       )
     end
 
+    def destroy
+      record.destroy
+      respond_with(:dashboard, record)
+    end
+
     private
 
     def initialize_form(params = {})
       form = MessagingServiceForm.new(params)
       form.carrier = current_carrier
+      form.account = current_account unless current_user.carrier_user?
       form
     end
 
