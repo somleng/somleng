@@ -3,19 +3,18 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
 
   class TwiMLError < StandardError; end
 
-  attr_reader :message, :url, :http_method
+  attr_reader :message, :url, :http_method, :twiml_parser
 
-  def initialize(message:, url:, http_method:)
+  def initialize(message:, url:, http_method:, twiml_parser: TwiMLParser::Parser)
     @message = message
     @url = url
     @http_method = http_method
+    @twiml_parser = twiml_parser
   end
 
   def call
     redirect_args = catch(:redirect) do
-      twiml_doc.each do |verb|
-        next if verb.comment?
-
+      twiml.each do |verb|
         case verb.name
         when "Message"
           execute_message(verb)
@@ -89,21 +88,8 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
     )
   end
 
-  def twiml_doc
-    twiml = request_twiml
-
-    doc = ::Nokogiri::XML(twiml.strip) do |config|
-      config.options = Nokogiri::XML::ParseOptions::NOBLANKS
-    end
-
-    if doc.root.name != "Response"
-      raise(TwiMLError,
-            "The root element must be the '<Response>' element")
-    end
-
-    doc.root.children
-  rescue Nokogiri::XML::SyntaxError => e
-    raise TwiMLError, "Error while parsing XML: #{e.message}. XML Document: #{twiml}"
+  def twiml
+    twiml_parser.new(request_twiml).parse
   end
 
   def request_twiml
