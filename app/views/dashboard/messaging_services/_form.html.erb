@@ -60,6 +60,16 @@
           <h5 class="card-title">Integration</h5>
 
           <div class="row">
+            <%= f.input(
+              :incoming_message_behavior,
+              collection: [["Defer to sender's webhook", :defer_to_sender], ["Drop the message", :drop], ["Send a webhook", :webhook]],
+              hint: "Hint goes here",
+              wrapper: :vertical_collection_novalidate,
+              as: :radio_buttons
+            ) %>
+          </div>
+
+          <div class="row">
             <div class="col-sm-6">
               <%= f.input :inbound_request_url, hint: "Invoke an HTTP webhook for all incoming messages. Must start with http or https" %>
             </div>

@@ -20,6 +20,7 @@ class MessagingServiceForm
   attribute :status_callback_url
   attribute :messaging_service, default: -> { MessagingService.new }
   attribute :smart_encoding, :boolean, default: true
+  attribute :incoming_message_behavior, default: :defer_to_sender
 
   validates :name, presence: true
   validates :account_id, presence: true, if: :validate_account_id?
@@ -117,7 +118,7 @@ class MessagingServiceForm
     attributes = build_phone_number_configuration_attributes
     return if attributes.empty?
 
-    PhoneNumberConfiguration.upsert_all(attributes, unique_by: :phone_number_id)
+    PhoneNumberConfiguration. (attributes, unique_by: :phone_number_id)
   end
 
   def build_phone_number_configuration_attributes
