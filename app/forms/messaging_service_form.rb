@@ -8,7 +8,11 @@ class MessagingServiceForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  extend Enumerize
+  INCOMING_MESSAGE_BEHAVIORS = {
+    defer_to_sender: "Defer to sender's webhook <div class='form-text'>Invoke the sender's HTTP webhook (if it is defined) for incoming messages.</div>",
+    drop: "Drop the message <div class='form-text'>Your application will ignore messages, excluding opt-out requests which will be processed. You won't be billed for incoming messages.</div>",
+    webhook: "Send a webhook <div class='form-text'>Invoke an HTTP webhook for all incoming messages.</div>"
+  }
 
   attribute :carrier
   attribute :account_id
@@ -80,6 +84,10 @@ class MessagingServiceForm
 
   def phone_numbers_options_for_select
     available_phone_numbers.map { |phone_number| [phone_number.number, phone_number.id] }
+  end
+
+  def incoming_message_behavior_options_for_select
+    INCOMING_MESSAGE_BEHAVIORS.map { |k, v| [v.html_safe, k] }
   end
 
   private

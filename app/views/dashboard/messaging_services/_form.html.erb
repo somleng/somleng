@@ -55,21 +55,26 @@
         </div>
       </div>
 
-      <div class="card mb-3">
+      <div class="card mb-3" data-controller="messaging-service-integration">
         <div class="card-body">
           <h5 class="card-title">Integration</h5>
 
           <div class="row">
             <%= f.input(
               :incoming_message_behavior,
-              collection: [["Defer to sender's webhook", :defer_to_sender], ["Drop the message", :drop], ["Send a webhook", :webhook]],
-              hint: "Hint goes here",
+              collection: resource.incoming_message_behavior_options_for_select,
               wrapper: :vertical_collection_novalidate,
+              input_html: {
+                data: {
+                  action: "click->messaging-service-integration#changeIncomingMessageBehavior",
+                  messaging_service_integration_target: "incomingMessageBehaviorInput"
+                }
+              },
               as: :radio_buttons
             ) %>
           </div>
 
-          <div class="row">
+          <div class="row" data-messaging-service-integration-target="inboundRequestSection">
             <div class="col-sm-6">
               <%= f.input :inbound_request_url, hint: "Invoke an HTTP webhook for all incoming messages. Must start with http or https" %>
             </div>
