@@ -17,6 +17,10 @@
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
+    <% if policy(:phone_number).index? %>
+      <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-hashtag") %>
+    <% end %>
+
     <% if policy(:sip_trunk).index? || policy(:phone_call).index? %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
@@ -60,10 +64,6 @@
           <% end %>
         </ul>
       </li>
-    <% end %>
-
-    <% if policy(:phone_number).index? %>
-      <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-hashtag") %>
     <% end %>
 
     <% if policy(:carrier_user).index? %>

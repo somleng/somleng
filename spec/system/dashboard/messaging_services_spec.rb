@@ -37,7 +37,7 @@ RSpec.describe "Messaging Services" do
     expect(page).to have_content("My Messaging Service")
   end
 
-  it "Create a messaging service" do
+  it "Create a messaging service", :js do
     carrier = create(:carrier)
     account = create(:account, carrier:, name: "Rocket Rides")
     create(
@@ -59,15 +59,17 @@ RSpec.describe "Messaging Services" do
 
     click_link("New")
     fill_in("Name", with: "My Messaging Service")
-    select("Rocket Rides", from: "Account")
+    choices_select("Rocket Rides", from: "Account")
     click_button("Next")
 
-    select("855715777777", from: "Phone numbers")
-    select("855715888888", from: "Phone numbers")
+    choices_select("855715777777", from: "Phone numbers")
+    choices_select("855715888888", from: "Phone numbers")
+    choose("Send a webhook")
     fill_in("Inbound request URL", with: "https://www.example.com/message.xml")
     select("POST", from: "Inbound request method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
     check("Smart encoding")
+
     click_button("Save")
 
     expect(page).to have_content("Messaging service was successfully updated")
@@ -77,7 +79,7 @@ RSpec.describe "Messaging Services" do
     expect(page).to have_link("855715888888")
     expect(page).to have_content("https://www.example.com/message.xml")
     expect(page).to have_content("https://www.example.com/status_callback.xml")
-    expect(page).to have_content("Smart encodingYes")
+    expect(page).to have_content("Webhook")
   end
 
   it "Create a messaging service as an account admin" do

@@ -235,7 +235,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_234914) do
     t.string "inbound_request_url"
     t.string "inbound_request_method"
     t.boolean "smart_encoding", default: false, null: false
-    t.boolean "use_inbound_webhook_on_number", default: true, null: false
+    t.string "incoming_message_behavior", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

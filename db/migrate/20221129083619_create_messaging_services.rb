@@ -8,7 +8,7 @@ class CreateMessagingServices < ActiveRecord::Migration[7.0]
       t.string :inbound_request_url
       t.string :inbound_request_method
       t.boolean :smart_encoding, null: false, default: false
-      t.boolean :use_inbound_webhook_on_number, null: false, default: true
+      t.string :incoming_message_behavior, null: false
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
 

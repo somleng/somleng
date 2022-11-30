@@ -9,27 +9,63 @@
 <% end %>
 
 <div class="card-body">
-  <%= show_for(@resource) do |f| %>
-    <%= f.attribute :id, label: "SID" do %>
-      <code>
-        <%= @resource.id %>
-      </code>
-    <% end %>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Properties</h5>
 
-    <%= f.attribute :name %>
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= @resource.id %>
+          </code>
+        <% end %>
 
-    <% if policy(:account).show? %>
-      <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
-    <% end %>
+        <%= f.attribute :name %>
 
-    <%= f.attribute :inbound_request_url %>
-    <%= f.attribute :inbound_request_method %>
-    <%= f.attribute :status_callback_url %>
-    <%= f.attribute :smart_encoding %>
-    <%= f.association(:phone_numbers, label: "Sender pool", collection_tag: :ul, collection_html: { class: "list-unstyled" }) do |phone_number| %>
-      <li><%= link_to(phone_number.number, dashboard_phone_number_path(phone_number)) %></li>
-    <% end %>
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
-  <% end %>
+        <% if policy(:account).show? %>
+          <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
+        <% end %>
+
+        <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+        <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Sender Pool</h5>
+
+      <%= show_for(@resource) do |f| %>
+        <%= f.association(:phone_numbers, collection_tag: :ul, collection_html: { class: "list-unstyled" }) do |phone_number| %>
+          <li>
+            <%= external_link_to(phone_number.number, dashboard_phone_number_path(phone_number)) %>
+          </li>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Integration</h5>
+
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute :incoming_message_behavior, value: @resource.incoming_message_behavior.humanize %>
+        <%= f.attribute :inbound_request_url %>
+        <%= f.attribute :inbound_request_method %>
+        <%= f.attribute :status_callback_url %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Content Settings</h5>
+
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute :smart_encoding %>
+      <% end %>
+    </div>
+  </div>
 </div>

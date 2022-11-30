@@ -23,6 +23,22 @@ RSpec.describe MessagingServiceForm do
       expect(form.errors[:name]).to be_present
     end
 
+    it "validates inbound request URL" do
+      form = MessagingServiceForm.new(incoming_message_behavior: :webhook, inbound_request_url: nil)
+      form.valid?
+      expect(form.errors[:inbound_request_url]).to be_present
+
+      form = MessagingServiceForm.new(
+        incoming_message_behavior: :defer_to_sender, inbound_request_url: nil
+      )
+      form.valid?
+      expect(form.errors[:inbound_request_url]).to be_blank
+
+      form = MessagingServiceForm.new(inbound_request_url: "ftp://www.example.com")
+      form.valid?
+      expect(form.errors[:inbound_request_url]).to be_present
+    end
+
     it "validates the phone numbers" do
       messaging_service = create(:messaging_service)
       existing_sender = create(

@@ -7,12 +7,13 @@ class MessagingServiceForm
 
   include ActiveModel::Model
   include ActiveModel::Attributes
+  extend Enumerize
 
   INCOMING_MESSAGE_BEHAVIORS = {
     defer_to_sender: "Defer to sender's webhook <div class='form-text'>Invoke the sender's HTTP webhook (if it is defined) for incoming messages.</div>",
-    drop: "Drop the message <div class='form-text'>Your application will ignore messages, excluding opt-out requests which will be processed. You won't be billed for incoming messages.</div>",
+    drop: "Drop the message <div class='form-text'>Your application will ignore messages. You won't be billed for incoming messages.</div>",
     webhook: "Send a webhook <div class='form-text'>Invoke an HTTP webhook for all incoming messages.</div>"
-  }
+  }.freeze
 
   attribute :carrier
   attribute :account_id
@@ -26,17 +27,23 @@ class MessagingServiceForm
   attribute :smart_encoding, :boolean, default: true
   attribute :incoming_message_behavior, default: :defer_to_sender
 
+  enumerize :incoming_message_behavior,
+            in: MessagingService.incoming_message_behavior.values
+
   validates :name, presence: true
   validates :account_id, presence: true, if: :validate_account_id?
   validate :validate_phone_numbers, if: :persisted?
 
   validates :inbound_request_url,
-            :status_callback_url,
-            url_format: { allow_http: true },
-            allow_blank: true
+            url_format: { allow_http: true, allow_blank: true },
+            presence: { if: -> { incoming_message_behavior.webhook? } }
 
   validates :inbound_request_method,
-            inclusion: { in: MessagingService.inbound_request_method.values },
+            inclusion: { in: MessagingService.inbound_request_method.values, allow_blank: true },
+            presence: { if: -> { inbound_request_url.present? } }
+
+  validates :status_callback_url,
+            url_format: { allow_http: true },
             allow_blank: true
 
   delegate :persisted?, :new_record?, :id, to: :messaging_service
@@ -52,6 +59,7 @@ class MessagingServiceForm
       account: messaging_service.account,
       carrier: messaging_service.carrier,
       phone_number_ids: messaging_service.phone_number_ids,
+      incoming_message_behavior: messaging_service.incoming_message_behavior,
       inbound_request_url: messaging_service.inbound_request_url,
       inbound_request_method: messaging_service.inbound_request_method,
       status_callback_url: messaging_service.status_callback_url,
@@ -69,6 +77,7 @@ class MessagingServiceForm
     messaging_service.inbound_request_method = inbound_request_method
     messaging_service.status_callback_url = status_callback_url.presence
     messaging_service.smart_encoding = smart_encoding
+    messaging_service.incoming_message_behavior = incoming_message_behavior
 
     MessagingService.transaction do
       messaging_service.save!
@@ -126,7 +135,7 @@ class MessagingServiceForm
     attributes = build_phone_number_configuration_attributes
     return if attributes.empty?
 
-    PhoneNumberConfiguration. (attributes, unique_by: :phone_number_id)
+    PhoneNumberConfiguration.upsert_all(attributes, unique_by: :phone_number_id)
   end
 
   def build_phone_number_configuration_attributes

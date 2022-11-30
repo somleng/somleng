@@ -382,6 +382,7 @@ FactoryBot.define do
     account
     carrier { account.carrier }
     name { "My Messaging Service" }
+    incoming_message_behavior { :defer_to_sender }
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
