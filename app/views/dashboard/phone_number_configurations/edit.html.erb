@@ -42,9 +42,10 @@
             <div class="col-sm-6">
                 <%= f.input :messaging_service_id,
                             collection: @resource.messaging_service_options_for_select,
-                            selected: @resource.messaging_service,
+                            selected: @resource.messaging_service_id,
                             prompt: "Select a messaging service",
-                            hint: "Optionally select a messaging service",
+                            include_blank: true,
+                            hint: "Optionally select a ".html_safe + link_to("Messaging service", dashboard_messaging_services_path),
                             input_html: { data: { behavior: "choices-input" } } %>
             </div>
           </div>

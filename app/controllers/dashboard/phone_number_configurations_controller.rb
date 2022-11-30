@@ -17,7 +17,7 @@ module Dashboard
     def permitted_params
       params.require(:phone_number_configuration).permit(
         :voice_url, :voice_method, :status_callback_url, :status_callback_method, :sip_domain,
-        :sms_url, :sms_method
+        :sms_url, :sms_method, :messaging_service_id
       )
     end
 

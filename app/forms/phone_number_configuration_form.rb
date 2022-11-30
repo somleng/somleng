@@ -7,7 +7,7 @@ class PhoneNumberConfigurationForm
   attribute :status_callback_url
   attribute :status_callback_method
   attribute :sip_domain
-  attribute :messaging_service
+  attribute :messaging_service_id
   attribute :sms_url
   attribute :sms_method
   attribute :phone_number_configuration
@@ -45,7 +45,8 @@ class PhoneNumberConfigurationForm
       status_callback_method: phone_number_configuration.status_callback_method,
       sip_domain: phone_number_configuration.sip_domain,
       sms_url: phone_number_configuration.sms_url,
-      sms_method: phone_number_configuration.sms_method
+      sms_method: phone_number_configuration.sms_method,
+      messaging_service_id: phone_number_configuration.messaging_service_id
     )
   end
 
@@ -59,11 +60,24 @@ class PhoneNumberConfigurationForm
       status_callback_method: status_callback_method.presence,
       sip_domain: sip_domain.presence,
       sms_url: sms_url.presence,
-      sms_method: sms_method.presence
+      sms_method: sms_method.presence,
+      messaging_service: find_messaging_service
     )
   end
 
   def messaging_service_options_for_select
+    messaging_services
+  end
+
+  private
+
+  def messaging_services
     phone_number.account.messaging_services
+  end
+
+  def find_messaging_service
+    return if messaging_service_id.blank?
+
+    messaging_services.find(messaging_service_id)
   end
 end
