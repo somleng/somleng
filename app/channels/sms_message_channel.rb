@@ -52,6 +52,8 @@ class SMSMessageChannel < ApplicationCable::Channel
         http_method: message.sms_method
       )
     else
+      return if error_log_messages.empty?
+
       ErrorLog.create!(
         carrier: error_log_messages.carrier,
         account: error_log_messages.account,

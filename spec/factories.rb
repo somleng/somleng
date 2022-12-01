@@ -278,13 +278,17 @@ FactoryBot.define do
 
       transient do
         messaging_service { nil }
+        sms_url { nil }
+        sms_method { nil }
       end
 
       after(:build) do |phone_number, evaluator|
         phone_number.configuration ||= build(
           :phone_number_configuration,
           phone_number:,
-          messaging_service: evaluator.messaging_service
+          messaging_service: evaluator.messaging_service,
+          sms_url: evaluator.sms_url,
+          sms_method: evaluator.sms_method
         )
       end
     end
@@ -379,10 +383,17 @@ FactoryBot.define do
   end
 
   factory :messaging_service do
+    defer_to_sender
     account
     carrier { account.carrier }
     name { "My Messaging Service" }
-    incoming_message_behavior { :defer_to_sender }
+    traits_for_enum :inbound_message_behavior, %w[defer_to_sender drop]
+
+    trait :webhook do
+      inbound_message_behavior { :webhook }
+      inbound_request_url { "https://www.example.com/incoming_request.xml" }
+      inbound_request_method { "POST" }
+    end
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do

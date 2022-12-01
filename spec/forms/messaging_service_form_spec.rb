@@ -24,12 +24,12 @@ RSpec.describe MessagingServiceForm do
     end
 
     it "validates inbound request URL" do
-      form = MessagingServiceForm.new(incoming_message_behavior: :webhook, inbound_request_url: nil)
+      form = MessagingServiceForm.new(inbound_message_behavior: :webhook, inbound_request_url: nil)
       form.valid?
       expect(form.errors[:inbound_request_url]).to be_present
 
       form = MessagingServiceForm.new(
-        incoming_message_behavior: :defer_to_sender, inbound_request_url: nil
+        inbound_message_behavior: :defer_to_sender, inbound_request_url: nil
       )
       form.valid?
       expect(form.errors[:inbound_request_url]).to be_blank

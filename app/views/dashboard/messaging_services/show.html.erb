@@ -51,7 +51,7 @@
       <h5 class="card-title">Integration</h5>
 
       <%= show_for(@resource) do |f| %>
-        <%= f.attribute :incoming_message_behavior, value: @resource.incoming_message_behavior.humanize %>
+        <%= f.attribute :inbound_message_behavior, value: @resource.inbound_message_behavior.humanize %>
         <%= f.attribute :inbound_request_url %>
         <%= f.attribute :inbound_request_method %>
         <%= f.attribute :status_callback_url %>

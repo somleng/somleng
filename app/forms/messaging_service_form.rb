@@ -9,7 +9,7 @@ class MessagingServiceForm
   include ActiveModel::Attributes
   extend Enumerize
 
-  INCOMING_MESSAGE_BEHAVIORS = {
+  INBOUND_MESSAGE_BEHAVIORS = {
     defer_to_sender: "Defer to sender's webhook <div class='form-text'>Invoke the sender's HTTP webhook (if it is defined) for incoming messages.</div>",
     drop: "Drop the message <div class='form-text'>Your application will ignore messages. You won't be billed for incoming messages.</div>",
     webhook: "Send a webhook <div class='form-text'>Invoke an HTTP webhook for all incoming messages.</div>"
@@ -25,10 +25,10 @@ class MessagingServiceForm
   attribute :status_callback_url
   attribute :messaging_service, default: -> { MessagingService.new }
   attribute :smart_encoding, :boolean, default: true
-  attribute :incoming_message_behavior, default: :defer_to_sender
+  attribute :inbound_message_behavior, default: :defer_to_sender
 
-  enumerize :incoming_message_behavior,
-            in: MessagingService.incoming_message_behavior.values
+  enumerize :inbound_message_behavior,
+            in: MessagingService.inbound_message_behavior.values
 
   validates :name, presence: true
   validates :account_id, presence: true, if: :validate_account_id?
@@ -36,7 +36,7 @@ class MessagingServiceForm
 
   validates :inbound_request_url,
             url_format: { allow_http: true, allow_blank: true },
-            presence: { if: -> { incoming_message_behavior.webhook? } }
+            presence: { if: -> { inbound_message_behavior.webhook? } }
 
   validates :inbound_request_method,
             inclusion: { in: MessagingService.inbound_request_method.values, allow_blank: true },
@@ -59,7 +59,7 @@ class MessagingServiceForm
       account: messaging_service.account,
       carrier: messaging_service.carrier,
       phone_number_ids: messaging_service.phone_number_ids,
-      incoming_message_behavior: messaging_service.incoming_message_behavior,
+      inbound_message_behavior: messaging_service.inbound_message_behavior,
       inbound_request_url: messaging_service.inbound_request_url,
       inbound_request_method: messaging_service.inbound_request_method,
       status_callback_url: messaging_service.status_callback_url,
@@ -77,7 +77,7 @@ class MessagingServiceForm
     messaging_service.inbound_request_method = inbound_request_method
     messaging_service.status_callback_url = status_callback_url.presence
     messaging_service.smart_encoding = smart_encoding
-    messaging_service.incoming_message_behavior = incoming_message_behavior
+    messaging_service.inbound_message_behavior = inbound_message_behavior
 
     MessagingService.transaction do
       messaging_service.save!
@@ -95,8 +95,8 @@ class MessagingServiceForm
     available_phone_numbers.map { |phone_number| [phone_number.number, phone_number.id] }
   end
 
-  def incoming_message_behavior_options_for_select
-    INCOMING_MESSAGE_BEHAVIORS.map { |k, v| [v.html_safe, k] }
+  def inbound_message_behavior_options_for_select
+    inbound_message_behaviorS.map { |k, v| [v.html_safe, k] }
   end
 
   private

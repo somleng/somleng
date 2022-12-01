@@ -20,7 +20,7 @@ module Dashboard
         :inbound_request_method,
         :status_callback_url,
         :smart_encoding,
-        :incoming_message_behavior,
+        :inbound_message_behavior,
         phone_number_ids: []
       )
       @resource = initialize_form(permitted_params)

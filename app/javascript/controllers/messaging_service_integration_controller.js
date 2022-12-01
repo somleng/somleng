@@ -1,14 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "incomingMessageBehaviorInput", "inboundRequestSection"]
+  static targets = [ "InboundMessageBehaviorInput", "inboundRequestSection"]
 
   connect() {
-    this.changeIncomingMessageBehavior();
+    this.changeInboundMessageBehavior();
   }
 
-  changeIncomingMessageBehavior() {
-    const element = this.incomingMessageBehaviorInputTargets.find((element) => element.checked)
+  changeInboundMessageBehavior() {
+    const element = this.InboundMessageBehaviorInputTargets.find((element) => element.checked)
 
     if (element.value === "webhook") {
       this.inboundRequestSectionTarget.style.display = "flex";

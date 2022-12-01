@@ -61,13 +61,13 @@
 
           <div class="row">
             <%= f.input(
-              :incoming_message_behavior,
-              collection: resource.incoming_message_behavior_options_for_select,
+              :inbound_message_behavior,
+              collection: resource.inbound_message_behavior_options_for_select,
               wrapper: :vertical_collection_novalidate,
               input_html: {
                 data: {
-                  action: "click->messaging-service-integration#changeIncomingMessageBehavior",
-                  messaging_service_integration_target: "incomingMessageBehaviorInput"
+                  action: "click->messaging-service-integration#changeInboundMessageBehavior",
+                  messaging_service_integration_target: "InboundMessageBehaviorInput"
                 }
               },
               as: :radio_buttons

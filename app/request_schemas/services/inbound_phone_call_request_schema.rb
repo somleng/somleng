@@ -1,11 +1,17 @@
 module Services
   class InboundPhoneCallRequestSchema < ServicesRequestSchema
     option :error_log_messages
-    option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
-           default: proc { PhoneNumberConfigurationRules.new(:voice) }
+           default: lambda {
+                      PhoneNumberConfigurationRules.new(
+                        configuration_context: lambda { |phone_number|
+                                                 phone_number.configuration&.voice_url.present?
+                                               }
+                      )
+                    }
     option :carrier_standing_rules,
-           default: proc { CarrierStandingRules.new }
+           default: -> { CarrierStandingRules.new }
 
     params do
       required(:to).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -87,8 +93,7 @@ module Services
       result[:status_callback_url] = phone_number.configuration.status_callback_url
       result[:status_callback_method] = phone_number.configuration.status_callback_method
       if phone_number.configuration.sip_domain.present?
-        result[:twiml] =
-          route_to_sip_domain(phone_number)
+        result[:twiml] = route_to_sip_domain(phone_number)
       end
       result[:to] = context[:to]
       result[:from] = context[:from]

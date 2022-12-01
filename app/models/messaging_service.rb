@@ -8,6 +8,6 @@ class MessagingService < ApplicationRecord
 
   enumerize :inbound_request_method, in: %w[POST GET]
 
-  enumerize :incoming_message_behavior,
+  enumerize :inbound_message_behavior,
             in: %i[defer_to_sender drop webhook]
 end
