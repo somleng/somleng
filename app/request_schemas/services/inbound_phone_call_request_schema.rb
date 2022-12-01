@@ -3,13 +3,7 @@ module Services
     option :error_log_messages
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
-           default: lambda {
-                      PhoneNumberConfigurationRules.new(
-                        configuration_context: lambda { |phone_number|
-                                                 phone_number.configuration&.voice_url.present?
-                                               }
-                      )
-                    }
+           default: -> { PhoneNumberConfigurationRules.new }
     option :carrier_standing_rules,
            default: -> { CarrierStandingRules.new }
 
@@ -43,7 +37,9 @@ module Services
       context[:to] = normalize_number(value, context[:sip_trunk])
       phone_numbers = context[:sip_trunk].carrier.phone_numbers
       context[:phone_number] = phone_numbers.find_by(number: context[:to])
-      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number]) do
+        context[:phone_number].configuration&.voice_url.present?
+      end
 
       error_message = format(phone_number_configuration_rules.error_message, value: context[:to])
       base.failure(error_message)

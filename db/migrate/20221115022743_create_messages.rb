@@ -21,6 +21,7 @@ class CreateMessages < ActiveRecord::Migration[7.0]
       t.string :error_code
       t.string :error_message
       t.datetime :sent_at
+      t.datetime :send_at
       t.decimal :price, precision: 10, scale: 4
       t.string :price_unit
       t.integer :validity_period

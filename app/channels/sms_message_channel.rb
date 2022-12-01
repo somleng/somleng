@@ -42,7 +42,10 @@ class SMSMessageChannel < ApplicationCable::Channel
       }
     )
     if schema.success?
-      message = Message.create!(schema.output)
+      attributes = schema.output
+      return if drop_message?(attributes)
+
+      message = Message.create!(attributes)
       create_interaction(message)
 
       ExecuteWorkflowJob.perform_later(
@@ -52,8 +55,6 @@ class SMSMessageChannel < ApplicationCable::Channel
         http_method: message.sms_method
       )
     else
-      return if error_log_messages.empty?
-
       ErrorLog.create!(
         carrier: error_log_messages.carrier,
         account: error_log_messages.account,
@@ -63,6 +64,12 @@ class SMSMessageChannel < ApplicationCable::Channel
   end
 
   private
+
+  def drop_message?(attributes)
+    return false if attributes[:messaging_service].blank?
+
+    attributes.fetch(:messaging_service).inbound_message_behavior.drop?
+  end
 
   def create_interaction(message)
     Interaction.create_or_find_by!(message:) do |interaction|

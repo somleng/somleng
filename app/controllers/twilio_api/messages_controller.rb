@@ -11,7 +11,7 @@ module TwilioAPI
         **serializer_options
       ) do |permitted_params|
         message = Message.create!(permitted_params)
-        OutboundMessageJob.perform_later(message)
+        schedule_message(message)
         message
       end
     end
@@ -56,6 +56,16 @@ module TwilioAPI
 
     def serializer_options
       { serializer_class: MessageSerializer }
+    end
+
+    def schedule_message(message)
+      return OutboundMessageJob.perform_later(message) if message.send_at.blank?
+
+      ScheduledJob.perform_later(
+        OutboundMessageJob.to_s,
+        message,
+        wait_until: message.send_at
+      )
     end
   end
 end

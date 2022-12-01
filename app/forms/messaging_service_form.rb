@@ -96,7 +96,7 @@ class MessagingServiceForm
   end
 
   def inbound_message_behavior_options_for_select
-    inbound_message_behaviorS.map { |k, v| [v.html_safe, k] }
+    INBOUND_MESSAGE_BEHAVIORS.map { |k, v| [v.html_safe, k] }
   end
 
   private

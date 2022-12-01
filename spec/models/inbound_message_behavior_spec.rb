@@ -34,7 +34,7 @@ RSpec.describe InboundMessageBehavior do
       ).to eq(true)
       expect(
         InboundMessageBehavior.new(phone_number_with_drop_messaging_service).configured?
-      ).to eq(false)
+      ).to eq(true)
     end
   end
 

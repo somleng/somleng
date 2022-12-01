@@ -18,6 +18,7 @@ class InitiateOutboundMessage < ApplicationWorkflow
       channel: message.channel
     )
 
+    message.sent_at = Time.current
     message.mark_as_initiated!
   end
 end

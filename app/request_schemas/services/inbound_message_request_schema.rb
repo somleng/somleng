@@ -2,11 +2,7 @@ module Services
   class InboundMessageRequestSchema < ServicesRequestSchema
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
-           default: lambda {
-             PhoneNumberConfigurationRules.new(
-               configuration_context: ->(phone_number) { InboundMessageBehavior.new(phone_number) }
-             )
-           }
+           default: -> { PhoneNumberConfigurationRules.new }
     option :inbound_message_behavior,
            default: -> { ->(phone_number) { InboundMessageBehavior.new(phone_number) } }
 
@@ -16,7 +12,7 @@ module Services
     option :error_log_messages
 
     params do
-      optional(:from).value(ApplicationRequestSchema::Types::Number, :filled?)
+      required(:from).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:to).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:body).maybe(:string)
     end
@@ -27,9 +23,8 @@ module Services
 
       context[:phone_number] = sms_gateway.carrier.phone_numbers.find_by(number: value)
 
-      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
-      if inbound_message_behavior.call(context[:phone_number]).drop?
-        next base.failure("Message was dropped")
+      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number]) do
+        InboundMessageBehavior.new(context[:phone_number]).configured?
       end
 
       error_message = format(phone_number_configuration_rules.error_message, value:)
