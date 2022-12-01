@@ -29,6 +29,10 @@ module TwilioAPI
         )
       end
 
+      def serializable_hash(options = nil)
+        super.compact
+      end
+
       def MessageSid
         sid
       end
@@ -37,7 +41,9 @@ module TwilioAPI
         account_sid
       end
 
-      def MessagingServiceSid; end
+      def MessagingServiceSid
+        messaging_service_id
+      end
 
       def From
         object.from

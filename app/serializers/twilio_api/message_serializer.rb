@@ -21,7 +21,9 @@ module TwilioAPI
       )
     end
 
-    def messaging_service_sid; end
+    def messaging_service_sid
+      messaging_service_id
+    end
 
     def num_media
       "0"
