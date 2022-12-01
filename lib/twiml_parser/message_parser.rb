@@ -1,26 +1,29 @@
 module TwiMLParser
-  class MessageParser < NodeParser
+  class MessageParser < VerbParser
     Result = Struct.new(:body, :to, :from, :action, :method, keyword_init: true) do
-      def self.verb
-        :message
+      def self.name
+        "Message"
       end
     end
 
-    attr_reader :action_validator, :method_validator
+    attr_reader :action_validator, :method_validator, :uppercase_attribute
 
-    def initialize(node, options = {})
-      super
+    def initialize(options = {})
+      super()
       @action_validator = options.fetch(:action_validator, ActionValidator.new)
       @method_validator = options.fetch(:method_validator, MethodValidator.new)
+      @uppercase_attribute = options.fetch(:uppercase_attribute, UppercaseAttribute.new)
     end
 
-    def parse
+    def parse(node)
+      super
+
       validate!
 
       Result.new(
         body: child.content,
-        to: attributes["to"],
-        from: attributes["from"],
+        to: node.attributes["to"],
+        from: node.attributes["from"],
         action:,
         method:
       )
@@ -33,9 +36,9 @@ module TwiMLParser
     end
 
     def validate!
-      raise_error("Invalid content '#{child}'") unless valid_child?
-      raise_error("Invalid attribute 'method'") unless method_validator.valid?(method)
-      raise_error("Invalid attribute 'action'") unless action_validator.valid?(action, allow_blank: true)
+      raise(TwiMLError, "Invalid content: '#{child}'") unless valid_child?
+      raise(TwiMLError, "Invalid attribute: 'method'") unless method_validator.valid?(method)
+      raise(TwiMLError, "Invalid attribute: 'action'") unless action_validator.valid?(action, allow_blank: true)
     end
 
     def valid_child?
@@ -43,11 +46,11 @@ module TwiMLParser
     end
 
     def action
-      attributes["action"]
+      node.attributes["action"]
     end
 
     def method
-      attributes["method"].to_s.upcase.presence
+      uppercase_attribute.cast(node.attributes["method"]).presence
     end
   end
 end

@@ -1,20 +1,23 @@
 module TwiMLParser
-  class RedirectParser < NodeParser
-    attr_reader :action_validator, :method_validator
+  class RedirectParser < VerbParser
+    attr_reader :action_validator, :method_validator, :uppercase_attribute
 
-    def initialize(node, options = {})
-      super
+    def initialize(options = {})
+      super()
       @action_validator = options.fetch(:action_validator, ActionValidator.new)
       @method_validator = options.fetch(:method_validator, MethodValidator.new)
+      @uppercase_attribute = options.fetch(:uppercase_attribute, UppercaseAttribute.new)
     end
 
     Result = Struct.new(:url, :method, keyword_init: true) do
-      def self.verb
-        :redirect
+      def self.name
+        "Redirect"
       end
     end
 
-    def parse
+    def parse(node)
+      super
+
       validate!
 
       Result.new(
@@ -35,7 +38,7 @@ module TwiMLParser
     end
 
     def method
-      attributes["method"].to_s.upcase.presence
+      uppercase_attribute.cast(node.attributes["method"]).presence
     end
   end
 end

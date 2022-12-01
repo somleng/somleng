@@ -1,20 +1,25 @@
 module TwiMLParser
   class NodeParser
-    attr_reader :node, :options
-
-    def initialize(node, options = {})
-      @node = node
-      @options = options
+    def parse(node)
+      build_node(node)
     end
 
     private
 
-    def attributes
-      node.attributes.transform_values { |v| v.value.strip }
+    def build_node(node)
+      Node.new(
+        attributes: node.attributes.transform_values { |v| v.value.strip },
+        name: node.name,
+        text?: node.text?,
+        children: build_children(node),
+        content: node.content
+      )
     end
 
-    def raise_error(message)
-      raise(TwiMLError, message)
+    def build_children(node)
+      node.children.each_with_object([]) do |child, result|
+        result << build_node(child)
+      end
     end
   end
 end

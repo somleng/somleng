@@ -1,95 +1,56 @@
 class ExecuteMessagingTwiML < ApplicationWorkflow
+  class Error < StandardError; end
+
   SLEEP_BETWEEN_REDIRECTS = 1
 
-  class TwiMLError < StandardError; end
+  attr_reader :message, :url, :http_method, :twiml_parser, :error_message
 
-  attr_reader :message, :url, :http_method, :twiml_parser
-
-  def initialize(message:, url:, http_method:, twiml_parser: TwiMLParser::Parser)
-    @message = message
-    @url = url
-    @http_method = http_method
-    @twiml_parser = twiml_parser
+  def initialize(options)
+    @message = options.fetch(:message)
+    @url = options.fetch(:url)
+    @http_method = options.fetch(:http_method)
+    @twiml_parser = options.fetch(:twiml_parser, TwiMLParser::Parser.new)
   end
 
   def call
-    redirect_args = catch(:redirect) do
-      twiml.each do |verb|
-        case verb.name
-        when "Message"
-          execute_message(verb)
-        when "Redirect"
-          execute_redirect(verb)
-        else
-          raise TwiMLError, "Invalid element '#{verb.name}'"
-        end
+    twiml.each do |verb|
+      case verb.class.name
+      when "Message"
+        execute_message(verb)
+      when "Redirect"
+        return execute_redirect(verb)
       end
-
-      false
     end
-
-    redirect(*redirect_args) if redirect_args.present?
-  rescue TwiMLError
+  rescue Error, TwiMLParser::TwiMLError => e
+    @error_message = e.message
   end
 
   private
 
   def execute_message(verb)
-    attributes = twiml_attributes(verb)
-    nested_noun = verb.children.first
-    body = nested_noun.content if nested_noun.text? || nested_noun.name == "Body"
-    action = URI.join(url, attributes["action"]).to_s if attributes.key?("action")
+    schema = build_message_schema(verb)
 
-    schema = TwilioAPI::MessageRequestSchema.new(
-      input_params: {
-        From: attributes.fetch("from", message.to),
-        To: attributes.fetch("to", message.from),
-        Body: body,
-        StatusCallback: action,
-        StatusCallbackMethod: attributes["method"]
-      },
-      options: {
-        account: message.account
-      }
+    raise(Error, schema.errors(full: true).map(&:text).to_sentence) unless schema.success?
+
+    InitiateOutboundMessage.call(
+      Message.create!(
+        schema.output.merge(direction: :outbound_reply)
+      )
     )
-
-    if schema.success?
-      reply_message = Message.create!(schema.output.merge(direction: :outbound_reply))
-      InitiateOutboundMessage.call(reply_message)
-    else
-      raise TwiMLError, "Invalid <Message> verb's attributes"
-    end
   end
 
   def execute_redirect(verb)
-    raise TwiMLError, "Redirect must contain a URL" if verb.content.blank?
-
     sleep(SLEEP_BETWEEN_REDIRECTS)
 
-    attributes = twiml_attributes(verb)
-    throw(
-      :redirect,
-      [
-        verb.content,
-        attributes.fetch("method", "POST")
-      ]
-    )
-  end
-
-  def twiml_attributes(node)
-    node.attributes.transform_values(&:value)
-  end
-
-  def redirect(redirect_url, http_method)
     ExecuteMessagingTwiML.call(
       message:,
-      url: URI.join(url, redirect_url).to_s,
-      http_method:
+      url: action_url(verb.url).to_s,
+      http_method: verb.method || "POST"
     )
   end
 
   def twiml
-    twiml_parser.new(request_twiml).parse
+    twiml_parser.parse(request_twiml)
   end
 
   def request_twiml
@@ -105,5 +66,26 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
     @message_params ||= TwilioAPI::Webhook::MessageSerializer.new(
       MessageDecorator.new(message)
     ).as_json
+  end
+
+  def action_url(action)
+    return if action.blank?
+
+    URI.join(url, action).to_s
+  end
+
+  def build_message_schema(verb)
+    TwilioAPI::MessageRequestSchema.new(
+      input_params: {
+        From: verb.from || message.to,
+        To: verb.to || message.from,
+        Body: verb.body,
+        StatusCallback: action_url(verb.action),
+        StatusCallbackMethod: verb.method
+      },
+      options: {
+        account: message.account
+      }
+    )
   end
 end
