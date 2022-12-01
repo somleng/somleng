@@ -15,28 +15,32 @@ class Message < ApplicationRecord
 
   enumerize :encoding, in: %w[GSM UCS2]
 
-  aasm column: :status do
-    state :queued, initial: true
-    state :initiated
+  delegate :fire!, to: :aasm
+
+  aasm column: :status, timestamps: true do
+    state :accepted
+    state :queued
+    state :sending
     state :sent
     state :failed
     state :received
     state :canceled
+    state :scheduled
 
-    event :mark_as_initiated do
-      transitions from: :queued, to: :initiated
+    event :mark_as_sending do
+      transitions from: :queued, to: :sending
     end
 
     event :mark_as_sent do
-      transitions from: :initiated, to: :sent
+      transitions from: :sending, to: :sent
     end
 
     event :mark_as_failed do
-      transitions from: :initiated, to: :failed
+      transitions from: :sending, to: :failed
     end
 
     event :cancel do
-      transitions from: :queued, to: :canceled
+      transitions from: :scheduled, to: :canceled
     end
   end
 

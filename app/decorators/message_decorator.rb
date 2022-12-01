@@ -7,8 +7,10 @@ class MessageDecorator < SimpleDelegator
   }.freeze
 
   TWILIO_MESSAGE_STATUS_MAPPINGS = {
+    "accepted" => "accepted",
+    "scheduled" => "scheduled",
     "queued" => "queued",
-    "initiated" => "sending",
+    "sending" => "sending",
     "sent" => "sent",
     "failed" => "failed",
     "received" => "received",

@@ -20,8 +20,15 @@ class CreateMessages < ActiveRecord::Migration[7.0]
       t.string :beneficiary_fingerprint, null: false
       t.string :error_code
       t.string :error_message
-      t.datetime :sent_at
       t.datetime :send_at
+      t.datetime :accepted_at
+      t.datetime :queued_at
+      t.datetime :sending_at
+      t.datetime :sent_at
+      t.datetime :failed_at
+      t.datetime :received_at
+      t.datetime :canceled_at
+      t.datetime :scheduled_at
       t.decimal :price, precision: 10, scale: 4
       t.string :price_unit
       t.integer :validity_period

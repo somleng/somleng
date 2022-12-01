@@ -375,11 +375,32 @@ FactoryBot.define do
 
     trait :inbound do
       direction { :inbound }
+      status { :received }
+      received_at { Time.current }
       sms_url { "https://example.com/messaging.xml" }
       sms_method { "POST" }
     end
 
-    traits_for_enum :status, %w[queued initiated sent failed]
+    trait :accepted do
+      status { :accepted }
+      accepted_at { Time.current }
+    end
+
+    trait :queued do
+      status { :queued }
+      scheduled_at { Time.current }
+    end
+
+    trait :sent do
+      status { :sent }
+      sent_at { Time.current }
+    end
+
+    trait :scheduled do
+      status { :scheduled }
+      scheduled_at { Time.current }
+      send_at { 5.days.from_now }
+    end
   end
 
   factory :messaging_service do

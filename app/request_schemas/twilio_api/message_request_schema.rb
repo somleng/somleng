@@ -122,7 +122,8 @@ module TwilioAPI
         direction: :outbound_api,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,
-        send_at: params[:SendAt]
+        send_at: params[:SendAt],
+        **status_params(context, params)
       }
     end
 
@@ -132,6 +133,17 @@ module TwilioAPI
       smart_encoding_result = smart_encoding.encode(body)
 
       [smart_encoding_result.to_s, smart_encoding_result.smart_encoded?]
+    end
+
+    def status_params(context, params)
+      status = :scheduled if params[:SendAt].present?
+      status ||= :accepted if context[:messaging_service].present?
+      status ||= :queued
+
+      {
+        status:,
+        "#{status}_at": Time.current
+      }
     end
   end
 end

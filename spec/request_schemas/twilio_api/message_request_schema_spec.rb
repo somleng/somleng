@@ -225,44 +225,42 @@ module TwilioAPI
     it "handles post processing" do
       account = create(:account)
       phone_number = create(:phone_number, account:, number: "855716100234")
-      sms_gateway = create(
-        :sms_gateway,
-        carrier: account.carrier
-      )
-      send_at = 5.days.from_now.iso8601
-      schema = validate_request_schema(
-        input_params: {
-          To: "+855 68 308 531",
-          From: "+855 716 100 234",
-          Body: "Hello World ✽",
-          StatusCallback: "https://example.com/status-callback",
-          SmartEncoded: "true",
-          ValidityPeriod: "5",
-          SendAt: send_at
-        },
-        options: {
-          account:
-        }
-      )
+      sms_gateway = create(:sms_gateway, carrier: account.carrier)
 
-      expect(schema.output).to eq(
-        to: "85568308531",
-        from: "855716100234",
-        body: "Hello World *",
-        channel: nil,
-        segments: 1,
-        encoding: "GSM",
-        account:,
-        messaging_service: nil,
-        carrier: account.carrier,
-        phone_number:,
-        sms_gateway:,
-        status_callback_url: "https://example.com/status-callback",
-        direction: :outbound_api,
-        validity_period: 5,
-        smart_encoded: true,
-        send_at:
-      )
+      travel_to(Time.current) do
+        schema = validate_request_schema(
+          input_params: {
+            To: "+855 68 308 531",
+            From: "+855 716 100 234",
+            Body: "Hello World ✽",
+            StatusCallback: "https://example.com/status-callback",
+            SmartEncoded: "true",
+            ValidityPeriod: "5"
+          },
+          options: { account: }
+        )
+
+        expect(schema.output).to eq(
+          to: "85568308531",
+          from: "855716100234",
+          body: "Hello World *",
+          channel: nil,
+          segments: 1,
+          encoding: "GSM",
+          account:,
+          messaging_service: nil,
+          carrier: account.carrier,
+          phone_number:,
+          sms_gateway:,
+          status_callback_url: "https://example.com/status-callback",
+          direction: :outbound_api,
+          validity_period: 5,
+          smart_encoded: true,
+          send_at: nil,
+          status: :queued,
+          queued_at: Time.current
+        )
+      end
     end
 
     it "handles messaging service post processing" do
@@ -274,31 +272,37 @@ module TwilioAPI
         smart_encoding: true,
         status_callback_url: "https://example.com/status-callback"
       )
-      phone_number = create(:phone_number, :configured, messaging_service:, account:, number: "855716100234")
-      create(
-        :sms_gateway,
-        carrier: account.carrier
+      phone_number = create(
+        :phone_number, :configured, messaging_service:, account:, number: "855716100234"
       )
-      schema = validate_request_schema(
-        input_params: {
-          To: "85568308531",
-          MessagingServiceSid: messaging_service.id,
-          Body: "Hello World ✽"
-        },
-        options: {
-          account:
-        }
-      )
+      create(:sms_gateway, carrier: account.carrier)
 
-      expect(schema.output).to include(
-        from: "855716100234",
-        body: "Hello World *",
-        encoding: "GSM",
-        phone_number:,
-        status_callback_url: "https://example.com/status-callback",
-        smart_encoded: true,
-        messaging_service:
-      )
+      travel_to(Time.current) do
+        schema = validate_request_schema(
+          input_params: {
+            To: "85568308531",
+            MessagingServiceSid: messaging_service.id,
+            SendAt: 5.days.from_now.iso8601,
+            Body: "Hello World ✽"
+          },
+          options: {
+            account:
+          }
+        )
+
+        expect(schema.output).to include(
+          from: "855716100234",
+          body: "Hello World *",
+          encoding: "GSM",
+          phone_number:,
+          status_callback_url: "https://example.com/status-callback",
+          smart_encoded: true,
+          messaging_service:,
+          send_at: 5.days.from_now,
+          status: :scheduled,
+          scheduled_at: Time.current
+        )
+      end
     end
 
     def validate_request_schema(input_params:, options: {})

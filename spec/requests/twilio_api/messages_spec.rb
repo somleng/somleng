@@ -154,7 +154,7 @@ RSpec.resource "Messages", document: :twilio_api do
 
         expect(response_status).to eq(201)
         expect(response_body).to match_api_response_schema("twilio_api/message")
-        expect(json_response.fetch("status")).to eq("queued")
+        expect(json_response.fetch("status")).to eq("scheduled")
         expect(ScheduledJob).to have_been_enqueued.with(
           OutboundMessageJob.to_s,
           any_args,
@@ -205,12 +205,22 @@ RSpec.resource "Messages", document: :twilio_api do
     # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
 
     explanation <<~HEREDOC
-      Updates the body of a Message resource.
+      Updates the body of a message resource or cancels a scheduled message.
 
-      This action is primarily used to redact messages: to do so, POST to the above URI and set the
-      `Body` parameter as an empty string: "".
-      This will allow you to effectively redact the text of a message
+      *Redacting a message*
+
+      This action can be used to redact messages: to do so, POST to the above URI and set the
+      `Body` parameter as an empty string: "". This will allow you to effectively redact the text of a message
       while keeping the other message resource properties intact.
+
+      *Canceling a scheduled message*
+
+      Before you use this functionality:
+
+      1. Ensure the status value of canceled is spelled with one "l", (**canceled**) and not two (cancelled).
+      2. Ensure that you store the `MessageSid` of the messages you schedule. You need to reference the `MessageSid` for each message cancelation request.
+      3. There is no bulk cancelation. If you'd like to cancel multiple messages, you must send in a cancelation request for each message and reference the `MessageSid`.
+      4. There is a new status callback event for `Canceled`. You can continue to receive existing callback events by including the optional `StatusCallBack` parameter in the message request.
     HEREDOC
 
     parameter(
@@ -227,9 +237,16 @@ RSpec.resource "Messages", document: :twilio_api do
 
     parameter(
       "Body",
-      "The text of the message you want to send. Can be up to 1,600 characters in length.",
+      'Must be an empty string (""). Required for redacting a message',
       required: false,
       example: ""
+    )
+
+    parameter(
+      "Status",
+      "When set as `canceled`, allows a message cancelation request if a message has not yet been sent.",
+      required: false,
+      example: "canceled"
     )
 
     example "Redact a message" do
@@ -246,6 +263,25 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/message")
       expect(json_response.fetch("body")).to eq("")
+    end
+
+    example "Cancel a scheduled message" do
+      account = create(:account)
+      message = create(:message, :scheduled, account:)
+
+      set_twilio_api_authorization_header(account)
+
+      perform_enqueued_jobs do
+        do_request(
+          account_sid: account.id,
+          sid: message.id,
+          "Status" => "canceled"
+        )
+      end
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/message")
+      expect(json_response.fetch("status")).to eq("canceled")
     end
   end
 
