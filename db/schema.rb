@@ -200,7 +200,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_234914) do
     t.integer "segments", null: false
     t.string "encoding", null: false
     t.string "to", null: false
-    t.string "from", null: false
+    t.string "from"
     t.string "direction", null: false
     t.string "sms_url"
     t.string "sms_method"

@@ -21,7 +21,7 @@ module TwilioAPI
             To: "855716100235"
           }
         )
-      ).not_to have_valid_schema(error_message: "Landline or unreachable carrier")
+      ).not_to have_valid_schema(error_message: Errors::UnreachableCarrierError.new.message)
 
       expect(
         validate_request_schema(
@@ -59,7 +59,7 @@ module TwilioAPI
             From: "1234"
           }
         )
-      ).not_to have_valid_schema(error_message: "The 'From' phone number provided is not a valid message-capable phone number for this destination.")
+      ).not_to have_valid_schema(error_message: Errors::MessageIncapablePhoneNumberError.new.message)
     end
 
     it "validates MessagingServiceSid" do
@@ -95,7 +95,7 @@ module TwilioAPI
           },
           options: { account: }
         )
-      ).not_to have_valid_schema(error_code: "21606")
+      ).not_to have_valid_schema(error_message: Errors::MessageIncapablePhoneNumberError.new.message)
 
       expect(
         validate_request_schema(
@@ -104,7 +104,7 @@ module TwilioAPI
           },
           options: { account: }
         )
-      ).not_to have_valid_field(:MessagingServiceSid)
+      ).not_to have_valid_schema(error_message: Errors::MessagingServiceBlankError.new.message)
 
       expect(
         validate_request_schema(
@@ -113,7 +113,7 @@ module TwilioAPI
           },
           options: { account: }
         )
-      ).not_to have_valid_schema(error_code: "21606")
+      ).not_to have_valid_schema(error_message: Errors::MessagingServiceNoSendersError.new.message)
     end
 
     it "validates Body" do
@@ -190,7 +190,7 @@ module TwilioAPI
             MessagingServiceSid: "messaging-service-sid"
           }
         )
-      ).not_to have_valid_schema(error_message: "SendAt cannot be empty for ScheduleType 'fixed'")
+      ).not_to have_valid_schema(error_message: Errors::SentAtMissingError.new.message)
 
       expect(
         validate_request_schema(
@@ -199,7 +199,9 @@ module TwilioAPI
             SendAt: 20.minutes.from_now.iso8601
           }
         )
-      ).not_to have_valid_schema(error_message: "MessagingServiceSid is required to schedule a message")
+      ).not_to have_valid_schema(
+        error_message: Errors::ScheduledMessageMessagingServiceSidMissingError.new.message
+      )
 
       expect(
         validate_request_schema(
@@ -209,7 +211,7 @@ module TwilioAPI
             SendAt: 1.minute.from_now.iso8601
           }
         )
-      ).not_to have_valid_schema(error_message: "SendAt time must be between 900 seconds and 7 days (604800 seconds) in the future")
+      ).not_to have_valid_schema(error_message: Errors::SendAtInvalidError.new.message)
 
       expect(
         validate_request_schema(
@@ -227,40 +229,36 @@ module TwilioAPI
       phone_number = create(:phone_number, account:, number: "855716100234")
       sms_gateway = create(:sms_gateway, carrier: account.carrier)
 
-      travel_to(Time.current) do
-        schema = validate_request_schema(
-          input_params: {
-            To: "+855 68 308 531",
-            From: "+855 716 100 234",
-            Body: "Hello World ✽",
-            StatusCallback: "https://example.com/status-callback",
-            SmartEncoded: "true",
-            ValidityPeriod: "5"
-          },
-          options: { account: }
-        )
+      schema = validate_request_schema(
+        input_params: {
+          To: "+855 68 308 531",
+          From: "+855 716 100 234",
+          Body: "Hello World ✽",
+          StatusCallback: "https://example.com/status-callback",
+          SmartEncoded: "true",
+          ValidityPeriod: "5"
+        },
+        options: { account: }
+      )
 
-        expect(schema.output).to eq(
-          to: "85568308531",
-          from: "855716100234",
-          body: "Hello World *",
-          channel: nil,
-          segments: 1,
-          encoding: "GSM",
-          account:,
-          messaging_service: nil,
-          carrier: account.carrier,
-          phone_number:,
-          sms_gateway:,
-          status_callback_url: "https://example.com/status-callback",
-          direction: :outbound_api,
-          validity_period: 5,
-          smart_encoded: true,
-          send_at: nil,
-          status: :queued,
-          queued_at: Time.current
-        )
-      end
+      expect(schema.output).to eq(
+        to: "85568308531",
+        from: "855716100234",
+        body: "Hello World *",
+        channel: nil,
+        segments: 1,
+        encoding: "GSM",
+        account:,
+        messaging_service: nil,
+        carrier: account.carrier,
+        phone_number:,
+        sms_gateway:,
+        status_callback_url: "https://example.com/status-callback",
+        validity_period: 5,
+        smart_encoded: true,
+        send_at: nil,
+        status: :queued
+      )
     end
 
     it "handles messaging service post processing" do
@@ -272,37 +270,31 @@ module TwilioAPI
         smart_encoding: true,
         status_callback_url: "https://example.com/status-callback"
       )
-      phone_number = create(
-        :phone_number, :configured, messaging_service:, account:, number: "855716100234"
-      )
+      create(:phone_number, :configured, messaging_service:, account:)
       create(:sms_gateway, carrier: account.carrier)
+      send_at = Time.parse(5.days.from_now.iso8601)
 
-      travel_to(Time.current) do
-        schema = validate_request_schema(
-          input_params: {
-            To: "85568308531",
-            MessagingServiceSid: messaging_service.id,
-            SendAt: 5.days.from_now.iso8601,
-            Body: "Hello World ✽"
-          },
-          options: {
-            account:
-          }
-        )
+      schema = validate_request_schema(
+        input_params: {
+          To: "85568308531",
+          MessagingServiceSid: messaging_service.id,
+          SendAt: send_at.iso8601,
+          Body: "Hello World ✽"
+        },
+        options: { account: }
+      )
 
-        expect(schema.output).to include(
-          from: "855716100234",
-          body: "Hello World *",
-          encoding: "GSM",
-          phone_number:,
-          status_callback_url: "https://example.com/status-callback",
-          smart_encoded: true,
-          messaging_service:,
-          send_at: 5.days.from_now,
-          status: :scheduled,
-          scheduled_at: Time.current
-        )
-      end
+      expect(schema.output).to include(
+        from: nil,
+        phone_number: nil,
+        body: "Hello World *",
+        encoding: "GSM",
+        status_callback_url: "https://example.com/status-callback",
+        smart_encoded: true,
+        messaging_service:,
+        send_at:,
+        status: :scheduled
+      )
     end
 
     def validate_request_schema(input_params:, options: {})

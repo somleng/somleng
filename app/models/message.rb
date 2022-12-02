@@ -3,6 +3,8 @@ class Message < ApplicationRecord
   include HasBeneficiary
   extend Enumerize
 
+  after_create :set_status_timestamp
+
   belongs_to :carrier
   belongs_to :account
   belongs_to :sms_gateway, optional: true
@@ -27,6 +29,10 @@ class Message < ApplicationRecord
     state :canceled
     state :scheduled
 
+    event :queue do
+      transitions from: %i[accepted scheduled], to: :queued
+    end
+
     event :mark_as_sending do
       transitions from: :queued, to: :sending
     end
@@ -36,7 +42,7 @@ class Message < ApplicationRecord
     end
 
     event :mark_as_failed do
-      transitions from: :sending, to: :failed
+      transitions from: %i[accepted queued sending], to: :failed
     end
 
     event :cancel do
@@ -55,6 +61,15 @@ class Message < ApplicationRecord
   def validity_period_expired?
     return false if validity_period.blank?
 
-    (created_at + validity_period.seconds).past?
+    (queued_at + validity_period.seconds).past?
+  end
+
+  private
+
+  def set_status_timestamp
+    timestamp_column = "#{status}_at"
+    return if public_send(timestamp_column).present?
+
+    public_send("#{timestamp_column}=", Time.current)
   end
 end

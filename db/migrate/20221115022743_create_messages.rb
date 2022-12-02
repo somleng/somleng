@@ -10,7 +10,7 @@ class CreateMessages < ActiveRecord::Migration[7.0]
       t.integer :segments, null: false
       t.string :encoding, null: false
       t.string :to, null: false
-      t.string :from, null: false
+      t.string :from
       t.string :direction, null: false
       t.string :sms_url
       t.string :sms_method

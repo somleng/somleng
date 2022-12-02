@@ -117,15 +117,54 @@ RSpec.resource "Messages", document: :twilio_api do
       perform_enqueued_jobs do
         do_request(
           account_sid: account.id,
-          "To" => "+855716788123",
-          "From" => "+855716788999",
+          "To" => "+855 716 788 123",
+          "From" => "+855 716 788 999",
           "Body" => "Hello World"
         )
       end
 
       expect(response_status).to eq(201)
       expect(response_body).to match_api_response_schema("twilio_api/message")
-      expect(json_response.fetch("status")).to eq("queued")
+      expect(json_response).to include(
+        "status" => "queued",
+        "to" => "+855716788123",
+        "from" => "+855716788999",
+        "body" => "Hello World"
+      )
+    end
+
+    example "Create a Message through a Messaging Service" do
+      account = create(:account)
+      create(:sms_gateway, carrier: account.carrier)
+      messaging_service = create(
+        :messaging_service,
+        account:, carrier: account.carrier,
+        status_callback_url: "https://www.example.com/message_status_callback"
+      )
+      create(:phone_number, :configured, messaging_service:, account:, carrier: account.carrier)
+      stub_request(:post, "https://www.example.com/message_status_callback")
+
+      set_twilio_api_authorization_header(account)
+
+      perform_enqueued_jobs do
+        do_request(
+          account_sid: account.id,
+          "To" => "+855716788123",
+          "MessagingServiceSid" => messaging_service.id,
+          "Body" => "Hello World"
+        )
+      end
+
+      expect(response_status).to eq(201)
+      expect(response_body).to match_api_response_schema("twilio_api/message")
+      expect(json_response).to include(
+        "status" => "accepted",
+        "from" => nil
+      )
+      expect_status_callback_request(
+        to: "https://www.example.com/message_status_callback",
+        with_status: "queued"
+      )
     end
 
     example "Schedule a Message" do
@@ -154,9 +193,11 @@ RSpec.resource "Messages", document: :twilio_api do
 
         expect(response_status).to eq(201)
         expect(response_body).to match_api_response_schema("twilio_api/message")
-        expect(json_response.fetch("status")).to eq("scheduled")
+        expect(json_response).to include(
+          "status" => "scheduled"
+        )
         expect(ScheduledJob).to have_been_enqueued.with(
-          OutboundMessageJob.to_s,
+          QueueOutboundMessage.to_s,
           any_args,
           wait_until: 5.days.from_now
         )
@@ -267,10 +308,15 @@ RSpec.resource "Messages", document: :twilio_api do
 
     example "Cancel a scheduled message" do
       account = create(:account)
-      message = create(:message, :scheduled, account:)
+      message = create(
+        :message,
+        :scheduled,
+        account:,
+        status_callback_url: "https://www.example.com/message_status_callback"
+      )
+      stub_request(:post, "https://www.example.com/message_status_callback")
 
       set_twilio_api_authorization_header(account)
-
       perform_enqueued_jobs do
         do_request(
           account_sid: account.id,
@@ -282,6 +328,10 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/message")
       expect(json_response.fetch("status")).to eq("canceled")
+      expect_status_callback_request(
+        to: "https://www.example.com/message_status_callback",
+        with_status: "canceled"
+      )
     end
   end
 
@@ -322,7 +372,7 @@ RSpec.resource "Messages", document: :twilio_api do
 
     example "Does not delete in-progress messages", document: false do
       account = create(:account)
-      message = create(:message, :initiated, account:)
+      message = create(:message, :queued, account:)
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, sid: message.id)
@@ -336,5 +386,13 @@ RSpec.resource "Messages", document: :twilio_api do
         "more_info" => "https://www.twilio.com/docs/errors/20009"
       )
     end
+  end
+
+  def expect_status_callback_request(to:, with_status:)
+    expect(WebMock).to(
+      have_requested(
+        :post, to
+      ).with { |request| request.body.include?("MessageStatus=#{with_status}") }
+    )
   end
 end

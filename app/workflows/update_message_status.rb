@@ -1,16 +1,20 @@
 class UpdateMessageStatus < ApplicationWorkflow
-  CALLBACK_STATES = %i[queued canceled failed sent].freeze
+  CALLBACK_STATES = %w[queued canceled failed sent].freeze
 
-  attr_reader :message, :event
+  attr_reader :message, :event, :attributes
 
-  def initialize(message, event:)
+  def initialize(message, event:, **attributes)
     @message = message
     @event = event
+    @attributes = attributes
   end
 
   def call
-    message.fire!(event) do
-      enqueue_status_callback
+    message.transaction do
+      message.fire!(event) do
+        enqueue_status_callback
+      end
+      message.update!(attributes)
     end
   end
 

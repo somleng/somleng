@@ -57,7 +57,7 @@ RSpec.describe ExecuteMessagingTwiML do
         from: "85512888888",
         to: "85512345678",
         body: "Hello world",
-        status: "initiated",
+        status: "sending",
         phone_number:
       )
     end
@@ -113,7 +113,7 @@ RSpec.describe ExecuteMessagingTwiML do
         from: "85512777777",
         to: "85512999999",
         body: "Hello world",
-        status: "initiated",
+        status: "sending",
         status_callback_url: "https://www.example.com/message_status_callback.xml"
       )
     end

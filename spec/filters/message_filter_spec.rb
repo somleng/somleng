@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe MessageFilter do
   it "filters by status" do
-    initiated_message = create(:message, :initiated)
+    sending_message = create(:message, :sending)
     _sent_messaage = create(:message, :sent)
 
     filter = MessageFilter.new(
@@ -16,6 +16,6 @@ RSpec.describe MessageFilter do
 
     result = filter.apply
 
-    expect(result).to match_array([initiated_message])
+    expect(result).to match_array([sending_message])
   end
 end

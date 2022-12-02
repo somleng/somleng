@@ -32,7 +32,7 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
 
     raise(Error, schema.errors(full: true).map(&:text).to_sentence) unless schema.success?
 
-    InitiateOutboundMessage.call(
+    SendOutboundMessage.call(
       Message.create!(
         schema.output.merge(direction: :outbound_reply)
       )

@@ -1,5 +1,5 @@
 class OutboundMessageJob < ApplicationJob
   def perform(message)
-    InitiateOutboundMessage.call(message)
+    SendOutboundMessage.call(message)
   end
 end

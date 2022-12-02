@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe InitiateOutboundMessage do
+RSpec.describe SendOutboundMessage do
   it "broadcast to sms gateway" do
     message = create(:message, :queued)
 
     expect {
-      InitiateOutboundMessage.call(message)
+      SendOutboundMessage.call(message)
     }.to have_broadcasted_to(
       message.sms_gateway
     ).from_channel(
@@ -18,22 +18,22 @@ RSpec.describe InitiateOutboundMessage do
       channel: message.channel
     )
 
-    expect(message.status).to eq("initiated")
+    expect(message.status).to eq("sending")
   end
 
   it "handles messages that are not queued" do
     message = create(:message, :sent)
 
-    InitiateOutboundMessage.call(message)
+    SendOutboundMessage.call(message)
 
     expect(message.status).to eq("sent")
   end
 
   it "handles expired validity period" do
-    message = create(:message, :queued, validity_period: 5, created_at: 5.seconds.ago)
+    message = create(:message, :queued, queued_at: 5.seconds.ago, validity_period: 5)
 
-    InitiateOutboundMessage.call(message)
+    SendOutboundMessage.call(message)
 
-    expect(message.status).to eq("canceled")
+    expect(message.status).to eq("failed")
   end
 end

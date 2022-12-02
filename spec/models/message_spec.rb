@@ -22,15 +22,23 @@ RSpec.describe Message do
     expect(inbound_message.beneficiary_country_code).to eq("LA")
   end
 
+  it "handles status timestamps" do
+    message = build(:message, status: :queued)
+
+    message.save!
+
+    expect(message.queued_at).to be_present
+  end
+
   describe "#validity_period_expired?" do
     it "returns if the validity period is expired" do
-      expired_message = create(:message, validity_period: 5, created_at: 5.seconds.ago)
+      expired_message = create(:message, :queued, queued_at: 5.seconds.ago, validity_period: 5)
       expect(expired_message.validity_period_expired?).to eq(true)
 
-      normal_message = create(:message, validity_period: nil)
+      normal_message = create(:message, :queued, validity_period: nil)
       expect(normal_message.validity_period_expired?).to eq(false)
 
-      valid_message = create(:message, validity_period: 5)
+      valid_message = create(:message, :queued, validity_period: 5)
       expect(valid_message.validity_period_expired?).to eq(false)
     end
   end

@@ -266,7 +266,8 @@ FactoryBot.define do
     carrier
 
     trait :assigned_to_account do
-      account { association :account, carrier: }
+      account
+      carrier { account.carrier }
     end
 
     trait :disabled do
@@ -382,13 +383,28 @@ FactoryBot.define do
     end
 
     trait :accepted do
+      with_messaging_service
       status { :accepted }
+      from { nil }
       accepted_at { Time.current }
+    end
+
+    trait :scheduled do
+      with_messaging_service
+      status { :scheduled }
+      scheduled_at { Time.current }
+      from { nil }
+      send_at { 5.days.from_now }
     end
 
     trait :queued do
       status { :queued }
-      scheduled_at { Time.current }
+      queued_at { Time.current }
+    end
+
+    trait :sending do
+      status { :sending }
+      sending_at { Time.current }
     end
 
     trait :sent do
@@ -396,10 +412,9 @@ FactoryBot.define do
       sent_at { Time.current }
     end
 
-    trait :scheduled do
-      status { :scheduled }
-      scheduled_at { Time.current }
-      send_at { 5.days.from_now }
+    trait :with_messaging_service do
+      messaging_service
+      account { messaging_service.account }
     end
   end
 

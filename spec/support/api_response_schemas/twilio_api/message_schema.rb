@@ -7,10 +7,13 @@ module APIResponseSchema
       required(:date_created).maybe(:str?)
       required(:date_sent).maybe(:str?)
       required(:date_updated).maybe(:str?)
-      required(:direction).filled(:str?, included_in?: %w[inbound outbound-api])
+      required(:direction).filled(
+        :str?,
+        included_in?: %w[inbound outbound-api outbound-reply outbound-call]
+      )
       required(:error_code).maybe(:str?)
       required(:error_message).maybe(:str?)
-      required(:from).filled(:str?)
+      required(:from).maybe(:str?)
       required(:messaging_service_sid).maybe(:str?)
       required(:num_media).maybe(:str?)
       required(:num_segments).maybe(:str?)

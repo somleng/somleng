@@ -9,6 +9,8 @@ module TwilioAPI
            default: -> { SmartEncoding.new }
     option :sms_gateway_resolver,
            default: -> { SMSGatewayResolver.new }
+    option :schema_errors,
+           default: -> { SchemaErrorGenerator.new }
 
     params do
       optional(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -25,73 +27,64 @@ module TwilioAPI
     rule(:To) do |context:|
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      sms_gateway, channel = sms_gateway_resolver.resolve(
+      context[:sms_gateway], context[:channel] = sms_gateway_resolver.resolve(
         carrier: account.carrier,
         destination: value
       )
 
-      if sms_gateway.blank?
-        next base.failure(
-          text: "Landline or unreachable carrier",
-          code: "30006"
-        )
-      end
+      next if context[:sms_gateway].present?
 
-      context[:sms_gateway] = sms_gateway
-      context[:channel] = channel
+      schema_errors.generate_for(base, error: Errors::UnreachableCarrierError.new)
     end
 
     rule(:From, :MessagingServiceSid) do |context:|
       if values[:From].blank? && values[:MessagingServiceSid].blank?
-        key(:From).failure("is required")
-        next
+        next key(:From).failure("is required")
       end
 
       if values[:MessagingServiceSid].present?
-        messaging_service = account.messaging_services.find_by(id: values[:MessagingServiceSid])
-        context[:messaging_service] = messaging_service
-        next key(:MessagingServiceSid).failure("is invalid") if messaging_service.blank?
+        context[:messaging_service] = account.messaging_services.find_by(
+          id: values.fetch(:MessagingServiceSid)
+        )
+
+        if context[:messaging_service].blank?
+          next schema_errors.generate_for(base, error: Errors::MessagingServiceBlankError.new)
+        end
+
+        sender_pool = context[:messaging_service].phone_numbers
+        if sender_pool.empty?
+          next schema_errors.generate_for(base, error: Errors::MessagingServiceNoSendersError.new)
+        end
+
+        next if values[:From].blank?
+      else
+        sender_pool = account.phone_numbers
       end
 
-      context[:phone_number] = if values[:From].blank?
-                                 messaging_service.phone_numbers.order("RANDOM()").first
-                               elsif messaging_service.present?
-                                 messaging_service.phone_numbers.find_by(number: value)
-                               else
-                                 account.phone_numbers.find_by(number: values[:From])
-                               end
+      context[:phone_number] = sender_pool.find_by(number: values[:From])
 
       next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
 
-      base.failure(
-        text: "The 'From' phone number provided is not a valid message-capable phone number for this destination.",
-        code: "21606"
-      )
+      schema_errors.generate_for(base, error: Errors::MessageIncapablePhoneNumberError.new)
     end
 
     rule(:SendAt) do
       if value.blank? && values[:ScheduleType].present?
-        next base.failure(
-          text: "SendAt cannot be empty for ScheduleType 'fixed'",
-          code: "35111"
-        )
+        next schema_errors.generate_for(base, error: Errors::SentAtMissingError.new)
       end
 
       next if value.blank?
       next key(:ScheduleType).failure("is required") if values[:ScheduleType].blank?
 
       if values[:MessagingServiceSid].blank?
-        next base.failure(
-          text: "MessagingServiceSid is required to schedule a message",
-          code: "35118"
+        next schema_errors.generate_for(
+          base,
+          error: Errors::ScheduledMessageMessagingServiceSidMissingError.new
         )
       end
 
       unless value.between?(900.seconds.from_now, 7.days.from_now)
-        next base.failure(
-          text: "SendAt time must be between 900 seconds and 7 days (604800 seconds) in the future",
-          code: "35114"
-        )
+        next schema_errors.generate_for(base, error: Errors::SendAtInvalidError.new)
       end
     end
 
@@ -109,7 +102,7 @@ module TwilioAPI
       {
         account:,
         carrier: account.carrier,
-        phone_number: context.fetch(:phone_number),
+        phone_number: context[:phone_number],
         messaging_service:,
         sms_gateway: context.fetch(:sms_gateway),
         channel: context.fetch(:channel),
@@ -117,13 +110,12 @@ module TwilioAPI
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
-        from: context.fetch(:phone_number).number,
+        from: context[:phone_number]&.number,
         status_callback_url:,
-        direction: :outbound_api,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,
         send_at: params[:SendAt],
-        **status_params(context, params)
+        status: message_status(context, params)
       }
     end
 
@@ -135,15 +127,11 @@ module TwilioAPI
       [smart_encoding_result.to_s, smart_encoding_result.smart_encoded?]
     end
 
-    def status_params(context, params)
-      status = :scheduled if params[:SendAt].present?
-      status ||= :accepted if context[:messaging_service].present?
-      status ||= :queued
+    def message_status(context, params)
+      return :scheduled if params[:SendAt].present?
+      return :accepted if context[:messaging_service].present?
 
-      {
-        status:,
-        "#{status}_at": Time.current
-      }
+      :queued
     end
   end
 end

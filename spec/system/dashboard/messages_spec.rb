@@ -6,9 +6,9 @@ RSpec.describe "Messages" do
     account = create(:account, carrier:)
     message = create(
       :message,
+      :sending,
       direction: :outbound_api,
       account:,
-      status: :initiated,
       to: "85512234232",
       from: "1294",
       created_at: Time.utc(2021, 12, 1),
