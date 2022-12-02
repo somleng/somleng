@@ -34,7 +34,7 @@ module TwilioAPI
 
       next if context[:sms_gateway].present?
 
-      schema_errors.generate_for(base, error: Errors::UnreachableCarrierError.new)
+      base.failure(schema_errors.build(:unreachable_carrier))
     end
 
     rule(:From, :MessagingServiceSid) do |context:|
@@ -48,43 +48,37 @@ module TwilioAPI
         )
 
         if context[:messaging_service].blank?
-          next schema_errors.generate_for(base, error: Errors::MessagingServiceBlankError.new)
+          next base.failure(schema_errors.build(:messaging_service_blank))
         end
 
-        sender_pool = context[:messaging_service].phone_numbers
-        if sender_pool.empty?
-          next schema_errors.generate_for(base, error: Errors::MessagingServiceNoSendersError.new)
-        end
-
+        phone_numbers = context[:messaging_service].phone_numbers
+        next base.failure(schema_errors.build(:messaging_service_no_senders)) if phone_numbers.empty?
         next if values[:From].blank?
       else
-        sender_pool = account.phone_numbers
+        phone_numbers = account.phone_numbers
       end
 
-      context[:phone_number] = sender_pool.find_by(number: values[:From])
+      context[:phone_number] = phone_numbers.find_by(number: values[:From])
 
       next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
 
-      schema_errors.generate_for(base, error: Errors::MessageIncapablePhoneNumberError.new)
+      base.failure(schema_errors.build(:message_incapable_phone_number))
     end
 
     rule(:SendAt) do
       if value.blank? && values[:ScheduleType].present?
-        next schema_errors.generate_for(base, error: Errors::SentAtMissingError.new)
+        next base.failure(schema_errors.build(:sent_at_missing))
       end
 
       next if value.blank?
       next key(:ScheduleType).failure("is required") if values[:ScheduleType].blank?
 
       if values[:MessagingServiceSid].blank?
-        next schema_errors.generate_for(
-          base,
-          error: Errors::ScheduledMessageMessagingServiceSidMissingError.new
-        )
+        next base.failure(schema_errors.build(:scheduled_message_messaging_service_sid_missing))
       end
 
       unless value.between?(900.seconds.from_now, 7.days.from_now)
-        next schema_errors.generate_for(base, error: Errors::SendAtInvalidError.new)
+        next base.failure(schema_errors.build(:send_at_invalid))
       end
     end
 

@@ -31,7 +31,7 @@ module TwilioAPI
         **serializer_options
       ) do |permitted_params|
         message.update!(body: "") if permitted_params[:redact].present?
-        UpdateMessageStatus.call(message, event: :cancel) if permitted_params[:cancel].present?
+        UpdateMessageStatus.new(message).call { message.cancel! } if permitted_params[:cancel].present?
         message
       end
     end

@@ -1,4 +1,10 @@
 class QueueOutboundMessage < ApplicationWorkflow
+  class MessagingServiceError < StandardError
+    def code
+      message.to_sym
+    end
+  end
+
   attr_reader :message
 
   def initialize(message)
@@ -7,32 +13,31 @@ class QueueOutboundMessage < ApplicationWorkflow
 
   def call
     message.transaction do
-      return false if message.phone_number.blank? && !resolve_sender
+      resolve_sender if message.phone_number.blank?
 
-      UpdateMessageStatus.call(message, event: :queue)
+      UpdateMessageStatus.new(message).call { message.queue! }
+      OutboundMessageJob.perform_later(message)
     end
-    SendOutboundMessage.call(message)
+  rescue MessagingServiceError => e
+    error = TwilioAPI::Errors.fetch(e.code)
+
+    UpdateMessageStatus.new(message).call do
+      message.error_message = error.message
+      message.error_code = error.code
+      message.mark_as_failed!
+    end
   end
 
   private
 
   def resolve_sender
-    return fail!(TwilioAPI::Errors::MessagingServiceBlankError.new) if messaging_service.blank?
+    raise(MessagingServiceError, :messaging_service_blank) if messaging_service.blank?
 
-    phone_number = messaging_service.phone_numbers.order("RANDOM()").first
-    return message.update!(from: phone_number.number, phone_number:) if phone_number.present?
-
-    fail!(TwilioAPI::Errors::MessagingServiceNoSendersAvailableError.new)
-  end
-
-  def fail!(error)
-    UpdateMessageStatus.call(
-      message,
-      event: :mark_as_failed,
-      error_message: error.message,
-      error_code: error.code
-    )
-    false
+    if (phone_number = messaging_service.phone_numbers.order("RANDOM()").first)
+      message.update!(from: phone_number.number, phone_number:)
+    else
+      raise(MessagingServiceError, :messaging_service_no_senders_available)
+    end
   end
 
   def messaging_service

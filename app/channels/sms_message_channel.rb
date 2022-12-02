@@ -11,10 +11,10 @@ class SMSMessageChannel < ApplicationCable::Channel
     message = current_sms_gateway.messages.find(data.fetch("id"))
     case data.fetch("status")
     when "sent"
-      UpdateMessageStatus.call(message, event: :mark_as_sent)
+      UpdateMessageStatus.new(message).call { message.mark_as_sent! }
       create_interaction(message)
     when "failed"
-      UpdateMessageStatus.call(message, event: :mark_as_failed)
+      UpdateMessageStatus.new(message).call { message.mark_as_failed! }
     else
       raise "Unknown message status: #{data.fetch('status')}"
     end

@@ -34,7 +34,12 @@ RSpec.describe SendOutboundMessage do
 
     SendOutboundMessage.call(message)
 
-    expect(message.status).to eq("failed")
+    expected_error = TwilioAPI::Errors.fetch(:validity_period_expired)
+    expect(message).to have_attributes(
+      status: "failed",
+      error_message: expected_error.message,
+      error_code: expected_error.code
+    )
   end
 
   it "handles disconnected sms gateways" do
@@ -43,7 +48,12 @@ RSpec.describe SendOutboundMessage do
 
     SendOutboundMessage.call(message)
 
-    expect(message.status).to eq("failed")
+    expected_error = TwilioAPI::Errors.fetch(:sms_gateway_disconnected)
+    expect(message).to have_attributes(
+      status: "failed",
+      error_message: expected_error.message,
+      error_code: expected_error.code
+    )
   end
 
   def create_message(*args)

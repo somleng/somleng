@@ -7,8 +7,8 @@ class SendOutboundMessage < ApplicationWorkflow
 
   def call
     return unless message.queued?
-    return update_message_status(:mark_as_failed) if message.validity_period_expired?
-    return update_message_status(:mark_as_failed) unless message.sms_gateway.connected?
+    return mark_as_failed(:validity_period_expired) if message.validity_period_expired?
+    return mark_as_failed(:sms_gateway_disconnected) unless message.sms_gateway.connected?
 
     SMSMessageChannel.broadcast_to(
       message.sms_gateway,
@@ -19,12 +19,18 @@ class SendOutboundMessage < ApplicationWorkflow
       channel: message.channel
     )
 
-    update_message_status(:mark_as_sending)
+    UpdateMessageStatus.new(message).call { message.mark_as_sending! }
   end
 
   private
 
-  def update_message_status(event)
-    UpdateMessageStatus.call(message, event:)
+  def mark_as_failed(error_code)
+    error = TwilioAPI::Errors.fetch(error_code)
+
+    UpdateMessageStatus.new(message).call do
+      message.error_message = error.message
+      message.error_code = error.code
+      message.mark_as_failed!
+    end
   end
 end
