@@ -39,7 +39,7 @@ RSpec.describe QueueOutboundMessage do
 
     QueueOutboundMessage.call(message_with_deleted_messaging_service.reload)
 
-    expected_error = TwilioAPI::Errors.fetch(:messaging_service_blank)
+    expected_error = ApplicationError::Errors.fetch(:messaging_service_blank)
     expect(message_with_deleted_messaging_service).to have_attributes(
       status: "failed",
       error_message: expected_error.message,
@@ -48,7 +48,7 @@ RSpec.describe QueueOutboundMessage do
 
     QueueOutboundMessage.call(message_with_unconfigured_messaging_service)
 
-    expected_error = TwilioAPI::Errors.fetch(:messaging_service_no_senders_available)
+    expected_error = ApplicationError::Errors.fetch(:messaging_service_no_senders_available)
     expect(message_with_unconfigured_messaging_service).to have_attributes(
       status: "failed",
       error_message: expected_error.message,

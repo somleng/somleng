@@ -9,8 +9,6 @@ module TwilioAPI
            default: -> { SmartEncoding.new }
     option :sms_gateway_resolver,
            default: -> { SMSGatewayResolver.new }
-    option :schema_errors,
-           default: -> { SchemaErrorGenerator.new }
 
     params do
       optional(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -34,7 +32,7 @@ module TwilioAPI
 
       next if context[:sms_gateway].present?
 
-      base.failure(schema_errors.build(:unreachable_carrier))
+      base.failure(schema_helper.build_schema_error(:unreachable_carrier))
     end
 
     rule(:From, :MessagingServiceSid) do |context:|
@@ -48,11 +46,11 @@ module TwilioAPI
         )
 
         if context[:messaging_service].blank?
-          next base.failure(schema_errors.build(:messaging_service_blank))
+          next base.failure(schema_helper.build_schema_error(:messaging_service_blank))
         end
 
         phone_numbers = context[:messaging_service].phone_numbers
-        next base.failure(schema_errors.build(:messaging_service_no_senders)) if phone_numbers.empty?
+        next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders)) if phone_numbers.empty?
         next if values[:From].blank?
       else
         phone_numbers = account.phone_numbers
@@ -62,23 +60,23 @@ module TwilioAPI
 
       next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
 
-      base.failure(schema_errors.build(:message_incapable_phone_number))
+      base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
     end
 
     rule(:SendAt) do
       if value.blank? && values[:ScheduleType].present?
-        next base.failure(schema_errors.build(:sent_at_missing))
+        next base.failure(schema_helper.build_schema_error(:sent_at_missing))
       end
 
       next if value.blank?
       next key(:ScheduleType).failure("is required") if values[:ScheduleType].blank?
 
       if values[:MessagingServiceSid].blank?
-        next base.failure(schema_errors.build(:scheduled_message_messaging_service_sid_missing))
+        next base.failure(schema_helper.build_schema_error(:scheduled_message_messaging_service_sid_missing))
       end
 
       unless value.between?(900.seconds.from_now, 7.days.from_now)
-        next base.failure(schema_errors.build(:send_at_invalid))
+        next base.failure(schema_helper.build_schema_error(:send_at_invalid))
       end
     end
 

@@ -19,7 +19,7 @@ class QueueOutboundMessage < ApplicationWorkflow
       OutboundMessageJob.perform_later(message)
     end
   rescue MessagingServiceError => e
-    error = TwilioAPI::Errors.fetch(e.code)
+    error = ApplicationError::Errors.fetch(e.code)
 
     UpdateMessageStatus.new(message).call do
       message.error_message = error.message

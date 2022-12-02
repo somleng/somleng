@@ -23,17 +23,18 @@ RSpec.describe ExecuteMessagingTwiML do
 
   context "<Message> verb" do
     it "handles <Message> verbs" do
+      sms_gateway = create(:sms_gateway, :connected)
+      account = create(:account, carrier: sms_gateway.carrier)
       phone_number = create(
-        :phone_number,
-        :configured,
-        number: "85512888888"
+        :phone_number, :configured, account:, number: "85512888888", carrier: sms_gateway.carrier
       )
 
       message = create(
         :message,
         :inbound,
-        account: phone_number.account,
+        account:,
         phone_number:,
+        sms_gateway:,
         from: "85512345678",
         to: "85512888888",
         sms_url: "https://www.example.com/messaging.xml",
@@ -64,6 +65,7 @@ RSpec.describe ExecuteMessagingTwiML do
 
     it "handles <Message> verbs with attributes" do
       carrier = create(:carrier)
+      sms_gateway = create(:sms_gateway, :connected, carrier:)
       account = create(:account, carrier:)
 
       phone_number = create(

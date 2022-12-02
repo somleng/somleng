@@ -1,6 +1,8 @@
 class ApplicationRequestSchema < Dry::Validation::Contract
   URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/.freeze
 
+  option :schema_helper, default: -> { RequestSchemaHelper.new }
+
   attr_reader :input_params
 
   delegate :success?, :errors, :context, to: :result

@@ -21,7 +21,7 @@ module TwilioAPI
             To: "855716100235"
           }
         )
-      ).not_to have_valid_schema(error_message: Errors.fetch(:unreachable_carrier).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:unreachable_carrier).message)
 
       expect(
         validate_request_schema(
@@ -59,7 +59,7 @@ module TwilioAPI
             From: "1234"
           }
         )
-      ).not_to have_valid_schema(error_message: Errors.fetch(:message_incapable_phone_number).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:message_incapable_phone_number).message)
     end
 
     it "validates MessagingServiceSid" do
@@ -95,7 +95,7 @@ module TwilioAPI
           },
           options: { account: }
         )
-      ).not_to have_valid_schema(error_message: Errors.fetch(:message_incapable_phone_number).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:message_incapable_phone_number).message)
 
       expect(
         validate_request_schema(
@@ -104,7 +104,7 @@ module TwilioAPI
           },
           options: { account: }
         )
-      ).not_to have_valid_schema(error_message: Errors.fetch(:messaging_service_blank).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:messaging_service_blank).message)
 
       expect(
         validate_request_schema(
@@ -113,7 +113,7 @@ module TwilioAPI
           },
           options: { account: }
         )
-      ).not_to have_valid_schema(error_message: Errors.fetch(:messaging_service_no_senders).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:messaging_service_no_senders).message)
     end
 
     it "validates Body" do
@@ -190,7 +190,7 @@ module TwilioAPI
             MessagingServiceSid: "messaging-service-sid"
           }
         )
-      ).not_to have_valid_schema(error_message: Errors.fetch(:sent_at_missing).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:sent_at_missing).message)
 
       expect(
         validate_request_schema(
@@ -200,7 +200,7 @@ module TwilioAPI
           }
         )
       ).not_to have_valid_schema(
-        error_message: Errors.fetch(:scheduled_message_messaging_service_sid_missing).message
+        error_message: ApplicationError::Errors.fetch(:scheduled_message_messaging_service_sid_missing).message
       )
 
       expect(
@@ -211,7 +211,7 @@ module TwilioAPI
             SendAt: 1.minute.from_now.iso8601
           }
         )
-      ).not_to have_valid_schema(error_message: Errors.fetch(:send_at_invalid).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:send_at_invalid).message)
 
       expect(
         validate_request_schema(

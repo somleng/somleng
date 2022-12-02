@@ -34,7 +34,7 @@ RSpec.describe SendOutboundMessage do
 
     SendOutboundMessage.call(message)
 
-    expected_error = TwilioAPI::Errors.fetch(:validity_period_expired)
+    expected_error = ApplicationError::Errors.fetch(:validity_period_expired)
     expect(message).to have_attributes(
       status: "failed",
       error_message: expected_error.message,
@@ -48,7 +48,7 @@ RSpec.describe SendOutboundMessage do
 
     SendOutboundMessage.call(message)
 
-    expected_error = TwilioAPI::Errors.fetch(:sms_gateway_disconnected)
+    expected_error = ApplicationError::Errors.fetch(:sms_gateway_disconnected)
     expect(message).to have_attributes(
       status: "failed",
       error_message: expected_error.message,

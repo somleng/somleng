@@ -1,7 +1,7 @@
 class SendOutboundMessage < ApplicationWorkflow
   attr_reader :message
 
-  def initialize(message, attempt: 1)
+  def initialize(message)
     @message = message
   end
 
@@ -25,7 +25,7 @@ class SendOutboundMessage < ApplicationWorkflow
   private
 
   def mark_as_failed(error_code)
-    error = TwilioAPI::Errors.fetch(error_code)
+    error = ApplicationError::Errors.fetch(error_code)
 
     UpdateMessageStatus.new(message).call do
       message.error_message = error.message
