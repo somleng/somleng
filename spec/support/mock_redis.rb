@@ -1,0 +1,1 @@
+Redis.current = MockRedis.new

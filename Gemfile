@@ -47,6 +47,7 @@ gem "phony"
 gem "puma"
 gem "pundit"
 gem "recaptcha"
+gem "redis-objects"
 gem "responders", github: "heartcombo/responders"
 gem "rqrcode"
 gem "sassc-rails"
@@ -85,6 +86,7 @@ group :test do
   gem "capybara"
   gem "email_spec"
   gem "factory_bot_rails"
+  gem "mock_redis"
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false

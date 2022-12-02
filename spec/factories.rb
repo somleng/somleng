@@ -116,6 +116,14 @@ FactoryBot.define do
     name { "GoIP" }
     max_channels { 4 }
     carrier
+
+    trait :connected do
+      after(:create, &:ping)
+    end
+
+    trait :disconnected do
+      after(:create, &:disconnect!)
+    end
   end
 
   factory :sms_gateway_channel_group do
@@ -366,7 +374,7 @@ FactoryBot.define do
   factory :message do
     account
     carrier { account.carrier }
-    sms_gateway { association :sms_gateway, carrier: }
+    sms_gateway { association :sms_gateway, carrier: account.carrier }
     to { "85512334667" }
     from { "2442" }
     direction { :outbound_api }

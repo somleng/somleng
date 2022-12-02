@@ -11,25 +11,13 @@ class SMSMessageChannel < ApplicationCable::Channel
     message = current_sms_gateway.messages.find(data.fetch("id"))
     case data.fetch("status")
     when "sent"
-      message.mark_as_sent!
+      UpdateMessageStatus.call(message, event: :mark_as_sent)
       create_interaction(message)
     when "failed"
-      message.mark_as_failed!
+      UpdateMessageStatus.call(message, event: :mark_as_failed)
     else
       raise "Unknown message status: #{data.fetch('status')}"
     end
-
-    return if message.status_callback_url.blank?
-
-    ExecuteWorkflowJob.perform_later(
-      "TwilioAPI::NotifyWebhook",
-      account: message.account,
-      url: message.status_callback_url,
-      http_method: "POST",
-      params: TwilioAPI::Webhook::MessageStatusCallbackSerializer.new(
-        MessageDecorator.new(message)
-      ).serializable_hash
-    )
   end
 
   def received(data)

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SendOutboundMessage do
   it "broadcast to sms gateway" do
-    message = create(:message, :queued)
+    message = create_message(:queued)
 
     expect {
       SendOutboundMessage.call(message)
@@ -22,7 +22,7 @@ RSpec.describe SendOutboundMessage do
   end
 
   it "handles messages that are not queued" do
-    message = create(:message, :sent)
+    message = create_message(:sent)
 
     SendOutboundMessage.call(message)
 
@@ -30,10 +30,26 @@ RSpec.describe SendOutboundMessage do
   end
 
   it "handles expired validity period" do
-    message = create(:message, :queued, queued_at: 5.seconds.ago, validity_period: 5)
+    message = create_message(:queued, queued_at: 5.seconds.ago, validity_period: 5)
 
     SendOutboundMessage.call(message)
 
     expect(message.status).to eq("failed")
+  end
+
+  it "handles disconnected sms gateways" do
+    sms_gateway = create(:sms_gateway, :disconnected)
+    message = create(:message, :queued, sms_gateway:, carrier: sms_gateway.carrier)
+
+    SendOutboundMessage.call(message)
+
+    expect(message.status).to eq("failed")
+  end
+
+  def create_message(*args)
+    options = args.extract_options!
+    sms_gateway = create(:sms_gateway, :connected)
+    account = create(:account, carrier: sms_gateway.carrier)
+    create(:message, *args, sms_gateway:, account:, **options)
   end
 end

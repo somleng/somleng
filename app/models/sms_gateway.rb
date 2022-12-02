@@ -1,4 +1,6 @@
 class SMSGateway < ApplicationRecord
+  include Redis::Objects
+
   belongs_to :carrier
   has_many :messages
   has_many :channel_groups, class_name: "SMSGatewayChannelGroup"
@@ -7,6 +9,20 @@ class SMSGateway < ApplicationRecord
   encrypts :device_token, deterministic: true, downcase: true
 
   before_create :create_device_token
+
+  value :last_connected_at, expiration: 5.minutes
+
+  def connected?
+    last_connected_at.value.present?
+  end
+
+  def ping
+    self.last_connected_at = Time.current
+  end
+
+  def disconnect!
+    last_connected_at.delete
+  end
 
   def available_channel_slots
     (all_channel_slots - used_channel_slots).sort
