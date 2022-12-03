@@ -27,15 +27,12 @@ module TwilioAPI
 
       destination_rules = DestinationRules.new(account:, destination: value)
       unless destination_rules.calling_code_allowed?
-        next base.failure(text: "Call blocked by block list", code: "13225")
+        next base.failure(schema_helper.build_schema_error(:call_blocked_by_blocked_list))
       end
 
       context[:sip_trunk] = destination_rules.sip_trunk
       if context[:sip_trunk].blank?
-        base.failure(
-          text: "Calling this number is unsupported or the number is invalid",
-          code: "13224"
-        )
+        next base.failure(schema_helper.build_schema_error(:calling_number_unsupported_or_invalid))
       end
     end
 

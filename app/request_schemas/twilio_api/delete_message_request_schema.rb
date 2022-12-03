@@ -7,10 +7,7 @@ module TwilioAPI
     rule do
       next if message.complete?
 
-      base.failure(
-        text: "Cannot delete this resource before it is complete",
-        code: "20009"
-      )
+      base.failure(schema_helper.build_schema_error(:delete_before_complete))
     end
   end
 end

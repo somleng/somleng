@@ -31,7 +31,7 @@ module TwilioAPI
             account: queued_message.account
           }
         )
-      ).not_to have_valid_schema(error_message: "Cannot update this resource before it is complete")
+      ).not_to have_valid_schema(error_message: ApplicationError.Error.fetch(:update_before_complete).message)
     end
 
     it "validates Status" do
@@ -63,7 +63,7 @@ module TwilioAPI
             account: queued_message.account
           }
         )
-      ).not_to have_valid_schema(error_message: "Message is not in a cancelable state.")
+      ).not_to have_valid_schema(error_message: ApplicationError.Error.fetch(:message_not_cancelable))
     end
 
     it "handles post processing for redacting a message" do

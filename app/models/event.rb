@@ -5,6 +5,7 @@ class Event < ApplicationRecord
 
   TYPES = %i[
     phone_call.completed
+    message.sent
   ].freeze
 
   belongs_to :eventable, polymorphic: true

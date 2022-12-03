@@ -11,20 +11,14 @@ module TwilioAPI
       next unless value == ""
       next if message.complete?
 
-      base.failure(
-        text: "Cannot update this resource before it is complete",
-        code: "20009"
-      )
+      base.failure(schema_helper.build_schema_error(:update_before_complete))
     end
 
     rule(:Status) do
       next unless value == "canceled"
       next if message.may_cancel?
 
-      base.failure(
-        text: "Message is not in a cancelable state.",
-        code: "30409"
-      )
+      base.failure(schema_helper.build_schema_error(:message_not_cancelable))
     end
 
     def output

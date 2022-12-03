@@ -11,8 +11,7 @@ class SMSMessageChannel < ApplicationCable::Channel
     message = current_sms_gateway.messages.find(data.fetch("id"))
     case data.fetch("status")
     when "sent"
-      UpdateMessageStatus.new(message).call { message.mark_as_sent! }
-      create_interaction(message)
+      handle_sent_event(message)
     when "failed"
       UpdateMessageStatus.new(message).call { message.mark_as_failed! }
     else
@@ -52,6 +51,14 @@ class SMSMessageChannel < ApplicationCable::Channel
   end
 
   private
+
+  def handle_sent_event(message)
+    message.transaction do
+      UpdateMessageStatus.new(message).call { message.mark_as_sent! }
+      CreateEvent.call(eventable: message, type: "message.sent")
+      create_interaction(message)
+    end
+  end
 
   def drop_message?(attributes)
     return false if attributes[:messaging_service].blank?
