@@ -15,12 +15,12 @@
       <%= mask_content(@resource.device_token) %>
     <% end %>
 
-    <%= f.attribute :channel_groups do %>
-      <%= external_link_to("Manage (#{@resource.channel_groups.count})", dashboard_sms_gateway_channel_groups_path(filter: { sms_gateway_id: @resource.id })) %>
+    <%= f.attribute :connection_status do %>
+      <%= connection_status(connected: @resource.connected?) %>
     <% end %>
 
-    <%= f.attribute :used_channels do %>
-      <%= "#{@resource.used_channel_slots.size} of #{@resource.max_channels || 'Unlimited'}" %>
+    <%= f.attribute :channel_groups do %>
+      <%= external_link_to("Manage (#{@resource.channel_groups.count})", dashboard_sms_gateway_channel_groups_path(filter: { sms_gateway_id: @resource.id })) %>
     <% end %>
 
     <%= f.attribute :channels, value: @resource.used_channel_slots.join(", ")  %>

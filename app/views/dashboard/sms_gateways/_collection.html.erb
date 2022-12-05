@@ -8,10 +8,10 @@
         Channel groups
       </th>
       <th>
-        Used channels
+        Connection status
       </th>
       <th>
-        Created At
+        Created at
       </th>
     </tr>
   </thead>
@@ -29,7 +29,7 @@
         </td>
 
         <td>
-          <%= "#{sms_gateway.used_channel_slots.size} of #{sms_gateway.max_channels || 'Unlimited'}" %>
+          <%= connection_status(connected: sms_gateway.connected?) %>
         </td>
 
         <td>

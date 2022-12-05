@@ -105,4 +105,13 @@ module DashboardHelper
 
     doc.to_xml(indent: 2)
   end
+
+  def connection_status(connected:)
+    content = "".html_safe
+    content + if connected
+                content_tag(:i, '', class: 'fas fa-circle text-success') + " Connected"
+              else
+                content_tag(:i, '', class: 'fas fa-circle text-danger') + " Disconnected"
+              end
+  end
 end
