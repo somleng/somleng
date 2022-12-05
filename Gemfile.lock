@@ -401,6 +401,8 @@ GEM
     recaptcha (5.10.0)
       json
     redis (4.8.0)
+    redis-namespace (1.9.0)
+      redis (>= 4)
     redis-objects (1.7.0)
       redis
     regexp_parser (2.5.0)
@@ -605,6 +607,7 @@ DEPENDENCIES
   rails (~> 7.0.0)
   recaptcha
   redis
+  redis-namespace
   redis-objects
   responders!
   rqrcode

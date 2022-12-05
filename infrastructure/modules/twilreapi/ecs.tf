@@ -39,6 +39,7 @@ data "template_file" "appserver_container_definitions" {
     uploads_bucket = aws_s3_bucket.uploads.id
     call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
+    redis_url = var.redis_url
   }
 }
 
@@ -59,16 +60,14 @@ resource "aws_ecs_service" "appserver" {
   task_definition = aws_ecs_task_definition.appserver.arn
   desired_count   = var.ecs_appserver_autoscale_min_instances
   launch_type = var.launch_type
-  deployment_controller {
-    type = "CODE_DEPLOY"
-  }
+
   network_configuration {
     subnets = var.container_instance_subnets
-    security_groups = [aws_security_group.appserver.id, var.db_security_group]
+    security_groups = [aws_security_group.appserver.id, var.db_security_group, var.redis_security_group]
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.this[0].arn
+    target_group_arn = aws_lb_target_group.webserver.arn
     container_name   = var.webserver_container_name
     container_port   = var.webserver_container_port
   }
@@ -105,6 +104,7 @@ data "template_file" "worker_container_definitions" {
     uploads_bucket = aws_s3_bucket.uploads.id
     call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
+    redis_url = var.redis_url
   }
 }
 
@@ -128,7 +128,7 @@ resource "aws_ecs_service" "worker" {
 
   network_configuration {
     subnets = var.container_instance_subnets
-    security_groups = [aws_security_group.worker.id, var.db_security_group]
+    security_groups = [aws_security_group.worker.id, var.db_security_group, var.redis_security_group]
   }
 
   lifecycle {

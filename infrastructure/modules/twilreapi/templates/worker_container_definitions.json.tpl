@@ -101,6 +101,10 @@
       {
         "name": "RAW_RECORDINGS_BUCKET",
         "value": "${raw_recordings_bucket_name}"
+      },
+      {
+        "name": "REDIS_URL",
+        "value": "${redis_url}"
       }
     ]
   }

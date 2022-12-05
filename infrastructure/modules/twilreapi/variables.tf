@@ -9,7 +9,6 @@ variable "aws_region" {}
 variable "aws_ses_region" {}
 variable "container_instance_subnets" {}
 variable "vpc_id" {}
-variable "codedeploy_role" {}
 variable "uploads_bucket" {}
 variable "load_balancer" {}
 variable "listener_arn" {}
@@ -52,8 +51,9 @@ variable "db_pool" {
   default = 48
 }
 
-variable "db_security_group" {
-}
+variable "db_security_group" {}
+variable "redis_security_group" {}
+variable "redis_url" {}
 
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
