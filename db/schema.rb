@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_29_234914) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_05_031641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -129,15 +129,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_234914) do
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
-    t.string "eventable_type", null: false
-    t.uuid "eventable_id", null: false
+    t.uuid "phone_call_id"
     t.string "type", null: false
     t.jsonb "details", default: {}, null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "message_id"
     t.index ["carrier_id"], name: "index_events_on_carrier_id"
-    t.index ["eventable_type", "eventable_id"], name: "index_events_on_eventable"
+    t.index ["message_id"], name: "index_events_on_message_id"
+    t.index ["phone_call_id"], name: "index_events_on_phone_call_id"
     t.index ["sequence_number"], name: "index_events_on_sequence_number", unique: true, order: :desc
   end
 
@@ -548,6 +549,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_29_234914) do
   add_foreign_key "error_logs", "accounts"
   add_foreign_key "error_logs", "carriers"
   add_foreign_key "events", "carriers"
+  add_foreign_key "events", "messages", on_delete: :nullify
+  add_foreign_key "events", "phone_calls", on_delete: :nullify
   add_foreign_key "exports", "users"
   add_foreign_key "imports", "carriers", on_delete: :cascade
   add_foreign_key "imports", "users", on_delete: :cascade

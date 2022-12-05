@@ -1,6 +1,7 @@
 <%= page_title(title: "Events") do %>
   <%= render("shared/filters") do |form| %>
-    <%= form.text_field_tag(:eventable_id, params.dig(:filter, :eventable_id), title: "Resource ID") %>
+    <%= form.text_field_tag(:phone_call_id, params.dig(:filter, :phone_call_id)) %>
+    <%= form.text_field_tag(:phone_call_id, params.dig(:filter, :message_id)) %>
     <%= form.select :type, Event.type.values, { filter_value: params.dig(:filter, :type) }, { data: { behavior: "choices-input" }} %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

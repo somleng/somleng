@@ -31,7 +31,7 @@ module TwilioAPI
             account: queued_message.account
           }
         )
-      ).not_to have_valid_schema(error_message: ApplicationError.Error.fetch(:update_before_complete).message)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:update_before_complete).message)
     end
 
     it "validates Status" do
@@ -63,7 +63,7 @@ module TwilioAPI
             account: queued_message.account
           }
         )
-      ).not_to have_valid_schema(error_message: ApplicationError.Error.fetch(:message_not_cancelable))
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:message_not_cancelable).message)
     end
 
     it "handles post processing for redacting a message" do

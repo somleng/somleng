@@ -75,8 +75,7 @@ RSpec.describe ProcessCDRJob do
 
     ProcessCDRJob.perform_now(freeswitch_cdr)
 
-    event = Event.find_by(eventable_id: phone_call.id)
-    expect(event).to have_attributes(
+    expect(phone_call.events.first).to have_attributes(
       type: "phone_call.completed",
       carrier: phone_call.carrier
     )

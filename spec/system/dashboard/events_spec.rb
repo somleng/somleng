@@ -5,7 +5,7 @@ RSpec.describe "Events" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
     phone_call = create(:phone_call, carrier:)
-    event1 = create(:event, :phone_call_completed, eventable: phone_call, carrier:)
+    event1 = create(:event, :phone_call_completed, phone_call:, carrier:)
     event2 = create(:event, :phone_call_completed, carrier:)
     event3 = create(:event)
 
@@ -13,7 +13,7 @@ RSpec.describe "Events" do
     visit dashboard_events_path(
       filter: {
         type: "phone_call.completed",
-        eventable_id: phone_call.id
+        phone_call_id: phone_call.id
       }
     )
 

@@ -141,14 +141,12 @@ FactoryBot.define do
     phone_call_completed
 
     trait :phone_call_completed do
-      association :eventable, factory: :phone_call
+      phone_call
+      carrier { phone_call.carrier }
       type { "phone_call.completed" }
-    end
-
-    carrier { eventable.carrier }
-
-    details do
-      eventable.jsonapi_serializer_class.new(eventable.decorated).as_json
+      details do
+        phone_call.jsonapi_serializer_class.new(phone_call.decorated).as_json
+      end
     end
   end
 

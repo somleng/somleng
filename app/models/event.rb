@@ -8,10 +8,24 @@ class Event < ApplicationRecord
     message.sent
   ].freeze
 
-  belongs_to :eventable, polymorphic: true
   belongs_to :carrier
+  belongs_to :phone_call, optional: true
+  belongs_to :message, optional: true
 
   has_many :webhook_request_logs
 
   enumerize :type, in: TYPES
+
+  def eventable=(eventable)
+    case eventable
+    when PhoneCall
+      self.phone_call = eventable
+    when Message
+      self.message = eventable
+    end
+  end
+
+  def eventable
+    phone_call || message
+  end
 end

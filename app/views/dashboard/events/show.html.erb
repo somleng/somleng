@@ -7,12 +7,9 @@
         <%= @resource.id %>
       </code>
     <% end %>
-    <%= f.attribute :type do %>
-      <code><%= @resource.type %></code>
-    <% end %>
 
-    <%= f.attribute :eventable, label: "Resource" do %>
-      <%= external_link_to("#{@resource.eventable_type.titleize} (#{@resource.eventable_id})", polymorphic_path([:dashboard, @resource.eventable])) %>
+    <%= f.attribute :type do %>
+      <%= external_link_to(@resource.type, polymorphic_path([:dashboard, @resource.eventable])) %>
     <% end %>
 
     <%= f.attribute :webhook_logs, value: external_link_to("View", dashboard_webhook_request_logs_path(filter: {event_id: @resource.id}), title: "View webhook logs") %>
