@@ -4,6 +4,6 @@ class SMSGatewayConnectionChannel < ApplicationCable::Channel
   end
 
   def ping
-    current_sms_gateway.ping
+    current_sms_gateway.receive_ping
   end
 end

@@ -16,7 +16,7 @@ class SMSGateway < ApplicationRecord
     last_connected_at.value.present?
   end
 
-  def ping
+  def receive_ping
     self.last_connected_at = Time.current
   end
 

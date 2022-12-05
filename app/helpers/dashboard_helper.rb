@@ -106,12 +106,18 @@ module DashboardHelper
     doc.to_xml(indent: 2)
   end
 
-  def connection_status(connected:)
+  def connection_status(sms_gateway)
     content = "".html_safe
-    content + if connected
-                content_tag(:i, '', class: 'fas fa-circle text-success') + " Connected"
-              else
-                content_tag(:i, '', class: 'fas fa-circle text-danger') + " Disconnected"
-              end
+    if sms_gateway.connected?
+      content << content_tag(:i, "", class: "fas fa-circle text-success")
+      content << " Connected "
+      content << content_tag(
+        :span,
+        "#{time_ago_in_words(sms_gateway.last_connected_at.value)} ago",
+        class: "text-muted small"
+      )
+    else
+      content << content_tag(:i, "", class: "fas fa-circle text-danger") + " Disconnected"
+    end
   end
 end

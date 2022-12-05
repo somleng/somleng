@@ -16,7 +16,7 @@
     <% end %>
 
     <%= f.attribute :connection_status do %>
-      <%= connection_status(connected: @resource.connected?) %>
+      <%= connection_status(@resource) %>
     <% end %>
 
     <%= f.attribute :channel_groups do %>

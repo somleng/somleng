@@ -118,7 +118,7 @@ FactoryBot.define do
     carrier
 
     trait :connected do
-      after(:create, &:ping)
+      after(:create, &:receive_ping)
     end
 
     trait :disconnected do
