@@ -113,7 +113,7 @@ module DashboardHelper
       content << " Connected "
       content << content_tag(
         :span,
-        "#{time_ago_in_words(sms_gateway.last_connected_at.value)} ago",
+        "#{time_ago_in_words(sms_gateway.last_connected)} ago",
         class: "text-muted small"
       )
     else

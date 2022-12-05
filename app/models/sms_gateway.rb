@@ -24,6 +24,10 @@ class SMSGateway < ApplicationRecord
     last_connected_at.delete
   end
 
+  def last_connected
+    last_connected_at.value
+  end
+
   def available_channel_slots
     (all_channel_slots - used_channel_slots).sort
   end

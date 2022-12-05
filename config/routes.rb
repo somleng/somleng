@@ -120,6 +120,7 @@ Rails.application.routes.draw do
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]
       resources :phone_calls, only: %i[show index]
+      resources :messages, only: %i[show index]
       resources :users, only: %i[show index]
       resources :statistics, only: :index
       resources :error_logs, only: %i[show index]
@@ -133,6 +134,9 @@ Rails.application.routes.draw do
       resources :phone_call_events, only: :show
       resources :call_data_records, only: :show
       resources :recordings, only: :show
+      resources :sms_gateways, only: :show
+      resources :sms_gateway_channel_groups, only: :show
+      resources :messaging_services, only: :show
 
       root to: "statistics#index"
     end
