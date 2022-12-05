@@ -5,7 +5,11 @@ development:
 test:
   adapter: test
 
-production:
+production: &production
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  url: <%= Rails.configuration.app_settings.fetch(:redis_url) %>
   channel_prefix: somleng_production
+
+staging:
+  <<: *production
+  channel_prefix: somleng_staging

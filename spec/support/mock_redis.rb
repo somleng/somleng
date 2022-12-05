@@ -1,1 +1,1 @@
-Redis.current = MockRedis.new
+Redis::Objects.redis = MockRedis.new

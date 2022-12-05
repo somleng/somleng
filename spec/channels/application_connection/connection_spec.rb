@@ -20,7 +20,7 @@ module ApplicationCable
       sms_gateway = create(:sms_gateway)
 
       connect("/cable", headers: { "X-Device-Key" => sms_gateway.device_token })
-      sms_gateway.ping
+      sms_gateway.receive_ping
       expect(sms_gateway.connected?).to eq(true)
 
       disconnect
