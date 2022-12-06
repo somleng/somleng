@@ -289,9 +289,6 @@ jobs:
           service: ${{ matrix.identifier}}-appserver
           cluster: ${{ matrix.ecs_cluster}}
           wait-for-service-stability: true
-          codedeploy-appspec: deploy/appspec.yaml
-          codedeploy-application: ${{ matrix.identifier }}
-          codedeploy-deployment-group: ${{ matrix.identifier }}
 
       - name: Deploy Worker
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1

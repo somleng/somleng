@@ -6,6 +6,7 @@ RSpec.describe "Phone number configuration" do
     account = create(:account, carrier:)
     user = create(:user, :with_account_membership, account_role: :admin, account:)
     phone_number = create(:phone_number, account:, carrier:)
+    messaging_service = create(:messaging_service, name: "My Messaging Service", account:, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
@@ -15,6 +16,10 @@ RSpec.describe "Phone number configuration" do
     select("POST", from: "Voice method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
     select("POST", from: "Status callback method")
+    fill_in("SMS URL", with: "https://www.example.com/sms.xml")
+    select("POST", from: "SMS method")
+    select("My Messaging Service", from: "Messaging service")
+
     click_button("Update Configuration")
 
     expect(page).to have_content("Phone number configuration was successfully updated")
@@ -22,6 +27,9 @@ RSpec.describe "Phone number configuration" do
     expect(page).to have_field("Voice method", with: "POST")
     expect(page).to have_field("Status callback URL", with: "https://www.example.com/status_callback.xml")
     expect(page).to have_field("Status callback method", with: "POST")
+    expect(page).to have_field("SMS URL", with: "https://www.example.com/sms.xml")
+    expect(page).to have_field("SMS method", with: "POST")
+    expect(page).to have_field("Messaging service", with: messaging_service.id)
   end
 
   it "Configure a phone number with sip domain as an account admin" do

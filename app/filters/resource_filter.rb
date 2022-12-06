@@ -7,7 +7,20 @@ class ResourceFilter < ApplicationFilter
 
   def apply
     filters.inject(super) do |result, filter|
-      filter.new(resources_scope: result, input_params:).apply
+      initialize_filter(filter, result).apply
     end
+  end
+
+  private
+
+  def initialize_filter(filter, result)
+    case filter
+    when Symbol
+      filter_class = "attribute_filter/#{filter}".classify.constantize
+    when Class
+      filter_class = filter
+    end
+
+    filter_class.new(resources_scope: result, input_params:)
   end
 end

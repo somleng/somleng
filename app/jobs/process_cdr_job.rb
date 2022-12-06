@@ -55,7 +55,13 @@ class ProcessCDRJob < ApplicationJob
     return if phone_call.status_callback_url.blank?
 
     ExecuteWorkflowJob.perform_later(
-      "NotifyPhoneCallStatusCallback", phone_call
+      "TwilioAPI::NotifyWebhook",
+      account: phone_call.account,
+      url: phone_call.status_callback_url,
+      http_method: phone_call.status_callback_method,
+      params: TwilioAPI::Webhook::VoiceStatusCallbackSerializer.new(
+        PhoneCallDecorator.new(phone_call)
+      ).serializable_hash
     )
   end
 

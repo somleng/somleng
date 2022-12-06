@@ -13,11 +13,14 @@ class Account < ApplicationRecord
           dependent: :destroy
 
   has_many :phone_calls, dependent: :restrict_with_error
+  has_many :messages, dependent: :restrict_with_error
+  has_many :messaging_services
   has_many :phone_numbers, dependent: :restrict_with_error
   has_many :account_memberships, dependent: :restrict_with_error
   has_many :users, through: :account_memberships
   has_many :recordings
   has_many :error_logs
+  has_many :interactions
 
   def self.customer_managed
     where(arel_table[:account_memberships_count].gt(0))

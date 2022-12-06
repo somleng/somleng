@@ -13,8 +13,8 @@ class ApplicationFilter
 
   def initialize(resources_scope:, input_params:, scoped_to: {})
     @resources_scope = resources_scope
-    @scoped_to = scoped_to.symbolize_keys
     @input_params = input_params.to_h
+    @scoped_to = scoped_to.symbolize_keys
   end
 
   def apply

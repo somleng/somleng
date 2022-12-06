@@ -11,6 +11,19 @@ module SystemSpecHelpers
   def accept_confirm(*)
     Capybara.current_driver == :rack_test ? yield : super
   end
+
+  def choices_select(value, from:)
+    select_element = find_field(from, visible: false)
+    choices_wrapper = select_element.find(:xpath, "../..")
+    choices_wrapper.click
+
+    dropdown = choices_wrapper.find(:xpath, ".//div[contains(@class, 'choices__list--dropdown')]")
+    item = dropdown.find(
+      :xpath,
+      ".//div[contains(@class, 'choices__item') and contains(., '#{value}')]"
+    )
+    item.click
+  end
 end
 
 RSpec.configure do |config|

@@ -172,6 +172,7 @@ GEM
     chunky_png (1.4.0)
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
+    connection_pool (2.3.0)
     countries (5.1.0)
       sixarm_ruby_unaccent (~> 1.1)
     country_select (8.0.0)
@@ -322,6 +323,8 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
     minitest (5.16.3)
+    mock_redis (0.34.0)
+      ruby2_keywords
     money (6.16.0)
       i18n (>= 0.6.4, <= 2)
     msgpack (1.5.3)
@@ -397,6 +400,11 @@ GEM
     rake (13.0.6)
     recaptcha (5.10.0)
       json
+    redis (4.8.0)
+    redis-namespace (1.9.0)
+      redis (>= 4)
+    redis-objects (1.7.0)
+      redis
     regexp_parser (2.5.0)
     request_store (1.5.1)
       rack (>= 1.4)
@@ -497,6 +505,7 @@ GEM
     sixarm_ruby_unaccent (1.2.0)
     skylight (5.3.3)
       activesupport (>= 5.2.0)
+    smstools (0.2.2)
     sprockets (4.1.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -565,6 +574,7 @@ DEPENDENCIES
   bootsnap
   bootstrap-email (= 1.1.6)
   capybara
+  connection_pool
   country_select
   cssbundling-rails
   cursor_paginator
@@ -586,6 +596,7 @@ DEPENDENCIES
   jwt
   kaminari
   lograge
+  mock_redis
   money
   okcomputer
   pg
@@ -595,6 +606,9 @@ DEPENDENCIES
   pundit
   rails (~> 7.0.0)
   recaptcha
+  redis
+  redis-namespace
+  redis-objects
   responders!
   rqrcode
   rspec-rails
@@ -613,6 +627,7 @@ DEPENDENCIES
   simplecov
   simplecov-lcov
   skylight
+  smstools
   squasher
   stimulus-rails
   turbo-rails

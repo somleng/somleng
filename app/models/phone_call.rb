@@ -1,13 +1,12 @@
 class PhoneCall < ApplicationRecord
   extend Enumerize
   include AASM
+  include HasBeneficiary
 
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]
   enumerize :recording_status_callback_method, in: %w[POST GET]
   enumerize :direction, in: %i[inbound outbound], predicates: true, scope: :shallow
-
-  attribute :beneficiary_fingerprint, SHA256Type.new
 
   belongs_to :carrier
   belongs_to :account
@@ -15,8 +14,8 @@ class PhoneCall < ApplicationRecord
   belongs_to :sip_trunk, optional: true
 
   has_one    :call_data_record, -> { where(call_leg: :A) }
-  has_one    :interaction, as: :interactable
-  has_many   :events, as: :eventable
+  has_one    :interaction
+  has_many   :events
   has_many   :phone_call_events
   has_many   :recordings
 
@@ -73,7 +72,6 @@ class PhoneCall < ApplicationRecord
   end
 
   validates :external_id, presence: true, if: :inbound?
-  before_create :set_beneficiary_data
 
   def self.in_progress
     where(status: %w[initiated ringing answered])
@@ -81,19 +79,5 @@ class PhoneCall < ApplicationRecord
 
   def self.in_progress_or_initiating
     in_progress.or(initiating)
-  end
-
-  private
-
-  def set_beneficiary_data
-    self.beneficiary_fingerprint = beneficiary
-    self.beneficiary_country_code = ResolvePhoneNumberCountry.call(
-      beneficiary,
-      fallback_country: carrier.country
-    ).alpha2
-  end
-
-  def beneficiary
-    outbound? ? to : from
   end
 end

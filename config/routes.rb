@@ -10,6 +10,9 @@ Rails.application.routes.draw do
 
       resources :phone_calls, only: %i[index create show update], path: "Calls", concerns: :recordings
       post "Calls/:id" => "phone_calls#update"
+
+      resources :messages, only: %i[index create show destroy], path: "Messages"
+      post "Messages/:id" => "messages#update"
     end
 
     scope "/carrier", as: :carrier, module: :carrier_api do
@@ -18,6 +21,7 @@ Rails.application.routes.draw do
         resources :events, only: %i[index show]
 
         resources :phone_calls, only: %i[index show update]
+        resources :messages, only: %i[index show update]
         resources :phone_numbers, only: %i[index create show update destroy] do
           patch :release, on: :member
         end
@@ -68,6 +72,8 @@ Rails.application.routes.draw do
       resources :accounts
       resources :account_memberships
       resources :sip_trunks
+      resources :sms_gateways
+      resources :sms_gateway_channel_groups
       resources :carrier_users
       resources :exports, only: %i[index create]
       resources :imports, only: %i[index create]
@@ -80,6 +86,8 @@ Rails.application.routes.draw do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
         patch :release, on: :member
       end
+      resources :messages, only: %i[index show]
+      resources :messaging_services
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
       resources :events, only: %i[index show]
@@ -112,6 +120,7 @@ Rails.application.routes.draw do
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]
       resources :phone_calls, only: %i[show index]
+      resources :messages, only: %i[show index]
       resources :users, only: %i[show index]
       resources :statistics, only: :index
       resources :error_logs, only: %i[show index]
@@ -125,6 +134,9 @@ Rails.application.routes.draw do
       resources :phone_call_events, only: :show
       resources :call_data_records, only: :show
       resources :recordings, only: :show
+      resources :sms_gateways, only: :show
+      resources :sms_gateway_channel_groups, only: :show
+      resources :messaging_services, only: :show
 
       root to: "statistics#index"
     end

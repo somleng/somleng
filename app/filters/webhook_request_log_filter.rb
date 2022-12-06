@@ -23,5 +23,5 @@ class WebhookRequestLogFilter < ResourceFilter
     end
   end
 
-  filter_with FailedFilter, EventFilter, DateFilter
+  filter_with FailedFilter, EventFilter, :date_filter
 end

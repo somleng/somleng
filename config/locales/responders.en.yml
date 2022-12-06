@@ -13,13 +13,32 @@ en:
     dashboard:
       account_settings:
         update:
-          notice: "Account Settings were successfully updated."
+          notice: Account settings were successfully updated.
       carrier_settings:
         update:
-          notice: "Carrier Settings were successfully updated."
+          notice: Carrier settings were successfully updated.
+      sms_gateway_channels:
+        create:
+          notice: Channel was successfully created.
+        update:
+          notice: Channel was successfully updated.
+        destroy:
+          notice: Channel was successfully destroyed.
+          alert: Channel could not be destroyed.
+      sms_gateway_channel_groups:
+        create:
+          notice: Channel group was successfully created.
+        update:
+          notice: Channel group was successfully updated.
+        destroy:
+          notice: Channel group was successfully destroyed.
+          alert: Channel group could not be destroyed.
       phone_numbers:
         release:
           notice: '%{resource_name} was successfully released.'
       custom_domains:
         regenerate:
           notice: '%{resource_name} was successfully regenerated.'
+      messaging_services:
+        create:
+          notice: ""

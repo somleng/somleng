@@ -60,7 +60,7 @@ module Services
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
-      ).not_to have_valid_field(:to, error_message: "is unassigned")
+      ).not_to have_valid_schema(error_message: "Phone number #{unassigned_phone_number.number} is unassigned")
 
       expect(
         validate_request_schema(
@@ -69,7 +69,7 @@ module Services
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
-      ).not_to have_valid_field(:to)
+      ).not_to have_valid_schema(error_message: "Phone number 85516701721 does not exist")
 
       expect(
         validate_request_schema(
@@ -78,7 +78,9 @@ module Services
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
-      ).not_to have_valid_field(:to, error_message: "is unconfigured")
+      ).not_to have_valid_schema(
+        error_message: "Phone number #{unconfigured_phone_number.number} is unconfigured"
+      )
 
       expect(
         validate_request_schema(
@@ -87,7 +89,9 @@ module Services
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
-      ).not_to have_valid_field(:to, error_message: "is disabled")
+      ).not_to have_valid_schema(
+        error_message: "Phone number #{disabled_phone_number.number} is disabled"
+      )
     end
 
     it "validates carrier is in good standing" do
@@ -102,7 +106,9 @@ module Services
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
-      ).not_to have_valid_schema(error_message: "carrier is not in good standing")
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:carrier_standing).message
+      )
     end
 
     it "validates from" do

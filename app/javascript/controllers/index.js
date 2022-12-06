@@ -16,6 +16,9 @@ application.register("filters", FiltersController)
 import MaskedContentController from "./masked_content_controller.js"
 application.register("masked-content", MaskedContentController)
 
+import MessagingServiceIntegrationController from "./messaging_service_integration_controller.js"
+application.register("messaging-service-integration", MessagingServiceIntegrationController)
+
 import SidebarController from "./sidebar_controller.js"
 application.register("sidebar", SidebarController)
 
@@ -24,3 +27,6 @@ application.register("sign-up", SignUpController)
 
 import SipTrunksController from "./sip_trunks_controller.js"
 application.register("sip-trunks", SipTrunksController)
+
+import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller.js"
+application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsController)

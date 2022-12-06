@@ -47,6 +47,7 @@ RSpec.describe "Twilio API Authentication" do
     )
 
     expect(response.code).to eq("401")
+    expect(json_response(response.body).fetch("message")).to eq("Account suspended")
   end
 
   it "denies access for carriers that are not in good standing" do
@@ -59,5 +60,6 @@ RSpec.describe "Twilio API Authentication" do
     )
 
     expect(response.code).to eq("401")
+    expect(json_response(response.body).fetch("message")).to eq("Carrier is not in good standing")
   end
 end

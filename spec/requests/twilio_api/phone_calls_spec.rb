@@ -62,7 +62,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       example: "POST"
     )
 
-    # https://www.twilio.com/docs/api/rest/making-calls
+    # https://www.twilio.com/docs/voice/api/call-resource#create-a-call-resource
     example "Create a call" do
       account = create(:account)
       create(:sip_trunk, carrier: account.carrier)

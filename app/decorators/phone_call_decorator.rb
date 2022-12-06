@@ -28,12 +28,28 @@ class PhoneCallDecorator < SimpleDelegator
     PhoneCall.human_attribute_name(*args)
   end
 
+  def self.statuses
+    TWILIO_CALL_STATUS_MAPPINGS.values.uniq
+  end
+
+  def self.directions
+    TWILIO_CALL_DIRECTIONS.values.uniq
+  end
+
+  def self.status_from(twilio_status)
+    TWILIO_CALL_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
+  end
+
+  def self.direction_from(twilio_status)
+    TWILIO_CALL_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+  end
+
   def from
-    format_number(super, format: :e164)
+    phone_number_formatter.format(super, format: :e164)
   end
 
   def to
-    format_number(super, format: :e164)
+    phone_number_formatter.format(super, format: :e164)
   end
 
   def sid
@@ -61,21 +77,15 @@ class PhoneCallDecorator < SimpleDelegator
   end
 
   def to_formatted
-    format_number(object.to, format: :international)
+    phone_number_formatter.format(object.to, format: :international)
   end
 
   def from_formatted
-    format_number(object.from, format: :international)
+    phone_number_formatter.format(object.from, format: :international)
   end
 
   def price_formatted
-    return if price.blank?
-
-    ActiveSupport::NumberHelper.number_to_currency(
-      object.price,
-      unit: Money::Currency.new(object.price_unit).symbol,
-      precision: 6
-    )
+    price_formatter.format(price, object.price_unit)
   end
 
   def call_data_record
@@ -84,14 +94,12 @@ class PhoneCallDecorator < SimpleDelegator
 
   private
 
-  def format_number(value, options = {})
-    return value unless Phony.plausible?(value)
+  def phone_number_formatter
+    @phone_number_formatter ||= PhoneNumberFormatter.new
+  end
 
-    if options[:format] == :e164
-      "+#{value}"
-    else
-      Phony.format(value, options)
-    end
+  def price_formatter
+    @price_formatter ||= PriceFormatter.new
   end
 
   def object

@@ -31,8 +31,6 @@ class SIPTrunkForm
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
   validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
   validate :validate_source_ip
-
-  validates :name, presence: true
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
 
   delegate :new_record?, :persisted?, :id, to: :sip_trunk

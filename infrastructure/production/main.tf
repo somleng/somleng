@@ -8,7 +8,6 @@ module "twilreapi" {
   cdn_subdomain = "cdn"
   api_subdomain = "api"
 
-  codedeploy_role = data.terraform_remote_state.core_infrastructure.outputs.codedeploy_role
   app_image = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image = data.terraform_remote_state.core.outputs.nginx_ecr_repository
   memory = 1024
@@ -29,6 +28,10 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
+
+  redis_security_group = data.terraform_remote_state.core.outputs.redis_security_group.id
+  redis_url = "redis://${data.terraform_remote_state.core.outputs.elasticache_redis_endpoint}/0"
+
   call_service_queue_name = "switch-services"
 
   ecs_worker_autoscale_min_instances = 1

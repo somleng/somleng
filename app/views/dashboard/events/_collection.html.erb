@@ -8,9 +8,6 @@
         Type
       </th>
       <th>
-        Resource
-      </th>
-      <th>
         Created At
       </th>
     </tr>
@@ -23,10 +20,9 @@
           <%= link_to(event.id, dashboard_event_path(event)) %>
         </td>
         <td>
-          <code><%= event.type %></code>
-        </td>
-        <td>
-           <%= external_link_to("#{event.eventable_type.titleize} (#{event.eventable_id})", polymorphic_path([:dashboard, event.eventable])) %>
+          <code>
+            <%= event.type %>
+          </code>
         </td>
         <td>
           <%= local_time(event.created_at) %>

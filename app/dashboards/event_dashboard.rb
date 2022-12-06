@@ -4,7 +4,8 @@ class EventDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::String,
     carrier: Field::BelongsTo,
-    eventable: Field::Polymorphic,
+    phone_call: Field::BelongsTo,
+    message: Field::BelongsTo,
     type: Field::String,
     details: Field::JSON,
     webhook_request_logs: Field::HasMany,
@@ -14,7 +15,8 @@ class EventDashboard < Administrate::BaseDashboard
 
   COLLECTION_ATTRIBUTES = %i[
     carrier
-    eventable
+    phone_call
+    message
     type
     created_at
   ].freeze
@@ -22,7 +24,8 @@ class EventDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     id
     carrier
-    eventable
+    phone_call
+    message
     type
     details
     webhook_request_logs

@@ -47,9 +47,9 @@ class AccountFilter < ResourceFilter
       value = filter_params.dig(:metadata, :value)
       keys = key.split(".").join(",")
 
-      super.where("metadata #>> :key = :value", key: "{#{keys}}", value: value)
+      super.where("metadata #>> :key = :value", key: "{#{keys}}", value:)
     end
   end
 
-  filter_with IDFilter, StatusFilter, TypeFilter, DateFilter, MetadataFilter
+  filter_with StatusFilter, TypeFilter, MetadataFilter, :id_filter, :date_filter
 end

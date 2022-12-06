@@ -2,22 +2,26 @@ class PhoneNumberConfigurationForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/.freeze
-
   attribute :voice_url
   attribute :voice_method
   attribute :status_callback_url
   attribute :status_callback_method
   attribute :sip_domain
+  attribute :messaging_service_id
+  attribute :sms_url
+  attribute :sms_method
   attribute :phone_number_configuration
 
-  validates :voice_url, format: URL_FORMAT, allow_blank: true
-  validates :status_callback_url, format: URL_FORMAT, allow_blank: true
+  validates :voice_url, :sms_url, url_format: { allow_http: true }, allow_blank: true
+  validates :status_callback_url, url_format: { allow_http: true }, allow_blank: true
   validates :voice_method,
             inclusion: { in: PhoneNumberConfiguration.voice_method.values },
             allow_blank: true
   validates :status_callback_method,
             inclusion: { in: PhoneNumberConfiguration.status_callback_method.values },
+            allow_blank: true
+  validates :sms_method,
+            inclusion: { in: PhoneNumberConfiguration.sms_method.values },
             allow_blank: true
 
   def persisted?
@@ -39,7 +43,10 @@ class PhoneNumberConfigurationForm
       voice_method: phone_number_configuration.voice_method,
       status_callback_url: phone_number_configuration.status_callback_url,
       status_callback_method: phone_number_configuration.status_callback_method,
-      sip_domain: phone_number_configuration.sip_domain
+      sip_domain: phone_number_configuration.sip_domain,
+      sms_url: phone_number_configuration.sms_url,
+      sms_method: phone_number_configuration.sms_method,
+      messaging_service_id: phone_number_configuration.messaging_service_id
     )
   end
 
@@ -51,7 +58,26 @@ class PhoneNumberConfigurationForm
       voice_method: voice_method.presence,
       status_callback_url: status_callback_url.presence,
       status_callback_method: status_callback_method.presence,
-      sip_domain: sip_domain.presence
+      sip_domain: sip_domain.presence,
+      sms_url: sms_url.presence,
+      sms_method: sms_method.presence,
+      messaging_service: find_messaging_service
     )
+  end
+
+  def messaging_service_options_for_select
+    messaging_services
+  end
+
+  private
+
+  def messaging_services
+    phone_number.account.messaging_services
+  end
+
+  def find_messaging_service
+    return if messaging_service_id.blank?
+
+    messaging_services.find(messaging_service_id)
   end
 end

@@ -72,14 +72,15 @@ FactoryBot.define do
   end
 
   factory :interaction do
-    carrier { interactable.carrier }
-    account { interactable.account }
     for_phone_call
 
     trait :for_phone_call do
-      interactable { association :phone_call, to: generate(:phone_number) }
-      beneficiary_fingerprint { interactable.beneficiary_fingerprint }
-      beneficiary_country_code { interactable.beneficiary_country_code }
+      carrier { phone_call.carrier }
+      account { phone_call.account }
+      interactable_type { "PhoneCall" }
+      phone_call { association :phone_call, to: generate(:phone_number) }
+      beneficiary_fingerprint { phone_call.beneficiary_fingerprint }
+      beneficiary_country_code { phone_call.beneficiary_country_code }
     end
   end
 
@@ -111,18 +112,41 @@ FactoryBot.define do
     end
   end
 
+  factory :sms_gateway do
+    name { "GoIP" }
+    max_channels { 4 }
+    carrier
+
+    trait :connected do
+      after(:create, &:receive_ping)
+    end
+
+    trait :disconnected do
+      after(:create, &:disconnect!)
+    end
+  end
+
+  factory :sms_gateway_channel_group do
+    name { "Metfone" }
+    sms_gateway
+  end
+
+  factory :sms_gateway_channel do
+    sms_gateway { channel_group.sms_gateway }
+    association :channel_group, factory: :sms_gateway_channel_group
+    sequence(:slot_index)
+  end
+
   factory :event do
     phone_call_completed
 
     trait :phone_call_completed do
-      association :eventable, factory: :phone_call
+      phone_call
+      carrier { phone_call.carrier }
       type { "phone_call.completed" }
-    end
-
-    carrier { eventable.carrier }
-
-    details do
-      eventable.jsonapi_serializer_class.new(eventable.decorated).as_json
+      details do
+        phone_call.jsonapi_serializer_class.new(phone_call.decorated).as_json
+      end
     end
   end
 
@@ -248,7 +272,8 @@ FactoryBot.define do
     carrier
 
     trait :assigned_to_account do
-      account { association :account, carrier: }
+      account
+      carrier { account.carrier }
     end
 
     trait :disabled do
@@ -258,9 +283,19 @@ FactoryBot.define do
     trait :configured do
       assigned_to_account
 
-      after(:build) do |phone_number|
+      transient do
+        messaging_service { nil }
+        sms_url { nil }
+        sms_method { nil }
+      end
+
+      after(:build) do |phone_number, evaluator|
         phone_number.configuration ||= build(
-          :phone_number_configuration, phone_number:
+          :phone_number_configuration,
+          phone_number:,
+          messaging_service: evaluator.messaging_service,
+          sms_url: evaluator.sms_url,
+          sms_method: evaluator.sms_method
         )
       end
     end
@@ -275,6 +310,8 @@ FactoryBot.define do
     voice_method { "GET" }
     status_callback_url { "https://example.com/status-callback" }
     status_callback_method { "POST" }
+    sms_url { "https://demo.twilio.com/docs/messaging.xml" }
+    sms_method { "GET" }
   end
 
   factory :phone_call do
@@ -329,6 +366,75 @@ FactoryBot.define do
       after(:build) do |phone_call|
         phone_call.call_data_record ||= build(:call_data_record, phone_call:)
       end
+    end
+  end
+
+  factory :message do
+    account
+    carrier { account.carrier }
+    sms_gateway { association :sms_gateway, carrier: account.carrier }
+    to { "85512334667" }
+    from { "2442" }
+    direction { :outbound_api }
+    body { "Hello World" }
+    segments { 1 }
+    encoding { "GSM" }
+
+    trait :inbound do
+      direction { :inbound }
+      status { :received }
+      received_at { Time.current }
+      sms_url { "https://example.com/messaging.xml" }
+      sms_method { "POST" }
+    end
+
+    trait :accepted do
+      with_messaging_service
+      status { :accepted }
+      from { nil }
+      accepted_at { Time.current }
+    end
+
+    trait :scheduled do
+      with_messaging_service
+      status { :scheduled }
+      scheduled_at { Time.current }
+      from { nil }
+      send_at { 5.days.from_now }
+    end
+
+    trait :queued do
+      status { :queued }
+      queued_at { Time.current }
+    end
+
+    trait :sending do
+      status { :sending }
+      sending_at { Time.current }
+    end
+
+    trait :sent do
+      status { :sent }
+      sent_at { Time.current }
+    end
+
+    trait :with_messaging_service do
+      messaging_service
+      account { messaging_service.account }
+    end
+  end
+
+  factory :messaging_service do
+    defer_to_sender
+    account
+    carrier { account.carrier }
+    name { "My Messaging Service" }
+    traits_for_enum :inbound_message_behavior, %w[defer_to_sender drop]
+
+    trait :webhook do
+      inbound_message_behavior { :webhook }
+      inbound_request_url { "https://www.example.com/incoming_request.xml" }
+      inbound_request_method { "POST" }
     end
   end
 

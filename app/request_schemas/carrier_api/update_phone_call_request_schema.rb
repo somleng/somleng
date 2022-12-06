@@ -1,6 +1,7 @@
 module CarrierAPI
   class UpdatePhoneCallRequestSchema < CarrierAPIRequestSchema
-    CURRENCIES = Money::Currency.table.values.pluck(:iso_code)
+    option :update_interaction_rules,
+           default: -> { SchemaRules::UpdateInteraction.new }
 
     params do
       required(:data).value(:hash).schema do
@@ -14,17 +15,7 @@ module CarrierAPI
     end
 
     attribute_rule(:price, :price_unit) do |attributes|
-      if attributes.values_at(:price, :price_unit).one?
-        key(attribute_key_path(:price)).failure(text: "is blank") unless attributes.key?(:price)
-        key(attribute_key_path(:price_unit)).failure(text: "is blank") unless attributes.key?(:price_unit)
-      end
-    end
-
-    # respond with friendly error message
-    attribute_rule(:price_unit) do
-      next unless key?
-
-      key.failure("must be one of ISO 4217 currency format") unless CURRENCIES.include?(value)
+      update_interaction_rules.validate(attributes, context: self)
     end
   end
 end

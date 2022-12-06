@@ -1,0 +1,46 @@
+<%= page_title(title: "Message") %>
+
+<div class="card-body">
+  <% message = MessageDecorator.new(@resource) %>
+  <%= show_for(message) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= @resource.id %>
+      </code>
+    <% end %>
+
+    <% if policy(:account).show? %>
+      <%= f.attribute :account, value: external_link_to(message.account.name, dashboard_account_path(message.account)) %>
+    <% end %>
+
+    <% if policy(:phone_number).show? %>
+      <% if message.phone_number.present? %>
+        <%= f.attribute :phone_number, value: external_link_to(message.phone_number.number, dashboard_phone_number_path(message.phone_number)) %>
+      <% end %>
+    <% end %>
+
+    <% if policy(:sms_gateway).show? %>
+      <% if message.sms_gateway.present? %>
+        <%= f.attribute :sms_gateway, value: external_link_to(message.sms_gateway.name, dashboard_sms_gateway_path(message.sms_gateway)) %>
+      <% end %>
+    <% end %>
+
+    <% if policy(:event).show? %>
+      <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { message_id: message.id }), title: "View events") %>
+    <% end %>
+
+    <%= f.attribute :body %>
+    <%= f.attribute :from, value: message.from %>
+    <%= f.attribute :to, value: message.to %>
+    <%= f.attribute :status, value: message.status.humanize %>
+    <%= f.attribute :direction, value: message.direction.humanize %>
+    <%= f.attribute :encoding %>
+    <%= f.attribute :smart_encoded %>
+    <%= f.attribute :price, value: message.price_formatted %>
+    <%= f.attribute :price_unit %>
+    <%= f.attribute :status_callback_url %>
+    <%= f.attribute :error_message %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

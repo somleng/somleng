@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_05_031641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -129,15 +129,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
 
   create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
-    t.string "eventable_type", null: false
-    t.uuid "eventable_id", null: false
+    t.uuid "phone_call_id"
     t.string "type", null: false
     t.jsonb "details", default: {}, null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "message_id"
     t.index ["carrier_id"], name: "index_events_on_carrier_id"
-    t.index ["eventable_type", "eventable_id"], name: "index_events_on_eventable"
+    t.index ["message_id"], name: "index_events_on_message_id"
+    t.index ["phone_call_id"], name: "index_events_on_phone_call_id"
     t.index ["sequence_number"], name: "index_events_on_sequence_number", unique: true, order: :desc
   end
 
@@ -170,7 +171,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
 
   create_table "interactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "interactable_type", null: false
-    t.uuid "interactable_id", null: false
+    t.uuid "phone_call_id"
     t.uuid "carrier_id", null: false
     t.uuid "account_id", null: false
     t.string "beneficiary_fingerprint", null: false
@@ -178,13 +179,78 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "message_id"
     t.index ["account_id"], name: "index_interactions_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_interactions_on_beneficiary_country_code"
     t.index ["beneficiary_fingerprint"], name: "index_interactions_on_beneficiary_fingerprint"
     t.index ["carrier_id"], name: "index_interactions_on_carrier_id"
     t.index ["created_at"], name: "index_interactions_on_created_at"
-    t.index ["interactable_type", "interactable_id"], name: "index_interactions_on_interactable", unique: true
+    t.index ["interactable_type"], name: "index_interactions_on_interactable_type"
+    t.index ["message_id"], name: "index_interactions_on_message_id", unique: true
+    t.index ["phone_call_id"], name: "index_interactions_on_phone_call_id", unique: true
     t.index ["sequence_number"], name: "index_interactions_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "carrier_id", null: false
+    t.uuid "phone_number_id"
+    t.uuid "sms_gateway_id"
+    t.integer "channel"
+    t.text "body", null: false
+    t.integer "segments", null: false
+    t.string "encoding", null: false
+    t.string "to", null: false
+    t.string "from"
+    t.string "direction", null: false
+    t.string "sms_url"
+    t.string "sms_method"
+    t.string "status", null: false
+    t.string "status_callback_url"
+    t.string "beneficiary_country_code", null: false
+    t.string "beneficiary_fingerprint", null: false
+    t.string "error_code"
+    t.string "error_message"
+    t.datetime "send_at"
+    t.datetime "accepted_at"
+    t.datetime "queued_at"
+    t.datetime "sending_at"
+    t.datetime "sent_at"
+    t.datetime "failed_at"
+    t.datetime "received_at"
+    t.datetime "canceled_at"
+    t.datetime "scheduled_at"
+    t.decimal "price", precision: 10, scale: 4
+    t.string "price_unit"
+    t.integer "validity_period"
+    t.boolean "smart_encoded", default: false, null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "messaging_service_id"
+    t.index ["account_id"], name: "index_messages_on_account_id"
+    t.index ["carrier_id"], name: "index_messages_on_carrier_id"
+    t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
+    t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
+    t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
+  end
+
+  create_table "messaging_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "carrier_id", null: false
+    t.string "name", null: false
+    t.string "status_callback_url"
+    t.string "inbound_request_url"
+    t.string "inbound_request_method"
+    t.boolean "smart_encoding", default: false, null: false
+    t.string "inbound_message_behavior", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_messaging_services_on_account_id"
+    t.index ["carrier_id"], name: "index_messaging_services_on_carrier_id"
+    t.index ["sequence_number"], name: "index_messaging_services_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -291,7 +357,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
   end
 
   create_table "phone_number_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "phone_number_id"
+    t.uuid "phone_number_id", null: false
     t.string "voice_url"
     t.string "voice_method"
     t.string "status_callback_url"
@@ -300,7 +366,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["phone_number_id"], name: "index_phone_number_configurations_on_phone_number_id"
+    t.string "sms_url"
+    t.string "sms_method"
+    t.uuid "messaging_service_id"
+    t.index ["messaging_service_id"], name: "index_phone_number_configurations_on_messaging_service_id"
+    t.index ["phone_number_id"], name: "index_phone_number_configurations_on_phone_number_id", unique: true
     t.index ["sequence_number"], name: "index_phone_number_configurations_on_sequence_number", unique: true, order: :desc
   end
 
@@ -358,6 +428,43 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
+  end
+
+  create_table "sms_gateway_channel_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "sms_gateway_id", null: false
+    t.string "name", null: false
+    t.string "route_prefixes", default: [], null: false, array: true
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_sms_gateway_channel_groups_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_sms_gateway_channel_groups_on_sms_gateway_id"
+  end
+
+  create_table "sms_gateway_channels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "sms_gateway_id", null: false
+    t.uuid "channel_group_id", null: false
+    t.integer "slot_index", limit: 2, null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_group_id"], name: "index_sms_gateway_channels_on_channel_group_id"
+    t.index ["sequence_number"], name: "index_sms_gateway_channels_on_sequence_number", unique: true, order: :desc
+    t.index ["slot_index", "sms_gateway_id"], name: "index_sms_gateway_channels_on_slot_index_and_sms_gateway_id", unique: true
+    t.index ["sms_gateway_id"], name: "index_sms_gateway_channels_on_sms_gateway_id"
+  end
+
+  create_table "sms_gateways", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "name", null: false
+    t.integer "max_channels", limit: 2
+    t.string "device_token", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
+    t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true
+    t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -442,11 +549,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
   add_foreign_key "error_logs", "accounts"
   add_foreign_key "error_logs", "carriers"
   add_foreign_key "events", "carriers"
+  add_foreign_key "events", "messages", on_delete: :nullify
+  add_foreign_key "events", "phone_calls", on_delete: :nullify
   add_foreign_key "exports", "users"
   add_foreign_key "imports", "carriers", on_delete: :cascade
   add_foreign_key "imports", "users", on_delete: :cascade
   add_foreign_key "interactions", "accounts"
   add_foreign_key "interactions", "carriers"
+  add_foreign_key "interactions", "messages", on_delete: :nullify
+  add_foreign_key "interactions", "phone_calls", on_delete: :nullify
+  add_foreign_key "messages", "accounts"
+  add_foreign_key "messages", "carriers"
+  add_foreign_key "messages", "messaging_services", on_delete: :nullify
+  add_foreign_key "messages", "phone_numbers", on_delete: :nullify
+  add_foreign_key "messages", "sms_gateways", on_delete: :nullify
+  add_foreign_key "messaging_services", "accounts", on_delete: :cascade
+  add_foreign_key "messaging_services", "carriers", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_applications", "carriers", column: "owner_id"
@@ -455,12 +573,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_135351) do
   add_foreign_key "phone_calls", "carriers"
   add_foreign_key "phone_calls", "phone_numbers", on_delete: :nullify
   add_foreign_key "phone_calls", "sip_trunks", on_delete: :nullify
+  add_foreign_key "phone_number_configurations", "messaging_services", on_delete: :nullify
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
   add_foreign_key "sip_trunks", "carriers"
+  add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
+  add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
+  add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
+  add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
   add_foreign_key "webhook_endpoints", "oauth_applications"

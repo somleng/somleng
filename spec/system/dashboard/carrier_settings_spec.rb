@@ -18,7 +18,7 @@ RSpec.describe "Carrier Settings" do
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
     click_button("Update Carrier Settings")
 
-    expect(page).to have_content("Carrier Settings were successfully updated")
+    expect(page).to have_content("Carrier settings were successfully updated")
     expect(page).to have_content("T-Mobile")
     expect(page).to have_content("Zambia")
     expect(page).to have_content("https://example.com/webhook_endpoint")
@@ -62,7 +62,7 @@ RSpec.describe "Carrier Settings" do
     uncheck("Enable webhooks")
     click_button("Update Carrier Settings")
 
-    expect(page).to have_content("Carrier Settings were successfully updated")
+    expect(page).to have_content("Carrier settings were successfully updated")
     expect(page).not_to have_content("https://www.example.com/webhooks")
   end
 end
