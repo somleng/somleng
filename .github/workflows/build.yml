@@ -82,12 +82,8 @@ jobs:
           bundle exec rails spec:prepare
           bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          api-token: ${{ secrets.CODACY_API_TOKEN }}
-          coverage-reports: coverage/lcov/*
-          language: Ruby
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
 
       - name: Prepare Documentation Source
         if: steps.set-deployment-matrix.outputs.matrixLength > 0
