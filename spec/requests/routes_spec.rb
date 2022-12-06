@@ -13,12 +13,12 @@ RSpec.describe "Routes" do
     end.to raise_error(ActionController::RoutingError)
   end
 
-  it "redirects for requests to somleng.org" do
+  it "redirects docs to somleng.org" do
     carrier = create(:carrier)
 
     get(docs_url(host: carrier.subdomain_host))
 
-    expect(response).to redirect_to("https://www.somleng.org/carrier_documentation.html")
+    expect(response).to redirect_to("https://www.somleng.org/docs.html")
   end
 
   it "serves customized documentation" do
