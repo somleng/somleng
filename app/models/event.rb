@@ -24,8 +24,4 @@ class Event < ApplicationRecord
       self.message = eventable
     end
   end
-
-  def eventable
-    phone_call || message
-  end
 end

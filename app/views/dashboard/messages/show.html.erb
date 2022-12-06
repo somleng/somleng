@@ -26,7 +26,7 @@
     <% end %>
 
     <% if policy(:event).show? %>
-      <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { eventable_id: message.id }), title: "View events") %>
+      <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { message_id: message.id }), title: "View events") %>
     <% end %>
 
     <%= f.attribute :body %>

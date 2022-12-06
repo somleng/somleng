@@ -20,7 +20,9 @@
           <%= link_to(event.id, dashboard_event_path(event)) %>
         </td>
         <td>
-           <%= external_link_to(event.type, polymorphic_path([:dashboard, event.eventable])) %>
+          <code>
+            <%= event.type %>
+          </code>
         </td>
         <td>
           <%= local_time(event.created_at) %>

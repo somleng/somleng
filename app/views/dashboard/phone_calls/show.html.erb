@@ -26,7 +26,7 @@
     <% end %>
 
     <% if policy(:event).show? %>
-      <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { eventable_id: phone_call.id }), title: "View events") %>
+      <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { phone_call_id: phone_call.id }), title: "View events") %>
     <% end %>
 
     <%= f.attribute :from, value: phone_call.from_formatted %>
