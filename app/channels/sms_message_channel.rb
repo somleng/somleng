@@ -14,8 +14,6 @@ class SMSMessageChannel < ApplicationCable::Channel
       handle_sent_event(message)
     when "failed"
       UpdateMessageStatus.new(message).call { message.mark_as_failed! }
-    else
-      raise "Unknown message status: #{data.fetch('status')}"
     end
   end
 

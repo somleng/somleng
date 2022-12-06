@@ -6,7 +6,6 @@ module Services
     option :inbound_message_behavior,
            default: -> { ->(phone_number) { InboundMessageBehavior.new(phone_number) } }
 
-    option :carrier_standing_rules, default: -> { CarrierStandingRules.new }
     option :sms_encoding, default: -> { SMSEncoding.new }
     option :sms_gateway
     option :error_log_messages
@@ -34,10 +33,11 @@ module Services
     end
 
     rule do
-      next if carrier_standing_rules.valid?(carrier: sms_gateway.carrier)
+      next if CarrierStanding.new(sms_gateway.carrier).good_standing?
 
-      base.failure(carrier_standing_rules.error_message)
-      error_log_messages << carrier_standing_rules.error_message
+      error = schema_helper.fetch_error(:carrier_standing)
+      base.failure(text: error.message, code: error.code)
+      error_log_messages << error.message
     end
 
     rule do |context:|

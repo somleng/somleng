@@ -48,6 +48,23 @@ RSpec.describe "SMS Gateways" do
     expect(page).to have_content("can't be blank")
   end
 
+  it "Show an SMS Gateway" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, :admin, carrier:)
+    sms_gateway = create(
+      :sms_gateway,
+      :connected,
+      carrier:,
+      name: "My SMS Gateway"
+    )
+
+    carrier_sign_in(user)
+    visit dashboard_sms_gateway_path(sms_gateway)
+
+    expect(page).to have_content("My SMS Gateway")
+    expect(page).to have_content("Connected")
+  end
+
   it "Update a SMS Gateway" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)

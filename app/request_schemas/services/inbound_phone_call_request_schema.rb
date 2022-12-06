@@ -4,8 +4,6 @@ module Services
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
            default: -> { PhoneNumberConfigurationRules.new }
-    option :carrier_standing_rules,
-           default: -> { CarrierStandingRules.new }
 
     params do
       required(:to).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -65,10 +63,11 @@ module Services
 
     rule do |context:|
       next if context[:phone_number].blank?
-      next if carrier_standing_rules.valid?(carrier: context[:phone_number].carrier)
+      next if CarrierStanding.new(context[:phone_number].carrier).good_standing?
 
-      base.failure(carrier_standing_rules.error_message)
-      error_log_messages << carrier_standing_rules.error_message
+      error = schema_helper.fetch_error(:carrier_standing)
+      base.failure(text: error.message, code: error.code)
+      error_log_messages << error.message
     end
 
     def output

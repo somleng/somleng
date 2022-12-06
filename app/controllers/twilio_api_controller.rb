@@ -12,9 +12,9 @@ class TwilioAPIController < APIController
     return deny_access! unless authenticate_with_http_basic do |given_name|
       ActiveSupport::SecurityUtils.secure_compare(given_name, current_account.id)
     end
-    return deny_access! unless current_account.enabled?
+    return deny_access!(build_error(:account_suspended)) unless current_account.enabled?
     return deny_access! unless current_account.id == params[:account_id]
-    return deny_access! unless CarrierStanding.new(current_account.carrier).good_standing?
+    return deny_access!(build_error(:carrier_standing)) unless CarrierStanding.new(current_account.carrier).good_standing?
   end
 
   def respond_with_resource(resource, options = {})
@@ -25,8 +25,8 @@ class TwilioAPIController < APIController
     @current_account ||= Account.find(doorkeeper_token.resource_owner_id)
   end
 
-  def deny_access!
-    render(unauthorized_render_options)
+  def deny_access!(...)
+    render(unauthorized_render_options(...))
   end
 
   def doorkeeper_unauthorized_render_options(**)
@@ -37,16 +37,23 @@ class TwilioAPIController < APIController
     unauthorized_render_options
   end
 
-  def unauthorized_render_options
+  def unauthorized_render_options(options = {})
+    code = options.fetch(:code, 20_003)
+    message = options.fetch(:message, "Authenticate")
     {
       json: {
-        "code": 20003,
-        "detail": "",
-        "message": "Authenticate",
-        "more_info": "https://www.twilio.com/docs/errors/20003",
-        "status": 401
+        code:,
+        message:,
+        detail: "",
+        more_info: "https://www.twilio.com/docs/errors/#{code}",
+        status: 401
       },
       status: :unauthorized
     }
+  end
+
+  def build_error(code)
+    error = ApplicationError::Errors.fetch(code)
+    { message: error.message, code: error.code }
   end
 end

@@ -106,7 +106,9 @@ module Services
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
-      ).not_to have_valid_schema(error_message: "Carrier is not in good standing")
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:carrier_standing).message
+      )
     end
 
     it "validates from" do

@@ -2,6 +2,19 @@ require "rails_helper"
 
 module Services
   RSpec.describe InboundMessageRequestSchema, type: :request_schema do
+    it "validates carrier is in good standing" do
+      carrier = create_restricted_carrier
+      sms_gateway = create(:sms_gateway, carrier:)
+
+      expect(
+        validate_request_schema(
+          options: { sms_gateway: }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:carrier_standing).message
+      )
+    end
+
     it "normalizes the output" do
       carrier = create(:carrier)
       account = create(:account)

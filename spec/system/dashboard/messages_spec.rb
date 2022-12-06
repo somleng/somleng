@@ -40,6 +40,23 @@ RSpec.describe "Messages" do
     expect(page).to have_content("+85512234232")
     expect(page).to have_content("1294")
     expect(page).not_to have_content(filtered_message.id)
+
+    perform_enqueued_jobs do
+      click_on("Export")
+    end
+
+    within(".alert") do
+      expect(page).to have_content("Your export is being processed")
+      click_link("Exports")
+    end
+
+    click_link("messages_")
+
+    expect(page).to have_content(message.id)
+    expect(page).to have_content("outbound-api")
+    expect(page).to have_content("-0.001")
+    expect(page).to have_content("MXN")
+    expect(page).not_to have_content(filtered_message.id)
   end
 
   it "Shows a message" do

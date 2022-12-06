@@ -35,7 +35,9 @@ module TwilioAPI
 
       expect(
         validate_request_schema(input_params: { To: "61428234567" }, options: { account: })
-      ).not_to have_valid_schema(error_message: "Call blocked by block list", error_code: "13225")
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:call_blocked_by_blocked_list).message
+      )
 
       expect(
         validate_request_schema(
@@ -45,7 +47,7 @@ module TwilioAPI
           options: { account: account_with_no_sip_trunks }
         )
       ).not_to have_valid_schema(
-        error_message: "Calling this number is unsupported or the number is invalid", error_code: "13224"
+        error_message: ApplicationError::Errors.fetch(:calling_number_unsupported_or_invalid).message
       )
     end
 
