@@ -2,7 +2,7 @@
 
 [![GitHub Action](https://github.com/somleng/somleng/actions/workflows/build.yml/badge.svg)](https://github.com/somleng/somleng/actions)
 [![View performance data on Skylight](https://badges.skylight.io/status/DvGhX1IYIjrx.svg)](https://oss.skylight.io/app/applications/DvGhX1IYIjrx)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e1f941eb9ba34197a87ddc5a930558bd)](https://www.codacy.com/gh/somleng/somleng/dashboard?utm_source=github.com&utm_medium=referral&utm_content=somleng/somleng&utm_campaign=Badge_Coverage)
+[![codecov](https://codecov.io/gh/somleng/somleng/branch/develop/graph/badge.svg?token=VotbVOJty2)](https://codecov.io/gh/somleng/somleng)
 
 Somleng (part of [The Somleng Project](https://github.com/somleng/somleng-project)) is an Open Source Cloud Communications Platform as a Service (CPaaS).
 
