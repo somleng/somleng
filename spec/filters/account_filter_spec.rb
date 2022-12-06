@@ -52,4 +52,35 @@ RSpec.describe AccountFilter do
 
     expect(result).to eq([account])
   end
+
+  it "filters by type" do
+    customer_managed_account = create(:account)
+    create(:account_membership, account: customer_managed_account)
+    carrier_managed_account = create(:account, :carrier_managed)
+    filter = AccountFilter.new(
+      resources_scope: Account,
+      input_params: {
+        filter: {
+          type: "customer_managed"
+        }
+      }
+    )
+
+    result = filter.apply
+
+    expect(result).to eq([customer_managed_account])
+
+    filter = AccountFilter.new(
+      resources_scope: Account,
+      input_params: {
+        filter: {
+          type: "carrier_managed"
+        }
+      }
+    )
+
+    result = filter.apply
+
+    expect(result).to eq([carrier_managed_account])
+  end
 end
