@@ -8,7 +8,7 @@ module ApplicationCable
     end
 
     def disconnect
-      current_sms_gateway.disconnect!
+      current_sms_gateway&.disconnect!
     end
   end
 end

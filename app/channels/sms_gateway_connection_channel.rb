@@ -1,6 +1,7 @@
 class SMSGatewayConnectionChannel < ApplicationCable::Channel
   def subscribed
     stream_for(current_sms_gateway)
+    ping
   end
 
   def ping
