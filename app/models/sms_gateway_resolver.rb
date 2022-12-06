@@ -46,6 +46,7 @@ class SMSGatewayResolver
   end
 
   def default_sms_gateway(carrier)
-    SMSGateway.find_by(carrier_id: carrier.id)
+    sms_gateways = SMSGateway.where(carrier_id: carrier.id)
+    sms_gateways.detect(&:connected?) || sms_gateways.first
   end
 end

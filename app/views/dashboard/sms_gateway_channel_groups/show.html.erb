@@ -15,10 +15,15 @@
       <%= external_link_to(@resource.sms_gateway.name, dashboard_sms_gateway_path(@resource.sms_gateway)) %>
     <% end %>
 
-    <%= f.attribute :used_channels do %>
-      <%= "#{@resource.used_channel_slots.size} of #{@resource.sms_gateway.max_channels || 'Unlimited'}" %>
+    <% if @resource.configured_channel_slots.any? %>
+      <%= f.attribute :configured_channels do %>
+        <%= "#{@resource.configured_channel_slots.size} of #{@resource.sms_gateway.max_channels || 'Unlimited'}" %>
+      <% end %>
+    <% else %>
+      <%= f.attribute :configured_channels, value: nil %>
     <% end %>
-    <%= f.attribute :channels, value: @resource.used_channel_slots.join(", ")  %>
+
+    <%= f.attribute :channels, value: @resource.configured_channel_slots.join(", ")  %>
 
     <% if @resource.route_prefixes.present? %>
       <%= f.attribute :route_prefixes do %>

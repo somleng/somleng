@@ -32,7 +32,7 @@ class SMSGatewayChannelGroupForm
       name: channel_group.name,
       sms_gateway_id: channel_group.sms_gateway_id,
       route_prefixes: channel_group.route_prefixes,
-      channels: channel_group.used_channel_slots
+      channels: channel_group.configured_channel_slots
     )
   end
 
@@ -65,7 +65,7 @@ class SMSGatewayChannelGroupForm
   end
 
   def channels_options_for_select(sms_gateway = channel_group.sms_gateway)
-    (sms_gateway.available_channel_slots + channel_group.used_channel_slots).sort
+    (sms_gateway.available_channel_slots + channel_group.configured_channel_slots).sort
   end
 
   private

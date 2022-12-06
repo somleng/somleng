@@ -14,6 +14,19 @@ RSpec.describe SMSGatewayResolver do
       expect(channel).to eq(nil)
     end
 
+    it "prefers online SMS gateways" do
+      carrier = create(:carrier)
+      _offline_sms_gateway = create(:sms_gateway, :disconnected, carrier:)
+      online_sms_gateway = create(:sms_gateway, :connected, carrier:)
+      resolver = SMSGatewayResolver.new
+
+      sms_gateway, = resolver.resolve(
+        carrier:, destination: "85512234567"
+      )
+
+      expect(sms_gateway).to eq(online_sms_gateway)
+    end
+
     it "returns the gateway and channel with the longest matching prefix" do
       carrier = create(:carrier)
       non_matching_sms_gateway = create(:sms_gateway, carrier:)

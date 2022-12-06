@@ -1,7 +1,7 @@
 module Dashboard
   class SMSGatewayChannelGroupsController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(:sms_gateway, :channels))
+      @resources = apply_filters(scope.includes(:sms_gateway))
       @resources = paginate_resources(@resources)
     end
 

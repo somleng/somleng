@@ -6,7 +6,7 @@ class SMSGatewayChannelGroupDashboard < Administrate::BaseDashboard
     sms_gateway: Field::BelongsTo,
     name: Field::String,
     route_prefixes: Field::String,
-    used_channel_slots: Field::String,
+    configured_channel_slots: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
   }.freeze
@@ -16,7 +16,7 @@ class SMSGatewayChannelGroupDashboard < Administrate::BaseDashboard
     sms_gateway
     name
     route_prefixes
-    used_channel_slots
+    configured_channel_slots
     created_at
     updated_at
   ].freeze

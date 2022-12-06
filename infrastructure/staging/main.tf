@@ -33,8 +33,8 @@ module "twilreapi" {
 
   call_service_queue_name = "switch-services-staging"
 
-  ecs_appserver_autoscale_min_instances = 0
-  ecs_worker_autoscale_min_instances = 0
+  ecs_appserver_autoscale_min_instances = 1
+  ecs_worker_autoscale_min_instances = 1
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
 }
