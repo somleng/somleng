@@ -5,7 +5,7 @@ RspecApiDocumentation.configure do |config|
 
   config.format = [:slate]
   config.curl_host = ""
-  config.curl_headers_to_filter = %w[Host Cookie]
+  config.curl_headers_to_filter = %w[Host Cookie Version]
 
   config.request_headers_to_include = []
   config.response_headers_to_include = []

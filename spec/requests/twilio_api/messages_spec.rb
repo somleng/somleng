@@ -96,7 +96,7 @@ RSpec.resource "Messages", document: :twilio_api do
     )
     parameter(
       "ScheduleType",
-      "Indicates your intent to schedule a message. Pass the value `fixed`` to schedule a message at a fixed time.",
+      "Indicates your intent to schedule a message. Pass the value `fixed` to schedule a message at a fixed time.",
       required: false,
       example: "fixed"
     )
