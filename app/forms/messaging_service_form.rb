@@ -57,6 +57,7 @@ class MessagingServiceForm
       messaging_service:,
       name: messaging_service.name,
       account: messaging_service.account,
+      account_id: messaging_service.account.id,
       carrier: messaging_service.carrier,
       phone_number_ids: messaging_service.phone_number_ids,
       inbound_message_behavior: messaging_service.inbound_message_behavior,
