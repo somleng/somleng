@@ -21,7 +21,7 @@ module TwiMLParser
       validate!
 
       Result.new(
-        body: child.content,
+        body: child.content.strip,
         to: node.attributes["to"],
         from: node.attributes["from"],
         action:,

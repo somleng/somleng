@@ -39,7 +39,7 @@ class SMSMessageChannel < ApplicationCable::Channel
         url: message.sms_url,
         http_method: message.sms_method
       )
-    else
+    elsif error_log_messages.messages.present?
       ErrorLog.create!(
         carrier: error_log_messages.carrier,
         account: error_log_messages.account,

@@ -5,7 +5,7 @@ module TwiMLParser
     it "parses a message verb" do
       node = build_node(
         children: [
-          build_node(name: "Body", content: "Body Text")
+          build_node(name: "Body", content: "  Body Text ")
         ],
         attributes: {
           "to" => "+85512333333",
