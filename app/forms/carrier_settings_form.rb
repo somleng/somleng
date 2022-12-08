@@ -38,7 +38,7 @@ class CarrierSettingsForm
 
   validates :name, presence: true
   validates :country, inclusion: { in: COUNTRIES }
-  validates :website, presence: true, url_format: { allow_blank: true }
+  validates :website, presence: true, url_format: { allow_http: true, allow_blank: true }
   validates :webhook_url, url_format: { allow_http: true }, allow_blank: true
   validates :subdomain, presence: true,
                         subdomain: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }

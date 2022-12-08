@@ -54,5 +54,13 @@ RSpec.describe CarrierSettingsForm do
       expect(form).to be_invalid
       expect(form.errors[:custom_api_host]).to be_present
     end
+
+    it "validates the website" do
+      form = CarrierSettingsForm.new(website: "http://www.example.com")
+
+      form.valid?
+
+      expect(form.errors[:website]).to be_empty
+    end
   end
 end
