@@ -17,10 +17,10 @@ default: &default
   recaptcha_secret_key: <%= ENV.fetch("RECAPTCHA_SECRET_KEY", "recaptcha_secret_key") %>
   services_user: "services"
   services_password: "password"
-  ahn_host: <%= ENV.fetch("AHN_HOST", "http://localhost:8080") %>
-  redis_url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
-  ahn_username: "adhearsion"
-  ahn_password: "password"
+  switch_host: <%= ENV.fetch("SWITCH_HOST", "http://localhost:8080") %>
+  redis_url: "<%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>"
+  switch_username: "adhearsion"
+  switch_password: "password"
   admin_username: "admin"
   admin_password: "password"
   sip_port: 5060
@@ -31,28 +31,28 @@ default: &default
 
 production: &production
   <<: *default
-  app_url_host: "https://app.somleng.org"
-  asset_url_host: "https://cdn.somleng.org"
-  sentry_dsn: "<%= Rails.application.credentials.sentry_dsn %>"
-  services_password: "<%= ENV['SERVICES_PASSWORD'] %>"
-  ahn_host: "https://ahn.somleng.org"
-  recaptcha_site_key: "<%= Rails.application.credentials.recaptcha_site_key %>"
-  recaptcha_secret_key: "<%= Rails.application.credentials.recaptcha_secret_key %>"
-  admin_password: "<%= Rails.application.credentials.admin_password %>"
-  ahn_password: "<%= Rails.application.credentials.ahn_password %>"
-  skylight_authentication_token: "<%= Rails.application.credentials.skylight_authentication_token %>"
+  app_url_host: "<%= ENV.fetch("APP_URL_HOST", "https://app.somleng.org") %>"
+  asset_url_host: "<%= ENV.fetch("ASSET_URL_HOST", "https://cdn.somleng.org") %>"
+  switch_host: "<%= ENV.fetch("SWITCH_HOST", "https://ahn.somleng.org") %>"
+  sentry_dsn: "<%= ENV.fetch("SENTRY_DSN") { Rails.application.credentials.sentry_dsn } %>"
+  services_password: "<%= ENV.fetch("SERVICES_PASSWORD") { Rails.application.credentials.services_password } %>"
+  recaptcha_site_key: "<%= ENV.fetch("RECAPTCHA_SITE_KEY") { Rails.application.credentials.recaptcha_site_key } %>"
+  recaptcha_secret_key: "<%= ENV.fetch("RECAPTCHA_SECRET_KEY") { Rails.application.credentials.recaptcha_secret_key } %>"
+  admin_password: "<%= ENV.fetch("ADMIN_PASSWORD") { Rails.application.credentials.admin_password } %>"
+  switch_password: "<%= ENV.fetch("SWITCH_PASSWORD") { Rails.application.credentials.switch_password } %>"
+  skylight_authentication_token: "<%= ENV.fetch("SKYLIGHT_AUTHENTICATION_TOKEN") { Rails.application.credentials.skylight_authentication_token } %>"
   active_record_encryption:
-    primary_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :primary_key) %>"
-    deterministic_key: "<%= Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) %>"
-    key_derivation_salt: "<%= Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) %>"
+    primary_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY") { Rails.application.credentials.dig(:active_record_encryption, :primary_key) } %>"
+    deterministic_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY") { Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) } %>"
+    key_derivation_salt: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT") { Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) } %>"
 
 staging:
   <<: *production
   app_subdomain: "app-staging"
   api_subdomain: "api-staging"
-  app_url_host: "https://app-staging.somleng.org"
-  asset_url_host: "https://cdn-staging.somleng.org"
-  ahn_host: "https://switch-staging.somleng.org"
+  app_url_host: <%= ENV.fetch("APP_URL_HOST", "https://app-staging.somleng.org") %>
+  asset_url_host: <%= ENV.fetch("ASSET_URL_HOST", "https://cdn-staging.somleng.org") %>
+  switch_host: <%= ENV.fetch("SWITCH_HOST", "https://switch-staging.somleng.org") %>
   sip_port: 6060
   client_gateway_domain: "Connect Via Public IP"
 
@@ -61,5 +61,5 @@ development: &development
 
 test:
   <<: *development
-  ahn_host: "https://ahn.somleng.org"
+  switch_host: "https://ahn.somleng.org"
   app_url_host: "http://app.lvh.me"
