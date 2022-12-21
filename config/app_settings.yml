@@ -4,7 +4,7 @@ default: &default
   client_gateway_domain: "sip.somleng.org"
   call_service_queue_url: <%= ENV.fetch("CALL_SERVICE_QUEUE_URL", "https://amazonaws.com/12345/call_service_queue") %>
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
-  mailer_sender: "no-reply@somleng.org"
+  mailer_sender: <%= ENV.fetch("MAILER_SENDER", "no-reply@somleng.org") %>
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
   aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>
   aws_sqs_low_priority_queue_name: <%= ENV.fetch("AWS_SQS_LOW_PRIORITY_QUEUE_NAME", "low-priority") %>
