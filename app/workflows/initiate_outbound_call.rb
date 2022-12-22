@@ -10,6 +10,7 @@ class InitiateOutboundCall < ApplicationWorkflow
 
   def call
     return unless phone_call.status.in?(%w[queued initiating])
+    return phone_call.cancel! if phone_call.sip_trunk.blank?
     return reschedule unless initiate!
 
     response = create_remote_call
