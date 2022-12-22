@@ -65,6 +65,18 @@ RSpec.describe InitiateOutboundCall do
     expect(WebMock).not_to have_requested(:post, "https://ahn.somleng.org/calls")
   end
 
+  it "handles deleted SIP trunks" do
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    sip_trunk = create(:sip_trunk, carrier:)
+    phone_call = create(:phone_call, :outbound, :queued, sip_trunk:, carrier:, account:)
+    sip_trunk.destroy!
+
+    InitiateOutboundCall.call(phone_call.reload)
+
+    expect(phone_call.canceled?).to eq(true)
+  end
+
   it "handles failed outbound calls" do
     phone_call = create(:phone_call, :outbound, :queued, :routable)
     stub_request(:post, "https://ahn.somleng.org/calls").to_return(status: 500)
