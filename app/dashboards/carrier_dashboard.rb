@@ -6,6 +6,8 @@ class CarrierDashboard < Administrate::BaseDashboard
     sip_trunks: Field::HasMany,
     phone_numbers: Field::HasMany,
     phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
+    messages: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
+    sms_gateways: Field::HasMany,
     carrier_users: Field::HasMany,
     account_users: Field::HasMany,
     logo: Field::ActiveStorage.with_options(show_preview_size: [150, 150], export: false),
@@ -39,7 +41,9 @@ class CarrierDashboard < Administrate::BaseDashboard
     updated_at
     accounts
     sip_trunks
+    sms_gateways
     phone_numbers
+    messages
     phone_calls
     carrier_users
     account_users

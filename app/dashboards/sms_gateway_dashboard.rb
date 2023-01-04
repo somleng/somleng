@@ -25,6 +25,7 @@ class SMSGatewayDashboard < Administrate::BaseDashboard
 
   COLLECTION_ATTRIBUTES = %i[
     name
+    last_connected
     created_at
   ].freeze
 
