@@ -43,7 +43,7 @@ class PhoneCall < ApplicationRecord
     end
 
     event :cancel do
-      transitions from: %i[queued initiated ringing], to: :canceled
+      transitions from: %i[queued initiating initiated ringing], to: :canceled
     end
 
     event :ring do
@@ -79,5 +79,9 @@ class PhoneCall < ApplicationRecord
 
   def self.in_progress_or_initiating
     in_progress.or(initiating)
+  end
+
+  def was_initiated?
+    initiated_at.present?
   end
 end

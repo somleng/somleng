@@ -14,14 +14,16 @@ Shoryuken.configure_server do |config|
     end
   end
 
-  config.default_worker_options["auto_visibility_timeout"] = true
-
-  Shoryuken.default_worker_options["retry_intervals"] = lambda do |attempts|
-    ExponentialBackoff.new.delay(attempt: attempts)
-  end
+  # `JobWrapper` is defined before initializer
+  ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper.shoryuken_options(
+    retry_intervals: ->(attempts) { ExponentialBackoff.new.delay(attempt: attempts) },
+    auto_visibility_timeout: true
+  )
 
   # Turn on long polling
   # https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
   # https://github.com/phstc/shoryuken/wiki/Long-Polling
   config.sqs_client_receive_message_opts = { wait_time_seconds: 20 }
 end
+
+

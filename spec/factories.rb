@@ -339,7 +339,12 @@ FactoryBot.define do
       status { :initiated }
     end
 
-    traits_for_enum :status, %i[initiating answered not_answered ringing canceled failed busy]
+    trait :answered do
+      initiated
+      status { :answered }
+    end
+
+    traits_for_enum :status, %i[initiating not_answered ringing canceled failed busy]
 
     trait :inbound do
       direction { :inbound }
