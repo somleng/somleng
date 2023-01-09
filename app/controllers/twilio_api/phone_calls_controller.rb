@@ -44,7 +44,7 @@ module TwilioAPI
     def end_call(phone_call, params)
       return unless PhoneCallStatusEvent.new(phone_call).may_transition_to?(params[:status])
 
-      phone_call.queued? ? phone_call.cancel! : EndCallJob.perform_later(phone_call)
+      phone_call.was_initiated? ? EndCallJob.perform_later(phone_call) : phone_call.cancel!
     end
 
     def serializer_options
