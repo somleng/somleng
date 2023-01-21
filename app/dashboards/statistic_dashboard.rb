@@ -42,6 +42,17 @@ class StatisticDashboard < Administrate::CustomDashboard
     end
   end
 
+  class QuarterFilter < Filter
+    def initialize(name:, reference_time:)
+      super(name:, reference_time:, time_period: :quarter)
+    end
+
+    def to_s
+      quarter = (reference_time.call.month / 3.0).ceil
+      reference_time.call.strftime("Q#{quarter} %Y")
+    end
+  end
+
   DEFAULT_FILTER = Filter.new(name: :today, reference_time: -> { Time.current }, time_period: :day)
 
   FILTERS = [
@@ -50,8 +61,8 @@ class StatisticDashboard < Administrate::CustomDashboard
     Filter.new(name: :yesterday, reference_time: -> { 1.day.ago }, time_period: :day),
     Filter.new(name: :this_month, reference_time: -> { Time.current }, time_period: :month),
     Filter.new(name: :last_month, reference_time: -> { 1.month.ago }, time_period: :month),
-    Filter.new(name: :this_quarter, reference_time: -> { Time.current }, time_period: :quarter),
-    Filter.new(name: :last_quarter, reference_time: -> { Time.current.prev_quarter }, time_period: :quarter),
+    QuarterFilter.new(name: :this_quarter, reference_time: -> { Time.current }),
+    QuarterFilter.new(name: :last_quarter, reference_time: -> { Time.current.prev_quarter }),
     Filter.new(name: :this_year, reference_time: -> { Time.current }, time_period: :year),
     Filter.new(name: :last_year, reference_time: -> { 1.year.ago }, time_period: :year)
   ]
