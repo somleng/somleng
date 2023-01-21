@@ -12,6 +12,8 @@ RSpec.describe "Admin/Statistics" do
     page.driver.browser.authorize("admin", "password")
     visit admin_statistics_path
 
+    expect(page).to have_link("last_quarter")
+    expect(page).to have_link("last_year")
     expect(page).to have_content("Beneficiaries: 2")
     expect(page).to have_content("Cambodia")
     expect(page).to have_content("Australia")

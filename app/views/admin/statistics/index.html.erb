@@ -9,7 +9,7 @@
 
   <div style="float: right;" id="filters">
     <small>
-      <% StatisticDashboard::FILTERS.first(8).each do |filter| %>
+      <% StatisticDashboard::FILTERS.first(10).each do |filter| %>
         <%= link_to(filter.name, url_for(action: :index, search: filter.name) )%>
       <% end %>
     </small>

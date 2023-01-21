@@ -20,21 +20,11 @@ class StatisticDashboard < Administrate::CustomDashboard
     end
 
     def apply(scope)
-      scope.where(column => start_time..end_time)
+      scope.where(column => reference_time.call.public_send("all_#{time_period}"))
     end
 
     def to_s
       reference_time.call.strftime(TIME_FORMATS.fetch(time_period))
-    end
-
-    private
-
-    def start_time
-      reference_time.call.public_send("beginning_of_#{time_period}")
-    end
-
-    def end_time
-      reference_time.call.public_send("end_of_#{time_period}")
     end
   end
 
@@ -60,6 +50,8 @@ class StatisticDashboard < Administrate::CustomDashboard
     Filter.new(name: :yesterday, reference_time: -> { 1.day.ago }, time_period: :day),
     Filter.new(name: :this_month, reference_time: -> { Time.current }, time_period: :month),
     Filter.new(name: :last_month, reference_time: -> { 1.month.ago }, time_period: :month),
+    Filter.new(name: :this_quarter, reference_time: -> { Time.current }, time_period: :quarter),
+    Filter.new(name: :last_quarter, reference_time: -> { Time.current.prev_quarter }, time_period: :quarter),
     Filter.new(name: :this_year, reference_time: -> { Time.current }, time_period: :year),
     Filter.new(name: :last_year, reference_time: -> { 1.year.ago }, time_period: :year)
   ]
