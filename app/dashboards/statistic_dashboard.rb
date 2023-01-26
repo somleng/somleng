@@ -126,6 +126,14 @@ class StatisticDashboard < Administrate::CustomDashboard
     accounts.count
   end
 
+  def phone_calls_count
+    completed_phone_calls.count
+  end
+
+  def bill_minutes
+    call_data_records.sum("(bill_sec / 60) + 1")
+  end
+
   private
 
   def interactions
@@ -146,6 +154,14 @@ class StatisticDashboard < Administrate::CustomDashboard
 
   def accounts
     apply_filters(Account.all)
+  end
+
+  def completed_phone_calls
+    apply_filters(PhoneCall.completed)
+  end
+
+  def call_data_records
+    apply_filters(CallDataRecord.joins(:phone_call).merge(PhoneCall.completed))
   end
 
   def apply_filters(scope)
