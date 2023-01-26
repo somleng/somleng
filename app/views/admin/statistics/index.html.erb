@@ -42,6 +42,12 @@
 
       <dt class="attribute-label">Accounts:</dt>
       <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.accounts_count, units: { thousand: "K", million: "M", billion: "B" }) %></dd>
+
+      <dt class="attribute-label">Phone Calls:</dt>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.phone_calls_count, units: { thousand: "K", million: "M", billion: "B" }) %></dd>
+
+      <dt class="attribute-label">Bill Minutes:</dt>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.bill_minutes, units: { thousand: "K", million: "M", billion: "B" }) %></dd>
     </dl>
   </p>
 </div>
