@@ -28,6 +28,7 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
+  db_instance_identifier = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.id
 
   redis_security_group = data.terraform_remote_state.core.outputs.redis_security_group.id
   redis_url = "redis://${data.terraform_remote_state.core.outputs.elasticache_redis_endpoint}/0"
@@ -38,4 +39,5 @@ module "twilreapi" {
   ecs_worker_autoscale_max_instances = 10
 
   raw_recordings_bucket_name = "raw-recordings.somleng.org"
+
 }

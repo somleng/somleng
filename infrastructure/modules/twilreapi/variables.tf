@@ -24,6 +24,7 @@ variable "raw_recordings_bucket_name" {}
 variable "webserver_container_name" {
   default = "nginx"
 }
+
 variable "webserver_container_port" {
   default = 80
 }
@@ -49,6 +50,10 @@ variable "db_name" {
 
 variable "db_pool" {
   default = 48
+}
+
+variable "db_instance_identifier" {
+  default = ""
 }
 
 variable "db_security_group" {}

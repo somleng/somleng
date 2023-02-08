@@ -3,11 +3,6 @@ resource "aws_cloudwatch_event_rule" "scheduler_daily" {
   schedule_expression =  "cron(0 0 * * ? *)"
 }
 
-resource "aws_cloudwatch_event_rule" "scheduler_hourly" {
-  name                = "somleng-${var.app_environment}-SchedulerJob-hourly"
-  schedule_expression =  "cron(0 * * * ? *)"
-}
-
 resource "aws_cloudwatch_event_target" "scheduler_daily" {
   target_id = aws_cloudwatch_event_rule.scheduler_daily.name
   arn       = aws_sqs_queue.scheduler.arn
@@ -18,6 +13,11 @@ resource "aws_cloudwatch_event_target" "scheduler_daily" {
   "job_class": "DailyJob"
 }
 DOC
+}
+
+resource "aws_cloudwatch_event_rule" "scheduler_hourly" {
+  name                = "somleng-${var.app_environment}-SchedulerJob-hourly"
+  schedule_expression =  "cron(0 * * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "scheduler_hourly" {
