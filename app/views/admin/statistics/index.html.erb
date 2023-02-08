@@ -9,6 +9,8 @@
 
   <div style="float: right;" id="filters">
     <small>
+      <%= link_to("pg_hero", pg_hero_path) %>
+
       <% StatisticDashboard::FILTERS.first(10).each do |filter| %>
         <%= link_to(filter.name, url_for(action: :index, search: filter.name) )%>
       <% end %>
