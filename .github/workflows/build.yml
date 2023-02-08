@@ -41,7 +41,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "develop",
+              "branch": "pg_hero",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging"
