@@ -1,5 +1,7 @@
 class CreatePgheroSpaceStats < ActiveRecord::Migration[7.0]
   def change
+    enable_extension("pg_stat_statements")
+
     create_table :pghero_space_stats do |t|
       t.text :database
       t.text :schema
