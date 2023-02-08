@@ -41,6 +41,7 @@ production: &production
   admin_password: "<%= ENV.fetch("ADMIN_PASSWORD") { Rails.application.credentials.admin_password } %>"
   switch_password: "<%= ENV.fetch("SWITCH_PASSWORD") { Rails.application.credentials.switch_password } %>"
   skylight_authentication_token: "<%= ENV.fetch("SKYLIGHT_AUTHENTICATION_TOKEN") { Rails.application.credentials.skylight_authentication_token } %>"
+  pghero_db_instance_identifier: "<%= ENV["PGHERO_DB_INSTANCE_IDENTIFIER"] %>"
   active_record_encryption:
     primary_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY") { Rails.application.credentials.dig(:active_record_encryption, :primary_key) } %>"
     deterministic_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY") { Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) } %>"

@@ -24,6 +24,11 @@ variable "raw_recordings_bucket_name" {}
 variable "webserver_container_name" {
   default = "nginx"
 }
+
+variable "pghero_db_instance_identifier" {
+  default = ""
+}
+
 variable "webserver_container_port" {
   default = 80
 }

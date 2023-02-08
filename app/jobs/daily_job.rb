@@ -3,5 +3,6 @@ class DailyJob < ApplicationJob
 
   def perform
     ExecuteWorkflowJob.perform_later(ExpireQueuedPhoneCalls.to_s)
+    PgHero.capture_space_stats
   end
 end

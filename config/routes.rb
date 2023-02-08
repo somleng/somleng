@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount PgHero::Engine, at: "pghero"
+
   scope(as: :api, constraints: { subdomain: AppSettings.config_for(:api_subdomain) }, defaults: { format: "json" } ) do
     concern :recordings do
       resources :recordings, only: %i[index], path: "Recordings"
