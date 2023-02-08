@@ -28,7 +28,7 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
-  pghero_db_instance_identifier = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.identifier
+  db_instance_identifier = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.id
 
   redis_security_group = data.terraform_remote_state.core.outputs.redis_security_group.id
   redis_url = "redis://${data.terraform_remote_state.core.outputs.elasticache_redis_endpoint}/0"

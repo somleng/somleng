@@ -137,6 +137,10 @@
       {
         "name": "REDIS_URL",
         "value": "${redis_url}"
+      },
+      {
+        "name": "PGHERO_DB_INSTANCE_IDENTIFIER",
+        "value": "${pghero_db_instance_identifier}"
       }
     ]
   }

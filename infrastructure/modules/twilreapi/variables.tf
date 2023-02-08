@@ -25,10 +25,6 @@ variable "webserver_container_name" {
   default = "nginx"
 }
 
-variable "pghero_db_instance_identifier" {
-  default = ""
-}
-
 variable "webserver_container_port" {
   default = 80
 }
@@ -54,6 +50,10 @@ variable "db_name" {
 
 variable "db_pool" {
   default = 48
+}
+
+variable "db_instance_identifier" {
+  default = ""
 }
 
 variable "db_security_group" {}

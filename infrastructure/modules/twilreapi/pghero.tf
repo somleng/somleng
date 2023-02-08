@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_event_rule" "scheduler_pg_hero_capture_query_stats_job" {
   name                = "somleng-${var.app_environment}-SchedulerJob-pg-hero-capture_query_stats"
-  schedule_expression =  "cron(0 * * * ? *)"
+  schedule_expression =  "cron(*/5 * * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "scheduler_pg_hero_capture_query_stats_job" {

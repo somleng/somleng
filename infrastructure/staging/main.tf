@@ -28,14 +28,15 @@ module "twilreapi" {
   db_host = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
   db_port = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
+  db_instance_identifier = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.id
 
   redis_security_group = data.terraform_remote_state.core.outputs.redis_security_group.id
   redis_url = "redis://${data.terraform_remote_state.core.outputs.elasticache_redis_endpoint}/1"
 
   call_service_queue_name = "switch-services-staging"
 
-  ecs_appserver_autoscale_min_instances = 0
-  ecs_worker_autoscale_min_instances = 0
+  ecs_appserver_autoscale_min_instances = 1
+  ecs_worker_autoscale_min_instances = 1
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
 }
