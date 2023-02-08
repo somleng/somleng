@@ -10,7 +10,7 @@ resource "aws_cloudwatch_event_target" "scheduler_pg_hero_capture_query_stats_jo
 
   input = <<DOC
 {
-  "job_class": "PgHeroCaptureQueryStatsJob"
+  "job_class": "PgheroCaptureQueryStatsJob"
 }
 DOC
 }
