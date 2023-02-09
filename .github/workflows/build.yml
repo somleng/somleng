@@ -41,7 +41,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "fix_image_processing",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging"

@@ -6,6 +6,6 @@ RSpec.describe Carrier do
 
     carrier.logo.variant(resize_to_limit: [100, 100]).processed
 
-    expect(ActiveStorage::VariantRecord.count).to eq(1)
+    expect(carrier.logo.variant_records).to be_present
   end
 end
