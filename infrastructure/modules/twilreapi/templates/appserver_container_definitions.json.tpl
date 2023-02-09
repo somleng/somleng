@@ -141,6 +141,10 @@
       {
         "name": "PGHERO_DB_INSTANCE_IDENTIFIER",
         "value": "${pghero_db_instance_identifier}"
+      },
+      {
+        "name": "PGHERO_OTHER_DATABASES",
+        "value": "${pghero_other_databases}"
       }
     ]
   }

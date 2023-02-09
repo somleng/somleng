@@ -41,6 +41,7 @@ data "template_file" "appserver_container_definitions" {
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
     redis_url = var.redis_url
     pghero_db_instance_identifier = var.db_instance_identifier
+    pghero_other_databases = var.pghero_other_databases
   }
 }
 
@@ -107,6 +108,7 @@ data "template_file" "worker_container_definitions" {
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
     redis_url = var.redis_url
     pghero_db_instance_identifier = var.db_instance_identifier
+    pghero_other_databases = var.pghero_other_databases
   }
 }
 
