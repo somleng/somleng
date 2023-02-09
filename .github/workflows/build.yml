@@ -41,8 +41,8 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "develop",
-              "environment": "configure_other_databases_for_pghero",
+              "branch": "configure_other_databases_for_pghero",
+              "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging"
             },
