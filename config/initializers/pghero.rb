@@ -4,7 +4,7 @@ ENV["PGHERO_DB_INSTANCE_IDENTIFIER"] = Rails.configuration.app_settings.pghero_d
 
 db_config = Rails.configuration.database_configuration[Rails.env]
 
-ENV["PGHERO_OTHER_DATABASES"].to_s.split(",").each do |database_name|
+Rails.configuration.app_settings.pghero_other_databases.to_s.split(",").each do |database_name|
   PgHero.config["databases"][database_name] = {
     "url" => db_config.merge("database" => database_name),
     "db_instance_identifier" => ENV["PGHERO_DB_INSTANCE_IDENTIFIER"]
