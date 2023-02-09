@@ -39,4 +39,5 @@ module "twilreapi" {
   ecs_worker_autoscale_min_instances = 0
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
+  pghero_other_databases = "opensips_public_gateway_staging,opensips_client_gateway_staging"
 }

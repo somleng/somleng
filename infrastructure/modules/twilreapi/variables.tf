@@ -56,6 +56,11 @@ variable "db_instance_identifier" {
   default = ""
 }
 
+variable "pghero_other_databases" {
+  description = "A comma separated list of other databases to show in the pghero console"
+  default = ""
+}
+
 variable "db_security_group" {}
 variable "redis_security_group" {}
 variable "redis_url" {}
