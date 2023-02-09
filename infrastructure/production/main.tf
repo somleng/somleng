@@ -39,5 +39,5 @@ module "twilreapi" {
   ecs_worker_autoscale_max_instances = 10
 
   raw_recordings_bucket_name = "raw-recordings.somleng.org"
-
+  pghero_other_databases = "opensips_public_gateway,opensips_client_gateway"
 }
