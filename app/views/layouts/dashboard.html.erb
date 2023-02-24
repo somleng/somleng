@@ -13,6 +13,10 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
     <%= render "shared/favicon" %>
+
+    <% if current_carrier.custom_theme_css.present? %>
+      <%= tag.style(current_carrier.custom_theme_css.html_safe) %>
+    <% end %>
   </head>
 
   <body data-controller="sidebar">
