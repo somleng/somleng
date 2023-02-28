@@ -46,7 +46,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
 
       expect(message.reload).to have_attributes(
         status: "delivered",
-        sent_at: be_present
+        delivered_at: be_present
       )
       expect(WebMock).to(have_requested(:post, "https://www.example.com/message_status_callback").with { |request|
         request.body.include?("MessageStatus=delivered")

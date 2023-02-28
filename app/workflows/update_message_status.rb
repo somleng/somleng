@@ -1,5 +1,5 @@
 class UpdateMessageStatus < ApplicationWorkflow
-  CALLBACK_STATES = %w[queued canceled failed sent].freeze
+  CALLBACK_STATES = %w[queued canceled failed sent delivered].freeze
 
   attr_reader :message
 
