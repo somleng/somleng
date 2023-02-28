@@ -40,7 +40,7 @@ class Message < ApplicationRecord
     end
 
     event :mark_as_sent do
-      transitions from: %i[sending sent], to: :sent
+      transitions from: :sending, to: :sent
     end
 
     event :mark_as_delivered do
@@ -48,7 +48,7 @@ class Message < ApplicationRecord
     end
 
     event :mark_as_failed do
-      transitions from: %i[accepted queued sending], to: :failed
+      transitions from: %i[accepted queued sending sent], to: :failed
     end
 
     event :cancel do
