@@ -15,6 +15,7 @@
     <%= render "shared/favicon" %>
 
     <% if current_carrier.custom_theme_css.present? %>
+      <%# NOTE: We need to handle it differently when we are ready to open letting user custom their own css %>
       <%= tag.style(current_carrier.custom_theme_css.html_safe) %>
     <% end %>
   </head>
