@@ -12,6 +12,8 @@ class SMSMessageChannel < ApplicationCable::Channel
     case data.fetch("status")
     when "sent"
       handle_sent_event(message)
+    when "delivered"
+      handle_delivered_event(message)
     when "failed"
       UpdateMessageStatus.new(message).call { message.mark_as_failed! }
     end
@@ -54,6 +56,14 @@ class SMSMessageChannel < ApplicationCable::Channel
     message.transaction do
       UpdateMessageStatus.new(message).call { message.mark_as_sent! }
       CreateEvent.call(eventable: message, type: "message.sent")
+      create_interaction(message)
+    end
+  end
+
+  def handle_delivered_event(message)
+    message.transaction do
+      UpdateMessageStatus.new(message).call { message.mark_as_delivered! }
+      CreateEvent.call(eventable: message, type: "message.delivered")
       create_interaction(message)
     end
   end

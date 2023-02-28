@@ -26,6 +26,7 @@ class Message < ApplicationRecord
     state :sending
     state :sent
     state :failed
+    state :delivered
     state :received
     state :canceled
     state :scheduled
@@ -39,7 +40,11 @@ class Message < ApplicationRecord
     end
 
     event :mark_as_sent do
-      transitions from: :sending, to: :sent
+      transitions from: %i[sending sent], to: :sent
+    end
+
+    event :mark_as_delivered do
+      transitions from: %i[sending sent], to: :delivered
     end
 
     event :mark_as_failed do
