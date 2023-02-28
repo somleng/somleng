@@ -14,7 +14,8 @@ class MessageDecorator < SimpleDelegator
     "sent" => "sent",
     "failed" => "failed",
     "received" => "received",
-    "canceled" => "canceled"
+    "canceled" => "canceled",
+    "delivered" => "delivered"
   }.freeze
 
   def self.model_name

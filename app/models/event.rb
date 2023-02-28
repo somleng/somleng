@@ -6,6 +6,7 @@ class Event < ApplicationRecord
   TYPES = %i[
     phone_call.completed
     message.sent
+    message.delivered
   ].freeze
 
   belongs_to :carrier

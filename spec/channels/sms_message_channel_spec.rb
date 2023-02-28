@@ -29,6 +29,33 @@ RSpec.describe SMSMessageChannel, type: :channel do
       )
     end
 
+    it "handles delivered delevery status" do
+      sms_gateway = stub_current_sms_gateway
+      message = create(
+        :message,
+        :sending,
+        sms_gateway:,
+        status_callback_url: "https://www.example.com/message_status_callback"
+      )
+      stub_request(:post, "https://www.example.com/message_status_callback")
+
+      subscribe
+      perform_enqueued_jobs do
+        perform(:sent, id: message.id, status: "delivered")
+      end
+
+      expect(message.reload).to have_attributes(
+        status: "delivered",
+        delivered_at: be_present
+      )
+      expect(WebMock).to(have_requested(:post, "https://www.example.com/message_status_callback").with { |request|
+        request.body.include?("MessageStatus=delivered")
+      })
+      expect(message.events.first).to have_attributes(
+        type: "message.delivered"
+      )
+    end
+
     it "handles failed delivery" do
       sms_gateway = stub_current_sms_gateway
       message = create(:message, :sending, sms_gateway:)
