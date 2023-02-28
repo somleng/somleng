@@ -2,15 +2,15 @@
 // COLORS
 ////////////////////
 
-$brand-color: #311FDA;
-$nav-bg-color: #3c4b64;
+$brand-color: #02d29d;
+$nav-bg-color: #fff;
 
 /////////////////////
 // BACKGROUND COLORS
 ////////////////////
 
 $logo-margin: 20px;
-$main-bg: #F7F7F7;
+$main-bg: #f7f7f7;
 $nav-bg: $nav-bg-color;
 $nav-active-bg: $brand-color;
 $nav-subitem-bg: $nav-bg-color;
@@ -22,12 +22,20 @@ $nav-active-parent-bg: $nav-bg-color;
 // TEXT COLORS
 ////////////////////
 
-$nav-text: #fff;
-$nav-active-text: #fff ;
-$nav-active-parent-text: #fff;
+$nav-text: #333;
+$nav-active-text: #fff;
+$nav-active-parent-text: #333;
 $main-text: #333;
 
 .logo {
   margin: 20px auto;
   max-width: 90% !important;
+}
+
+.toc-wrapper {
+  border-right: 1px solid #ccc;
+
+  .toc-link.active-parent {
+    border-left: 3px solid $brand-color;
+  }
 }
