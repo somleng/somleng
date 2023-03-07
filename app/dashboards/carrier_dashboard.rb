@@ -11,6 +11,7 @@ class CarrierDashboard < Administrate::BaseDashboard
     carrier_users: Field::HasMany,
     account_users: Field::HasMany,
     logo: Field::ActiveStorage.with_options(show_preview_size: [150, 150], export: false),
+    favicon: Field::ActiveStorage.with_options(show_preview_size: [32, 32], export: false),
     id: Field::String,
     name: Field::String,
     created_at: Field::LocalTime,
@@ -32,6 +33,7 @@ class CarrierDashboard < Administrate::BaseDashboard
     id
     name
     logo
+    favicon
     country_code
     website
     subdomain

@@ -16,6 +16,7 @@ RSpec.describe "Carrier Settings" do
     fill_in("Dashboard host", with: "dashboard.t-mobile.example.com")
     fill_in("API host", with: "api.t-mobile.example.com")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
+    attach_file("Favicon", file_fixture("favicon-32x32.png"))
     click_button("Update Carrier Settings")
 
     expect(page).to have_content("Carrier settings were successfully updated")
@@ -25,6 +26,8 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_content("Webhook signing secret")
     expect(page).to have_content("dashboard.t-mobile.example.com")
     expect(page).to have_content("api.t-mobile.example.com")
+    expect(page).to have_xpath("//img[@title='Logo']")
+    expect(page).to have_xpath("//img[@title='Favicon']")
   end
 
   it "Update carrier subdomain" do

@@ -7,22 +7,28 @@
         <h5 class="card-title">General</h5>
 
         <div class="row">
-          <div class="col-6">
+          <div class="col-sm">
             <%= f.input :name, maxlength: 128, hint: "Your company's name" %>
           </div>
 
-          <div class="col-6">
+          <div class="col-sm">
             <%= f.input :website, hint: "Must start with http or https" %>
           </div>
         </div>
 
         <div class="row">
           <div class="col-sm">
-            <%= f.input :country %>
+            <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
           </div>
 
           <div class="col-sm">
-            <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
+            <%= f.input :favicon, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg, image/gif, image/svg+xml, image/x-icon, image/webp", direct_upload: true }, hint: "Square icon. Recommended size: 32x32px " %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <%= f.input :country %>
           </div>
         </div>
       </div>

@@ -87,11 +87,11 @@ module DashboardHelper
     end
   end
 
-  def image_thumbnail(image)
+  def image_thumbnail(image, width: 100, title: nil)
     return unless image.attached?
 
     link_to(
-      image_tag(image, width: 100, class: "img-thumbnail"),
+      image_tag(image, width:, title:, class: "img-thumbnail"),
       url_for(image),
       target: "_blank",
       rel: "noopener"

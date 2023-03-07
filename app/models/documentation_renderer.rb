@@ -20,9 +20,17 @@ class DocumentationRenderer
     return unless carrier.logo.attached?
 
     html_doc = Nokogiri::HTML(content)
+
     logo = html_doc.at_css(".logo")
     logo[:src] = url_helpers.rails_blob_url(carrier.logo)
     logo[:alt] = carrier.name
+
+    if carrier.favicon.attached?
+      head = html_doc.at_css("head")
+      favicon = html_doc.create_element("link", href: url_helpers.rails_blob_url(carrier.favicon), rel: "icon", size: "32x32")
+      head.add_child(favicon)
+    end
+
     @content = html_doc.to_html
   end
 

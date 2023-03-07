@@ -15,12 +15,15 @@
         <%= f.attribute :website do %>
           <%= external_link_to(@resource.website, @resource.website, target: "_blank") %>
         <% end %>
+        <%= f.attribute :logo do %>
+          <%= image_thumbnail(@resource.logo, title: "Logo") %>
+        <% end %>
+        <%= f.attribute :favicon do %>
+          <%= image_thumbnail(@resource.favicon, width: 32, title: "Favicon") %>
+        <% end %>
         <%= f.attribute :country do %>
           <%= @resource.country.emoji_flag %>
           <%= @resource.country.iso_short_name %>
-        <% end %>
-        <%= f.attribute :logo do %>
-          <%= image_thumbnail(@resource.logo) %>
         <% end %>
       <% end %>
     </div>

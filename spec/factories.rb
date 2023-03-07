@@ -59,6 +59,10 @@ FactoryBot.define do
       association :logo, factory: :active_storage_attachment, filename: "carrier_logo.jpeg"
     end
 
+    trait :with_favicon do
+      association :favicon, factory: :active_storage_attachment, filename: "favicon-32x32.png"
+    end
+
     trait :with_oauth_application do
       after(:build) do |carrier|
         carrier.oauth_application ||= build(:oauth_application, owner: carrier)

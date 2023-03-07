@@ -31,6 +31,7 @@ class CarrierSettingsForm
   attribute :custom_app_host, HostnameType.new
   attribute :custom_api_host, HostnameType.new
   attribute :logo
+  attribute :favicon
   attribute :webhook_url
   attribute :enable_webhooks, :boolean, default: true
 
@@ -61,6 +62,7 @@ class CarrierSettingsForm
       website: carrier.website,
       country: carrier.country_code,
       logo: carrier.logo,
+      favicon: carrier.favicon,
       webhook_url: carrier.webhook_endpoint&.url,
       enable_webhooks: carrier.webhooks_enabled?,
       custom_app_host: carrier.custom_app_host,
@@ -84,6 +86,7 @@ class CarrierSettingsForm
     webhook_endpoint.url = webhook_url if webhook_url.present?
 
     carrier.logo.attach(logo) if logo.present?
+    carrier.favicon.attach(favicon) if favicon.present?
 
     Carrier.transaction do
       carrier.save!
