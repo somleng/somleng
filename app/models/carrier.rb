@@ -19,6 +19,7 @@ class Carrier < ApplicationRecord
   has_many :webhook_request_logs
 
   has_one_attached :logo
+  has_one_attached :favicon
 
   def country
     ISO3166::Country.new(country_code)

@@ -8,8 +8,8 @@ module ApplicationHelper
   end
 
   def carrier_favicon_url(carrier)
-    if carrier&.logo&.attached?
-      url_for(carrier.logo)
+    if carrier&.favicon&.attached?
+      url_for(carrier.favicon)
     else
       image_path("placeholder_logo.png")
     end
