@@ -15,6 +15,24 @@ module Services
       )
     end
 
+    it "validates to" do
+      carrier = create(:carrier)
+      sms_gateway = create(:sms_gateway, carrier:, name: "My SMS Gateway")
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            to: "855715222333",
+            from: "855716100230",
+            body: "Hello world"
+          },
+          options: { sms_gateway: }
+        )
+      ).not_to have_valid_schema(
+        error_message: "Phone number 855715222333 does not exist. SMS Gateway: My SMS Gateway"
+      )
+    end
+
     it "normalizes the output" do
       carrier = create(:carrier)
       account = create(:account)

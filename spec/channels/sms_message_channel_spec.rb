@@ -107,7 +107,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
     end
 
     it "handles unconfigured phone numbers" do
-      sms_gateway = stub_current_sms_gateway
+      sms_gateway = stub_current_sms_gateway(name: "My SMS Gateway")
 
       subscribe
       perform(:received, from: "85510777777", to: "85510888888", body: "message body")
@@ -115,7 +115,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
       expect(sms_gateway.messages).to be_empty
       expect(ErrorLog.last).to have_attributes(
         carrier: sms_gateway.carrier,
-        error_message: "Phone number 85510888888 does not exist"
+        error_message: "Phone number 85510888888 does not exist. SMS Gateway: My SMS Gateway"
       )
     end
 
@@ -144,8 +144,8 @@ RSpec.describe SMSMessageChannel, type: :channel do
     end
   end
 
-  def stub_current_sms_gateway
-    sms_gateway = create(:sms_gateway)
+  def stub_current_sms_gateway(attributes = {})
+    sms_gateway = create(:sms_gateway, attributes)
     stub_connection(current_sms_gateway: sms_gateway)
     sms_gateway
   end
