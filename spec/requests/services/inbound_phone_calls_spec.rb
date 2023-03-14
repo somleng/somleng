@@ -101,7 +101,7 @@ RSpec.describe "Services" do
       expect(ErrorLog.last).to have_attributes(
         carrier:,
         account: unconfigured_phone_number.account,
-        error_message: "Phone number 85568308532 is unconfigured"
+        error_message: "Phone number 85568308532 is unconfigured."
       )
     end
   end
