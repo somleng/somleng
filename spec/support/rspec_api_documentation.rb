@@ -27,15 +27,14 @@ RspecApiDocumentation.configure do |config|
     conf.api_explanation = <<~HEREDOC
       # Introduction
 
-      Dive into our full API Reference Documentation and seamlessly integrate Voice functionalities into your website or application.
+      Dive into our full API Reference Documentation and seamlessly integrate Voice and SMS functionalities into your website or application.
       This API uses HTTP verbs and a RESTful endpoint structure. Your Account SID and Auth Token is used as the API Authorization framework.
       Request and response payloads are formatted as JSON using UTF-8 encoding and URL encoded values.
 
       ## Make an HTTP Request
 
       There are a lot of ways you can make an HTTP request to Somleng.
-      You can make a raw HTTP request in your code (for example, using a module like [got in NodeJS](https://www.npmjs.com/package/got)) or by using a tool like [Postman](https://www.postman.com/).
-      You might find it easier to use the [Twilio Helper Library or SDK](https://www.twilio.com/docs/libraries) for your preferred programming language. These libraries can be usually be used with Somleng by overriding the URL parameter from `api.twilio.com` to `api.somleng.org` or that of your own host.
+      You can use a [Helper Library or SDK](#helper-libraries) for your preferred programming language or you can make a raw HTTP request in your code by using a tool like [Postman](https://www.postman.com/).
 
       ## Credentials
 
@@ -48,6 +47,18 @@ RspecApiDocumentation.configure do |config|
       | Username   | Password  |
       | ---------- | --------- |
       | AccountSid | AuthToken |
+
+      ## Helper Libraries
+
+      The following is a list of officially supported helper libraries for Somleng. Please refer to the documentation in each library for more details.
+
+      * [somleng-node](https://github.com/somleng/somleng-node)
+
+      ## Demo Applications
+
+      The following is a list of demo applications which you can use to get started with Somleng.
+
+      * [Somleng Demo Next.js](https://github.com/somleng/somleng-demo-nextjs)
     HEREDOC
 
     conf.filter = :twilio_api
