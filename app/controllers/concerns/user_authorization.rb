@@ -8,12 +8,17 @@ module UserAuthorization
     helper_method :current_account
     helper_method :current_account_membership
 
-    before_action :select_account_membership!
     before_action :authorize_carrier!
+    before_action :select_account_membership!
+    before_action :find_record, if: :find_record?
     before_action :authorize_user!
     after_action :verify_authorized
     rescue_from Pundit::NotAuthorizedError do
-      redirect_to dashboard_root_path, alert: "You are not authorized to perform this action", status: :see_other
+      redirect_to(
+        dashboard_root_path,
+        alert: "You are not authorized to perform this action",
+        status: :see_other
+      )
     end
   end
 
@@ -36,7 +41,11 @@ module UserAuthorization
 
     if current_user.account_memberships.blank?
       sign_out(current_user)
-      redirect_to(new_user_session_path, alert: "You are not a member of any accounts", status: :see_other)
+      redirect_to(
+        new_user_session_path,
+        alert: "You are not a member of any accounts",
+        status: :see_other
+      )
     else
       current_user.update!(current_account_membership: current_user.account_memberships.first!)
     end
@@ -57,4 +66,14 @@ module UserAuthorization
   def parent_scope
     current_user.carrier_user? ? current_carrier : current_account
   end
+
+  def find_record?
+    action_name.in?(%w[show edit update destroy release])
+  end
+
+  def find_record
+    record
+  end
+
+  def record; end
 end

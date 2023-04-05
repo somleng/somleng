@@ -121,4 +121,11 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("Phone number was successfully released")
     expect(page).not_to have_content("Rocket Rides")
   end
+
+  it "requires authentication" do
+    phone_number = create(:phone_number)
+    set_app_host(phone_number.carrier)
+
+    visit dashboard_phone_number_path(phone_number)
+  end
 end
