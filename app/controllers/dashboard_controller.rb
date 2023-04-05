@@ -4,7 +4,6 @@ class DashboardController < ApplicationController
 
   include UserAuthorization
 
-  prepend_before_action :find_record, only: %i[show edit update destroy]
   prepend_before_action :authenticate_user!
   before_action :enforce_two_factor_authentication!
 
@@ -30,10 +29,4 @@ class DashboardController < ApplicationController
   def paginate_resources(resources_scope)
     resources_scope.latest_first.page(params[:page]).without_count
   end
-
-  def find_record
-    record
-  end
-
-  def record; end
 end
