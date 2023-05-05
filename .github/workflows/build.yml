@@ -31,8 +31,6 @@ jobs:
           --health-retries 5
 
     steps:
-      # Adapted from
-      # https://stackoverflow.com/a/65434401
       - name: Set Deployment Matrix
         id: set-deployment-matrix
         run: |
@@ -41,7 +39,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "setup_ghcr",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging"
@@ -231,7 +229,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push to AWS ECR `${{ matrix.identifier }}`
+      - name: Build and push `${{ matrix.identifier }}`
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -243,7 +241,7 @@ jobs:
             ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
             ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}
 
-      - name: Build and push to AWS ECR `nginx`
+      - name: Build and push `nginx`
         uses: docker/build-push-action@v4
         with:
           context: "docker/nginx"
