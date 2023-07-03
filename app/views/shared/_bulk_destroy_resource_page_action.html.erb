@@ -1,0 +1,3 @@
+<%= button_to(path, class: "btn btn-outline-danger", form_class: "d-inline", title: "Delete #{pluralize(total_records, "record")}", method: :delete, form: { data: { turbo_confirm: "This action will delete #{pluralize(total_records, "record")}. Are you sure you want to continue?" }}) do %>
+  <i class="fas fa-trash-alt"></i> <span class="badge bg-danger""><%= total_records %></span>
+<% end %>
