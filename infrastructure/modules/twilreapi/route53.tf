@@ -4,8 +4,8 @@ resource "aws_route53_record" "api" {
   type    = "A"
 
   alias {
-    name                   = var.load_balancer.dns_name
-    zone_id                = var.load_balancer.zone_id
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.zone_id
     evaluate_target_health = true
   }
 }
@@ -16,8 +16,8 @@ resource "aws_route53_record" "app" {
   type    = "A"
 
   alias {
-    name                   = var.load_balancer.dns_name
-    zone_id                = var.load_balancer.zone_id
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.zone_id
     evaluate_target_health = true
   }
 }
@@ -28,8 +28,8 @@ resource "aws_route53_record" "app_subdomains" {
   type    = "A"
 
   alias {
-    name                   = var.load_balancer.dns_name
-    zone_id                = var.load_balancer.zone_id
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.zone_id
     evaluate_target_health = true
   }
 }
