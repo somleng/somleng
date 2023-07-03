@@ -5,7 +5,7 @@ resource "aws_route53_record" "api" {
 
   alias {
     name                   = var.global_accelerator.dns_name
-    zone_id                = var.global_accelerator.zone_id
+    zone_id                = var.global_accelerator.hosted_zone_id
     evaluate_target_health = true
   }
 }
@@ -17,7 +17,7 @@ resource "aws_route53_record" "app" {
 
   alias {
     name                   = var.global_accelerator.dns_name
-    zone_id                = var.global_accelerator.zone_id
+    zone_id                = var.global_accelerator.hosted_zone_id
     evaluate_target_health = true
   }
 }
@@ -29,7 +29,7 @@ resource "aws_route53_record" "app_subdomains" {
 
   alias {
     name                   = var.global_accelerator.dns_name
-    zone_id                = var.global_accelerator.zone_id
+    zone_id                = var.global_accelerator.hosted_zone_id
     evaluate_target_health = true
   }
 }
