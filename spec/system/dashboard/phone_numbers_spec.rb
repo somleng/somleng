@@ -39,6 +39,7 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("855972222222")
     expect(page).not_to have_content("855973333333")
     expect(page).not_to have_content("855974444444")
+    expect(page).not_to have_selector(:link_or_button, "Delete")
   end
 
   it "List phone numbers as an account member" do

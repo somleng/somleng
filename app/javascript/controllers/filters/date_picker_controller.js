@@ -24,11 +24,13 @@ export default class extends Controller {
           moment(this.toDateTarget.value, "DD/MM/YYYY")
         ],
         onSelect: ({formattedDate}) => {
-          if (formattedDate.length == 1) { return; }
+          if(formattedDate.length == 1) {
+            formattedDate.push(formattedDate[0])
+          }
 
           const [fromDate, toDate] = formattedDate;
-          this.fromDateTarget.value = fromDate
-          this.toDateTarget.value   = toDate
+          this.fromDateTarget.value = fromDate;
+          this.toDateTarget.value   = toDate;
         }
       }
     );

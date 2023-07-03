@@ -18,7 +18,9 @@ RSpec.describe "Accounts" do
 
     create(:account, name: "Garry Gas", carrier:, created_at: Time.utc(2021, 12, 10))
     create(:account, name: "Alice Apples", carrier:, created_at: Time.utc(2021, 10, 1))
-    create(:account, :disabled, name: "Disabled Account", carrier:, created_at: Time.utc(2021, 12, 10))
+    create(
+      :account, :disabled, name: "Disabled Account", carrier:, created_at: Time.utc(2021, 12, 10)
+    )
 
     carrier_sign_in(user)
     visit dashboard_accounts_path(

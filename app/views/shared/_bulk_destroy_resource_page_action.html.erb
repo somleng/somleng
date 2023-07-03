@@ -6,7 +6,7 @@
   method: :delete,
   form: {
     data: {
-      turbo_confirm: "This action will delete #{pluralize(number_with_delimiter(total_records), 'record')}. Are you sure you want to continue?" }
+      turbo_confirm: "This action will delete #{pluralize(number_with_delimiter(total_records), 'record')}. This action cannot be undone. Are you sure you want to continue?" }
     }
   ) do %>
   <i class="fas fa-trash-alt"></i> <span class="badge bg-danger""><%= number_with_delimiter(total_records) %></span>
