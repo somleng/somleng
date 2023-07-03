@@ -41,6 +41,13 @@ module Dashboard
       respond_with(:dashboard, record)
     end
 
+    def bulk_destroy
+      @resources = apply_filters(phone_numbers_scope)
+      @resources.delete_all
+
+      respond_with(@resources, location: dashboard_phone_numbers_path(filter: request.query_parameters["filter"]))
+    end
+
     def release
       record.release!
       respond_with(:dashboard, record)

@@ -36,6 +36,8 @@ en:
       phone_numbers:
         release:
           notice: '%{resource_name} was successfully released.'
+        bulk_destroy:
+          notice: 'Phone numbers were successfully destroyed.'
       custom_domains:
         regenerate:
           notice: '%{resource_name} was successfully regenerated.'

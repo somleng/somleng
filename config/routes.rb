@@ -85,6 +85,7 @@ Rails.application.routes.draw do
       resources :phone_numbers do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
         patch :release, on: :member
+        delete :bulk_destroy, on: :collection
       end
       resources :messages, only: %i[index show]
       resources :messaging_services
