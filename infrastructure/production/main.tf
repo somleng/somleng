@@ -15,6 +15,7 @@ module "twilreapi" {
   aws_region = var.aws_region
   aws_ses_region = "us-east-1"
   load_balancer = data.terraform_remote_state.core_infrastructure.outputs.application_load_balancer
+  global_accelerator = data.terraform_remote_state.core_infrastructure.outputs.global_accelerator
   listener_arn = data.terraform_remote_state.core_infrastructure.outputs.https_listener.arn
   route53_zone = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
   cdn_certificate = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate

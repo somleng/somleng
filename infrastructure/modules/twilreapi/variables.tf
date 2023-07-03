@@ -11,6 +11,7 @@ variable "container_instance_subnets" {}
 variable "vpc_id" {}
 variable "uploads_bucket" {}
 variable "load_balancer" {}
+variable "global_accelerator" {}
 variable "listener_arn" {}
 variable "route53_zone" {}
 variable "cdn_certificate" {}
