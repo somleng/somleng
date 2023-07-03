@@ -1,8 +1,8 @@
 module Dashboard
   class PhoneNumbersController < DashboardController
     def index
-      @resources = apply_filters(phone_numbers_scope.includes(:account))
-      @resources = paginate_resources(@resources)
+      @filtered_resources = apply_filters(phone_numbers_scope.includes(:account))
+      @resources = paginate_resources(@filtered_resources)
     end
 
     def new
