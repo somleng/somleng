@@ -5,5 +5,6 @@ RSpec.describe DailyJob do
     DailyJob.perform_now
 
     expect(ExecuteWorkflowJob).to have_been_enqueued.with(ExpireQueuedPhoneCalls.to_s)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with(PublishInteractionData.to_s)
   end
 end

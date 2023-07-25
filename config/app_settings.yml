@@ -15,6 +15,8 @@ default: &default
   raw_recordings_bucket: <%= ENV.fetch("RAW_RECORDINGS_BUCKET", "raw-recordings-bucket") %>
   recaptcha_site_key: <%= ENV.fetch("RECAPTCHA_SITE_KEY", "recaptcha_site_key") %>
   recaptcha_secret_key: <%= ENV.fetch("RECAPTCHA_SECRET_KEY", "recaptcha_secret_key") %>
+  datawrapper_api_key: <%= ENV["DATAWRAPPER_API_KEY"] %>
+  datawrapper_chart_id: <%= ENV["DATAWRAPPER_CHART_ID"] %>
   services_user: "services"
   services_password: "password"
   switch_host: <%= ENV.fetch("SWITCH_HOST", "http://localhost:8080") %>
@@ -43,6 +45,8 @@ production: &production
   admin_password: "<%= ENV.fetch("ADMIN_PASSWORD") { Rails.application.credentials.admin_password } %>"
   switch_password: "<%= ENV.fetch("SWITCH_PASSWORD") { Rails.application.credentials.switch_password } %>"
   skylight_authentication_token: "<%= ENV.fetch("SKYLIGHT_AUTHENTICATION_TOKEN") { Rails.application.credentials.skylight_authentication_token } %>"
+  datawrapper_api_key: <%= ENV.fetch("DATAWRAPPER_API_KEY") { Rails.application.credentials.datawrapper_api_key } %>
+  datawrapper_chart_id: <%= ENV.fetch("DATAWRAPPER_CHART_ID") { Rails.application.credentials.datawrapper_chart_id } %>
   active_record_encryption:
     primary_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY") { Rails.application.credentials.dig(:active_record_encryption, :primary_key) } %>"
     deterministic_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY") { Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) } %>"
