@@ -1,8 +1,8 @@
 resource "aws_lb_target_group" "webserver" {
-  name = "${var.app_identifier}"
+  name = "${var.old_app_identifier}"
   port = var.webserver_container_port
   protocol = "HTTP"
-  vpc_id = var.vpc_id
+  vpc_id = var.vpc.vpc_id
   target_type = "ip"
   deregistration_delay = 60
 

@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_metric_alarm" "appserver_cpu_utilization_high" {
-  alarm_name          = "${var.app_identifier}-CPU-Utilization-High"
+  alarm_name          = "${var.old_app_identifier}-CPU-Utilization-High"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "appserver_cpu_utilization_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "appserver_cpu_utilization_low" {
-  alarm_name          = "${var.app_identifier}-CPU-Utilization-Low"
+  alarm_name          = "${var.old_app_identifier}-CPU-Utilization-Low"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
@@ -35,7 +35,7 @@ resource "aws_cloudwatch_metric_alarm" "appserver_cpu_utilization_low" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
-  alarm_name          = "${var.app_identifier}-queue-size-alarm-high"
+  alarm_name          = "${var.old_app_identifier}-queue-size-alarm-high"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
   threshold           = 1000
@@ -111,7 +111,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
-  alarm_name          = "${var.app_identifier}-queue-size-alarm-low"
+  alarm_name          = "${var.old_app_identifier}-queue-size-alarm-low"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = 1
   threshold           = 500
@@ -262,14 +262,14 @@ resource "aws_appautoscaling_target" "appserver_scale_target" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.appserver.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = var.ecs_appserver_autoscale_max_instances
-  min_capacity       = var.ecs_appserver_autoscale_min_instances
+  max_capacity       = var.appserver_max_tasks
+  min_capacity       = var.appserver_min_tasks
 }
 
 resource "aws_appautoscaling_target" "worker_scale_target" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.worker.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = var.ecs_worker_autoscale_max_instances
-  min_capacity       = var.ecs_worker_autoscale_min_instances
+  max_capacity       = var.worker_max_tasks
+  min_capacity       = var.worker_min_tasks
 }
