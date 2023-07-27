@@ -92,6 +92,7 @@ group :test do
   gem "email_spec"
   gem "factory_bot_rails"
   gem "mock_redis"
+  gem "selenium-webdriver"
   gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
