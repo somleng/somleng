@@ -5,7 +5,7 @@ ENV BUNDLE_APP_CONFIG="/app/.bundle"
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base git postgresql-dev nodejs yarn
+    apk add --update --no-cache build-base git gcompat postgresql-dev nodejs yarn
 
 RUN gem install bundler
 
