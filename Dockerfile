@@ -38,7 +38,7 @@ WORKDIR $APP_ROOT
 
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base postgresql-dev vips-dev ffmpeg && \
+    apk add --update --no-cache build-base gcompat postgresql-dev vips-dev ffmpeg && \
     gem install bundler
 
 COPY --from=build-env $APP_ROOT $APP_ROOT
