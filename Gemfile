@@ -69,6 +69,8 @@ gem "twilio-ruby"
 gem "tzinfo-data"
 gem "with_advisory_lock"
 
+gem "google-protobuf", ">= 3.24.0.rc.2"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
