@@ -7,7 +7,6 @@ variable "app_image" {}
 variable "nginx_image" {}
 variable "aws_region" {}
 variable "aws_ses_region" {}
-variable "container_instance_subnets" {}
 variable "vpc" {}
 variable "uploads_bucket" {}
 variable "load_balancer" {}
@@ -22,18 +21,11 @@ variable "api_subdomain" {}
 variable "call_service_queue_name" {}
 variable "raw_recordings_bucket_name" {}
 
-variable "app_port" {
-  default = 3000
-}
+variable "db_host" {}
 
-variable "db_host" {
-}
+variable "db_port" {}
 
-variable "db_port" {
-}
-
-variable "db_name" {
-}
+variable "db_name" {}
 
 variable "db_pool" {
   default = 48
@@ -54,9 +46,6 @@ variable "redis_url" {}
 
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
-variable "enable_dashboard" {
-  default = false
-}
 variable "appserver_max_tasks" {
   default = 4
 }

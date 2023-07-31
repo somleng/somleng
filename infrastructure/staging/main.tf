@@ -19,7 +19,6 @@ module "twilreapi" {
   listener_arn = data.terraform_remote_state.core_infrastructure.outputs.https_listener.arn
   route53_zone = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
   cdn_certificate = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
-  container_instance_subnets = data.terraform_remote_state.core_infrastructure.outputs.vpc.private_subnets
   vpc = data.terraform_remote_state.core_infrastructure.outputs.vpc
   uploads_bucket = "uploads-staging.somleng.org"
 

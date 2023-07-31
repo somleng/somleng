@@ -38,7 +38,6 @@ data "template_file" "appserver_container_definitions" {
 
   vars = {
     name = var.app_identifier
-    app_port = var.app_port
     app_image      = var.app_image
     nginx_image      = var.nginx_image
     region = var.aws_region
@@ -85,7 +84,7 @@ resource "aws_ecs_service" "appserver" {
   desired_count   = var.appserver_min_tasks
 
   network_configuration {
-    subnets = var.container_instance_subnets
+    subnets = var.vpc.private_subnets
     security_groups = [
       aws_security_group.appserver.id,
       var.db_security_group,
@@ -203,12 +202,12 @@ resource "aws_ecs_service" "old_appserver" {
   launch_type = "FARGATE"
 
   network_configuration {
-    subnets = var.container_instance_subnets
+    subnets = var.vpc.private_subnets
     security_groups = [aws_security_group.appserver.id, var.db_security_group, var.redis_security_group]
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.webserver.arn
+    target_group_arn = aws_lb_target_group.old_webserver.arn
     container_name   = "nginx"
     container_port   = 80
   }
@@ -237,7 +236,7 @@ resource "aws_ecs_service" "old_worker" {
   launch_type = "FARGATE"
 
   network_configuration {
-    subnets = var.container_instance_subnets
+    subnets = var.vpc.private_subnets
     security_groups = [aws_security_group.worker.id, var.db_security_group, var.redis_security_group]
   }
 
@@ -251,7 +250,6 @@ data "template_file" "old_appserver_container_definitions" {
 
   vars = {
     name = var.old_service_name
-    app_port = var.app_port
     app_image      = var.app_image
     nginx_image      = var.nginx_image
     region = var.aws_region
