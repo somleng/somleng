@@ -45,8 +45,8 @@ jobs:
               "ecs_cluster": "somleng-staging"
             },
             {
-              "identifier": "twilreapi",
-              "branch": "master",
+              "identifier": "somleng",
+              "branch": "ec2_infra",
               "environment": "production",
               "image_tag": "latest",
               "ecs_cluster": "somleng"

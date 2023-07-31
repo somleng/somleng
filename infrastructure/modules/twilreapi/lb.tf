@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "webserver" {
 }
 
 resource "aws_lb_listener_rule" "webserver" {
-  priority = var.app_environment == "production" ? 15 : 115
+  priority = var.app_environment == "production" ? 16 : 116
 
   listener_arn = var.listener_arn
 
@@ -52,7 +52,7 @@ resource "aws_lb_target_group" "old_webserver" {
 }
 
 resource "aws_lb_listener_rule" "old_webserver" {
-  priority = var.app_environment == "production" ? 16 : 116
+  priority = var.app_environment == "production" ? 15 : 115
 
   listener_arn = var.listener_arn
 
