@@ -55,8 +55,8 @@ jobs:
           EOF
           )
           matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
-          echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
-          echo ::set-output name=matrixLength::$(echo $matrix | jq length)
+          echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+          echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
 
       - name: Checkout
         uses: actions/checkout@v3
