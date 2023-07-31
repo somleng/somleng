@@ -4,6 +4,7 @@ module "twilreapi" {
   cluster_name = "somleng-staging"
   app_identifier = "somleng-staging"
   old_app_identifier = "somleng-staging"
+  old_service_name = "old-somleng-staging"
   app_environment = "staging"
   app_subdomain = "app-staging"
   cdn_subdomain = "cdn-staging"

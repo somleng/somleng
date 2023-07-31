@@ -38,7 +38,7 @@ jobs:
           matrixSource=$(cat << EOF
           [
             {
-              "identifier": "somleng-staging",
+              "identifier": "old-somleng-staging",
               "branch": "ec2_infra",
               "environment": "staging",
               "image_tag": "staging",
@@ -257,7 +257,6 @@ jobs:
       - name: Get current task definition
         run: |
           aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-appserver" --query 'taskDefinition' > task-definition.json
-          cat task-definition.json
 
       - name: Prepare nginx task definition
         id: render-nginx-task-def
@@ -278,7 +277,6 @@ jobs:
       - name: Get current task definition
         run: |
           aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker" --query 'taskDefinition' > task-definition.json
-          cat task-definition.json
 
       - name: Prepare worker task definition
         id: render-worker-task-def

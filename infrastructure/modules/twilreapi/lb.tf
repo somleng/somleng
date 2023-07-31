@@ -1,6 +1,6 @@
 resource "aws_lb_target_group" "webserver" {
   name = "${var.old_app_identifier}"
-  port = var.webserver_container_port
+  port = 80
   protocol = "HTTP"
   vpc_id = var.vpc.vpc_id
   target_type = "ip"

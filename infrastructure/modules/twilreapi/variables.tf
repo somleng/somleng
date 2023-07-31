@@ -1,6 +1,7 @@
 variable "cluster_name" {}
 variable "app_identifier" {}
 variable "old_app_identifier" {}
+variable "old_service_name" {}
 variable "app_environment" {}
 variable "app_image" {}
 variable "nginx_image" {}
@@ -20,14 +21,6 @@ variable "api_subdomain" {}
 
 variable "call_service_queue_name" {}
 variable "raw_recordings_bucket_name" {}
-
-variable "webserver_container_name" {
-  default = "nginx"
-}
-
-variable "webserver_container_port" {
-  default = 80
-}
 
 variable "app_port" {
   default = 3000
