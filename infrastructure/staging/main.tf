@@ -1,5 +1,5 @@
-module "twilreapi" {
-  source = "../modules/twilreapi"
+module "somleng" {
+  source = "../modules/somleng"
 
   cluster_name = "somleng-staging"
   app_identifier = "somleng-staging"
