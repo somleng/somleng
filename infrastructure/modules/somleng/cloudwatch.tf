@@ -3,8 +3,8 @@ resource "aws_cloudwatch_log_group" "nginx" {
   retention_in_days = 7
 }
 
-resource "aws_cloudwatch_log_group" "app" {
-  name = "${var.app_identifier}-app"
+resource "aws_cloudwatch_log_group" "appserver" {
+  name = "${var.app_identifier}-appserver"
   retention_in_days = 7
 }
 

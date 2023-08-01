@@ -54,5 +54,3 @@ resource "aws_sqs_queue" "dead_letter" {
 data "aws_sqs_queue" "call_service" {
   name = var.call_service_queue_name
 }
-
-

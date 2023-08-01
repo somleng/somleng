@@ -45,7 +45,7 @@ jobs:
               "ecs_cluster": "somleng-staging"
             },
             {
-              "identifier": "twilreapi",
+              "identifier": "somleng",
               "branch": "master",
               "environment": "production",
               "image_tag": "latest",
@@ -55,8 +55,8 @@ jobs:
           EOF
           )
           matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
-          echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
-          echo ::set-output name=matrixLength::$(echo $matrix | jq length)
+          echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+          echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -234,6 +234,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=${{ matrix.identifier }}
           cache-to: type=gha,mode=max,scope=${{ matrix.identifier }}
           tags: |
@@ -246,6 +247,7 @@ jobs:
         with:
           context: "docker/nginx"
           push: true
+          platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=${{ matrix.identifier }}-nginx
           cache-to: type=gha,mode=max,scope=${{ matrix.identifier }}-nginx
           tags: |
@@ -256,7 +258,6 @@ jobs:
       - name: Get current task definition
         run: |
           aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-appserver" --query 'taskDefinition' > task-definition.json
-          cat task-definition.json
 
       - name: Prepare nginx task definition
         id: render-nginx-task-def
@@ -274,10 +275,9 @@ jobs:
           container-name: app
           image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
-      - name: Get current task definition
+      - name: Get current worker task definition
         run: |
           aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker" --query 'taskDefinition' > task-definition.json
-          cat task-definition.json
 
       - name: Prepare worker task definition
         id: render-worker-task-def
@@ -287,14 +287,31 @@ jobs:
           container-name: worker
           image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
-      - name: Register Migration Task Definition
+      - name: Register worker task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
 
+      - name: Get current Fargate worker task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker-fargate" --query 'taskDefinition' > task-definition.json
+
+      - name: Prepare Fargate worker task definition
+        id: render-fargate-worker-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: worker
+          image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
+
+      - name: Register Fargate task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-fargate-worker-task-def.outputs.task-definition }}
+
       - name: Run DB Migrate
         run: |
-          ./bin/ecs_run_task --cluster ${{ matrix.ecs_cluster }} --started-by db_migrate_ci --service ${{ matrix.identifier }}-worker --command "bundle exec rails db:migrate"
+          ./bin/ecs_run_task --cluster ${{ matrix.ecs_cluster }} --started-by db_migrate_ci --service ${{ matrix.identifier }}-worker --task-definition ${{ matrix.identifier }}-worker-fargate --launch-type FARGATE --command "bundle exec rails db:migrate"
 
       - name: Deploy App Server
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1

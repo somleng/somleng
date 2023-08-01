@@ -14,12 +14,12 @@ data "aws_iam_policy_document" "ecs_task_assume_role_policy" {
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-  name               = "${var.app_identifier}-ecs-task-role"
+  name               = "${var.app_identifier}-ecsTaskRole"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume_role_policy.json
 }
 
 resource "aws_iam_policy" "ecs_task_policy" {
-  name = "${var.app_identifier}-ecs-task-policy"
+  name = "${var.app_identifier}-ecsTaskPolicy"
 
   policy = <<EOF
 {

@@ -262,14 +262,14 @@ resource "aws_appautoscaling_target" "appserver_scale_target" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.appserver.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = var.ecs_appserver_autoscale_max_instances
-  min_capacity       = var.ecs_appserver_autoscale_min_instances
+  max_capacity       = var.appserver_max_tasks
+  min_capacity       = var.appserver_min_tasks
 }
 
 resource "aws_appautoscaling_target" "worker_scale_target" {
   service_namespace  = "ecs"
   resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.worker.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = var.ecs_worker_autoscale_max_instances
-  min_capacity       = var.ecs_worker_autoscale_min_instances
+  max_capacity       = var.worker_max_tasks
+  min_capacity       = var.worker_min_tasks
 }

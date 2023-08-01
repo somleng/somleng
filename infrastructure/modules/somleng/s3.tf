@@ -1,6 +1,14 @@
 resource "aws_s3_bucket" "uploads" {
   bucket = var.uploads_bucket
+}
+
+resource "aws_s3_bucket_acl" "uploads" {
+  bucket = aws_s3_bucket.uploads.id
   acl    = "private"
+}
+
+resource "aws_s3_bucket_cors_configuration" "uploads" {
+  bucket = aws_s3_bucket.uploads.id
 
   cors_rule {
     allowed_headers = ["*"]

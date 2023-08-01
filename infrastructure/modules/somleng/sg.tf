@@ -1,6 +1,6 @@
 resource "aws_security_group" "appserver" {
   name   = "${var.app_identifier}-appserver"
-  vpc_id = var.vpc_id
+  vpc_id = var.vpc.vpc_id
 }
 
 resource "aws_security_group_rule" "appserver_ingress" {
@@ -23,7 +23,7 @@ resource "aws_security_group_rule" "appserver_egress" {
 
 resource "aws_security_group" "worker" {
   name   = "${var.app_identifier}-worker"
-  vpc_id = var.vpc_id
+  vpc_id = var.vpc.vpc_id
 }
 
 resource "aws_security_group_rule" "worker_egress" {

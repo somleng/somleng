@@ -1,6 +1,6 @@
 [
   {
-    "name": "${webserver_container_name}",
+    "name": "nginx",
     "image": "${nginx_image}:latest",
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -13,7 +13,7 @@
     "essential": true,
     "portMappings": [
       {
-        "containerPort": ${webserver_container_port}
+        "containerPort": 80
       }
     ],
     "dependsOn": [
@@ -29,7 +29,7 @@
     "logConfiguration": {
       "logDriver": "awslogs",
        "options": {
-         "awslogs-group": "${app_logs_group}",
+         "awslogs-group": "${appserver_logs_group}",
          "awslogs-region": "${logs_group_region}",
          "awslogs-stream-prefix": "${app_environment}"
        }
@@ -58,7 +58,7 @@
     ],
     "portMappings": [
       {
-        "containerPort": ${app_port}
+        "containerPort": 3000
       }
     ],
     "environment": [

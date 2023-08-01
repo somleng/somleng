@@ -6,7 +6,7 @@ require "shellwords"
 
 options = {
   started_by: "ecs_run_task",
-  launch_type: "FARGATE"
+  launch_type: "EC2"
 }
 
 OptionParser.new do |opts|

@@ -1,5 +1,5 @@
-module "twilreapi" {
-  source = "../modules/twilreapi"
+module "somleng" {
+  source = "../modules/somleng"
 
   cluster_name = "somleng-staging"
   app_identifier = "somleng-staging"
@@ -10,8 +10,6 @@ module "twilreapi" {
 
   app_image = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image = data.terraform_remote_state.core.outputs.nginx_ecr_repository
-  memory = 1024
-  cpu = 512
   aws_region = var.aws_region
   aws_ses_region = "us-east-1"
   load_balancer = data.terraform_remote_state.core_infrastructure.outputs.application_load_balancer
@@ -19,8 +17,7 @@ module "twilreapi" {
   listener_arn = data.terraform_remote_state.core_infrastructure.outputs.https_listener.arn
   route53_zone = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
   cdn_certificate = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
-  container_instance_subnets = data.terraform_remote_state.core_infrastructure.outputs.vpc.private_subnets
-  vpc_id = data.terraform_remote_state.core_infrastructure.outputs.vpc.vpc_id
+  vpc = data.terraform_remote_state.core_infrastructure.outputs.vpc
   uploads_bucket = "uploads-staging.somleng.org"
 
   db_name = "somleng_staging"
@@ -36,8 +33,10 @@ module "twilreapi" {
 
   call_service_queue_name = "switch-services-staging"
 
-  ecs_appserver_autoscale_min_instances = 0
-  ecs_worker_autoscale_min_instances = 0
+  appserver_min_tasks = 0
+  worker_min_tasks = 0
+  appserver_max_tasks = 1
+  worker_max_tasks = 1
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
   pghero_other_databases = "opensips_public_gateway_staging,opensips_client_gateway_staging"
