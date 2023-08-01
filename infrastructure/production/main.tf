@@ -4,7 +4,6 @@ module "twilreapi" {
   cluster_name = "somleng"
   app_identifier = "somleng"
   old_app_identifier = "twilreapi"
-  old_service_name = "twilreapi"
 
   app_environment = "production"
   app_subdomain = "app"

@@ -1,7 +1,6 @@
 variable "cluster_name" {}
 variable "app_identifier" {}
 variable "old_app_identifier" {}
-variable "old_service_name" {}
 variable "app_environment" {}
 variable "app_image" {}
 variable "nginx_image" {}

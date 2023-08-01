@@ -14,12 +14,12 @@ data "aws_iam_policy_document" "ecs_task_assume_role_policy" {
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-  name               = "${var.old_app_identifier}-ecs-task-role"
+  name               = "${var.app_identifier}-ecsTaskRole"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume_role_policy.json
 }
 
 resource "aws_iam_policy" "ecs_task_policy" {
-  name = "${var.old_app_identifier}-ecs-task-policy"
+  name = "${var.app_identifier}-ecsTaskPolicy"
 
   policy = <<EOF
 {
@@ -103,7 +103,7 @@ EOF
 
 # https://aws.amazon.com/blogs/containers/new-using-amazon-ecs-exec-access-your-containers-fargate-ec2/
 resource "aws_iam_policy" "ecs_exec_policy" {
-  name = "${var.old_app_identifier}-ecs-exec-policy"
+  name = "${var.app_identifier}-ecs-exec-policy"
 
   policy = <<EOF
 {
@@ -135,7 +135,7 @@ resource "aws_iam_role_policy_attachment" "ecs_exec_policy" {
 }
 
 resource "aws_iam_role" "task_execution_role" {
-  name = "${var.old_app_identifier}-ecsTaskExecutionRole"
+  name = "${var.app_identifier}-ecsTaskExecutionRole"
 
   assume_role_policy = <<EOF
 {
@@ -154,7 +154,7 @@ EOF
 }
 
 resource "aws_iam_policy" "task_execution_custom_policy" {
-  name = "${var.old_app_identifier}-task-execution-custom-policy"
+  name = "${var.app_identifier}-task-execution-custom-policy"
 
   policy = <<EOF
 {
