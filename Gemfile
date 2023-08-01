@@ -46,7 +46,6 @@ gem "money"
 gem "okcomputer"
 gem "pg"
 gem "pghero"
-gem "pg_query", force_ruby_platform: true # https://github.com/protocolbuffers/protobuf/issues/12904#issuecomment-1589718935
 gem "phony"
 gem "puma"
 gem "pundit"

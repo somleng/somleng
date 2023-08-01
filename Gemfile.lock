@@ -257,7 +257,6 @@ GEM
     foreman (0.87.2)
     globalid (1.1.0)
       activesupport (>= 5.0)
-    google-protobuf (3.23.4)
     haikunator (1.1.1)
     hashdiff (1.0.1)
     htmlbeautifier (1.4.2)
@@ -350,8 +349,6 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.3)
-    pg_query (4.2.1)
-      google-protobuf (>= 3.22.3)
     pghero (3.3.3)
       activerecord (>= 6)
     phony (2.20.5)
@@ -607,7 +604,6 @@ DEPENDENCIES
   money
   okcomputer
   pg
-  pg_query
   pghero
   phony
   pry
