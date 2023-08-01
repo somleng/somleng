@@ -35,7 +35,7 @@ resource "aws_sqs_queue" "scheduler" {
         "Service": "events.amazonaws.com"
       },
       "Action": "sqs:SendMessage",
-      "Resource": "arn:aws:sqs:*:*:${var.old_app_identifier}-scheduler",
+      "Resource": "arn:aws:sqs:*:*:${var.app_identifier}-scheduler",
       "Condition": {
         "ArnEquals": {
           "aws:SourceArn": "arn:aws:events:*:*:rule/somleng-${var.app_environment}-SchedulerJob-*"
@@ -54,60 +54,3 @@ resource "aws_sqs_queue" "dead_letter" {
 data "aws_sqs_queue" "call_service" {
   name = var.call_service_queue_name
 }
-
-
-
-
-
-
-
-resource "aws_sqs_queue" "old_high_priority" {
-  name                       = "${var.old_app_identifier}-high-priority"
-  redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.old_dead_letter.arn}\",\"maxReceiveCount\":${local.sqs_max_receive_count}}"
-  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
-}
-
-resource "aws_sqs_queue" "old_default" {
-  name                       = "${var.old_app_identifier}-default"
-  redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.old_dead_letter.arn}\",\"maxReceiveCount\":${local.sqs_max_receive_count}}"
-  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
-}
-
-resource "aws_sqs_queue" "old_low_priority" {
-  name                       = "${var.old_app_identifier}-low-priority"
-  redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.old_dead_letter.arn}\",\"maxReceiveCount\":${local.sqs_max_receive_count}}"
-  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
-}
-
-resource "aws_sqs_queue" "old_scheduler" {
-  name                       = "${var.old_app_identifier}-scheduler"
-  redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.old_dead_letter.arn}\",\"maxReceiveCount\":${local.sqs_max_receive_count}}"
-  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
-
-  policy = <<DOC
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "events.amazonaws.com"
-      },
-      "Action": "sqs:SendMessage",
-      "Resource": "arn:aws:sqs:*:*:${var.old_app_identifier}-scheduler",
-      "Condition": {
-        "ArnEquals": {
-          "aws:SourceArn": "arn:aws:events:*:*:rule/somleng-${var.app_environment}-SchedulerJob-*"
-        }
-      }
-    }
-  ]
-}
-DOC
-}
-
-resource "aws_sqs_queue" "old_dead_letter" {
-  name = "${var.old_app_identifier}-dead-letter"
-}
-
-
