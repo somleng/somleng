@@ -12,18 +12,3 @@ resource "aws_cloudwatch_log_group" "worker" {
   name ="${var.app_identifier}-worker"
   retention_in_days = 7
 }
-
-resource "aws_cloudwatch_log_group" "old_nginx" {
-  name = "${var.old_app_identifier}-nginx"
-  retention_in_days = 7
-}
-
-resource "aws_cloudwatch_log_group" "old_app" {
-  name = "${var.old_app_identifier}-app"
-  retention_in_days = 7
-}
-
-resource "aws_cloudwatch_log_group" "old_worker" {
-  name ="${var.old_app_identifier}-worker"
-  retention_in_days = 7
-}
