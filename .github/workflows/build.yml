@@ -39,14 +39,14 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "ec2_infra",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging"
             },
             {
               "identifier": "somleng",
-              "branch": "ec2_infra",
+              "branch": "master",
               "environment": "production",
               "image_tag": "latest",
               "ecs_cluster": "somleng"
