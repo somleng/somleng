@@ -226,7 +226,7 @@ jobs:
             version: 0.2
             phases:
               build:
-                commands:
+                steps:
                   - name: Set up Docker Buildx
                     uses: docker/setup-buildx-action@v2
 
