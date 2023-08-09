@@ -57,7 +57,6 @@ jobs:
           matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
           echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
           echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
-          echo $matrix
 
       # - name: Checkout
       #   uses: actions/checkout@v3
@@ -175,7 +174,9 @@ jobs:
       packages: write
 
     strategy:
-      matrix: ${{fromJson(needs.build.outputs.matrix)}}
+      matrix:
+        platforms: [linux/amd64, linux/arm64]
+        ${{fromJson(needs.build.outputs.matrix)}}
 
     needs:
       - build
