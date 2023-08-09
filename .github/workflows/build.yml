@@ -244,7 +244,7 @@ jobs:
                 commands:
                   - echo Build started on `date`
                   - echo Building the Docker image...
-                  - docker buildx -t ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }} -t ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }} -t ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }} .
+                  - docker buildx build --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }} --push .
               post_build:
                 commands:
                   - echo Build completed on `date`
