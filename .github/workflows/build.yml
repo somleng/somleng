@@ -279,6 +279,7 @@ jobs:
             ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}
             ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
             ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}
+          outputs: type=image,name=${{ env.APP_ECR_REPOSITORY_URI }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Build linux/amd64 nginx image
         id: build-nginx
@@ -293,6 +294,7 @@ jobs:
             ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}
             ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
             ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}
+          outputs: type=image,name=${{ env.NGINX_ECR_REPOSITORY_URI }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digests
         run: |
