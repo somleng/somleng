@@ -176,6 +176,7 @@ jobs:
       packages: write
 
     strategy:
+      fail-fast: false
       matrix: ${{fromJSON(needs.build.outputs.matrix)}}
 
     needs:
