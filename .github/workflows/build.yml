@@ -55,7 +55,7 @@ jobs:
           EOF
           )
           matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
-          echo "matrix={\"platforms\":["linux/amd64","linux/arm64"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+          echo "matrix={\"platforms\":[\"linux/amd64\",\"linux/arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
           echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
 
       # - name: Checkout
