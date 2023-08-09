@@ -298,6 +298,7 @@ jobs:
           outputs: type=image,name=${{ env.NGINX_ECR_REPOSITORY_URI }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digests
+        if: matrix.platform == 'linux/amd64'
         run: |
           mkdir -p /tmp/digests
           app_digest="${{ steps.build-app.outputs.digest }}"
@@ -306,6 +307,7 @@ jobs:
           touch "/tmp/digests/${nginx_digest#sha256:}"
 
       - name: Upload digest
+        if: matrix.platform == 'linux/amd64'
         uses: actions/upload-artifact@v3
         with:
           name: digests
