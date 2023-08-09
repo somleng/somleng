@@ -238,6 +238,7 @@ jobs:
                   - echo Build started on `date`
                   - echo Building the Docker image...
                   - export DOCKER_BUILDKIT=1
+                  - ln -s /usr/local/bin/docker-buildx /usr/local/lib/docker/cli-plugins/docker-buildx
                   - docker build --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }} --push .
 
       # - name: Login to AWS Public ECR
