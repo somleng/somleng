@@ -25,8 +25,8 @@ data "aws_iam_policy_document" "codebuild" {
     effect    = "Allow"
 
     resources = [
-      "arn:aws:logs:::log-group:/aws/codebuild/${local.codebuild_project_name}",
-      "arn:aws:logs:::log-group:/aws/codebuild/${local.codebuild_project_name}:*"
+      "arn:aws:logs:*:*:log-group:/aws/codebuild/${local.codebuild_project_name}",
+      "arn:aws:logs:*:*:log-group:/aws/codebuild/${local.codebuild_project_name}:*"
     ]
 
     actions = [
