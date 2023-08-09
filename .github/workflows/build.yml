@@ -101,6 +101,7 @@ jobs:
       #   with:
       #     name: documentation_source
       #     path: doc/
+      #     retention-days: 1
 
   # build_documentation:
   #   name: Build Documentation
@@ -145,6 +146,7 @@ jobs:
   #       with:
   #         name: api_documentation
   #         path: build
+  #         retention-days: 1
 
   #     - name: Configure AWS credentials
   #       if: github.ref == 'refs/heads/master'
@@ -265,6 +267,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build linux/amd64 app image
+        id: build-app
         if: matrix.platform == 'linux/amd64'
         uses: docker/build-push-action@v4
         with:
@@ -278,6 +281,7 @@ jobs:
             ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}
 
       - name: Build linux/amd64 nginx image
+        id: build-nginx
         if: matrix.platform == 'linux/amd64'
         uses: docker/build-push-action@v4
         with:
@@ -289,6 +293,22 @@ jobs:
             ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}
             ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
             ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}
+
+      - name: Export digests
+        run: |
+          mkdir -p /tmp/digests
+          app_digest="${{ steps.build-app.outputs.digest }}"
+          nginx_digest="${{ steps.build-nginx.outputs.digest }}"
+          touch "/tmp/digests/${app_digest#sha256:}"
+          touch "/tmp/digests/${nginx_digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v3
+        with:
+          name: digests
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
 
       # - name: Get current task definition
       #   run: |
