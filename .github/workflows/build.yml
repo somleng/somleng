@@ -225,6 +225,13 @@ jobs:
           buildspec-override:   |
             version: 0.2
             phases:
+              install:
+                commands:
+                  - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
+                  - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-arm64"
+                  - mkdir -p ~/.docker/cli-plugins
+                  - mv "buildx-$BUILDX_VERSION.linux-arm64" ~/.docker/cli-plugins/docker-buildx
+                  - chmod +x ~/.docker/cli-plugins/docker-buildx
               pre_build:
                 commands:
                   - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
