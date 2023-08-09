@@ -55,7 +55,7 @@ jobs:
           EOF
           )
           matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
-          echo "matrix={\"platforms\":[\"linux/amd64\",\"linux/arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+          echo "matrix={\"platform\":[\"linux/amd64\",\"linux/arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
           echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
 
       # - name: Checkout
@@ -217,7 +217,8 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ap-southeast-1
 
-      - name: Run CodeBuild
+      - name: Build Image on AWS CodeBuild
+        if: matrix.platform == "linux/arm64"
         uses: aws-actions/aws-codebuild-run-build@v1
         with:
           project-name: somleng
