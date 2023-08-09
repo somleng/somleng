@@ -57,13 +57,14 @@ resource "aws_codebuild_project" "this" {
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/amazonlinux2-aarch64-standard:3.0"
-    type                        = "ARM_CONTAINER"
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image = "aws/codebuild/amazonlinux2-aarch64-standard:3.0"
+    type = "ARM_CONTAINER"
+    privileged_mode = true
   }
 
   source {
-    type            = "GITHUB"
-    location        = "https://github.com/somleng/somleng.git"
+    type = "GITHUB"
+    location = "https://github.com/somleng/somleng.git"
   }
 }
