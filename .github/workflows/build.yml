@@ -225,13 +225,6 @@ jobs:
           buildspec-override:   |
             version: 0.2
             phases:
-              install:
-                commands:
-                  - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
-                  - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64"
-                  - mkdir -p ~/.docker/cli-plugins
-                  - mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
-                  - chmod +x ~/.docker/cli-plugins/docker-buildx
               pre_build:
                 steps:
                   - name: Login to AWS Public ECR
@@ -244,13 +237,8 @@ jobs:
                 commands:
                   - echo Build started on `date`
                   - echo Building the Docker image...
-                  - docker buildx build --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }} --push .
-              post_build:
-                commands:
-                  - echo Build completed on `date`
-                  - echo Pushing the Docker image...
-                  - docker push ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}
-                  - docker push ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }}
+                  - export DOCKER_BUILDKIT=1
+                  - docker buildx build --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG  }} --push .
 
       # - name: Login to AWS Public ECR
       #   uses: docker/login-action@v2
