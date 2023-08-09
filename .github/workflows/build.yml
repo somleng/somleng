@@ -228,7 +228,7 @@ jobs:
               pre_build:
                 commands:
                   - echo Logging in to Amazon ECR...
-                  - $(aws ecr-public get-authorization-token --region $AWS_DEFAULT_REGION)
+                  - $(aws ecr-public get-authorization-token --region us-east-1)
               build:
                 commands:
                   - echo Build started on `date`
