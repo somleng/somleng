@@ -150,7 +150,6 @@ jobs:
           bundle exec middleman build --build-dir=build/twilio_api
 
       - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/master'
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -162,8 +161,8 @@ jobs:
 
       - name: Deploy API Documentation
         run: |
-          aws s3 sync --delete --acl public-read build/twilio_api s3://www.somleng.org/${{ matrix.docs_path }}/twilio_api/
-          aws s3 sync --delete --acl public-read build/carrier_api s3://www.somleng.org/${{ matrix.docs_path }}/carrier_api/
+          aws s3 sync --delete --acl public-read build/twilio_api s3://www.somleng.org/${{ matrix.docs_path }}/twilio_api
+          aws s3 sync --delete --acl public-read build/carrier_api s3://www.somleng.org/${{ matrix.docs_path }}/carrier_api
           aws cloudfront create-invalidation --distribution-id E3962XCJFZ0KB1 --paths /${{ matrix.docs_path }}/\*
 
   build-packages:
