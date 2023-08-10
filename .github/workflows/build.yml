@@ -178,7 +178,7 @@ jobs:
     if: needs.build.outputs.matrixLength > 0
 
     strategy:
-      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
+      matrix: ${{fromJSON(needs.build.outputs.packageMatrix)}}
 
     needs:
       - build
