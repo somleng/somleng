@@ -222,6 +222,8 @@ jobs:
 
                   - name: Build
                     run: |
+                      echo Checking Dockerfile...
+                      cat Dockerfile
                       aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
                       echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
                       export DOCKER_BUILDKIT=1
