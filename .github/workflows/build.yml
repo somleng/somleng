@@ -336,7 +336,7 @@ jobs:
       - name: Run DB Migrate using Fargate
         run: |
           network_configuration=$(aws ecs describe-services --cluster ${{ matrix.ecs_cluster }} --service ${{ matrix.identifier }}-worker --query 'services[0]' | jq 'with_entries(select([.key] | inside(["networkConfiguration"])))')
-          run_task_params=$(echo $network_configuration | jq '.startedBy = "db_migrate_ci" | .cluster = "${{ matrix.ecs_cluster }}" | .launchType = "FARGATE" | .taskDefinition = "${{ matrix.identifier }}-worker-fargate" | .overrides.containerOverrides[0].name = "worker" | .overrides.containerOverrides[0].command = ["bundle", "exec", "rails", "db:migrate"]')
+          run_task_params=$(echo $network_configuration | jq '.startedBy = "db_migrate_ci" | .cluster = "${{ matrix.ecs_cluster }}" | .launchType = "FARGATE" | .taskDefinition = "${{ matrix.identifier }}-worker-fargate" | .overrides.containerOverrides[0].name = "worker" | .overrides.containerOverrides[0].command = ["bundle", "exec", "rails", "db:migrate"]' | jq -r tostring)
           aws ecs run-task --cli-input-json $run_task_params
 
       - name: Deploy App Server
