@@ -225,8 +225,8 @@ jobs:
                       aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
                       echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
                       export DOCKER_BUILDKIT=1
-                      docker build --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-                      docker build --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+                      docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+                      docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
   build-manifest:
     name: Build Manifest
@@ -335,7 +335,9 @@ jobs:
 
       - name: Run DB Migrate using Fargate
         run: |
-          ./bin/ecs_run_task --cluster ${{ matrix.ecs_cluster }} --started-by db_migrate_ci --service ${{ matrix.identifier }}-worker --task-definition ${{ matrix.identifier }}-worker-fargate --launch-type FARGATE --command "bundle exec rails db:migrate"
+          network_configuration=$(aws ecs describe-services --cluster ${{ matrix.ecs_cluster }} --service ${{ matrix.identifier }}-worker --query 'services[0]' | jq 'with_entries(select([.key] | inside(["networkConfiguration"])))')
+          run_task_params=$(echo $network_configuration | jq '.startedBy = "db_migrate_ci" | .cluster = "${{ matrix.ecs_cluster }}" | .launchType = "FARGATE" | .taskDefinition = "${{ matrix.identifier }}-worker-fargate" | .overrides.containerOverrides[0].name = "worker" | .overrides.containerOverrides[0].command = ["bundle", "exec", "rails", "db:migrate"]')
+          aws ecs run-task --cli-input-json $run_task_params
 
       - name: Deploy App Server
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
