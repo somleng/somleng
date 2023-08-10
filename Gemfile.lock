@@ -520,7 +520,7 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     squasher (0.7.2)
-    stimulus-rails (1.2.1)
+    stimulus-rails (1.2.2)
       railties (>= 6.0.0)
     thor (1.2.2)
     tilt (2.2.0)
