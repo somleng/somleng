@@ -25,5 +25,3 @@ Shoryuken.configure_server do |config|
   # https://github.com/phstc/shoryuken/wiki/Long-Polling
   config.sqs_client_receive_message_opts = { wait_time_seconds: 20 }
 end
-
-
