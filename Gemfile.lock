@@ -351,7 +351,7 @@ GEM
     pg (1.5.3)
     pghero (3.3.3)
       activerecord (>= 6)
-    phony (2.20.5)
+    phony (2.20.6)
     premailer (1.21.0)
       addressable
       css_parser (>= 1.12.0)
