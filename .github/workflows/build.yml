@@ -44,7 +44,7 @@ jobs:
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging",
-              "docs_path": "docs"
+              "docs_path": "staging/docs"
             },
             {
               "identifier": "somleng",
