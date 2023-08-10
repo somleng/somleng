@@ -284,10 +284,10 @@ jobs:
             aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
             echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
             export DOCKER_CLI_EXPERIMENTAL=enabled
-            docker manifest create ${{ needs.build-packages.outputs.app_ecr_repository_uri}} ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-amd64 ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-arm64
+            docker manifest create ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}} ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-amd64 ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-arm64
             docker manifest annotate --arch amd64 ${{ needs.build-packages.outputs.app_ecr_repository_uri}} ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-amd64
             docker manifest annotate --arch arm64 ${{ needs.build-packages.outputs.app_ecr_repository_uri}} ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-arm64
-            docker manifest push ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}
+            docker manifest push --purge ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}
             docker manifest inspect ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}
 
       # - name: Get current task definition
