@@ -8,6 +8,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-deployment-matrix.outputs.matrix }}
       matrixLength: ${{ steps.set-deployment-matrix.outputs.matrixLength }}
+      packageMatrix: ${{ steps.set-deployment-matrix.outputs.packageMatrix }}
 
     env:
       PGHOST: localhost
@@ -51,14 +52,15 @@ jobs:
               "environment": "production",
               "image_tag": "latest",
               "ecs_cluster": "somleng",
-              "docs_uri":  "docs"
+              "docs_path":  "docs"
             }
           ]
           EOF
           )
           matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
-          echo "matrix={\"platform\":[\"amd64\",\"arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+          echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
           echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
+          echo "packageMatrix={\"platform\":[\"amd64\",\"arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -110,6 +112,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: needs.build.outputs.matrixLength > 0
+
+    strategy:
+      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
+
     steps:
       - name: Checkout Slate
         uses: actions/checkout@v3
@@ -166,7 +172,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
+      matrix: ${{fromJSON(needs.build.outputs.packageMatrix)}}
 
     needs:
       - build
@@ -259,7 +265,6 @@ jobs:
       - build-packages
 
     steps:
-
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v2
           with:
