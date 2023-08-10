@@ -179,6 +179,7 @@ jobs:
 
     strategy:
       matrix: ${{fromJSON(needs.build.outputs.packageMatrix)}}
+      fail-fast: false
 
     needs:
       - build
@@ -207,9 +208,9 @@ jobs:
                 commands:
                   # Temp fix: Remove this install phase. See: https://github.com/aws/aws-codebuild-docker-images/pull/642
                   - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
-                  - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-arm64"
+                  - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-${{ matrix.platform }}"
                   - mkdir -p ~/.docker/cli-plugins
-                  - mv "buildx-$BUILDX_VERSION.linux-arm64" ~/.docker/cli-plugins/docker-buildx
+                  - mv "buildx-$BUILDX_VERSION.linux-${{ matrix.platform }}" ~/.docker/cli-plugins/docker-buildx
                   - chmod +x ~/.docker/cli-plugins/docker-buildx
 
               build:
