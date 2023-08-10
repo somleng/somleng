@@ -143,6 +143,7 @@ jobs:
 
       - name: Copy API Documentation to public
         run: |
+          mkdir -p public/docs
           cp -R build/twilio_api/* public/docs/
           mv public/docs/index.html public/docs/twilio_api/
 
