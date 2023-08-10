@@ -209,56 +209,53 @@ jobs:
       #     cp -R doc/build/twilio_api/* public/docs/
       #     mv public/docs/index.html public/docs/twilio_api/
 
-      # - name: Setup Ruby
-      #   uses: ruby/setup-ruby@v1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+          aws-region: ap-southeast-1
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-      #     role-skip-session-tagging: true
-      #     role-duration-seconds: 3600
-      #     aws-region: ap-southeast-1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
+      - name: Build linux/arm64 images
+        if: matrix.platform == 'arm64'
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: somleng-arm64
+          disable-source-override: true
+          buildspec-override:   |
+            version: 0.2
+            phases:
+              install:
+                commands:
+                  # Temp fix: Remove this install phase. See: https://github.com/aws/aws-codebuild-docker-images/pull/642
+                  - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
+                  - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-arm64"
+                  - mkdir -p ~/.docker/cli-plugins
+                  - mv "buildx-$BUILDX_VERSION.linux-arm64" ~/.docker/cli-plugins/docker-buildx
+                  - chmod +x ~/.docker/cli-plugins/docker-buildx
 
-      # - name: Build linux/arm64 images
-      #   if: matrix.platform == 'arm64'
-      #   uses: aws-actions/aws-codebuild-run-build@v1
-      #   with:
-      #     project-name: somleng-arm64
-      #     disable-source-override: true
-      #     buildspec-override:   |
-      #       version: 0.2
-      #       phases:
-      #         install:
-      #           commands:
-      #             # Temp fix: Remove this install phase. See: https://github.com/aws/aws-codebuild-docker-images/pull/642
-      #             - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
-      #             - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-arm64"
-      #             - mkdir -p ~/.docker/cli-plugins
-      #             - mv "buildx-$BUILDX_VERSION.linux-arm64" ~/.docker/cli-plugins/docker-buildx
-      #             - chmod +x ~/.docker/cli-plugins/docker-buildx
+              build:
+                commands:
+                  - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+                  - echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
+                  - export DOCKER_BUILDKIT=1
+                  - docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+                  - docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
-      #         build:
-      #           commands:
-      #             - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
-      #             - echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-      #             - export DOCKER_BUILDKIT=1
-      #             - docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-      #             - docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
-
-      # - name: Build linux/amd64 images
-      #   if: matrix.platform == 'amd64'
-      #   run: |
-      #     aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
-      #     echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-      #     export DOCKER_BUILDKIT=1
-      #     docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-      #     docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+      - name: Build linux/amd64 images
+        if: matrix.platform == 'amd64'
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
+          export DOCKER_BUILDKIT=1
+          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
   build-manifest:
     name: Build Manfiest
