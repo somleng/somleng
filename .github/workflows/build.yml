@@ -243,12 +243,20 @@ jobs:
                   - chmod +x ~/.docker/cli-plugins/docker-buildx
 
               build:
-                commands:
-                  - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
-                  - echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-                  - export DOCKER_BUILDKIT=1
-                  - docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-                  - docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+                steps:
+                  - name: Download Documentation
+                    uses: actions/download-artifact@v3
+                    with:
+                      name: app_docs
+                      path: public/docs
+
+                  - name: Build
+                    run: |
+                      aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+                      echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
+                      export DOCKER_BUILDKIT=1
+                      docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+                      docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
       - name: Build linux/amd64 images
         if: matrix.platform == 'amd64'
@@ -260,7 +268,7 @@ jobs:
           docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
   build-manifest:
-    name: Build Manfiest
+    name: Build Manifest
     runs-on: ubuntu-latest
 
     needs:
