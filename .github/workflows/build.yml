@@ -1,6 +1,13 @@
 on: push
 name: Build Somleng
 
+env:
+  IMAGE_TAG: ${{ github.sha }}
+  APP_ECR_REPOSITORY_URI: public.ecr.aws/somleng/somleng
+  NGINX_ECR_REPOSITORY_URI: public.ecr.aws/somleng/somleng-nginx
+  APP_GHCR_REPOSITORY_URI: ghcr.io/somleng/somleng
+  NGINX_GHCR_REPOSITORY_URI: ghcr.io/somleng/somleng-nginx
+
 jobs:
   build:
     name: Build
@@ -168,29 +175,14 @@ jobs:
   build-packages:
     name: Build Packages
     runs-on: ubuntu-latest
+    if: needs.build.outputs.matrixLength > 0
 
     strategy:
-      fail-fast: false
-      matrix: ${{fromJSON(needs.build.outputs.packageMatrix)}}
+      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
 
     needs:
       - build
       - build_documentation
-
-    if: needs.build.outputs.matrixLength > 0
-    env:
-      ECR_PUBLIC_REGISTRY: public.ecr.aws
-      APP_ECR_REPOSITORY_URI: public.ecr.aws/somleng/somleng
-      NGINX_ECR_REPOSITORY_URI: public.ecr.aws/somleng/somleng-nginx
-      APP_GHCR_REPOSITORY_URI: ghcr.io/somleng/somleng
-      NGINX_GHCR_REPOSITORY_URI: ghcr.io/somleng/somleng-nginx
-
-    outputs:
-      image_tag: ${{ matrix.image_tag }}
-      app_ecr_repository_uri: ${{ env.APP_ECR_REPOSITORY_URI }}
-      nginx_ecr_repository_uri: ${{ env.NGINX_ECR_REPOSITORY_URI }}
-      app_ghcr_repository_uri: ${{ env.APP_GHCR_REPOSITORY_URI }}
-      nginx_ghcr_repository_uri: ${{ env.NGINX_GHCR_REPOSITORY_URI }}
 
     steps:
       - name: Checkout
@@ -244,8 +236,8 @@ jobs:
                       aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
                       echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
                       export DOCKER_BUILDKIT=1
-                      docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-                      docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+                      docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+                      docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
       - name: Build linux/amd64 images
         if: matrix.platform == 'amd64'
@@ -253,15 +245,20 @@ jobs:
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
           echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
           export DOCKER_BUILDKIT=1
-          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
   build-manifest:
     name: Build Manifest
     runs-on: ubuntu-latest
+    if: needs.build.outputs.matrixLength > 0
 
     needs:
+      - build
       - build-packages
+
+    strategy:
+      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
 
     steps:
         - name: Configure AWS credentials
@@ -281,74 +278,87 @@ jobs:
           run: |
             aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
             echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-            docker buildx imagetools create -t ${{ needs.build-packages.outputs.app_ghcr_repository_uri}}:${{needs.build-packages.outputs.image_tag}} -t ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}} -t ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{github.sha}} ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-amd64 ${{ needs.build-packages.outputs.app_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-arm64
-            docker buildx imagetools create -t ${{ needs.build-packages.outputs.nginx_ghcr_repository_uri}}:${{needs.build-packages.outputs.image_tag}} -t ${{ needs.build-packages.outputs.nginx_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}} -t ${{ needs.build-packages.outputs.nginx_ecr_repository_uri}}:${{github.sha}} ${{ needs.build-packages.outputs.nginx_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-amd64 ${{ needs.build-packages.outputs.nginx_ecr_repository_uri}}:${{needs.build-packages.outputs.image_tag}}-arm64
+            docker buildx imagetools create -t ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }} -t ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }} -t ${{ env.APP_ECR_REPOSITORY_URI}}:${{ env.IMAGE_TAG }} ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-amd64 ${{ env.APP_ECR_REPOSITORY_URI}}:${{matrix.image_tag}}-arm64
+            docker buildx imagetools create -t ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{matrix.image_tag}} -t ${{ env.NGINX_ECR_REPOSITORY_URI}}:${{matrix.image_tag}} -t ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }} ${{ env.NGINX_ECR_REPOSITORY_URI}}:${{matrix.image_tag}}-amd64 ${{ env.NGINX_ECR_REPOSITORY_URI}}:${{matrix.image_tag}}-arm64
 
-      # - name: Get current task definition
-      #   run: |
-      #     aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-appserver" --query 'taskDefinition' > task-definition.json
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: needs.build.outputs.matrixLength > 0
 
-      # - name: Prepare nginx task definition
-      #   id: render-nginx-task-def
-      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-      #   with:
-      #     task-definition: task-definition.json
-      #     container-name: nginx
-      #     image: ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
+    needs:
+      - build
+      - build-manifest
 
-      # - name: Prepare app server task definition
-      #   id: render-appserver-task-def
-      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-      #   with:
-      #     task-definition: ${{ steps.render-nginx-task-def.outputs.task-definition }}
-      #     container-name: app
-      #     image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
+    strategy:
+      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
 
-      # - name: Get current worker task definition
-      #   run: |
-      #     aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker" --query 'taskDefinition' > task-definition.json
+    steps:
+      - name: Get current task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-appserver" --query 'taskDefinition' > task-definition.json
 
-      # - name: Prepare worker task definition
-      #   id: render-worker-task-def
-      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-      #   with:
-      #     task-definition: task-definition.json
-      #     container-name: worker
-      #     image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
+      - name: Prepare nginx task definition
+        id: render-nginx-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: nginx
+          image: ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
-      # - name: Get current Fargate worker task definition
-      #   run: |
-      #     aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker-fargate" --query 'taskDefinition' > task-definition.json
+      - name: Prepare app server task definition
+        id: render-appserver-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-nginx-task-def.outputs.task-definition }}
+          container-name: app
+          image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
-      # - name: Prepare Fargate worker task definition
-      #   id: render-fargate-worker-task-def
-      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-      #   with:
-      #     task-definition: task-definition.json
-      #     container-name: worker
-      #     image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
+      - name: Get current worker task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker" --query 'taskDefinition' > task-definition.json
 
-      # - name: Register Fargate task definition
-      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      #   with:
-      #     task-definition: ${{ steps.render-fargate-worker-task-def.outputs.task-definition }}
+      - name: Prepare worker task definition
+        id: render-worker-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: worker
+          image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
-      # - name: Run DB Migrate
-      #   run: |
-      #     ./bin/ecs_run_task --cluster ${{ matrix.ecs_cluster }} --started-by db_migrate_ci --service ${{ matrix.identifier }}-worker --task-definition ${{ matrix.identifier }}-worker-fargate --launch-type FARGATE --command "bundle exec rails db:migrate"
+      - name: Get current Fargate worker task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker-fargate" --query 'taskDefinition' > task-definition.json
 
-      # - name: Deploy App Server
-      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      #   with:
-      #     task-definition: ${{ steps.render-appserver-task-def.outputs.task-definition }}
-      #     service: ${{ matrix.identifier}}-appserver
-      #     cluster: ${{ matrix.ecs_cluster}}
-      #     wait-for-service-stability: true
+      - name: Prepare Fargate worker task definition
+        id: render-fargate-worker-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: worker
+          image: ${{ env.APP_ECR_REPOSITORY_URI }}:${{ env.IMAGE_TAG }}
 
-      # - name: Deploy Worker
-      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      #   with:
-      #     task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
-      #     service: ${{ matrix.identifier}}-worker
-      #     cluster: ${{ matrix.ecs_cluster}}
-      #     wait-for-service-stability: true
+      - name: Register Fargate task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-fargate-worker-task-def.outputs.task-definition }}
+
+      - name: Run DB Migrate
+        run: |
+          ./bin/ecs_run_task --cluster ${{ matrix.ecs_cluster }} --started-by db_migrate_ci --service ${{ matrix.identifier }}-worker --task-definition ${{ matrix.identifier }}-worker-fargate --launch-type FARGATE --command "bundle exec rails db:migrate"
+
+      - name: Deploy App Server
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-appserver-task-def.outputs.task-definition }}
+          service: ${{ matrix.identifier}}-appserver
+          cluster: ${{ matrix.ecs_cluster}}
+          wait-for-service-stability: true
+
+      - name: Deploy Worker
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
+          service: ${{ matrix.identifier}}-worker
+          cluster: ${{ matrix.ecs_cluster}}
+          wait-for-service-stability: true
