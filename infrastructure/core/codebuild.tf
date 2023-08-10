@@ -1,5 +1,5 @@
 locals {
-  codebuild_project_name = "somleng"
+  codebuild_identifier = "somleng"
 }
 
 data "aws_iam_policy_document" "codebuild_assume_role" {
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "codebuild_assume_role" {
 }
 
 resource "aws_iam_role" "codebuild" {
-  name               = "codebuild-${local.codebuild_project_name}"
+  name               = "codebuild-${local.codebuild_identifier}"
   assume_role_policy = data.aws_iam_policy_document.codebuild_assume_role.json
 }
 
@@ -25,8 +25,8 @@ data "aws_iam_policy_document" "codebuild" {
     effect    = "Allow"
 
     resources = [
-      "arn:aws:logs:*:*:log-group:/aws/codebuild/${local.codebuild_project_name}",
-      "arn:aws:logs:*:*:log-group:/aws/codebuild/${local.codebuild_project_name}:*"
+      "arn:aws:logs:*:*:log-group:/aws/codebuild/${local.codebuild_identifier}",
+      "arn:aws:logs:*:*:log-group:/aws/codebuild/${local.codebuild_identifier}:*"
     ]
 
     actions = [
@@ -48,8 +48,8 @@ resource "aws_iam_role_policy_attachment" "codebuild_ecr_public" {
 }
 
 
-resource "aws_codebuild_project" "this" {
-  name           = local.codebuild_project_name
+resource "aws_codebuild_project" "arm64" {
+  name           = "${local.codebuild_identifier}-arm64"
 
   service_role = aws_iam_role.codebuild.arn
 
