@@ -15,20 +15,20 @@ jobs:
       RAILS_ENV: test
       CI: true
 
-    # services:
-    #   postgres:
-    #     image: postgres
-    #     env:
-    #       POSTGRES_USER: postgres
-    #       POSTGRES_PASSWORD: postgres
-    #       POSTGRES_HOST_AUTH_METHOD: trust
-    #     ports:
-    #       - 5432:5432
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Set Deployment Matrix
@@ -58,114 +58,117 @@ jobs:
           echo "matrix={\"platform\":[\"amd64\",\"arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
           echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
 
-      # - name: Checkout
-      #   uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      # - name: Install native dependencies
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install libvips
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libvips
 
-      # - uses: FedericoCarboni/setup-ffmpeg@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v2
 
-      # - name: Setup Ruby
-      #   uses: ruby/setup-ruby@v1
-      #   with:
-      #     bundler-cache: true
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-      # - name: Setup Node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version-file: ".tool-versions"
-      #     cache: 'yarn'
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".tool-versions"
+          cache: 'yarn'
 
-      # - name: Setup DB
-      #   run: bundle exec rails db:create db:schema:load
+      - name: Setup DB
+        run: bundle exec rails db:create db:schema:load
 
-      # - name: Run Specs
-      #   run: |
-      #     bundle exec rails spec:prepare
-      #     bundle exec rspec --format RspecApiDocumentation::ApiFormatter
+      - name: Run Specs
+        run: |
+          bundle exec rails spec:prepare
+          bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v3
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
 
-      # - name: Prepare Documentation Source
-      #   if: steps.set-deployment-matrix.outputs.matrixLength > 0
-      #   run: |
-      #     cp app/assets/images/logo_documentation.png doc/logo.png
+      - name: Prepare Documentation Source
+        if: steps.set-deployment-matrix.outputs.matrixLength > 0
+        run: |
+          cp app/assets/images/logo_documentation.png doc/logo.png
 
-      # - name: Upload Documentation Source
-      #   if: steps.set-deployment-matrix.outputs.matrixLength > 0
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: documentation_source
-      #     path: doc/
-      #     retention-days: 1
+      - name: Upload Documentation Source
+        if: steps.set-deployment-matrix.outputs.matrixLength > 0
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation_source
+          path: doc/
+          retention-days: 1
 
-  # build_documentation:
-  #   name: Build Documentation
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   if: needs.build.outputs.matrixLength > 0
-  #   steps:
-  #     - name: Checkout Slate
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: main
-  #         repository: slatedocs/slate
+  build_documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    needs: build
+    if: needs.build.outputs.matrixLength > 0
+    steps:
+      - name: Checkout Slate
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          repository: slatedocs/slate
 
-  #     - name: Setup Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         bundler-cache: true
-  #         ruby-version: '3'
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: '3'
 
-  #     - name: Download Documentation Source
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: documentation_source
-  #         path: api_docs
+      - name: Download Documentation Source
+        uses: actions/download-artifact@v3
+        with:
+          name: documentation_source
+          path: api_docs
 
-  #     - name: Prepare Slate
-  #       run: |
-  #         cp -R api_docs/slate/source/stylesheets/* source/stylesheets
-  #         cp api_docs/logo.png source/logo.png
-  #         echo "@import 'overrides';" >> source/stylesheets/_variables.scss
+      - name: Prepare Slate
+        run: |
+          cp -R api_docs/slate/source/stylesheets/* source/stylesheets
+          cp api_docs/logo.png source/logo.png
+          echo "@import 'overrides';" >> source/stylesheets/_variables.scss
 
-  #     - name: Build API Documentation
-  #       run: |
-  #         cp -R api_docs/carrier_api/* source
-  #         bundle exec middleman build --build-dir=build/carrier_api
+      - name: Build API Documentation
+        run: |
+          cp -R api_docs/carrier_api/* source
+          bundle exec middleman build --build-dir=build/carrier_api
 
-  #         cp -R api_docs/twilio_api/* source
-  #         bundle exec middleman build --build-dir=build/twilio_api
+          cp -R api_docs/twilio_api/* source
+          bundle exec middleman build --build-dir=build/twilio_api
 
-  #     - name: Upload API Documentation
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: api_documentation
-  #         path: build
-  #         retention-days: 1
+      - name: Copy API Documentation to public
+        run: |
+          cp -R build/twilio_api/* public/docs/
+          mv public/docs/index.html public/docs/twilio_api/
 
-  #     - name: Configure AWS credentials
-  #       if: github.ref == 'refs/heads/master'
-  #       uses: aws-actions/configure-aws-credentials@v2
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-  #         role-skip-session-tagging: true
-  #         role-duration-seconds: 3600
-  #         aws-region: ap-southeast-1
+      - name: Upload public docs directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: app_docs
+          path: public/docs
+          retention-days: 1
 
-  #     - name: Deploy API Documentation
-  #       if: github.ref == 'refs/heads/master'
-  #       run: aws s3 sync --acl public-read build s3://www.somleng.org/docs/
+      - name: Configure AWS credentials
+        if: github.ref == 'refs/heads/master'
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+          aws-region: ap-southeast-1
 
-  #     - name: Invalidate Cache
-  #       if: github.ref == 'refs/heads/master'
-  #       run: aws cloudfront create-invalidation --distribution-id E3962XCJFZ0KB1 --paths /docs/\*
+      - name: Deploy API Documentation
+        if: github.ref == 'refs/heads/master'
+        run: |
+          aws s3 sync --acl public-read build s3://www.somleng.org/docs/
+          aws cloudfront create-invalidation --distribution-id E3962XCJFZ0KB1 --paths /docs/\*
 
   build-packages:
     name: Build Packages
@@ -177,7 +180,7 @@ jobs:
 
     needs:
       - build
-      # - build_documentation
+      - build_documentation
 
     if: needs.build.outputs.matrixLength > 0
     env:
@@ -198,64 +201,63 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # - name: Download Documentation
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: api_documentation
-      #     path: doc/build
+      - name: Download Documentation
+        uses: actions/download-artifact@v3
+        with:
+          name: app_docs
+          path: public/docs
 
-      # - name: Copy API Documentation public
-      #   run: |
-      #     cp -R doc/build/twilio_api/* public/docs/
-      #     mv public/docs/index.html public/docs/twilio_api/
+      - name: Test Download
+        run: |
+          cat public/docs/twilio_api/index.html
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-      #     role-skip-session-tagging: true
-      #     role-duration-seconds: 3600
-      #     aws-region: ap-southeast-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+          aws-region: ap-southeast-1
 
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      # - name: Build linux/arm64 images
-      #   if: matrix.platform == 'arm64'
-      #   uses: aws-actions/aws-codebuild-run-build@v1
-      #   with:
-      #     project-name: somleng-arm64
-      #     disable-source-override: true
-      #     buildspec-override:   |
-      #       version: 0.2
-      #       phases:
-      #         install:
-      #           commands:
-      #             # Temp fix: Remove this install phase. See: https://github.com/aws/aws-codebuild-docker-images/pull/642
-      #             - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
-      #             - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-arm64"
-      #             - mkdir -p ~/.docker/cli-plugins
-      #             - mv "buildx-$BUILDX_VERSION.linux-arm64" ~/.docker/cli-plugins/docker-buildx
-      #             - chmod +x ~/.docker/cli-plugins/docker-buildx
+      - name: Build linux/arm64 images
+        if: matrix.platform == 'arm64'
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: somleng-arm64
+          disable-source-override: true
+          buildspec-override:   |
+            version: 0.2
+            phases:
+              install:
+                commands:
+                  # Temp fix: Remove this install phase. See: https://github.com/aws/aws-codebuild-docker-images/pull/642
+                  - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
+                  - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-arm64"
+                  - mkdir -p ~/.docker/cli-plugins
+                  - mv "buildx-$BUILDX_VERSION.linux-arm64" ~/.docker/cli-plugins/docker-buildx
+                  - chmod +x ~/.docker/cli-plugins/docker-buildx
 
-      #         build:
-      #           commands:
-      #             - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
-      #             - echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-      #             - export DOCKER_BUILDKIT=1
-      #             - docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-      #             - docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+              build:
+                commands:
+                  - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+                  - echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
+                  - export DOCKER_BUILDKIT=1
+                  - docker build --cache-from ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+                  - docker build --cache-from ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
-      # - name: Build linux/amd64 images
-      #   if: matrix.platform == 'amd64'
-      #   run: |
-      #     aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
-      #     echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-      #     export DOCKER_BUILDKIT=1
-      #     docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-      #     docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+      - name: Build linux/amd64 images
+        if: matrix.platform == 'amd64'
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
+          export DOCKER_BUILDKIT=1
+          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.APP_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.APP_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
+          docker build --cache-from type=gha --cache-to type=gha,mode=max --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.NGINX_ECR_REPOSITORY_URI }}:${{ github.sha }}-${{ matrix.platform }} --tag ${{ env.NGINX_GHCR_REPOSITORY_URI }}:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
 
   build-manifest:
     name: Build Manfiest
