@@ -10,7 +10,7 @@ RSpec.describe ForgotSubdomainMailer, type: :mailer do
         email: "bobchan@example.com", carriers: [carrier, other_carrier]
       )
 
-      mail_body = Capybara.string(mail.body.encoded)
+      mail_body = Capybara.string(mail.html_part.body.raw_source)
       expect(mail_body).to have_link("AT&T")
       expect(mail_body).to have_link("T-Mobile")
     end

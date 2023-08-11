@@ -8,7 +8,7 @@ RSpec.describe DeviseMailer, type: :mailer do
 
       mail = DeviseMailer.confirmation_instructions(user, "abc")
 
-      mail_body = Capybara.string(mail.body.encoded)
+      mail_body = Capybara.string(mail.html_part.body.raw_source)
       expect(mail_body).to have_link("Confirm my account", href: "http://example.app.lvh.me/users/confirmation?confirmation_token=abc")
     end
 
@@ -18,7 +18,7 @@ RSpec.describe DeviseMailer, type: :mailer do
 
       mail = DeviseMailer.confirmation_instructions(user, "abc")
 
-      mail_body = Capybara.string(mail.body.encoded)
+      mail_body = Capybara.string(mail.html_part.body.raw_source)
       expect(mail_body).to have_link("Confirm my account", href: "http://dashboard.example.com/users/confirmation?confirmation_token=abc")
     end
   end
