@@ -267,7 +267,7 @@ jobs:
 
     needs:
       - build
-      - build-manifest
+      - build-packages
 
     strategy:
       matrix: ${{fromJSON(needs.build.outputs.matrix)}}
