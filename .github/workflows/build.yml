@@ -257,7 +257,7 @@ jobs:
             for component in "${components[@]}"
             do
               source_images=$(printf "${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }}-%s " "${platforms[@]}")
-              docker buildx imagetools create -t ${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }} $source_images
+              docker buildx imagetools create -t ${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }} -t ${{ env.ECR_REGISTRY }}/$component:${{ env.IMAGE_TAG }} $source_images
             done
 
   # Do this step in Github Actions because pushing to Github from AWS CodeBuild is slow
