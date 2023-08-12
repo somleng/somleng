@@ -45,7 +45,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "sip-trunk-ui-features",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging",
