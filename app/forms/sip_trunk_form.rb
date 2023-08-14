@@ -14,6 +14,7 @@ class SIPTrunkForm
   attribute :name
   attribute :max_channels
   attribute :authentication_mode
+  attribute :route_prefixes, Array
 
   attribute :country
   attribute :source_ip

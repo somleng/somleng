@@ -49,7 +49,7 @@ module Dashboard
       params.require(:sip_trunk).permit(
         :authentication_mode, :name, :max_channels,
         :source_ip, :country,
-        :host, :dial_string_prefix, :national_dialing, :plus_prefix
+        :host, :dial_string_prefix, :national_dialing, :plus_prefix, route_prefixes: []
       )
     end
 

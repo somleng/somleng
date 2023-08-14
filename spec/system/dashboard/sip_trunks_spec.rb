@@ -40,6 +40,7 @@ RSpec.describe "SIP Trunks" do
     fill_in("Dial string prefix", with: "123456")
     check("National dialing")
     check("Plus prefix")
+    fill_in("Route prefixes", with: "85510")
 
     click_button "Create SIP trunk"
 
