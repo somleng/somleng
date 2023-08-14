@@ -78,6 +78,14 @@
           <%= f.attribute :outbound_host, label: "Host" %>
         <% end %>
 
+        <% if @resource.outbound_route_prefixes.present? %>
+          <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" do %>
+            <%= RoutePrefixesType.new.cast(@resource.outbound_route_prefixes) %>
+          <% end %>
+        <% else %>
+          <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" %>
+        <% end %>
+
         <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
           <code>
             <%= @resource.outbound_example_dial_string %>

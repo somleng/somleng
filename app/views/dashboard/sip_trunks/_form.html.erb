@@ -77,19 +77,19 @@
         <h5 class="card-title">Outbound Dialing</h5>
 
         <div class="row">
-          <div class="col-sm-6">
-            <%= f.label :route_prefixes %>
-            <%= f.hint "Optionally add route prefixes to match against this SIP trunk" %>
-
-            <div class="input-group mb-3">
-              <%= f.input_field :route_prefixes, as: :numeric, multiple: true %>
-            </div>
+          <div class="col-sm-6" data-sip-trunks-target="ipAddressAuthenticationSection">
+            <%= f.input :host, placeholder: "sip.example.com:5061", hint: "Can be either an IP Address or FQDN" %>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-sm-6" data-sip-trunks-target="ipAddressAuthenticationSection">
-            <%= f.input :host, placeholder: "sip.example.com:5061", hint: "Can be either an IP Address or FQDN" %>
+          <div class="col-sm-6">
+            <%= f.input(
+              :route_prefixes,
+              as: :text,
+              placeholder: "#{resource.carrier.country.country_code}15, #{resource.carrier.country.country_code}16",
+              hint: "An optional comma seperated list of route prefixes. Must include the country code."
+            ) %>
           </div>
 
           <div class="col-sm-6">
