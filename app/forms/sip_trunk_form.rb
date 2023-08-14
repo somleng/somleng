@@ -14,6 +14,7 @@ class SIPTrunkForm
   attribute :name
   attribute :max_channels
   attribute :authentication_mode
+  attribute :route_prefixes, RoutePrefixesType.new
 
   attribute :country
   attribute :source_ip
@@ -42,6 +43,7 @@ class SIPTrunkForm
   def self.initialize_with(sip_trunk)
     new(
       sip_trunk:,
+      carrier: sip_trunk.carrier,
       authentication_mode: sip_trunk.authentication_mode,
       name: sip_trunk.name,
       max_channels: sip_trunk.max_channels,
@@ -50,14 +52,18 @@ class SIPTrunkForm
       host: sip_trunk.outbound_host,
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
       national_dialing: sip_trunk.outbound_national_dialing,
-      plus_prefix: sip_trunk.outbound_plus_prefix
+      plus_prefix: sip_trunk.outbound_plus_prefix,
+      route_prefixes: sip_trunk.outbound_route_prefixes
     )
   end
 
   def save
     return false if invalid?
 
-    set_defaults
+    if authentication_mode.client_credentials?
+      self.source_ip = nil
+      self.host = nil
+    end
 
     sip_trunk.attributes = {
       carrier:,
@@ -69,7 +75,8 @@ class SIPTrunkForm
       outbound_host: host.to_s.strip.presence,
       outbound_dial_string_prefix: dial_string_prefix.presence,
       outbound_national_dialing: national_dialing,
-      outbound_plus_prefix: plus_prefix
+      outbound_plus_prefix: plus_prefix,
+      outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes)
     }
 
     sip_trunk.save!
@@ -84,15 +91,5 @@ class SIPTrunkForm
     return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
 
     errors.add(:source_ip, :taken)
-  end
-
-  def set_defaults
-    return unless authentication_mode.client_credentials?
-
-    self.source_ip = nil
-    self.host = nil
-    self.dial_string_prefix = nil
-    self.national_dialing = false
-    self.plus_prefix = true
   end
 end

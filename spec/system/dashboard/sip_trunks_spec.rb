@@ -40,6 +40,7 @@ RSpec.describe "SIP Trunks" do
     fill_in("Dial string prefix", with: "123456")
     check("National dialing")
     check("Plus prefix")
+    fill_in("Route prefixes", with: "85510")
 
     click_button "Create SIP trunk"
 
@@ -52,7 +53,7 @@ RSpec.describe "SIP Trunks" do
   end
 
   it "Creates a SIP trunk with client credentials", :js do
-    carrier = create(:carrier, country_code: "KH")
+    carrier = create(:carrier, country_code: "LA")
     user = create(:user, :carrier, :admin, carrier:)
 
     carrier_sign_in(user)
@@ -61,15 +62,19 @@ RSpec.describe "SIP Trunks" do
     choose("Client credentials")
     fill_in("Name", with: "Main SIP Trunk")
     fill_in("Max channels", with: 32)
+    fill_in("Dial string prefix", with: "123456")
+    check("National dialing")
+    uncheck("Plus prefix")
 
     click_button "Create SIP trunk"
 
     expect(page).to have_content("SIP trunk was successfully created")
     expect(page).to have_content("Username")
     expect(page).to have_content("Password")
-    expect(page).to have_content("Cambodia (855)")
+    expect(page).to have_content("Lao People's Democratic Republic (856)")
     expect(page).to have_content("sip.somleng.org")
     expect(page).to have_content("32")
+    expect(page).to have_content("1234560XXXXXXXX@your-sip-registration-ip")
   end
 
   it "Handles validations" do

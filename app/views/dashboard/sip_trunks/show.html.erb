@@ -69,23 +69,29 @@
     </div>
   </div>
 
-  <% if @resource.authentication_mode.ip_address? %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Outbound Dialing</h5>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Outbound Dialing</h5>
 
-        <%= show_for(@resource) do |f| %>
+      <%= show_for(@resource) do |f| %>
+        <% if @resource.outbound_host.present? %>
           <%= f.attribute :outbound_host, label: "Host" %>
-
-          <% if @resource.outbound_host.present? %>
-            <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
-              <code>
-                <%= @resource.outbound_example_dial_string %>
-              </code>
-            <% end %>
-          <% end %>
         <% end %>
-      </div>
+
+        <% if @resource.outbound_route_prefixes.present? %>
+          <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" do %>
+            <%= RoutePrefixesType.new.cast(@resource.outbound_route_prefixes) %>
+          <% end %>
+        <% else %>
+          <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" %>
+        <% end %>
+
+        <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
+          <code>
+            <%= @resource.outbound_example_dial_string %>
+          </code>
+        <% end %>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

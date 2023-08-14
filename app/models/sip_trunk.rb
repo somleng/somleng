@@ -26,15 +26,13 @@ class SIPTrunk < ApplicationRecord
   end
 
   def outbound_example_dial_string
-    return if outbound_host.blank?
-
-    format(
+    dial_string = format(
       DIAL_STRING_FORMAT,
       plus_prefix: outbound_plus_prefix? ? "+" : "",
       dial_string_prefix: outbound_dial_string_prefix,
       national_prefix: outbound_national_dialing? ? carrier.country.national_prefix : "X" * carrier.country.country_code.to_s.length,
       local_number: "X" * carrier.country.national_number_lengths.last,
-      host: outbound_host
+      host: outbound_host.present? ? outbound_host : "your-sip-registration-ip"
     )
   end
 

@@ -163,6 +163,11 @@ resource "aws_ecs_task_definition" "worker_fargate" {
   execution_role_arn = aws_iam_role.task_execution_role.arn
   memory = 1024
   cpu = 512
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
 }
 
 resource "aws_ecs_service" "worker" {

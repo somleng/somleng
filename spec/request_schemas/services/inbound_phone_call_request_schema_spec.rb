@@ -222,24 +222,24 @@ module Services
         :sip_trunk,
         carrier:,
         inbound_source_ip: "175.100.7.240",
-        inbound_country_code: "KH"
+        inbound_country_code: "LA"
       )
       _phone_number = create(
         :phone_number,
         :configured,
-        number: "85568308531",
+        number: "8562092960310",
         carrier:
       )
       schema = validate_request_schema(
         input_params: {
           source_ip: "175.100.7.240",
-          to: "068308531",
-          from: "068308532",
+          to: "02092960310",
+          from: "02092960314",
           external_id: "external-id"
         }
       )
 
-      expect(schema.output).to include(from: "85568308532", to: "85568308531")
+      expect(schema.output).to include(from: "8562092960314", to: "8562092960310")
     end
 
     it "normalizes the twiml for routing to a sip domain" do
