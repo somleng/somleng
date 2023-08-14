@@ -77,6 +77,17 @@
         <h5 class="card-title">Outbound Dialing</h5>
 
         <div class="row">
+          <div class="col-sm-6">
+            <%= f.label :route_prefixes %>
+            <%= f.hint "Optionally add route prefixes to match against this SIP trunk" %>
+
+            <div class="input-group mb-3">
+              <%= f.input_field :route_prefixes, as: :numeric, multiple: true %>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-sm-6" data-sip-trunks-target="ipAddressAuthenticationSection">
             <%= f.input :host, placeholder: "sip.example.com:5061", hint: "Can be either an IP Address or FQDN" %>
           </div>
@@ -88,15 +99,6 @@
                 as: :numeric,
                 hint: "Numeric prefix applied to the beginning of the dial string"
               ) %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <%= f.label :route_prefixes %>
-            <div class="input-group mb-3">
-              <%= f.input_field :route_prefixes, as: :numeric, multiple: true %>
-            </div>
           </div>
         </div>
 
