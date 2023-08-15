@@ -27,11 +27,17 @@ class DestinationRules
     return if account.sip_trunk.present?
 
     outbound_sip_trunks = account.carrier.sip_trunks.select(&:configured_for_outbound_dialing?)
-    outbound_sip_trunks = outbound_sip_trunks.sort_by do |sip_trunk|
-      -sip_trunk.outbound_route_prefixes.length
+    find_sip_trunk_by_route_prefix(outbound_sip_trunks) || outbound_sip_trunks.detect { |sip_trunk| sip_trunk.outbound_route_prefixes.blank? }
+  end
+
+  def find_sip_trunk_by_route_prefix(sip_trunks)
+    sip_trunk_route_prefixes = sip_trunks.select(&:outbound_route_prefixes?).flat_map do |sip_trunk|
+      sip_trunk.outbound_route_prefixes.map { |prefix| [sip_trunk, prefix] }
     end
-    outbound_sip_trunks.detect do |sip_trunk|
-      sip_trunk.outbound_route_prefixes.any? { |prefix| destination =~ /\A#{prefix}/ } || sip_trunk.outbound_route_prefixes.empty?
+
+    longest_prefix_first = sip_trunk_route_prefixes.sort_by { |(_, prefix)| -prefix.length }
+    longest_prefix_first.detect do |(sip_trunk, prefix)|
+      return sip_trunk if destination =~ /\A#{prefix}/
     end
   end
 end

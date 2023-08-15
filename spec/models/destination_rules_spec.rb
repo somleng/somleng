@@ -32,10 +32,15 @@ RSpec.describe DestinationRules do
     it "handles prefix routing" do
       carrier = create(:carrier)
       _catch_all_sip_trunk = create(:sip_trunk, carrier:)
-      sip_trunk = create(
+      create(
         :sip_trunk,
         carrier:,
-        outbound_route_prefixes: ["85571"]
+        outbound_route_prefixes: %w(85571 85597)
+      )
+      longer_route_prefix_sip_trunk = create(
+        :sip_trunk,
+        carrier:,
+        outbound_route_prefixes: ["8557151"]
       )
       account = create(:account, carrier:)
 
@@ -44,7 +49,7 @@ RSpec.describe DestinationRules do
         destination: "855715100970"
       ).sip_trunk
 
-      expect(result).to eq(sip_trunk)
+      expect(result).to eq(longer_route_prefix_sip_trunk)
     end
 
     it "returns nil when no route is found" do
