@@ -103,7 +103,7 @@ GEM
     aws-partitions (1.805.0)
     aws-record (2.11.0)
       aws-sdk-dynamodb (~> 1, >= 1.85.0)
-    aws-sdk-cloudwatch (1.78.0)
+    aws-sdk-cloudwatch (1.79.0)
       aws-sdk-core (~> 3, >= 3.177.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-core (3.180.3)
