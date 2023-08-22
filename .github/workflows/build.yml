@@ -45,7 +45,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "reinstall_pg_query",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging",
