@@ -15,6 +15,7 @@ WORKDIR $APP_ROOT
 COPY Gemfile Gemfile.lock package.json yarn.lock $APP_ROOT/
 
 RUN bundle config --local deployment true && \
+    bundle config --local force_ruby_platform true \
     bundle config --local path "vendor/bundle" && \
     bundle config --local without 'development test'
 
