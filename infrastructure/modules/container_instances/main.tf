@@ -1,6 +1,7 @@
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
+# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/retrieve-ecs-optimized_AMI.html
 data "aws_ssm_parameter" "this_ami" {
-  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/arm64/recommended"
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/arm64/recommended"
 }
 
 data "aws_ec2_instance_type" "this" {
