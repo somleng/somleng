@@ -151,7 +151,7 @@ resource "aws_ecs_task_definition" "worker" {
   container_definitions = data.template_file.worker_container_definitions.rendered
   task_role_arn = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
-  memory = module.container_instances.ec2_instance_type.memory_size - 256
+  memory = 768
 }
 
 resource "aws_ecs_task_definition" "worker_fargate" {
