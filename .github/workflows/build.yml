@@ -53,7 +53,7 @@ jobs:
             },
             {
               "identifier": "somleng",
-              "branch": "better_task_memory",
+              "branch": "master",
               "environment": "production",
               "image_tag": "latest",
               "ecs_cluster": "somleng",
