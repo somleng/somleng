@@ -45,7 +45,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "switch_to_ecr_private",
+              "branch": "develop",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging",
