@@ -47,6 +47,11 @@ resource "aws_iam_role_policy_attachment" "codebuild_ecr_public" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonElasticContainerRegistryPublicPowerUser"
 }
 
+resource "aws_iam_role_policy_attachment" "codebuild_ecr" {
+  role       = aws_iam_role.codebuild.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
+
 resource "aws_codebuild_project" "amd64" {
   name           = "${local.codebuild_identifier}-amd64"
 

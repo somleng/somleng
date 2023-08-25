@@ -3,7 +3,7 @@ name: Build Somleng
 
 env:
   IMAGE_TAG: ${{ github.sha }}
-  ECR_REGISTRY: public.ecr.aws/somleng
+  ECR_REGISTRY: 324279636507.dkr.ecr.ap-southeast-1.amazonaws.com/somleng
   GHCR_REGISTRY: ghcr.io/somleng
 
 jobs:
@@ -45,7 +45,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "develop",
+              "branch": "switch_to_ecr_private",
               "environment": "staging",
               "image_tag": "staging",
               "ecs_cluster": "somleng-staging",
@@ -219,7 +219,7 @@ jobs:
 
                   - name: Build
                     run: |
-                      aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+                      aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin  ${{ env.ECR_REGISTRY }}
                       export DOCKER_BUILDKIT=1
                       docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
                       docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
@@ -251,7 +251,7 @@ jobs:
 
         - name: Build Manifest
           run: |
-            aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+            aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin  ${{ env.ECR_REGISTRY }}
             declare -a platforms=("amd64" "arm64")
             declare -a components=("somleng" "somleng-nginx")
             for component in "${components[@]}"
