@@ -2,7 +2,6 @@ on: push
 name: Build Somleng
 
 env:
-  IMAGE_TAG: ${{ github.sha }}
   ECR_REGISTRY: 324279636507.dkr.ecr.ap-southeast-1.amazonaws.com
   GHCR_REGISTRY: ghcr.io/somleng
 
@@ -45,9 +44,10 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "develop",
+              "branch": "ecr_lifecycle_policy",
               "environment": "staging",
-              "image_tag": "staging",
+              "friendly_image_tag": "beta",
+              "image_tag": "stag-${{ github.sha }}",
               "ecs_cluster": "somleng-staging",
               "docs_path": "staging/docs"
             },
@@ -55,7 +55,8 @@ jobs:
               "identifier": "somleng",
               "branch": "master",
               "environment": "production",
-              "image_tag": "latest",
+              "friendly_image_tag": "latest",
+              "image_tag": "prod-${{ github.sha }}",
               "ecs_cluster": "somleng",
               "docs_path":  "docs"
             }
@@ -221,8 +222,8 @@ jobs:
                     run: |
                       aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
                       export DOCKER_BUILDKIT=1
-                      docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}-${{ matrix.platform }} --push .
-                      docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.image_tag }}-${{ matrix.platform }} --push docker/nginx
+                      docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --push .
+                      docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --push docker/nginx
 
   build-manifest:
     name: Build Manifest
@@ -256,8 +257,8 @@ jobs:
             declare -a components=("somleng" "somleng-nginx")
             for component in "${components[@]}"
             do
-              source_images=$(printf "${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }}-%s " "${platforms[@]}")
-              docker buildx imagetools create -t ${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }} -t ${{ env.ECR_REGISTRY }}/$component:${{ env.IMAGE_TAG }} $source_images
+              source_images=$(printf "${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-%s " "${platforms[@]}")
+              docker buildx imagetools create -t ${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }} -t ${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }} $source_images
             done
 
   # Do this step in Github Actions because pushing to Github from AWS CodeBuild is slow
@@ -307,16 +308,16 @@ jobs:
           do
             for component in "${components[@]}"
             do
-              docker image pull ${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }}-$platform
-              docker tag ${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }}-$platform ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.image_tag }}-$platform
-              docker push ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.image_tag }}-$platform
+              docker image pull ${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform
+              docker tag ${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform
+              docker push ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform
             done
           done
 
           for component in "${components[@]}"
           do
-            source_images=$(printf "${{ env.GHCR_REGISTRY }}/$component:${{ matrix.image_tag }}-%s " "${platforms[@]}")
-            docker buildx imagetools create -t ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.image_tag }} $source_images
+            source_images=$(printf "${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-%s " "${platforms[@]}")
+            docker buildx imagetools create -t ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }} $source_images
           done
 
   deploy:
@@ -351,7 +352,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: nginx
-          image: ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ env.IMAGE_TAG }}
+          image: ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.image_tag }}
 
       - name: Inject new app image into webserver task definition
         id: render-appserver-task-def
@@ -359,7 +360,7 @@ jobs:
         with:
           task-definition: ${{ steps.render-nginx-task-def.outputs.task-definition }}
           container-name: app
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ env.IMAGE_TAG }}
+          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
 
       - name: Get current worker task definition
         run: |
@@ -371,7 +372,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: worker
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ env.IMAGE_TAG }}
+          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
 
       - name: Get current Fargate worker task definition
         run: |
@@ -383,7 +384,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: worker
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ env.IMAGE_TAG }}
+          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
 
       - name: Register Fargate task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
