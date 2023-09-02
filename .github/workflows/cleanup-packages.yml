@@ -1,19 +1,23 @@
 name: Cleanup Packages
 
-on: push
+on:
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   cleanup_packages:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/delete-package-versions@v4
+      - name: Delete Untagged 'somleng' Packages
+        uses: actions/delete-package-versions@v4
         with:
           package-name: 'somleng'
           package-type: 'container'
           delete-only-untagged-versions: 'true'
 
-      - uses: actions/delete-package-versions@v4
+      - name: Delete Untagged 'somleng-nginx' Packages
+        uses: actions/delete-package-versions@v4
         with:
           package-name: 'somleng-nginx'
           package-type: 'container'
