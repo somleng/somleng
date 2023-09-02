@@ -1,0 +1,20 @@
+name: Cleanup Packages
+
+on: push
+
+jobs:
+  cleanup_packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/delete-package-versions@v4
+        with:
+          package-name: 'somleng'
+          package-type: 'container'
+          delete-only-untagged-versions: 'true'
+
+      - uses: actions/delete-package-versions@v4
+        with:
+          package-name: 'somleng-nginx'
+          package-type: 'container'
+          delete-only-untagged-versions: 'true'
