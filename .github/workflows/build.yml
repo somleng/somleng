@@ -69,7 +69,7 @@ jobs:
           echo "packageMatrix={\"platform\":[\"amd64\",\"arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install native dependencies
         run: |
@@ -124,7 +124,7 @@ jobs:
 
     steps:
       - name: Checkout Slate
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
           repository: slatedocs/slate
