@@ -186,6 +186,25 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   alarm_actions       = [aws_appautoscaling_policy.worker_down.arn]
 }
 
+resource "aws_cloudwatch_metric_alarm" "worker_memory_utilization_high" {
+  alarm_name          = "${var.app_identifier}-worker-Memory-Utilization-High"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "MemoryUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  treat_missing_data  = "breaching" # if no memory utilization data is returned the instance is out of memory
+  threshold           = 60
+
+  dimensions = {
+    ClusterName = aws_ecs_cluster.cluster.name
+    ServiceName = aws_ecs_service.worker.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.worker_up.arn]
+}
+
 resource "aws_appautoscaling_policy" "appserver_up" {
   name               = "appserver-scale-up"
   service_namespace  = aws_appautoscaling_target.appserver_scale_target.service_namespace
