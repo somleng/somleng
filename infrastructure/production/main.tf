@@ -34,7 +34,7 @@ module "somleng" {
 
   call_service_queue_name = "switch-services"
 
-  worker_min_tasks = 1
+  worker_min_tasks = 4
   worker_max_tasks = 10
 
   raw_recordings_bucket_name = "raw-recordings.somleng.org"
