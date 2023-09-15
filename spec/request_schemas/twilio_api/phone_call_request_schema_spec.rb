@@ -67,6 +67,10 @@ module TwilioAPI
       expect(
         validate_request_schema(input_params: {})
       ).not_to have_valid_field(:Url)
+
+      expect(
+        validate_request_schema(input_params: { Url: "http://localhost:5200/api/v1/campaigns/callback" })
+      ).not_to have_valid_field(:Url)
     end
 
     it "validates Twiml" do

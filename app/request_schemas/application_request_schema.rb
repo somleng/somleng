@@ -1,6 +1,4 @@
 class ApplicationRequestSchema < Dry::Validation::Contract
-  URL_FORMAT = /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/.freeze
-
   option :schema_helper, default: -> { RequestSchemaHelper.new }
 
   attr_reader :input_params
@@ -26,7 +24,10 @@ class ApplicationRequestSchema < Dry::Validation::Contract
       empty_range = from_date.blank? && to_date.blank?
       valid_range = from_date.present? && to_date.present? && to_date >= from_date
 
-      key([*key.path.keys, :date_range].join(".")).failure("invalid date range") unless empty_range || valid_range
+      unless empty_range || valid_range
+        key([*key.path.keys,
+             :date_range].join(".")).failure("invalid date range")
+      end
     end
   end
 
