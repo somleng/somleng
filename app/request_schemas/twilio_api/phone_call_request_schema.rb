@@ -1,17 +1,18 @@
 module TwilioAPI
   class PhoneCallRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :url_validator, default: proc { URLValidator.new(allow_http: true) }
 
     params do
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
-      optional(:Url).filled(:str?, format?: URL_FORMAT)
+      optional(:Url).filled(:str?)
       optional(:Method).value(
         ApplicationRequestSchema::Types::UppercaseString,
         :filled?,
         included_in?: PhoneCall.voice_method.values
       )
-      optional(:StatusCallback).filled(:string, format?: URL_FORMAT)
+      optional(:StatusCallback).filled(:string)
       optional(:StatusCallbackMethod).value(
         ApplicationRequestSchema::Types::UppercaseString,
         :filled?,
@@ -48,6 +49,17 @@ module TwilioAPI
 
     rule(:Url, :Twiml) do
       key(:Url).failure("is required") unless key?(:Url) || key?(:Twiml)
+      next if values[:Url].blank?
+      next if url_validator.valid?(values[:Url])
+
+      key(:Url).failure("is invalid")
+    end
+
+    rule(:StatusCallback) do
+      next if value.blank?
+      next if url_validator.valid?(value)
+
+      key(:StatusCallback).failure("is invalid")
     end
 
     def output

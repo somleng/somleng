@@ -16,9 +16,10 @@ RSpec.describe ExecuteMessagingTwiML do
 
     ExecuteMessagingTwiML.call(message:, url: message.sms_url, http_method: message.sms_method)
 
-    expect(WebMock).to(have_requested(:post, "https://www.example.com/messaging.xml").with { |request|
-      request.body.include?("MessageSid=#{message.id}")
-    })
+    expect(WebMock).to(have_requested(:post,
+                                      "https://www.example.com/messaging.xml").with do |request|
+                         request.body.include?("MessageSid=#{message.id}")
+                       end)
   end
 
   context "<Message> verb" do
@@ -65,7 +66,7 @@ RSpec.describe ExecuteMessagingTwiML do
 
     it "handles <Message> verbs with attributes" do
       carrier = create(:carrier)
-      sms_gateway = create(:sms_gateway, :connected, carrier:)
+      _sms_gateway = create(:sms_gateway, :connected, carrier:)
       account = create(:account, carrier:)
 
       phone_number = create(
