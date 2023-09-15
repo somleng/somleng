@@ -10,12 +10,14 @@ module TwilioAPI
     option :sms_gateway_resolver,
            default: -> { SMSGatewayResolver.new }
 
+    option :url_validator, default: proc { URLValidator.new(allow_http: true) }
+
     params do
       optional(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
       optional(:MessagingServiceSid).filled(:string)
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:Body).filled(:string, max_size?: 1600)
-      optional(:StatusCallback).maybe(:string, format?: URL_FORMAT)
+      optional(:StatusCallback).maybe(:string)
       optional(:ValidityPeriod).maybe(:integer, gteq?: 1, lteq?: 14_400)
       optional(:SmartEncoded).maybe(:bool)
       optional(:SendAt).filled(:time)
@@ -50,7 +52,9 @@ module TwilioAPI
         end
 
         phone_numbers = context[:messaging_service].phone_numbers
-        next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders)) if phone_numbers.empty?
+        if phone_numbers.empty?
+          next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
+        end
         next if values[:From].blank?
       else
         phone_numbers = account.phone_numbers
@@ -78,6 +82,13 @@ module TwilioAPI
       unless value.between?(900.seconds.from_now, 7.days.from_now)
         next base.failure(schema_helper.build_schema_error(:send_at_invalid))
       end
+    end
+
+    rule(:StatusCallback) do
+      next if value.blank?
+      next if url_validator.valid?(value)
+
+      key(:StatusCallback).failure("is invalid")
     end
 
     def output
