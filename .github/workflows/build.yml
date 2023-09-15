@@ -69,7 +69,7 @@ jobs:
           echo "packageMatrix={\"platform\":[\"amd64\",\"arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Install native dependencies
         run: |
