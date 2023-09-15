@@ -13,7 +13,7 @@ module Services
     end
 
     rule(:status_callback_url) do
-      next unless key?(:status_callback_url)
+      next if value.blank?
       next if url_validator.valid?(value)
 
       key(:status_callback_url).failure("is invalid")
