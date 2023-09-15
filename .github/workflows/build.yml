@@ -69,7 +69,7 @@ jobs:
           echo "packageMatrix={\"platform\":[\"amd64\",\"arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install native dependencies
         run: |
@@ -98,7 +98,7 @@ jobs:
           bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v3
 
       - name: Prepare Documentation Source
         if: steps.set-deployment-matrix.outputs.matrixLength > 0
