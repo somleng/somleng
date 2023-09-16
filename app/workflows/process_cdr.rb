@@ -1,6 +1,12 @@
-class ProcessCDRJob < ApplicationJob
-  def perform(cdr)
-    call_data_record = create_call_data_record(cdr)
+class ProcessCDR < ApplicationWorkflow
+  attr_accessor :cdr
+
+  def initialize(payload)
+    @cdr = JSON.parse(decompress(payload))
+  end
+
+  def call
+    call_data_record = create_call_data_record
     return unless call_data_record.call_leg.A?
 
     update_phone_call_status(call_data_record.phone_call)
@@ -10,9 +16,8 @@ class ProcessCDRJob < ApplicationJob
 
   private
 
-  def create_call_data_record(cdr)
-    cdr_variables = cdr.fetch("variables")
-    phone_call = find_phone_call(cdr_variables)
+  def create_call_data_record
+    phone_call = find_phone_call
 
     CallDataRecord.create!(
       phone_call:,
@@ -74,12 +79,20 @@ class ProcessCDRJob < ApplicationJob
     Time.at(epoch) if epoch.positive?
   end
 
-  def find_phone_call(cdr_variables)
+  def find_phone_call
     phone_call_id = cdr_variables["sip_rh_X-Somleng-CallSid"]
     phone_call_id ||= cdr_variables["sip_h_X-Somleng-CallSid"]
 
     return PhoneCall.find(phone_call_id) if phone_call_id.present?
 
     PhoneCall.find_by!(external_id: cdr_variables.fetch("uuid"))
+  end
+
+  def cdr_variables
+    cdr.fetch("variables")
+  end
+
+  def decompress(payload)
+    ActiveSupport::Gzip.decompress(Base64.decode64(payload))
   end
 end
