@@ -247,6 +247,12 @@ FactoryBot.define do
     end
   end
 
+  factory :export do
+    association :user, factory: %i[user carrier]
+    resource_type { "PhoneCall" }
+    scoped_to { { carrier_id: user.carrier.id } }
+  end
+
   factory :import do
     phone_numbers
     association :user, factory: %i[user carrier]

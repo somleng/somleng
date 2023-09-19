@@ -8,14 +8,16 @@ class ExportCSV < ApplicationWorkflow
   end
 
   def call
-    csv = generate_csv
-    attach_file(csv)
+    Tempfile.open do |tmpfile|
+      write_csv(tmpfile)
+      attach_file(tmpfile)
+    end
   end
 
   private
 
-  def generate_csv
-    CSV.generate do |csv|
+  def write_csv(file)
+    CSV.open(file, "w") do |csv|
       csv << attribute_names
 
       records.find_each do |record|
@@ -24,16 +26,16 @@ class ExportCSV < ApplicationWorkflow
     end
   end
 
-  def attribute_names
-    serializer_class.new(resource_class.new).headers
-  end
-
   def attach_file(csv)
     export.file.attach(
-      io: StringIO.new(csv),
+      io: csv,
       filename: export.name,
       content_type: "text/csv"
     )
+  end
+
+  def attribute_names
+    serializer_class.new(resource_class.new).headers
   end
 
   def records
