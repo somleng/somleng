@@ -21,6 +21,7 @@ RSpec.describe "Exports" do
       click_link("Exports")
     end
 
+    expect(page).to have_content("Done")
     click_link("accounts_")
 
     expect(page.response_headers["Content-Type"]).to eq("text/csv")

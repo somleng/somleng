@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_19_015637) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_19_054219) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -153,6 +153,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_015637) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status_message"
     t.index ["sequence_number"], name: "index_exports_on_sequence_number", unique: true, order: :desc
     t.index ["user_id"], name: "index_exports_on_user_id"
   end

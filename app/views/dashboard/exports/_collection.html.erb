@@ -8,6 +8,9 @@
         Status
       </th>
       <th>
+        Message
+      </th>
+      <th>
         Created At
       </th>
     </tr>
@@ -26,6 +29,10 @@
 
         <td>
           <%= export.ready? ? "Ready" : "Processing" %>
+        </td>
+
+        <td>
+          <%= export.status_message %>
         </td>
 
         <td>

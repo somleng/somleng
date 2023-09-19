@@ -15,7 +15,7 @@ groups:
     queues:
       - <%= ENV.fetch("AWS_SQS_LOW_PRIORITY_QUEUE_NAME", "low-priority") %>
   long_running:
-    concurrency: 10
+    concurrency: 1
     delay: 30
     queues:
       - <%= ENV.fetch("AWS_SQS_LONG_RUNNING_QUEUE_NAME", "long-running") %>
