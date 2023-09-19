@@ -21,9 +21,8 @@ class ExportCSV < ApplicationWorkflow
       csv << attribute_names
 
       ApplicationRecord.uncached do
-        records.find_each(batch_size: 100) do |record|
+        records.find_each do |record|
           csv << serializer_class.new(record.decorated).as_csv
-          csv.flush
         end
       end
     end
