@@ -17,7 +17,8 @@
     <%= form.text_field_tag(:from, params.dig(:filter, :from)) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
-  <%= render("shared/export_action", export_params: { resource_type: "PhoneCall" }) %>
+
+  <%= render("shared/export_action", disabled_title: "You must filter by date", disabled: params.dig(:filter, :from_date).blank?, export_params: { resource_type: "PhoneCall" }) %>
 <% end %>
 
 <div class="card-body">

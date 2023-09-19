@@ -1,14 +1,19 @@
 <% filter_params = request.query_parameters.fetch(:filter, {}).compact %>
+<% disabled = local_assigns.fetch(:disabled, false) %>
+<% disabled_title = local_assigns.fetch(:disabled_title, "Export") %>
 
-<%= button_to(
-  dashboard_exports_path(
-    export: export_params.reverse_merge(filter_params: filter_params)
-  ),
-  class: "btn btn-outline-info",
-  form_class: "d-inline",
-  title: "Export",
-  method: :post,
-  form: { data: { turbo_confirm: ("You haven't selected any filters. Are you sure you still want to export all records?" if filter_params.blank?) }}
-  ) do %>
-  <i class="fa-solid fa-file-download"></i>
-<% end %>
+<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="<%= disabled ? disabled_title : "Export" %>">
+  <%= button_to(
+    dashboard_exports_path(
+      export: export_params.reverse_merge(filter_params: filter_params)
+    ),
+    class: "btn btn-outline-info",
+    form_class: "d-inline",
+    title: "Export",
+    method: :post,
+    disabled: disabled,
+    form: { data: { turbo_confirm: ("You haven't selected any filters. Are you sure you still want to export all records?" if filter_params.blank?) }}
+    ) do %>
+    <i class="fa-solid fa-file-download"></i>
+  <% end %>
+</span>

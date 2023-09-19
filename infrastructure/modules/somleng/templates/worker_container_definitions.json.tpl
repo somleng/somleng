@@ -55,6 +55,10 @@
         "value": "${aws_sqs_low_priority_queue_name}"
       },
       {
+        "name": "AWS_SQS_LONG_RUNNING_QUEUE_NAME",
+        "value": "${aws_sqs_long_running_queue_name}"
+      },
+      {
         "name": "AWS_SQS_SCHEDULER_QUEUE_NAME",
         "value": "${aws_sqs_scheduler_queue_name}"
       },

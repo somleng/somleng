@@ -45,6 +45,7 @@ data "template_file" "appserver_container_definitions" {
     aws_sqs_high_priority_queue_name = aws_sqs_queue.high_priority.name
     aws_sqs_default_queue_name = aws_sqs_queue.default.name
     aws_sqs_low_priority_queue_name = aws_sqs_queue.low_priority.name
+    aws_sqs_long_running_queue_name = aws_sqs_queue.long_running.name
     aws_sqs_scheduler_queue_name = aws_sqs_queue.scheduler.name
     nginx_logs_group = aws_cloudwatch_log_group.nginx.name
     appserver_logs_group = aws_cloudwatch_log_group.appserver.name
@@ -127,6 +128,7 @@ data "template_file" "worker_container_definitions" {
     aws_sqs_high_priority_queue_name = aws_sqs_queue.high_priority.name
     aws_sqs_default_queue_name = aws_sqs_queue.default.name
     aws_sqs_low_priority_queue_name = aws_sqs_queue.low_priority.name
+    aws_sqs_long_running_queue_name = aws_sqs_queue.long_running.name
     aws_sqs_scheduler_queue_name = aws_sqs_queue.scheduler.name
     worker_logs_group = aws_cloudwatch_log_group.worker.name
     logs_group_region = var.aws_region

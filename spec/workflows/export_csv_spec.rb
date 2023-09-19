@@ -17,6 +17,7 @@ RSpec.describe ExportCSV do
     ExportCSV.call(export)
 
     expect(export.file.attached?).to eq(true)
+    expect(export.status_message).to eq("Exported 1 record")
     expect(export.file.blob.filename).to eq(export.name)
     expect(export.file.blob.content_type).to eq("text/csv")
     csv_data = CSV.parse(export.file.download, headers: true)
