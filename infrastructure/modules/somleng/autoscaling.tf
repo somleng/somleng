@@ -41,14 +41,14 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
   threshold           = 1000
 
   metric_query {
-    id = "e1"
+    id = "tm"
     return_data = true
-    expression = "m1 + m2 + m3 + m4"
-    label = "Number of Messages"
+    expression = "sm + lrm + lpm + dpm + hpm"
+    label = "Total Number of Messages"
   }
 
   metric_query {
-    id = "m1"
+    id = "dpm"
     return_data = false
     label = "Number of default priority messages"
     metric {
@@ -63,7 +63,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
   }
 
   metric_query {
-    id = "m2"
+    id = "sm"
     return_data = false
     label = "Number of scheduler messages"
     metric {
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
   }
 
   metric_query {
-    id = "m3"
+    id = "hpm"
     return_data = false
     label = "Number of high priority messages"
     metric {
@@ -93,7 +93,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
   }
 
   metric_query {
-    id = "m4"
+    id = "lpm"
     return_data = false
     label = "Number of low priority messages"
     metric {
@@ -103,6 +103,21 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
       stat           = "Sum"
       dimensions = {
         QueueName = aws_sqs_queue.low_priority.name
+      }
+    }
+  }
+
+  metric_query {
+    id = "lrm"
+    return_data = false
+    label = "Number of long running messages"
+    metric {
+      namespace           = "AWS/SQS"
+      metric_name         = "ApproximateNumberOfMessagesVisible"
+      period              = 60 # Wait this number of seconds before triggering the alarm (smallest available)
+      stat           = "Sum"
+      dimensions = {
+        QueueName = aws_sqs_queue.long_running.name
       }
     }
   }
@@ -112,19 +127,26 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_high" {
 
 resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   alarm_name          = "${var.app_identifier}-queue-size-alarm-low"
-  comparison_operator = "LessThanThreshold"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
-  threshold           = 500
+  threshold           = 1
 
   metric_query {
     id = "e1"
     return_data = true
-    expression = "m1 + m2 + m3 + m4"
-    label = "Number of Messages"
+    expression = "tm < 500 && lrm < 1"
+    label = "Total messages below threshold and no long running messages"
   }
 
   metric_query {
-    id = "m1"
+    id = "tm"
+    return_data = false
+    expression = "sm + lrm + lpm + dpm + hpm"
+    label = "Total Number of Messages"
+  }
+
+  metric_query {
+    id = "dpm"
     return_data = false
     label = "Number of default priority messages"
     metric {
@@ -139,7 +161,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   }
 
   metric_query {
-    id = "m2"
+    id = "sm"
     return_data = false
     label = "Number of scheduler messages"
     metric {
@@ -154,7 +176,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   }
 
   metric_query {
-    id = "m3"
+    id = "hpm"
     return_data = false
     label = "Number of high priority messages"
     metric {
@@ -169,7 +191,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   }
 
   metric_query {
-    id = "m4"
+    id = "lpm"
     return_data = false
     label = "Number of low priority messages"
     metric {
@@ -179,6 +201,21 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
       stat           = "Sum"
       dimensions = {
         QueueName = aws_sqs_queue.low_priority.name
+      }
+    }
+  }
+
+  metric_query {
+    id = "lrm"
+    return_data = false
+    label = "Number of long running messages"
+    metric {
+      namespace           = "AWS/SQS"
+      metric_name         = "ApproximateNumberOfMessagesVisible"
+      period              = 300
+      stat           = "Sum"
+      dimensions = {
+        QueueName = aws_sqs_queue.long_running.name
       }
     }
   }

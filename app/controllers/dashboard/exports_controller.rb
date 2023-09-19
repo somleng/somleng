@@ -7,7 +7,7 @@ module Dashboard
     def create
       @resource = build_export
       @resource.save!
-      ExecuteWorkflowJob.perform_later("ExportCSV", @resource)
+      ExportCSVJob.perform_later(@resource)
 
       redirect_back(
         fallback_location: dashboard_exports_path,

@@ -72,6 +72,7 @@ resource "aws_iam_policy" "ecs_task_policy" {
         "${aws_sqs_queue.high_priority.arn}",
         "${aws_sqs_queue.default.arn}",
         "${aws_sqs_queue.low_priority.arn}",
+        "${aws_sqs_queue.long_running.arn}",
         "${aws_sqs_queue.scheduler.arn}"
       ]
     },
