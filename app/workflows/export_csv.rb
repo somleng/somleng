@@ -20,8 +20,9 @@ class ExportCSV < ApplicationWorkflow
     CSV.open(file, "w") do |csv|
       csv << attribute_names
 
-      records.find_each do |record|
+      records.find_each(batch_size: 100) do |record|
         csv << serializer_class.new(record.decorated).as_csv
+        csv.flush
       end
     end
   end
