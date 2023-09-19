@@ -2,6 +2,7 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
   def date_range(options)
     title = options.fetch(:title)
     from_date, to_date = options.fetch(:filter_value)
+    hint = options.fetch(:hint) { "Max 3 months" }
 
     @template.render("shared/filters/field", filter_value: from_date, title:) do
       @template.tag.div(data: { controller: "filters--date-picker" }) do
@@ -13,6 +14,11 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
             "filters--date-picker-target" => "dateRangePicker"
           }
         )
+
+        hint_element = @template.tag.div(class: "form-text") do
+          hint
+        end
+
         from_date_hidden_field = hidden_field(
           :from_date,
           value: from_date,
@@ -28,7 +34,7 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
           }
         )
 
-        input_box + from_date_hidden_field + to_date_hidden_field
+        input_box + hint_element + from_date_hidden_field + to_date_hidden_field
       end
     end
   end

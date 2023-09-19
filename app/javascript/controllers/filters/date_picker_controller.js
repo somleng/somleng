@@ -23,9 +23,16 @@ export default class extends Controller {
           moment(this.fromDateTarget.value, "DD/MM/YYYY"),
           moment(this.toDateTarget.value, "DD/MM/YYYY")
         ],
-        onSelect: ({formattedDate}) => {
+        onSelect: ({date, formattedDate}) => {
           if(formattedDate.length == 1) {
-            formattedDate.push(formattedDate[0])
+            let selectedDate = date[0];
+            let minDate = new Date(selectedDate);
+            let maxDate = new Date(selectedDate);
+            minDate.setMonth(selectedDate.getMonth() - 3);
+            maxDate.setMonth(selectedDate.getMonth() + 3);
+            picker.update({minDate: minDate, maxDate: maxDate});
+
+            formattedDate.push(formattedDate[0]);
           }
 
           const [fromDate, toDate] = formattedDate;

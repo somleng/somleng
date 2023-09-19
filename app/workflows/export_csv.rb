@@ -2,6 +2,8 @@ require "csv"
 
 class ExportCSV < ApplicationWorkflow
   include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
+
   attr_reader :export
 
   def initialize(export)
@@ -24,13 +26,20 @@ class ExportCSV < ApplicationWorkflow
       ApplicationRecord.uncached do
         total_records = records.count
         records.find_each.with_index do |record, index|
-          update_status_message!("Exporting record #{number_with_delimiter(index + 1)}/#{number_with_delimiter(total_records)}") if (index % 500).zero?
+          update_status_message!("#{format_number(index + 1)} of #{format_number(total_records, 'record')}") if (index % 500).zero?
           csv << serializer_class.new(record.decorated).as_csv
         end
-        
-        update_status_message!("Done")
+
+        update_status_message!("Exported #{format_number(total_records, 'record')}")
       end
     end
+  end
+
+  def format_number(number, singular = nil)
+    formatted_number = number_with_delimiter(number)
+    return formatted_number if singular.blank?
+
+    pluralize(formatted_number, singular)
   end
 
   def update_status_message!(message)
