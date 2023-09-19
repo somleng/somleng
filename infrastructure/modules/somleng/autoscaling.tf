@@ -134,7 +134,7 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
   metric_query {
     id = "e1"
     return_data = true
-    expression = "tm < 500 && lrm < 1"
+    expression = "tm < 500 && (lrm + lrmif) < 1"
     label = "Total messages below threshold and no long running messages"
   }
 
@@ -212,6 +212,21 @@ resource "aws_cloudwatch_metric_alarm" "worker_queue_size_alarm_low" {
     metric {
       namespace           = "AWS/SQS"
       metric_name         = "ApproximateNumberOfMessagesVisible"
+      period              = 300
+      stat           = "Sum"
+      dimensions = {
+        QueueName = aws_sqs_queue.long_running.name
+      }
+    }
+  }
+
+    metric_query {
+    id = "lrmif"
+    return_data = false
+    label = "Number of long running messages in flight"
+    metric {
+      namespace           = "AWS/SQS"
+      metric_name         = "ApproximateNumberOfMessagesNotVisible"
       period              = 300
       stat           = "Sum"
       dimensions = {
