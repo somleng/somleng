@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_28_141127) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_19_015637) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -368,6 +368,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_141127) do
     t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
     t.index ["beneficiary_fingerprint"], name: "index_phone_calls_on_beneficiary_fingerprint"
     t.index ["carrier_id"], name: "index_phone_calls_on_carrier_id"
+    t.index ["created_at"], name: "index_phone_calls_on_created_at"
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
     t.index ["from"], name: "index_phone_calls_on_from"
