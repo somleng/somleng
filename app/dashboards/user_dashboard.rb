@@ -14,7 +14,9 @@ class UserDashboard < Administrate::BaseDashboard
     invitation_sent_at: Field::LocalTime,
     invitation_accepted_at: Field::LocalTime,
     invited_by: Field::Polymorphic,
-    account_memberships: Field::HasMany
+    account_memberships: Field::HasMany,
+    imports: Field::HasMany,
+    exports: Field::HasMany,
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -37,6 +39,8 @@ class UserDashboard < Administrate::BaseDashboard
     invitation_accepted_at
     invited_by
     account_memberships
+    imports
+    exports
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze
