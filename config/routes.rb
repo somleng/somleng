@@ -128,6 +128,8 @@ Rails.application.routes.draw do
       resources :statistics, only: :index
       resources :error_logs, only: %i[show index]
       resources :events, only: %i[index show]
+      resources :exports, only: %i[index show]
+      resources :imports, only: %i[index show]
       resources :webhook_request_logs, only: %i[index show]
 
       resources :account_memberships, only: :show

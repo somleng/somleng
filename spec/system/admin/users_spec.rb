@@ -6,6 +6,8 @@ RSpec.describe "Admin/Users" do
     inviting_user = create(:user, name: "Joe Bloggs")
     user = create(:user, name: "John Doe", invited_by: inviting_user)
     create(:account_membership, user: inviting_user, account:)
+    import = create(:import, user:)
+    export = create(:export, user:)
     account_membership = create(:account_membership, user:, account:, role: :admin)
 
     page.driver.browser.authorize("admin", "password")
@@ -14,6 +16,8 @@ RSpec.describe "Admin/Users" do
 
     expect(page).to have_content("John Doe")
     expect(page).to have_link("Joe Bloggs")
+    expect(page).to have_link(import.id)
+    expect(page).to have_link(export.id)
 
     click_link(account_membership.id)
 
