@@ -533,7 +533,7 @@ GEM
     show_for (0.8.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
-    simple_form (5.2.0)
+    simple_form (5.3.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
     simplecov (0.22.0)
