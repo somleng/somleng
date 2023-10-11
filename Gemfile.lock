@@ -530,7 +530,7 @@ GEM
       thor
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
-    show_for (0.8.0)
+    show_for (0.8.1)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
     simple_form (5.3.0)
