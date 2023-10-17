@@ -6,7 +6,7 @@ class DefaultTTSConfigurationForm
   attribute :default_tts_configuration
   attribute :provider, default: -> { DefaultTTSConfiguration.new.provider }
   attribute :language, default: -> { DefaultTTSConfiguration.new.language }
-  delegate :persisted?, :id, to: :account
+  delegate :persisted?, :id, to: :default_tts_configuration
 
   enumerize :provider, in: DefaultTTSConfiguration.provider.values
   enumerize :language, in: DefaultTTSConfiguration.language.values
@@ -19,6 +19,7 @@ class DefaultTTSConfigurationForm
 
   def self.initialize_with(default_tts_configuration)
     new(
+      default_tts_configuration:,
       provider: default_tts_configuration.provider,
       language: default_tts_configuration.language
     )

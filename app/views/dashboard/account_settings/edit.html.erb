@@ -15,23 +15,7 @@
       </div>
     </div>
 
-    <div id="default-tts-configuration" class="card mb-3">
-      <div class="card-body">
-        <%= f.simple_fields_for(@resource.default_tts_configuration, wrapper: :input_group) do |tts_form| %>
-          <h5 class="card-title">Text to speech</h5>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <%= tts_form.input :provider, include_blank: false %>
-            </div>
-
-            <div class="col-sm-6">
-              <%= tts_form.input :language, include_blank: false, collection: DefaultTTSConfiguration.language.values %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <%= render("default_tts_configuration_fields", f: f) %>
 
     <%= f.button :submit %>
   <% end %>
