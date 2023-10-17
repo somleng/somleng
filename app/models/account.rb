@@ -21,6 +21,7 @@ class Account < ApplicationRecord
   has_many :recordings
   has_many :error_logs
   has_many :interactions
+  has_many :tts_events
 
   def self.customer_managed
     where(arel_table[:account_memberships_count].gt(0))
