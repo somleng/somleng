@@ -14,16 +14,20 @@ class AccountSettingsForm
 
   def self.initialize_with(account)
     new(
-      account: account,
+      account:,
       name: account.name
     )
+  end
+
+  def default_tts_configuration
+    DefaultTTSConfigurationForm.initialize_with(account.default_tts_configuration)
   end
 
   def save
     return false if invalid?
 
     account.attributes = {
-      name: name
+      name:
     }
 
     account.save!

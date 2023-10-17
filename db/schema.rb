@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_17_072614) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -42,7 +42,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_072614) do
     t.jsonb "metadata", default: {}, null: false
     t.integer "calls_per_second", default: 1, null: false
     t.uuid "sip_trunk_id"
-    t.string "default_tts_provider", null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
@@ -116,6 +115,18 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_072614) do
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
+  end
+
+  create_table "default_tts_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.string "provider", null: false
+    t.string "language", null: false
+    t.string "voice", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_default_tts_configurations_on_account_id"
+    t.index ["sequence_number"], name: "index_default_tts_configurations_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "error_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -536,9 +547,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_072614) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "invitation_token"
-    t.datetime "invitation_created_at"
-    t.datetime "invitation_sent_at"
-    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at", precision: nil
+    t.datetime "invitation_sent_at", precision: nil
+    t.datetime "invitation_accepted_at", precision: nil
     t.integer "invitation_limit"
     t.string "invited_by_type"
     t.uuid "invited_by_id"
@@ -593,6 +604,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_072614) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "default_tts_configurations", "accounts", on_delete: :cascade
   add_foreign_key "error_logs", "accounts"
   add_foreign_key "error_logs", "carriers"
   add_foreign_key "events", "carriers"
@@ -637,6 +649,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_072614) do
   add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
   add_foreign_key "users", "carriers"
   add_foreign_key "webhook_endpoints", "oauth_applications"
+  add_foreign_key "webhook_request_logs", "carriers"
   add_foreign_key "webhook_request_logs", "events"
   add_foreign_key "webhook_request_logs", "webhook_endpoints"
 end

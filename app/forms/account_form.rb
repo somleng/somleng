@@ -8,15 +8,12 @@ class AccountForm
   attribute :enabled, :boolean, default: true
   attribute :account, default: -> { Account.new(access_token: Doorkeeper::AccessToken.new) }
   attribute :sip_trunk_id
-  attribute :default_tts_provider, default: -> { Account.new.default_tts_provider }
   attribute :owner_name
   attribute :owner_email
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
 
   delegate :persisted?, :id, :customer_managed?, to: :account
-
-  enumerize :default_tts_provider, in: Account.default_tts_provider.values
 
   validates :name, presence: true, unless: :persisted?
   validates :owner_email, format: User::EMAIL_FORMAT, allow_blank: true, allow_nil: true
@@ -79,7 +76,8 @@ class AccountForm
     return errors.add(:owner_email, :blank) if owner_name.present? && owner_email.blank?
     return errors.add(:owner_name, :blank) if owner_email.present? && owner_name.blank?
     return errors.add(:owners_email, :invalid) if customer_managed?
-    return errors.add(:owner_email, :taken) if User.exists?(carrier:, email: owner_email)
+
+    errors.add(:owner_email, :taken) if User.exists?(carrier:, email: owner_email)
   end
 
   def validate_name

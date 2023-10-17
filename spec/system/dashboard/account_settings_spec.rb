@@ -29,10 +29,19 @@ RSpec.describe "Account Settings" do
     carrier_sign_in(user)
     visit dashboard_account_settings_path
     click_link("Edit")
+
     fill_in("Name", with: "Car Rides")
+
+    within("#default-tts-configuration") do
+      select("Polly", from: "Provider")
+      select("en-us", from: "Language")
+    end
+
     click_button("Update Account Settings")
 
     expect(page).to have_content("Account settings were successfully updated")
     expect(page).to have_content("Car Rides")
+    expect(page).to have_content("Polly")
+    expect(page).to have_content("en-us")
   end
 end
