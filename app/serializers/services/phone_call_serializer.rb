@@ -13,7 +13,8 @@ module Services
         "account_sid" => nil,
         "account_auth_token" => nil,
         "direction" => nil,
-        "api_version" => nil
+        "api_version" => nil,
+        "default_tts_provider" => nil
       )
     end
 

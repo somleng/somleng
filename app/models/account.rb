@@ -3,6 +3,7 @@ class Account < ApplicationRecord
   TYPES = %w[customer_managed carrier_managed].freeze
 
   enumerize :status, in: %i[enabled disabled], predicates: true, default: :enabled
+  enumerize :default_tts_provider, in: %i[basic polly], default: :basic
 
   belongs_to :carrier
   belongs_to :sip_trunk, optional: true

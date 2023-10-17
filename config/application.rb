@@ -35,7 +35,6 @@ module Somleng
     # https://guides.rubyonrails.org/active_record_encryption.html#unique-constraints
     config.active_record.encryption.extend_queries = true
 
-    config.eager_load_paths << Rails.root.join("lib")
     config.app_settings = config_for(:app_settings)
     config.active_job.default_queue_name = config.app_settings.fetch(:aws_sqs_default_queue_name)
     Rails.application.routes.default_url_options[:host] = config.app_settings.fetch(:app_url_host)

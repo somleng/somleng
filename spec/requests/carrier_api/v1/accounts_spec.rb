@@ -11,6 +11,10 @@ resource "Accounts", document: :carrier_api do
         required: true
       )
       parameter(
+        :default_tts_provider,
+        "The default TTS provider. Possible values: #{Account.default_tts_provider.values.join(', ')}"
+      )
+      parameter(
         :metadata,
         "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format."
       )
@@ -25,6 +29,7 @@ resource "Accounts", document: :carrier_api do
           type: :account,
           attributes: {
             name: "Rocket Rides",
+            default_tts_provider: "polly",
             metadata: {
               foo: "bar"
             }
@@ -36,6 +41,7 @@ resource "Accounts", document: :carrier_api do
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
       expect(jsonapi_response_attributes.fetch("name")).to eq("Rocket Rides")
       expect(jsonapi_response_attributes.fetch("type")).to eq("carrier_managed")
+      expect(jsonapi_response_attributes.fetch("default_tts_provider")).to eq("polly")
     end
 
     example "handles invalid requests", document: false do
@@ -69,6 +75,7 @@ resource "Accounts", document: :carrier_api do
         :account,
         name: "Rocket Rides",
         status: :enabled,
+        default_tts_provider: :basic,
         metadata: { "foo" => "bar" }
       )
 
@@ -83,6 +90,7 @@ resource "Accounts", document: :carrier_api do
           attributes: {
             name: "Bob Cats",
             status: "disabled",
+            default_tts_provider: "polly",
             metadata: {
               "bar" => "foo"
             }
@@ -94,6 +102,7 @@ resource "Accounts", document: :carrier_api do
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
       expect(jsonapi_response_attributes).to include(
         "status" => "disabled",
+        "default_tts_provider" => "polly",
         "metadata" => {
           "bar" => "foo",
           "foo" => "bar"

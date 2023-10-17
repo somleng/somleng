@@ -4,6 +4,9 @@
       <div class="col-sm-6">
         <%= f.input :name, maxlength: 128, hint: "A friendly name for the account", disabled: policy(resource).customer_managed? %>
       </div>
+      <div class="col-sm-6">
+        <%= f.input :default_tts_provider, include_blank: false  %>
+      </div>
     </div>
 
     <div class="row">

@@ -53,6 +53,7 @@ module Dashboard
         :owner_email,
         :sip_trunk_id,
         :calls_per_second,
+        :default_tts_provider,
         :enabled
       )
     end

@@ -20,6 +20,7 @@ class PhoneCall < ApplicationRecord
   has_many   :recordings
 
   delegate :may_fire_event?, to: :aasm
+  delegate :default_tts_provider, to: :account
 
   aasm column: :status do
     state :queued, initial: true

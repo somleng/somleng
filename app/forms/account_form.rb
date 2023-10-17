@@ -1,4 +1,5 @@
 class AccountForm
+  extend Enumerize
   include ActiveModel::Model
   include ActiveModel::Attributes
 
@@ -7,6 +8,7 @@ class AccountForm
   attribute :enabled, :boolean, default: true
   attribute :account, default: -> { Account.new(access_token: Doorkeeper::AccessToken.new) }
   attribute :sip_trunk_id
+  attribute :default_tts_provider, default: -> { Account.new.default_tts_provider }
   attribute :owner_name
   attribute :owner_email
   attribute :current_user
@@ -14,8 +16,11 @@ class AccountForm
 
   delegate :persisted?, :id, :customer_managed?, to: :account
 
+  enumerize :default_tts_provider, in: Account.default_tts_provider.values
+
   validates :name, presence: true, unless: :persisted?
   validates :owner_email, format: User::EMAIL_FORMAT, allow_blank: true, allow_nil: true
+  validates :default_tts_provider, presence: true
   validates :calls_per_second,
             presence: true,
             numericality: {
@@ -39,7 +44,8 @@ class AccountForm
       enabled: account.enabled?,
       calls_per_second: account.calls_per_second,
       owner_name: account.owner&.name,
-      owner_email: account.owner&.email
+      owner_email: account.owner&.email,
+      default_tts_provider: account.default_tts_provider
     )
   end
 
@@ -50,6 +56,7 @@ class AccountForm
     account.status = enabled ? "enabled" : "disabled"
     account.name = name if name.present?
     account.calls_per_second = calls_per_second
+    account.default_tts_provider = default_tts_provider
 
     account.sip_trunk = carrier.sip_trunks.find(sip_trunk_id) if sip_trunk_id.present?
 

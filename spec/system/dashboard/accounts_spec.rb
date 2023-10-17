@@ -54,6 +54,7 @@ RSpec.describe "Accounts" do
 
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
+    select("Polly", from: "Default TTS provider")
     click_button "Create Account"
 
     expect(page).to have_content("Account was successfully created")
@@ -63,6 +64,7 @@ RSpec.describe "Accounts" do
     expect(page).to have_link("Edit")
     expect(page).to have_content("Auth Token")
     expect(page).to have_content("Carrier managed")
+    expect(page).to have_content("Polly")
   end
 
   it "Handle validation errors" do

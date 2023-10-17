@@ -11,6 +11,7 @@ module APIResponseSchema
       required(:sid).filled(:str?)
       required(:account_sid).filled(:str?)
       required(:account_auth_token).filled(:str?)
+      required(:default_tts_provider).filled(:str?)
       required(:direction).filled(:str?)
       required(:api_version).filled(:str?, eql?: "2010-04-01")
       required(:created_at).filled(:str?)

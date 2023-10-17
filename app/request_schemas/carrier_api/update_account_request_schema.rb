@@ -7,6 +7,7 @@ module CarrierAPI
         required(:attributes).value(:hash).schema do
           optional(:name).filled(:str?)
           optional(:status).filled(:str?, included_in?: Account.status.values)
+          optional(:default_tts_provider).value(:str?, included_in?: Account.default_tts_provider.values)
           optional(:metadata).maybe(:hash?)
         end
       end

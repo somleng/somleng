@@ -1,7 +1,7 @@
 class TTSEvent < ApplicationRecord
   extend Enumerize
 
-  enumerize :provider, in: [:polly]
+  enumerize :provider, in: %i[basic polly]
 
   belongs_to :carrier
   belongs_to :account
