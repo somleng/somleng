@@ -514,4 +514,12 @@ FactoryBot.define do
   factory :error_log do
     error_message { "error message" }
   end
+
+  factory :tts_event do
+    phone_call
+    account { phone_call.account }
+    carrier { account.carrier }
+    provider { :polly }
+    num_chars { 100 }
+  end
 end

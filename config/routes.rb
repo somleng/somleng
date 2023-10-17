@@ -127,6 +127,7 @@ Rails.application.routes.draw do
       resources :messages, only: %i[show index]
       resources :users, only: %i[show index]
       resources :statistics, only: :index
+      resources :tts_events, only: %i[show index]
       resources :error_logs, only: %i[show index]
       resources :events, only: %i[index show]
       resources :exports, only: %i[index show]
