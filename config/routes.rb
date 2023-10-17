@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     namespace :services do
       resources :inbound_phone_calls, only: :create
       resources :phone_call_events, only: :create
+      resources :tts_events, only: :create
       resources :call_data_records, only: :create
       resources :recordings, only: %i[create update]
       resource :routing_parameters, only: :create

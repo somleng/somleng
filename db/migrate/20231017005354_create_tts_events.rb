@@ -8,6 +8,8 @@ class CreateTTSEvents < ActiveRecord::Migration[7.1]
       t.string :provider, null: false
       t.index :created_at
 
+      t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
+
       t.timestamps
     end
   end

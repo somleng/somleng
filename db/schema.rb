@@ -503,12 +503,14 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_005354) do
     t.uuid "phone_call_id"
     t.integer "num_chars", null: false
     t.string "provider", null: false
+    t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_tts_events_on_account_id"
     t.index ["carrier_id"], name: "index_tts_events_on_carrier_id"
     t.index ["created_at"], name: "index_tts_events_on_created_at"
     t.index ["phone_call_id"], name: "index_tts_events_on_phone_call_id"
+    t.index ["sequence_number"], name: "index_tts_events_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
