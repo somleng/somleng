@@ -9,7 +9,11 @@ module Dashboard
     end
 
     def update
-      @resource = AccountSettingsForm.new(permitted_params)
+      default_tts_configuration = DefaultTTSConfigurationForm.new(
+        default_tts_configuration: current_account.default_tts_configuration,
+        **permitted_params[:default_tts_configuration]
+      )
+      @resource = AccountSettingsForm.new(permitted_params.merge(default_tts_configuration:))
       @resource.account = current_account
       @resource.save
 
@@ -19,7 +23,13 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:account_settings).permit(:name)
+      params.require(:account_settings).permit(
+        :name,
+        default_tts_configuration: %i[
+          provider
+          language
+        ]
+      )
     end
 
     def policy_class

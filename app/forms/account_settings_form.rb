@@ -4,6 +4,7 @@ class AccountSettingsForm
 
   attribute :name
   attribute :account
+  attribute :default_tts_configuration, default: -> { DefaultTTSConfigurationForm.new }
   delegate :persisted?, :id, to: :account
 
   validates :name, presence: true
@@ -15,12 +16,9 @@ class AccountSettingsForm
   def self.initialize_with(account)
     new(
       account:,
-      name: account.name
+      name: account.name,
+      default_tts_configuration: DefaultTTSConfigurationForm.initialize_with(account.default_tts_configuration)
     )
-  end
-
-  def default_tts_configuration
-    DefaultTTSConfigurationForm.initialize_with(account.default_tts_configuration)
   end
 
   def save
@@ -30,6 +28,9 @@ class AccountSettingsForm
       name:
     }
 
-    account.save!
+    ApplicationRecord.transaction do
+      default_tts_configuration.save
+      account.save!
+    end
   end
 end
