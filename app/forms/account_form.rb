@@ -12,8 +12,8 @@ class AccountForm
   attribute :owner_email
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
-  attribute :default_tts_configuration_attributes, default: {}
-  attribute :default_tts_configuration, default: -> { DefaultTTSConfigurationForm.new }
+  attribute :tts_configuration_attributes, default: {}
+  attribute :tts_configuration, default: -> { TTSConfigurationForm.new }
 
   delegate :persisted?, :id, :customer_managed?, to: :account
 
@@ -27,7 +27,7 @@ class AccountForm
               only_integer: true
             }
 
-  validates :default_tts_configuration, nested_form: true
+  validates :tts_configuration, nested_form: true
   validate :validate_owner
 
   def self.model_name
@@ -44,17 +44,24 @@ class AccountForm
       calls_per_second: account.calls_per_second,
       owner_name: account.owner&.name,
       owner_email: account.owner&.email,
-      default_tts_configuration: DefaultTTSConfigurationForm.initialize_with(account.default_tts_configuration)
+      tts_configuration: TTSConfigurationForm.initialize_with(account.tts_configuration)
     )
   end
 
-  def save
-    self.default_tts_configuration = DefaultTTSConfigurationForm.new(
-      **default_tts_configuration_attributes
-    )
+  def tts_configuration_attributes=(attributes)
+    super
+    tts_configuration.assign_attributes(attributes)
+  end
 
+  def account=(account)
+    super
+    tts_configuration.account = account
+  end
+
+  def save
     return false if invalid?
 
+    tts_configuration.account = account
     account.carrier = carrier
     account.status = enabled ? "enabled" : "disabled"
     account.name = name if name.present?
@@ -64,8 +71,7 @@ class AccountForm
 
     Account.transaction do
       account.save!
-      default_tts_configuration.default_tts_configuration = account.build_default_tts_configuration
-      default_tts_configuration.save
+      tts_configuration.save
       invite_owner! if owner_email.present?
       true
     end

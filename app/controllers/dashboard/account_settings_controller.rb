@@ -21,9 +21,7 @@ module Dashboard
     def permitted_params
       params.require(:account_settings).permit(
         :name,
-        default_tts_configuration_attributes: %i[
-          voice
-        ]
+        tts_configuration_attributes: %i[voice]
       )
     end
 

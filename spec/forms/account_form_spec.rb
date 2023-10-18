@@ -28,18 +28,25 @@ RSpec.describe AccountForm do
       expect(form.errors[:calls_per_second]).to be_present
     end
 
-    it "validates the default_tts_configuration" do
-      form = AccountForm.new(default_tts_provider: nil)
+    it "validates tts_configuration" do
+      form = AccountForm.new(
+        tts_configuration_attributes: { voice: nil }
+      )
 
       expect(form).to be_invalid
-      expect(form.errors[:default_tts_provider]).to be_present
+      expect(form.errors[:"tts_configuration.voice"]).to be_present
     end
   end
 
   describe "#save" do
     it "creates an account without an owner" do
       carrier = create(:carrier)
-      form = AccountForm.new(name: "Rocket Rides", enabled: true, calls_per_second: 2)
+      form = AccountForm.new(
+        name: "Rocket Rides",
+        enabled: true,
+        calls_per_second: 2,
+        tts_configuration_attributes: { voice: "Basic.Kal" }
+      )
       form.carrier = carrier
 
       result = form.save
@@ -49,7 +56,10 @@ RSpec.describe AccountForm do
         access_token: be_present,
         name: "Rocket Rides",
         enabled?: true,
-        calls_per_second: 2
+        calls_per_second: 2,
+        tts_configuration: have_attributes(
+          voice_identifier: "Basic.Kal"
+        )
       )
     end
 
@@ -70,6 +80,28 @@ RSpec.describe AccountForm do
         owner: have_attributes(name: "John Doe", email: "johndoe@example.com")
       )
       expect(ActionMailer::MailDeliveryJob).to have_been_enqueued
+    end
+
+    it "updates an account" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:, name: "Rocket Rides", tts_voice_identifier: "Basic.Kal")
+
+      form = AccountForm.new(
+        name: "Car Rides",
+        tts_configuration_attributes: { voice: "Basic.Slt" },
+        carrier:,
+        account:
+      )
+
+      result = form.save
+
+      expect(result).to eq(true)
+      expect(form.account).to have_attributes(
+        name: "Car Rides",
+        tts_configuration: have_attributes(
+          voice_identifier: "Basic.Slt"
+        )
+      )
     end
   end
 end

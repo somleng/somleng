@@ -11,8 +11,8 @@ resource "Accounts", document: :carrier_api do
         required: true
       )
       parameter(
-        :default_tts_provider,
-        "The default TTS provider. Possible values: #{Account.default_tts_provider.values.join(', ')}"
+        :tts_voice_identifier,
+        "The default TTS voice identifier. Possible values: #{TTSConfiguration.voice_identifier.values.join(', ')}"
       )
       parameter(
         :metadata,
@@ -142,8 +142,11 @@ resource "Accounts", document: :carrier_api do
 
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_collection_schema("carrier_api/account")
-      expect(json_response.fetch("data").pluck("id")).to match_array([customer_managed_account.id, carrier_managed_account.id])
-      expect(json_response.dig("data", 0, "attributes", "auth_token")).to eq(carrier_managed_account.auth_token)
+      expect(json_response.fetch("data").pluck("id")).to contain_exactly(
+        customer_managed_account.id, carrier_managed_account.id
+      )
+      expect(json_response.dig("data", 0, "attributes",
+                               "auth_token")).to eq(carrier_managed_account.auth_token)
       expect(json_response.dig("data", 1, "attributes").has_key?("auth_token")).to eq(false)
     end
   end

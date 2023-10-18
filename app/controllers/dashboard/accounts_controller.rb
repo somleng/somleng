@@ -54,7 +54,7 @@ module Dashboard
         :sip_trunk_id,
         :calls_per_second,
         :enabled,
-        default_tts_configuration_attributes: %i[
+        tts_configuration_attributes: %i[
           voice
         ]
       )

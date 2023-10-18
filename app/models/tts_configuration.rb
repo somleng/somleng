@@ -1,4 +1,4 @@
-class DefaultTTSConfiguration < ApplicationRecord
+class TTSConfiguration < ApplicationRecord
   extend Enumerize
 
   belongs_to :account

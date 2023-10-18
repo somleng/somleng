@@ -50,7 +50,7 @@ class ApplicationSeeder
     carrier = params.fetch(:carrier)
     Account.first_or_create!(params.reverse_merge(name: carrier.name)) do |account|
       account.build_access_token
-      account.build_default_tts_configuration(
+      account.build_tts_configuration(
         voice_identifier: "Basic.Kal"
       )
     end

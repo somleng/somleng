@@ -163,7 +163,7 @@ FactoryBot.define do
     name { "Rocket Rides" }
 
     transient do
-      default_tts_voice_identifier { "Basic.Kal" }
+      tts_voice_identifier { "Basic.Kal" }
     end
 
     trait :carrier_managed do
@@ -181,15 +181,15 @@ FactoryBot.define do
     end
 
     after(:build) do |account, evaluator|
-      account.default_tts_configuration ||= build(
-        :default_tts_configuration,
+      account.tts_configuration ||= build(
+        :tts_configuration,
         account:,
-        voice_identifier: evaluator.default_tts_voice_identifier
+        voice_identifier: evaluator.tts_voice_identifier
       )
     end
   end
 
-  factory :default_tts_configuration do
+  factory :tts_configuration do
     account
     voice_identifier { "Basic.Kal" }
   end

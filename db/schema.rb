@@ -117,16 +117,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
   end
 
-  create_table "default_tts_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id", null: false
-    t.string "voice_identifier", null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_default_tts_configurations_on_account_id"
-    t.index ["sequence_number"], name: "index_default_tts_configurations_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "error_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id"
     t.uuid "account_id"
@@ -507,6 +497,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "tts_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.string "voice_identifier", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_tts_configurations_on_account_id", unique: true
+    t.index ["sequence_number"], name: "index_tts_configurations_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "tts_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id"
@@ -602,7 +602,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
-  add_foreign_key "default_tts_configurations", "accounts", on_delete: :cascade
   add_foreign_key "error_logs", "accounts"
   add_foreign_key "error_logs", "carriers"
   add_foreign_key "events", "carriers"
@@ -641,6 +640,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
+  add_foreign_key "tts_configurations", "accounts", on_delete: :cascade
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify

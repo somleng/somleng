@@ -12,7 +12,7 @@ class Account < ApplicationRecord
           foreign_key: :resource_owner_id,
           dependent: :destroy
 
-  has_one :default_tts_configuration
+  has_one :tts_configuration
 
   has_many :phone_calls, dependent: :restrict_with_error
   has_many :messages, dependent: :restrict_with_error
