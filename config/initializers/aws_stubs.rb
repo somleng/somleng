@@ -8,4 +8,10 @@ if Rails.env.development? || Rails.env.test?
       send_message: Aws::SQS::Client.new.stub_data(:send_message)
     }
   }
+
+  Aws.config[:polly] ||= {
+    stub_responses: {
+      describe_voices: Aws::Polly::Client.new.stub_data(:describe_voices)
+    }
+  }
 end

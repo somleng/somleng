@@ -128,6 +128,9 @@ GEM
     aws-sdk-kms (1.71.0)
       aws-sdk-core (~> 3, >= 3.177.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-polly (1.76.0)
+      aws-sdk-core (~> 3, >= 3.184.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-rails (3.9.0)
       aws-record (~> 2)
       aws-sdk-ses (~> 1, >= 1.50.0)
@@ -606,6 +609,7 @@ DEPENDENCIES
   after_commit_everywhere
   aws-sdk-cloudwatch
   aws-sdk-ec2
+  aws-sdk-polly
   aws-sdk-rails
   aws-sdk-s3
   aws-sdk-sesv2

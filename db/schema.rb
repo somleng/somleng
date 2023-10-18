@@ -119,9 +119,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
 
   create_table "default_tts_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
-    t.string "provider", null: false
-    t.string "language", null: false
-    t.string "voice", null: false
+    t.string "voice_identifier", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
