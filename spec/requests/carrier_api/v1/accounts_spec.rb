@@ -12,7 +12,7 @@ resource "Accounts", document: :carrier_api do
       )
       parameter(
         :tts_voice_identifier,
-        "The default TTS voice identifier. Possible values: #{TTSConfiguration.voice_identifier.values.join(', ')}"
+        "The default TTS voice identifier. Defaults to: #{TTSConfiguration.new.voice_identifier}"
       )
       parameter(
         :metadata,

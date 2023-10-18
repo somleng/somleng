@@ -9,6 +9,7 @@
           <%= tts_form.input :voice,
                       collection: tts_form.object.voice_options_for_select,
                       prompt: "",
+                      disabled: local_assigns.fetch(:disabled, false),
                       input_html: { data: { behavior: "choices-input" } } %>
 
         </div>

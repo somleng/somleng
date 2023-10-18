@@ -17,27 +17,55 @@
   <% end %>
 
   <%= show_for(@resource) do |f| %>
-    <%= f.attribute :name, value: @resource.name %>
-    <%= f.attribute :id, label: "SID" do %>
-      <code>
-        <%= @resource.id %>
-      </code>
-    <% end %>
-    <% if policy(@resource).show_auth_token? %>
-      <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
-    <% end %>
-    <%= f.attribute :type, value: @resource.type.humanize %>
-    <%= f.attribute :status, value: @resource.status.humanize %>
-    <%= f.attribute :calls_per_second %>
-    <%= f.attribute :owner_name, value: @resource.owner&.name %>
-    <%= f.attribute :owner_email, value: @resource.owner&.email %>
-    <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>
-    <%= f.attribute :phone_calls, value: external_link_to("Manage", dashboard_phone_calls_path(filter: {account_id: @resource.id}), title: "Manage phone calls") %>
-    <%= f.attribute :sip_trunk do %>
-      <% if @resource.sip_trunk.present? %>
-        <%= external_link_to(@resource.sip_trunk.name, dashboard_sip_trunk_path(@resource.sip_trunk)) %>
-      <% end %>
-    <% end %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <%= f.attribute :name, value: @resource.name %>
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= @resource.id %>
+          </code>
+        <% end %>
+
+        <% if policy(@resource).show_auth_token? %>
+          <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
+        <% end %>
+        <%= f.attribute :type, value: @resource.type.humanize %>
+        <%= f.attribute :status, value: @resource.status.humanize %>
+        <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>
+        <%= f.attribute :metadata do %>
+          <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>
+        <% end %>
+
+        <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+        <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Owner</h5>
+
+        <%= f.attribute :name, value: @resource.owner&.name %>
+        <%= f.attribute :email, value: @resource.owner&.email %>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Voice</h5>
+
+        <%= f.attribute :sip_trunk do %>
+          <% if @resource.sip_trunk.present? %>
+            <%= external_link_to(@resource.sip_trunk.name, dashboard_sip_trunk_path(@resource.sip_trunk)) %>
+          <% end %>
+        <% end %>
+
+        <%= f.attribute :calls_per_second %>
+        <%= f.attribute :phone_calls, value: external_link_to("Manage", dashboard_phone_calls_path(filter: {account_id: @resource.id}), title: "Manage phone calls") %>
+      </div>
+    </div>
 
     <div class="card mb-3">
       <div class="card-body">
@@ -46,12 +74,5 @@
         <%= f.attribute :voice, value: @resource.tts_configuration.tts_voice %>
       </div>
     </div>
-
-    <%= f.attribute :metadata do %>
-      <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>
-    <% end %>
-
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>
 </div>

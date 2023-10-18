@@ -86,17 +86,19 @@ RSpec.describe "Accounts" do
     account = create(
       :account,
       :enabled,
-      carrier: user.carrier
+      carrier: user.carrier,
+      tts_voice_identifier: "Basic.Kal"
     )
     sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_link("Edit")
-    uncheck("Enabled")
-    select("Main SIP Trunk", from: "SIP trunk")
+    choices_select("Main SIP Trunk", from: "SIP trunk")
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
+    choices_select("Basic.Slt", from: "Voice")
+    uncheck("Enabled")
 
     perform_enqueued_jobs do
       click_button "Update Account"
@@ -110,7 +112,35 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Customer managed")
     expect(page).to have_content("John Doe")
     expect(page).to have_content("johndoe@example.com")
+    expect(page).to have_content("Basic.Slt (Female, en-US)")
     expect(last_email_sent).to deliver_to("johndoe@example.com")
+  end
+
+  it "Update a customer managed account" do
+    user = create(:user, :carrier)
+    create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
+    account = create(
+      :account,
+      :enabled,
+      carrier: user.carrier,
+      tts_voice_identifier: "Basic.Kal"
+    )
+    create(
+      :user, :with_account_membership, account_role: :owner, account:
+    )
+
+    carrier_sign_in(user)
+    visit edit_dashboard_account_path(account)
+
+    expect(page).to have_field("Name", disabled: true)
+    expect(page).to have_field("Voice", disabled: true)
+
+    choices_select("Main SIP Trunk", from: "SIP trunk")
+
+    click_button "Update Account"
+
+    expect(page).to have_content("Account was successfully updated")
+    expect(page).to have_content("Basic.Kal (Male, en-US)")
   end
 
   it "Resend invitation" do
