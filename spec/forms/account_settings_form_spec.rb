@@ -14,12 +14,12 @@ RSpec.describe AccountSettingsForm do
     it "validates default_tts_configuration" do
       form = AccountSettingsForm.new(
         default_tts_configuration: DefaultTTSConfigurationForm.new(
-          provider: nil
+          voice: nil
         )
       )
 
       expect(form).to be_invalid
-      expect(form.errors[:"default_tts_configuration.provider"]).to be_present
+      expect(form.errors[:"default_tts_configuration.voice"]).to be_present
     end
   end
 end

@@ -39,6 +39,14 @@
       <% end %>
     <% end %>
 
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Text to speech</h5>
+
+        <%= f.attribute :voice, value: @resource.default_tts_configuration.tts_voice %>
+      </div>
+    </div>
+
     <%= f.attribute :metadata do %>
       <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>
     <% end %>

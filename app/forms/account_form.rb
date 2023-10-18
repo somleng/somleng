@@ -12,12 +12,13 @@ class AccountForm
   attribute :owner_email
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
+  attribute :default_tts_configuration_attributes, default: {}
+  attribute :default_tts_configuration, default: -> { DefaultTTSConfigurationForm.new }
 
   delegate :persisted?, :id, :customer_managed?, to: :account
 
   validates :name, presence: true, unless: :persisted?
-  validates :owner_email, format: User::EMAIL_FORMAT, allow_blank: true, allow_nil: true
-  validates :default_tts_provider, presence: true
+  validates :owner_email, email_format: true, allow_blank: true, allow_nil: true
   validates :calls_per_second,
             presence: true,
             numericality: {
@@ -26,6 +27,7 @@ class AccountForm
               only_integer: true
             }
 
+  validates :default_tts_configuration, nested_form: true
   validate :validate_owner
 
   def self.model_name
@@ -42,23 +44,28 @@ class AccountForm
       calls_per_second: account.calls_per_second,
       owner_name: account.owner&.name,
       owner_email: account.owner&.email,
-      default_tts_provider: account.default_tts_provider
+      default_tts_configuration: DefaultTTSConfigurationForm.initialize_with(account.default_tts_configuration)
     )
   end
 
   def save
+    self.default_tts_configuration = DefaultTTSConfigurationForm.new(
+      **default_tts_configuration_attributes
+    )
+
     return false if invalid?
 
     account.carrier = carrier
     account.status = enabled ? "enabled" : "disabled"
     account.name = name if name.present?
     account.calls_per_second = calls_per_second
-    account.default_tts_provider = default_tts_provider
 
     account.sip_trunk = carrier.sip_trunks.find(sip_trunk_id) if sip_trunk_id.present?
 
     Account.transaction do
       account.save!
+      default_tts_configuration.default_tts_configuration = account.build_default_tts_configuration
+      default_tts_configuration.save
       invite_owner! if owner_email.present?
       true
     end

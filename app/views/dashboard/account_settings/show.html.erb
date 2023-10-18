@@ -27,8 +27,7 @@
       <div class="card-body">
         <h5 class="card-title">Text to speech</h5>
 
-        <%= f.attribute :provider, value: @resource.default_tts_configuration.provider.humanize %>
-        <%= f.attribute :language, value: @resource.default_tts_configuration.language %>
+        <%= f.attribute :voice, value: @resource.default_tts_configuration.tts_voice %>
       </div>
     </div>
   <% end %>

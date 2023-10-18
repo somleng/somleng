@@ -22,8 +22,7 @@ module Dashboard
       params.require(:account_settings).permit(
         :name,
         default_tts_configuration_attributes: %i[
-          provider
-          language
+          voice
         ]
       )
     end

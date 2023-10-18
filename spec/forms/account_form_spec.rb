@@ -28,7 +28,7 @@ RSpec.describe AccountForm do
       expect(form.errors[:calls_per_second]).to be_present
     end
 
-    it "validates the default_tts_provider" do
+    it "validates the default_tts_configuration" do
       form = AccountForm.new(default_tts_provider: nil)
 
       expect(form).to be_invalid

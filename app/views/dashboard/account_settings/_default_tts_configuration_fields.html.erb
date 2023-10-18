@@ -5,11 +5,12 @@
 
       <div class="row">
         <div class="col-sm-6">
-          <%= tts_form.input :provider, include_blank: false %>
-        </div>
 
-        <div class="col-sm-6">
-          <%= tts_form.input :language, include_blank: false, collection: DefaultTTSConfiguration.language.values %>
+          <%= tts_form.input :voice,
+                      collection: tts_form.object.voice_options_for_select,
+                      prompt: "",
+                      input_html: { data: { behavior: "choices-input" } } %>
+
         </div>
       </div>
     <% end %>

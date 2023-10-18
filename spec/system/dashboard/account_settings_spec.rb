@@ -33,15 +33,12 @@ RSpec.describe "Account Settings" do
     fill_in("Name", with: "Car Rides")
 
     within("#default-tts-configuration") do
-      select("Polly", from: "Provider")
-      select("en-us", from: "Language")
+      choices_select("Basic.Slt", from: "Voice")
     end
-
     click_button("Update Account Settings")
 
     expect(page).to have_content("Account settings were successfully updated")
     expect(page).to have_content("Car Rides")
-    expect(page).to have_content("Polly")
-    expect(page).to have_content("en-us")
+    expect(page).to have_content("Basic.Slt (Female, en-US)")
   end
 end

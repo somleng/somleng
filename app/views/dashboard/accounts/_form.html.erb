@@ -1,39 +1,65 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :name, maxlength: 128, hint: "A friendly name for the account", disabled: policy(resource).customer_managed? %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :name, maxlength: 128, hint: "A friendly name for the account", disabled: policy(resource).customer_managed? %>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :owner_name, hint: "Specify an owner to make the account customer managed. The owner will receive an invitation email. This cannot be undone.", disabled: policy(resource).customer_managed? %>
-      </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Owner</h5>
 
-      <div class="col-sm-6">
-        <%= f.input :owner_email, disabled: policy(resource).customer_managed? %>
-      </div>
-    </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :owner_name, hint: "Specify an owner to make the account customer managed. The owner will receive an invitation email. This cannot be undone.", disabled: policy(resource).customer_managed? %>
+          </div>
 
-    <div class="row">
-      <div class="col-sm-6">
-         <%= f.input :sip_trunk_id,
-                      collection: resource.sip_trunk_options_for_select,
-                      hint: "Optionally specify a SIP trunk which will be used by this account for outbound calls. If left blank outbound calls from this account will be routed automatically.",
-                      selected: resource.sip_trunk_id,
-                      prompt: "",
-                      input_html: { data: { behavior: "choices-input" } } %>
-      </div>
-
-      <div class="col-sm-6">
-        <%= f.input :calls_per_second, as: :numeric, hint: "Restrict the number of calls per second for the account" %>
+          <div class="col-sm-6">
+            <%= f.input :owner_email, disabled: policy(resource).customer_managed? %>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch, hint: "Accounts which are disabled are blocked from accessing the API" %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Voice</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :sip_trunk_id,
+                          collection: resource.sip_trunk_options_for_select,
+                          hint: "Optionally specify a SIP trunk which will be used by this account for outbound calls. If left blank outbound calls from this account will be routed automatically.",
+                          selected: resource.sip_trunk_id,
+                          prompt: "",
+                          input_html: { data: { behavior: "choices-input" } } %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input :calls_per_second, as: :numeric, hint: "Restrict the number of calls per second for the account" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= render("dashboard/account_settings/default_tts_configuration_fields", f: f) %>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Danger Zone</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch, hint: "Accounts which are disabled are blocked from accessing the API" %>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -13,6 +13,8 @@ module SystemSpecHelpers
   end
 
   def choices_select(value, from:)
+    return select(value, from:) if Capybara.current_driver == :rack_test
+
     select_element = find_field(from, visible: false)
     choices_wrapper = select_element.find(:xpath, "../..")
     choices_wrapper.click
