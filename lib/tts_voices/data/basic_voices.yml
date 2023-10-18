@@ -1,9 +1,0 @@
----
-voices:
-  basic:
-    kal:
-      language: "en-us"
-      gender: "Male"
-    slt:
-      language: "en-us"
-      gender: "Female"

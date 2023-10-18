@@ -1,10 +1,6 @@
 module TTSVoices
   class Provider
-    Type = Struct.new(:name, :required_credentials, keyword_init: true)
-    TYPES = [
-      Type.new(name: "Basic"),
-      Type.new(name: "Polly", required_credentials: %w[access_key_id secret_access_key])
-    ].freeze
+    TYPES = %w[Basic Polly].freeze
 
     class << self
       def find(name)
@@ -13,20 +9,15 @@ module TTSVoices
 
       def all
         @all ||= TYPES.each do |type|
-          new(name: type.name, required_credentials: type.required_credentials)
+          new(name: type)
         end
       end
     end
 
-    attr_reader :name, :required_credentials
+    attr_reader :name
 
-    def initialize(name:, required_credentials:)
+    def initialize(name:)
       @name = name
-      @required_credentials = required_credentials
-    end
-
-    def friendly_name
-      name.capitalize
     end
   end
 end

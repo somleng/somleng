@@ -1,6 +1,10 @@
 module TTSVoices
   module DataSource
     class PollyVoices
+      def self.load_data
+        new.load_data
+      end
+
       attr_reader :aws_client
 
       def initialize(aws_client: default_aws_client)
