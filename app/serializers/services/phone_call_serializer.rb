@@ -25,5 +25,9 @@ module Services
     def account_auth_token
       object.account.auth_token
     end
+
+    def default_tts_voice
+      object.default_tts_voice.identifier
+    end
   end
 end

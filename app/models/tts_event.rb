@@ -1,7 +1,7 @@
 class TTSEvent < ApplicationRecord
   extend Enumerize
 
-  enumerize :provider, in: %i[basic polly]
+  attribute :tts_voice, TTSVoiceType.new
 
   belongs_to :carrier
   belongs_to :account

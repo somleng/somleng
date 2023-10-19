@@ -1,7 +1,7 @@
 module Services
   class TTSEventRequestSchema < ServicesRequestSchema
     params do
-      required(:provider).value(:str?, included_in?: TTSEvent.provider.values)
+      required(:tts_voice).value(:str?, included_in?: Account::VALID_TTS_VOICES)
       required(:phone_call).value(:str?)
       required(:num_chars).value(:integer, gteq?: 0)
     end

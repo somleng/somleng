@@ -6,7 +6,7 @@ class TTSEventDashboard < Administrate::BaseDashboard
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
     phone_call: Field::BelongsTo,
-    provider: Field::String,
+    tts_voice: Field::String,
     num_chars: Field::Number,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
@@ -15,7 +15,7 @@ class TTSEventDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     carrier
     account
-    provider
+    tts_voice
     num_chars
     created_at
   ].freeze
@@ -25,7 +25,7 @@ class TTSEventDashboard < Administrate::BaseDashboard
     carrier
     account
     phone_call
-    provider
+    tts_voice
     num_chars
     created_at
     updated_at

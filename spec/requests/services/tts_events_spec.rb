@@ -12,7 +12,7 @@ RSpec.describe "Services" do
         api_services_tts_events_path,
         params: {
           phone_call: phone_call.id,
-          provider: "polly",
+          tts_voice: "Basic.Kal",
           num_chars: 10
         },
         headers: build_authorization_headers("services", "password")
@@ -24,7 +24,7 @@ RSpec.describe "Services" do
         phone_call:,
         account: phone_call.account,
         carrier: phone_call.carrier,
-        provider: "polly"
+        tts_voice: TTSVoices::Voice.find("Basic.Kal")
       )
     end
   end

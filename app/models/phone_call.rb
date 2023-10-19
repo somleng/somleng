@@ -18,8 +18,10 @@ class PhoneCall < ApplicationRecord
   has_many   :events
   has_many   :phone_call_events
   has_many   :recordings
+  has_many   :tts_events
 
   delegate :may_fire_event?, to: :aasm
+  delegate :default_tts_voice, to: :account
 
   aasm column: :status do
     state :queued, initial: true

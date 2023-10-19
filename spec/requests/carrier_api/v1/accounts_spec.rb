@@ -29,7 +29,7 @@ resource "Accounts", document: :carrier_api do
           type: :account,
           attributes: {
             name: "Rocket Rides",
-            default_tts_provider: "polly",
+            default_tts_voice: "Basic.Kal",
             metadata: {
               foo: "bar"
             }
@@ -41,7 +41,7 @@ resource "Accounts", document: :carrier_api do
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
       expect(jsonapi_response_attributes.fetch("name")).to eq("Rocket Rides")
       expect(jsonapi_response_attributes.fetch("type")).to eq("carrier_managed")
-      expect(jsonapi_response_attributes.fetch("default_tts_provider")).to eq("polly")
+      expect(jsonapi_response_attributes.fetch("default_tts_voice")).to eq("Basic.Kal")
     end
 
     example "handles invalid requests", document: false do
@@ -75,7 +75,7 @@ resource "Accounts", document: :carrier_api do
         :account,
         name: "Rocket Rides",
         status: :enabled,
-        default_tts_provider: :basic,
+        default_tts_voice: "Basic.Slt",
         metadata: { "foo" => "bar" }
       )
 
