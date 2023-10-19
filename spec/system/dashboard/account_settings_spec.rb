@@ -31,10 +31,7 @@ RSpec.describe "Account Settings" do
     click_link("Edit")
 
     fill_in("Name", with: "Car Rides")
-
-    within("#default-tts-configuration") do
-      choices_select("Basic.Slt", from: "Voice")
-    end
+    choices_select("Basic.Slt", from: "Default TTS voice")
     click_button("Update Account Settings")
 
     expect(page).to have_content("Account settings were successfully updated")

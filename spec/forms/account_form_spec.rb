@@ -10,32 +10,36 @@ RSpec.describe AccountForm do
         owner_email: "johndoe@example.com"
       )
 
-      expect(form).to be_invalid
+      expect(form).not_to be_valid
       expect(form.errors[:owner_email]).to be_present
     end
 
     it "validates the owner's email format" do
       form = AccountForm.new(owner_email: "foobar")
 
-      expect(form).to be_invalid
+      expect(form).not_to be_valid
       expect(form.errors[:owner_email]).to be_present
     end
 
     it "validates the calls_per_second" do
       form = AccountForm.new(calls_per_second: 0)
 
-      expect(form).to be_invalid
+      expect(form).not_to be_valid
       expect(form.errors[:calls_per_second]).to be_present
     end
 
-    it "validates tts_configuration" do
+    it "validates default_tts_voice" do
       form = AccountForm.new(
-        tts_configuration_attributes: { voice: nil }
+        default_tts_voice: "Voice.Invalid"
       )
 
-      expect(form).to be_invalid
-      expect(form.errors[:"tts_configuration.voice"]).to be_present
+      expect(form).not_to be_valid
+      expect(form.errors[:default_tts_voice]).to be_present
     end
+  end
+
+  it "has a default value for default_tts_voice" do
+    expect(AccountForm.new.default_tts_voice).to be_present
   end
 
   describe "#save" do
@@ -45,7 +49,7 @@ RSpec.describe AccountForm do
         name: "Rocket Rides",
         enabled: true,
         calls_per_second: 2,
-        tts_configuration_attributes: { voice: "Basic.Kal" }
+        default_tts_voice: "Basic.Slt"
       )
       form.carrier = carrier
 
@@ -57,8 +61,8 @@ RSpec.describe AccountForm do
         name: "Rocket Rides",
         enabled?: true,
         calls_per_second: 2,
-        tts_configuration: have_attributes(
-          voice_identifier: "Basic.Kal"
+        default_tts_voice: have_attributes(
+          identifier: "Basic.Slt"
         )
       )
     end
@@ -69,7 +73,8 @@ RSpec.describe AccountForm do
         name: "Rocket Rides",
         enabled: true,
         owner_name: "John Doe",
-        owner_email: "johndoe@example.com"
+        owner_email: "johndoe@example.com",
+        default_tts_voice: "Basic.Kal"
       )
       form.carrier = carrier
 
@@ -84,11 +89,11 @@ RSpec.describe AccountForm do
 
     it "updates an account" do
       carrier = create(:carrier)
-      account = create(:account, carrier:, name: "Rocket Rides", tts_voice_identifier: "Basic.Kal")
+      account = create(:account, carrier:, name: "Rocket Rides", default_tts_voice: "Basic.Kal")
 
       form = AccountForm.new(
         name: "Car Rides",
-        tts_configuration_attributes: { voice: "Basic.Slt" },
+        default_tts_voice: "Basic.Slt",
         carrier:,
         account:
       )
@@ -98,8 +103,8 @@ RSpec.describe AccountForm do
       expect(result).to eq(true)
       expect(form.account).to have_attributes(
         name: "Car Rides",
-        tts_configuration: have_attributes(
-          voice_identifier: "Basic.Slt"
+        default_tts_voice: have_attributes(
+          identifier: "Basic.Slt"
         )
       )
     end

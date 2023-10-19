@@ -27,7 +27,7 @@
       <div class="card-body">
         <h5 class="card-title">Text to speech</h5>
 
-        <%= f.attribute :voice, value: @resource.tts_configuration.tts_voice %>
+        <%= f.attribute :voice, value: @resource.default_tts_voice %>
       </div>
     </div>
   <% end %>

@@ -14,7 +14,7 @@ module Services
         "account_auth_token" => nil,
         "direction" => nil,
         "api_version" => nil,
-        "default_tts_provider" => nil
+        "default_tts_voice" => nil
       )
     end
 

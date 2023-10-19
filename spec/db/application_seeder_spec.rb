@@ -9,7 +9,7 @@ describe ApplicationSeeder do
       account = Account.first
       expect(account).to be_present
       expect(account.auth_token).to be_present
-      expect(account.tts_configuration).to be_present
+      expect(account.default_tts_voice).to be_present
       expect(account.phone_numbers).to be_present
       expect(account.phone_numbers.first.configuration).to be_present
     end

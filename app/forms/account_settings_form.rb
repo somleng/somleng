@@ -4,12 +4,11 @@ class AccountSettingsForm
 
   attribute :name
   attribute :account
-  attribute :tts_configuration_attributes, default: {}
-  attribute :tts_configuration, default: -> { TTSConfigurationForm.new }
+  attribute :default_tts_voice, TTSVoiceType.new
+
   delegate :persisted?, :id, to: :account
 
-  validates :name, presence: true
-  validates :tts_configuration, nested_form: true
+  validates :name, :default_tts_voice, presence: true
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "AccountSettings")
@@ -19,28 +18,16 @@ class AccountSettingsForm
     new(
       account:,
       name: account.name,
-      tts_configuration: TTSConfigurationForm.initialize_with(account.tts_configuration)
+      default_tts_voice: account.default_tts_voice
     )
-  end
-
-  def tts_configuration_attributes=(attributes)
-    super
-    tts_configuration.assign_attributes(attributes)
-  end
-
-  def account=(account)
-    super
-    tts_configuration.account = account
   end
 
   def save
     return false if invalid?
 
     account.name = name
+    account.default_tts_voice = default_tts_voice
 
-    Account.transaction do
-      account.save!
-      tts_configuration.save
-    end
+    account.save!
   end
 end

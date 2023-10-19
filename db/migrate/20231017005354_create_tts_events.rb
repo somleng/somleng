@@ -5,7 +5,7 @@ class CreateTTSEvents < ActiveRecord::Migration[7.1]
       t.references :account, type: :uuid, foreign_key: { on_delete: :nullify }
       t.references :phone_call, type: :uuid, foreign_key: { on_delete: :nullify }
       t.integer :num_chars, null: false
-      t.string :provider, null: false
+      t.string :tts_voice, null: false
       t.index :created_at
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }

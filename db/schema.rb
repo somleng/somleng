@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_19_015556) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -42,6 +42,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
     t.jsonb "metadata", default: {}, null: false
     t.integer "calls_per_second", default: 1, null: false
     t.uuid "sip_trunk_id"
+    t.string "default_tts_voice", null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
@@ -497,22 +498,12 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "tts_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id", null: false
-    t.string "voice_identifier", null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_tts_configurations_on_account_id", unique: true
-    t.index ["sequence_number"], name: "index_tts_configurations_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "tts_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id"
     t.uuid "phone_call_id"
     t.integer "num_chars", null: false
-    t.string "provider", null: false
+    t.string "tts_voice", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -640,7 +631,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_17_090241) do
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
-  add_foreign_key "tts_configurations", "accounts", on_delete: :cascade
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify

@@ -2,6 +2,7 @@ class AccountForm
   extend Enumerize
   include ActiveModel::Model
   include ActiveModel::Attributes
+  include ActiveModel::Dirty
 
   attribute :carrier
   attribute :name
@@ -12,12 +13,11 @@ class AccountForm
   attribute :owner_email
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
-  attribute :tts_configuration_attributes, default: {}
-  attribute :tts_configuration, default: -> { TTSConfigurationForm.new }
+  attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
 
   delegate :persisted?, :id, :customer_managed?, to: :account
 
-  validates :name, presence: true, unless: :persisted?
+  validates :name, :default_tts_voice, presence: true
   validates :owner_email, email_format: true, allow_blank: true, allow_nil: true
   validates :calls_per_second,
             presence: true,
@@ -27,7 +27,6 @@ class AccountForm
               only_integer: true
             }
 
-  validates :tts_configuration, nested_form: true
   validate :validate_owner
 
   def self.model_name
@@ -44,34 +43,23 @@ class AccountForm
       calls_per_second: account.calls_per_second,
       owner_name: account.owner&.name,
       owner_email: account.owner&.email,
-      tts_configuration: TTSConfigurationForm.initialize_with(account.tts_configuration)
+      default_tts_voice: account.default_tts_voice
     )
-  end
-
-  def tts_configuration_attributes=(attributes)
-    super
-    tts_configuration.assign_attributes(attributes)
-  end
-
-  def account=(account)
-    super
-    tts_configuration.account = account
   end
 
   def save
     return false if invalid?
 
-    tts_configuration.account = account
     account.carrier = carrier
     account.status = enabled ? "enabled" : "disabled"
-    account.name = name if name.present?
+    account.name = name
+    account.default_tts_voice = default_tts_voice
     account.calls_per_second = calls_per_second
 
     account.sip_trunk = carrier.sip_trunks.find(sip_trunk_id) if sip_trunk_id.present?
 
     Account.transaction do
       account.save!
-      tts_configuration.save
       invite_owner! if owner_email.present?
       true
     end

@@ -7,9 +7,24 @@ module CarrierAPI
         required(:attributes).value(:hash).schema do
           optional(:name).filled(:str?)
           optional(:status).filled(:str?, included_in?: Account.status.values)
-          optional(:default_tts_provider).value(:str?, included_in?: Account.default_tts_provider.values)
+          optional(:default_tts_voice).value(
+            :str?,
+            included_in?: Account::VALID_TTS_VOICES
+          )
           optional(:metadata).maybe(:hash?)
         end
+      end
+    end
+
+    attribute_rule(:name) do
+      if resource.customer_managed? && key?
+        key.failure("Cannot be updated for customer managed accounts")
+      end
+    end
+
+    attribute_rule(:default_tts_voice) do
+      if resource.customer_managed? && key?
+        key.failure("Cannot be updated for customer managed accounts")
       end
     end
 

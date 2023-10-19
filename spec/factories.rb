@@ -159,12 +159,9 @@ FactoryBot.define do
     enabled
     with_access_token
     traits_for_enum :status, %w[enabled disabled]
+    default_tts_voice { "Basic.Kal" }
 
     name { "Rocket Rides" }
-
-    transient do
-      tts_voice_identifier { "Basic.Kal" }
-    end
 
     trait :carrier_managed do
       with_access_token
@@ -179,19 +176,6 @@ FactoryBot.define do
     trait :with_sip_trunk do
       sip_trunk { build(:sip_trunk, carrier:) }
     end
-
-    after(:build) do |account, evaluator|
-      account.tts_configuration ||= build(
-        :tts_configuration,
-        account:,
-        voice_identifier: evaluator.tts_voice_identifier
-      )
-    end
-  end
-
-  factory :tts_configuration do
-    account
-    voice_identifier { "Basic.Kal" }
   end
 
   factory :user do

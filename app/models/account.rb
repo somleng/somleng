@@ -1,8 +1,11 @@
 class Account < ApplicationRecord
   extend Enumerize
   TYPES = %w[customer_managed carrier_managed].freeze
+  VALID_TTS_VOICES = TTSVoices::Voice.all.map(&:identifier).freeze
 
   enumerize :status, in: %i[enabled disabled], predicates: true, default: :enabled
+
+  attribute :default_tts_voice, TTSVoiceType.new
 
   belongs_to :carrier
   belongs_to :sip_trunk, optional: true
@@ -11,8 +14,6 @@ class Account < ApplicationRecord
           class_name: "Doorkeeper::AccessToken",
           foreign_key: :resource_owner_id,
           dependent: :destroy
-
-  has_one :tts_configuration
 
   has_many :phone_calls, dependent: :restrict_with_error
   has_many :messages, dependent: :restrict_with_error

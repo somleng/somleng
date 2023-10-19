@@ -11,8 +11,8 @@ resource "Accounts", document: :carrier_api do
         required: true
       )
       parameter(
-        :tts_voice_identifier,
-        "The default TTS voice identifier. Defaults to: #{TTSConfiguration.new.voice_identifier}"
+        :tts_voice,
+        "The default TTS voice identifier. Defaults to: #{TTSVoices::Voice.default.identifier}"
       )
       parameter(
         :metadata,
@@ -90,7 +90,7 @@ resource "Accounts", document: :carrier_api do
           attributes: {
             name: "Bob Cats",
             status: "disabled",
-            default_tts_provider: "polly",
+            default_tts_voice: "Basic.Kal",
             metadata: {
               "bar" => "foo"
             }
@@ -102,11 +102,40 @@ resource "Accounts", document: :carrier_api do
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
       expect(jsonapi_response_attributes).to include(
         "status" => "disabled",
-        "default_tts_provider" => "polly",
+        "default_tts_voice" => "Basic.Kal",
         "metadata" => {
           "bar" => "foo",
           "foo" => "bar"
         }
+      )
+    end
+
+    example "Update a customer managed account with invalid attributes", document: false do
+      account = create(:account)
+      create(:account_membership, :owner, account:)
+
+      set_carrier_api_authorization_header(
+        account.carrier
+      )
+      do_request(
+        id: account.id,
+        data: {
+          type: :account,
+          id: account.id,
+          attributes: {
+            name: "Bob Cats",
+            default_tts_voice: "Basic.Kal"
+          }
+        }
+      )
+
+      expect(response_status).to eq(422)
+      expect(response_body).to match_api_response_schema("jsonapi_error")
+      expect(
+        json_response.fetch("errors").pluck("source").pluck("pointer")
+      ).to include(
+        "/data/attributes/name",
+        "/data/attributes/default_tts_voice"
       )
     end
   end

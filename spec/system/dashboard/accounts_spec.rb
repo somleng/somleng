@@ -55,14 +55,14 @@ RSpec.describe "Accounts" do
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
 
-    within("#default-tts-configuration") do
-      choices_select("Basic.Slt", from: "Voice")
-    end
-
+    choices_select("Basic.Slt", from: "Default TTS voice")
     click_button "Create Account"
 
     expect(page).to have_content("Account was successfully created")
-    expect(page).to have_content("Calls per second2")
+    within("#voice") do
+      expect(page).to have_content("Calls per second")
+      expect(page).to have_content("2")
+    end
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("Enabled")
     expect(page).to have_link("Edit")
@@ -87,7 +87,7 @@ RSpec.describe "Accounts" do
       :account,
       :enabled,
       carrier: user.carrier,
-      tts_voice_identifier: "Basic.Kal"
+      default_tts_voice: "Basic.Kal"
     )
     sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
 
@@ -97,7 +97,7 @@ RSpec.describe "Accounts" do
     choices_select("Main SIP Trunk", from: "SIP trunk")
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
-    choices_select("Basic.Slt", from: "Voice")
+    choices_select("Basic.Slt", from: "Default TTS voice")
     uncheck("Enabled")
 
     perform_enqueued_jobs do
@@ -123,7 +123,7 @@ RSpec.describe "Accounts" do
       :account,
       :enabled,
       carrier: user.carrier,
-      tts_voice_identifier: "Basic.Kal"
+      default_tts_voice: "Basic.Slt"
     )
     create(
       :user, :with_account_membership, account_role: :owner, account:
@@ -133,14 +133,14 @@ RSpec.describe "Accounts" do
     visit edit_dashboard_account_path(account)
 
     expect(page).to have_field("Name", disabled: true)
-    expect(page).to have_field("Voice", disabled: true)
+    expect(page).to have_choices_select("Default TTS voice", disabled: true)
 
     choices_select("Main SIP Trunk", from: "SIP trunk")
 
     click_button "Update Account"
 
     expect(page).to have_content("Account was successfully updated")
-    expect(page).to have_content("Basic.Kal (Male, en-US)")
+    expect(page).to have_content("Basic.Slt (Female, en-US)")
   end
 
   it "Resend invitation" do
