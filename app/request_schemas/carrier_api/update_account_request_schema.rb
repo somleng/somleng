@@ -9,7 +9,7 @@ module CarrierAPI
           optional(:status).filled(:str?, included_in?: Account.status.values)
           optional(:default_tts_voice).value(
             :str?,
-            included_in?: Account::VALID_TTS_VOICES
+            included_in?: TTSVoices::Voice.all.map(&:identifier)
           )
           optional(:metadata).maybe(:hash?)
         end
