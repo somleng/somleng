@@ -1,6 +1,6 @@
 class AddCarrierIDToWebhookRequestLogs < ActiveRecord::Migration[7.0]
   def change
-    add_reference :webhook_request_logs, :carrier, type: :uuid, foreign_key: true
+    add_reference :webhook_request_logs, :carrier, type: :uuid
 
     reversible do |dir|
       dir.up do

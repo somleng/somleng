@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_19_015556) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_20_123344) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -512,6 +512,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_19_015556) do
     t.index ["created_at"], name: "index_tts_events_on_created_at"
     t.index ["phone_call_id"], name: "index_tts_events_on_phone_call_id"
     t.index ["sequence_number"], name: "index_tts_events_on_sequence_number", unique: true, order: :desc
+    t.index ["tts_voice"], name: "index_tts_events_on_tts_voice"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
