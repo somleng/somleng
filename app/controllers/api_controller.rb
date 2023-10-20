@@ -20,11 +20,11 @@ class APIController < ActionController::API
     end
   end
 
-  def respond_with_resource(resource, options = {}, &block)
-    respond_with(resource, **options, &block)
+  def respond_with_resource(resource, options = {}, &)
+    respond_with(resource, **options, &)
   end
 
-  def respond_with_errors(object, **options)
-    respond_with(object, responder: InvalidRequestSchemaResponder, **options)
+  def respond_with_errors(object, **)
+    respond_with(object, responder: InvalidRequestSchemaResponder, **)
   end
 end

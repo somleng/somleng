@@ -8,6 +8,7 @@ class AccountDashboard < Administrate::BaseDashboard
     phone_numbers: Field::HasMany,
     id: Field::String,
     name: Field::String,
+    default_tts_voice: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime,
     status: Field::String,
@@ -29,6 +30,7 @@ class AccountDashboard < Administrate::BaseDashboard
     name
     status
     calls_per_second
+    default_tts_voice
     sip_trunk
     created_at
     updated_at

@@ -42,7 +42,8 @@ RSpec.describe "Services" do
         "voice_url" => "https://example.com/voice.xml",
         "voice_method" => "POST",
         "status_callback_url" => "https://example.com/status_callback",
-        "status_callback_method" => "POST"
+        "status_callback_method" => "POST",
+        "default_tts_voice" => "Basic.Kal"
       )
     end
 

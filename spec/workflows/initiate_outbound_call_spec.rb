@@ -38,6 +38,7 @@ RSpec.describe InitiateOutboundCall do
         account_sid: phone_call.account.id,
         account_auth_token: phone_call.account.auth_token,
         direction: "outbound-api",
+        default_tts_voice: "Basic.Kal",
         api_version: "2010-04-01",
         voice_url: "http://example.com/voice_url",
         voice_method: "POST",

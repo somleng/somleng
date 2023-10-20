@@ -2,15 +2,15 @@ require "rails_helper"
 
 RSpec.describe "Routes" do
   it "blocks requests to admin panel for custom domains" do
-    expect do
-      get(admin_root_path)
-    end.to raise_error(ActionController::RoutingError)
+    get(admin_root_path)
+
+    expect(response).to have_http_status(:not_found)
   end
 
   it "blocks requests to sign up for subdomains" do
-    expect do
-      get(new_user_registration_path)
-    end.to raise_error(ActionController::RoutingError)
+    get(new_user_registration_path)
+
+    expect(response).to have_http_status(:not_found)
   end
 
   it "redirects docs to somleng.org" do
@@ -32,7 +32,7 @@ RSpec.describe "Routes" do
       }
     )
 
-    expect(response.code).to eq("200")
+    expect(response).to have_http_status(:ok)
   end
 
   it "Allows login to a custom domain" do

@@ -31,4 +31,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "HTTP"
   inflect.acronym "SMS"
   inflect.acronym "TwiML"
+  inflect.acronym "TTS"
 end

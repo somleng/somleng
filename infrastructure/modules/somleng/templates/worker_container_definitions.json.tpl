@@ -91,10 +91,6 @@
         "value": "${db_pool}"
       },
       {
-        "name": "RAILS_LOG_TO_STDOUT",
-        "value": "true"
-      },
-      {
         "name": "UPLOADS_BUCKET",
         "value": "${uploads_bucket}"
       },

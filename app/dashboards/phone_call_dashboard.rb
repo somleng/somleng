@@ -12,6 +12,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     phone_call_events: Field::HasMany,
     events: Field::HasMany,
     recordings: Field::HasMany,
+    tts_events: Field::HasMany,
     id: Field::String,
     to: Field::String,
     from: Field::String,
@@ -61,6 +62,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     events
     phone_call_events
     recordings
+    tts_events
   ].freeze
 
   filters = PhoneCall.aasm.states.map(&:name).index_with do |status|

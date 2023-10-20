@@ -48,7 +48,10 @@ class ApplicationSeeder
 
   def create_account(params)
     carrier = params.fetch(:carrier)
-    Account.first_or_create!(params.reverse_merge(name: carrier.name), &:build_access_token)
+    Account.first_or_create!(
+      params.reverse_merge(name: carrier.name, default_tts_voice: TTSVoices::Voice.default),
+      &:build_access_token
+    )
   end
 
   def create_phone_number(params)

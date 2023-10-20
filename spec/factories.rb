@@ -155,11 +155,13 @@ FactoryBot.define do
   end
 
   factory :account do
-    name { "Rocket Rides" }
+    carrier
     enabled
     with_access_token
-    association :carrier
     traits_for_enum :status, %w[enabled disabled]
+    default_tts_voice { "Basic.Kal" }
+
+    name { "Rocket Rides" }
 
     trait :carrier_managed do
       with_access_token
@@ -513,5 +515,13 @@ FactoryBot.define do
 
   factory :error_log do
     error_message { "error message" }
+  end
+
+  factory :tts_event do
+    phone_call
+    account { phone_call.account }
+    carrier { account.carrier }
+    tts_voice { TTSVoices::Voice.default }
+    num_chars { 100 }
   end
 end

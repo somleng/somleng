@@ -13,8 +13,9 @@ module SystemSpecHelpers
   end
 
   def choices_select(value, from:)
-    select_element = find_field(from, visible: false)
-    choices_wrapper = select_element.find(:xpath, "../..")
+    return select(value, from:) if Capybara.current_driver == :rack_test
+
+    choices_wrapper = find_field(from, visible: false).find(:xpath, "../..")
     choices_wrapper.click
 
     dropdown = choices_wrapper.find(:xpath, ".//div[contains(@class, 'choices__list--dropdown')]")
@@ -23,6 +24,11 @@ module SystemSpecHelpers
       ".//div[contains(@class, 'choices__item') and contains(., '#{value}')]"
     )
     item.click
+  end
+
+  def have_choices_select(locator = nil, **options)
+    options[:visible] = false unless Capybara.current_driver == :rack_test
+    have_select(locator, **options)
   end
 end
 

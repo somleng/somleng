@@ -19,7 +19,7 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:account_settings).permit(:name)
+      params.require(:account_settings).permit(:name, :default_tts_voice)
     end
 
     def policy_class

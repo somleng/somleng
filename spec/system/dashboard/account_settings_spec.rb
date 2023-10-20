@@ -29,10 +29,13 @@ RSpec.describe "Account Settings" do
     carrier_sign_in(user)
     visit dashboard_account_settings_path
     click_link("Edit")
+
     fill_in("Name", with: "Car Rides")
+    choices_select("Basic.Slt", from: "Default TTS voice")
     click_button("Update Account Settings")
 
     expect(page).to have_content("Account settings were successfully updated")
     expect(page).to have_content("Car Rides")
+    expect(page).to have_content("Basic.Slt (Female, en-US)")
   end
 end

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     namespace :services do
       resources :inbound_phone_calls, only: :create
       resources :phone_call_events, only: :create
+      resources :tts_events, only: :create
       resources :call_data_records, only: :create
       resources :recordings, only: %i[create update]
       resource :routing_parameters, only: :create
@@ -126,6 +127,7 @@ Rails.application.routes.draw do
       resources :messages, only: %i[show index]
       resources :users, only: %i[show index]
       resources :statistics, only: :index
+      resources :tts_events, only: %i[show index]
       resources :error_logs, only: %i[show index]
       resources :events, only: %i[index show]
       resources :exports, only: %i[index show]

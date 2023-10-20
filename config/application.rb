@@ -19,7 +19,12 @@ module Somleng
     # Use the responders controller from the responders gem
     config.app_generators.scaffold_controller :responders_controller
 
-    config.load_defaults 7.0
+    config.load_defaults 7.1
+
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks templates])
 
     config.active_support.escape_html_entities_in_json = false
 
@@ -30,7 +35,6 @@ module Somleng
     # https://guides.rubyonrails.org/active_record_encryption.html#unique-constraints
     config.active_record.encryption.extend_queries = true
 
-    config.eager_load_paths << Rails.root.join("lib")
     config.app_settings = config_for(:app_settings)
     config.active_job.default_queue_name = config.app_settings.fetch(:aws_sqs_default_queue_name)
     Rails.application.routes.default_url_options[:host] = config.app_settings.fetch(:app_url_host)

@@ -6,15 +6,29 @@
 
 <div class="card-body" id="accountSettings">
   <%= show_for(@resource) do |f| %>
-    <%= f.attribute :name, value: @resource.name %>
-    <%= f.attribute :id, label: "SID" do %>
-      <code>
-        <%= @resource.id %>
-      </code>
-    <% end %>
-    <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
-    <%= f.attribute :status, value: @resource.status.humanize %>
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <%= f.attribute :name, value: @resource.name %>
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= @resource.id %>
+          </code>
+        <% end %>
+        <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
+        <%= f.attribute :status, value: @resource.status.humanize %>
+        <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+        <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Text to speech</h5>
+
+        <%= f.attribute :voice, value: @resource.default_tts_voice %>
+      </div>
+    </div>
   <% end %>
 </div>

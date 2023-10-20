@@ -54,15 +54,21 @@ RSpec.describe "Accounts" do
 
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
+
+    choices_select("Basic.Slt", from: "Default TTS voice")
     click_button "Create Account"
 
     expect(page).to have_content("Account was successfully created")
-    expect(page).to have_content("Calls per second2")
+    within("#voice") do
+      expect(page).to have_content("Calls per second")
+      expect(page).to have_content("2")
+    end
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("Enabled")
     expect(page).to have_link("Edit")
     expect(page).to have_content("Auth Token")
     expect(page).to have_content("Carrier managed")
+    expect(page).to have_content("Basic.Slt (Female, en-US)")
   end
 
   it "Handle validation errors" do
@@ -80,17 +86,19 @@ RSpec.describe "Accounts" do
     account = create(
       :account,
       :enabled,
-      carrier: user.carrier
+      carrier: user.carrier,
+      default_tts_voice: "Basic.Kal"
     )
     sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_link("Edit")
-    uncheck("Enabled")
-    select("Main SIP Trunk", from: "SIP trunk")
+    choices_select("Main SIP Trunk", from: "SIP trunk")
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
+    choices_select("Basic.Slt", from: "Default TTS voice")
+    uncheck("Enabled")
 
     perform_enqueued_jobs do
       click_button "Update Account"
@@ -104,7 +112,35 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Customer managed")
     expect(page).to have_content("John Doe")
     expect(page).to have_content("johndoe@example.com")
+    expect(page).to have_content("Basic.Slt (Female, en-US)")
     expect(last_email_sent).to deliver_to("johndoe@example.com")
+  end
+
+  it "Update a customer managed account" do
+    user = create(:user, :carrier)
+    create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
+    account = create(
+      :account,
+      :enabled,
+      carrier: user.carrier,
+      default_tts_voice: "Basic.Slt"
+    )
+    create(
+      :user, :with_account_membership, account_role: :owner, account:
+    )
+
+    carrier_sign_in(user)
+    visit edit_dashboard_account_path(account)
+
+    expect(page).to have_field("Name", disabled: true)
+    expect(page).to have_choices_select("Default TTS voice", disabled: true)
+
+    choices_select("Main SIP Trunk", from: "SIP trunk")
+
+    click_button "Update Account"
+
+    expect(page).to have_content("Account was successfully updated")
+    expect(page).to have_content("Basic.Slt (Female, en-US)")
   end
 
   it "Resend invitation" do

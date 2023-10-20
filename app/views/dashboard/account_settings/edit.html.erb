@@ -2,11 +2,20 @@
 
 <div class="card-body">
   <%= simple_form_for(@resource, url: dashboard_account_settings_path, wrapper: :input_group) do |f| %>
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :name, maxlength: 128, hint: "A friendly name for your account" %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :name, maxlength: 128, hint: "A friendly name for your account" %>
+          </div>
+        </div>
+
       </div>
     </div>
+
+    <%= render("default_tts_configuration_fields", f: f) %>
 
     <%= f.button :submit %>
   <% end %>

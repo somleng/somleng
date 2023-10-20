@@ -13,7 +13,8 @@ module Services
         "account_sid" => nil,
         "account_auth_token" => nil,
         "direction" => nil,
-        "api_version" => nil
+        "api_version" => nil,
+        "default_tts_voice" => nil
       )
     end
 
@@ -23,6 +24,10 @@ module Services
 
     def account_auth_token
       object.account.auth_token
+    end
+
+    def default_tts_voice
+      object.default_tts_voice.identifier
     end
   end
 end

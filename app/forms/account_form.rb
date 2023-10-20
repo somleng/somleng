@@ -1,4 +1,5 @@
 class AccountForm
+  extend Enumerize
   include ActiveModel::Model
   include ActiveModel::Attributes
 
@@ -11,11 +12,12 @@ class AccountForm
   attribute :owner_email
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
+  attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
 
   delegate :persisted?, :id, :customer_managed?, to: :account
 
-  validates :name, presence: true, unless: :persisted?
-  validates :owner_email, format: User::EMAIL_FORMAT, allow_blank: true, allow_nil: true
+  validates :name, :default_tts_voice, presence: true
+  validates :owner_email, email_format: true, allow_blank: true, allow_nil: true
   validates :calls_per_second,
             presence: true,
             numericality: {
@@ -39,7 +41,8 @@ class AccountForm
       enabled: account.enabled?,
       calls_per_second: account.calls_per_second,
       owner_name: account.owner&.name,
-      owner_email: account.owner&.email
+      owner_email: account.owner&.email,
+      default_tts_voice: account.default_tts_voice
     )
   end
 
@@ -48,7 +51,8 @@ class AccountForm
 
     account.carrier = carrier
     account.status = enabled ? "enabled" : "disabled"
-    account.name = name if name.present?
+    account.name = name
+    account.default_tts_voice = default_tts_voice
     account.calls_per_second = calls_per_second
 
     account.sip_trunk = carrier.sip_trunks.find(sip_trunk_id) if sip_trunk_id.present?
@@ -72,7 +76,8 @@ class AccountForm
     return errors.add(:owner_email, :blank) if owner_name.present? && owner_email.blank?
     return errors.add(:owner_name, :blank) if owner_email.present? && owner_name.blank?
     return errors.add(:owners_email, :invalid) if customer_managed?
-    return errors.add(:owner_email, :taken) if User.exists?(carrier:, email: owner_email)
+
+    errors.add(:owner_email, :taken) if User.exists?(carrier:, email: owner_email)
   end
 
   def validate_name

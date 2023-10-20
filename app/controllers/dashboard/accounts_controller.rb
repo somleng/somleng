@@ -26,6 +26,10 @@ module Dashboard
 
     def update
       @resource = initialize_form(permitted_params)
+      if record.customer_managed?
+        @resource.name = record.name
+        @resource.default_tts_voice = record.default_tts_voice
+      end
       @resource.account = record
       @resource.save
 
@@ -49,6 +53,7 @@ module Dashboard
     def permitted_params
       params.require(:account).permit(
         :name,
+        :default_tts_voice,
         :owner_name,
         :owner_email,
         :sip_trunk_id,
