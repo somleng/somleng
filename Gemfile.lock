@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/somleng/tts_voices.git
-  revision: 65a7b3024a27fb4c56dc03a86eb286fa1d83c24f
+  revision: 3d3f6b2d6fed77ea938a8628250fe0278d620fbe
   specs:
     tts_voices (0.1.0)
       aws-sdk-polly
