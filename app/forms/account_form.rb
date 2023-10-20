@@ -2,7 +2,6 @@ class AccountForm
   extend Enumerize
   include ActiveModel::Model
   include ActiveModel::Attributes
-  include ActiveModel::Dirty
 
   attribute :carrier
   attribute :name
