@@ -96,6 +96,13 @@ resource "aws_iam_policy" "ecs_task_policy" {
       "Effect": "Allow",
       "Action": "ses:SendRawEmail",
       "Resource":"*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "polly:DescribeVoices"
+      ],
+      "Resource": "*"
     }
   ]
 }

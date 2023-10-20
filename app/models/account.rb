@@ -1,7 +1,6 @@
 class Account < ApplicationRecord
   extend Enumerize
   TYPES = %w[customer_managed carrier_managed].freeze
-  VALID_TTS_VOICES = TTSVoices::Voice.all.map(&:identifier).freeze
 
   enumerize :status, in: %i[enabled disabled], predicates: true, default: :enabled
 
