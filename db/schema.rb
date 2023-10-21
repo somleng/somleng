@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_20_123344) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -507,11 +507,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_20_123344) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "tts_provider", null: false
+    t.string "tts_engine", null: false
     t.index ["account_id"], name: "index_tts_events_on_account_id"
     t.index ["carrier_id"], name: "index_tts_events_on_carrier_id"
     t.index ["created_at"], name: "index_tts_events_on_created_at"
     t.index ["phone_call_id"], name: "index_tts_events_on_phone_call_id"
     t.index ["sequence_number"], name: "index_tts_events_on_sequence_number", unique: true, order: :desc
+    t.index ["tts_engine"], name: "index_tts_events_on_tts_engine"
+    t.index ["tts_provider"], name: "index_tts_events_on_tts_provider"
     t.index ["tts_voice"], name: "index_tts_events_on_tts_voice"
   end
 
