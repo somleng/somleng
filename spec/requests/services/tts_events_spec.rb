@@ -24,6 +24,8 @@ RSpec.describe "Services" do
         phone_call:,
         account: phone_call.account,
         carrier: phone_call.carrier,
+        tts_provider: "Basic",
+        tts_engine: "Standard",
         tts_voice: have_attributes(
           "identifier" => "Basic.Kal"
         )

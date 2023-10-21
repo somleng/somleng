@@ -521,7 +521,9 @@ FactoryBot.define do
     phone_call
     account { phone_call.account }
     carrier { account.carrier }
-    tts_voice { TTSVoices::Voice.default }
+    tts_voice { "Basic.Kal" }
+    tts_provider { "Basic" }
+    tts_engine { "Standard" }
     num_chars { 100 }
   end
 end
