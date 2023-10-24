@@ -438,7 +438,7 @@ GEM
     rake (13.0.6)
     rdoc (6.5.0)
       psych (>= 4.0.0)
-    recaptcha (5.15.0)
+    recaptcha (5.16.0)
     redis (5.0.8)
       redis-client (>= 0.17.0)
     redis-client (0.17.1)
