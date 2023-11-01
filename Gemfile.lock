@@ -533,7 +533,7 @@ GEM
       sentry-ruby (~> 5.12.0)
     sentry-ruby (5.12.0)
       concurrent-ruby (~> 1.0, >= 1.0.2)
-    shoryuken (6.0.0)
+    shoryuken (6.1.0)
       aws-sdk-core (>= 2)
       concurrent-ruby
       thor
