@@ -20,6 +20,16 @@ RSpec.describe "Account Settings" do
     expect(page).to have_content(account.auth_token)
   end
 
+  it "Visit account settings as a carrier user" do
+    user = create(:user, :carrier)
+
+    carrier_sign_in(user)
+    visit dashboard_account_settings_path
+
+    expect(page).to have_content("You are not authorized to perform this action")
+    expect(page).to have_current_path(dashboard_carrier_settings_path)
+  end
+
   it "Update account settings" do
     account = create(:account, :with_access_token, name: "Rocket Rides")
     user = create(

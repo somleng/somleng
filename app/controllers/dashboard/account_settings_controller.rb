@@ -27,7 +27,7 @@ module Dashboard
     end
 
     def record
-      @record ||= current_account
+      @record ||= current_account unless current_user.carrier_user?
     end
   end
 end
