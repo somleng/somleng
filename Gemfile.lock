@@ -156,7 +156,7 @@ GEM
     aws-sdk-sesv2 (1.41.0)
       aws-sdk-core (~> 3, >= 3.184.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-sqs (1.66.0)
+    aws-sdk-sqs (1.67.0)
       aws-sdk-core (~> 3, >= 3.184.0)
       aws-sigv4 (~> 1.1)
     aws-sessionstore-dynamodb (2.1.0)
