@@ -115,7 +115,7 @@ GEM
       activesupport
     ast (2.4.2)
     aws-eventstream (1.2.0)
-    aws-partitions (1.846.0)
+    aws-partitions (1.848.0)
     aws-record (2.13.0)
       aws-sdk-dynamodb (~> 1, >= 1.85.0)
     aws-sdk-cloudwatch (1.81.0)
@@ -156,7 +156,7 @@ GEM
     aws-sdk-sesv2 (1.41.0)
       aws-sdk-core (~> 3, >= 3.184.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-sqs (1.65.0)
+    aws-sdk-sqs (1.66.0)
       aws-sdk-core (~> 3, >= 3.184.0)
       aws-sigv4 (~> 1.1)
     aws-sessionstore-dynamodb (2.1.0)
