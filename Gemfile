@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem "rails", "~> 7.1.1"
+gem "rails", "~> 7.1.2"
 
 gem "administrate"
 gem "administrate-field-active_storage"
