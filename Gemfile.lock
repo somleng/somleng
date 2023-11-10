@@ -129,7 +129,7 @@ GEM
     aws-sdk-dynamodb (1.95.0)
       aws-sdk-core (~> 3, >= 3.184.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-ec2 (1.418.0)
+    aws-sdk-ec2 (1.419.0)
       aws-sdk-core (~> 3, >= 3.184.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.72.0)
