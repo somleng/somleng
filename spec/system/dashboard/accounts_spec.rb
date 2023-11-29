@@ -81,6 +81,40 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("can't be blank")
   end
 
+  it "Shows an account" do
+    account = create(:account)
+    user = create(:user, :carrier, carrier: account.carrier)
+
+    carrier_sign_in(user)
+    visit dashboard_account_path(account)
+
+    within("#voice") do
+      expect(page).to have_link(
+        "View",
+        href: dashboard_phone_calls_path(filter: { account_id: account.id })
+      )
+    end
+
+    within("#tts") do
+      expect(page).to have_link(
+        "View",
+        href: dashboard_tts_events_path(filter: { account_id: account.id })
+      )
+    end
+
+    within("#messaging") do
+      expect(page).to have_link(
+        "View",
+        href: dashboard_messages_path(filter: { account_id: account.id })
+      )
+
+      expect(page).to have_link(
+        "Manage",
+        href: dashboard_messaging_services_path(filter: { account_id: account.id })
+      )
+    end
+  end
+
   it "Update an account" do
     user = create(:user, :carrier)
     account = create(

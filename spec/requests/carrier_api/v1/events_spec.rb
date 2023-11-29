@@ -26,7 +26,7 @@ resource "Events", document: :carrier_api do
           :event,
           type: "phone_call.completed",
           eventable: create(:phone_call, :completed),
-          carrier: carrier
+          carrier:
         )
       ]
       _other_event = create(:event)

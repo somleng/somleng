@@ -63,15 +63,36 @@
         <% end %>
 
         <%= f.attribute :calls_per_second %>
-        <%= f.attribute :phone_calls, value: external_link_to("Manage", dashboard_phone_calls_path(filter: {account_id: @resource.id}), title: "Manage phone calls") %>
+
+        <% if policy(:phone_call).index? %>
+          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { account_id: @resource.id }), title: "View phone calls") %>
+        <% end %>
       </div>
     </div>
 
-    <div class="card mb-3">
+    <div id="messaging" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Messaging</h5>
+
+        <% if policy(:message).index? %>
+          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { account_id: @resource.id }), title: "View messages") %>
+        <% end %>
+
+        <% if policy(:messaging_service).index? %>
+          <%= f.attribute :messaging_services, value: external_link_to("Manage", dashboard_messaging_services_path(filter: { account_id: @resource.id }), title: "Manage messaging services") %>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="tts" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Text to speech</h5>
 
         <%= f.attribute :voice, value: @resource.default_tts_voice %>
+
+        <% if policy(:tts_event).index? %>
+           <%= f.attribute :tts_events, value: external_link_to("View", dashboard_tts_events_path(filter: { account_id: @resource.id }), title: "View TTS events") %>
+        <% end %>
       </div>
     </div>
   <% end %>

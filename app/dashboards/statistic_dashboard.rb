@@ -126,6 +126,10 @@ class StatisticDashboard < Administrate::CustomDashboard
     accounts.count
   end
 
+  def tts_characters
+    tts_events.sum(:num_chars)
+  end
+
   def phone_calls_count
     completed_phone_calls.count
   end
@@ -162,6 +166,10 @@ class StatisticDashboard < Administrate::CustomDashboard
 
   def call_data_records
     apply_filters(CallDataRecord.joins(:phone_call).merge(PhoneCall.completed))
+  end
+
+  def tts_events
+    apply_filters(TTSEvent.all)
   end
 
   def apply_filters(scope)

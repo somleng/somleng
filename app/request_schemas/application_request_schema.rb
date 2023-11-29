@@ -18,17 +18,16 @@ class ApplicationRequestSchema < Dry::Validation::Contract
   end
 
   register_macro(:date_range) do
-    if key?
-      from_date = value[:from_date]
-      to_date = value[:to_date]
-      empty_range = from_date.blank? && to_date.blank?
-      valid_range = from_date.present? && to_date.present? && to_date >= from_date
+    next unless key?
+    next if value[:from_date].blank? && value[:to_date].blank?
 
-      unless empty_range || valid_range
-        key([*key.path.keys,
-             :date_range].join(".")).failure("invalid date range")
-      end
-    end
+    date_range = DateRange.new(from_date: value[:from_date], to_date: value[:to_date])
+
+    next if date_range.valid?
+
+    key(
+      [*key.path.keys, :date_range].join(".")
+    ).failure("invalid date range")
   end
 
   def initialize(input_params:, options: {})

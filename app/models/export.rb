@@ -1,6 +1,6 @@
 class Export < ApplicationRecord
   extend Enumerize
-  enumerize :resource_type, in: %w[Account PhoneNumber PhoneCall Message]
+  enumerize :resource_type, in: %w[Account PhoneNumber PhoneCall Message TTSEvent]
 
   belongs_to :user
 

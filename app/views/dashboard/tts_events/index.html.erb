@@ -1,0 +1,22 @@
+<%= page_title(title: "TTS Events") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.select(
+        :account_id,
+        current_carrier.accounts.map { |account| [account.name, account.id] },
+        { filter_value: params.dig(:filter, :account_id) },
+        { data: { behavior: "choices-input" }}
+      )
+    %>
+
+    <%= form.text_field_tag(:phone_call_id, params.dig(:filter, :phone_call_id)) %>
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <%= render("shared/export_action", disabled_title: "Filter by date to export", disabled: params.dig(:filter, :from_date).blank?, export_params: { resource_type: "TTSEvent" }) %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

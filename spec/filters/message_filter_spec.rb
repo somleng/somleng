@@ -16,6 +16,6 @@ RSpec.describe MessageFilter do
 
     result = filter.apply
 
-    expect(result).to match_array([sending_message])
+    expect(result).to eq([sending_message])
   end
 end

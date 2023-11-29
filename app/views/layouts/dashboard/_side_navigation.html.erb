@@ -21,7 +21,7 @@
       <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-hashtag") %>
     <% end %>
 
-    <% if policy(:sip_trunk).index? || policy(:phone_call).index? %>
+    <% if %i[sip_trunk phone_call tts_events].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-mobile-retro"></i> Voice
@@ -34,6 +34,10 @@
 
           <% if policy(:sip_trunk).index? %>
             <%= sidebar_nav("SIP Trunks", dashboard_sip_trunks_path, icon_class: "fa-solid fa-tower-cell") %>
+          <% end %>
+
+          <% if policy(:tts_event).index? %>
+            <%= sidebar_nav("TTS Events", dashboard_tts_events_path, icon_class: "fa-solid fa-font") %>
           <% end %>
         </ul>
       </li>

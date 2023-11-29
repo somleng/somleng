@@ -104,5 +104,13 @@ RSpec.describe "Phone Calls" do
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
     expect(page).to have_content("Recordings")
+    expect(page).to have_link(
+      "View",
+      href: dashboard_events_path(filter: { phone_call_id: phone_call.id })
+    )
+    expect(page).to have_link(
+      "View",
+      href: dashboard_tts_events_path(filter: { phone_call_id: phone_call.id })
+    )
   end
 end

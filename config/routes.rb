@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  scope(as: :api, constraints: { subdomain: AppSettings.config_for(:api_subdomain) }, defaults: { format: "json" } ) do
+  scope(as: :api, constraints: { subdomain: AppSettings.config_for(:api_subdomain) },
+        defaults: { format: "json" }) do
     concern :recordings do
       resources :recordings, only: %i[index], path: "Recordings"
       resources :recordings, only: %i[show], path: "Recordings", defaults: { format: "wav" }
@@ -8,7 +9,8 @@ Rails.application.routes.draw do
     scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_account do
       concerns :recordings
 
-      resources :phone_calls, only: %i[index create show update], path: "Calls", concerns: :recordings
+      resources :phone_calls, only: %i[index create show update], path: "Calls",
+                              concerns: :recordings
       post "Calls/:id" => "phone_calls#update"
 
       resources :messages, only: %i[index create show destroy], path: "Messages"
@@ -19,6 +21,7 @@ Rails.application.routes.draw do
       namespace :v1, defaults: { format: :json } do
         resources :accounts, only: %i[create show update index destroy]
         resources :events, only: %i[index show]
+        resources :tts_events, only: %i[index show]
 
         resources :phone_calls, only: %i[index show update]
         resources :messages, only: %i[index show update]
@@ -94,6 +97,7 @@ Rails.application.routes.draw do
       resources :error_logs, only: :index
       resources :events, only: %i[index show]
       resources :webhook_request_logs, only: %i[index show]
+      resources :tts_events, only: %i[index show]
 
       root to: "home#show"
     end

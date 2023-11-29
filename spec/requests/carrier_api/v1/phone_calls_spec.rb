@@ -28,7 +28,9 @@ resource "Phone Calls", document: :carrier_api do
       carrier = create(:carrier)
       account = create(:account, carrier:)
       other_account = create(:account, carrier:)
-      phone_call = create(:phone_call, :outbound, :initiated, account:, created_at: Time.utc(2021, 11, 1, 1))
+      phone_call = create(
+        :phone_call, :outbound, :initiated, account:, created_at: Time.utc(2021, 11, 1)
+      )
       create(
         :phone_call,
         :inbound,
@@ -55,14 +57,14 @@ resource "Phone Calls", document: :carrier_api do
         direction: phone_call.direction,
         status: phone_call.status,
         account: phone_call.account,
-        created_at: Time.utc(2021, 11, 1, 12)
+        created_at: Time.utc(2021, 11, 2)
       )
 
       set_carrier_api_authorization_header(carrier)
       do_request(
         filter: {
           from_date: Time.utc(2021, 11, 1).iso8601,
-          to_date: Time.utc(2021, 11, 1, 11).iso8601,
+          to_date: Time.utc(2021, 11, 1).iso8601,
           account: account.id,
           direction: "outbound-api",
           status: "queued"
@@ -71,7 +73,7 @@ resource "Phone Calls", document: :carrier_api do
 
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_collection_schema("carrier_api/phone_call")
-      expect(json_response.fetch("data").pluck("id")).to match_array([phone_call.id])
+      expect(json_response.fetch("data").pluck("id")).to contain_exactly(phone_call.id)
     end
   end
 

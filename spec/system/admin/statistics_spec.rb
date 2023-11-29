@@ -24,10 +24,11 @@ RSpec.describe "Admin/Statistics" do
     expect(page).to have_content("Accounts: 1")
     expect(page).to have_content("Phone Calls: 2")
     expect(page).to have_content("Bill Minutes")
+    expect(page).to have_content("TTS Characters")
   end
 
-  def create_phone_call_interaction(phone_call_params: {}, **params)
+  def create_phone_call_interaction(phone_call_params: {}, **)
     phone_call = create(:phone_call, :outbound, :completed, phone_call_params)
-    create(:interaction, :for_phone_call, phone_call:, **params)
+    create(:interaction, :for_phone_call, phone_call:, **)
   end
 end

@@ -50,6 +50,9 @@
 
       <dt class="attribute-label">Bill Minutes:</dt>
       <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.bill_minutes, units: { thousand: "K", million: "M", billion: "B" }) %></dd>
+
+      <dt class="attribute-label">TTS Characters:</dt>
+      <dd class="attribute-data attribute-data--string"><%= number_to_human(@dashboard.tts_characters, units: { thousand: "K", million: "M", billion: "B" }) %></dd>
     </dl>
   </p>
 </div>
