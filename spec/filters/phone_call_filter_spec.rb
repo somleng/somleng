@@ -48,6 +48,6 @@ RSpec.describe PhoneCallFilter do
 
     result = filter.apply
 
-    expect(result).to match_array([queued_phone_call, initiated_phone_call])
+    expect(result).to contain_exactly(queued_phone_call, initiated_phone_call)
   end
 end

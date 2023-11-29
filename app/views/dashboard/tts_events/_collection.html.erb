@@ -1,0 +1,43 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Voice
+      </th>
+      <th>
+        Characters
+      </th>
+      <th>
+        Account
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |tts_event| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(tts_event.id, dashboard_tts_event_path(tts_event)) %>
+        </td>
+        <td>
+          <code><%= tts_event.tts_voice %></code>
+        </td>
+        <td>
+          <%= number_with_delimiter(tts_event.num_chars) %>
+        </td>
+        <td>
+          <%= link_to(tts_event.account.name, dashboard_account_path(tts_event.account_id)) %>
+        </td>
+        <td>
+          <%= local_time(tts_event.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

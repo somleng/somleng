@@ -8,6 +8,15 @@ module APIResponseSchema
         required(:to).filled(:str?)
         required(:from).filled(:str?)
       end
+
+      required(:relationships).schema do
+        required(:account).schema do
+          required(:data).schema do
+            required(:id).filled(:str?)
+            required(:type).filled(eql?: "account")
+          end
+        end
+      end
     end
   end
 end

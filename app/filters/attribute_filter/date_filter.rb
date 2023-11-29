@@ -6,13 +6,14 @@ module AttributeFilter
     end
 
     def apply
-      return super if filter_params.blank?
-
-      date_range = Range.new(
-        filter_params.fetch(:from_date).beginning_of_day,
-        filter_params.fetch(:to_date).end_of_day
+      date_range = DateRange.new(
+        from_date: filter_params[:from_date],
+        to_date: filter_params[:to_date]
       )
-      super.where(created_at: date_range)
+
+      return super unless date_range.valid?
+
+      super.where(created_at: date_range.to_range)
     end
   end
 end

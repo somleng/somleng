@@ -11,18 +11,6 @@ class EventFilter < ResourceFilter
     end
   end
 
-  class PhoneCallIDFilter < ApplicationFilter
-    filter_params do
-      optional(:phone_call_id).value(:string)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(phone_call_id: filter_params.fetch(:phone_call_id))
-    end
-  end
-
   class MessageIDFilter < ApplicationFilter
     filter_params do
       optional(:message_id).value(:string)
@@ -35,5 +23,5 @@ class EventFilter < ResourceFilter
     end
   end
 
-  filter_with TypeFilter, PhoneCallIDFilter, :date_filter
+  filter_with TypeFilter, MessageIDFilter, :phone_call_id_filter, :date_filter
 end

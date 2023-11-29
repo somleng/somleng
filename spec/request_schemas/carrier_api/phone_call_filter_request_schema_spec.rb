@@ -22,7 +22,7 @@ module CarrierAPI
             }
           }
         )
-      ).not_to have_valid_field(:filter, :date_range)
+      ).to have_valid_field(:filter, :date_range)
 
       expect(
         validate_request_schema(

@@ -25,8 +25,12 @@
       <% end %>
     <% end %>
 
-    <% if policy(:event).show? %>
+    <% if policy(:event).index? %>
       <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { phone_call_id: phone_call.id }), title: "View events") %>
+    <% end %>
+
+    <% if policy(:tts_event).index? %>
+      <%= f.attribute :tts_events, value: external_link_to("View", dashboard_tts_events_path(filter: { phone_call_id: phone_call.id }), title: "View TTS events") %>
     <% end %>
 
     <%= f.attribute :from, value: phone_call.from_formatted %>

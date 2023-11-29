@@ -174,9 +174,15 @@ resource "Accounts", document: :carrier_api do
       expect(json_response.fetch("data").pluck("id")).to contain_exactly(
         customer_managed_account.id, carrier_managed_account.id
       )
-      expect(json_response.dig("data", 0, "attributes",
-                               "auth_token")).to eq(carrier_managed_account.auth_token)
-      expect(json_response.dig("data", 1, "attributes").has_key?("auth_token")).to eq(false)
+      expect(
+        json_response.dig(
+          "data", 0, "attributes",
+          "auth_token"
+        )
+      ).to eq(carrier_managed_account.auth_token)
+      expect(
+        json_response.dig("data", 1, "attributes").key?("auth_token")
+      ).to be(false)
     end
   end
 
