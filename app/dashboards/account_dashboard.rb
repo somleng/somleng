@@ -7,6 +7,7 @@ class AccountDashboard < Administrate::BaseDashboard
     phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
     phone_numbers: Field::HasMany,
     id: Field::String,
+    type: Field::String,
     name: Field::String,
     default_tts_voice: Field::String,
     created_at: Field::LocalTime,
@@ -20,6 +21,7 @@ class AccountDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     carrier
     name
+    type
     status
     created_at
   ].freeze
@@ -28,6 +30,7 @@ class AccountDashboard < Administrate::BaseDashboard
     carrier
     id
     name
+    type
     status
     calls_per_second
     default_tts_voice
