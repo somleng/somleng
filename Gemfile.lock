@@ -382,7 +382,7 @@ GEM
       google-protobuf (>= 3.22.3)
     pghero (3.4.0)
       activerecord (>= 6)
-    phony (2.20.10)
+    phony (2.20.11)
     premailer (1.21.0)
       addressable
       css_parser (>= 1.12.0)
