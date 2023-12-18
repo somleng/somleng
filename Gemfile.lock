@@ -533,7 +533,7 @@ GEM
     sentry-rails (5.15.0)
       railties (>= 5.0)
       sentry-ruby (~> 5.15.0)
-    sentry-ruby (5.15.0)
+    sentry-ruby (5.15.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
     shoryuken (6.1.1)
       aws-sdk-core (>= 2)
