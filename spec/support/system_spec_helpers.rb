@@ -19,10 +19,9 @@ module SystemSpecHelpers
     choices_wrapper.click
 
     dropdown = choices_wrapper.find(:xpath, ".//div[contains(@class, 'choices__list--dropdown')]")
-    item = dropdown.find(
-      :xpath,
-      ".//div[contains(@class, 'choices__item') and contains(., '#{value}')]"
-    )
+    item_xpath = value.present? ? ".//div[contains(@class, 'choices__item') and contains(., '#{value}')]" : ".//div[contains(@class, 'choices__item') and not(text())]"
+
+    item = dropdown.find(:xpath, item_xpath)
     item.click
   end
 

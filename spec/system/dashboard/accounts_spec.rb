@@ -150,6 +150,27 @@ RSpec.describe "Accounts" do
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
+  it "remove a SIP trunk" do
+    user = create(:user, :carrier)
+    sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
+    account = create(
+      :account,
+      sip_trunk:,
+      carrier: user.carrier
+    )
+
+    carrier_sign_in(user)
+    visit edit_dashboard_account_path(account)
+
+    choices_select("", from: "SIP trunk")
+    click_button "Update Account"
+
+    expect(page).to have_content("Account was successfully updated")
+    expect(page).not_to have_link(
+      "Main SIP Trunk"
+    )
+  end
+
   it "Update a customer managed account" do
     user = create(:user, :carrier)
     create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")

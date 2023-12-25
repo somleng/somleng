@@ -37,9 +37,18 @@
             <%= f.input :sip_trunk_id,
                           collection: resource.sip_trunk_options_for_select,
                           hint: "Optionally specify a SIP trunk which will be used by this account for outbound calls. If left blank outbound calls from this account will be routed automatically.",
+                          include_blank: true,
                           selected: resource.sip_trunk_id,
-                          prompt: "",
-                          input_html: { data: { behavior: "choices-input" } } %>
+                          input_html: {
+                            data: {
+                              behavior: "choices-input",
+                              choices_options: {
+                                removeItemButton: true
+                              }
+                            }
+                          }
+              %>
+
           </div>
 
           <div class="col-sm-6">

@@ -55,7 +55,7 @@ class AccountForm
     account.default_tts_voice = default_tts_voice
     account.calls_per_second = calls_per_second
 
-    account.sip_trunk = carrier.sip_trunks.find(sip_trunk_id) if sip_trunk_id.present?
+    account.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
 
     Account.transaction do
       account.save!
