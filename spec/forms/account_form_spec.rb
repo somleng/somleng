@@ -89,7 +89,14 @@ RSpec.describe AccountForm do
 
     it "updates an account" do
       carrier = create(:carrier)
-      account = create(:account, carrier:, name: "Rocket Rides", default_tts_voice: "Basic.Kal")
+      sip_trunk = create(:sip_trunk, carrier:)
+      account = create(
+        :account,
+        carrier:,
+        sip_trunk:,
+        name: "Rocket Rides",
+        default_tts_voice: "Basic.Kal"
+      )
 
       form = AccountForm.new(
         name: "Car Rides",
@@ -105,7 +112,8 @@ RSpec.describe AccountForm do
         name: "Car Rides",
         default_tts_voice: have_attributes(
           identifier: "Basic.Slt"
-        )
+        ),
+        sip_trunk: nil
       )
     end
   end
