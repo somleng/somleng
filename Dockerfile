@@ -1,48 +1,59 @@
-FROM public.ecr.aws/docker/library/ruby:3.2-alpine AS build-env
+# syntax = docker/dockerfile:1
 
-ARG APP_ROOT="/app"
-ENV BUNDLE_APP_CONFIG="/app/.bundle"
+# Make sure RUBY_VERSION matches the Ruby version in .tool-versions
+ARG RUBY_VERSION=3.2
+FROM public.ecr.aws/docker/library/ruby:$RUBY_VERSION-alpine AS base
 
+# Rails app lives here
+WORKDIR /rails
+
+# Set production environment
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development test" \
+    BUNDLE_FORCE_RUBY_PLATFORM="1"
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install packages needed to build gems
 RUN apk update && \
     apk upgrade && \
     apk add --update --no-cache build-base git gcompat postgresql-dev nodejs yarn
 
-RUN gem install bundler
+# Install application gems
+COPY Gemfile Gemfile.lock ./
 
-RUN mkdir -p $APP_ROOT
-WORKDIR $APP_ROOT
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
 
-COPY Gemfile Gemfile.lock package.json yarn.lock $APP_ROOT/
-
-RUN bundle config --local deployment true && \
-    bundle config --local force_ruby_platform true \
-    bundle config --local path "vendor/bundle" && \
-    bundle config --local without 'development test'
-
-RUN bundle install --jobs 20 --retry 5
-RUN yarn install --frozen-lockfile
-
+# Copy application code
 COPY . .
 
-RUN bundle exec rails assets:precompile
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
 
-RUN mkdir -p tmp/pids
-RUN rm -rf vendor/bundle/ruby/*/cache/ && find vendor/ -name "*.o" -delete && find vendor/ -name "*.c"
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
+# Final stage for app image
+FROM base
 
-FROM public.ecr.aws/docker/library/ruby:3.2-alpine
-
-ARG APP_ROOT="/app"
-ENV BUNDLE_APP_CONFIG="/app/.bundle"
-
-WORKDIR $APP_ROOT
-
+# Install packages needed for deployment
 RUN apk update && \
     apk upgrade && \
-    apk add --update --no-cache build-base gcompat postgresql-dev vips-dev ffmpeg && \
-    gem install bundler
+    apk add --update --no-cache build-base gcompat postgresql-dev vips-dev ffmpeg
 
-COPY --from=build-env $APP_ROOT $APP_ROOT
+# Copy built artifacts: gems, application
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
 
+# Run and own only the runtime files as a non-root user for security
+RUN adduser -D rails  && \
+    chown -R rails:rails db log tmp
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+CMD ["./bin/rails", "server"]
