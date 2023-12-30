@@ -29,6 +29,9 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
 # Copy application code
 COPY . .
 
@@ -51,8 +54,11 @@ COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN adduser -D rails  && \
+RUN addgroup -S -g 1000 rails && \
+    adduser -u 1000 -D -G rails rails && \
     chown -R rails:rails db log tmp
+
+USER 1000:1000
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
