@@ -500,6 +500,9 @@ GEM
       rubocop (~> 1.41)
     rubocop-factory_bot (2.24.0)
       rubocop (~> 1.33)
+    rubocop-minitest (0.34.2)
+      rubocop (>= 1.39, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     rubocop-performance (1.20.1)
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.30.0, < 2.0)
@@ -508,6 +511,11 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
       rubocop-ast (>= 1.30.0, < 2.0)
+    rubocop-rails-omakase (1.0.0)
+      rubocop
+      rubocop-minitest
+      rubocop-performance
+      rubocop-rails
     rubocop-rspec (2.25.0)
       rubocop (~> 1.40)
       rubocop-capybara (~> 2.17)
@@ -666,9 +674,7 @@ DEPENDENCIES
   rqrcode
   rspec-rails
   rspec_api_documentation!
-  rubocop
-  rubocop-performance
-  rubocop-rails
+  rubocop-rails-omakase
   rubocop-rspec
   sassc-rails
   selenium-webdriver

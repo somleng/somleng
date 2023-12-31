@@ -1,20 +1,13 @@
 require: rubocop-rspec
 
+# Omakase Ruby styling for Rails
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
 AllCops:
   NewCops: enable
 
 Style/FrozenStringLiteralComment:
-  Enabled: false
-
-Style/StringLiterals:
-  EnforcedStyle: double_quotes
-
-Layout/LineLength:
-  Max: 100
-  Exclude:
-    - "db/schema.rb"
-
-Style/Documentation:
   Enabled: false
 
 RSpec/DescribedClass:
@@ -25,11 +18,3 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Enabled: false
-
-Metrics/BlockLength:
-  Exclude:
-    - "spec/**/*_spec.rb"
-
-Metrics/MethodLength:
-  Exclude:
-    - "db/migrate/*.rb"
