@@ -76,7 +76,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install libvips
 
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v3
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
