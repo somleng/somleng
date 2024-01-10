@@ -1,6 +1,7 @@
 default: &default
   app_subdomain: "app"
   api_subdomain: "api"
+  verify_subdomain: "verify"
   client_gateway_domain: "sip.somleng.org"
   call_service_queue_url: <%= ENV.fetch("CALL_SERVICE_QUEUE_URL", "https://amazonaws.com/12345/call_service_queue") %>
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
@@ -57,6 +58,7 @@ staging:
   <<: *production
   app_subdomain: "app-staging"
   api_subdomain: "api-staging"
+  verify_subdomain: "verify-staging"
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "https://app-staging.somleng.org") %>
   asset_url_host: <%= ENV.fetch("ASSET_URL_HOST", "https://cdn-staging.somleng.org") %>
   switch_host: <%= ENV.fetch("SWITCH_HOST", "https://switch-staging.somleng.org") %>

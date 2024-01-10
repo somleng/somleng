@@ -526,4 +526,11 @@ FactoryBot.define do
     tts_engine { "Standard" }
     num_chars { 100 }
   end
+
+  factory :verification_service do
+    account
+    carrier { account.carrier }
+    name { "My Verification Service" }
+    code_length { 4 }
+  end
 end

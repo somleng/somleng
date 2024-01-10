@@ -31,7 +31,7 @@ module TwilioAPI
       end
 
       def ApiVersion
-        TwilioAPISerializer::API_VERSION
+        TwilioAPI::ResourceSerializer::API_VERSION
       end
 
       def CallSid
@@ -39,11 +39,11 @@ module TwilioAPI
       end
 
       def AccountSid
-        account_sid
+        object.account_id
       end
 
       def RecordingSid
-        sid
+        object.id
       end
 
       def RecordingUrl
@@ -68,7 +68,7 @@ module TwilioAPI
       end
 
       def RecordingStartTime
-        format_time(object.start_time)
+        object.start_time.utc.rfc2822
       end
 
       def RecordingSource

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_09_144718) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -498,6 +498,17 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "tmp_encryption_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_id"
+    t.string "sms_gateway_id"
+    t.string "otp_secret"
+    t.string "device_id"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_tmp_encryption_keys_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "tts_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id"
@@ -560,6 +571,19 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "verification_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.uuid "account_id", null: false
+    t.string "name", null: false
+    t.integer "code_length", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_verification_services_on_account_id"
+    t.index ["carrier_id"], name: "index_verification_services_on_carrier_id"
+    t.index ["sequence_number"], name: "index_verification_services_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "webhook_endpoints", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -631,16 +655,14 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
-  add_foreign_key "sip_trunks", "carriers"
   add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
-  add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
-  add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
-  add_foreign_key "users", "carriers"
+  add_foreign_key "verification_services", "accounts"
+  add_foreign_key "verification_services", "carriers"
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_request_logs", "carriers"
   add_foreign_key "webhook_request_logs", "events"

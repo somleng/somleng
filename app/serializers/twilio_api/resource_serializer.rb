@@ -1,5 +1,7 @@
 module TwilioAPI
   class ResourceSerializer < TwilioAPISerializer
+    API_VERSION = "2010-04-01".freeze
+
     def attributes
       super.merge(
         "api_version" => nil,
@@ -10,12 +12,36 @@ module TwilioAPI
       )
     end
 
+    def api_version
+      API_VERSION
+    end
+
+    def sid
+      object.id
+    end
+
+    def account_sid
+      object.account_id
+    end
+
     def date_created
       format_time(object.created_at)
     end
 
     def date_updated
       format_time(object.updated_at)
+    end
+
+    private
+
+    def pagination_serializer
+      PaginationSerializer.new(serializer_options.fetch(:pagination_info))
+    end
+
+    def format_time(value)
+      return if value.blank?
+
+      value.utc.rfc2822
     end
   end
 end

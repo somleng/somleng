@@ -43,6 +43,16 @@ Rails.application.routes.draw do
     end
   end
 
+  scope(
+    module: "twilio_api/verify", as: :api_twilio_verify, constraints: { subdomain: AppSettings.config_for(:verify_subdomain) },
+    defaults: { format: "json" }
+  ) do
+    scope :v2 do
+      resources :verification_services, only: %i[index create show destroy], path: "Services"
+      post "Services/:id" => "verification_services#update"
+    end
+  end
+
   constraints(AppSubdomainConstraint.new) do
     devise_for :users, skip: %i[registrations invitations]
 
