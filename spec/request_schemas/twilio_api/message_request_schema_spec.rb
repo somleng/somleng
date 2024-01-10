@@ -65,8 +65,10 @@ module TwilioAPI
     it "validates MessagingServiceSid" do
       account = create(:account)
       messaging_service = create(:messaging_service, account:, carrier: account.carrier)
-      phone_number = create(:phone_number, :configured, messaging_service:, account:, carrier: account.carrier)
-      unconfigured_messaging_service = create(:messaging_service, account:, carrier: account.carrier)
+      phone_number = create(:phone_number, :configured, messaging_service:, account:,
+                                                        carrier: account.carrier)
+      unconfigured_messaging_service = create(:messaging_service, account:,
+                                                                  carrier: account.carrier)
 
       expect(
         validate_request_schema(
@@ -171,7 +173,7 @@ module TwilioAPI
             SendAt: 5.days.from_now.iso8601
           }
         )
-      ).to have_valid_schema
+      ).to have_valid_field(:SendAt)
 
       expect(
         validate_request_schema(

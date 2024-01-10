@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_10_084336) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_10_154040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -573,6 +573,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_084336) do
     t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "verification_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "verification_id", null: false
+    t.string "code", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_verification_attempts_on_sequence_number", unique: true, order: :desc
+    t.index ["verification_id"], name: "index_verification_attempts_on_verification_id"
+  end
+
   create_table "verification_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id", null: false
@@ -593,14 +603,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_084336) do
     t.string "to", null: false
     t.string "channel", null: false
     t.string "status", null: false
-    t.bigserial "sequence_number", null: false
+    t.string "code", null: false
+    t.integer "verification_attempts_count", default: 0, null: false
     t.datetime "approved_at"
     t.datetime "canceled_at"
+    t.datetime "expired_at", null: false
+    t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_verifications_on_account_id"
     t.index ["carrier_id"], name: "index_verifications_on_carrier_id"
+    t.index ["expired_at"], name: "index_verifications_on_expired_at"
     t.index ["sequence_number"], name: "index_verifications_on_sequence_number", unique: true, order: :desc
+    t.index ["status"], name: "index_verifications_on_status"
     t.index ["verification_service_id"], name: "index_verifications_on_verification_service_id"
   end
 
@@ -679,6 +694,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_084336) do
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
+  add_foreign_key "verification_attempts", "verifications", on_delete: :cascade
   add_foreign_key "verification_services", "accounts"
   add_foreign_key "verification_services", "carriers"
   add_foreign_key "verifications", "accounts", on_delete: :nullify

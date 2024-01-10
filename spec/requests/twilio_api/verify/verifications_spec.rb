@@ -68,11 +68,149 @@ RSpec.resource "Verifications", document: :twilio_api do
     end
   end
 
+  # https://www.twilio.com/docs/verify/api/verification-check#check-a-verification
+
+  post "https://verify.somleng.org/v2/Services/:service_sid/VerificationCheck" do
+    explanation <<~HEREDOC
+      ⚠️ Somleng deletes the verification SID once it's:
+
+      * expired (10 minutes)
+      * approved or canceled
+
+      If any of these occur, verification checks will return a 404 not found error like this.
+      If you'd like to double check what happened with a given verification - please use the Dashboard Verify Logs.
+    HEREDOC
+
+    parameter(
+      "ServiceSid",
+      "The SID of the verification Service to create the resource under.",
+      required: true
+    )
+
+    parameter(
+      "Code",
+      "The 4-10 character string being verified.",
+      required: false,
+      example: "1234"
+    )
+
+    parameter(
+      "To",
+      "The phone number or email to verify. Either this parameter or the `verification_sid`` must be specified. Phone numbers must be in E.164 format.",
+      required: false,
+      example: "+85512334667"
+    )
+
+    parameter(
+      "VerificationSid",
+      "A SID that uniquely identifies the Verification. Either this parameter or the `To` phone number/email must be specified.",
+      required: false,
+      example: SecureRandom.uuid
+    )
+
+    example "Check a Verification with a Phone Number" do
+      account = create(:account)
+      verification_service = create(:verification_service, account:, code_length: 4)
+      create(
+        :verification,
+        status: :pending,
+        to: "85512334667",
+        code: "1234",
+        verification_service:
+      )
+
+      set_twilio_api_authorization_header(account)
+
+      do_request(
+        service_sid: verification_service.id,
+        To: "+85512334667",
+        Code: "1234"
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/verify/verification_check")
+      expect(json_response.fetch("status")).to eq("approved")
+    end
+
+    example "Check a Verification with a SID" do
+      account = create(:account)
+      verification_service = create(:verification_service, account:, code_length: 4)
+      verification = create(
+        :verification,
+        status: :pending,
+        code: "1234",
+        verification_service:
+      )
+
+      set_twilio_api_authorization_header(account)
+
+      do_request(
+        service_sid: verification_service.id,
+        VerificationSid: verification.id,
+        Code: "1234"
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/verify/verification_check")
+      expect(json_response.fetch("status")).to eq("approved")
+    end
+
+    example "Check an expired Verification", document: false do
+      account = create(:account)
+      verification_service = create(:verification_service, account:)
+      verification = create(
+        :verification,
+        :expired,
+        code: "1234",
+        verification_service:
+      )
+
+      set_twilio_api_authorization_header(account)
+
+      do_request(
+        service_sid: verification_service.id,
+        VerificationSid: verification.id,
+        Code: "1234"
+      )
+
+      expect(response_status).to eq(404)
+    end
+
+    example "Check a Verification with too many check attempts", document: false do
+      account = create(:account)
+      verification_service = create(:verification_service, account:)
+      verification = create(
+        :verification,
+        :too_many_check_attempts,
+        status: :pending,
+        code: "1234",
+        verification_service:
+      )
+
+      set_twilio_api_authorization_header(account)
+
+      do_request(
+        service_sid: verification_service.id,
+        VerificationSid: verification.id,
+        Code: "1234"
+      )
+
+      expect(response_status).to eq(422)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
+      expect(json_response).to eq(
+        "message" => "Max check attempts reached",
+        "status" => 422,
+        "code" => 60_202,
+        "more_info" => "https://www.twilio.com/docs/errors/60202"
+      )
+    end
+  end
+
   # https://www.twilio.com/docs/verify/api/verification#update-a-verification-status
 
   post "https://verify.somleng.org/v2/Services/:service_sid/Verifications/:sid" do
     explanation <<~HEREDOC
-      Mark the verification as `approved` after your application had validated the verification code or
+      Manually mark the verification as `approved` after your application had validated the verification code or
       mark the verification as `canceled` to start a new verification session with a different code
       before the previous code expires (10 minutes). Only recommended during testing or if you're using custom verification codes.
 

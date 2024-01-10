@@ -57,6 +57,15 @@ module ApplicationError
       ),
       verify_invalid_verification_status: Error.new(
         code: "S60200", message: "Invalid verification status"
+      ),
+      no_target_verification_specified: Error.new(
+        code: "60221,", message: "Either a 'To' number or 'VerificationSid' must be specified"
+      ),
+      max_check_attempts_reached: Error.new(
+        code: "60202", message: "Max check attempts reached"
+      ),
+      max_send_attempts_reached: Error.new(
+        code: "60203", message: "Max send attempts reached"
       )
     }.freeze
 

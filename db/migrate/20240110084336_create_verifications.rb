@@ -16,12 +16,14 @@ class CreateVerifications < ActiveRecord::Migration[7.1]
 
       t.string :to, null: false
       t.string :channel, null: false
-      t.string :status, null: false
-
-      t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
+      t.string :status, null: false, index: true
+      t.string :code, null: false
+      t.integer :verification_attempts_count, null: false, default: 0
       t.datetime :approved_at
       t.datetime :canceled_at
+      t.datetime :expired_at, null: false, index: true
 
+      t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
       t.timestamps
     end
   end

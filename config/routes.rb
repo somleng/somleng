@@ -51,6 +51,8 @@ Rails.application.routes.draw do
       resources :services, only: %i[index create show destroy], path: "Services" do
         resources :verifications, only: %i[create show], path: "Verifications"
         post "Verifications/:id" => "verifications#update"
+
+        resource :verification_check, only: :create, path: "VerificationCheck"
       end
       post "Services/:id" => "services#update"
     end

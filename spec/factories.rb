@@ -540,5 +540,22 @@ FactoryBot.define do
     carrier { verification_service.carrier }
     channel { "sms" }
     to { "85512334667" }
+    code { "1234" }
+
+    trait :expired do
+      status { :pending }
+      expired_at { 1.minute.ago }
+    end
+
+    trait :too_many_check_attempts do
+      after(:build) do |verification|
+        verification.verification_attempts = build_list(:verification_attempt, 5, verification:)
+      end
+    end
+  end
+
+  factory :verification_attempt do
+    verification
+    code { "9876" }
   end
 end

@@ -47,6 +47,37 @@ module TwilioAPI
         ).not_to have_valid_field(:Channel)
       end
 
+      it "validates duplicate verifications" do
+        pending_verification = create(:verification, to: "855716100235", status: :pending)
+        approved_verification = create(:verification, to: "855716100236", status: :approved)
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "+855716100235"
+            },
+            options: {
+              verification_service: pending_verification.verification_service,
+              verifications_scope: pending_verification.verification_service.verifications.pending
+            }
+          )
+        ).not_to have_valid_schema(
+          error_message: ApplicationError::Errors.fetch(:max_send_attempts_reached).message
+        )
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "+855716100236"
+            },
+            options: {
+              verification_service: approved_verification.verification_service,
+              verifications_scope: approved_verification.verification_service.verifications.pending
+            }
+          )
+        ).to have_valid_schema
+      end
+
       it "handles post processing" do
         verification_service = create(:verification_service)
 
@@ -70,6 +101,7 @@ module TwilioAPI
       def validate_request_schema(input_params:, options: {})
         options[:verification_service] ||= build_stubbed(:verification_service)
         options[:account] ||= options[:verification_service].account
+        options[:verifications_scope] ||= options[:verification_service].verifications
 
         VerificationRequestSchema.new(input_params:, options:)
       end
