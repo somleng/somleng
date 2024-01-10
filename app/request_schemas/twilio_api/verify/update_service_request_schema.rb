@@ -1,6 +1,8 @@
 module TwilioAPI
   module Verify
-    class UpdateVerificationServiceRequestSchema < TwilioAPIRequestSchema
+    class UpdateServiceRequestSchema < TwilioAPIRequestSchema
+      option :service
+
       params do
         optional(:FriendlyName).filled(:str?, max_size?: 32)
         optional(:CodeLength).filled(:integer, gteq?: 4, lteq?: 10)

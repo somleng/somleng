@@ -1,18 +1,18 @@
 module TwilioAPI
   module Verify
-    class VerificationServicesController < VerifyAPIController
+    class ServicesController < VerifyAPIController
       def index
         respond_with(scope, serializer_options)
       end
 
       def show
-        verification_service = scope.find(params[:id])
-        respond_with_resource(verification_service, serializer_options)
+        service = scope.find(params[:id])
+        respond_with_resource(service, **serializer_options)
       end
 
       def create
         validate_request_schema(
-          with: VerificationServiceRequestSchema,
+          with: ServiceRequestSchema,
           schema_options: { account: current_account },
           **serializer_options
         ) do |permitted_params|
@@ -21,22 +21,22 @@ module TwilioAPI
       end
 
       def update
-        verification_service = scope.find(params[:id])
+        service = scope.find(params[:id])
 
         validate_request_schema(
-          with: UpdateVerificationServiceRequestSchema,
-          schema_options: { account: current_account, verification_service: },
+          with: UpdateServiceRequestSchema,
+          schema_options: { account: current_account, service: },
           status: :ok,
           **serializer_options
         ) do |permitted_params|
-          verification_service.update!(permitted_params)
-          verification_service
+          service.update!(permitted_params)
+          service
         end
       end
 
       def destroy
-        verification_service = scope.find(params[:id])
-        verification_service.destroy!
+        service = scope.find(params[:id])
+        service.destroy!
       end
 
       private
@@ -46,7 +46,11 @@ module TwilioAPI
       end
 
       def serializer_options
-        { serializer_class: VerificationServiceSerializer }
+        { serializer_class: ServiceSerializer }
+      end
+
+      def respond_with_resource(resource, options = {})
+        respond_with(resource, location: api_twilio_verify_service_path(resource), **options)
       end
     end
   end

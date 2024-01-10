@@ -1,6 +1,6 @@
 module TwilioAPI
   module Verify
-    class VerificationServiceSerializer < ResourceSerializer
+    class ServiceSerializer < ResourceSerializer
       def attributes
         super.merge(
           friendly_name: nil,
@@ -14,13 +14,7 @@ module TwilioAPI
       end
 
       def url
-        url_helpers.api_twilio_verify_verification_service_url(object, format: :json)
-      end
-
-      private
-
-      def collection_name
-        "services"
+        url_helpers.api_twilio_verify_service_url(object, format: :json)
       end
     end
   end

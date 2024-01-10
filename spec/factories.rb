@@ -533,4 +533,12 @@ FactoryBot.define do
     name { "My Verification Service" }
     code_length { 4 }
   end
+
+  factory :verification do
+    verification_service
+    account { verification_service.account }
+    carrier { verification_service.carrier }
+    channel { "sms" }
+    to { "85512334667" }
+  end
 end

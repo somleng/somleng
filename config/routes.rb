@@ -48,8 +48,11 @@ Rails.application.routes.draw do
     defaults: { format: "json" }
   ) do
     scope :v2 do
-      resources :verification_services, only: %i[index create show destroy], path: "Services"
-      post "Services/:id" => "verification_services#update"
+      resources :services, only: %i[index create show destroy], path: "Services" do
+        resources :verifications, only: %i[create show], path: "Verifications"
+        post "Verifications/:id" => "verifications#update"
+      end
+      post "Services/:id" => "services#update"
     end
   end
 

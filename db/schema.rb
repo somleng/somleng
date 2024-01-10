@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_09_144718) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_10_084336) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -586,6 +586,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_09_144718) do
     t.index ["sequence_number"], name: "index_verification_services_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "verifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "verification_service_id", null: false
+    t.uuid "account_id", null: false
+    t.uuid "carrier_id", null: false
+    t.string "to", null: false
+    t.string "channel", null: false
+    t.string "status", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "approved_at"
+    t.datetime "canceled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_verifications_on_account_id"
+    t.index ["carrier_id"], name: "index_verifications_on_carrier_id"
+    t.index ["sequence_number"], name: "index_verifications_on_sequence_number", unique: true, order: :desc
+    t.index ["verification_service_id"], name: "index_verifications_on_verification_service_id"
+  end
+
   create_table "webhook_endpoints", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "oauth_application_id", null: false
     t.string "url", null: false
@@ -663,6 +681,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_09_144718) do
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
   add_foreign_key "verification_services", "accounts"
   add_foreign_key "verification_services", "carriers"
+  add_foreign_key "verifications", "accounts", on_delete: :nullify
+  add_foreign_key "verifications", "verification_services", on_delete: :nullify
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_request_logs", "carriers"
   add_foreign_key "webhook_request_logs", "events"

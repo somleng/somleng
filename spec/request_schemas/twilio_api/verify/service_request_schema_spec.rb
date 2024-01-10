@@ -2,7 +2,7 @@ require "rails_helper"
 
 module TwilioAPI
   module Verify
-    RSpec.describe VerificationServiceRequestSchema, type: :request_schema do
+    RSpec.describe ServiceRequestSchema, type: :request_schema do
       it "validates FriendlyName" do
         expect(
           validate_request_schema(
@@ -82,7 +82,7 @@ module TwilioAPI
       def validate_request_schema(input_params:, options: {})
         options[:account] ||= build_stubbed(:account)
 
-        VerificationServiceRequestSchema.new(input_params:, options:)
+        ServiceRequestSchema.new(input_params:, options:)
       end
     end
   end
