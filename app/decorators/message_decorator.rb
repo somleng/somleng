@@ -3,7 +3,8 @@ class MessageDecorator < SimpleDelegator
     "inbound" => "inbound",
     "outbound_api" => "outbound-api",
     "outbound_call" => "outbound-call",
-    "outbound_reply" => "outbound-reply"
+    "outbound_reply" => "outbound-reply",
+    "outbound" => "outbound"
   }.freeze
 
   TWILIO_MESSAGE_STATUS_MAPPINGS = {
@@ -22,8 +23,8 @@ class MessageDecorator < SimpleDelegator
     ActiveModel::Name.new(self, nil, "Message")
   end
 
-  def self.human_attribute_name(*args)
-    Message.human_attribute_name(*args)
+  def self.human_attribute_name(*)
+    Message.human_attribute_name(*)
   end
 
   def self.statuses

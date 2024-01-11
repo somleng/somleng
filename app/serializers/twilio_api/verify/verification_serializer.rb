@@ -7,8 +7,15 @@ module TwilioAPI
           to: nil,
           channel: nil,
           status: nil,
-          url: nil
+          url: nil,
+          send_code_attempts: nil
         )
+      end
+
+      def send_code_attempts
+        object.delivery_attempts.map do |delivery_attempt|
+          VerificationDeliveryAttemptSerializer.new(delivery_attempt.decorated).serializable_hash
+        end
       end
 
       def service_sid

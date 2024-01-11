@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_10_154040) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_11_122818) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -233,8 +233,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_154040) do
     t.datetime "updated_at", null: false
     t.uuid "messaging_service_id"
     t.datetime "delivered_at"
+    t.boolean "internal", default: false, null: false
     t.index ["account_id"], name: "index_messages_on_account_id"
     t.index ["carrier_id"], name: "index_messages_on_carrier_id"
+    t.index ["internal"], name: "index_messages_on_internal"
     t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
@@ -583,6 +585,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_154040) do
     t.index ["verification_id"], name: "index_verification_attempts_on_verification_id"
   end
 
+  create_table "verification_delivery_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "verification_id", null: false
+    t.uuid "message_id"
+    t.string "channel", null: false
+    t.string "from", null: false
+    t.string "to", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_verification_delivery_attempts_on_message_id"
+    t.index ["sequence_number"], name: "index_verification_delivery_attempts_on_sequence_number", unique: true, order: :desc
+    t.index ["verification_id"], name: "index_verification_delivery_attempts_on_verification_id"
+  end
+
   create_table "verification_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id", null: false
@@ -605,6 +621,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_154040) do
     t.string "status", null: false
     t.string "code", null: false
     t.integer "verification_attempts_count", default: 0, null: false
+    t.integer "delivery_attempts_count", default: 0, null: false
     t.datetime "approved_at"
     t.datetime "canceled_at"
     t.datetime "expired_at", null: false
@@ -695,6 +712,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_10_154040) do
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
   add_foreign_key "verification_attempts", "verifications", on_delete: :cascade
+  add_foreign_key "verification_delivery_attempts", "messages", on_delete: :nullify
+  add_foreign_key "verification_delivery_attempts", "verifications", on_delete: :cascade
   add_foreign_key "verification_services", "accounts"
   add_foreign_key "verification_services", "carriers"
   add_foreign_key "verifications", "accounts", on_delete: :nullify

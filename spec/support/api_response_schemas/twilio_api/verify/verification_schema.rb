@@ -16,7 +16,7 @@ module APIResponseSchema
           schema do
             required(:attempt_sid).filled(:str?)
             required(:channel).filled(:str?)
-            required(:time).filled(:date?)
+            required(:time).filled(:str?)
           end
         end
       end

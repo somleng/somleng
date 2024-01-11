@@ -66,6 +66,10 @@ module ApplicationError
       ),
       max_send_attempts_reached: Error.new(
         code: "60203", message: "Max send attempts reached"
+      ),
+      verify_could_not_find_valid_phone_number: Error.new(
+        code: "S60232",
+        message: "Could not find a valid phone number to send the verification from."
       )
     }.freeze
 

@@ -1,14 +1,29 @@
 class Verification < ApplicationRecord
+  class DefaultTemplate
+    attr_reader :friendly_name, :code
+
+    def initialize(friendly_name:, code:)
+      @friendly_name = friendly_name
+      @code = code
+    end
+
+    def render
+      "Your #{friendly_name} verification code is: #{code}."
+    end
+  end
+
   include AASM
   extend Enumerize
 
   MAX_CHECK_ATTEMPTS = 5
+  MAX_DELIVERY_ATTEMPTS = 5
 
   belongs_to :carrier
   belongs_to :account
   belongs_to :verification_service
 
   has_many :verification_attempts
+  has_many :delivery_attempts, class_name: "VerificationDeliveryAttempt"
 
   enumerize :channel, in: %i[sms call]
   encrypts :code
@@ -32,6 +47,13 @@ class Verification < ApplicationRecord
     end
   end
 
+  def self.pending
+    where(
+      status: :pending,
+      expired_at: Time.current..
+    )
+  end
+
   def expired?
     expired_at.past?
   end
@@ -40,11 +62,12 @@ class Verification < ApplicationRecord
     verification_attempts_count >= MAX_CHECK_ATTEMPTS
   end
 
-  def self.pending
-    where(
-      status: :pending,
-      expired_at: Time.current..
-    )
+  def max_delivery_attempts_reached?
+    delivery_attempts_count >= MAX_DELIVERY_ATTEMPTS
+  end
+
+  def default_template
+    DefaultTemplate.new(friendly_name: verification_service.name, code:)
   end
 
   private

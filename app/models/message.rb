@@ -13,7 +13,7 @@ class Message < ApplicationRecord
   has_one :interaction
   has_many :events
 
-  enumerize :direction, in: %i[inbound outbound_api outbound_call outbound_reply],
+  enumerize :direction, in: %i[inbound outbound outbound_api outbound_call outbound_reply],
                         predicates: true, scope: :shallow
 
   enumerize :encoding, in: %w[GSM UCS2]
@@ -56,8 +56,12 @@ class Message < ApplicationRecord
     end
   end
 
+  def self.default_scope
+    where(internal: false)
+  end
+
   def outbound?
-    direction.in?(%w[outbound_api outbound_call outbound_reply])
+    direction.in?(%w[outbound_api outbound outbound_call outbound_reply])
   end
 
   def complete?

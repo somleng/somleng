@@ -47,18 +47,29 @@ module TwilioAPI
         ).not_to have_valid_field(:Channel)
       end
 
-      it "validates duplicate verifications" do
-        pending_verification = create(:verification, to: "855716100235", status: :pending)
-        approved_verification = create(:verification, to: "855716100236", status: :approved)
+      it "validates max delivery attempts" do
+        verification_service, = create_verification_service
+        pending_verification = create(
+          :verification,
+          to: "855716100235",
+          status: :pending,
+          verification_service:
+        )
+        pending_verification_with_too_many_delivery_attempts = create(
+          :verification,
+          :too_many_delivery_attempts,
+          to: "855716100236",
+          status: :pending,
+          verification_service:
+        )
 
         expect(
           validate_request_schema(
             input_params: {
-              To: "+855716100235"
+              To: pending_verification_with_too_many_delivery_attempts.to
             },
             options: {
-              verification_service: pending_verification.verification_service,
-              verifications_scope: pending_verification.verification_service.verifications.pending
+              verification_service:
             }
           )
         ).not_to have_valid_schema(
@@ -68,18 +79,79 @@ module TwilioAPI
         expect(
           validate_request_schema(
             input_params: {
-              To: "+855716100236"
+              To: pending_verification.to
             },
             options: {
-              verification_service: approved_verification.verification_service,
-              verifications_scope: approved_verification.verification_service.verifications.pending
+              verification_service:
             }
           )
         ).to have_valid_schema
       end
 
-      it "handles post processing" do
+      it "validates an SMS gateway" do
         verification_service = create(:verification_service)
+        verification_service_from_carrier_with_sms_gateway, _phone_number, _sms_gateway = create_verification_service
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "855715100987",
+              Channel: "sms"
+            },
+            options: {
+              verification_service: verification_service_from_carrier_with_sms_gateway
+            }
+          )
+        ).to have_valid_schema
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "855715100987",
+              Channel: "sms"
+            },
+            options: {
+              verification_service:
+            }
+          )
+        ).not_to have_valid_schema(
+          error_message: ApplicationError::Errors.fetch(:unreachable_carrier).message
+        )
+      end
+
+      it "validates a phone number is configured" do
+        verification_service = create(:verification_service)
+        verification_service_from_account_with_configured_phone_number, _phone_number = create_verification_service
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "855715100987",
+              Channel: "sms"
+            },
+            options: {
+              verification_service: verification_service_from_account_with_configured_phone_number
+            }
+          )
+        ).to have_valid_schema
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "855715100987",
+              Channel: "sms"
+            },
+            options: {
+              verification_service:
+            }
+          )
+        ).not_to have_valid_schema(
+          error_message: ApplicationError::Errors.fetch(:verify_could_not_find_valid_phone_number).message
+        )
+      end
+
+      it "handles post processing" do
+        verification_service, phone_number = create_verification_service
 
         schema = validate_request_schema(
           input_params: {
@@ -94,16 +166,48 @@ module TwilioAPI
           account: verification_service.account,
           carrier: verification_service.carrier,
           channel: "sms",
-          to: "855715100987"
+          to: "855715100987",
+          delivery_attempt: {
+            from: phone_number.number
+          }
+        )
+      end
+
+      it "finds an existing pending verification" do
+        verification_service, = create_verification_service
+        pending_verification = create(:verification, status: :pending, verification_service:)
+
+        schema = validate_request_schema(
+          input_params: {
+            To: pending_verification.to,
+            Channel: "call"
+          },
+          options: {
+            verification_service:
+          }
+        )
+
+        expect(schema.output).to include(
+          verification: pending_verification
         )
       end
 
       def validate_request_schema(input_params:, options: {})
         options[:verification_service] ||= build_stubbed(:verification_service)
         options[:account] ||= options[:verification_service].account
-        options[:verifications_scope] ||= options[:verification_service].verifications
+        options[:verifications_scope] ||= options[:verification_service].verifications.pending
 
         VerificationRequestSchema.new(input_params:, options:)
+      end
+
+      def create_verification_service(attributes = {})
+        verification_service = create(:verification_service, attributes)
+        phone_number = create(
+          :phone_number, :assigned_to_account,
+          account: verification_service.account
+        )
+        create(:sms_gateway, carrier: verification_service.carrier)
+        [verification_service, phone_number]
       end
     end
   end

@@ -552,10 +552,30 @@ FactoryBot.define do
         verification.verification_attempts = build_list(:verification_attempt, 5, verification:)
       end
     end
+
+    trait :too_many_delivery_attempts do
+      after(:build) do |verification|
+        verification.delivery_attempts = build_list(
+          :verification_delivery_attempt, 5, verification:
+        )
+      end
+    end
   end
 
   factory :verification_attempt do
     verification
     code { "9876" }
+  end
+
+  factory :verification_delivery_attempt do
+    verification
+    channel { verification.channel }
+    to { verification.to }
+    from { generate(:phone_number) }
+
+    trait :sms do
+      channel { :sms }
+      message { association :message, to:, from:, account: verification.account, internal: true }
+    end
   end
 end

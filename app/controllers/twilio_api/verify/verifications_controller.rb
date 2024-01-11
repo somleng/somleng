@@ -10,13 +10,12 @@ module TwilioAPI
         validate_request_schema(
           with: VerificationRequestSchema,
           schema_options: {
-            account: current_account,
-            verification_service:,
-            verifications_scope:
+            account: current_account, verification_service:, verifications_scope:
           },
+          status: :ok,
           **serializer_options
         ) do |permitted_params|
-          verifications_scope.create!(permitted_params)
+          CreateVerification.call(permitted_params)
         end
       end
 

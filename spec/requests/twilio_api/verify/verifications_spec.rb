@@ -44,27 +44,56 @@ RSpec.resource "Verifications", document: :twilio_api do
       example: "sms"
     )
 
-    parameter(
-      "CustomFriendlyName",
-      "A custom user defined friendly name that overwrites the existing one in the verification message",
-      required: false,
-      example: "My friendly name"
-    )
-
     example "Start New Verification" do
       account = create(:account)
       verification_service = create(:verification_service, account:)
+      create(:phone_number, :assigned_to_account, account:)
+      create(:sms_gateway, carrier: account.carrier)
+
+      set_twilio_api_authorization_header(account)
+
+      perform_enqueued_jobs do
+        do_request(
+          service_sid: verification_service.id,
+          To: "+85512334667",
+          Channel: "sms"
+        )
+      end
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/verify/verification")
+      expect(json_response.dig("send_code_attempts", 0, "channel")).to eq("sms")
+    end
+
+    example "Resend a verification", document: false do
+      account = create(:account)
+      verification_service = create(:verification_service, account:)
+      verification = create(
+        :verification,
+        status: :pending,
+        channel: :sms,
+        verification_service:,
+        to: "85512334667"
+      )
+      create(:verification_delivery_attempt, verification:, channel: :sms)
+      create(:phone_number, :assigned_to_account, account:)
 
       set_twilio_api_authorization_header(account)
 
       do_request(
         service_sid: verification_service.id,
         To: "+85512334667",
-        Channel: "sms"
+        Channel: "call"
       )
 
-      expect(response_status).to eq(201)
+      expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/verify/verification")
+      expect(json_response).to include(
+        "sid" => verification.id,
+        "channel" => "call"
+      )
+      expect(json_response.dig("send_code_attempts", 0, "channel")).to eq("sms")
+      expect(json_response.dig("send_code_attempts", 1, "channel")).to eq("call")
     end
   end
 
