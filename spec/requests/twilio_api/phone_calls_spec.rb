@@ -98,7 +98,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "Calling this number is unsupported or the number is invalid",
         "status" => 422,
-        "code" => 13_224,
+        "code" => "13224",
         "more_info" => "https://www.twilio.com/docs/errors/13224"
       )
     end

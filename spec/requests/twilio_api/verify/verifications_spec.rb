@@ -44,7 +44,7 @@ RSpec.resource "Verifications", document: :twilio_api do
       example: "sms"
     )
 
-    example "Start New Verification" do
+    example "Start New SMS Verification" do
       account = create(:account)
       verification_service = create(:verification_service, account:)
       create(:phone_number, :assigned_to_account, account:)
@@ -65,6 +65,25 @@ RSpec.resource "Verifications", document: :twilio_api do
       expect(json_response.dig("send_code_attempts", 0, "channel")).to eq("sms")
     end
 
+    example "Start New Call Verification" do
+      account = create(:account)
+      verification_service = create(:verification_service, account:)
+      create(:phone_number, :assigned_to_account, account:)
+      create(:sip_trunk, carrier: account.carrier)
+
+      set_twilio_api_authorization_header(account)
+
+      do_request(
+        service_sid: verification_service.id,
+        To: "+85512334667",
+        Channel: "call"
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/verify/verification")
+      expect(json_response.dig("send_code_attempts", 0, "channel")).to eq("call")
+    end
+
     example "Resend a verification", document: false do
       account = create(:account)
       verification_service = create(:verification_service, account:)
@@ -77,6 +96,7 @@ RSpec.resource "Verifications", document: :twilio_api do
       )
       create(:verification_delivery_attempt, verification:, channel: :sms)
       create(:phone_number, :assigned_to_account, account:)
+      create(:sip_trunk, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
 
@@ -94,6 +114,29 @@ RSpec.resource "Verifications", document: :twilio_api do
       )
       expect(json_response.dig("send_code_attempts", 0, "channel")).to eq("sms")
       expect(json_response.dig("send_code_attempts", 1, "channel")).to eq("call")
+    end
+
+    example "Fail to Start an SMS Verification", document: false do
+      account = create(:account)
+      verification_service = create(:verification_service, account:)
+      create(:sms_gateway, carrier: account.carrier)
+
+      set_twilio_api_authorization_header(account)
+
+      do_request(
+        service_sid: verification_service.id,
+        To: "+85512334667",
+        Channel: "sms"
+      )
+
+      expect(response_status).to eq(422)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
+      expect(json_response).to eq(
+        "message" => "Could not find a valid phone number to send the verification from.",
+        "status" => 422,
+        "code" => "S60232",
+        "more_info" => "https://www.twilio.com/docs/errors/S60232"
+      )
     end
   end
 
@@ -229,7 +272,7 @@ RSpec.resource "Verifications", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "Max check attempts reached",
         "status" => 422,
-        "code" => 60_202,
+        "code" => "60202",
         "more_info" => "https://www.twilio.com/docs/errors/60202"
       )
     end

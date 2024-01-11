@@ -23,15 +23,53 @@ RSpec.describe CreateVerification do
     expect(verification.delivery_attempts.first).to have_attributes(
       from: phone_number.number,
       to: "85512334667",
+      channel: "sms",
       message: have_attributes(
         body: "Your Rocket Rides verification code is: #{verification.code}.",
         from: phone_number.number,
         to: "85512334667",
         internal: true,
-        sms_gateway:
+        sms_gateway:,
+        direction: "outbound"
       )
     )
     expect(OutboundMessageJob).to have_been_enqueued
+  end
+
+  it "creates a new call verification" do
+    verification_service, phone_number, _sms_gateway, sip_trunk = create_verification_service(name: "Rocket Rides")
+
+    verification = CreateVerification.call(
+      build_verification_params(
+        verification_service:,
+        phone_number:,
+        to: "85512334667",
+        channel: :call
+      )
+    )
+
+    expect(verification).to have_attributes(
+      delivery_attempts_count: 1,
+      delivery_attempts: be_present,
+      to: "85512334667"
+    )
+
+    expect(verification.delivery_attempts.first).to have_attributes(
+      from: phone_number.number,
+      to: "85512334667",
+      channel: "call",
+      phone_call: have_attributes(
+        twiml: include("Your Rocket Rides verification code is: #{verification.code.chars.join('. ')}."),
+        internal: true,
+        from: phone_number.number,
+        to: "85512334667",
+        direction: "outbound",
+        sip_trunk:
+      )
+    )
+    expect(ScheduledJob).to have_been_enqueued.with(
+      OutboundCallJob.to_s, any_args
+    )
   end
 
   it "updates an existing verification" do
@@ -40,7 +78,7 @@ RSpec.describe CreateVerification do
       :verification,
       status: :pending,
       verification_service:,
-      channel: :sms
+      channel: :call
     )
 
     verification = CreateVerification.call(
@@ -48,12 +86,12 @@ RSpec.describe CreateVerification do
         verification: existing_verification,
         verification_service:,
         phone_number:,
-        channel: :call
+        channel: :sms
       )
     )
 
     expect(verification).to eq(existing_verification)
-    expect(verification.channel).to eq("call")
+    expect(verification.channel).to eq("sms")
   end
 
   def build_verification_params(verification_service:, phone_number:, **params)
@@ -76,6 +114,7 @@ RSpec.describe CreateVerification do
       account: verification_service.account
     )
     sms_gateway = create(:sms_gateway, carrier: verification_service.carrier)
-    [verification_service, phone_number, sms_gateway]
+    sip_trunk = create(:sip_trunk, carrier: verification_service.carrier)
+    [verification_service, phone_number, sms_gateway, sip_trunk]
   end
 end

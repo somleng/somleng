@@ -1,6 +1,13 @@
 require "rails_helper"
 
 RSpec.describe PhoneCall do
+  it "has a default scope" do
+    phone_call = create(:phone_call)
+    create(:phone_call, internal: true)
+
+    expect(PhoneCall.all).to contain_exactly(phone_call)
+  end
+
   it "transitions from queued to initiating" do
     phone_call = create(:phone_call, :queued)
 

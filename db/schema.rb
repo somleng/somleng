@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_11_122818) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -365,6 +365,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_122818) do
     t.uuid "sip_trunk_id"
     t.datetime "initiated_at"
     t.datetime "initiating_at"
+    t.boolean "internal", default: false, null: false
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
@@ -378,6 +379,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_122818) do
     t.index ["from"], name: "index_phone_calls_on_from"
     t.index ["initiated_at"], name: "index_phone_calls_on_initiated_at"
     t.index ["initiating_at"], name: "index_phone_calls_on_initiating_at"
+    t.index ["internal"], name: "index_phone_calls_on_internal"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
@@ -588,6 +590,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_122818) do
   create_table "verification_delivery_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "verification_id", null: false
     t.uuid "message_id"
+    t.uuid "phone_call_id"
     t.string "channel", null: false
     t.string "from", null: false
     t.string "to", null: false
@@ -595,6 +598,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_122818) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_id"], name: "index_verification_delivery_attempts_on_message_id"
+    t.index ["phone_call_id"], name: "index_verification_delivery_attempts_on_phone_call_id"
     t.index ["sequence_number"], name: "index_verification_delivery_attempts_on_sequence_number", unique: true, order: :desc
     t.index ["verification_id"], name: "index_verification_delivery_attempts_on_verification_id"
   end
@@ -713,6 +717,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_122818) do
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
   add_foreign_key "verification_attempts", "verifications", on_delete: :cascade
   add_foreign_key "verification_delivery_attempts", "messages", on_delete: :nullify
+  add_foreign_key "verification_delivery_attempts", "phone_calls", on_delete: :nullify
   add_foreign_key "verification_delivery_attempts", "verifications", on_delete: :cascade
   add_foreign_key "verification_services", "accounts"
   add_foreign_key "verification_services", "carriers"

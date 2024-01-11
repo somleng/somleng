@@ -44,7 +44,7 @@ class TwilioAPIController < APIController
   end
 
   def unauthorized_render_options(options = {})
-    code = options.fetch(:code, 20_003)
+    code = options.fetch(:code, "20003")
     message = options.fetch(:message, "Authenticate")
     {
       json: {

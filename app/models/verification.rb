@@ -7,8 +7,20 @@ class Verification < ApplicationRecord
       @code = code
     end
 
-    def render
+    def render_message
       "Your #{friendly_name} verification code is: #{code}."
+    end
+
+    def render_voice_twiml
+      response = Twilio::TwiML::VoiceResponse.new
+      response.say(message: "Your #{friendly_name} verification code is: #{code_with_punctuation}.")
+      response.to_xml
+    end
+
+    private
+
+    def code_with_punctuation
+      code.chars.join(". ")
     end
   end
 
