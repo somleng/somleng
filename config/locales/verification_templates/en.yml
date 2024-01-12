@@ -1,3 +1,5 @@
 en:
   verification_templates:
-    default: "Your %{friendly_name} verification code is: %{code}."
+    default:
+      message: "Your %{friendly_name} verification code is: %{code}."
+      call: "Your %{friendly_name} verification code is: %{code}. Again: %{code}. One last time: %{code}. Goodbye"

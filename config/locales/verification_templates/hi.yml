@@ -1,3 +1,5 @@
 hi:
   verification_templates:
-    default: "आपका %{friendly_name} सत्यापन कोड है: %{code}."
+    default:
+      message: "आपका %{friendly_name} सत्यापन कोड है: %{code}."
+      call: "आपका %{friendly_name} सत्यापन कोड है: %{code}."

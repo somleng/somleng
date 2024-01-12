@@ -1,3 +1,5 @@
 vi:
   verification_templates:
-    default: "Mã xác thực %{friendly_name} của bạn là: %{code}."
+    default:
+      message: "Mã xác thực %{friendly_name} của bạn là: %{code}."
+      call: "Mã xác thực %{friendly_name} của bạn là: %{code}."

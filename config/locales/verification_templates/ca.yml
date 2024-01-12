@@ -1,3 +1,5 @@
 ca:
   verification_templates:
-    default: "El teu %{friendly_name} codi de verificació és: %{code}."
+    default:
+      message: "El teu %{friendly_name} codi de verificació és: %{code}."
+      call: "El teu %{friendly_name} codi de verificació és: %{code}."

@@ -1,3 +1,5 @@
 it:
   verification_templates:
-    default: "Il codice di verifica per %{friendly_name} è: %{code}."
+    default:
+      message: "Il codice di verifica per %{friendly_name} è: %{code}."
+      call: "Il codice di verifica per %{friendly_name} è: %{code}."

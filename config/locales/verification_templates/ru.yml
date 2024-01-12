@@ -1,3 +1,5 @@
 ru:
   verification_templates:
-    default: "Ваш проверочный код %{friendly_name}: %{code}."
+    default:
+      message: "Ваш проверочный код %{friendly_name}: %{code}."
+      call: "Ваш проверочный код %{friendly_name}: %{code}."

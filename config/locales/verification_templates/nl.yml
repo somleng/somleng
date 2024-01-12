@@ -1,3 +1,5 @@
 nl:
   verification_templates:
-    default: "Uw %{friendly_name}-verificatiecode is: %{code}."
+    default:
+      message: "Uw %{friendly_name}-verificatiecode is: %{code}."
+      call: "Uw %{friendly_name}-verificatiecode is: %{code}."

@@ -1,3 +1,5 @@
 el:
   verification_templates:
-    default: "Ο %{friendly_name} κωδικός σας επιβεβαίωσης είναι: %{code}."
+    default:
+      message: "Ο %{friendly_name} κωδικός σας επιβεβαίωσης είναι: %{code}."
+      call: "Ο %{friendly_name} κωδικός σας επιβεβαίωσης είναι: %{code}."

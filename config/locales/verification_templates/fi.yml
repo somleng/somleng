@@ -1,3 +1,5 @@
 fi:
   verification_templates:
-    default: "Sinun %{friendly_name} vahvistuskoodi on: %{code}."
+    default:
+      message: "Sinun %{friendly_name} vahvistuskoodi on: %{code}."
+      call: "Sinun %{friendly_name} vahvistuskoodi on: %{code}."

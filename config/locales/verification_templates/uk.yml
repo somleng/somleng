@@ -1,3 +1,5 @@
 uk:
   verification_templates:
-    default: "Ваш код перевірки %{friendly_name}: %{code}."
+    default:
+      message: "Ваш код перевірки %{friendly_name}: %{code}."
+      call: "Ваш код перевірки %{friendly_name}: %{code}."

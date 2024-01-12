@@ -1,3 +1,5 @@
 hu:
   verification_templates:
-    default: "%{friendly_name} ellenőrző kódod: %{code}."
+    default:
+      message: "%{friendly_name} ellenőrző kódod: %{code}."
+      call: "%{friendly_name} ellenőrző kódod: %{code}."

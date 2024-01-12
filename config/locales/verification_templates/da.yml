@@ -1,3 +1,5 @@
 da:
   verification_templates:
-    default: "Din %{friendly_name} kode er: %{code}."
+    default:
+      message: "Din %{friendly_name} kode er: %{code}."
+      call: "Din %{friendly_name} kode er: %{code}."

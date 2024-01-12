@@ -1,3 +1,5 @@
 lt:
   verification_templates:
-    default: "Jūsų %{friendly_name} patvirtinimo kodas: %{code}."
+    default:
+      message: "Jūsų %{friendly_name} patvirtinimo kodas: %{code}."
+      call: "Jūsų %{friendly_name} patvirtinimo kodas: %{code}."

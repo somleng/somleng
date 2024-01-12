@@ -1,3 +1,5 @@
 pl:
   verification_templates:
-    default: "Twój kod weryfikacyjny %{friendly_name} to: %{code}."
+    default:
+      message: "Twój kod weryfikacyjny %{friendly_name} to: %{code}."
+      call: "Twój kod weryfikacyjny %{friendly_name} to: %{code}."

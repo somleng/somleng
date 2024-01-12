@@ -1,3 +1,5 @@
 cs:
   verification_templates:
-    default: "Váš ověřovací kód %{friendly_name} je: %{code}."
+    default:
+      message: "Váš ověřovací kód %{friendly_name} je: %{code}."
+      call: "Váš ověřovací kód %{friendly_name} je: %{code}."

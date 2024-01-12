@@ -1,3 +1,5 @@
 fr:
   verification_templates:
-    default: "Votre code de vérification %{friendly_name} est: %{code}."
+    default:
+      message: "Votre code de vérification %{friendly_name} est: %{code}."
+      call: "Votre code de vérification %{friendly_name} est: %{code}."

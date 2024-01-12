@@ -60,6 +60,7 @@ class VerificationLocales
     Locale.new(country_code: "NE", locale: "fr"),
     Locale.new(country_code: "NI", locale: "es"),
     Locale.new(country_code: "NL", locale: "nl"),
+    Locale.new(country_code: "NO", locale: "nb"),
     Locale.new(country_code: "OM", locale: "ar"),
     Locale.new(country_code: "PA", locale: "es"),
     Locale.new(country_code: "PE", locale: "es"),

@@ -1,3 +1,5 @@
 th:
   verification_templates:
-    default: "รหัสยืนยันของคุณ %{friendly_name} คือ: %{code}."
+    default:
+      message: "รหัสยืนยันของคุณ %{friendly_name} คือ: %{code}."
+      call: "รหัสยืนยันของคุณ %{friendly_name} คือ: %{code}."

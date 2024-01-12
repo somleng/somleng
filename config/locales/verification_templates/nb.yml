@@ -1,3 +1,5 @@
 nb:
   verification_templates:
-    default: "Din bekreftelseskode for %{friendly_name} er: %{code}."
+    default:
+      message: "Din bekreftelseskode for %{friendly_name} er: %{code}."
+      call: "Din bekreftelseskode for %{friendly_name} er: %{code}."

@@ -1,3 +1,5 @@
 tr:
   verification_templates:
-    default: "%{friendly_name} doğrulama kodunuz: %{code}."
+    default:
+      message: "%{friendly_name} doğrulama kodunuz: %{code}."
+      call: "%{friendly_name} doğrulama kodunuz: %{code}."

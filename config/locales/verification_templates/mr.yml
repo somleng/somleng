@@ -1,3 +1,5 @@
 mr:
   verification_templates:
-    default: "आपला %{friendly_name} सत्यापन कोड हा आहे: %{code}."
+    default:
+      message: "आपला %{friendly_name} सत्यापन कोड हा आहे: %{code}."
+      call: "आपला %{friendly_name} सत्यापन कोड हा आहे: %{code}."

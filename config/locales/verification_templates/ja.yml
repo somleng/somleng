@@ -1,3 +1,5 @@
 ja:
   verification_templates:
-    default: "あなたの%{friendly_name} 認証コード： %{code}。"
+    default:
+      message: "あなたの%{friendly_name} 認証コード： %{code}。"
+      call: "あなたの%{friendly_name} 認証コード： %{code}。"

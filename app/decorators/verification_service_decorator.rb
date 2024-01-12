@@ -1,7 +1,7 @@
 class VerificationServiceDecorator < SimpleDelegator
   def sample_message
     code = verification_code_generator.generate_code(code_length: object.code_length)
-    object.default_template(code:, locale: :en).render_message
+    object.default_template(code:, country_code: "US", locale: :en).render_message
   end
 
   private

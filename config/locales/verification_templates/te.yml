@@ -1,3 +1,5 @@
 te:
   verification_templates:
-    default: "మీ %{friendly_name} ధృవీకరణ కోడ్: %{code}."
+    default:
+      message: "మీ %{friendly_name} ధృవీకరణ కోడ్: %{code}."
+      call: "మీ %{friendly_name} ధృవీకరణ కోడ్: %{code}."

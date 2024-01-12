@@ -1,3 +1,5 @@
 ar:
   verification_templates:
-    default: "‫رمز تعريفك الخاص ب %{friendly_name} هو %{code}‬"
+    default:
+      message: "‫رمز تعريفك الخاص ب %{friendly_name} هو %{code}‬"
+      call: "‫رمز تعريفك الخاص ب %{friendly_name} هو %{code}‬"

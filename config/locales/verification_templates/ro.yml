@@ -1,3 +1,5 @@
 ro:
   verification_templates:
-    default: "Codul de verificare pentru %{friendly_name} este: %{code}."
+    default:
+      message: "Codul de verificare pentru %{friendly_name} este: %{code}."
+      call: "Codul de verificare pentru %{friendly_name} este: %{code}."

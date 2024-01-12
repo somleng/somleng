@@ -1,3 +1,5 @@
 zh:
   verification_templates:
-    default: "您的 %{friendly_name} 验证代码是：%{code}."
+    default:
+      message: "您的 %{friendly_name} 验证代码是：%{code}."
+      call: "您的 %{friendly_name} 验证代码是：%{code}."

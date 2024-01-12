@@ -1,3 +1,5 @@
 de:
   verification_templates:
-    default: "Dein %{friendly_name} Sicherheitscode lautet: %{code}."
+    default:
+      message: "Dein %{friendly_name} Sicherheitscode lautet: %{code}."
+      call: "Dein %{friendly_name} Sicherheitscode lautet: %{code}."

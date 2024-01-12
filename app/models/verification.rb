@@ -58,7 +58,7 @@ class Verification < ApplicationRecord
   end
 
   def default_template
-    verification_service.default_template(code:, locale:)
+    verification_service.default_template(code:, locale:, country_code:)
   end
 
   private

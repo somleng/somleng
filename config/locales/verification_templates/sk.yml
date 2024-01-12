@@ -1,3 +1,5 @@
 sk:
   verification_templates:
-    default: "Tvoj %{friendly_name} overovací kod je: %{code}."
+    default:
+      message: "Tvoj %{friendly_name} overovací kod je: %{code}."
+      call: "Tvoj %{friendly_name} overovací kod je: %{code}."

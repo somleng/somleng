@@ -1,3 +1,5 @@
 ms:
   verification_templates:
-    default: "Kod Pengesahan %{friendly_name} Anda: %{code}."
+    default:
+      message: "Kod Pengesahan %{friendly_name} Anda: %{code}."
+      call: "Kod Pengesahan %{friendly_name} Anda: %{code}."
