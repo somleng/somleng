@@ -1,0 +1,3 @@
+zh:
+  verification_templates:
+    default: "您的 %{friendly_name} 验证代码是：%{code}."

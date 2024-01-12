@@ -1,0 +1,3 @@
+el:
+  verification_templates:
+    default: "Ο %{friendly_name} κωδικός σας επιβεβαίωσης είναι: %{code}."

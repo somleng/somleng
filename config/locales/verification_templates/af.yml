@@ -1,0 +1,3 @@
+af:
+  verification_templates:
+    default: "Jou %{friendly_name} verifikasiekode is: %{code}."

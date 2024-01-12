@@ -1,0 +1,3 @@
+hi:
+  verification_templates:
+    default: "आपका %{friendly_name} सत्यापन कोड है: %{code}."

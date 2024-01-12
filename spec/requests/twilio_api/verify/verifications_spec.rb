@@ -44,6 +44,14 @@ RSpec.resource "Verifications", document: :twilio_api do
       example: "sms"
     )
 
+    available_locales = Verification.locale.values.map { |l| "`#{l}`" }.join(", ")
+    parameter(
+      "Locale",
+      "Locale will automatically resolve based on phone number country code of the recipient for SMS and call channel verifications. It will fallback to English if the selected translation is not available. This parameter will override the automatic locale resolution. The following locales are supported: #{available_locales}.",
+      required: false,
+      example: "de"
+    )
+
     example "Start New SMS Verification" do
       verification_service = create_verification_service
       set_twilio_api_authorization_header(verification_service.account)
@@ -74,6 +82,20 @@ RSpec.resource "Verifications", document: :twilio_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/verify/verification")
       expect(json_response.dig("send_code_attempts", 0, "channel")).to eq("call")
+    end
+
+    example "Start a New SMS Verification to a number with a supported locale", document: false do
+      verification_service = create_verification_service
+      set_twilio_api_authorization_header(verification_service.account)
+
+      do_request(
+        service_sid: verification_service.id,
+        To: "+491716895430",
+        Channel: "sms"
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/verify/verification")
     end
 
     example "Resend a verification", document: false do

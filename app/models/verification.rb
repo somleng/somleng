@@ -1,29 +1,4 @@
 class Verification < ApplicationRecord
-  class DefaultTemplate
-    attr_reader :friendly_name, :code
-
-    def initialize(friendly_name:, code:)
-      @friendly_name = friendly_name
-      @code = code
-    end
-
-    def render_message
-      "Your #{friendly_name} verification code is: #{code}."
-    end
-
-    def render_voice_twiml
-      response = Twilio::TwiML::VoiceResponse.new
-      response.say(message: "Your #{friendly_name} verification code is: #{code_with_punctuation}.")
-      response.to_xml
-    end
-
-    private
-
-    def code_with_punctuation
-      code.chars.join(". ")
-    end
-  end
-
   include AASM
   extend Enumerize
 
@@ -38,10 +13,14 @@ class Verification < ApplicationRecord
   has_many :delivery_attempts, class_name: "VerificationDeliveryAttempt"
 
   enumerize :channel, in: %i[sms call]
+  enumerize :locale, in: VerificationLocales.available_locales
+
   encrypts :code
 
   delegate :may_fire_event?, :fire!, to: :aasm
   delegate :code_length, to: :verification_service
+
+  attribute :verification_code_generator, default: -> { VerificationCodeGenerator.new }
 
   before_create :generate_code, :set_expiry
 
@@ -79,13 +58,13 @@ class Verification < ApplicationRecord
   end
 
   def default_template
-    DefaultTemplate.new(friendly_name: verification_service.name, code:)
+    verification_service.default_template(code:, locale:)
   end
 
   private
 
   def generate_code
-    self.code ||= SecureRandom.random_number(10**code_length).to_s.rjust(code_length, "0")
+    self.code ||= verification_code_generator.generate_code(code_length:)
   end
 
   def set_expiry

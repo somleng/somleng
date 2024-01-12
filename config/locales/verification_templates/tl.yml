@@ -1,0 +1,3 @@
+tl:
+  verification_templates:
+    default: "Ang iyong pamberipikasyong code sa %{friendly_name} ay: %{code}."

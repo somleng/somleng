@@ -1,0 +1,3 @@
+th:
+  verification_templates:
+    default: "รหัสยืนยันของคุณ %{friendly_name} คือ: %{code}."

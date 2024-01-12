@@ -1,0 +1,3 @@
+sk:
+  verification_templates:
+    default: "Tvoj %{friendly_name} overovací kod je: %{code}."

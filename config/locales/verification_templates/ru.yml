@@ -1,0 +1,3 @@
+ru:
+  verification_templates:
+    default: "Ваш проверочный код %{friendly_name}: %{code}."

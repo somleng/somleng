@@ -1,0 +1,3 @@
+uk:
+  verification_templates:
+    default: "Ваш код перевірки %{friendly_name}: %{code}."

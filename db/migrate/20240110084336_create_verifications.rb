@@ -18,6 +18,8 @@ class CreateVerifications < ActiveRecord::Migration[7.1]
       t.string :channel, null: false
       t.string :status, null: false, index: true
       t.string :code, null: false
+      t.string :locale, null: false
+      t.string :country_code, null: false
       t.integer :verification_attempts_count, null: false, default: 0
       t.integer :delivery_attempts_count, null: false, default: 0
       t.datetime :approved_at

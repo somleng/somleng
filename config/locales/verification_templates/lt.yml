@@ -1,0 +1,3 @@
+lt:
+  verification_templates:
+    default: "Jūsų %{friendly_name} patvirtinimo kodas: %{code}."

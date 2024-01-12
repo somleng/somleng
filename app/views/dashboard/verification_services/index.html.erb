@@ -1,0 +1,25 @@
+<%= page_title(title: "Verification Services") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+
+    <% if policy(:account).show? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.accounts.map { |account| [account.name, account.id] },
+          { filter_value: params.dig(:filter, :account_id) },
+          { data: { behavior: "choices-input" }}
+        )
+      %>
+    <% end %>
+  <% end %>
+
+  <% if policy(:verification_service).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_verification_service_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

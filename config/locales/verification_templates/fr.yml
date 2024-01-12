@@ -1,0 +1,3 @@
+fr:
+  verification_templates:
+    default: "Votre code de vérification %{friendly_name} est: %{code}."

@@ -1,0 +1,3 @@
+kn:
+  verification_templates:
+    default: "ನಿಮ್ಮ %{friendly_name} ಪರಿಶೀಲನಾ ಕೋಡ್: %{code}."

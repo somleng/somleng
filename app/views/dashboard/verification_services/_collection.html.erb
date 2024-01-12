@@ -1,0 +1,44 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |verification_service| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(verification_service.id, dashboard_verification_service_path(verification_service)) %>
+        </td>
+
+        <td>
+          <%= verification_service.name %>
+        </td>
+
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(verification_service.account.name, dashboard_account_path(verification_service.account_id)) %>
+          </td>
+        <% end %>
+
+        <td>
+          <%= local_time(verification_service.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

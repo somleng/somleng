@@ -1,0 +1,3 @@
+sv:
+  verification_templates:
+    default: "Din %{friendly_name} verifieringskod är: %{code}."

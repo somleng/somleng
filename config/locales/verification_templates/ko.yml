@@ -1,0 +1,3 @@
+ko:
+  verification_templates:
+    default: "%{friendly_name} 확인 코드: %{code}."

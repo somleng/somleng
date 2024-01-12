@@ -11,14 +11,18 @@ RSpec.describe CreateVerification do
         verification_service:,
         phone_number:,
         to: "85512334667",
-        channel: :sms
+        channel: :sms,
+        country_code: "KH",
+        locale: "en"
       )
     )
 
     expect(verification).to have_attributes(
       delivery_attempts_count: 1,
       delivery_attempts: be_present,
-      to: "85512334667"
+      to: "85512334667",
+      country_code: "KH",
+      locale: "en"
     )
     expect(verification.delivery_attempts.first).to have_attributes(
       from: phone_number.number,
@@ -72,6 +76,33 @@ RSpec.describe CreateVerification do
     )
   end
 
+  it "creates a new sms verification" do
+    verification_service, phone_number, = create_verification_service(
+      name: "Rocket Rides"
+    )
+
+    verification = CreateVerification.call(
+      build_verification_params(
+        verification_service:,
+        phone_number:,
+        to: "66814822567",
+        channel: :sms,
+        country_code: "TH",
+        locale: "th"
+      )
+    )
+
+    expect(verification).to have_attributes(
+      delivery_attempts_count: 1,
+      delivery_attempts: be_present
+    )
+    expect(verification.delivery_attempts.first).to have_attributes(
+      message: have_attributes(
+        body: "รหัสยืนยันของคุณ Rocket Rides คือ: #{verification.code}."
+      )
+    )
+  end
+
   it "updates an existing verification" do
     verification_service, phone_number, _sms_gateway = create_verification_service
     existing_verification = create(
@@ -101,6 +132,8 @@ RSpec.describe CreateVerification do
       carrier: verification_service.carrier,
       channel: :sms,
       to: "85512334667",
+      locale: "en",
+      country_code: "KH",
       delivery_attempt: {
         from: phone_number.number
       }

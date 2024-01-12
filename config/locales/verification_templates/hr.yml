@@ -1,0 +1,3 @@
+hr:
+  verification_templates:
+    default: "Vaš %{friendly_name} kôd je: %{code}."

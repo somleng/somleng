@@ -10,6 +10,7 @@ class Carrier < ApplicationRecord
   has_many :phone_numbers
   has_many :messages
   has_many :messaging_services
+  has_many :verification_services
   has_many :phone_calls
   has_many :events
   has_many :error_logs

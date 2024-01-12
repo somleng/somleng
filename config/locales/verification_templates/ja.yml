@@ -1,0 +1,3 @@
+ja:
+  verification_templates:
+    default: "あなたの%{friendly_name} 認証コード： %{code}。"

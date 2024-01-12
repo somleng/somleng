@@ -1,0 +1,3 @@
+cs:
+  verification_templates:
+    default: "Váš ověřovací kód %{friendly_name} je: %{code}."

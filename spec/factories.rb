@@ -541,6 +541,8 @@ FactoryBot.define do
     channel { "sms" }
     to { "85512334667" }
     code { "1234" }
+    locale { "en" }
+    country_code { "KH" }
 
     trait :expired do
       status { :pending }

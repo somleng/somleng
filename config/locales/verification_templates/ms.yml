@@ -1,0 +1,3 @@
+ms:
+  verification_templates:
+    default: "Kod Pengesahan %{friendly_name} Anda: %{code}."

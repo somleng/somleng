@@ -1,0 +1,3 @@
+id:
+  verification_templates:
+    default: "Kode verifikasi %{friendly_name} anda adalah: %{code}."

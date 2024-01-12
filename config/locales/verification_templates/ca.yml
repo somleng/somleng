@@ -1,0 +1,3 @@
+ca:
+  verification_templates:
+    default: "El teu %{friendly_name} codi de verificació és: %{code}."

@@ -624,6 +624,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
     t.string "channel", null: false
     t.string "status", null: false
     t.string "code", null: false
+    t.string "locale", null: false
+    t.string "country_code", null: false
     t.integer "verification_attempts_count", default: 0, null: false
     t.integer "delivery_attempts_count", default: 0, null: false
     t.datetime "approved_at"

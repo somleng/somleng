@@ -1,0 +1,3 @@
+ar:
+  verification_templates:
+    default: "‫رمز تعريفك الخاص ب %{friendly_name} هو %{code}‬"

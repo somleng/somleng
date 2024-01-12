@@ -1,0 +1,3 @@
+nl:
+  verification_templates:
+    default: "Uw %{friendly_name}-verificatiecode is: %{code}."

@@ -110,6 +110,7 @@ Rails.application.routes.draw do
       end
       resources :messages, only: %i[index show]
       resources :messaging_services
+      resources :verification_services
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
       resources :events, only: %i[index show]

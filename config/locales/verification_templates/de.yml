@@ -1,0 +1,3 @@
+de:
+  verification_templates:
+    default: "Dein %{friendly_name} Sicherheitscode lautet: %{code}."

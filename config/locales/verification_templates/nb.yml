@@ -1,0 +1,3 @@
+nb:
+  verification_templates:
+    default: "Din bekreftelseskode for %{friendly_name} er: %{code}."

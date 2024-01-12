@@ -47,6 +47,24 @@ module TwilioAPI
         ).not_to have_valid_field(:Channel)
       end
 
+      it "validates Locale" do
+        expect(
+          validate_request_schema(
+            input_params: {
+              Locale: "de"
+            }
+          )
+        ).to have_valid_field(:Locale)
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              Locale: "foo"
+            }
+          )
+        ).not_to have_valid_field(:Locale)
+      end
+
       it "validates max delivery attempts" do
         verification_service, = create_verification_service
         pending_verification = create(
@@ -198,6 +216,8 @@ module TwilioAPI
           carrier: verification_service.carrier,
           channel: "sms",
           to: "855715100987",
+          country_code: "KH",
+          locale: "en",
           delivery_attempt: {
             from: phone_number.number
           }
@@ -220,6 +240,24 @@ module TwilioAPI
 
         expect(schema.output).to include(
           verification: pending_verification
+        )
+      end
+
+      it "respects the locale parameter" do
+        verification_service, = create_verification_service
+
+        schema = validate_request_schema(
+          input_params: {
+            To: "+855 71 5100 987",
+            Channel: "sms",
+            Locale: "de"
+          },
+          options: { verification_service: }
+        )
+
+        expect(schema.output).to include(
+          country_code: "KH",
+          locale: "de"
         )
       end
 

@@ -1,0 +1,107 @@
+class VerificationLocales
+  Locale = Struct.new(:country_code, :locale, keyword_init: true)
+  DEFAULT_LOCALE = Locale.new(country_code: "US", locale: "en")
+
+  LOCALES = [
+    Locale.new(country_code: "AD", locale: "ca"),
+    Locale.new(country_code: "AE", locale: "ar"),
+    Locale.new(country_code: "AO", locale: "pt"),
+    Locale.new(country_code: "AT", locale: "de"),
+    Locale.new(country_code: "AW", locale: "nl"),
+    Locale.new(country_code: "AX", locale: "sv"),
+    Locale.new(country_code: "BH", locale: "ar"),
+    Locale.new(country_code: "BJ", locale: "fr"),
+    Locale.new(country_code: "BL", locale: "fr"),
+    Locale.new(country_code: "BN", locale: "ms"),
+    Locale.new(country_code: "BR", locale: "pt"),
+    Locale.new(country_code: "CI", locale: "fr"),
+    Locale.new(country_code: "CL", locale: "es"),
+    Locale.new(country_code: "CN", locale: "zh"),
+    Locale.new(country_code: "CO", locale: "es"),
+    Locale.new(country_code: "CR", locale: "es"),
+    Locale.new(country_code: "CU", locale: "es"),
+    Locale.new(country_code: "CV", locale: "pt"),
+    Locale.new(country_code: "CW", locale: "nl"),
+    Locale.new(country_code: "DE", locale: "de"),
+    Locale.new(country_code: "DK", locale: "da"),
+    Locale.new(country_code: "DO", locale: "es"),
+    Locale.new(country_code: "DZ", locale: "ar"),
+    Locale.new(country_code: "EC", locale: "es"),
+    Locale.new(country_code: "EG", locale: "ar"),
+    Locale.new(country_code: "ES", locale: "es"),
+    Locale.new(country_code: "FR", locale: "fr"),
+    Locale.new(country_code: "GA", locale: "fr"),
+    Locale.new(country_code: "GF", locale: "fr"),
+    Locale.new(country_code: "GR", locale: "el"),
+    Locale.new(country_code: "GT", locale: "es"),
+    Locale.new(country_code: "GW", locale: "pt"),
+    Locale.new(country_code: "HN", locale: "es"),
+    Locale.new(country_code: "HR", locale: "hr"),
+    Locale.new(country_code: "HU", locale: "hu"),
+    Locale.new(country_code: "ID", locale: "id"),
+    Locale.new(country_code: "IQ", locale: "ar"),
+    Locale.new(country_code: "IT", locale: "it"),
+    Locale.new(country_code: "JO", locale: "ar"),
+    Locale.new(country_code: "JP", locale: "ja"),
+    Locale.new(country_code: "KP", locale: "ko"),
+    Locale.new(country_code: "KR", locale: "ko"),
+    Locale.new(country_code: "KW", locale: "ar"),
+    Locale.new(country_code: "LI", locale: "de"),
+    Locale.new(country_code: "LT", locale: "lt"),
+    Locale.new(country_code: "LY", locale: "ar"),
+    Locale.new(country_code: "MA", locale: "ar"),
+    Locale.new(country_code: "MC", locale: "fr"),
+    Locale.new(country_code: "MD", locale: "ro"),
+    Locale.new(country_code: "ML", locale: "fr"),
+    Locale.new(country_code: "MQ", locale: "fr"),
+    Locale.new(country_code: "MX", locale: "es"),
+    Locale.new(country_code: "MZ", locale: "pt"),
+    Locale.new(country_code: "NC", locale: "fr"),
+    Locale.new(country_code: "NE", locale: "fr"),
+    Locale.new(country_code: "NI", locale: "es"),
+    Locale.new(country_code: "NL", locale: "nl"),
+    Locale.new(country_code: "OM", locale: "ar"),
+    Locale.new(country_code: "PA", locale: "es"),
+    Locale.new(country_code: "PE", locale: "es"),
+    Locale.new(country_code: "PF", locale: "fr"),
+    Locale.new(country_code: "PL", locale: "pl"),
+    Locale.new(country_code: "PM", locale: "fr"),
+    Locale.new(country_code: "PT", locale: "pt"),
+    Locale.new(country_code: "QA", locale: "ar"),
+    Locale.new(country_code: "RE", locale: "fr"),
+    Locale.new(country_code: "RO", locale: "ro"),
+    Locale.new(country_code: "RU", locale: "ru"),
+    Locale.new(country_code: "SA", locale: "ar"),
+    Locale.new(country_code: "SE", locale: "sv"),
+    Locale.new(country_code: "SK", locale: "sk"),
+    Locale.new(country_code: "SM", locale: "it"),
+    Locale.new(country_code: "SN", locale: "fr"),
+    Locale.new(country_code: "SR", locale: "nl"),
+    Locale.new(country_code: "ST", locale: "pt"),
+    Locale.new(country_code: "SV", locale: "es"),
+    Locale.new(country_code: "SY", locale: "ar"),
+    Locale.new(country_code: "TG", locale: "fr"),
+    Locale.new(country_code: "TH", locale: "th"),
+    Locale.new(country_code: "TL", locale: "pt"),
+    Locale.new(country_code: "TR", locale: "tr"),
+    Locale.new(country_code: "TW", locale: "zh"),
+    Locale.new(country_code: "UA", locale: "uk"),
+    Locale.new(country_code: "UY", locale: "es"),
+    Locale.new(country_code: "VE", locale: "es"),
+    Locale.new(country_code: "VN", locale: "vi"),
+    Locale.new(country_code: "WF", locale: "fr"),
+    Locale.new(country_code: "YE", locale: "ar")
+  ].freeze
+
+  class << self
+    def available_locales
+      I18n.available_locales.select do |locale|
+        I18n.t(:"verification_templates.default", locale:, default: nil).present?
+      end
+    end
+
+    def find_by_country(country)
+      LOCALES.find(-> { DEFAULT_LOCALE }) { |locale| locale.country_code == country.alpha2 }
+    end
+  end
+end

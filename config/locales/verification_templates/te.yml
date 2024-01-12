@@ -1,0 +1,3 @@
+te:
+  verification_templates:
+    default: "మీ %{friendly_name} ధృవీకరణ కోడ్: %{code}."

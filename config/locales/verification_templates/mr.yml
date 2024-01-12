@@ -1,0 +1,3 @@
+mr:
+  verification_templates:
+    default: "आपला %{friendly_name} सत्यापन कोड हा आहे: %{code}."
