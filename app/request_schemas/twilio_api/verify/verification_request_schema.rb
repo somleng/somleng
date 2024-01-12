@@ -6,8 +6,10 @@ module TwilioAPI
       option :phone_number_validator, default: -> { PhoneNumberValidator.new }
       option :phone_number_configuration_rules,
              default: -> { PhoneNumberConfigurationRules.new }
-      option :sms_gateway_resolver,
-             default: -> { SMSGatewayResolver.new }
+      option :message_destination_schema_rules,
+             default: -> { MessageDestinationSchemaRules.new }
+      option :phone_call_destination_schema_rules,
+             default: -> { PhoneCallDestinationSchemaRules.new }
 
       params do
         required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -20,14 +22,19 @@ module TwilioAPI
 
       rule(:To, :Channel) do
         if values[:Channel] == "sms"
-          sms_gateway, _channel = sms_gateway_resolver.resolve(
-            carrier: account.carrier,
-            destination: values[:To]
-          )
+          message_destination_schema_rules.carrier = account.carrier
+          message_destination_schema_rules.destination = values[:To]
 
-          next if sms_gateway.present?
+          unless message_destination_schema_rules.valid?
+            base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
+          end
+        elsif values[:Channel] == "call"
+          phone_call_destination_schema_rules.account = account
+          phone_call_destination_schema_rules.destination = values[:To]
 
-          base.failure(schema_helper.build_schema_error(:unreachable_carrier))
+          unless phone_call_destination_schema_rules.valid?
+            base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
+          end
         end
       end
 

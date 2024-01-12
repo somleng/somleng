@@ -88,9 +88,9 @@ module TwilioAPI
         ).to have_valid_schema
       end
 
-      it "validates an SMS gateway" do
+      it "validates the message destination rules" do
         verification_service = create(:verification_service)
-        verification_service_from_carrier_with_sms_gateway, _phone_number, _sms_gateway = create_verification_service
+        verification_service_from_carrier_with_sms_gateway, = create_verification_service
 
         expect(
           validate_request_schema(
@@ -116,6 +116,37 @@ module TwilioAPI
           )
         ).not_to have_valid_schema(
           error_message: ApplicationError::Errors.fetch(:unreachable_carrier).message
+        )
+      end
+
+      it "validates the phone call destination rules" do
+        verification_service = create(:verification_service)
+        verification_service_from_carrier_with_sip_trunk, = create_verification_service
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "855715100987",
+              Channel: "call"
+            },
+            options: {
+              verification_service: verification_service_from_carrier_with_sip_trunk
+            }
+          )
+        ).to have_valid_schema
+
+        expect(
+          validate_request_schema(
+            input_params: {
+              To: "855715100987",
+              Channel: "call"
+            },
+            options: {
+              verification_service:
+            }
+          )
+        ).not_to have_valid_schema(
+          error_message: ApplicationError::Errors.fetch(:calling_number_unsupported_or_invalid).message
         )
       end
 
@@ -207,6 +238,7 @@ module TwilioAPI
           account: verification_service.account
         )
         create(:sms_gateway, carrier: verification_service.carrier)
+        create(:sip_trunk, carrier: verification_service.carrier)
         [verification_service, phone_number]
       end
     end
