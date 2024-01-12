@@ -45,12 +45,8 @@ RSpec.resource "Verifications", document: :twilio_api do
     )
 
     example "Start New SMS Verification" do
-      account = create(:account)
-      verification_service = create(:verification_service, account:)
-      create(:phone_number, :assigned_to_account, account:)
-      create(:sms_gateway, carrier: account.carrier)
-
-      set_twilio_api_authorization_header(account)
+      verification_service = create_verification_service
+      set_twilio_api_authorization_header(verification_service.account)
 
       perform_enqueued_jobs do
         do_request(
@@ -66,12 +62,8 @@ RSpec.resource "Verifications", document: :twilio_api do
     end
 
     example "Start New Call Verification" do
-      account = create(:account)
-      verification_service = create(:verification_service, account:)
-      create(:phone_number, :assigned_to_account, account:)
-      create(:sip_trunk, carrier: account.carrier)
-
-      set_twilio_api_authorization_header(account)
+      verification_service = create_verification_service
+      set_twilio_api_authorization_header(verification_service.account)
 
       do_request(
         service_sid: verification_service.id,
@@ -85,8 +77,7 @@ RSpec.resource "Verifications", document: :twilio_api do
     end
 
     example "Resend a verification", document: false do
-      account = create(:account)
-      verification_service = create(:verification_service, account:)
+      verification_service = create_verification_service
       verification = create(
         :verification,
         status: :pending,
@@ -95,10 +86,8 @@ RSpec.resource "Verifications", document: :twilio_api do
         to: "85512334667"
       )
       create(:verification_delivery_attempt, verification:, channel: :sms)
-      create(:phone_number, :assigned_to_account, account:)
-      create(:sip_trunk, carrier: account.carrier)
 
-      set_twilio_api_authorization_header(account)
+      set_twilio_api_authorization_header(verification_service.account)
 
       do_request(
         service_sid: verification_service.id,
@@ -117,11 +106,10 @@ RSpec.resource "Verifications", document: :twilio_api do
     end
 
     example "Fail to Start an SMS Verification", document: false do
-      account = create(:account)
-      verification_service = create(:verification_service, account:)
-      create(:sms_gateway, carrier: account.carrier)
+      verification_service = create(:verification_service)
+      create(:sms_gateway, carrier: verification_service.carrier)
 
-      set_twilio_api_authorization_header(account)
+      set_twilio_api_authorization_header(verification_service.account)
 
       do_request(
         service_sid: verification_service.id,
@@ -332,5 +320,16 @@ RSpec.resource "Verifications", document: :twilio_api do
       expect(response_body).to match_api_response_schema("twilio_api/verify/verification")
       expect(json_response.fetch("status")).to eq("approved")
     end
+  end
+
+  def create_verification_service(attributes = {})
+    verification_service = create(:verification_service, attributes)
+    create(
+      :phone_number, :assigned_to_account,
+      account: verification_service.account
+    )
+    create(:sms_gateway, carrier: verification_service.carrier)
+    create(:sip_trunk, carrier: verification_service.carrier)
+    verification_service
   end
 end
