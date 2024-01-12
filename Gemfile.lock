@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/somleng/tts_voices.git
-  revision: 37e162a48ac1fbf130530ef92c84dfb09f4b6892
+  revision: 56abf5a66dd9b2b2f97787eeba516e81c593b645
   specs:
     tts_voices (0.1.0)
       aws-sdk-polly
@@ -116,7 +116,7 @@ GEM
       activesupport
     ast (2.4.2)
     aws-eventstream (1.3.0)
-    aws-partitions (1.879.0)
+    aws-partitions (1.880.0)
     aws-record (2.13.0)
       aws-sdk-dynamodb (~> 1, >= 1.85.0)
     aws-sdk-cloudwatch (1.84.0)
