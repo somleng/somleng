@@ -43,6 +43,11 @@
           <strong>
             <span data-verification-services-target="messagePreviewContent"></span>
           </strong>
+
+          <a tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus"  toggle="tooltip" data-bs-content="Unless explicitly specified when creating a verification, the locale is determined automatically by the recipient's country.">
+            <i class="fa-solid fa-info-circle"></i>
+          </a>
+
         <% end %>
 
         <% if policy(:account).show? %>

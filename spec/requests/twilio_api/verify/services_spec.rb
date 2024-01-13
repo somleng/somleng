@@ -91,19 +91,19 @@ RSpec.resource "Verification Services", document: :twilio_api do
 
     example "Update a Service" do
       account = create(:account)
-      verification_service = create(:verification_service, account:)
+      verification_service = create(:verification_service, account:, code_length: 4)
 
       set_twilio_api_authorization_header(account)
       do_request(
         sid: verification_service.id,
-        "FriendlyName" => "My Updated Verification Service",
+        "FriendlyName" => "Rocket Ride Service",
         "CodeLength" => 6
       )
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/verify/service")
       expect(json_response).to include(
-        "friendly_name" => "My Updated Verification Service",
+        "friendly_name" => "Rocket Ride Service",
         "code_length" => 6
       )
     end

@@ -7,7 +7,7 @@ module TwilioAPI
         expect(
           validate_request_schema(
             input_params: {
-              FriendlyName: "a" * 32
+              FriendlyName: "a" * 30
             }
           )
         ).to have_valid_field(:FriendlyName)
@@ -15,7 +15,7 @@ module TwilioAPI
         expect(
           validate_request_schema(
             input_params: {
-              FriendlyName: "a" * 33
+              FriendlyName: "a" * 31
             }
           )
         ).not_to have_valid_field(:FriendlyName)
@@ -73,7 +73,7 @@ module TwilioAPI
 
         expect(schema.output).to eq(
           name: "My Verification Service",
-          code_length: 4,
+          code_length: 6,
           account:,
           carrier: account.carrier
         )
