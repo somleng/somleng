@@ -76,7 +76,7 @@ RSpec.describe CreateVerification do
     )
   end
 
-  it "creates a new sms verification" do
+  it "hnadles Thai sms verifications" do
     verification_service, phone_number, = create_verification_service(
       name: "Rocket Rides"
     )
