@@ -3,7 +3,7 @@ class VerificationTemplate
 
   attr_reader :friendly_name, :code, :locale, :country_code, :template
 
-  def initialize(friendly_name:, code:, locale:, country_code:, template: :default)
+  def initialize(friendly_name:, code:, locale:, country_code: "US", template: :default)
     @friendly_name = friendly_name
     @code = code
     @locale = locale

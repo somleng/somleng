@@ -1,0 +1,123 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], html: { data: { turbo: false } }) do |f| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :friendly_name,
+                hint: "Friendly name is the brand name that appears in the body of your verification messages, and helps users understand who the message is coming from. Max: #{pluralize(VerificationService::MAX_NAME_LENGTH, 'character')}."
+              ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(:code_length, collection: @resource.code_length_options_for_select, include_blank: false) %>
+          </div>
+
+          <div class="row">
+            <% if current_user.carrier_user? %>
+              <div class="col-sm-6">
+                  <%= f.input :account_id,
+                      collection: resource.account_options_for_select,
+                      selected: resource.account_id,
+                      disabled: resource.persisted?,
+                      prompt: "",
+                      input_html: { data: { behavior: "choices-input" } }
+                    %>
+              </div>
+            <% end %>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <% if resource.persisted? %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Sender Pool</h5>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <%= f.input(
+                :phone_number_ids,
+                label: "Phone numbers",
+                collection: resource.phone_numbers_options_for_select,
+                selected: resource.phone_number_ids,
+                input_html: {
+                  multiple: true,
+                  data: {
+                    behavior: "choices-input",
+                    choices_options: {
+                      removeItemButton: true
+                    }
+                  }
+                },
+                hint: "A list of phone numbers to add to your messaging service"
+              ) %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3" data-controller="messaging-service-integration">
+        <div class="card-body">
+          <h5 class="card-title">Integration</h5>
+
+          <div class="row">
+            <%= f.input(
+              :inbound_message_behavior,
+              collection: resource.inbound_message_behavior_options_for_select,
+              wrapper: :vertical_collection_novalidate,
+              input_html: {
+                data: {
+                  action: "click->messaging-service-integration#changeInboundMessageBehavior",
+                  messaging_service_integration_target: "InboundMessageBehaviorInput"
+                }
+              },
+              as: :radio_buttons
+            ) %>
+          </div>
+
+          <div class="row" data-messaging-service-integration-target="inboundRequestSection">
+            <div class="col-sm-6">
+              <%= f.input :inbound_request_url, hint: "Invoke an HTTP webhook for all incoming messages. Must start with http or https" %>
+            </div>
+
+            <div class="col-sm-6">
+              <%= f.input :inbound_request_method, collection: MessagingService.inbound_request_method.values, include_blank: true %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :status_callback_url, hint: "Provide a URL to call via webhook to let you know the delivery status of your message. Must start with http or https" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Content Settings</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input(
+                :smart_encoding,
+                as: :boolean,
+                wrapper: :custom_boolean_switch,
+                hint: "Smart encoding detects Unicode characters that are easy to miss and replaces them with similar GSM encoded characters. This substitution helps ensure that your messages are segmented properly at 160 characters"
+              ) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

@@ -1,4 +1,5 @@
 ko:
+  language_name: Korean
   verification_templates:
     default:
       message: "%{friendly_name} 확인 코드: %{code}."

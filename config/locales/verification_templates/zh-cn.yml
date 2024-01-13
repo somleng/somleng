@@ -1,4 +1,5 @@
 zh-cn:
+  language_name: Chinese Mandarin
   verification_templates:
     default:
       message: "您的 %{friendly_name} 验证代码是：%{code}."

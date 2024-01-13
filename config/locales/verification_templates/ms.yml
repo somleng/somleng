@@ -1,4 +1,5 @@
 ms:
+  language_name: Malay
   verification_templates:
     default:
       message: "Kod Pengesahan %{friendly_name} Anda: %{code}."

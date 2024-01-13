@@ -1,4 +1,5 @@
 af:
+  language_name: Afrikaans
   verification_templates:
     default:
       message: "Jou %{friendly_name} verifikasiekode is: %{code}."

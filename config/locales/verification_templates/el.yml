@@ -1,4 +1,5 @@
 el:
+  language_name: Greek
   verification_templates:
     default:
       message: "Ο %{friendly_name} κωδικός σας επιβεβαίωσης είναι: %{code}."

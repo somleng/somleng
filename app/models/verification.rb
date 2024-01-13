@@ -13,7 +13,7 @@ class Verification < ApplicationRecord
   has_many :delivery_attempts, class_name: "VerificationDeliveryAttempt"
 
   enumerize :channel, in: %i[sms call]
-  enumerize :locale, in: VerificationLocales.available_locales
+  enumerize :locale, in: VerificationLocales.available_locales.map(&:iso_code)
 
   encrypts :code
 

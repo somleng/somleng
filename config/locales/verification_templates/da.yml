@@ -1,4 +1,5 @@
 da:
+  language_name: Danish
   verification_templates:
     default:
       message: "Din %{friendly_name} kode er: %{code}."

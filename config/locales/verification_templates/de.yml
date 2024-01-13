@@ -1,4 +1,5 @@
 de:
+  language_name: German
   verification_templates:
     default:
       message: "Dein %{friendly_name} Sicherheitscode lautet: %{code}."

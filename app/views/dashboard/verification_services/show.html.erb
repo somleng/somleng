@@ -8,8 +8,9 @@
   <% end %>
 <% end %>
 
-<div class="card-body">
-  <div class="card mb-3">
+
+<div class="card-body" data-controller="verification-services">
+  <div class="card mb-3"">
     <div class="card-body">
       <h5 class="card-title">General</h5>
 
@@ -22,7 +23,27 @@
 
         <%= f.attribute :name, label: "Friendly name" %>
         <%= f.attribute :code_length %>
-        <%= f.attribute :sample_message, value: @resource.decorated.sample_message %>
+
+        <%= f.attribute :locale_preview do %>
+          <%= select_tag(
+            :locale_preview,
+            options_from_collection_for_select(VerificationLocales.available_locales, :iso_code, :language_name),
+            data: {
+              verification_services_target: "localePreviewInput",
+              action: "change->verification-services#updateLocalePreview",
+              behavior: "choices-input",
+              message_previews: VerificationLocales.available_locales.each_with_object({}) do |locale, result|
+                result[locale.iso_code] = @resource.decorated.sample_message(locale: locale.iso_code)
+              end.to_json
+            }
+          ) %>
+        <% end %>
+
+        <%= f.attribute :message_preview do %>
+          <strong>
+            <span data-verification-services-target="messagePreviewContent"></span>
+          </strong>
+        <% end %>
 
         <% if policy(:account).show? %>
           <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>

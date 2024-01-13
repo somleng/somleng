@@ -1,4 +1,5 @@
 cs:
+  language_name: Czech
   verification_templates:
     default:
       message: "Váš ověřovací kód %{friendly_name} je: %{code}."

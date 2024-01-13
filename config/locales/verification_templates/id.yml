@@ -1,4 +1,5 @@
 id:
+  language_name: Indonesian
   verification_templates:
     default:
       message: "Kode verifikasi %{friendly_name} anda adalah: %{code}."

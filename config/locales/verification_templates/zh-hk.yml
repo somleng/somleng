@@ -1,4 +1,5 @@
 zh-hk:
+  language_name: Chinese Cantonese
   verification_templates:
     default:
       message: "您的 %{friendly_name} 驗證代碼是：%{code}."

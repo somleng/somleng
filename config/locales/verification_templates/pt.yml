@@ -1,4 +1,5 @@
 pt:
+  language_name: Portuguese
   verification_templates:
     default:
       message: "Seu código de verificação para %{friendly_name} é: %{code}."
