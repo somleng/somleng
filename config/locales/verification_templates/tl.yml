@@ -1,0 +1,6 @@
+tl:
+  language_name: Tagalog
+  verification_templates:
+    default:
+      message: "Ang iyong pamberipikasyong code sa %{friendly_name} ay: %{code}."
+      call: "Ang iyong pamberipikasyong code sa %{friendly_name} ay: %{code}."

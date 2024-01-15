@@ -1,0 +1,6 @@
+fi:
+  language_name: Finnish
+  verification_templates:
+    default:
+      message: "Sinun %{friendly_name} vahvistuskoodi on: %{code}."
+      call: "Sinun %{friendly_name} vahvistuskoodi on: %{code}."

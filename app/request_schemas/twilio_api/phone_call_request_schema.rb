@@ -1,7 +1,8 @@
 module TwilioAPI
   class PhoneCallRequestSchema < TwilioAPIRequestSchema
-    option :phone_number_validator, default: proc { PhoneNumberValidator.new }
-    option :url_validator, default: proc { URLValidator.new(allow_http: true) }
+    option :phone_number_validator, default: -> { PhoneNumberValidator.new }
+    option :url_validator, default: -> { URLValidator.new(allow_http: true) }
+    option :phone_call_destination_schema_rules, default: -> { PhoneCallDestinationSchemaRules.new }
 
     params do
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -23,17 +24,15 @@ module TwilioAPI
 
     rule(:To) do |context:|
       next unless key?
-
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      destination_rules = DestinationRules.new(account:, destination: value)
-      unless destination_rules.calling_code_allowed?
-        next base.failure(schema_helper.build_schema_error(:call_blocked_by_blocked_list))
-      end
+      phone_call_destination_schema_rules.account = account
+      phone_call_destination_schema_rules.destination = value
 
-      context[:sip_trunk] = destination_rules.sip_trunk
-      if context[:sip_trunk].blank?
-        next base.failure(schema_helper.build_schema_error(:calling_number_unsupported_or_invalid))
+      if phone_call_destination_schema_rules.valid?
+        context[:sip_trunk] = phone_call_destination_schema_rules.sip_trunk
+      else
+        base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
       end
     end
 

@@ -43,6 +43,21 @@ Rails.application.routes.draw do
     end
   end
 
+  scope(
+    module: "twilio_api/verify", as: :api_twilio_verify, constraints: { subdomain: AppSettings.config_for(:verify_subdomain) },
+    defaults: { format: "json" }
+  ) do
+    scope :v2 do
+      resources :services, only: %i[index create show destroy], path: "Services" do
+        resources :verifications, only: %i[create show], path: "Verifications"
+        post "Verifications/:id" => "verifications#update"
+
+        resource :verification_check, only: :create, path: "VerificationCheck"
+      end
+      post "Services/:id" => "services#update"
+    end
+  end
+
   constraints(AppSubdomainConstraint.new) do
     devise_for :users, skip: %i[registrations invitations]
 
@@ -95,6 +110,8 @@ Rails.application.routes.draw do
       end
       resources :messages, only: %i[index show]
       resources :messaging_services
+      resources :verification_services
+      resources :verifications, only: %i[index show]
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
       resources :events, only: %i[index show]
@@ -139,6 +156,7 @@ Rails.application.routes.draw do
       resources :exports, only: %i[index show]
       resources :imports, only: %i[index show]
       resources :webhook_request_logs, only: %i[index show]
+      resources :verifications, only: %i[show index]
 
       resources :account_memberships, only: :show
       resources :sip_trunks, only: :show
@@ -150,6 +168,7 @@ Rails.application.routes.draw do
       resources :sms_gateways, only: :show
       resources :sms_gateway_channel_groups, only: :show
       resources :messaging_services, only: :show
+      resources :verification_services, only: :show
 
       root to: "statistics#index"
     end

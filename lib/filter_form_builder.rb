@@ -2,7 +2,13 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
   def date_range(options)
     title = options.fetch(:title)
     from_date, to_date = options.fetch(:filter_value)
-    hint = options.fetch(:hint) { "Max 3 months" }
+    hint = options[:hint]
+    picker_options = options.fetch(:picker_options, {})
+
+    if options[:restrict_date_range]
+      hint ||= "Max 3 months"
+      picker_options[:max_date_range_months] ||= 3
+    end
 
     @template.render("shared/filters/field", filter_value: from_date, title:) do
       @template.tag.div(data: { controller: "filters--date-picker" }) do
@@ -11,7 +17,8 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
           class: "form-control",
           placeholder: "Enter date",
           data: {
-            "filters--date-picker-target" => "dateRangePicker"
+            "filters--date-picker-target" => "dateRangePicker",
+            **picker_options
           }
         )
 
@@ -39,7 +46,7 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  def select(name, choices = nil, options = {}, html_options = {}, &block)
+  def select(name, choices = nil, options = {}, html_options = {}, &)
     title = options.fetch(:title, name.to_s.humanize)
     filter_value = options.fetch(:filter_value)
     options[:selected] ||= filter_value
@@ -50,12 +57,12 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  def boolean_select(name, options = {}, html_options = {}, &block)
+  def boolean_select(name, options = {}, html_options = {}, &)
     choices = [
       [I18n.t("show_for.yes"), true],
       [I18n.t("show_for.no"), false]
     ]
-    select(name, choices, options, html_options, &block)
+    select(name, choices, options, html_options, &)
   end
 
   def key_value(name, key, value, options = {})

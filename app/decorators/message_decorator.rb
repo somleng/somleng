@@ -3,7 +3,8 @@ class MessageDecorator < SimpleDelegator
     "inbound" => "inbound",
     "outbound_api" => "outbound-api",
     "outbound_call" => "outbound-call",
-    "outbound_reply" => "outbound-reply"
+    "outbound_reply" => "outbound-reply",
+    "outbound" => "outbound"
   }.freeze
 
   TWILIO_MESSAGE_STATUS_MAPPINGS = {
@@ -18,28 +19,24 @@ class MessageDecorator < SimpleDelegator
     "delivered" => "delivered"
   }.freeze
 
-  def self.model_name
-    ActiveModel::Name.new(self, nil, "Message")
-  end
+  class << self
+    delegate :model_name, :human_attribute_name, to: :Message
 
-  def self.human_attribute_name(*args)
-    Message.human_attribute_name(*args)
-  end
+    def statuses
+      TWILIO_MESSAGE_STATUS_MAPPINGS.values.uniq
+    end
 
-  def self.statuses
-    TWILIO_MESSAGE_STATUS_MAPPINGS.values.uniq
-  end
+    def directions
+      TWILIO_MESSAGE_DIRECTIONS.values.uniq
+    end
 
-  def self.directions
-    TWILIO_MESSAGE_DIRECTIONS.values.uniq
-  end
+    def status_from(twilio_status)
+      TWILIO_MESSAGE_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
+    end
 
-  def self.status_from(twilio_status)
-    TWILIO_MESSAGE_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
-  end
-
-  def self.direction_from(twilio_status)
-    TWILIO_MESSAGE_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+    def direction_from(twilio_status)
+      TWILIO_MESSAGE_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+    end
   end
 
   def from

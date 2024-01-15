@@ -14,7 +14,7 @@ RSpec.resource "Messages", document: :twilio_api do
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/message")
-      expect(json_response.fetch("messages").pluck("sid")).to match_array([message.id])
+      expect(json_response.fetch("messages").pluck("sid")).to contain_exactly(message.id)
     end
   end
 
@@ -221,7 +221,7 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "The 'From' phone number provided is not a valid message-capable phone number for this destination.",
         "status" => 422,
-        "code" => 21_606,
+        "code" => "21606",
         "more_info" => "https://www.twilio.com/docs/errors/21606"
       )
     end
@@ -382,7 +382,7 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "Cannot delete this resource before it is complete",
         "status" => 422,
-        "code" => 20_009,
+        "code" => "20009",
         "more_info" => "https://www.twilio.com/docs/errors/20009"
       )
     end

@@ -1,0 +1,6 @@
+nl:
+  language_name: Dutch
+  verification_templates:
+    default:
+      message: "Uw %{friendly_name}-verificatiecode is: %{code}."
+      call: "Uw %{friendly_name}-verificatiecode is: %{code}."

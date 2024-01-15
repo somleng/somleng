@@ -66,7 +66,7 @@ module TwilioAPI
       end
 
       def ApiVersion
-        TwilioAPISerializer::API_VERSION
+        TwilioAPI::ResourceSerializer::API_VERSION
       end
     end
   end

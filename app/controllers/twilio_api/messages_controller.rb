@@ -31,7 +31,11 @@ module TwilioAPI
         **serializer_options
       ) do |permitted_params|
         message.update!(body: "") if permitted_params[:redact].present?
-        UpdateMessageStatus.new(message).call { message.cancel! } if permitted_params[:cancel].present?
+        if permitted_params[:cancel].present?
+          UpdateMessageStatus.new(message).call do
+            message.cancel!
+          end
+        end
         message
       end
     end
@@ -62,7 +66,8 @@ module TwilioAPI
     def process_message(message)
       return queue_message(message) if message.accepted?
       return send_message(message) if message.queued?
-      return schedule_message(message) if message.scheduled?
+
+      schedule_message(message) if message.scheduled?
     end
 
     def queue_message(message)

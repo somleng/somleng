@@ -1,0 +1,6 @@
+it:
+  language_name: Italian
+  verification_templates:
+    default:
+      message: "Il codice di verifica per %{friendly_name} è: %{code}."
+      call: "Il codice di verifica per %{friendly_name} è: %{code}."

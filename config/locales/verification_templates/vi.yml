@@ -1,0 +1,6 @@
+vi:
+  language_name: Vietnamese
+  verification_templates:
+    default:
+      message: "Mã xác thực %{friendly_name} của bạn là: %{code}."
+      call: "Mã xác thực %{friendly_name} của bạn là: %{code}."

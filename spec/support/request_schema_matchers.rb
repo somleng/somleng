@@ -46,10 +46,10 @@ module RequestSchemaMatchers
     end
   end
 
-  matcher :have_valid_schema do |options|
+  matcher :have_valid_schema do |options = {}|
     include Helpers
 
-    match { |actual| valid?(actual, nil, options) }
+    match { |actual| valid?(actual, nil) }
     match_when_negated { |actual| invalid?(actual, nil, options) }
 
     failure_message do |actual|

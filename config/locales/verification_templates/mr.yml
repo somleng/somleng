@@ -1,0 +1,6 @@
+mr:
+  language_name: Marathi
+  verification_templates:
+    default:
+      message: "आपला %{friendly_name} सत्यापन कोड हा आहे: %{code}."
+      call: "आपला %{friendly_name} सत्यापन कोड हा आहे: %{code}."

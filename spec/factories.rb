@@ -340,6 +340,10 @@ FactoryBot.define do
       association :account, factory: %i[account with_sip_trunk]
     end
 
+    trait :internal do
+      internal { true }
+    end
+
     trait :queued do
       external_id { nil }
       status { :queued }
@@ -403,6 +407,10 @@ FactoryBot.define do
       received_at { Time.current }
       sms_url { "https://example.com/messaging.xml" }
       sms_method { "POST" }
+    end
+
+    trait :internal do
+      internal { true }
     end
 
     trait :accepted do
@@ -525,5 +533,66 @@ FactoryBot.define do
     tts_provider { "Basic" }
     tts_engine { "Standard" }
     num_chars { 100 }
+  end
+
+  factory :verification_service do
+    account
+    carrier { account.carrier }
+    name { "My Verification Service" }
+    code_length { 4 }
+  end
+
+  factory :verification do
+    verification_service
+    account { verification_service.account }
+    carrier { verification_service.carrier }
+    channel { "sms" }
+    to { "85512334667" }
+    code { "1234" }
+    locale { "en" }
+    country_code { "KH" }
+
+    traits_for_enum :status, %w[pending canceled approved]
+
+    trait :expired do
+      status { :pending }
+      expired_at { 1.minute.ago }
+    end
+
+    trait :too_many_check_attempts do
+      after(:build) do |verification|
+        verification.verification_attempts = build_list(:verification_attempt, 5, verification:)
+      end
+    end
+
+    trait :too_many_delivery_attempts do
+      after(:build) do |verification|
+        verification.delivery_attempts = build_list(
+          :verification_delivery_attempt, 5, verification:
+        )
+      end
+    end
+  end
+
+  factory :verification_attempt do
+    verification
+    code { "9876" }
+
+    trait :successful do
+      verification { association :verification, :approved }
+      code { verification.code }
+    end
+  end
+
+  factory :verification_delivery_attempt do
+    verification
+    channel { verification.channel }
+    to { verification.to }
+    from { generate(:phone_number) }
+
+    trait :sms do
+      channel { :sms }
+      message { association :message, to:, from:, account: verification.account, internal: true }
+    end
   end
 end

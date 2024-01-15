@@ -1,0 +1,6 @@
+ru:
+  language_name: Russian
+  verification_templates:
+    default:
+      message: "Ваш проверочный код %{friendly_name}: %{code}."
+      call: "Ваш проверочный код %{friendly_name}: %{code}."

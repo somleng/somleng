@@ -1,0 +1,6 @@
+fr:
+  language_name: French
+  verification_templates:
+    default:
+      message: "Votre code de vérification %{friendly_name} est: %{code}."
+      call: "Votre code de vérification %{friendly_name} est: %{code}."

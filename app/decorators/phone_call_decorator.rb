@@ -20,28 +20,24 @@ class PhoneCallDecorator < SimpleDelegator
     "outbound" => "outbound-api"
   }.freeze
 
-  def self.model_name
-    ActiveModel::Name.new(self, nil, "PhoneCall")
-  end
+  class << self
+    delegate :model_name, :human_attribute_name, to: :PhoneCall
 
-  def self.human_attribute_name(*args)
-    PhoneCall.human_attribute_name(*args)
-  end
+    def statuses
+      TWILIO_CALL_STATUS_MAPPINGS.values.uniq
+    end
 
-  def self.statuses
-    TWILIO_CALL_STATUS_MAPPINGS.values.uniq
-  end
+    def directions
+      TWILIO_CALL_DIRECTIONS.values.uniq
+    end
 
-  def self.directions
-    TWILIO_CALL_DIRECTIONS.values.uniq
-  end
+    def status_from(twilio_status)
+      TWILIO_CALL_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
+    end
 
-  def self.status_from(twilio_status)
-    TWILIO_CALL_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
-  end
-
-  def self.direction_from(twilio_status)
-    TWILIO_CALL_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+    def direction_from(twilio_status)
+      TWILIO_CALL_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+    end
   end
 
   def from

@@ -1,0 +1,6 @@
+en:
+  language_name: English
+  verification_templates:
+    default:
+      message: "Your %{friendly_name} verification code is: %{code}."
+      call: "Your %{friendly_name} verification code is: %{code}. Again: %{code}. One last time: %{code}. Goodbye"

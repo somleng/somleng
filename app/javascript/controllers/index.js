@@ -4,29 +4,32 @@
 
 import { application } from "./application"
 
-import Filters__DatePickerController from "./filters/date_picker_controller.js"
+import Filters__DatePickerController from "./filters/date_picker_controller"
 application.register("filters--date-picker", Filters__DatePickerController)
 
-import Filters__FieldController from "./filters/field_controller.js"
+import Filters__FieldController from "./filters/field_controller"
 application.register("filters--field", Filters__FieldController)
 
-import FiltersController from "./filters_controller.js"
+import FiltersController from "./filters_controller"
 application.register("filters", FiltersController)
 
-import MaskedContentController from "./masked_content_controller.js"
+import MaskedContentController from "./masked_content_controller"
 application.register("masked-content", MaskedContentController)
 
-import MessagingServiceIntegrationController from "./messaging_service_integration_controller.js"
+import MessagingServiceIntegrationController from "./messaging_service_integration_controller"
 application.register("messaging-service-integration", MessagingServiceIntegrationController)
 
-import SidebarController from "./sidebar_controller.js"
+import SidebarController from "./sidebar_controller"
 application.register("sidebar", SidebarController)
 
-import SignUpController from "./sign_up_controller.js"
+import SignUpController from "./sign_up_controller"
 application.register("sign-up", SignUpController)
 
-import SipTrunksController from "./sip_trunks_controller.js"
+import SipTrunksController from "./sip_trunks_controller"
 application.register("sip-trunks", SipTrunksController)
 
-import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller.js"
+import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller"
 application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsController)
+
+import VerificationServicesController from "./verification_services_controller"
+application.register("verification-services", VerificationServicesController)

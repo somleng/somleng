@@ -1,0 +1,6 @@
+kn:
+  language_name: Kannada
+  verification_templates:
+    default:
+      message: "ನಿಮ್ಮ %{friendly_name} ಪರಿಶೀಲನಾ ಕೋಡ್: %{code}."
+      call: "ನಿಮ್ಮ %{friendly_name} ಪರಿಶೀಲನಾ ಕೋಡ್: %{code}."

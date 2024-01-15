@@ -7,8 +7,8 @@ module TwilioAPI
            default: -> { SMSEncoding.new }
     option :smart_encoding,
            default: -> { SmartEncoding.new }
-    option :sms_gateway_resolver,
-           default: -> { SMSGatewayResolver.new }
+    option :message_destination_schema_rules,
+           default: -> { MessageDestinationSchemaRules.new }
 
     option :url_validator, default: proc { URLValidator.new(allow_http: true) }
 
@@ -27,14 +27,14 @@ module TwilioAPI
     rule(:To) do |context:|
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      context[:sms_gateway], context[:channel] = sms_gateway_resolver.resolve(
-        carrier: account.carrier,
-        destination: value
-      )
+      message_destination_schema_rules.carrier = account.carrier
+      message_destination_schema_rules.destination = value
 
-      next if context[:sms_gateway].present?
-
-      base.failure(schema_helper.build_schema_error(:unreachable_carrier))
+      if message_destination_schema_rules.valid?
+        context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
+      else
+        base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
+      end
     end
 
     rule(:From, :MessagingServiceSid) do |context:|

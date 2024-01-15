@@ -7,18 +7,18 @@ module CarrierAPI
           input_params: request.query_parameters,
           **serializer_options
         ) do |permitted_params|
-          phone_calls_scope.where(permitted_params)
+          scope.where(permitted_params)
         end
       end
 
       def show
-        phone_call = phone_calls_scope.find(params[:id])
+        phone_call = scope.find(params[:id])
 
         respond_with_resource(phone_call, serializer_options)
       end
 
       def update
-        phone_call = phone_calls_scope.find(params[:id])
+        phone_call = scope.find(params[:id])
 
         validate_request_schema(
           with: UpdatePhoneCallRequestSchema,
@@ -32,7 +32,7 @@ module CarrierAPI
 
       private
 
-      def phone_calls_scope
+      def scope
         current_carrier.phone_calls
       end
 

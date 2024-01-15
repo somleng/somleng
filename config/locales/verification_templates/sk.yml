@@ -1,0 +1,6 @@
+sk:
+  language_name: Slovak
+  verification_templates:
+    default:
+      message: "Tvoj %{friendly_name} overovací kod je: %{code}."
+      call: "Tvoj %{friendly_name} overovací kod je: %{code}."

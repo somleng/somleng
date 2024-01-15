@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.resource "Phone Calls", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
+  # https://www.twilio.com/docs/voice/api/call-resource#create-a-call-resource
+  #
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
     example "List phone calls" do
       account = create(:account)
@@ -14,7 +16,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/call")
-      expect(json_response.fetch("calls").pluck("sid")).to match_array([phone_call.id])
+      expect(json_response.fetch("calls").pluck("sid")).to contain_exactly(phone_call.id)
     end
   end
 
@@ -96,7 +98,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       expect(json_response).to eq(
         "message" => "Calling this number is unsupported or the number is invalid",
         "status" => 422,
-        "code" => 13_224,
+        "code" => "13224",
         "more_info" => "https://www.twilio.com/docs/errors/13224"
       )
     end

@@ -1,0 +1,6 @@
+hr:
+  language_name: Croatian
+  verification_templates:
+    default:
+      message: "Vaš %{friendly_name} kôd je: %{code}."
+      call: "Vaš %{friendly_name} kôd je: %{code}."

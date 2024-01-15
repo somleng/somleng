@@ -1,0 +1,6 @@
+ar:
+  language_name: Arabic
+  verification_templates:
+    default:
+      message: "‫رمز تعريفك الخاص ب %{friendly_name} هو %{code}‬"
+      call: "‫رمز تعريفك الخاص ب %{friendly_name} هو %{code}‬"

@@ -1,0 +1,6 @@
+es:
+  language_name: Spanish
+  verification_templates:
+    default:
+      message: "Su codigo de verificacion para %{friendly_name} es: %{code}."
+      call: "Su codigo de verificacion para %{friendly_name} es: %{code}."
