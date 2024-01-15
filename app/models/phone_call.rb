@@ -75,10 +75,6 @@ class PhoneCall < ApplicationRecord
 
   validates :external_id, presence: true, if: :inbound?
 
-  def self.default_scope
-    where(internal: false)
-  end
-
   def self.in_progress
     where(status: %w[initiated ringing answered])
   end

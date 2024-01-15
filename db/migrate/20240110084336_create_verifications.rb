@@ -2,17 +2,17 @@ class CreateVerifications < ActiveRecord::Migration[7.1]
   def change
     create_table :verifications, id: :uuid do |t|
       t.references :verification_service,
-                   type: :uuid, null: false,
+                   type: :uuid,
                    foreign_key: { on_delete: :nullify }
 
       t.references :account,
                    type: :uuid,
-                   null: false,
                    foreign_key: { on_delete: :nullify }
 
       t.references :carrier,
                    type: :uuid,
-                   null: false
+                   null: false,
+                   foreign_key: true
 
       t.string :to, null: false
       t.string :channel, null: false
@@ -28,6 +28,8 @@ class CreateVerifications < ActiveRecord::Migration[7.1]
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
       t.timestamps
+
+      t.index :created_at
     end
   end
 end

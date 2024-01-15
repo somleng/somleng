@@ -26,6 +26,10 @@ RSpec.describe "Verification Services" do
     visit dashboard_verification_service_path(verification_service)
 
     expect(page).to have_content(/Your Rocket Rides verification code is: \d{6}\./)
+    expect(page).to have_link(
+      "View verifications",
+      href: dashboard_verifications_path(filter: { verification_service_id: verification_service.id })
+    )
 
     choices_select("German", from: "locale_preview")
 

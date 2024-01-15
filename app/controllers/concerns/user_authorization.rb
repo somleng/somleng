@@ -7,6 +7,7 @@ module UserAuthorization
     helper_method :current_carrier
     helper_method :current_account
     helper_method :current_account_membership
+    helper_method :parent_scope
 
     before_action :authorize_carrier!
     before_action :select_account_membership!

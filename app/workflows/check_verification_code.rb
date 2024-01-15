@@ -8,21 +8,14 @@ class CheckVerificationCode < ApplicationWorkflow
 
   def call
     ApplicationRecord.transaction do
-      create_verification_attempt
-      approve_verification if attempt_valid?
+      verification_attempt = create_verification_attempt
+      approve_verification if verification_attempt.successful?
     end
 
     verification
   end
 
   private
-
-  def attempt_valid?
-    ActiveSupport::SecurityUtils.secure_compare(
-      code,
-      verification.code
-    )
-  end
 
   def create_verification_attempt
     VerificationAttempt.create!(verification:, code:)

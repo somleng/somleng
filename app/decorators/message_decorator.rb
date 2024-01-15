@@ -19,28 +19,24 @@ class MessageDecorator < SimpleDelegator
     "delivered" => "delivered"
   }.freeze
 
-  def self.model_name
-    ActiveModel::Name.new(self, nil, "Message")
-  end
+  class << self
+    delegate :model_name, :human_attribute_name, to: :Message
 
-  def self.human_attribute_name(*)
-    Message.human_attribute_name(*)
-  end
+    def statuses
+      TWILIO_MESSAGE_STATUS_MAPPINGS.values.uniq
+    end
 
-  def self.statuses
-    TWILIO_MESSAGE_STATUS_MAPPINGS.values.uniq
-  end
+    def directions
+      TWILIO_MESSAGE_DIRECTIONS.values.uniq
+    end
 
-  def self.directions
-    TWILIO_MESSAGE_DIRECTIONS.values.uniq
-  end
+    def status_from(twilio_status)
+      TWILIO_MESSAGE_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
+    end
 
-  def self.status_from(twilio_status)
-    TWILIO_MESSAGE_STATUS_MAPPINGS.select { |_k, v| v == twilio_status }.keys.uniq
-  end
-
-  def self.direction_from(twilio_status)
-    TWILIO_MESSAGE_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+    def direction_from(twilio_status)
+      TWILIO_MESSAGE_DIRECTIONS.select { |_k, v| v == twilio_status }.keys.uniq
+    end
   end
 
   def from

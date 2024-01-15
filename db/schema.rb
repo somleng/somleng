@@ -236,6 +236,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
     t.boolean "internal", default: false, null: false
     t.index ["account_id"], name: "index_messages_on_account_id"
     t.index ["carrier_id"], name: "index_messages_on_carrier_id"
+    t.index ["created_at"], name: "index_messages_on_created_at"
     t.index ["internal"], name: "index_messages_on_internal"
     t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
@@ -617,8 +618,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
   end
 
   create_table "verifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "verification_service_id", null: false
-    t.uuid "account_id", null: false
+    t.uuid "verification_service_id"
+    t.uuid "account_id"
     t.uuid "carrier_id", null: false
     t.string "to", null: false
     t.string "channel", null: false
@@ -636,6 +637,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_verifications_on_account_id"
     t.index ["carrier_id"], name: "index_verifications_on_carrier_id"
+    t.index ["created_at"], name: "index_verifications_on_created_at"
     t.index ["expired_at"], name: "index_verifications_on_expired_at"
     t.index ["sequence_number"], name: "index_verifications_on_sequence_number", unique: true, order: :desc
     t.index ["status"], name: "index_verifications_on_status"
@@ -721,9 +723,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
   add_foreign_key "verification_delivery_attempts", "messages", on_delete: :nullify
   add_foreign_key "verification_delivery_attempts", "phone_calls", on_delete: :nullify
   add_foreign_key "verification_delivery_attempts", "verifications", on_delete: :cascade
-  add_foreign_key "verification_services", "accounts"
-  add_foreign_key "verification_services", "carriers"
+  add_foreign_key "verification_services", "accounts", on_delete: :cascade
+  add_foreign_key "verification_services", "carriers", on_delete: :cascade
   add_foreign_key "verifications", "accounts", on_delete: :nullify
+  add_foreign_key "verifications", "carriers"
   add_foreign_key "verifications", "verification_services", on_delete: :nullify
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_request_logs", "carriers"

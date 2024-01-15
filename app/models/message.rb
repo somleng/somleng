@@ -56,10 +56,6 @@ class Message < ApplicationRecord
     end
   end
 
-  def self.default_scope
-    where(internal: false)
-  end
-
   def outbound?
     direction.in?(%w[outbound_api outbound outbound_call outbound_reply])
   end

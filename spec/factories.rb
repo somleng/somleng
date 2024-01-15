@@ -544,6 +544,8 @@ FactoryBot.define do
     locale { "en" }
     country_code { "KH" }
 
+    traits_for_enum :status, %w[pending canceled approved]
+
     trait :expired do
       status { :pending }
       expired_at { 1.minute.ago }
@@ -567,6 +569,11 @@ FactoryBot.define do
   factory :verification_attempt do
     verification
     code { "9876" }
+
+    trait :successful do
+      verification { association :verification, :approved }
+      code { verification.code }
+    end
   end
 
   factory :verification_delivery_attempt do

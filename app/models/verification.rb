@@ -45,6 +45,17 @@ class Verification < ApplicationRecord
     )
   end
 
+  def self.expired
+    where(
+      status: :pending,
+      expired_at: ..Time.current
+    )
+  end
+
+  def country
+    ISO3166::Country.new(country_code)
+  end
+
   def expired?
     expired_at.past?
   end

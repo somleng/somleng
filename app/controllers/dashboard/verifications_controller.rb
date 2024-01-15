@@ -1,7 +1,7 @@
 module Dashboard
-  class PhoneCallsController < DashboardController
+  class VerificationsController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(:account))
+      @resources = apply_filters(scope.includes(:verification_service, :account))
       @resources = paginate_resources(@resources)
     end
 
@@ -12,7 +12,7 @@ module Dashboard
     private
 
     def scope
-      parent_scope.phone_calls
+      parent_scope.verifications
     end
 
     def record

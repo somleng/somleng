@@ -70,7 +70,7 @@
       </li>
     <% end %>
 
-    <% if %i[verification_service].any? { |r| policy(r).index? } %>
+    <% if %i[verification_service verification].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-clipboard-check"></i> Verify
@@ -79,6 +79,10 @@
         <ul class="nav-group-items">
           <% if policy(:verification_service).index? %>
             <%= sidebar_nav("Services", dashboard_verification_services_path, icon_class: "fa-solid fa-list-check") %>
+          <% end %>
+
+          <% if policy(:verification).index? %>
+            <%= sidebar_nav("Verifications", dashboard_verifications_path, icon_class: "fa-regular fa-circle-check") %>
           <% end %>
         </ul>
       </li>

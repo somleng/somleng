@@ -111,6 +111,7 @@ Rails.application.routes.draw do
       resources :messages, only: %i[index show]
       resources :messaging_services
       resources :verification_services
+      resources :verifications, only: %i[index show]
       resources :phone_calls, only: %i[index show]
       resources :error_logs, only: :index
       resources :events, only: %i[index show]

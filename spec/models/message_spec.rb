@@ -30,13 +30,6 @@ RSpec.describe Message do
     expect(message.queued_at).to be_present
   end
 
-  it "excludes internal messages by default" do
-    message = create(:message)
-    create(:message, internal: true)
-
-    expect(Message.all).to contain_exactly(message)
-  end
-
   describe "#validity_period_expired?" do
     it "returns if the validity period is expired" do
       expired_message = create(:message, :queued, queued_at: 5.seconds.ago, validity_period: 5)
