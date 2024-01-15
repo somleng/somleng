@@ -340,6 +340,10 @@ FactoryBot.define do
       association :account, factory: %i[account with_sip_trunk]
     end
 
+    trait :internal do
+      internal { true }
+    end
+
     trait :queued do
       external_id { nil }
       status { :queued }
@@ -403,6 +407,10 @@ FactoryBot.define do
       received_at { Time.current }
       sms_url { "https://example.com/messaging.xml" }
       sms_method { "POST" }
+    end
+
+    trait :internal do
+      internal { true }
     end
 
     trait :accepted do

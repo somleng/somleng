@@ -8,7 +8,7 @@ RSpec.describe "Admin/Phone Calls" do
       sip_trunk:,
       carrier: sip_trunk.carrier,
       status_callback_url: "https://example.com/call-status-callback",
-      to: "855718224112",
+      to: "855718224112"
     )
     recording = create(
       :recording,
@@ -16,15 +16,19 @@ RSpec.describe "Admin/Phone Calls" do
       phone_call:,
       status_callback_url: "https://example.com/recording-status-callback"
     )
+    internal_phone_call = create(:phone_call, :internal, to: "66814822567")
 
     page.driver.browser.authorize("admin", "password")
     visit admin_phone_calls_path
-    click_link("855718224112")
+
+    expect(page).to have_no_content(internal_phone_call.to)
+
+    click_on("855718224112")
 
     expect(page).to have_content("https://example.com/call-status-callback")
     expect(page).to have_content("Recordings")
 
-    click_link(recording.id)
+    click_on(recording.id)
     expect(page).to have_content("https://example.com/recording-status-callback")
   end
 end
