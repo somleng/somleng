@@ -6,18 +6,27 @@ RSpec.describe "Verifications" do
     pending_verification = create(:verification, :pending, verification_service:)
     expired_verification = create(:verification, :expired, verification_service:)
     approved_verification = create(:verification, :approved, verification_service:)
+    other_verification = create(
+      :verification,
+      verification_service: create(
+        :verification_service,
+        account: verification_service.account,
+        carrier: verification_service.carrier
+      )
+    )
     user = create(:user, :carrier, carrier: verification_service.carrier)
 
     carrier_sign_in(user)
     visit(
       dashboard_verifications_path(
-        filter: { status: :pending }
+        filter: { verification_service_id: verification_service.id }
       )
     )
 
     expect(page).to have_content(pending_verification.id)
-    expect(page).to have_no_content(approved_verification.id)
-    expect(page).to have_no_content(expired_verification.id)
+    expect(page).to have_content(expired_verification.id)
+    expect(page).to have_content(approved_verification.id)
+    expect(page).to have_no_content(other_verification.id)
   end
 
   it "shows a verification" do
@@ -28,7 +37,7 @@ RSpec.describe "Verifications" do
       verification_service:, to: "66814822567",
       country_code: "TH"
     )
-    _delivery_attempt = create(:verification_delivery_attempt, verification:, channel: "call")
+    _delivery_attempt = create(:verification_delivery_attempt, :sms, verification:)
     _failed_verification_attempt = create(:verification_attempt, verification:)
     _successful_verification_attempt = create(:verification_attempt, :successful, verification:)
     user = create(:user, :carrier, carrier: verification.carrier)
@@ -49,7 +58,7 @@ RSpec.describe "Verifications" do
     expect(page).to have_content("Thailand")
 
     within("#delivery-attempt-1") do
-      expect(page).to have_content("Call")
+      expect(page).to have_content("SMS")
     end
 
     within("#verification-attempt-1") do
