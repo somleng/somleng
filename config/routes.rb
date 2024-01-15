@@ -156,6 +156,7 @@ Rails.application.routes.draw do
       resources :exports, only: %i[index show]
       resources :imports, only: %i[index show]
       resources :webhook_request_logs, only: %i[index show]
+      resources :verifications, only: %i[show index]
 
       resources :account_memberships, only: :show
       resources :sip_trunks, only: :show
@@ -167,6 +168,7 @@ Rails.application.routes.draw do
       resources :sms_gateways, only: :show
       resources :sms_gateway_channel_groups, only: :show
       resources :messaging_services, only: :show
+      resources :verification_services, only: :show
 
       root to: "statistics#index"
     end
