@@ -20,6 +20,25 @@ module Dashboard
       respond_with(:dashboard, @resource)
     end
 
+    def edit
+      @resource = VerificationServiceForm.initialize_with(record)
+    end
+
+    def update
+      permitted_params = required_params.permit(:friendly_name, :code_length)
+      @resource = initialize_form(permitted_params)
+      @resource.verification_service = record
+      @resource.account = record.account
+      @resource.save
+
+      respond_with(:dashboard, @resource)
+    end
+
+    def destroy
+      record.destroy
+      respond_with(:dashboard, record)
+    end
+
     private
 
     def initialize_form(params = {})

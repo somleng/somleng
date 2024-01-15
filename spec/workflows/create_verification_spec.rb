@@ -125,6 +125,21 @@ RSpec.describe CreateVerification do
     expect(verification.channel).to eq("sms")
   end
 
+  it "raises an error if there is an issue with the schema" do
+    verification_service = create(:verification_service)
+    unassigned_phone_number = create(:phone_number, carrier: verification_service.carrier)
+
+    expect do
+      CreateVerification.call(
+        build_verification_params(
+          verification_service:,
+          phone_number: unassigned_phone_number,
+          channel: :sms
+        )
+      )
+    end.to raise_error(CreateVerification::Error)
+  end
+
   def build_verification_params(verification_service:, phone_number:, **params)
     params.reverse_merge(
       verification_service:,

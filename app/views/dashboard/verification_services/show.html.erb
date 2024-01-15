@@ -22,7 +22,7 @@
         <% end %>
 
         <%= f.attribute :name, label: "Friendly name" %>
-        <%= f.attribute :code_length %>
+        <%= f.attribute :code_length, value: pluralize(@resource.code_length, "digit") %>
 
         <%= f.attribute :locale_preview do %>
           <%= select_tag(

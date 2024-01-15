@@ -30,14 +30,15 @@ class VerificationServiceForm
     ActiveModel::Name.new(self, nil, "VerificationService")
   end
 
-  def code_length_options_for_select
-    VerificationService::VALID_CODE_LENGTHS.map do |code_length|
-      ["#{code_length} digits", code_length]
-    end
-  end
-
-  def account_options_for_select
-    accounts_scope.map { |account| [account.name, account.id] }
+  def self.initialize_with(verification_service)
+    new(
+      verification_service:,
+      carrier: verification_service.carrier,
+      account: verification_service.account,
+      account_id: verification_service.account_id,
+      friendly_name: verification_service.name,
+      code_length: verification_service.code_length
+    )
   end
 
   def save
@@ -49,6 +50,16 @@ class VerificationServiceForm
     verification_service.code_length = code_length
 
     verification_service.save!
+  end
+
+  def code_length_options_for_select
+    VerificationService::VALID_CODE_LENGTHS.map do |code_length|
+      ["#{code_length} digits", code_length]
+    end
+  end
+
+  def account_options_for_select
+    accounts_scope.map { |account| [account.name, account.id] }
   end
 
   private
