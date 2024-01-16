@@ -28,6 +28,7 @@ resource "aws_lb_listener_rule" "webserver" {
     host_header {
       values = [
         aws_route53_record.api.fqdn,
+        aws_route53_record.verify.fqdn,
         aws_route53_record.app.fqdn,
         "*.${aws_route53_record.app.fqdn}"
       ]

@@ -15,6 +15,7 @@ variable "cdn_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}
+variable "verify_subdomain" {}
 
 variable "call_service_queue_name" {}
 variable "raw_recordings_bucket_name" {}

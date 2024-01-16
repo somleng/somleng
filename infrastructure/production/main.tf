@@ -8,6 +8,7 @@ module "somleng" {
   app_subdomain   = "app"
   cdn_subdomain   = "cdn"
   api_subdomain   = "api"
+  verify_subdomain = "verify"
 
   app_image          = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image        = data.terraform_remote_state.core.outputs.nginx_ecr_repository

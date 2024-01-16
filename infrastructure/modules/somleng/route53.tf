@@ -46,4 +46,14 @@ resource "aws_route53_record" "cdn" {
   }
 }
 
+resource "aws_route53_record" "verify" {
+  zone_id = var.route53_zone.zone_id
+  name    = var.verify_subdomain
+  type    = "A"
 
+  alias {
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.hosted_zone_id
+    evaluate_target_health = true
+  }
+}
