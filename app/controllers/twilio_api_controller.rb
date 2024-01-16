@@ -1,7 +1,7 @@
 class TwilioAPIController < APIController
   include ActionController::HttpAuthentication::Basic::ControllerMethods
 
-  self.responder = TwilioAPIResponder
+  self.responder = TwilioAPI::Responder
 
   before_action :doorkeeper_authorize!
   before_action :authorize_account!
@@ -13,8 +13,14 @@ class TwilioAPIController < APIController
       ActiveSupport::SecurityUtils.secure_compare(given_name, current_account.id)
     end
     return deny_access!(build_error(:account_suspended)) unless current_account.enabled?
-    return deny_access! unless current_account.id == params[:account_id]
-    return deny_access!(build_error(:carrier_standing)) unless CarrierStanding.new(current_account.carrier).good_standing?
+    return deny_access! if verify_account_param? && current_account.id != params[:account_id]
+    return if CarrierStanding.new(current_account.carrier).good_standing?
+
+    deny_access!(build_error(:carrier_standing))
+  end
+
+  def verify_account_param?
+    true
   end
 
   def respond_with_resource(resource, options = {})
@@ -38,7 +44,7 @@ class TwilioAPIController < APIController
   end
 
   def unauthorized_render_options(options = {})
-    code = options.fetch(:code, 20_003)
+    code = options.fetch(:code, "20003")
     message = options.fetch(:message, "Authenticate")
     {
       json: {

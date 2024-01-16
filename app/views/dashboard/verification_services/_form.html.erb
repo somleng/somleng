@@ -1,0 +1,39 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], html: { data: { turbo: false } }) do |f| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :friendly_name,
+                hint: "Friendly name is the brand name that appears in the body of your verification messages, and helps users understand who the message is coming from. Max: #{pluralize(VerificationService::MAX_NAME_LENGTH, 'character')}."
+              ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(:code_length, collection: @resource.code_length_options_for_select, include_blank: false) %>
+          </div>
+
+          <div class="row">
+            <% if current_user.carrier_user? %>
+              <div class="col-sm-6">
+                  <%= f.input :account_id,
+                      collection: resource.account_options_for_select,
+                      selected: resource.account_id,
+                      disabled: resource.persisted?,
+                      prompt: "",
+                      input_html: { data: { behavior: "choices-input" } }
+                    %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

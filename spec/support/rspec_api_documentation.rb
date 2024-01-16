@@ -20,7 +20,7 @@ RspecApiDocumentation.configure do |config|
     end
   end
 
-  config.keep_source_order = false
+  config.keep_source_order = true
   config.disable_dsl_status!
 
   config.define_group :twilio_api do |conf|

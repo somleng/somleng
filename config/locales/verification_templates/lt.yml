@@ -1,0 +1,6 @@
+lt:
+  language_name: Lithuanian
+  verification_templates:
+    default:
+      message: "Jūsų %{friendly_name} patvirtinimo kodas: %{code}."
+      call: "Jūsų %{friendly_name} patvirtinimo kodas: %{code}."

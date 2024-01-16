@@ -1,0 +1,6 @@
+ro:
+  language_name: Romanian
+  verification_templates:
+    default:
+      message: "Codul de verificare pentru %{friendly_name} este: %{code}."
+      call: "Codul de verificare pentru %{friendly_name} este: %{code}."

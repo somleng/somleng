@@ -1,0 +1,64 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Status
+      </th>
+      <th>
+        Service
+      </th>
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+      <th>
+        Sent to
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |verification| %>
+      <% verification = verification.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(verification.id, dashboard_verification_path(verification)) %>
+        </td>
+
+        <td>
+          <%= status_badge(verification.status_color) %>
+          <%= verification.status.humanize %>
+        </td>
+
+        <td>
+          <% if verification.verification_service.present? %>
+            <%= external_link_to(verification.verification_service.name, dashboard_verification_service_path(verification.verification_service_id)) %>
+          <% end %>
+        </td>
+
+        <% if policy(:account).show? %>
+          <td>
+            <% if verification.account.present? %>
+              <%= external_link_to(verification.account.name, dashboard_account_path(verification.account_id)) %>
+            <% end %>
+          </td>
+        <% end %>
+
+        <td>
+          <%= verification.to_formatted %>
+        </td>
+
+        <td>
+          <%= local_time(verification.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -11,7 +11,22 @@ if Rails.env.development? || Rails.env.test?
 
   Aws.config[:polly] ||= {
     stub_responses: {
-      describe_voices: Aws::Polly::Client.new.stub_data(:describe_voices)
+      describe_voices: {
+        voices: [
+          {
+            gender: "Female", id: "Vitoria", language_code: "pt-BR",
+            supported_engines: %w[neural standard]
+          },
+          {
+            gender: "Female", id: "Mia", language_code: "es-MX",
+            supported_engines: %w[neural standard]
+          },
+          {
+            gender: "Female", id: "Celine", language_code: "fr-FR",
+            supported_engines: %w[standard]
+          }
+        ]
+      }
     }
   }
 end

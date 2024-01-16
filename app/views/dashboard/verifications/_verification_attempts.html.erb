@@ -1,0 +1,28 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Date & Time
+      </th>
+
+      <th>
+        Status
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% verification.verification_attempts.each_with_index do |verification_attempt, index| %>
+      <% verification_attempt = verification_attempt.decorated %>
+      <tr id="verification-attempt-<%= index + 1 %>" role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= local_time(verification_attempt.created_at) %>
+        </td>
+
+        <td>
+          <%= verification_attempt.status.humanize %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

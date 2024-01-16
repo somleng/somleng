@@ -1,0 +1,6 @@
+th:
+  language_name: Thai
+  verification_templates:
+    default:
+      message: "รหัสยืนยันของคุณ %{friendly_name} คือ: %{code}."
+      call: "รหัสยืนยันของคุณ %{friendly_name} คือ: %{code}."

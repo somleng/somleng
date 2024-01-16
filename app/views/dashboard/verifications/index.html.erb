@@ -1,0 +1,35 @@
+<%= page_title(title: "Verifications") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.select(
+        :verification_service_id,
+        parent_scope.verification_services.map { |verification_service| [verification_service.name, verification_service.id] },
+        { filter_value: params.dig(:filter, :verification_service_id), title: "Service" },
+        { data: { behavior: "choices-input" }}
+      )
+    %>
+
+    <%= form.select :status, VerificationDecorator.statuses.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
+
+    <% if policy(:account).show? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.accounts.map { |account| [account.name, account.id] },
+          { filter_value: params.dig(:filter, :account_id) },
+          { data: { behavior: "choices-input" }}
+        )
+      %>
+    <% end %>
+
+    <%= form.date_range(
+      title: "Created At",
+      filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)],
+      restrict_date_range: true
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

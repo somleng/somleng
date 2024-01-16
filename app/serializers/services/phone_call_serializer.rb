@@ -19,7 +19,7 @@ module Services
     end
 
     def api_version
-      TwilioAPISerializer::API_VERSION
+      TwilioAPI::ResourceSerializer::API_VERSION
     end
 
     def account_auth_token

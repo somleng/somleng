@@ -44,7 +44,7 @@ class InitiateOutboundCall < ApplicationWorkflow
       account_sid: decorated_phone_call.account_sid,
       account_auth_token: decorated_phone_call.account.auth_token,
       direction: decorated_phone_call.direction,
-      api_version: TwilioAPISerializer::API_VERSION,
+      api_version: TwilioAPI::ResourceSerializer::API_VERSION,
       voice_url: decorated_phone_call.voice_url,
       voice_method: decorated_phone_call.voice_method,
       twiml: decorated_phone_call.twiml,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -233,8 +233,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
     t.datetime "updated_at", null: false
     t.uuid "messaging_service_id"
     t.datetime "delivered_at"
+    t.boolean "internal", default: false, null: false
     t.index ["account_id"], name: "index_messages_on_account_id"
     t.index ["carrier_id"], name: "index_messages_on_carrier_id"
+    t.index ["created_at"], name: "index_messages_on_created_at"
+    t.index ["internal"], name: "index_messages_on_internal"
     t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
@@ -363,6 +366,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
     t.uuid "sip_trunk_id"
     t.datetime "initiated_at"
     t.datetime "initiating_at"
+    t.boolean "internal", default: false, null: false
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
@@ -376,6 +380,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
     t.index ["from"], name: "index_phone_calls_on_from"
     t.index ["initiated_at"], name: "index_phone_calls_on_initiated_at"
     t.index ["initiating_at"], name: "index_phone_calls_on_initiating_at"
+    t.index ["internal"], name: "index_phone_calls_on_internal"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
@@ -498,6 +503,17 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "tmp_encryption_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_id"
+    t.string "sms_gateway_id"
+    t.string "otp_secret"
+    t.string "device_id"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_tmp_encryption_keys_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "tts_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id"
@@ -560,6 +576,72 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "verification_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "verification_id", null: false
+    t.string "code", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_verification_attempts_on_sequence_number", unique: true, order: :desc
+    t.index ["verification_id"], name: "index_verification_attempts_on_verification_id"
+  end
+
+  create_table "verification_delivery_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "verification_id", null: false
+    t.uuid "message_id"
+    t.uuid "phone_call_id"
+    t.string "channel", null: false
+    t.string "from", null: false
+    t.string "to", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_verification_delivery_attempts_on_message_id"
+    t.index ["phone_call_id"], name: "index_verification_delivery_attempts_on_phone_call_id"
+    t.index ["sequence_number"], name: "index_verification_delivery_attempts_on_sequence_number", unique: true, order: :desc
+    t.index ["verification_id"], name: "index_verification_delivery_attempts_on_verification_id"
+  end
+
+  create_table "verification_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.uuid "account_id", null: false
+    t.string "name", null: false
+    t.integer "code_length", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_verification_services_on_account_id"
+    t.index ["carrier_id"], name: "index_verification_services_on_carrier_id"
+    t.index ["sequence_number"], name: "index_verification_services_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "verifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "verification_service_id"
+    t.uuid "account_id"
+    t.uuid "carrier_id", null: false
+    t.string "to", null: false
+    t.string "channel", null: false
+    t.string "status", null: false
+    t.string "code", null: false
+    t.string "locale", null: false
+    t.string "country_code", null: false
+    t.integer "verification_attempts_count", default: 0, null: false
+    t.integer "delivery_attempts_count", default: 0, null: false
+    t.datetime "approved_at"
+    t.datetime "canceled_at"
+    t.datetime "expired_at", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_verifications_on_account_id"
+    t.index ["carrier_id"], name: "index_verifications_on_carrier_id"
+    t.index ["created_at"], name: "index_verifications_on_created_at"
+    t.index ["expired_at"], name: "index_verifications_on_expired_at"
+    t.index ["sequence_number"], name: "index_verifications_on_sequence_number", unique: true, order: :desc
+    t.index ["status"], name: "index_verifications_on_status"
+    t.index ["verification_service_id"], name: "index_verifications_on_verification_service_id"
   end
 
   create_table "webhook_endpoints", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -631,16 +713,21 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_21_010730) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
-  add_foreign_key "sip_trunks", "carriers"
   add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
-  add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
-  add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
-  add_foreign_key "users", "carriers"
+  add_foreign_key "verification_attempts", "verifications", on_delete: :cascade
+  add_foreign_key "verification_delivery_attempts", "messages", on_delete: :nullify
+  add_foreign_key "verification_delivery_attempts", "phone_calls", on_delete: :nullify
+  add_foreign_key "verification_delivery_attempts", "verifications", on_delete: :cascade
+  add_foreign_key "verification_services", "accounts", on_delete: :cascade
+  add_foreign_key "verification_services", "carriers", on_delete: :cascade
+  add_foreign_key "verifications", "accounts", on_delete: :nullify
+  add_foreign_key "verifications", "carriers"
+  add_foreign_key "verifications", "verification_services", on_delete: :nullify
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_request_logs", "carriers"
   add_foreign_key "webhook_request_logs", "events"

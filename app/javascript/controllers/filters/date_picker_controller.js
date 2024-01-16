@@ -25,12 +25,15 @@ export default class extends Controller {
         ],
         onSelect: ({date, formattedDate}) => {
           if(formattedDate.length == 1) {
-            let selectedDate = date[0];
-            let minDate = new Date(selectedDate);
-            let maxDate = new Date(selectedDate);
-            minDate.setMonth(selectedDate.getMonth() - 3);
-            maxDate.setMonth(selectedDate.getMonth() + 3);
-            picker.update({minDate: minDate, maxDate: maxDate});
+            if("maxDateRangeMonths" in this.dateRangePickerTarget.dataset) {
+              const maxDateRangeMonths = parseInt(this.dateRangePickerTarget.dataset.maxDateRangeMonths);
+              let selectedDate = date[0];
+              let minDate = new Date(selectedDate);
+              let maxDate = new Date(selectedDate);
+              minDate.setMonth(selectedDate.getMonth() - maxDateRangeMonths);
+              maxDate.setMonth(selectedDate.getMonth() + maxDateRangeMonths);
+              picker.update({minDate: minDate, maxDate: maxDate});
+            }
 
             formattedDate.push(formattedDate[0]);
           }

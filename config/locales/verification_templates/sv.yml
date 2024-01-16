@@ -1,0 +1,6 @@
+sv:
+  language_name: Swedish
+  verification_templates:
+    default:
+      message: "Din %{friendly_name} verifieringskod är: %{code}."
+      call: "Din %{friendly_name} verifieringskod är: %{code}."

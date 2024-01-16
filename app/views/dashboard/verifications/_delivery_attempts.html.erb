@@ -1,0 +1,36 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Date & Time
+      </th>
+
+      <th>
+        Channel
+      </th>
+
+      <th>
+        Delivery status
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% verification.delivery_attempts.each_with_index do |delivery_attempt, index| %>
+      <% delivery_attempt = delivery_attempt.decorated %>
+      <tr id="delivery-attempt-<%= index + 1 %>" role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= local_time(delivery_attempt.created_at) %>
+        </td>
+
+        <td>
+          <%= delivery_attempt.channel.humanize %>
+        </td>
+
+        <td>
+          <%= delivery_attempt.status.humanize %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

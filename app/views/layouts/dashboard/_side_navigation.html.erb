@@ -43,7 +43,7 @@
       </li>
     <% end %>
 
-    <% if policy(:sms_gateway).index? || policy(:sms_gateway_channel_group).index? || policy(:message).index? || policy(:messaging_service).index? %>
+    <% if %i[sms_gateway sms_gateway_channel_group message messaging_service].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-comment"></i> Messaging
@@ -64,7 +64,25 @@
           <% end %>
 
           <% if policy(:messaging_service).index? %>
-            <%= sidebar_nav("Message Services", dashboard_messaging_services_path, icon_class: "fa-solid fa-rectangle-list") %>
+            <%= sidebar_nav("Messaging Services", dashboard_messaging_services_path, icon_class: "fa-solid fa-rectangle-list") %>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
+    <% if %i[verification_service verification].any? { |r| policy(r).index? } %>
+      <li class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-clipboard-check"></i> Verify
+        </a>
+
+        <ul class="nav-group-items">
+          <% if policy(:verification_service).index? %>
+            <%= sidebar_nav("Services", dashboard_verification_services_path, icon_class: "fa-solid fa-list-check") %>
+          <% end %>
+
+          <% if policy(:verification).index? %>
+            <%= sidebar_nav("Verifications", dashboard_verifications_path, icon_class: "fa-regular fa-circle-check") %>
           <% end %>
         </ul>
       </li>

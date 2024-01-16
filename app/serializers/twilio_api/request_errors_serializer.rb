@@ -1,6 +1,6 @@
 module TwilioAPI
   class RequestErrorsSerializer < TwilioAPISerializer
-    DEFAULT_ERROR_CODE = 20422
+    DEFAULT_ERROR_CODE = "20422".freeze
 
     def attributes
       {
@@ -21,7 +21,7 @@ module TwilioAPI
 
     def code
       errors.each do |error|
-        return error.meta.fetch(:code).to_i if error.meta.key?(:code)
+        return error.meta.fetch(:code) if error.meta.key?(:code)
       end
 
       DEFAULT_ERROR_CODE

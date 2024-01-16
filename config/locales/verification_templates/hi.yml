@@ -1,0 +1,6 @@
+hi:
+  language_name: Hindi
+  verification_templates:
+    default:
+      message: "आपका %{friendly_name} सत्यापन कोड है: %{code}."
+      call: "आपका %{friendly_name} सत्यापन कोड है: %{code}."

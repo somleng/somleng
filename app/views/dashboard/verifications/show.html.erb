@@ -1,0 +1,66 @@
+<%= page_title(title: "Verification") %>
+
+<div class="card-body">
+  <% verification = @resource.decorated %>
+
+  <%= show_for(verification) do |f| %>
+    <div class="card mb-3"">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= verification.id %>
+          </code>
+        <% end %>
+
+        <%= f.attribute :status do %>
+          <%= status_badge(verification.status_color) %>
+          <%= verification.status.humanize %>
+        <% end %>
+
+        <%= f.attribute :service do %>
+          <% if verification.verification_service.present? %>
+            <%= external_link_to(verification.verification_service.name, dashboard_verification_service_path(verification.verification_service)) %>
+          <% end %>
+        <% end %>
+
+        <% if policy(:account).show? %>
+          <%= f.attribute :account do %>
+            <% if verification.account.present? %>
+              <%= external_link_to(verification.account.name, dashboard_account_path(verification.account)) %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <%= f.attribute :sent_to, value: verification.to_formatted %>
+
+        <%= f.attribute :country do %>
+          <%= verification.country.emoji_flag %>
+          <%= verification.country.iso_short_name %>
+        <% end %>
+
+        <%= f.attribute :locale %>
+        <%= f.attribute :created_at, value: local_time(verification.created_at) %>
+        <%= f.attribute :approved_at, value: local_time(verification.approved_at) %>
+        <%= f.attribute :expired_at, value: local_time(verification.expired_at) %>
+      </div>
+    </div>
+
+    <div class="card mb-3"">
+      <div class="card-body">
+        <h5 class="card-title">Delivery Attempts</h5>
+
+        <%= render("delivery_attempts", verification:) %>
+      </div>
+    </div>
+
+    <div class="card mb-3"">
+      <div class="card-body">
+        <h5 class="card-title">Verification Attempts</h5>
+
+        <%= render("verification_attempts", verification:) %>
+      </div>
+    </div>
+  <% end %>
+</div>

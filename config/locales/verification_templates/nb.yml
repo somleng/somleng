@@ -1,0 +1,6 @@
+nb:
+  language_name: Norwegian
+  verification_templates:
+    default:
+      message: "Din bekreftelseskode for %{friendly_name} er: %{code}."
+      call: "Din bekreftelseskode for %{friendly_name} er: %{code}."

@@ -1,0 +1,6 @@
+tr:
+  language_name: Turkish
+  verification_templates:
+    default:
+      message: "%{friendly_name} doğrulama kodunuz: %{code}."
+      call: "%{friendly_name} doğrulama kodunuz: %{code}."

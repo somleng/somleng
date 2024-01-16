@@ -1,0 +1,6 @@
+pl:
+  language_name: Polish
+  verification_templates:
+    default:
+      message: "Twój kod weryfikacyjny %{friendly_name} to: %{code}."
+      call: "Twój kod weryfikacyjny %{friendly_name} to: %{code}."

@@ -1,0 +1,6 @@
+ja:
+  language_name: Japanese
+  verification_templates:
+    default:
+      message: "あなたの%{friendly_name} 認証コード： %{code}。"
+      call: "あなたの%{friendly_name} 認証コード： %{code}。"

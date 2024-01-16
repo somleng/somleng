@@ -32,22 +32,24 @@ RSpec.describe "Admin/Messages" do
       messaging_service:,
       phone_number:
     )
+    internal_message = create(:message, :internal)
 
     page.driver.browser.authorize("admin", "password")
     visit admin_messages_path
 
-    click_link("855718224112")
+    expect(page).to have_no_content(internal_message.id)
+    click_on("855718224112")
 
     expect(page).to have_link("Rocket Rides", href: admin_account_path(account))
     expect(page).to have_link("855718224112", href: admin_phone_number_path(phone_number))
 
-    click_link("My Messaging Service")
+    click_on("My Messaging Service")
 
     expect(page).to have_content("https://example.com/messages.xml")
 
-    click_link(message.id)
-    click_link("GoIP")
-    click_link("Smart")
+    click_on(message.id)
+    click_on("GoIP")
+    click_on("Smart")
 
     expect(page).to have_content("85510")
   end

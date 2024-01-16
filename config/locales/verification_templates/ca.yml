@@ -1,0 +1,6 @@
+ca:
+  language_name: Catalan
+  verification_templates:
+    default:
+      message: "El teu %{friendly_name} codi de verificació és: %{code}."
+      call: "El teu %{friendly_name} codi de verificació és: %{code}."

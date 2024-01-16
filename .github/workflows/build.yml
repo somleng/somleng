@@ -76,7 +76,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install libvips
 
-      - uses: FedericoCarboni/setup-ffmpeg@v2
+      - uses: FedericoCarboni/setup-ffmpeg@v3
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -99,6 +99,8 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Prepare Documentation Source
         if: steps.set-deployment-matrix.outputs.matrixLength > 0

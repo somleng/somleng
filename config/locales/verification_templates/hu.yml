@@ -1,0 +1,6 @@
+hu:
+  language_name: Hungarian
+  verification_templates:
+    default:
+      message: "%{friendly_name} ellenőrző kódod: %{code}."
+      call: "%{friendly_name} ellenőrző kódod: %{code}."

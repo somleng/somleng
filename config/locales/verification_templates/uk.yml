@@ -1,0 +1,6 @@
+uk:
+  language_name: Ukrainian
+  verification_templates:
+    default:
+      message: "Ваш код перевірки %{friendly_name}: %{code}."
+      call: "Ваш код перевірки %{friendly_name}: %{code}."

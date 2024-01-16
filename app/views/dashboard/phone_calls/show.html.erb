@@ -1,7 +1,7 @@
 <%= page_title(title: "Phone Call") %>
 
 <div class="card-body">
-  <% phone_call = PhoneCallDecorator.new(@resource) %>
+  <% phone_call = @resource.decorated %>
   <%= show_for(phone_call) do |f| %>
     <%= f.attribute :id, label: "SID" do %>
       <code>

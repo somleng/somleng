@@ -38,8 +38,8 @@ module DashboardHelper
     end
   end
 
-  def external_link_to(text, *args)
-    link_to(*args) do
+  def external_link_to(text, *)
+    link_to(*) do
       "".html_safe + text + " " + content_tag(:i, nil, class: "fa-solid fa-external-link-alt")
     end
   end
@@ -117,7 +117,14 @@ module DashboardHelper
         class: "text-muted small"
       )
     else
-      content << content_tag(:i, "", class: "fas fa-circle text-danger") + " Disconnected"
+      content << (content_tag(:i, "", class: "fas fa-circle text-danger") + " Disconnected")
+    end
+  end
+
+  def status_badge(color)
+    icon_class = color == :success ? "fa-circle-check" : "fa-triangle-exclamation"
+    tag.span(class: "text-#{color}") do
+      tag.i(class: "fa-solid #{icon_class}")
     end
   end
 end

@@ -14,9 +14,11 @@ class Account < ApplicationRecord
           foreign_key: :resource_owner_id,
           dependent: :destroy
 
-  has_many :phone_calls, dependent: :restrict_with_error
-  has_many :messages, dependent: :restrict_with_error
+  has_many :phone_calls, -> { where(internal: false) }, dependent: :restrict_with_error
+  has_many :messages, -> { where(internal: false) }, dependent: :restrict_with_error
   has_many :messaging_services
+  has_many :verification_services
+  has_many :verifications
   has_many :phone_numbers, dependent: :restrict_with_error
   has_many :account_memberships, dependent: :restrict_with_error
   has_many :users, through: :account_memberships
