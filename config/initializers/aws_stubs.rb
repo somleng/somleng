@@ -24,7 +24,27 @@ if Rails.env.development? || Rails.env.test?
           {
             gender: "Female", id: "Celine", language_code: "fr-FR",
             supported_engines: %w[standard]
-          }
+          },
+          {
+            gender: "Female", id: "Zhiyu", language_code: "cmn-CN",
+            supported_engines: %w[neural standard]
+          },
+          {
+            gender: "Female", id: "Hala", language_code: "ar-AE",
+            supported_engines: %w[neural]
+          },
+          {
+            gender: "Female", id: "Zayd", language_code: "ar-AE",
+            supported_engines: %w[neural]
+          },
+          {
+            gender: "Female", id: "Zeina", language_code: "arb",
+            supported_engines: %w[standard]
+          },
+          {
+            gender: "Female", id: "Hiujin", language_code: "yue-CN",
+            supported_engines: %w[neural]
+          },
         ]
       }
     }

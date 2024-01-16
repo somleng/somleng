@@ -503,17 +503,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "tmp_encryption_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "user_id"
-    t.string "sms_gateway_id"
-    t.string "otp_secret"
-    t.string "device_id"
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sequence_number"], name: "index_tmp_encryption_keys_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "tts_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id"
@@ -713,12 +702,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
+  add_foreign_key "sip_trunks", "carriers"
   add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
+  add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
+  add_foreign_key "users", "account_memberships", column: "current_account_membership_id", on_delete: :nullify
+  add_foreign_key "users", "carriers"
   add_foreign_key "verification_attempts", "verifications", on_delete: :cascade
   add_foreign_key "verification_delivery_attempts", "messages", on_delete: :nullify
   add_foreign_key "verification_delivery_attempts", "phone_calls", on_delete: :nullify

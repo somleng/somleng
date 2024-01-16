@@ -63,7 +63,7 @@ RSpec.describe CreateVerification do
       to: "85512334667",
       channel: "call",
       phone_call: have_attributes(
-        twiml: include("Your Rocket Rides verification code is: #{verification.code.chars.join('. ')}."),
+        twiml: include("Your Rocket Rides verification code is: #{verification.code.chars.join(', ')}."),
         internal: true,
         from: phone_number.number,
         to: "85512334667",
@@ -109,7 +109,8 @@ RSpec.describe CreateVerification do
       :verification,
       status: :pending,
       verification_service:,
-      channel: :call
+      channel: :call,
+      locale: :en
     )
 
     verification = CreateVerification.call(
@@ -117,12 +118,16 @@ RSpec.describe CreateVerification do
         verification: existing_verification,
         verification_service:,
         phone_number:,
-        channel: :sms
+        channel: :sms,
+        locale: :de
       )
     )
 
     expect(verification).to eq(existing_verification)
-    expect(verification.channel).to eq("sms")
+    expect(verification).to have_attributes(
+      channel: "sms",
+      locale: "de"
+    )
   end
 
   it "raises an error if there is an issue with the schema" do
