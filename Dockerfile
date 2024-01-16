@@ -27,6 +27,8 @@ COPY Gemfile Gemfile.lock ./
 
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    find "${BUNDLE_PATH}" -name "*.o" -delete && find "${BUNDLE_PATH}" -name "*.c" -delete && \
+    mkdir -p tmp/pids && \
     bundle exec bootsnap precompile --gemfile
 
 COPY package.json yarn.lock ./
