@@ -18,8 +18,8 @@ ENV RAILS_ENV="production" \
 FROM base as build
 
 # Install packages needed to build gems
-RUN apk update && \
-    apk upgrade && \
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
     apk add --update --no-cache build-base git gcompat postgresql-dev nodejs yarn
 
 # Install application gems
@@ -47,8 +47,8 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 FROM base
 
 # Install packages needed for deployment
-RUN apk update && \
-    apk upgrade && \
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
     apk add --update --no-cache build-base gcompat postgresql-dev vips-dev ffmpeg
 
 # Copy built artifacts: gems, application

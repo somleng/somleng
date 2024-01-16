@@ -22,7 +22,7 @@ class CreateVerification < ApplicationWorkflow
     verification = params.fetch(:verification) do
       Verification.create!(params.except(:delivery_attempt))
     end
-    verification.update!(params.slice(:channel))
+    verification.update!(params.slice(:channel, :locale))
     verification
   end
 

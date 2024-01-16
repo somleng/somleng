@@ -27,7 +27,7 @@ class VerificationTemplate
   private
 
   def code_with_punctuation
-    code.chars.join(". ")
+    code.chars.join(", ")
   end
 
   def lookup_translation(*keys, **interpolations)

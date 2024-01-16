@@ -41,7 +41,7 @@ RSpec.describe VerificationTemplate do
       twiml = verification_template.render_voice_twiml
 
       say_verb = twiml_verb(twiml, "Say")
-      expect(say_verb.text).to eq("Your Rocket Rides verification code is: 1. 2. 3. 4. 5. 6. Again: 1. 2. 3. 4. 5. 6. One last time: 1. 2. 3. 4. 5. 6. Goodbye")
+      expect(say_verb.text).to eq("Your Rocket Rides verification code is: 1, 2, 3, 4, 5, 6. Again: 1, 2, 3, 4, 5, 6. One last time: 1, 2, 3, 4, 5, 6. Goodbye")
       expect(say_verb[:language]).to eq("en-US")
     end
 
@@ -56,7 +56,7 @@ RSpec.describe VerificationTemplate do
       twiml = verification_template.render_voice_twiml
       say_verb = twiml_verb(twiml, "Say")
 
-      expect(say_verb.text).to eq("O seu código de verificação para Rocket Rides é: 1. 2. 3. 4. 5. 6.")
+      expect(say_verb.text).to eq("O seu código de verificação para Rocket Rides é: 1, 2, 3, 4, 5, 6.")
       expect(say_verb[:language]).to eq("pt-BR")
     end
 
@@ -71,7 +71,7 @@ RSpec.describe VerificationTemplate do
       twiml = verification_template.render_voice_twiml
       say_verb = twiml_verb(twiml, "Say")
 
-      expect(say_verb.text).to eq("Su codigo de verificacion para Rocket Rides es: 1. 2. 3. 4. 5. 6.")
+      expect(say_verb.text).to eq("Su codigo de verificacion para Rocket Rides es: 1, 2, 3, 4, 5, 6.")
       expect(say_verb[:language]).to eq("es-MX")
     end
 
@@ -86,7 +86,37 @@ RSpec.describe VerificationTemplate do
       twiml = verification_template.render_voice_twiml
       say_verb = twiml_verb(twiml, "Say")
 
-      expect(say_verb.text).to eq("Votre code de vérification Rocket Rides est: 1. 2. 3. 4. 5. 6.")
+      expect(say_verb.text).to eq("Votre code de vérification Rocket Rides est: 1, 2, 3, 4, 5, 6.")
+      expect(say_verb[:language]).to eq("fr-FR")
+    end
+
+    it "handles chinese" do
+      verification_template = VerificationTemplate.new(
+        friendly_name: "Rocket Rides",
+        code: "123456",
+        locale: :cmn,
+        country_code: "CN"
+      )
+
+      twiml = verification_template.render_voice_twiml
+      say_verb = twiml_verb(twiml, "Say")
+
+      expect(say_verb.text).to eq("Votre code de vérification Rocket Rides est: 1, 2, 3, 4, 5, 6.")
+      expect(say_verb[:language]).to eq("fr-FR")
+    end
+
+    it "handles arabic" do
+      verification_template = VerificationTemplate.new(
+        friendly_name: "Rocket Rides",
+        code: "123456",
+        locale: :arb,
+        country_code: "AE"
+      )
+
+      twiml = verification_template.render_voice_twiml
+      say_verb = twiml_verb(twiml, "Say")
+
+      expect(say_verb.text).to eq("Votre code de vérification Rocket Rides est: 1, 2, 3, 4, 5, 6.")
       expect(say_verb[:language]).to eq("fr-FR")
     end
   end
