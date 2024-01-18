@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -178,8 +178,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
     t.uuid "phone_call_id"
     t.uuid "carrier_id", null: false
     t.uuid "account_id", null: false
-    t.string "beneficiary_fingerprint", null: false
-    t.string "beneficiary_country_code", null: false
+    t.string "beneficiary_fingerprint"
+    t.string "beneficiary_country_code"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -211,8 +211,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
     t.string "sms_method"
     t.string "status", null: false
     t.string "status_callback_url"
-    t.string "beneficiary_country_code", null: false
-    t.string "beneficiary_fingerprint", null: false
+    t.string "beneficiary_country_code"
+    t.string "beneficiary_fingerprint"
     t.string "error_code"
     t.string "error_message"
     t.datetime "send_at"
@@ -361,8 +361,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_144449) do
     t.decimal "price", precision: 10, scale: 4
     t.string "price_unit"
     t.string "caller_id"
-    t.string "beneficiary_country_code", null: false
-    t.string "beneficiary_fingerprint", null: false
+    t.string "beneficiary_country_code"
+    t.string "beneficiary_fingerprint"
     t.uuid "sip_trunk_id"
     t.datetime "initiated_at"
     t.datetime "initiating_at"

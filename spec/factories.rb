@@ -76,16 +76,15 @@ FactoryBot.define do
   end
 
   factory :interaction do
-    for_phone_call
-
-    trait :for_phone_call do
-      carrier { phone_call.carrier }
-      account { phone_call.account }
-      interactable_type { "PhoneCall" }
-      phone_call { association :phone_call, to: generate(:phone_number) }
-      beneficiary_fingerprint { phone_call.beneficiary_fingerprint }
-      beneficiary_country_code { phone_call.beneficiary_country_code }
+    transient do
+      interactable { association :phone_call, to: generate(:phone_number) }
     end
+
+    carrier { interactable.carrier }
+    account { interactable.account }
+    beneficiary_fingerprint { interactable.beneficiary_fingerprint }
+    beneficiary_country_code { interactable.beneficiary_country_code }
+    interactable_type { interactable.class.name }
   end
 
   factory :sip_trunk do
@@ -400,6 +399,12 @@ FactoryBot.define do
     body { "Hello World" }
     segments { 1 }
     encoding { "GSM" }
+
+    trait :robot do
+      inbound
+      from { "732873" }
+      to { "85512334667" }
+    end
 
     trait :inbound do
       direction { :inbound }
