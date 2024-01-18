@@ -48,6 +48,22 @@ RspecApiDocumentation.configure do |config|
       | ---------- | --------- |
       | AccountSid | AuthToken |
 
+      ### Store Your Somleng Credentials Securely
+
+      It's important to keep credentials such as your Somleng Account SID and Auth token secure by storing them in a way that prevents unauthorized access.
+      One common method is to store them in environment variables which are then accessed from your app.
+      This keeps them out of code and other places where credentials don't belong.
+
+      Here's an example in Node.js
+
+      ```js
+      const accountSid = process.env.SOMLENG_ACCOUNT_SID;
+      const authToken = process.env.SOMLENG_AUTH_TOKEN;
+      const client = require('somleng')(accountSid, authToken);
+
+      // Make API calls here...
+      ```
+
       ## Helper Libraries
 
       The following is a list of officially supported helper libraries for Somleng. Please refer to the documentation in each library for more details.

@@ -5,6 +5,7 @@ RSpec.describe PublishInteractionData do
     create_phone_call_interaction(phone_call_params: { to: "855715900760" })
     create_phone_call_interaction(phone_call_params: { to: "855715900760" })
     create_phone_call_interaction(phone_call_params: { to: "61438576076" })
+    create(:interaction, interactable: create(:message, :robot))
 
     csv_data = CSV.generate(headers: true) do |csv|
       csv << %w[Date Beneficiaries Interactions]
@@ -33,7 +34,7 @@ RSpec.describe PublishInteractionData do
         csv.to_a == [
           %w[Date Beneficiaries Interactions],
           %w[2023-01-01 1 2],
-          [Date.today.to_s, "2", "3"]
+          [Date.today.to_s, "2", "4"]
         ]
       end
     )
@@ -64,6 +65,6 @@ RSpec.describe PublishInteractionData do
 
   def create_phone_call_interaction(phone_call_params: {}, **params)
     phone_call = create(:phone_call, :outbound, :completed, phone_call_params)
-    create(:interaction, :for_phone_call, phone_call:, **params)
+    create(:interaction, interactable: phone_call, **params)
   end
 end
