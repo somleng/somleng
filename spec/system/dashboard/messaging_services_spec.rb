@@ -31,7 +31,7 @@ RSpec.describe "Messaging Services" do
     visit dashboard_messaging_service_path(messaging_service)
 
     expect(page).to have_link(
-      "855715999999",
+      "+855 71 599 9999",
       href: dashboard_phone_number_path(phone_number)
     )
     expect(page).to have_content("My Messaging Service")
@@ -62,8 +62,8 @@ RSpec.describe "Messaging Services" do
     choices_select("Rocket Rides", from: "Account")
     click_button("Next")
 
-    choices_select("855715777777", from: "Phone numbers")
-    choices_select("855715888888", from: "Phone numbers")
+    choices_select("+855 71 577 7777", from: "Phone numbers")
+    choices_select("+855 71 588 8888", from: "Phone numbers")
     choose("Send a webhook")
     fill_in("Inbound request URL", with: "https://www.example.com/message.xml")
     select("POST", from: "Inbound request method")
@@ -75,8 +75,8 @@ RSpec.describe "Messaging Services" do
     expect(page).to have_content("Messaging service was successfully updated")
     expect(page).to have_content("My Messaging Service")
     expect(page).to have_content("Rocket Rides")
-    expect(page).to have_link("855715777777")
-    expect(page).to have_link("855715888888")
+    expect(page).to have_link("+855 71 577 7777")
+    expect(page).to have_link("+855 71 588 8888")
     expect(page).to have_content("https://www.example.com/message.xml")
     expect(page).to have_content("https://www.example.com/status_callback.xml")
     expect(page).to have_content("Webhook")
@@ -131,8 +131,8 @@ RSpec.describe "Messaging Services" do
     visit dashboard_messaging_service_path(messaging_service)
     click_link("Edit")
     fill_in("Name", with: "My Messaging Service")
-    select("855715777777", from: "Phone numbers")
-    select("855715888888", from: "Phone numbers")
+    select("+855 71 577 7777", from: "Phone numbers")
+    select("+855 71 588 8888", from: "Phone numbers")
     fill_in("Inbound request URL", with: "https://www.example.com/message.xml")
     select("POST", from: "Inbound request method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
@@ -143,8 +143,8 @@ RSpec.describe "Messaging Services" do
 
     expect(page).to have_content("Messaging service was successfully updated")
     expect(page).to have_content("My Messaging Service")
-    expect(page).to have_link("855715777777")
-    expect(page).to have_link("855715888888")
+    expect(page).to have_link("+855 71 577 7777")
+    expect(page).to have_link("+855 71 588 8888")
     expect(page).to have_content("https://www.example.com/message.xml")
     expect(page).to have_content("https://www.example.com/status_callback.xml")
     expect(page).to have_content("Smart encodingYes")

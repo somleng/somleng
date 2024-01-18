@@ -29,16 +29,16 @@ RSpec.describe "Phone Numbers" do
       filter: { from_date: "01/12/2021", to_date: "15/12/2021", enabled: true }
     )
 
-    expect(page).to have_content("855972222222")
-    expect(page).not_to have_content("855973333333")
-    expect(page).not_to have_content("855974444444")
+    expect(page).to have_content("+855 97 222 2222")
+    expect(page).not_to have_content("+855 97 333 3333")
+    expect(page).not_to have_content("+855 97 444 4444")
 
     click_on("Delete")
 
     expect(page).to have_content("Phone numbers were successfully destroyed")
-    expect(page).not_to have_content("855972222222")
-    expect(page).not_to have_content("855973333333")
-    expect(page).not_to have_content("855974444444")
+    expect(page).not_to have_content("+855 97 222 2222")
+    expect(page).not_to have_content("+855 97 333 3333")
+    expect(page).not_to have_content("+855 97 444 4444")
     expect(page).not_to have_selector(:link_or_button, "Delete")
   end
 

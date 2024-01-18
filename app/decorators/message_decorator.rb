@@ -47,6 +47,14 @@ class MessageDecorator < SimpleDelegator
     phone_number_formatter.format(super, format: :e164)
   end
 
+  def from_formatted
+    phone_number_formatter.format(object.from, format: :international)
+  end
+
+  def to_formatted
+    phone_number_formatter.format(object.to, format: :international)
+  end
+
   def sid
     id
   end

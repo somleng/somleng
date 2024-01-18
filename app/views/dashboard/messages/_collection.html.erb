@@ -29,7 +29,7 @@
 
   <tbody>
     <% resources.each do |message| %>
-      <% message = MessageDecorator.new(message) %>
+      <% message = message.decorated %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
           <%= link_to(message.id, dashboard_message_path(message)) %>
@@ -50,11 +50,11 @@
         </td>
 
         <td>
-          <%= message.to %>
+          <%= message.to_formatted %>
         </td>
 
         <td>
-          <%= message.from %>
+          <%= message.from_formatted %>
         </td>
 
         <td>

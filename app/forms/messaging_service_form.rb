@@ -93,7 +93,7 @@ class MessagingServiceForm
   end
 
   def phone_numbers_options_for_select
-    available_phone_numbers.map { |phone_number| [phone_number.number, phone_number.id] }
+    available_phone_numbers.map { |phone_number| [phone_number.decorated.number_formatted, phone_number.id] }
   end
 
   def inbound_message_behavior_options_for_select

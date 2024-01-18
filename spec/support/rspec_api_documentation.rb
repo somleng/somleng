@@ -54,7 +54,7 @@ RspecApiDocumentation.configure do |config|
       One common method is to store them in environment variables which are then accessed from your app.
       This keeps them out of code and other places where credentials don't belong.
 
-      Here's an example in Node.js
+      On the right is an example in Node.js ---->
 
       ```js
       const accountSid = process.env.SOMLENG_ACCOUNT_SID;
@@ -102,7 +102,7 @@ RspecApiDocumentation.configure do |config|
 
       All requests are signed using [JSON Web Token (JWT)](https://jwt.io/) Bearer authentication, according to the HS256 (HMAC-SHA256) algorithm.
 
-      You should verify the events that Somleng sends to your Webhook endpoints. Here's an example in Ruby:
+      You should verify the events that Somleng sends to your Webhook endpoints. On the right is an example in Ruby ---->
 
       ```ruby
       JWT.decode(
