@@ -20,9 +20,10 @@
 
   <tbody>
     <% resources.each do |phone_number| %>
+      <% phone_number = phone_number.decorated %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(phone_number.number, dashboard_phone_number_path(phone_number)) %>
+          <%= link_to(phone_number.number_formatted, dashboard_phone_number_path(phone_number)) %>
         </td>
 
         <% if policy(:account).show? %>

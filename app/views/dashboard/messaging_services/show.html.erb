@@ -38,8 +38,9 @@
 
       <%= show_for(@resource) do |f| %>
         <%= f.association(:phone_numbers, collection_tag: :ul, collection_html: { class: "list-unstyled" }) do |phone_number| %>
+          <% phone_number = phone_number.decorated %>
           <li>
-            <%= external_link_to(phone_number.number, dashboard_phone_number_path(phone_number)) %>
+            <%= external_link_to(phone_number.number_formatted, dashboard_phone_number_path(phone_number)) %>
           </li>
         <% end %>
       <% end %>
