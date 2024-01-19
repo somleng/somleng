@@ -103,6 +103,6 @@ class SIPTrunkForm
   end
 
   def default_sender_scope
-    carrier.phone_numbers
+    carrier.phone_numbers.enabled
   end
 end
