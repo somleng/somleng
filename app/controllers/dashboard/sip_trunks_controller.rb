@@ -50,7 +50,7 @@ module Dashboard
         :authentication_mode, :name, :max_channels,
         :source_ip, :country,
         :host, :dial_string_prefix, :national_dialing,
-        :plus_prefix, :route_prefixes, :caller_id_override_id
+        :plus_prefix, :route_prefixes, :default_sender_id
       )
     end
 

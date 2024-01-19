@@ -4,7 +4,7 @@ class SIPTrunk < ApplicationRecord
   extend Enumerize
 
   has_many :phone_calls
-  belongs_to :caller_id_override, class_name: "PhoneNumber", optional: true
+  belongs_to :default_sender, class_name: "PhoneNumber", optional: true
   belongs_to :carrier
   encrypts :password
 

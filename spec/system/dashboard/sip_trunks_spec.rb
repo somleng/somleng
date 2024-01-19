@@ -39,7 +39,7 @@ RSpec.describe "SIP Trunks" do
     select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
-    choices_select("+855 71 577 7777", from: "Caller ID override")
+    choices_select("+855 71 577 7777", from: "Default sender")
     check("National dialing")
     check("Plus prefix")
     fill_in("Route prefixes", with: "85510")
@@ -114,7 +114,7 @@ RSpec.describe "SIP Trunks" do
     select("Cambodia", from: "Default country code")
     fill_in("Host", with: "96.9.66.131")
     fill_in("Dial string prefix", with: "")
-    choices_select("+855 71 577 7777", from: "Caller ID override")
+    choices_select("+855 71 577 7777", from: "Default sender")
     uncheck("National dialing")
     uncheck("Plus prefix")
 

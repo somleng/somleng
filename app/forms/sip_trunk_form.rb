@@ -23,7 +23,7 @@ class SIPTrunkForm
   attribute :dial_string_prefix
   attribute :national_dialing, :boolean, default: false
   attribute :plus_prefix, :boolean, default: false
-  attribute :caller_id_override_id
+  attribute :default_sender_id
 
   enumerize :authentication_mode, in: SIPTrunk.authentication_mode.values
 
@@ -55,7 +55,7 @@ class SIPTrunkForm
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
-      caller_id_override_id: sip_trunk.caller_id_override_id
+      default_sender_id: sip_trunk.default_sender_id
     )
   end
 
@@ -79,14 +79,14 @@ class SIPTrunkForm
       outbound_national_dialing: national_dialing,
       outbound_plus_prefix: plus_prefix,
       outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes),
-      caller_id_override: find_caller_id_override
+      default_sender: default_sender_id.present? && default_sender_scope.find(default_sender_id)
     }
 
     sip_trunk.save!
   end
 
-  def caller_id_override_options_for_select
-    caller_id_override_scope.map do |phone_number|
+  def default_sender_options_for_select
+    default_sender_scope.map do |phone_number|
       [ phone_number.decorated.number_formatted, phone_number.id ]
     end
   end
@@ -102,13 +102,7 @@ class SIPTrunkForm
     errors.add(:source_ip, :taken)
   end
 
-  def find_caller_id_override
-    return if caller_id_override_id.blank?
-
-    caller_id_override_scope.find(caller_id_override_id)
-  end
-
-  def caller_id_override_scope
+  def default_sender_scope
     carrier.phone_numbers
   end
 end

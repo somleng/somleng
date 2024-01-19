@@ -104,8 +104,8 @@
 
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :caller_id_override_id,
-                        collection: resource.caller_id_override_options_for_select,
+            <%= f.input :default_sender_id,
+                        collection: resource.default_sender_options_for_select,
                         hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified.",
                         include_blank: true,
                         input_html: {

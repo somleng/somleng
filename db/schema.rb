@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_19_150018) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_19_154859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -460,9 +460,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_19_150018) do
     t.string "password"
     t.string "inbound_country_code"
     t.integer "max_channels"
-    t.uuid "caller_id_override_id"
-    t.index ["caller_id_override_id"], name: "index_sip_trunks_on_caller_id_override_id"
+    t.uuid "default_sender_id"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
+    t.index ["default_sender_id"], name: "index_sip_trunks_on_default_sender_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
@@ -500,9 +500,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_19_150018) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "caller_id_override_id"
-    t.index ["caller_id_override_id"], name: "index_sms_gateways_on_caller_id_override_id"
+    t.uuid "default_sender_id"
     t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
+    t.index ["default_sender_id"], name: "index_sms_gateways_on_default_sender_id"
     t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
@@ -707,12 +707,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_19_150018) do
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
   add_foreign_key "sip_trunks", "carriers"
-  add_foreign_key "sip_trunks", "phone_numbers", column: "caller_id_override_id", on_delete: :nullify
+  add_foreign_key "sip_trunks", "phone_numbers", column: "default_sender_id", on_delete: :nullify
   add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
-  add_foreign_key "sms_gateways", "phone_numbers", column: "caller_id_override_id", on_delete: :nullify
+  add_foreign_key "sms_gateways", "phone_numbers", column: "default_sender_id", on_delete: :nullify
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify

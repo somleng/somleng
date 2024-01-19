@@ -2,7 +2,7 @@ class SMSGateway < ApplicationRecord
   include Redis::Objects
 
   belongs_to :carrier
-  belongs_to :caller_id_override, class_name: "PhoneNumber", optional: true
+  belongs_to :default_sender, class_name: "PhoneNumber", optional: true
   has_many :messages
   has_many :channel_groups, class_name: "SMSGatewayChannelGroup"
   has_many :channels, class_name: "SMSGatewayChannel"
