@@ -3,6 +3,7 @@ require "administrate/base_dashboard"
 class SIPTrunkDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
+    default_sender: Field::BelongsTo,
     id: Field::String,
     name: Field::String,
     max_channels: Field::String,
@@ -35,6 +36,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     outbound_dial_string_prefix
     outbound_national_dialing
     outbound_plus_prefix
+    default_sender
     created_at
     updated_at
   ].freeze
