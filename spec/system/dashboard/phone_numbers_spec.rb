@@ -88,8 +88,6 @@ RSpec.describe "Phone Numbers" do
   it "Update a phone number" do
     carrier = create(:carrier)
     create(:account, carrier:, name: "Rocket Rides")
-    create(:sip_trunk, carrier:, name: "My SIP Trunk")
-    create(:sms_gateway, carrier:, name: "My SMS Gateway")
 
     user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:)
@@ -99,15 +97,11 @@ RSpec.describe "Phone Numbers" do
 
     click_link("Edit")
     select("Rocket Rides", from: "Account")
-    select("My SIP Trunk", from: "SIP trunk")
-    select("My SMS Gateway", from: "SMS gateway")
 
     click_button "Update Phone number"
 
     expect(page).to have_content("Phone number was successfully updated")
     expect(page).to have_content("Rocket Rides")
-    expect(page).to have_content("My SIP Trunk")
-    expect(page).to have_content("My SMS Gateway")
   end
 
   it "Delete a phone number" do

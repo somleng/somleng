@@ -65,25 +65,5 @@
         </div>
       </div>
     <% end %>
-
-    <% if policy(:sip_trunk).show? || policy(:sms_gateway).show? %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Sender Pools</h5>
-
-          <% if @resource.sip_trunk.present? %>
-            <%= f.attribute :sip_trunk, value: external_link_to(@resource.sip_trunk.name, dashboard_sip_trunk_path(@resource.sip_trunk)) %>
-          <% else %>
-            <%= f.attribute :sip_trunk %>
-          <% end %>
-
-          <% if @resource.sms_gateway.present? %>
-            <%= f.attribute :sms_gateway, value: external_link_to(@resource.sms_gateway.name, dashboard_sms_gateway_path(@resource.sms_gateway)) %>
-          <% else %>
-            <%= f.attribute :sms_gateway %>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
   <% end %>
 </div>

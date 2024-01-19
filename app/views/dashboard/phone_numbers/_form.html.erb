@@ -37,34 +37,6 @@
 
     <div class="card mb-3">
       <div class="card-body">
-        <h5 class="card-title">Sender Pools</h5>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <%= f.input :sip_trunk_id,
-                        collection: @resource.sip_trunk_options_for_select,
-                        selected: @resource.sip_trunk_id,
-                        prompt: "Select a SIP Trunk",
-                        include_blank: true,
-                        hint: "Optionally assign the number to a ".html_safe + link_to("SIP trunk", dashboard_sip_trunks_path) + " sender pool to be used as a caller ID when none is specified.",
-                        input_html: { data: { behavior: "choices-input" } } %>
-          </div>
-
-          <div class="col-sm-6">
-            <%= f.input :sms_gateway_id,
-                        collection: @resource.sms_gateway_options_for_select,
-                        selected: @resource.sms_gateway_id,
-                        prompt: "Select a SMS Gateway",
-                        include_blank: true,
-                        hint: "Optionally assign the number to a ".html_safe + link_to("SMS gateway", dashboard_sms_gateways_path) + " sender pool to be used as a caller ID when none is specified.",
-                        input_html: { data: { behavior: "choices-input" } } %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-body">
         <h5 class="card-title">Danger Zone</h5>
 
         <div class="row">

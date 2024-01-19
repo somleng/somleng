@@ -19,11 +19,11 @@ class SIPTrunkForm
   attribute :country
   attribute :source_ip
 
-  attribute :sender_pool_phone_number_ids, FilledArrayType.new, default: []
   attribute :host
   attribute :dial_string_prefix
   attribute :national_dialing, :boolean, default: false
   attribute :plus_prefix, :boolean, default: false
+  attribute :caller_id_override_id
 
   enumerize :authentication_mode, in: SIPTrunk.authentication_mode.values
 
@@ -34,7 +34,6 @@ class SIPTrunkForm
   validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
   validate :validate_source_ip
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
-  validate :validate_sender_pool_phone_numbers
 
   delegate :new_record?, :persisted?, :id, to: :sip_trunk
 
@@ -56,7 +55,7 @@ class SIPTrunkForm
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
-      sender_pool_phone_number_ids: sip_trunk.sender_pool_phone_number_ids
+      caller_id_override_id: sip_trunk.caller_id_override_id
     )
   end
 
@@ -79,19 +78,15 @@ class SIPTrunkForm
       outbound_dial_string_prefix: dial_string_prefix.presence,
       outbound_national_dialing: national_dialing,
       outbound_plus_prefix: plus_prefix,
-      outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes)
+      outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes),
+      caller_id_override: find_caller_id_override
     }
 
-    SIPTrunk.transaction do
-      sip_trunk.save!
-      update_sender_pool!
-    end
-
-    true
+    sip_trunk.save!
   end
 
-  def phone_numbers_options_for_select
-    PhoneNumber.where(id: sender_pool_select.all_values).map do |phone_number|
+  def caller_id_override_options_for_select
+    caller_id_override_scope.map do |phone_number|
       [ phone_number.decorated.number_formatted, phone_number.id ]
     end
   end
@@ -107,25 +102,13 @@ class SIPTrunkForm
     errors.add(:source_ip, :taken)
   end
 
-  def sender_pool_select
-    @sender_pool_select ||= MultiSelectFormComponent.new(
-      selected_values: sender_pool_phone_number_ids,
-      available_values: carrier.phone_numbers.where(sip_trunk_id: nil).pluck(:id),
-      existing_values: sip_trunk.sender_pool_phone_number_ids
-    )
+  def find_caller_id_override
+    return if caller_id_override_id.blank?
+
+    caller_id_override_scope.find(caller_id_override_id)
   end
 
-  def validate_sender_pool_phone_numbers
-    return if errors.any?
-    return if sender_pool_select.valid?
-
-    errors.add(:sender_pool_phone_number_ids, :invalid)
-  end
-
-  def update_sender_pool!
-    PhoneNumber.transaction do
-      PhoneNumber.where(id: sender_pool_select.values_to_remove).update_all(sip_trunk_id: nil)
-      PhoneNumber.where(id: sender_pool_select.values_to_add).update_all(sip_trunk_id: sip_trunk.id)
-    end
+  def caller_id_override_scope
+    carrier.phone_numbers
   end
 end

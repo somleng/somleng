@@ -28,8 +28,7 @@ RSpec.describe "SIP Trunks" do
 
   it "Create a SIP Trunk", :js do
     user = create(:user, :carrier, :admin)
-    create(:phone_number, carrier: user.carrier, number: "855715777777")
-    create(:phone_number, carrier: user.carrier, number: "855715778888")
+    phone_number = create(:phone_number, carrier: user.carrier, number: "855715777777")
 
     carrier_sign_in(user)
     visit dashboard_sip_trunks_path
@@ -40,8 +39,7 @@ RSpec.describe "SIP Trunks" do
     select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
-    choices_select("+855 71 577 7777", from: "Sender pool")
-    choices_select("+855 71 577 8888", from: "Sender pool")
+    choices_select("+855 71 577 7777", from: "Caller ID override")
     check("National dialing")
     check("Plus prefix")
     fill_in("Route prefixes", with: "85510")
@@ -54,8 +52,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("Mexico (52)")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_content("Unlimited")
-    expect(page).to have_link("+855 71 577 7777")
-    expect(page).to have_link("+855 71 577 8888")
+    expect(page).to have_link("+855 71 577 7777", href: dashboard_phone_number_path(phone_number))
   end
 
   it "Creates a SIP trunk with client credentials", :js do
@@ -106,8 +103,7 @@ RSpec.describe "SIP Trunks" do
       outbound_national_dialing: true,
       outbound_plus_prefix: true
     )
-    create(:phone_number, carrier:, number: "855715777777")
-    create(:phone_number, carrier:, number: "855715778888", sip_trunk:)
+    phone_number = create(:phone_number, carrier:, number: "855715777777")
 
     carrier_sign_in(user)
     visit dashboard_sip_trunk_path(sip_trunk)
@@ -118,7 +114,7 @@ RSpec.describe "SIP Trunks" do
     select("Cambodia", from: "Default country code")
     fill_in("Host", with: "96.9.66.131")
     fill_in("Dial string prefix", with: "")
-    choices_select("+855 71 577 7777", from: "Sender pool")
+    choices_select("+855 71 577 7777", from: "Caller ID override")
     uncheck("National dialing")
     uncheck("Plus prefix")
 
@@ -129,7 +125,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("96.9.66.131")
     expect(page).to have_content("Cambodia")
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.131")
-    expect(page).to have_link("+855 71 577 7777")
+    expect(page).to have_link("+855 71 577 7777", href: dashboard_phone_number_path(phone_number))
   end
 
   it "Delete a SIP Trunk" do

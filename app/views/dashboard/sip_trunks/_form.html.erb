@@ -103,23 +103,22 @@
         </div>
 
         <div class="row">
-          <div class="col-sm-12">
-            <%= f.input(
-              :sender_pool_phone_number_ids,
-              label: "Sender pool",
-              collection: resource.phone_numbers_options_for_select,
-              selected: resource.sender_pool_phone_number_ids,
-              input_html: {
-                multiple: true,
-                data: {
-                  behavior: "choices-input",
-                  choices_options: {
-                    removeItemButton: true
-                  }
-                }
-              },
-              hint: "A list of phone numbers which can be used as caller IDs when none is specified.",
-            ) %>
+          <div class="col-sm-6">
+            <%= f.input :caller_id_override_id,
+                        label: "Caller ID override",
+                        collection: resource.caller_id_override_options_for_select,
+                        hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified.",
+                        include_blank: true,
+                        selected: resource.caller_id_override_id,
+                        input_html: {
+                          data: {
+                            behavior: "choices-input",
+                            choices_options: {
+                              removeItemButton: true
+                            }
+                          }
+                        }
+              %>
           </div>
         </div>
 

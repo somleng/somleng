@@ -86,11 +86,10 @@
           <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" %>
         <% end %>
 
-        <%= f.association(:sender_pool_phone_numbers, label: "Sender pool", collection_tag: :ul, collection_html: { class: "list-unstyled" }) do |phone_number| %>
-          <% phone_number = phone_number.decorated %>
-          <li>
-            <%= external_link_to(phone_number.number_formatted, dashboard_phone_number_path(phone_number)) %>
-          </li>
+        <% if @resource.caller_id_override.present? %>
+          <%= f.attribute :caller_id_override, value: external_link_to(@resource.caller_id_override.decorated.number_formatted, dashboard_phone_number_path(@resource.caller_id_override)) %>
+        <% else %>
+          <%= f.attribute :caller_id_override %>
         <% end %>
 
         <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
