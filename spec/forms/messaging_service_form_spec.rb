@@ -98,6 +98,7 @@ RSpec.describe MessagingServiceForm do
       ]
 
       expect(form.save).to be_truthy
+
       expect(
         messaging_service.reload.phone_numbers
       ).to match_array([unconfigured_phone_number, configured_phone_number])

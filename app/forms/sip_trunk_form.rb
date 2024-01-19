@@ -19,6 +19,7 @@ class SIPTrunkForm
   attribute :country
   attribute :source_ip
 
+  attribute :sender_pool_phone_number_ids, FilledArrayType.new, default: []
   attribute :host
   attribute :dial_string_prefix
   attribute :national_dialing, :boolean, default: false
@@ -33,6 +34,7 @@ class SIPTrunkForm
   validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
   validate :validate_source_ip
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
+  validate :validate_sender_pool_phone_numbers
 
   delegate :new_record?, :persisted?, :id, to: :sip_trunk
 
@@ -53,7 +55,8 @@ class SIPTrunkForm
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
-      route_prefixes: sip_trunk.outbound_route_prefixes
+      route_prefixes: sip_trunk.outbound_route_prefixes,
+      sender_pool_phone_number_ids: sip_trunk.sender_pool_phone_number_ids
     )
   end
 
@@ -79,7 +82,18 @@ class SIPTrunkForm
       outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes)
     }
 
-    sip_trunk.save!
+    SIPTrunk.transaction do
+      sip_trunk.save!
+      update_sender_pool!
+    end
+
+    true
+  end
+
+  def phone_numbers_options_for_select
+    PhoneNumber.where(id: sender_pool_select.all_values).map do |phone_number|
+      [ phone_number.decorated.number_formatted, phone_number.id ]
+    end
   end
 
   private
@@ -91,5 +105,27 @@ class SIPTrunkForm
     return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
 
     errors.add(:source_ip, :taken)
+  end
+
+  def sender_pool_select
+    @sender_pool_select ||= MultiSelectFormComponent.new(
+      selected_values: sender_pool_phone_number_ids,
+      available_values: carrier.phone_numbers.where(sip_trunk_id: nil).pluck(:id),
+      existing_values: sip_trunk.sender_pool_phone_number_ids
+    )
+  end
+
+  def validate_sender_pool_phone_numbers
+    return if errors.any?
+    return if sender_pool_select.valid?
+
+    errors.add(:sender_pool_phone_number_ids, :invalid)
+  end
+
+  def update_sender_pool!
+    PhoneNumber.transaction do
+      PhoneNumber.where(id: sender_pool_select.values_to_remove).update_all(sip_trunk_id: nil)
+      PhoneNumber.where(id: sender_pool_select.values_to_add).update_all(sip_trunk_id: sip_trunk.id)
+    end
   end
 end

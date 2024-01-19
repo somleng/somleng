@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_19_093323) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -418,12 +418,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
     t.bigserial "sequence_number", null: false
     t.uuid "carrier_id", null: false
     t.boolean "enabled", default: true, null: false
+    t.uuid "sms_gateway_id"
+    t.uuid "sip_trunk_id"
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["enabled"], name: "index_phone_numbers_on_enabled"
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
     t.index ["number"], name: "index_phone_numbers_on_number"
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
+    t.index ["sip_trunk_id"], name: "index_phone_numbers_on_sip_trunk_id"
+    t.index ["sms_gateway_id"], name: "index_phone_numbers_on_sms_gateway_id"
   end
 
   create_table "recordings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -700,6 +704,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
+  add_foreign_key "phone_numbers", "sip_trunks", on_delete: :nullify
+  add_foreign_key "phone_numbers", "sms_gateways", on_delete: :nullify
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
   add_foreign_key "sip_trunks", "carriers"

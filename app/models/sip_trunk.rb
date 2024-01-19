@@ -4,6 +4,7 @@ class SIPTrunk < ApplicationRecord
   extend Enumerize
 
   has_many :phone_calls
+  has_many :sender_pool_phone_numbers, class_name: "PhoneNumber"
   belongs_to :carrier
   encrypts :password
 

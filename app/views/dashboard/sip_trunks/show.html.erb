@@ -86,6 +86,13 @@
           <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" %>
         <% end %>
 
+        <%= f.association(:sender_pool_phone_numbers, label: "Sender pool", collection_tag: :ul, collection_html: { class: "list-unstyled" }) do |phone_number| %>
+          <% phone_number = phone_number.decorated %>
+          <li>
+            <%= external_link_to(phone_number.number_formatted, dashboard_phone_number_path(phone_number)) %>
+          </li>
+        <% end %>
+
         <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
           <code>
             <%= @resource.outbound_example_dial_string %>

@@ -103,6 +103,27 @@
         </div>
 
         <div class="row">
+          <div class="col-sm-12">
+            <%= f.input(
+              :sender_pool_phone_number_ids,
+              label: "Sender pool",
+              collection: resource.phone_numbers_options_for_select,
+              selected: resource.sender_pool_phone_number_ids,
+              input_html: {
+                multiple: true,
+                data: {
+                  behavior: "choices-input",
+                  choices_options: {
+                    removeItemButton: true
+                  }
+                }
+              },
+              hint: "A list of phone numbers which can be used as caller IDs when none is specified.",
+            ) %>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-sm-6">
             <%= f.input :national_dialing, as: :boolean, wrapper: :custom_boolean_switch, hint: "Formats the dial string in national dialing format instead of E.164" %>
           </div>
