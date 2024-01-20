@@ -5,7 +5,7 @@ class PhoneNumberForm
   extend Enumerize
 
   attribute :carrier
-  attribute :number
+  attribute :number, PhoneNumberType.new
   attribute :account_id
   attribute :enabled, default: true
   attribute :phone_number, default: -> { PhoneNumber.new }

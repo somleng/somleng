@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource], html: { data: { turbo: false } }) do |f| %>
+  <%= simple_form_for([:dashboard, resource]) do |f| %>
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">General</h5>
@@ -9,7 +9,8 @@
             <%=
               f.input(
                 :friendly_name,
-                hint: "Friendly name is the brand name that appears in the body of your verification messages, and helps users understand who the message is coming from. Max: #{pluralize(VerificationService::MAX_NAME_LENGTH, 'character')}."
+                hint: "Friendly name is the brand name that appears in the body of your verification messages, and helps users understand who the message is coming from. Max: #{pluralize(VerificationService::MAX_NAME_LENGTH, 'character')}.",
+                input_html: { maxlength: VerificationService::MAX_NAME_LENGTH }
               ) %>
           </div>
 

@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import DashboardController from "./dashboard_controller"
+application.register("dashboard", DashboardController)
+
 import Filters__DatePickerController from "./filters/date_picker_controller"
 application.register("filters--date-picker", Filters__DatePickerController)
 

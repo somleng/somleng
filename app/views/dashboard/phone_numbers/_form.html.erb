@@ -10,6 +10,7 @@
             <%=
               f.input(
                 :number,
+                required: true,
                 disabled: resource.persisted?,
                 hint: resource.new_record? && "Phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
               ) %>
