@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource], html: { data: { controller: "sip-trunks", turbo: false } }) do |f| %>
+  <%= simple_form_for([:dashboard, resource], html: { data: { controller: "sip-trunks" } }) do |f| %>
 
     <div class="card mb-3">
       <div class="card-body">
@@ -31,7 +31,7 @@
           </div>
 
           <div class="col-sm-6">
-            <%= f.input :max_channels, hint: "The maximum number of channels/concurrent calls. Leave blank for unlimited channels" %>
+            <%= f.input :max_channels, as: :integer, hint: "The maximum number of channels/concurrent calls. Leave blank for unlimited channels" %>
           </div>
         </div>
       </div>

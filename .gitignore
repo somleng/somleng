@@ -64,3 +64,5 @@ yarn-debug.log*
 /config/credentials/production.key
 
 /config/credentials/staging.key
+
+dump.rdb

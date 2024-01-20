@@ -1,7 +1,7 @@
 <%= page_title(title: "Edit Carrier Settings") %>
 
 <div class="card-body">
-  <%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group, html: { data: { turbo: false }}) do |f| %>
+  <%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group) do |f| %>
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">General</h5>
