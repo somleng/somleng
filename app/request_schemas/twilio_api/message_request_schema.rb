@@ -9,6 +9,7 @@ module TwilioAPI
            default: -> { SmartEncoding.new }
     option :message_destination_schema_rules,
            default: -> { MessageDestinationSchemaRules.new }
+    option :sender, optional: true
 
     option :url_validator, default: proc { URLValidator.new(allow_http: true) }
 
@@ -60,9 +61,8 @@ module TwilioAPI
         phone_numbers = account.phone_numbers
       end
 
-      context[:phone_number] = phone_numbers.find_by(number: values[:From])
-
-      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+      context[:phone_number] = sender || phone_numbers.find_by(number: values[:From])
+      next if sender.present? || phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
 
       base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
     end
@@ -127,7 +127,7 @@ module TwilioAPI
     def smart_encode(body)
       smart_encoding_result = smart_encoding.encode(body)
 
-      [smart_encoding_result.to_s, smart_encoding_result.smart_encoded?]
+      [ smart_encoding_result.to_s, smart_encoding_result.smart_encoded? ]
     end
 
     def message_status(context, params)

@@ -59,7 +59,8 @@ class CreateVerification < ApplicationWorkflow
         Body: delivery_attempt.verification.default_template.render_message
       },
       options: {
-        account: delivery_attempt.verification.account
+        account: delivery_attempt.verification.account,
+        sender: delivery_attempt.phone_number
       }
     )
   end

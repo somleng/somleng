@@ -88,6 +88,7 @@ RSpec.describe "Phone Numbers" do
   it "Update a phone number" do
     carrier = create(:carrier)
     create(:account, carrier:, name: "Rocket Rides")
+
     user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:)
 
@@ -96,6 +97,7 @@ RSpec.describe "Phone Numbers" do
 
     click_link("Edit")
     select("Rocket Rides", from: "Account")
+
     click_button "Update Phone number"
 
     expect(page).to have_content("Phone number was successfully updated")

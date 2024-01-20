@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_20_012810) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -460,7 +460,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
     t.string "password"
     t.string "inbound_country_code"
     t.integer "max_channels"
+    t.uuid "default_sender_id"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
+    t.index ["default_sender_id"], name: "index_sip_trunks_on_default_sender_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
@@ -498,7 +500,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "default_sender_id"
     t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
+    t.index ["default_sender_id"], name: "index_sms_gateways_on_default_sender_id"
     t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
@@ -587,8 +591,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "phone_number_id"
     t.index ["message_id"], name: "index_verification_delivery_attempts_on_message_id"
     t.index ["phone_call_id"], name: "index_verification_delivery_attempts_on_phone_call_id"
+    t.index ["phone_number_id"], name: "index_verification_delivery_attempts_on_phone_number_id"
     t.index ["sequence_number"], name: "index_verification_delivery_attempts_on_sequence_number", unique: true, order: :desc
     t.index ["verification_id"], name: "index_verification_delivery_attempts_on_verification_id"
   end
@@ -703,10 +709,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
   add_foreign_key "sip_trunks", "carriers"
+  add_foreign_key "sip_trunks", "phone_numbers", column: "default_sender_id", on_delete: :nullify
   add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
+  add_foreign_key "sms_gateways", "phone_numbers", column: "default_sender_id", on_delete: :nullify
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
@@ -715,6 +723,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_053629) do
   add_foreign_key "verification_attempts", "verifications", on_delete: :cascade
   add_foreign_key "verification_delivery_attempts", "messages", on_delete: :nullify
   add_foreign_key "verification_delivery_attempts", "phone_calls", on_delete: :nullify
+  add_foreign_key "verification_delivery_attempts", "phone_numbers", on_delete: :nullify
   add_foreign_key "verification_delivery_attempts", "verifications", on_delete: :cascade
   add_foreign_key "verification_services", "accounts", on_delete: :cascade
   add_foreign_key "verification_services", "carriers", on_delete: :cascade

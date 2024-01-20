@@ -41,18 +41,29 @@
   <% phone_number = @resource.decorated %>
 
   <%= show_for(phone_number) do |f| %>
-    <%= f.attribute :number, value: phone_number.number_formatted  %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <%= f.attribute :number, value: phone_number.number_formatted  %>
+        <%= f.attribute :enabled %>
+        <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+        <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+      </div>
+    </div>
 
     <% if policy(:account).show? %>
-      <% if @resource.account.present? %>
-        <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
-      <% else %>
-        <%= f.attribute :account %>
-      <% end %>
-    <% end %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Account Settings</h5>
 
-    <%= f.attribute :enabled %>
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+          <% if @resource.account.present? %>
+            <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
+          <% else %>
+            <%= f.attribute :account %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   <% end %>
 </div>

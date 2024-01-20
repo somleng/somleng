@@ -1,30 +1,51 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource]) do |f| %>
-    <div class="row">
-      <div class="col-sm-6">
-        <%=
-          f.input(
-            :number,
-            as: :numeric,
-            disabled: resource.persisted?,
-            hint: "Phone number or shortcode"
-          ) %>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :number,
+                disabled: resource.persisted?,
+                hint: resource.new_record? && "Phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
+              ) %>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-6">
-          <%= f.input :account_id,
-                      collection: resource.account_options_for_select,
-                      hint: "Optionally assign the phone number to an account",
-                      selected: resource.account_id,
-                      disabled: resource.assigned?,
-                      prompt: "",
-                      input_html: { data: { behavior: "choices-input" } } %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Account Settings</h5>
+        <div class="row">
+          <div class="col-sm-6">
+              <%= f.input :account_id,
+                          collection: resource.account_options_for_select,
+                          hint: resource.account_id.blank? && "Optionally assign the phone number to an account",
+                          selected: resource.account_id,
+                          disabled: resource.assigned?,
+                          prompt: "",
+                          input_html: { data: { behavior: "choices-input" } } %>
+          </div>
+        </div>
       </div>
     </div>
 
-    <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Danger Zone</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch, hint: "Phone numbers which are disabled are blocked from being used by any accounts." %>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <%= f.button :submit %>
   <% end %>

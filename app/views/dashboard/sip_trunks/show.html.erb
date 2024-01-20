@@ -86,6 +86,12 @@
           <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" %>
         <% end %>
 
+        <% if @resource.default_sender.present? %>
+          <%= f.attribute :default_sender, value: external_link_to(@resource.default_sender.decorated.number_formatted, dashboard_phone_number_path(@resource.default_sender)) %>
+        <% else %>
+          <%= f.attribute :default_sender %>
+        <% end %>
+
         <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
           <code>
             <%= @resource.outbound_example_dial_string %>

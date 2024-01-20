@@ -27,7 +27,7 @@ class PhoneNumberForm
       phone_number:,
       account_id: phone_number.account_id,
       carrier: phone_number.carrier,
-      number: phone_number.number,
+      number: phone_number.decorated.number_formatted,
       enabled: phone_number.enabled
     )
   end
@@ -44,7 +44,7 @@ class PhoneNumberForm
   end
 
   def account_options_for_select
-    carrier.accounts.map { |account| [account.name, account.id] }
+    carrier.accounts.map { |account| [ account.name, account.id ] }
   end
 
   private

@@ -6,6 +6,7 @@ class SMSGatewayForm
   attribute :sms_gateway, default: -> { SMSGateway.new }
   attribute :max_channels
   attribute :name
+  attribute :default_sender_id
 
   validates :name, presence: true
   validates :max_channels,
@@ -25,8 +26,10 @@ class SMSGatewayForm
   def self.initialize_with(sms_gateway)
     new(
       sms_gateway:,
+      carrier: sms_gateway.carrier,
       name: sms_gateway.name,
-      max_channels: sms_gateway.max_channels
+      max_channels: sms_gateway.max_channels,
+      default_sender_id: sms_gateway.default_sender_id
     )
   end
 
@@ -36,9 +39,22 @@ class SMSGatewayForm
     sms_gateway.attributes = {
       name:,
       max_channels:,
-      carrier:
+      carrier:,
+      default_sender: default_sender_id.present? && default_sender_scope.find(default_sender_id)
     }
 
     sms_gateway.save!
+  end
+
+  def default_sender_options_for_select
+    default_sender_scope.map do |phone_number|
+      [ phone_number.decorated.number_formatted, phone_number.id ]
+    end
+  end
+
+  private
+
+  def default_sender_scope
+    carrier.phone_numbers.enabled
   end
 end
