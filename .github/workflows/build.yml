@@ -99,8 +99,6 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Prepare Documentation Source
         if: steps.set-deployment-matrix.outputs.matrixLength > 0
