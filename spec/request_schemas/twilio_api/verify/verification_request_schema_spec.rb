@@ -84,7 +84,8 @@ module TwilioAPI
         expect(
           validate_request_schema(
             input_params: {
-              To: pending_verification_with_too_many_delivery_attempts.to
+              To: pending_verification_with_too_many_delivery_attempts.to,
+              Channel: "sms"
             },
             options: {
               verification_service:
@@ -97,7 +98,8 @@ module TwilioAPI
         expect(
           validate_request_schema(
             input_params: {
-              To: pending_verification.to
+              To: pending_verification.to,
+              Channel: "sms"
             },
             options: {
               verification_service:
@@ -168,9 +170,10 @@ module TwilioAPI
         )
       end
 
-      it "validates a phone number is configured" do
+      it "validates a phone number is enabled" do
         verification_service = create(:verification_service)
-        verification_service_from_account_with_configured_phone_number, _phone_number = create_verification_service
+        create(:phone_number, :disabled, carrier: verification_service.carrier)
+        verification_service_from_carrier_with_configured_phone_number, = create_verification_service
 
         expect(
           validate_request_schema(
@@ -179,7 +182,7 @@ module TwilioAPI
               Channel: "sms"
             },
             options: {
-              verification_service: verification_service_from_account_with_configured_phone_number
+              verification_service: verification_service_from_carrier_with_configured_phone_number
             }
           )
         ).to have_valid_schema
@@ -219,6 +222,7 @@ module TwilioAPI
           country_code: "KH",
           locale: "en",
           delivery_attempt: {
+            phone_number:,
             from: phone_number.number
           }
         )
@@ -271,13 +275,10 @@ module TwilioAPI
 
       def create_verification_service(attributes = {})
         verification_service = create(:verification_service, attributes)
-        phone_number = create(
-          :phone_number, :assigned_to_account,
-          account: verification_service.account
-        )
-        create(:sms_gateway, carrier: verification_service.carrier)
-        create(:sip_trunk, carrier: verification_service.carrier)
-        [verification_service, phone_number]
+        phone_number = create(:phone_number, carrier: verification_service.carrier)
+        create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number)
+        create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number)
+        [ verification_service, phone_number ]
       end
     end
   end

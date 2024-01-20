@@ -25,6 +25,7 @@ RSpec.describe CreateVerification do
       locale: "en"
     )
     expect(verification.delivery_attempts.first).to have_attributes(
+      phone_number:,
       from: phone_number.number,
       to: "85512334667",
       channel: "sms",
@@ -155,6 +156,7 @@ RSpec.describe CreateVerification do
       locale: "en",
       country_code: "KH",
       delivery_attempt: {
+        phone_number:,
         from: phone_number.number
       }
     )
@@ -168,6 +170,6 @@ RSpec.describe CreateVerification do
     )
     sms_gateway = create(:sms_gateway, carrier: verification_service.carrier)
     sip_trunk = create(:sip_trunk, carrier: verification_service.carrier)
-    [verification_service, phone_number, sms_gateway, sip_trunk]
+    [ verification_service, phone_number, sms_gateway, sip_trunk ]
   end
 end

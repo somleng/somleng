@@ -21,19 +21,23 @@ module TwilioAPI
         key.failure("is invalid") unless phone_number_validator.valid?(value)
       end
 
-      rule(:To, :Channel) do
+      rule(:To, :Channel) do |context:|
         if values[:Channel] == "sms"
           message_destination_schema_rules.carrier = account.carrier
           message_destination_schema_rules.destination = values[:To]
 
-          unless message_destination_schema_rules.valid?
+          if message_destination_schema_rules.valid?
+            context[:sender] = message_destination_schema_rules.sms_gateway.default_sender
+          else
             base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
           end
         elsif values[:Channel] == "call"
           phone_call_destination_schema_rules.account = account
           phone_call_destination_schema_rules.destination = values[:To]
 
-          unless phone_call_destination_schema_rules.valid?
+          if phone_call_destination_schema_rules.valid?
+            context[:sender] = phone_call_destination_schema_rules.sip_trunk.default_sender
+          else
             base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
           end
         end
@@ -48,8 +52,7 @@ module TwilioAPI
       end
 
       rule do |context:|
-        context[:phone_number] = verification_service.account.phone_numbers.first
-        next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+        next if context[:sender]&.enabled?
 
         base.failure(schema_helper.build_schema_error(:verify_could_not_find_valid_phone_number))
       end
@@ -69,7 +72,8 @@ module TwilioAPI
           country_code: country.alpha2,
           locale:,
           delivery_attempt: {
-            from: context.fetch(:phone_number).number
+            phone_number: context.fetch(:sender),
+            from: context.fetch(:sender).number
           }
         }.compact
       end
@@ -85,7 +89,7 @@ module TwilioAPI
           VerificationLocales.find_by_country(beneficiary_country).locale
         end
 
-        [beneficiary_country, locale]
+        [ beneficiary_country, locale ]
       end
     end
   end

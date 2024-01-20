@@ -6,6 +6,7 @@ class VerificationDeliveryAttempt < ApplicationRecord
   belongs_to :verification, counter_cache: :delivery_attempts_count
   belongs_to :message, optional: true
   belongs_to :phone_call, optional: true
+  belongs_to :phone_number, optional: true
 
   def deliverable
     message || phone_call
