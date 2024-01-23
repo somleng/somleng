@@ -18,7 +18,7 @@ You can use Somleng to roll out your own programmable voice and SMS to:
 
 ## Getting Started
 
-In order to get the full Somleng stack up and running on your development machine, please follow the [GETTING STARTED](https://github.com/somleng/somleng-project/blob/master/docs/GETTING_STARTED.md) guide.
+Please follow the [Getting Started](https://www.somleng.org/docs#getting-started) Guide to get up and running. 🏃🏾
 
 ## Deployment
 
