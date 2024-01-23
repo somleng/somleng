@@ -29,6 +29,7 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     find "${BUNDLE_PATH}" -name "*.o" -delete && find "${BUNDLE_PATH}" -name "*.c" -delete && \
     mkdir -p tmp/pids && \
+    mkdir -p storage && \
     bundle exec bootsnap precompile --gemfile
 
 COPY package.json yarn.lock ./
@@ -58,7 +59,7 @@ COPY --from=build /rails /rails
 # Run and own only the runtime files as a non-root user for security
 RUN addgroup -S -g 1000 rails && \
     adduser -u 1000 -D -G rails rails && \
-    chown -R rails:rails db log tmp
+    chown -R rails:rails db storage log tmp
 
 USER 1000:1000
 
