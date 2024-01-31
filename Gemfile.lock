@@ -168,7 +168,7 @@ GEM
     base64 (0.2.0)
     bcrypt (3.1.20)
     bigdecimal (3.1.6)
-    bootsnap (1.18.1)
+    bootsnap (1.18.3)
       msgpack (~> 1.2)
     bootstrap-email (1.4.1)
       htmlbeautifier (~> 1.3)
