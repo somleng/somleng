@@ -89,11 +89,11 @@
     <% end %>
 
     <% if policy(:carrier_user).index? %>
-      <%= sidebar_nav("Users", dashboard_carrier_users_path, icon_class: "fa-solid fa-users") %>
+      <%= sidebar_nav("Team", dashboard_carrier_users_path, icon_class: "fa-solid fa-people-group") %>
     <% end %>
 
     <% if policy(:account_membership).index? %>
-      <%= sidebar_nav("Users", dashboard_account_memberships_path, icon_class: "fa-solid fa-users") %>
+      <%= sidebar_nav("Team", dashboard_account_memberships_path, icon_class: "fa-solid fa-people-group") %>
     <% end %>
 
     <li class="nav-item"><hr/></li>
