@@ -1,4 +1,4 @@
-<%= page_title(title: "Users") do %>
+<%= page_title(title: "Team") do %>
   <%= render("shared/filters") do |form| %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

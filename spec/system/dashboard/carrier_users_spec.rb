@@ -107,15 +107,16 @@ RSpec.describe "Carrier users" do
 
   it "Delete a user" do
     user = create(:user, :carrier, :owner)
-    other_user = create(
+    user_to_delete = create(
       :user,
       :carrier,
       name: "Joe Bloggs",
       carrier: user.carrier
     )
+    create(:export, user: user_to_delete)
 
     carrier_sign_in(user)
-    visit dashboard_carrier_user_path(other_user)
+    visit dashboard_carrier_user_path(user_to_delete)
 
     click_on "Delete"
 
