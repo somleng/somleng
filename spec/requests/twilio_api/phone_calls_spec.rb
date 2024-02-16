@@ -67,6 +67,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     # https://www.twilio.com/docs/voice/api/call-resource#create-a-call-resource
     example "Create a call" do
       account = create(:account)
+      phone_number = create(:phone_number, :assigned_to_account, account:)
       create(:sip_trunk, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
@@ -74,7 +75,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       do_request(
         account_sid: account.id,
         "To" => "+299221234",
-        "From" => "1234",
+        "From" => phone_number.number,
         "Url" => "https://demo.twilio.com/docs/voice.xml"
       )
 
@@ -84,6 +85,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
     example "Handles invalid requests", document: false do
       account = create(:account)
+      create(:sip_trunk, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(
@@ -96,10 +98,10 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       expect(response_status).to eq(422)
       expect(response_body).to match_api_response_schema("twilio_api/api_errors")
       expect(json_response).to eq(
-        "message" => "Calling this number is unsupported or the number is invalid",
+        "message" => "The source phone number provided is not yet verified for your account. You may only make calls from phone numbers that you've verified or purchased.",
         "status" => 422,
-        "code" => "13224",
-        "more_info" => "https://www.twilio.com/docs/errors/13224"
+        "code" => "21210",
+        "more_info" => "https://www.twilio.com/docs/errors/21210"
       )
     end
   end

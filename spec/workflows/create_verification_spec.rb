@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CreateVerification do
-  it "creates a new sms verification" do
+  it "creates a new SMS verification" do
     verification_service, phone_number, sms_gateway = create_verification_service(
       name: "Rocket Rides"
     )
@@ -77,7 +77,7 @@ RSpec.describe CreateVerification do
     )
   end
 
-  it "hnadles Thai sms verifications" do
+  it "hnadles Thai SMS verifications" do
     verification_service, phone_number, = create_verification_service(
       name: "Rocket Rides"
     )
@@ -164,12 +164,9 @@ RSpec.describe CreateVerification do
 
   def create_verification_service(attributes = {})
     verification_service = create(:verification_service, attributes)
-    phone_number = create(
-      :phone_number, :assigned_to_account,
-      account: verification_service.account
-    )
-    sms_gateway = create(:sms_gateway, carrier: verification_service.carrier)
-    sip_trunk = create(:sip_trunk, carrier: verification_service.carrier)
+    phone_number = create(:phone_number, carrier: verification_service.carrier)
+    sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number)
+    sip_trunk = create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number)
     [ verification_service, phone_number, sms_gateway, sip_trunk ]
   end
 end

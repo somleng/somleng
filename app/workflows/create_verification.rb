@@ -80,7 +80,8 @@ class CreateVerification < ApplicationWorkflow
         Twiml: delivery_attempt.verification.default_template.render_voice_twiml
       },
       options: {
-        account: delivery_attempt.verification.account
+        account: delivery_attempt.verification.account,
+        sender: delivery_attempt.phone_number
       }
     )
   end
