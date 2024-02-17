@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_17_075330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -694,9 +694,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
   add_foreign_key "messages", "sms_gateways", on_delete: :nullify
   add_foreign_key "messaging_services", "accounts", on_delete: :cascade
   add_foreign_key "messaging_services", "carriers", on_delete: :cascade
-  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_applications", "carriers", column: "owner_id"
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id", on_delete: :cascade
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id", on_delete: :cascade
+  add_foreign_key "oauth_applications", "carriers", column: "owner_id", on_delete: :cascade
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "carriers"
