@@ -600,4 +600,9 @@ FactoryBot.define do
       message { association :message, to:, from:, account: verification.account, internal: true }
     end
   end
+
+  factory :trial_interactions_credit_voucher do
+    number_of_interactions { 500 }
+    carrier { association :carrier, :restricted }
+  end
 end
