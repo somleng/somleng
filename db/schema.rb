@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_17_075330) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_17_093203) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -116,6 +116,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_075330) do
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
+  end
+
+  create_table "error_log_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "error_log_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_error_log_notifications_on_created_at"
+    t.index ["error_log_id"], name: "index_error_log_notifications_on_error_log_id"
+    t.index ["sequence_number"], name: "index_error_log_notifications_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "error_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -675,6 +685,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_075330) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "error_log_notifications", "error_logs"
   add_foreign_key "error_logs", "accounts"
   add_foreign_key "error_logs", "carriers"
   add_foreign_key "events", "carriers"

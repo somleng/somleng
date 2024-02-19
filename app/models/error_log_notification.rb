@@ -1,0 +1,2 @@
+class ErrorLogNotification < ApplicationRecord
+end

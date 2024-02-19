@@ -14,7 +14,7 @@ class CarrierStanding
   end
 
   def remaining_interactions
-    [(MAX_RESTRICTED_INTERACTIONS_PER_MONTH - interactions_this_month.count), 0].max
+    [ (MAX_RESTRICTED_INTERACTIONS_PER_MONTH - interactions_this_month.count), 0 ].max
   end
 
   def interactions_this_month
