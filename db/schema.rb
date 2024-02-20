@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_17_093203) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_19_073119) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -517,6 +517,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_093203) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "trial_interactions_credit_vouchers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.integer "number_of_interactions", null: false
+    t.datetime "valid_at", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_trial_interactions_credit_vouchers_on_carrier_id"
+    t.index ["sequence_number"], name: "index_trial_interactions_credit_vouchers_on_sequence_number", unique: true, order: :desc
+    t.index ["valid_at"], name: "index_trial_interactions_credit_vouchers_on_valid_at"
+  end
+
   create_table "tts_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id"
@@ -726,6 +738,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_093203) do
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "sms_gateways", "phone_numbers", column: "default_sender_id", on_delete: :nullify
+  add_foreign_key "trial_interactions_credit_vouchers", "carriers", on_delete: :cascade
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify
