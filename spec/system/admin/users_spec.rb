@@ -9,6 +9,7 @@ RSpec.describe "Admin/Users" do
     import = create(:import, user:)
     export = create(:export, user:)
     account_membership = create(:account_membership, user:, account:, role: :admin)
+    create(:error_log_notification, user:, carrier: user.carrier)
 
     page.driver.browser.authorize("admin", "password")
     visit admin_users_path

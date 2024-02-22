@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :imports
   has_many :account_memberships
   has_many :accounts, through: :account_memberships
+  has_many :error_log_notifications
 
   devise :invitable, :registerable, :confirmable,
          :recoverable, :trackable, :rememberable,

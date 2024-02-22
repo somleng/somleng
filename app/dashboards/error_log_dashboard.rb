@@ -4,6 +4,7 @@ class ErrorLogDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
+    notifications: Field::HasMany,
     id: Field::String,
     error_message: Field::String,
     created_at: Field::LocalTime,
@@ -22,6 +23,7 @@ class ErrorLogDashboard < Administrate::BaseDashboard
     carrier
     account
     error_message
+    notifications
     created_at
   ].freeze
 
