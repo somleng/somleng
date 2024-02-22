@@ -14,6 +14,7 @@ resource "aws_ecs_capacity_provider" "this" {
   auto_scaling_group_provider {
     auto_scaling_group_arn         = module.container_instances.autoscaling_group.arn
     managed_termination_protection = "ENABLED"
+    managed_draining = "ENABLED"
 
     managed_scaling {
       maximum_scaling_step_size = 1000
