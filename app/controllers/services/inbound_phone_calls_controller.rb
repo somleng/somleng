@@ -21,7 +21,7 @@ module Services
     def handle_errors(_schema)
       return if error_log_messages.empty?
 
-      ErrorLog.create!(
+      CreateErrorLog.call(
         carrier: error_log_messages.carrier,
         account: error_log_messages.account,
         error_message: error_log_messages.messages.to_sentence

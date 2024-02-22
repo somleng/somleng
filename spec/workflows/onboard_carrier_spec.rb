@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe OnboardCarrier do
   it "onboards a new carrier" do
-    carrier = OnboardCarrier.call(
+    carrier, owner = OnboardCarrier.call(
       name: "AT&T",
       country_code: "US",
       website: "https://www.att.com",
@@ -20,14 +20,15 @@ RSpec.describe OnboardCarrier do
       api_key: be_present,
       oauth_application: be_present,
       restricted: true,
-      subdomain: "at-t",
-      carrier_users: [
-        have_attributes(
-          name: "John Doe",
-          email: "johndoe@example.com"
-        )
-      ]
+      subdomain: "at-t"
     )
+
+    expect(owner).to have_attributes(
+      name: "John Doe",
+      email: "johndoe@example.com",
+      carrier_role: "owner"
+    )
+
     expect(ActionMailer::MailDeliveryJob).to have_been_enqueued
   end
 end

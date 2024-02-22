@@ -28,7 +28,7 @@ class Account < ApplicationRecord
   has_many :tts_events
 
   def self.customer_managed
-    where(arel_table[:account_memberships_count].gt(0))
+    where(account_memberships_count: 1..)
   end
 
   def self.carrier_managed

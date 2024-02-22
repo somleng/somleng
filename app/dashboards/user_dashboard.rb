@@ -14,9 +14,11 @@ class UserDashboard < Administrate::BaseDashboard
     invitation_sent_at: Field::LocalTime,
     invitation_accepted_at: Field::LocalTime,
     invited_by: Field::Polymorphic,
+    subscribed_notification_topics: Field::EnumerizeSet,
     account_memberships: Field::HasMany,
     imports: Field::HasMany,
     exports: Field::HasMany,
+    error_log_notifications: Field::HasMany
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -29,6 +31,7 @@ class UserDashboard < Administrate::BaseDashboard
     id
     name
     email
+    subscribed_notification_topics
     carrier
     carrier_role
     sign_in_count
@@ -41,6 +44,7 @@ class UserDashboard < Administrate::BaseDashboard
     account_memberships
     imports
     exports
+    error_log_notifications
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze
