@@ -17,6 +17,9 @@ en:
       carrier_settings:
         update:
           notice: Carrier settings were successfully updated.
+      notification_preferences:
+        update:
+          notice: Notification preferences were successfully updated.
       sms_gateway_channels:
         create:
           notice: Channel was successfully created.

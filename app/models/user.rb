@@ -3,9 +3,15 @@ class User < ApplicationRecord
   EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\z/
 
   enumerize :carrier_role, in: %i[owner admin member], predicates: true
+  enumerize :subscribed_notification_topics,
+            in: [ :error_logs ],
+            multiple: true
 
   belongs_to :carrier
-  belongs_to :current_account_membership, optional: true, class_name: "AccountMembership"
+  belongs_to :current_account_membership,
+             optional: true,
+             class_name: "AccountMembership"
+
   has_many :exports, dependent: :destroy
   has_many :imports
   has_many :account_memberships
@@ -32,7 +38,7 @@ class User < ApplicationRecord
             confirmation: { if: :password_required? },
             length: { within: Devise.password_length, allow_blank: true }
 
-  before_create :generate_otp_secret
+  before_create :set_defaults
 
   def self.policy_class
     CarrierUserPolicy
@@ -50,6 +56,10 @@ class User < ApplicationRecord
     where.not(carrier_role: nil)
   end
 
+  def self.subscribed_to_notifications_for(topic)
+    where(":topic = ANY (\"#{table_name}\".\"subscribed_notification_topics\")", topic:)
+  end
+
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
   end
@@ -61,10 +71,11 @@ class User < ApplicationRecord
   private
 
   def password_required?
-    !persisted? || !password.nil? || !password_confirmation.nil?
+    new_record? || password.present? || password_confirmation.present?
   end
 
-  def generate_otp_secret
+  def set_defaults
     self.otp_secret ||= User.generate_otp_secret
+    self.subscribed_notification_topics = [ :error_logs ] if subscribed_notification_topics.blank?
   end
 end

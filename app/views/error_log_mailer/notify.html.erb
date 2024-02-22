@@ -1,0 +1,30 @@
+<%= content_for(:title) do %>
+  New Issue
+<% end %>
+
+<preview>
+  <%= @error_log.error_message.truncate(50) %>
+</preview>
+
+<p class="fw-500">
+  Your have received a new issue from <%= @organization_name %>.
+</p>
+
+<blockquote>
+  <%= @error_log.error_message %>
+</blockquote>
+
+<%= link_to "View on Dashboard", dashboard_error_logs_url(host: @host), class: "btn btn-primary p-3 fw-700 ax-center" %>
+
+<p class="text-muted">
+  <% if @other_notifications.one? %>
+    You were the only person from your team notified about this issue.
+  <% else %>
+    Other members of your team were also notified about this issue.
+  <% end %>
+</p>
+
+<p class="text-muted text-sm">
+  You received this notification because you are subscribed to error log notifications.
+  You can disable this type of notification from the <%= link_to("notification preferences", edit_dashboard_notification_preferences_url(host: @host)) %> section on the dashboard.
+</p>

@@ -2,31 +2,36 @@ require "rails_helper"
 require Rails.root.join("db/application_seeder")
 
 describe ApplicationSeeder do
-  describe "#seed!" do
-    it "creates a new account" do
-      ApplicationSeeder.new.seed!
+  it "seeds the database" do
+    ApplicationSeeder.new.seed!
 
-      account = Account.first
-      expect(account).to be_present
-      expect(account.auth_token).to be_present
-      expect(account.default_tts_voice).to be_present
-      expect(account.phone_numbers).to be_present
-      expect(account.phone_numbers.first.configuration).to be_present
+    expect(Carrier.count).to eq(1)
+    expect(User.count).to eq(2)
+    expect(Account.carrier_managed.count).to eq(1)
+    expect(Account.customer_managed.count).to eq(1)
+    expect(ErrorLogNotification.count).to eq(2)
+    expect(PhoneNumber.count).to eq(1)
+
+    Account.all.each do |account|
+      expect(account).to have_attributes(
+        auth_token: be_present,
+        default_tts_voice: be_present
+      )
     end
 
-    it "does not create a new account if one already exists" do
-      carrier = create(:carrier)
-      existing_account = create(:account, :with_access_token, carrier:)
-      create(:phone_number, carrier:, account: existing_account)
-      create(:user, :carrier, carrier:)
+    expect(PhoneNumber.first.configuration).to be_present
+  end
 
-      ApplicationSeeder.new.seed!
+  it "behaves idempotently" do
+    seeder = ApplicationSeeder.new
 
-      account = Account.first
-      expect(Account.count).to eq(1)
-      expect(Carrier.count).to eq(1)
-      expect(account.auth_token).to eq(existing_account.auth_token)
-      expect(account.phone_numbers.count).to eq(1)
-    end
+    2.times { seeder.seed! }
+
+    expect(Carrier.count).to eq(1)
+    expect(User.count).to eq(2)
+    expect(Account.carrier_managed.count).to eq(1)
+    expect(Account.customer_managed.count).to eq(1)
+    expect(PhoneNumber.count).to eq(1)
+    expect(ErrorLogNotification.count).to eq(2)
   end
 end

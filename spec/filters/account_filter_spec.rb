@@ -23,7 +23,7 @@ RSpec.describe AccountFilter do
 
     result = filter.apply
 
-    expect(result).to eq([account])
+    expect(result).to eq([ account ])
   end
 
   it "Filters by nested metadata" do
@@ -50,7 +50,7 @@ RSpec.describe AccountFilter do
 
     result = filter.apply
 
-    expect(result).to eq([account])
+    expect(result).to eq([ account ])
   end
 
   it "filters by type" do
@@ -68,7 +68,7 @@ RSpec.describe AccountFilter do
 
     result = filter.apply
 
-    expect(result).to eq([customer_managed_account])
+    expect(result).to eq([ customer_managed_account ])
 
     filter = AccountFilter.new(
       resources_scope: Account,
@@ -81,6 +81,6 @@ RSpec.describe AccountFilter do
 
     result = filter.apply
 
-    expect(result).to eq([carrier_managed_account])
+    expect(result).to eq([ carrier_managed_account ])
   end
 end

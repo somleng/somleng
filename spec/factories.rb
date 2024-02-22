@@ -605,4 +605,17 @@ FactoryBot.define do
     number_of_interactions { 500 }
     carrier { association :carrier, :restricted }
   end
+
+  factory :error_log_notification do
+    transient do
+      carrier { build(:carrier) }
+      account { nil }
+      error_log_message { "error message" }
+    end
+
+    error_log { association :error_log, error_message: error_log_message, carrier:, account: }
+    user { association :user, :carrier, carrier: error_log.carrier }
+    message_digest { error_log.error_message }
+    email { user.email }
+  end
 end

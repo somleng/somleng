@@ -2,32 +2,29 @@ class ApplicationSeeder
   USER_PASSWORD = "Somleng1234!".freeze
 
   def seed!
-    carrier = Carrier.first
-    carrier ||= OnboardCarrier.call(
-      name: "My Carrier",
-      country_code: "KH",
-      restricted: false,
-      subdomain: "my-carrier",
-      website: "https://example.com",
-      owner: {
-        email: "johndoe@carrier.com",
-        name: "John Doe",
-        password: USER_PASSWORD,
-        carrier_role: :owner,
-        confirmed_at: Time.current
-      }
-    )
+    carrier, carrier_owner = create_carrier
     create_sip_trunk(carrier:)
-    account = create_account(carrier:)
-    phone_number = create_phone_number(carrier:, account:)
+    customer_managed_account, customer = create_customer_managed_account(carrier:)
+    create_error_log_notification(
+      carrier:,
+      user: carrier_owner,
+      error_message: "Phone number 523346380009 does not exist."
+    )
+    create_error_log_notification(
+      account: customer_managed_account,
+      user: customer,
+      error_message: "Phone number 12264131459 is unconfigured."
+    )
+    carrier_managed_account = create_carrier_managed_account(carrier:)
+    phone_number = create_phone_number(carrier:, account: carrier_managed_account)
 
     puts(<<~INFO)
-      Account SID:           #{account.id}
-      Auth Token:            #{account.auth_token}
+      Account SID:           #{carrier_managed_account.id}
+      Auth Token:            #{carrier_managed_account.auth_token}
       Inbound Phone Number:  #{phone_number.number}
       ---------------------------------------------
       URL:                   #{url_helpers.dashboard_root_url(host: carrier.subdomain_host)}
-      Carrier User Email:    #{carrier.carrier_users.first.email}
+      Carrier User Email:    #{carrier_owner.email}
       Carrier User Password: #{USER_PASSWORD}
       Carrier API Key:       #{carrier.api_key}
     INFO
@@ -46,12 +43,38 @@ class ApplicationSeeder
     )
   end
 
-  def create_account(params)
+  def create_carrier_managed_account(**params)
+    return Account.carrier_managed.first if Account.carrier_managed.exists?
+
     carrier = params.fetch(:carrier)
-    Account.first_or_create!(
-      params.reverse_merge(name: carrier.name, default_tts_voice: TTSVoices::Voice.default),
-      &:build_access_token
+
+    create_account(
+      name: carrier.name,
+      **params
     )
+  end
+
+  def create_customer_managed_account(**params)
+    if Account.customer_managed.exists?
+      account = Account.customer_managed.first!
+      customer = account.users.first!
+
+      return [ account, customer ]
+    end
+
+    carrier = params.fetch(:carrier)
+    account = create_account(name: "Customer Account", **params)
+
+    customer = User.create!(
+      build_user_params(
+        carrier:,
+        email: "customer@example.com",
+        name: "Bob Chan"
+      )
+    )
+    AccountMembership.create!(account:, user: customer, role: :owner)
+
+    [ account, customer ]
   end
 
   def create_phone_number(params)
@@ -67,5 +90,62 @@ class ApplicationSeeder
 
   def url_helpers
     @url_helpers ||= Rails.application.routes.url_helpers
+  end
+
+  def create_account(**params, &block)
+    Account.create!(
+      default_tts_voice: TTSVoices::Voice.default,
+      **params,
+      &:build_access_token
+    )
+  end
+
+  def build_user_params(**params)
+    {
+      password: USER_PASSWORD,
+      confirmed_at: Time.current,
+      **params
+    }
+  end
+
+  def create_error_log_notification(**params)
+    account = params.delete(:account)
+    carrier = params.delete(:carrier) || account&.carrier
+    user = params.fetch(:user)
+    error_message = params.delete(:error_message) || "An error occurred"
+
+    return if ErrorLogNotification.exists?(user:, message_digest: error_message)
+
+    error_log = ErrorLog.create!(carrier:, account:, error_message:)
+
+    ErrorLogNotification.create!(
+      error_log:,
+      user:,
+      email: user.email,
+      message_digest: error_log.error_message,
+      **params
+    )
+  end
+
+  def create_carrier
+    if Carrier.exists?
+      carrier = Carrier.first
+      carrier_member = carrier.carrier_users.first
+
+      return [ carrier, carrier_member ]
+    end
+
+    OnboardCarrier.call(
+      name: "My Carrier",
+      country_code: "KH",
+      restricted: false,
+      subdomain: "my-carrier",
+      website: "https://example.com",
+      owner: build_user_params(
+        email: "johndoe@carrier.com",
+        name: "John Doe",
+        carrier_role: :owner
+      )
+    )
   end
 end

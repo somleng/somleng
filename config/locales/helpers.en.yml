@@ -16,3 +16,5 @@ en:
       messaging_service:
         create: "Next"
         update: "Save"
+      notification_preferences:
+        update: "Save"
