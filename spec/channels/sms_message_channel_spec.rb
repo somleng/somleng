@@ -115,7 +115,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
       expect(sms_gateway.messages).to be_empty
       expect(ErrorLog.last).to have_attributes(
         carrier: sms_gateway.carrier,
-        error_message: "Phone number 85510888888 does not exist. SMS Gateway: My SMS Gateway"
+        error_message: "Phone number 85510888888 does not exist."
       )
     end
 

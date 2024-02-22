@@ -18,6 +18,7 @@ RSpec.describe CreateErrorLog do
       error_log_message: "An error message",
       carrier:
     )
+    _unconfirmed_user = create_subscribed_user(carrier:, confirmed_at: nil)
     recent_different_error_log_notification = create(
       :error_log_notification,
       error_log_message: "Another error message",

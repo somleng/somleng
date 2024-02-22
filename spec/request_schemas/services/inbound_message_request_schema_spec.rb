@@ -17,7 +17,7 @@ module Services
 
     it "validates to" do
       carrier = create(:carrier)
-      sms_gateway = create(:sms_gateway, carrier:, name: "My SMS Gateway")
+      sms_gateway = create(:sms_gateway, carrier:)
 
       expect(
         validate_request_schema(
@@ -29,7 +29,7 @@ module Services
           options: { sms_gateway: }
         )
       ).not_to have_valid_schema(
-        error_message: "Phone number 855715222333 does not exist. SMS Gateway: My SMS Gateway"
+        error_message: "Phone number 855715222333 does not exist."
       )
     end
 
