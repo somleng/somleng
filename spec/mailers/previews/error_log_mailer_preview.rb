@@ -9,9 +9,10 @@ class ErrorLogMailerPreview < ActionMailer::Preview
   end
 
   def notify_account_user
-    error_log = ErrorLog.joins(:notifications)
-                        .joins(:account)
-                        .merge(Account.customer_managed).last
+    error_log = ErrorLog
+               .joins(:notifications)
+               .joins(:account)
+               .merge(Account.customer_managed).last
 
     ErrorLogMailer.notify(error_log:)
   end
