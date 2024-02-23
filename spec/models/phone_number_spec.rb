@@ -129,7 +129,7 @@ RSpec.describe PhoneNumber do
 
   def create_utilized_phone_number(**params)
     phone_number = create(:phone_number)
-    create(params.fetch(:utilized_by), phone_number:)
+    create_list(params.fetch(:utilized_by), 2, phone_number:)
 
     phone_number
   end
