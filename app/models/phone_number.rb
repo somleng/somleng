@@ -20,13 +20,16 @@ class PhoneNumber < ApplicationRecord
     end
 
     def utilized
-      left_joins(:phone_calls).left_joins(:messages)
+      scope = left_joins(:phone_calls).left_joins(:messages)
       .where.not(phone_calls: { phone_number_id: nil }).or(where.not(messages: { phone_number_id: nil }))
+      .distinct
+
+      where(id: scope.select(:id))
     end
 
     def unutilized
       left_joins(:phone_calls).left_joins(:messages)
-      .where(phone_calls: { phone_number_id: nil }).where(messages: { phone_number_id: nil })
+      .where(phone_calls: { phone_number_id: nil }, messages: { phone_number_id: nil })
     end
 
     def configured
