@@ -4,7 +4,7 @@ class PhoneNumberPolicy < ApplicationPolicy
   end
 
   def release?
-    manage? && record.may_release?
+    manage? && record.assigned?
   end
 
   def bulk_destroy?

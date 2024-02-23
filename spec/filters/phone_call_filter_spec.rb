@@ -14,7 +14,7 @@ RSpec.describe PhoneCallFilter do
 
     result = filter.apply
 
-    expect(result).to eq([phone_call])
+    expect(result).to eq([ phone_call ])
   end
 
   it "filters by carrier" do
@@ -30,7 +30,7 @@ RSpec.describe PhoneCallFilter do
 
     result = filter.apply
 
-    expect(result).to eq([phone_call])
+    expect(result).to eq([ phone_call ])
   end
 
   it "filters by status" do

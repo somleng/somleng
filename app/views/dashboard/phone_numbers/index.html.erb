@@ -14,6 +14,8 @@
 
     <%= form.boolean_select(:enabled, { filter_value: params.dig(:filter, :enabled) }) %>
     <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>
+    <%= form.boolean_select(:configured, { filter_value: params.dig(:filter, :configured) }) %>
+    <%= form.boolean_select(:utilized, { filter_value: params.dig(:filter, :utilized) }) %>
   <% end %>
 
   <% if policy(:phone_number).bulk_destroy? && params[:filter].present? && @filtered_resources.any? %>

@@ -6,6 +6,8 @@ RSpec.describe "Phone Numbers" do
     user = create(:user, :carrier, carrier:)
     create(
       :phone_number,
+      :utilized,
+      :configured,
       carrier:,
       number: "855972222222",
       created_at: Time.utc(2021, 12, 1)
@@ -26,7 +28,7 @@ RSpec.describe "Phone Numbers" do
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path(
-      filter: { from_date: "01/12/2021", to_date: "15/12/2021", enabled: true }
+      filter: { from_date: "01/12/2021", to_date: "15/12/2021", enabled: true, utilized: true, configured: true }
     )
 
     expect(page).to have_content("+855 97 222 2222")

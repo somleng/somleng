@@ -15,9 +15,9 @@ class InboundMessageBehavior
 
   def webhook_request
     return if messaging_service_drop?
-    return [inbound_request_url, inbound_request_method] if messaging_service_webhook?
+    return [ inbound_request_url, inbound_request_method ] if messaging_service_webhook?
 
-    [configuration.sms_url, configuration.sms_method]
+    [ configuration.sms_url, configuration.sms_method ]
   end
 
   def configured?
