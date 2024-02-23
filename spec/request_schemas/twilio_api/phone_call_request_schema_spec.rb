@@ -124,10 +124,11 @@ module TwilioAPI
         carrier: account.carrier,
         outbound_host: "sip.example.com"
       )
+      phone_number = create(:phone_number, :assigned_to_account, account:, number: "85568308530")
       schema = validate_request_schema(
         input_params: {
           To: "+855 68 308 531",
-          From: "+855 716 100 234",
+          From: "+855 68 308 530",
           Url: "https://www.example.com/voice_url.xml",
           Method: "GET",
           Twiml: "<Response><Say>Ahoy there!</Say></Response>",
@@ -141,8 +142,9 @@ module TwilioAPI
 
       expect(schema.output).to eq(
         to: "85568308531",
-        from: "855716100234",
-        caller_id: "+855716100234",
+        from: "85568308530",
+        caller_id: "+85568308530",
+        phone_number:,
         account:,
         carrier: account.carrier,
         sip_trunk:,

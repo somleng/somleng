@@ -3,6 +3,7 @@ module TwilioAPI
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :url_validator, default: -> { URLValidator.new(allow_http: true) }
     option :phone_call_destination_schema_rules, default: -> { PhoneCallDestinationSchemaRules.new }
+    option :sender, optional: true
 
     params do
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -34,6 +35,10 @@ module TwilioAPI
       else
         base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
       end
+    end
+
+    rule(:From) do |context:|
+      context[:phone_number] = sender || account.phone_numbers.find_by(number: value)
     end
 
     rule(:Twiml) do
@@ -73,6 +78,7 @@ module TwilioAPI
         sip_trunk: context.fetch(:sip_trunk),
         to: params.fetch(:To),
         from: params.fetch(:From),
+        phone_number: context.fetch(:phone_number),
         caller_id:,
         voice_url: params[:Url],
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
