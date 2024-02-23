@@ -9,4 +9,16 @@ class PhoneNumberConfiguration < ApplicationRecord
   enumerize :status_callback_method, in: %w[POST GET]
 
   delegate :account, to: :phone_number
+
+  def self.configured
+    where.not(voice_url: nil).or(where.not(sms_url: nil)).or(where.not(messaging_service_id: nil))
+  end
+
+  def self.unconfigured
+    where(voice_url: nil, sms_url: nil, messaging_service_id: nil)
+  end
+
+  def configured?
+    voice_url.present? || sms_url.present? || messaging_service_id.present?
+  end
 end

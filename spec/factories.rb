@@ -283,8 +283,19 @@ FactoryBot.define do
     carrier
 
     trait :assigned_to_account do
-      account
-      carrier { account.carrier }
+      account { association :account, carrier: }
+    end
+
+    trait :utilized do
+      assigned_to_account
+
+      after(:build) do |phone_number|
+        next if phone_number.utilized?
+
+        phone_number.phone_calls << build(
+          :phone_call, account: phone_number.account, carrier: phone_number.carrier
+        )
+      end
     end
 
     trait :disabled do
@@ -303,6 +314,7 @@ FactoryBot.define do
       after(:build) do |phone_number, evaluator|
         phone_number.configuration ||= build(
           :phone_number_configuration,
+          :fully_configured,
           phone_number:,
           messaging_service: evaluator.messaging_service,
           sms_url: evaluator.sms_url,
@@ -317,12 +329,14 @@ FactoryBot.define do
   factory :phone_number_configuration do
     phone_number
 
-    voice_url { "https://demo.twilio.com/docs/voice.xml" }
-    voice_method { "GET" }
-    status_callback_url { "https://example.com/status-callback" }
-    status_callback_method { "POST" }
-    sms_url { "https://demo.twilio.com/docs/messaging.xml" }
-    sms_method { "GET" }
+    trait :fully_configured do
+      voice_url { "https://demo.twilio.com/docs/voice.xml" }
+      voice_method { "GET" }
+      status_callback_url { "https://example.com/status-callback" }
+      status_callback_method { "POST" }
+      sms_url { "https://demo.twilio.com/docs/messaging.xml" }
+      sms_method { "GET" }
+    end
   end
 
   factory :phone_call do

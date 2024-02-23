@@ -27,5 +27,44 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
-  filter_with EnabledFilter, AssignedFilter, :account_id_filter, :date_filter
+  class UtilizedFilter < ApplicationFilter
+    filter_params do
+      optional(:utilized).value(:bool)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      if filter_params.fetch(:utilized)
+        super.utilized
+      else
+        super.unutilized
+      end
+    end
+  end
+
+  class ConfiguredFilter < ApplicationFilter
+    filter_params do
+      optional(:configured).value(:bool)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      if filter_params.fetch(:configured)
+        super.configured
+      else
+        super.unconfigured
+      end
+    end
+  end
+
+  filter_with(
+    EnabledFilter,
+    AssignedFilter,
+    UtilizedFilter,
+    ConfiguredFilter,
+    :account_id_filter,
+    :date_filter
+  )
 end
