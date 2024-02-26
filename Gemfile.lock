@@ -570,7 +570,7 @@ GEM
     simplecov-html (0.12.3)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
-    skylight (6.0.3)
+    skylight (6.0.4)
       activesupport (>= 5.2.0)
     smstools (0.2.2)
     sprockets (4.2.1)
