@@ -58,7 +58,7 @@ RSpec.describe CreateErrorLog do
   it "notifies subscribed account team members" do
     carrier = create(:carrier, name: "Rocket Communications")
     _carrier_user = create_subscribed_user(carrier:)
-    account = create(:account, carrier:)
+    account = create(:account, :customer_managed, carrier:)
     subscribed_user = create_subscribed_user(account:)
     _unsubscribed_user = create_subscribed_user(account:, subscribed_notification_topics: [])
 

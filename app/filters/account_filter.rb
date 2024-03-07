@@ -13,7 +13,7 @@ class AccountFilter < ResourceFilter
 
   class TypeFilter < ApplicationFilter
     filter_params do
-      optional(:type).value(:string, included_in?: Account::TYPES)
+      optional(:type).value(:string, included_in?: Account.type.values)
     end
 
     def apply

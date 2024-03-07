@@ -54,6 +54,7 @@ class AccountForm
     account.name = name
     account.default_tts_voice = default_tts_voice
     account.calls_per_second = calls_per_second
+    account.type = owner_email.present? ? :customer_managed : :carrier_managed
 
     account.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
 
