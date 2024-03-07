@@ -157,14 +157,11 @@ FactoryBot.define do
     carrier
     enabled
     with_access_token
-    traits_for_enum :status, %w[enabled disabled]
-    default_tts_voice { "Basic.Kal" }
-
     name { "Rocket Rides" }
-
-    trait :carrier_managed do
-      with_access_token
-    end
+    default_tts_voice { "Basic.Kal" }
+    traits_for_enum :type, %i[carrier_managed customer_managed]
+    traits_for_enum :status, %w[enabled disabled]
+    carrier_managed
 
     trait :with_access_token do
       after(:build) do |account|

@@ -54,7 +54,7 @@ RSpec.describe AccountFilter do
   end
 
   it "filters by type" do
-    customer_managed_account = create(:account)
+    customer_managed_account = create(:account, :customer_managed)
     create(:account_membership, account: customer_managed_account)
     carrier_managed_account = create(:account, :carrier_managed)
     filter = AccountFilter.new(

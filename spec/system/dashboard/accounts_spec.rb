@@ -176,12 +176,10 @@ RSpec.describe "Accounts" do
     create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
     account = create(
       :account,
+      :customer_managed,
       :enabled,
       carrier: user.carrier,
       default_tts_voice: "Basic.Slt"
-    )
-    create(
-      :user, :with_account_membership, account_role: :owner, account:
     )
 
     carrier_sign_in(user)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_20_095205) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_07_051526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -43,9 +43,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_095205) do
     t.integer "calls_per_second", default: 1, null: false
     t.uuid "sip_trunk_id"
     t.string "default_tts_voice", null: false
+    t.string "type", null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
+    t.index ["type"], name: "index_accounts_on_type"
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

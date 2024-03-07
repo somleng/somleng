@@ -21,8 +21,7 @@ RSpec.describe PhoneNumberConfigurationPolicy, type: :policy do
 
     it "denies access to carrier admins if the phone number is customer managed" do
       user = build_stubbed(:user, :admin)
-      account = create(:account)
-      create(:account_membership, account:)
+      account = create(:account, :customer_managed)
       phone_number = create(:phone_number, account:)
 
       policy = PhoneNumberConfigurationPolicy.new(user, phone_number)

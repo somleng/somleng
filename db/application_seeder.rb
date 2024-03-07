@@ -50,6 +50,7 @@ class ApplicationSeeder
 
     create_account(
       name: carrier.name,
+      type: :carrier_managed,
       **params
     )
   end
@@ -63,7 +64,7 @@ class ApplicationSeeder
     end
 
     carrier = params.fetch(:carrier)
-    account = create_account(name: "Customer Account", **params)
+    account = create_account(name: "Customer Account", type: :customer_managed, **params)
 
     customer = User.create!(
       build_user_params(

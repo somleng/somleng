@@ -66,7 +66,7 @@ RSpec.describe ErrorLogMailer, type: :mailer do
   end
 
   def create_customer_managed_account(**params)
-    account = create(:account, **params)
+    account = create(:account, :customer_managed, **params)
     account_membership = create(:account_membership, account:)
     [ account, account_membership.user ]
   end
