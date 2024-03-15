@@ -1,5 +1,5 @@
 class OnboardCarrier < ApplicationWorkflow
-  attr_reader :name, :country_code, :owner, :restricted, :website, :subdomain
+  attr_reader :name, :country_code, :owner_params, :restricted, :website, :subdomain
 
   def initialize(params)
     @name = params.fetch(:name)
@@ -7,15 +7,15 @@ class OnboardCarrier < ApplicationWorkflow
     @restricted = params.fetch(:restricted)
     @subdomain = params.fetch(:subdomain)
     @website = params.fetch(:website)
-    @owner = params.fetch(:owner)
+    @owner_params = params.fetch(:owner)
   end
 
   def call
     ApplicationRecord.transaction do
       carrier = create_carrier
       create_carrier_access_token(carrier)
-      onboard_carrier_owner(carrier:, **owner)
-      carrier
+      owner = onboard_carrier_owner(carrier:, **owner_params)
+      [ carrier, owner ]
     end
   end
 
@@ -45,7 +45,7 @@ class OnboardCarrier < ApplicationWorkflow
     end
   end
 
-  def onboard_carrier_owner(params)
+  def onboard_carrier_owner(**params)
     user_params = params.reverse_merge(
       carrier_role: :owner
     )

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_07_051526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -43,9 +43,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
     t.integer "calls_per_second", default: 1, null: false
     t.uuid "sip_trunk_id"
     t.string "default_tts_voice", null: false
+    t.string "type", null: false
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
+    t.index ["type"], name: "index_accounts_on_type"
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -116,6 +118,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
+  end
+
+  create_table "error_log_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "error_log_id", null: false
+    t.uuid "user_id", null: false
+    t.string "email", null: false
+    t.string "message_digest", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["error_log_id"], name: "index_error_log_notifications_on_error_log_id"
+    t.index ["message_digest", "user_id"], name: "index_error_log_notifications_on_message_digest_and_user_id"
+    t.index ["sequence_number"], name: "index_error_log_notifications_on_sequence_number", unique: true, order: :desc
+    t.index ["user_id"], name: "index_error_log_notifications_on_user_id"
   end
 
   create_table "error_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -507,6 +523,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "trial_interactions_credit_vouchers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.integer "number_of_interactions", null: false
+    t.datetime "valid_at", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_trial_interactions_credit_vouchers_on_carrier_id"
+    t.index ["sequence_number"], name: "index_trial_interactions_credit_vouchers_on_sequence_number", unique: true, order: :desc
+    t.index ["valid_at"], name: "index_trial_interactions_credit_vouchers_on_valid_at"
+  end
+
   create_table "tts_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "account_id"
@@ -561,6 +589,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
     t.boolean "otp_required_for_login"
     t.uuid "current_account_membership_id"
     t.text "otp_secret"
+    t.string "subscribed_notification_topics", default: [], null: false, array: true
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
     t.index ["current_account_membership_id"], name: "index_users_on_current_account_membership_id"
     t.index ["email", "carrier_id"], name: "index_users_on_email_and_carrier_id", unique: true
@@ -675,6 +704,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
+  add_foreign_key "error_log_notifications", "users", on_delete: :cascade
   add_foreign_key "error_logs", "accounts"
   add_foreign_key "error_logs", "carriers"
   add_foreign_key "events", "carriers"
@@ -694,9 +725,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
   add_foreign_key "messages", "sms_gateways", on_delete: :nullify
   add_foreign_key "messaging_services", "accounts", on_delete: :cascade
   add_foreign_key "messaging_services", "carriers", on_delete: :cascade
-  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_applications", "carriers", column: "owner_id"
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id", on_delete: :cascade
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id", on_delete: :cascade
+  add_foreign_key "oauth_applications", "carriers", column: "owner_id", on_delete: :cascade
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "carriers"
@@ -715,6 +746,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_15_054327) do
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "sms_gateways", "phone_numbers", column: "default_sender_id", on_delete: :nullify
+  add_foreign_key "trial_interactions_credit_vouchers", "carriers", on_delete: :cascade
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"
   add_foreign_key "tts_events", "phone_calls", on_delete: :nullify

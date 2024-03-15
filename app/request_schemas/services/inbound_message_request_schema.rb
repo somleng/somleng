@@ -27,7 +27,6 @@ module Services
       end
 
       error_message = format(phone_number_configuration_rules.error_message, value:)
-      error_message << " SMS Gateway: #{sms_gateway.name}"
       base.failure(error_message)
 
       error_log_messages << error_message

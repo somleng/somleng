@@ -59,8 +59,8 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
 
   def boolean_select(name, options = {}, html_options = {}, &)
     choices = [
-      [I18n.t("show_for.yes"), true],
-      [I18n.t("show_for.no"), false]
+      [ I18n.t("show_for.yes"), true ],
+      [ I18n.t("show_for.no"), false ]
     ]
     select(name, choices, options, html_options, &)
   end

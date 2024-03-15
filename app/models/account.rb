@@ -1,7 +1,9 @@
 class Account < ApplicationRecord
-  extend Enumerize
-  TYPES = %w[customer_managed carrier_managed].freeze
+  self.inheritance_column = :_type_disabled
 
+  extend Enumerize
+
+  enumerize :type, in: [ :carrier_managed, :customer_managed ], predicates: true, scope: :shallow
   enumerize :status, in: %i[enabled disabled], predicates: true, default: :enabled
 
   attribute :default_tts_voice, TTSVoiceType.new
@@ -27,28 +29,8 @@ class Account < ApplicationRecord
   has_many :interactions
   has_many :tts_events
 
-  def self.customer_managed
-    where(arel_table[:account_memberships_count].gt(0))
-  end
-
-  def self.carrier_managed
-    where(account_memberships_count: 0)
-  end
-
   def auth_token
     access_token.token
-  end
-
-  def type
-    account_memberships_count.positive? ? "customer_managed" : "carrier_managed"
-  end
-
-  def carrier_managed?
-    type == "carrier_managed"
-  end
-
-  def customer_managed?
-    type == "customer_managed"
   end
 
   def owner

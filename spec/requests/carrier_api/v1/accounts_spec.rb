@@ -111,8 +111,7 @@ resource "Accounts", document: :carrier_api do
     end
 
     example "Update a customer managed account with invalid attributes", document: false do
-      account = create(:account)
-      create(:account_membership, :owner, account:)
+      account = create(:account, :customer_managed)
 
       set_carrier_api_authorization_header(
         account.carrier
@@ -161,8 +160,7 @@ resource "Accounts", document: :carrier_api do
   get "https://api.somleng.org/carrier/v1/accounts" do
     example "List all accounts" do
       carrier = create(:carrier)
-      customer_managed_account = create(:account, name: "Rocket Rides", carrier:)
-      create(:account_membership, account: customer_managed_account)
+      customer_managed_account = create(:account, :customer_managed, name: "Rocket Rides", carrier:)
       carrier_managed_account = create(:account, :carrier_managed, name: "Telco Net", carrier:)
       _other_account = create(:account)
 

@@ -69,7 +69,8 @@ RSpec.describe CreateVerification do
         from: phone_number.number,
         to: "85512334667",
         direction: "outbound",
-        sip_trunk:
+        sip_trunk:,
+        phone_number:
       )
     )
     expect(ScheduledJob).to have_been_enqueued.with(

@@ -4,8 +4,7 @@ module CarrierAPI
   RSpec.describe UpdateAccountRequestSchema, type: :request_schema do
     it "validates customer managed attributes" do
       carrier = create(:carrier)
-      customer_managed_account = create(:account, carrier:)
-      create(:account_membership, :owner, account: customer_managed_account)
+      customer_managed_account = create(:account, :customer_managed, carrier:)
 
       expect(
         validate_request_schema(

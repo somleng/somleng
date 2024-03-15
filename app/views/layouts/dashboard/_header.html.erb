@@ -17,7 +17,7 @@
       <% end %>
 
       <li class="nav-item dropdown">
-        <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link" title="Profile Menu" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
           <div class="avatar">
             <%= image_tag(user_profile_image_url(current_user), class: "avatar-img") %>
           </div>
@@ -28,6 +28,10 @@
           </div>
           <%= link_to(edit_user_registration_path, class: "dropdown-item") do %>
             <i class="fa-solid fa-user-cog mfe-2"></i> Profile
+          <% end %>
+
+          <%= link_to(edit_dashboard_notification_preferences_path, class: "dropdown-item") do %>
+            <i class="fa-solid fa-bell"></i> Notifications
           <% end %>
 
           <div class="dropdown-divider"></div>
