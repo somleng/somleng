@@ -154,7 +154,6 @@ module TwilioAPI
         carrier: account.carrier,
         outbound_host: "sip.example.com"
       )
-      phone_number = create(:phone_number, :assigned_to_account, account:, number: "85568308530")
       schema = validate_request_schema(
         input_params: {
           To: "+855 68 308 531",
