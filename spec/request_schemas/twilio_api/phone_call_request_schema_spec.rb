@@ -51,6 +51,35 @@ module TwilioAPI
       )
     end
 
+    it "validates From" do
+      account = create(:account)
+      phone_number = create(:phone_number, account:)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            From: phone_number.number
+          },
+          options: { account: }
+        )
+      ).to have_valid_field(:From)
+
+      expect(
+        validate_request_schema(
+          input_params: {},
+          options: { account: }
+        )
+      ).not_to have_valid_field(:From)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            From: "1234"
+          }
+        )
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:unverified_source_number).message)
+    end
+
     it "validates Url" do
       expect(
         validate_request_schema(input_params: { Url: "https://www.example.com" })

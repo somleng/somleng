@@ -28,6 +28,10 @@ module ApplicationError
         code: "21606",
         message: "The 'From' phone number provided is not a valid message-capable phone number for this destination."
       ),
+      unverified_source_number: Error.new(
+        code: "21210",
+        message: "The source phone number provided is not yet verified for your account. You may only make calls from phone numbers that you've verified or purchased."
+      ),
       sent_at_missing: Error.new(
         code: "35111",
         message: "SendAt cannot be empty for ScheduleType 'fixed'"
