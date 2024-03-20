@@ -86,6 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_113428) do
     t.uuid "phone_call_id", null: false
     t.uuid "account_id", null: false
     t.string "url", null: false
+    t.jsonb "custom_parameters", default: {}, null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

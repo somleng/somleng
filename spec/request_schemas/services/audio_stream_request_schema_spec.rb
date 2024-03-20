@@ -30,14 +30,20 @@ module Services
       schema = validate_request_schema(
         input_params: {
           phone_call_id: phone_call.id,
-          url: "wss://example.com/audio"
+          url: "wss://example.com/audio",
+          custom_parameters: {
+            "foo" => "bar"
+          }
         }
       )
 
       expect(schema.output).to eq(
         phone_call: phone_call,
         account: phone_call.account,
-        url: "wss://example.com/audio"
+        url: "wss://example.com/audio",
+        custom_parameters: {
+          "foo" => "bar"
+        }
       )
     end
 

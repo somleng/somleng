@@ -9,7 +9,8 @@ RSpec.describe "Services" do
         api_services_audio_streams_path,
         params: {
           phone_call_id: phone_call.id,
-          url: "wss://example.com/audio"
+          url: "wss://example.com/audio",
+          custom_parameters: { "foo" => "bar" }
         },
         headers: build_authorization_headers("services", "password")
       )
