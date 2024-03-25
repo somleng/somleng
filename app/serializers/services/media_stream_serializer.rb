@@ -1,5 +1,5 @@
 module Services
-  class AudioStreamSerializer < ResourceSerializer
+  class MediaStreamSerializer < ResourceSerializer
     def attributes
       super.merge(
         "sid" => nil,

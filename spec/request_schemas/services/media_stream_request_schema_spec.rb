@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Services
-  RSpec.describe AudioStreamRequestSchema, type: :request_schema do
+  RSpec.describe MediaStreamRequestSchema, type: :request_schema do
     it "validates phone_call_id" do
       phone_call = create(:phone_call)
 
@@ -48,7 +48,7 @@ module Services
     end
 
     def validate_request_schema(...)
-      AudioStreamRequestSchema.new(...)
+      MediaStreamRequestSchema.new(...)
     end
   end
 end

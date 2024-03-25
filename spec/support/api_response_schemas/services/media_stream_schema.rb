@@ -1,6 +1,6 @@
 module APIResponseSchema
   module Services
-    AudioStreamSchema = Dry::Schema.Params do
+    MediaStreamSchema = Dry::Schema.Params do
       required(:sid).filled(:str?)
       required(:url).filled(:str?)
       required(:created_at).filled(:str?)

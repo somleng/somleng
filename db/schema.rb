@@ -82,19 +82,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_113428) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "audio_streams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "phone_call_id", null: false
-    t.uuid "account_id", null: false
-    t.string "url", null: false
-    t.jsonb "custom_parameters", default: {}, null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_audio_streams_on_account_id"
-    t.index ["phone_call_id"], name: "index_audio_streams_on_phone_call_id"
-    t.index ["sequence_number"], name: "index_audio_streams_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "phone_call_id", null: false
     t.integer "bill_sec", null: false
@@ -222,6 +209,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_113428) do
     t.index ["message_id"], name: "index_interactions_on_message_id", unique: true
     t.index ["phone_call_id"], name: "index_interactions_on_phone_call_id", unique: true
     t.index ["sequence_number"], name: "index_interactions_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "media_streams", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "phone_call_id", null: false
+    t.uuid "account_id", null: false
+    t.string "url", null: false
+    t.jsonb "custom_parameters", default: {}, null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_media_streams_on_account_id"
+    t.index ["phone_call_id"], name: "index_media_streams_on_phone_call_id"
+    t.index ["sequence_number"], name: "index_media_streams_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -716,8 +716,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_113428) do
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "audio_streams", "accounts"
-  add_foreign_key "audio_streams", "phone_calls"
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "users", on_delete: :cascade
@@ -733,6 +731,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_113428) do
   add_foreign_key "interactions", "carriers"
   add_foreign_key "interactions", "messages", on_delete: :nullify
   add_foreign_key "interactions", "phone_calls", on_delete: :nullify
+  add_foreign_key "media_streams", "accounts"
+  add_foreign_key "media_streams", "phone_calls"
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
   add_foreign_key "messages", "messaging_services", on_delete: :nullify

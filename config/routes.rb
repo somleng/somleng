@@ -39,7 +39,7 @@ Rails.application.routes.draw do
       resources :tts_events, only: :create
       resources :call_data_records, only: :create
       resources :recordings, only: %i[create update]
-      resources :audio_streams, only: :create
+      resources :media_streams, only: :create
       resource :routing_parameters, only: :create
     end
   end

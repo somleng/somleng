@@ -1,5 +1,5 @@
 module Services
-  class AudioStreamRequestSchema < ServicesRequestSchema
+  class MediaStreamRequestSchema < ServicesRequestSchema
     params do
       required(:phone_call_id).filled(:str?)
       required(:url).filled(:str?)

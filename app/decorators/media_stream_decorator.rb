@@ -1,4 +1,4 @@
-class AudioStreamDecorator < SimpleDelegator
+class MediaStreamDecorator < SimpleDelegator
   def sid
     object.id
   end
