@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       resources :call_data_records, only: :create
       resources :recordings, only: %i[create update]
       resources :media_streams, only: :create
+      resources :media_stream_events, only: :create
       resource :routing_parameters, only: :create
     end
   end

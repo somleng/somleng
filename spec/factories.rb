@@ -629,4 +629,17 @@ FactoryBot.define do
     message_digest { error_log.error_message }
     email { user.email }
   end
+
+  factory :media_stream do
+    phone_call
+    account { phone_call.account }
+    url { "wss://example.com/audio" }
+    traits_for_enum :status, %i[initialized connected started disconnected connect_failed]
+  end
+
+  factory :media_stream_event do
+    media_stream
+    phone_call { media_stream.phone_call }
+    traits_for_enum :type, %i[connect start disconnect connect_failed]
+  end
 end

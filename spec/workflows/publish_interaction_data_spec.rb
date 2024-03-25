@@ -34,7 +34,7 @@ RSpec.describe PublishInteractionData do
         csv.to_a == [
           %w[Date Beneficiaries Interactions],
           %w[2023-01-01 1 2],
-          [Date.today.to_s, "2", "4"]
+          [ Date.current.to_s, "2", "4" ]
         ]
       end
     )
@@ -48,7 +48,7 @@ RSpec.describe PublishInteractionData do
     csv_data = CSV.generate(headers: true) do |csv|
       csv << %w[Date Beneficiaries Interactions]
       csv << %w[2023-01-01 1 2]
-      csv << [Date.today.to_s, 1, 1]
+      csv << [ Date.current.to_s, 1, 1 ]
     end
 
     stub_request(:get, "https://api.datawrapper.de/v3/charts/chart-id/data").to_return(
