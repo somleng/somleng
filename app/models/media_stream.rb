@@ -1,5 +1,8 @@
 class MediaStream < ApplicationRecord
   include AASM
+  extend Enumerize
+
+  enumerize :tracks, in: %i[inbound outbound both]
 
   belongs_to :account
   belongs_to :phone_call

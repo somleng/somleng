@@ -632,9 +632,11 @@ FactoryBot.define do
 
   factory :media_stream do
     phone_call
+    inbound
     account { phone_call.account }
     url { "wss://example.com/audio" }
     traits_for_enum :status, %i[initialized connected started disconnected connect_failed]
+    traits_for_enum :tracks, %i[inbound outbound both]
   end
 
   factory :media_stream_event do

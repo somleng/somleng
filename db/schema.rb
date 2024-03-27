@@ -229,6 +229,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_25_170920) do
     t.uuid "account_id", null: false
     t.string "url", null: false
     t.string "status", null: false
+    t.string "tracks", null: false
     t.jsonb "custom_parameters", default: {}, null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false

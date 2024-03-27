@@ -41,6 +41,7 @@ module Services
         phone_call: phone_call,
         account: phone_call.account,
         url: "wss://example.com/audio",
+        tracks: :inbound,
         custom_parameters: {
           "foo" => "bar"
         }

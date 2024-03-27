@@ -19,7 +19,8 @@ module Services
         phone_call: context.fetch(:phone_call),
         account: context.fetch(:phone_call).account,
         url: params.fetch(:url),
-        custom_parameters: params.fetch(:custom_parameters, {})
+        custom_parameters: params.fetch(:custom_parameters, {}),
+        tracks: :inbound
       }
     end
   end
