@@ -1,9 +1,11 @@
 class Message < ApplicationRecord
   include AASM
-  include HasBeneficiary
   extend Enumerize
 
+  before_create :set_beneficiary_data
   after_create :set_status_timestamp
+
+  attribute :beneficiary_fingerprint, SHA256Type.new
 
   belongs_to :carrier
   belongs_to :account
@@ -71,6 +73,18 @@ class Message < ApplicationRecord
   end
 
   private
+
+  def set_beneficiary_data
+    beneficiary = Beneficiary.new(
+      phone_number: outbound? ? to : from,
+      fallback_country: carrier.country
+    )
+
+    return unless beneficiary.valid?
+
+    self.beneficiary_fingerprint = beneficiary.phone_number
+    self.beneficiary_country_code = beneficiary.country.alpha2
+  end
 
   def set_status_timestamp
     timestamp_column = "#{status}_at"
