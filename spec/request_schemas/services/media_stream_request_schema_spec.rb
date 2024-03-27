@@ -24,6 +24,16 @@ module Services
       ).not_to have_valid_field(:url)
     end
 
+    it "validates tracks" do
+      expect(
+        validate_request_schema(input_params: { tracks: "inbound" })
+      ).to have_valid_field(:tracks)
+
+      expect(
+        validate_request_schema(input_params: { tracks: "" })
+      ).not_to have_valid_field(:tracks)
+    end
+
     it "normalizes output" do
       phone_call = create(:phone_call)
 
@@ -31,6 +41,7 @@ module Services
         input_params: {
           phone_call_id: phone_call.id,
           url: "wss://example.com/audio",
+          tracks: :inbound,
           custom_parameters: {
             "foo" => "bar"
           }

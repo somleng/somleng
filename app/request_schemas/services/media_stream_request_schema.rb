@@ -3,6 +3,7 @@ module Services
     params do
       required(:phone_call_id).filled(:str?)
       required(:url).filled(:str?)
+      required(:tracks).value(:str?, included_in?: MediaStream.tracks.values)
       optional(:custom_parameters).maybe(:hash)
     end
 
@@ -18,9 +19,9 @@ module Services
       {
         phone_call: context.fetch(:phone_call),
         account: context.fetch(:phone_call).account,
+        tracks: params.fetch(:tracks),
         url: params.fetch(:url),
-        custom_parameters: params.fetch(:custom_parameters, {}),
-        tracks: :inbound
+        custom_parameters: params.fetch(:custom_parameters, {})
       }
     end
   end

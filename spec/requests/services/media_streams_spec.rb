@@ -9,6 +9,7 @@ RSpec.describe "Services" do
         api_services_media_streams_path,
         params: {
           phone_call_id: phone_call.id,
+          tracks: "inbound",
           url: "wss://example.com/audio",
           custom_parameters: { "foo" => "bar" }
         },
