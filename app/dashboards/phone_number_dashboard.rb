@@ -5,6 +5,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
     phone_calls: Field::HasMany,
+    messages: Field::HasMany,
     id: Field::String,
     number: Field::String,
     enabled: Field::String,
@@ -14,6 +15,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
+    id
     account
     number
     enabled
@@ -29,6 +31,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     created_at
     updated_at
     phone_calls
+    messages
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze
