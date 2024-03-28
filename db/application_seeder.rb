@@ -3,7 +3,7 @@ class ApplicationSeeder
 
   def seed!
     carrier, carrier_owner = create_carrier
-    create_sip_trunk(carrier:)
+    sip_trunk = create_sip_trunk(carrier:)
     customer_managed_account, customer = create_customer_managed_account(carrier:)
     create_error_log_notification(
       carrier:,
@@ -17,6 +17,12 @@ class ApplicationSeeder
     )
     carrier_managed_account = create_carrier_managed_account(carrier:)
     phone_number = create_phone_number(carrier:, account: carrier_managed_account)
+    create_phone_call(
+      carrier:,
+      account: carrier_managed_account,
+      sip_trunk:,
+      phone_number:
+    )
 
     puts(<<~INFO)
       Account SID:           #{carrier_managed_account.id}
@@ -124,6 +130,19 @@ class ApplicationSeeder
       user:,
       email: user.email,
       message_digest: error_log.error_message,
+      **params
+    )
+  end
+
+  def create_phone_call(**params)
+    return if PhoneCall.exists?
+
+    phone_number = params.fetch(:phone_number)
+
+    PhoneCall.create!(
+      direction: :outbound,
+      from: phone_number.number,
+      to: "855715100678",
       **params
     )
   end

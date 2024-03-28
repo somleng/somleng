@@ -10,6 +10,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
       transform_on_export: ->(field) { field.data&.id }
     ),
     phone_call_events: Field::HasMany,
+    media_streams: Field::HasMany,
     events: Field::HasMany,
     recordings: Field::HasMany,
     tts_events: Field::HasMany,
@@ -61,6 +62,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     call_data_record
     events
     phone_call_events
+    media_streams
     recordings
     tts_events
   ].freeze

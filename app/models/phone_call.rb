@@ -1,7 +1,10 @@
 class PhoneCall < ApplicationRecord
   extend Enumerize
   include AASM
-  include HasBeneficiary
+
+  before_create :set_beneficiary_data
+
+  attribute :beneficiary_fingerprint, SHA256Type.new
 
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]
@@ -19,6 +22,7 @@ class PhoneCall < ApplicationRecord
   has_many   :phone_call_events
   has_many   :recordings
   has_many   :tts_events
+  has_many   :media_streams
 
   delegate :may_fire_event?, to: :aasm
   delegate :default_tts_voice, to: :account
@@ -85,5 +89,19 @@ class PhoneCall < ApplicationRecord
 
   def was_initiated?
     initiated_at.present?
+  end
+
+  private
+
+  def set_beneficiary_data
+    beneficiary = Beneficiary.new(
+      phone_number: outbound? ? to : from,
+      fallback_country: sip_trunk&.inbound_country || carrier.country
+    )
+
+    return unless beneficiary.valid?
+
+    self.beneficiary_fingerprint = beneficiary.phone_number
+    self.beneficiary_country_code = beneficiary.country.alpha2
   end
 end

@@ -11,6 +11,7 @@ describe ApplicationSeeder do
     expect(Account.customer_managed.count).to eq(1)
     expect(ErrorLogNotification.count).to eq(2)
     expect(PhoneNumber.count).to eq(1)
+    expect(PhoneCall.count).to eq(1)
 
     Account.all.each do |account|
       expect(account).to have_attributes(
@@ -32,6 +33,7 @@ describe ApplicationSeeder do
     expect(Account.carrier_managed.count).to eq(1)
     expect(Account.customer_managed.count).to eq(1)
     expect(PhoneNumber.count).to eq(1)
+    expect(PhoneCall.count).to eq(1)
     expect(ErrorLogNotification.count).to eq(2)
   end
 end
