@@ -1,10 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Admin/Phone Numbers" do
-  it "show a phone number" do
-    carrier = create(:carrier, name: "My Carrier")
-    account = create(:account, carrier:, name: "Rocket Rides")
-    phone_number = create(:phone_number, account:, carrier:, number: "1234")
+  it "List phone numbers" do
+    phone_number = create(:phone_number, :assigned_to_account, number: "1234")
     create(
       :phone_number_configuration,
       phone_number:,
@@ -12,11 +10,14 @@ RSpec.describe "Admin/Phone Numbers" do
     )
 
     page.driver.browser.authorize("admin", "password")
-    visit admin_carrier_path(carrier)
+    visit admin_phone_numbers_path
+
+    expect(page).to have_content("1234")
 
     click_link("1234")
-    expect(page).to have_link("My Carrier")
-    expect(page).to have_link("Rocket Rides")
+
+    expect(page).to have_link(phone_number.carrier.name)
+    expect(page).to have_link(phone_number.account.name)
     expect(page).to have_content("https://demo.twilio.com/docs/voice.xml")
 
     click_link(phone_number.configuration.id)

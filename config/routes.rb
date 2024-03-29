@@ -39,6 +39,8 @@ Rails.application.routes.draw do
       resources :tts_events, only: :create
       resources :call_data_records, only: :create
       resources :recordings, only: %i[create update]
+      resources :media_streams, only: :create
+      resources :media_stream_events, only: :create
       resource :routing_parameters, only: :create
     end
   end
@@ -147,11 +149,13 @@ Rails.application.routes.draw do
 
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]
+      resources :phone_numbers, only: %i[show index]
       resources :phone_calls, only: %i[show index]
       resources :messages, only: %i[show index]
       resources :users, only: %i[show index]
       resources :statistics, only: :index
       resources :tts_events, only: %i[show index]
+      resources :media_streams, only: %i[show index]
       resources :error_logs, only: %i[show index]
       resources :events, only: %i[index show]
       resources :exports, only: %i[index show]
@@ -161,7 +165,6 @@ Rails.application.routes.draw do
 
       resources :account_memberships, only: :show
       resources :sip_trunks, only: :show
-      resources :phone_numbers, only: :show
       resources :phone_number_configurations, only: :show
       resources :phone_call_events, only: :show
       resources :call_data_records, only: :show
@@ -170,6 +173,7 @@ Rails.application.routes.draw do
       resources :sms_gateway_channel_groups, only: :show
       resources :messaging_services, only: :show
       resources :verification_services, only: :show
+      resources :media_stream_events, only: :show
 
       root to: "statistics#index"
     end

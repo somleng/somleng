@@ -7,6 +7,9 @@ inherit_gem:
 AllCops:
   NewCops: enable
 
+Lint:
+  Enabled: true
+
 Style/FrozenStringLiteralComment:
   Enabled: false
 

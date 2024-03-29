@@ -16,6 +16,10 @@ RSpec.describe "Admin/Phone Calls" do
       phone_call:,
       status_callback_url: "https://example.com/recording-status-callback"
     )
+    media_stream = create(
+      :media_stream,
+      phone_call:
+    )
     internal_phone_call = create(:phone_call, :internal, to: "66814822567")
 
     page.driver.browser.authorize("admin", "password")
@@ -27,6 +31,7 @@ RSpec.describe "Admin/Phone Calls" do
 
     expect(page).to have_content("https://example.com/call-status-callback")
     expect(page).to have_content("Recordings")
+    expect(page).to have_content(media_stream.id)
 
     click_on(recording.id)
     expect(page).to have_content("https://example.com/recording-status-callback")
