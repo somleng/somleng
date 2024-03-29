@@ -29,20 +29,3 @@ RSpec.describe MediaStream do
     expect(media_stream.status).to eq("connect_failed")
   end
 end
-
-
-# event :connect do
-#   transitions from: :initialized, to: :connected
-# end
-
-# event :start do
-#   transitions from: [ :initialized, :connected ], to: :started
-# end
-
-# event :fail_to_connect do
-#   transitions from: [ :initialized ], to: :connect_failed
-# end
-
-# event :disconnect do
-#   transitions from: [ :initialized, :connected, :started ], to: :disconnected
-# end
