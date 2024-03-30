@@ -17,6 +17,7 @@ RSpec.describe "Admin/Media Streams" do
 
     click_on(media_stream_event.id)
 
-    expect(page).to have_content("connect")
+    expect(page).to have_content(media_stream_event.id)
+    expect(page).to have_content(media_stream.id)
   end
 end
