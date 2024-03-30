@@ -1,6 +1,4 @@
 class SMSGateway < ApplicationRecord
-  include Redis::Objects
-
   belongs_to :carrier
   belongs_to :default_sender, class_name: "PhoneNumber", optional: true
   has_many :messages
@@ -11,22 +9,16 @@ class SMSGateway < ApplicationRecord
 
   before_create :create_device_token
 
-  value :last_connected_at, expiration: 5.minutes
-
   def connected?
-    last_connected_at.value.present?
+    last_connected_at.present? && last_connected_at >= 5.minutes.ago
   end
 
   def receive_ping
-    self.last_connected_at = Time.current
+    touch(:last_connected_at)
   end
 
   def disconnect!
-    last_connected_at.delete
-  end
-
-  def last_connected
-    last_connected_at.value&.to_time
+    update_columns(last_connected_at: nil)
   end
 
   def available_channel_slots
