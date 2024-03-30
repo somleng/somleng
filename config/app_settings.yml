@@ -22,7 +22,6 @@ default: &default
   services_user: "services"
   services_password: "password"
   switch_host: <%= ENV.fetch("SWITCH_HOST", "http://localhost:8080") %>
-  redis_url: "<%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>"
   switch_username: "adhearsion"
   switch_password: "password"
   admin_username: "admin"

@@ -6,12 +6,10 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem "rails", "~> 7.1.3"
 
+# For Administrate
 gem "administrate"
 gem "administrate-field-active_storage"
 gem "image_processing"
-
-# Use Redis adapter to run Action Cable in production
-gem "redis"
 
 gem "aasm"
 gem "active_storage_validations"
@@ -25,7 +23,6 @@ gem "aws-sdk-s3"
 gem "aws-sdk-sesv2"
 gem "aws-sdk-sqs"
 gem "bootstrap-email", "1.4.1"
-gem "connection_pool"
 gem "country_select"
 gem "cssbundling-rails"
 gem "cursor_paginator"
@@ -52,8 +49,6 @@ gem "phony"
 gem "puma"
 gem "pundit"
 gem "recaptcha"
-gem "redis-namespace"
-gem "redis-objects"
 gem "responders"
 gem "rqrcode"
 gem "sassc-rails"
@@ -91,7 +86,6 @@ group :test do
   gem "capybara"
   gem "email_spec"
   gem "factory_bot_rails"
-  gem "mock_redis"
   gem "selenium-webdriver"
   gem "shoulda-matchers"
   gem "simplecov", require: false

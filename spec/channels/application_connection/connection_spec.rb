@@ -25,7 +25,7 @@ module ApplicationCable
 
       disconnect
 
-      expect(sms_gateway.connected?).to eq(false)
+      expect(sms_gateway.reload.connected?).to eq(false)
     end
   end
 end

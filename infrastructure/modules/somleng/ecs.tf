@@ -63,7 +63,6 @@ data "template_file" "appserver_container_definitions" {
     uploads_bucket = aws_s3_bucket.uploads.id
     call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
-    redis_url = var.redis_url
     pghero_db_instance_identifier = var.db_instance_identifier
     pghero_other_databases = var.pghero_other_databases
   }
@@ -89,8 +88,7 @@ resource "aws_ecs_service" "appserver" {
     subnets = var.vpc.private_subnets
     security_groups = [
       aws_security_group.appserver.id,
-      var.db_security_group,
-      var.redis_security_group
+      var.db_security_group
     ]
   }
 
@@ -145,7 +143,6 @@ data "template_file" "worker_container_definitions" {
     uploads_bucket = aws_s3_bucket.uploads.id
     call_service_queue_url = data.aws_sqs_queue.call_service.url
     raw_recordings_bucket_name = data.aws_s3_bucket.raw_recordings.bucket
-    redis_url = var.redis_url
     pghero_db_instance_identifier = var.db_instance_identifier
     pghero_other_databases = var.pghero_other_databases
   }
@@ -196,8 +193,7 @@ resource "aws_ecs_service" "worker" {
     subnets = var.vpc.private_subnets
     security_groups = [
       aws_security_group.worker.id,
-      var.db_security_group,
-      var.redis_security_group
+      var.db_security_group
     ]
   }
 
