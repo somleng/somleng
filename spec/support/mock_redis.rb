@@ -1,1 +1,1 @@
-Redis::Objects.redis = MockRedis.new
+AppSettings.redis_client = -> { MockRedis.new }

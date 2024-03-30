@@ -12,6 +12,7 @@ default: &default
   aws_sqs_long_running_queue_name: <%= ENV.fetch("AWS_SQS_LONG_RUNNING_QUEUE_NAME", "long-running") %>
   aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
   aws_ses_region: <%= ENV.fetch("AWS_SES_REGION", "ap-southeast-1") %>
+  redis_pool_size: <%= ENV.fetch('RAILS_MAX_THREADS') { 32 } %>
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
   uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "upload-bucket") %>
   raw_recordings_bucket: <%= ENV.fetch("RAW_RECORDINGS_BUCKET", "raw-recordings-bucket") %>

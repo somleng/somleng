@@ -1,13 +1,11 @@
 development:
-  adapter: redis
-  url: redis://localhost:6379/1
+  adapter: postgresql
 
 test:
   adapter: test
 
 production: &production
-  adapter: redis
-  url: <%= Rails.configuration.app_settings.fetch(:redis_url) %>
+  adapter: postgresql
   channel_prefix: somleng_production
 
 staging:
