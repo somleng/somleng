@@ -40,9 +40,6 @@ variable "pghero_other_databases" {
 }
 
 variable "db_security_group" {}
-variable "redis_security_group" {}
-variable "redis_url" {}
-
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
 variable "appserver_max_tasks" {
