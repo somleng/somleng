@@ -1,13 +1,11 @@
 development:
-  adapter: postgresql
+  adapter: any_cable
 
 test:
   adapter: test
 
 production: &production
-  adapter: postgresql
-  channel_prefix: somleng_production
+  adapter: any_cable
 
 staging:
   <<: *production
-  channel_prefix: somleng_staging

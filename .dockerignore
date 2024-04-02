@@ -3,6 +3,7 @@
 .circleci
 .ebextensions
 .bundle
+config/credentials/**/*.key
 coverage
 doc
 docker

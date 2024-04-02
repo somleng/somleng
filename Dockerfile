@@ -20,7 +20,16 @@ FROM base as build
 # Install packages needed to build gems
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --update --no-cache build-base git gcompat postgresql-dev nodejs yarn
+    apk add --update --no-cache build-base git gcompat postgresql-dev nodejs yarn wget curl jq
+
+RUN [[ "$(arch)" = "aarch64" ]] && arch="amd64" || arch="$(arch)" && \
+  curl -s https://api.github.com/repos/grpc-ecosystem/grpc-health-probe/releases/latest \
+  | jq ".assets[].browser_download_url" \
+  | grep "grpc_health_probe-linux-$arch" \
+  | tr -d \" \
+  | wget -qi - -O grpc-health-probe && \
+  chmod +x grpc-health-probe && \
+  mv grpc-health-probe /usr/local/bin
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -53,8 +62,9 @@ RUN apk update --no-cache && \
     apk add --update --no-cache build-base gcompat postgresql-dev vips-dev ffmpeg
 
 # Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
+COPY --from=build --link /usr/local/bundle /usr/local/bundle
+COPY --from=build --link /rails /rails
+COPY --from=build --link /usr/local/bin/grpc-health-probe /usr/local/bin
 
 # Run and own only the runtime files as a non-root user for security
 RUN addgroup -S -g 1000 rails && \

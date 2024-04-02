@@ -52,7 +52,7 @@ class VerificationTemplate
     preferred_voice&.language || DEFAULT_VOICE_LANGUAGE
   end
 
-  def find_tts_voice(language = nil, &block)
+  def find_tts_voice(language = nil, &)
     TTSVoices::Voice.all.find do |voice|
       block_given? ? yield(voice.language) : voice.language.casecmp(language.to_s).zero?
     end
