@@ -1,0 +1,6 @@
+km:
+  language_name: Khmer
+  verification_templates:
+    default:
+      message: "លេខកូដផ្ទៀងផ្ទាត់ %{friendly_name} របស់អ្នកគឺ៖ %{code}."
+      call: "Your %{friendly_name} verification code is: %{code}. Again: %{code}. One last time: %{code}. Goodbye"

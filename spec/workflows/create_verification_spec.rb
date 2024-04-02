@@ -105,6 +105,27 @@ RSpec.describe CreateVerification do
     )
   end
 
+  it "handles Khmer SMS verifications" do
+    verification_service, phone_number, = create_verification_service(
+      name: "Rocket Rides"
+    )
+
+    verification = CreateVerification.call(
+      build_verification_params(
+        verification_service:,
+        phone_number:,
+        channel: :sms,
+        locale: "km"
+      )
+    )
+
+    expect(verification.delivery_attempts.first).to have_attributes(
+      message: have_attributes(
+        body: "លេខកូដផ្ទៀងផ្ទាត់ Rocket Rides របស់អ្នកគឺ៖ #{verification.code}."
+      )
+    )
+  end
+
   it "updates an existing verification" do
     verification_service, phone_number, _sms_gateway = create_verification_service
     existing_verification = create(
