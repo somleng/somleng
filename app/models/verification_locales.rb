@@ -45,6 +45,7 @@ class VerificationLocales
     CountryLocale.new(country_code: "IT", locale: "it"),
     CountryLocale.new(country_code: "JO", locale: "ar"),
     CountryLocale.new(country_code: "JP", locale: "ja"),
+    CountryLocale.new(country_code: "KH", locale: "km"),
     CountryLocale.new(country_code: "KP", locale: "ko"),
     CountryLocale.new(country_code: "KR", locale: "ko"),
     CountryLocale.new(country_code: "KW", locale: "ar"),

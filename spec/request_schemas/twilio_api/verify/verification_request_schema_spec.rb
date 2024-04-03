@@ -220,7 +220,7 @@ module TwilioAPI
           channel: "sms",
           to: "855715100987",
           country_code: "KH",
-          locale: "en",
+          locale: "km",
           delivery_attempt: {
             phone_number:,
             from: phone_number.number
