@@ -287,7 +287,7 @@ resource "aws_ecs_task_definition" "anycable" {
             awslogs-stream-prefix = var.app_environment
           }
         },
-        command      = ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],
+        command      = ["bundle", "exec", "anycable"],
         startTimeout = 120,
         essential    = true,
         healthCheck = {
