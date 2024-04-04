@@ -311,6 +311,10 @@ resource "aws_ecs_task_definition" "anycable" {
             {
               name  = "ANYCABLE_RPC_PORT",
               value = tostring(var.anycable_rpc_port)
+            },
+            {
+              name  = "ANYCABLE_DEBUG",
+              value = "1"
             }
           ]
         )
