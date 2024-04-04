@@ -4,17 +4,16 @@ module "somleng" {
   cluster_name   = "somleng"
   app_identifier = "somleng"
 
-  app_environment = "production"
-  app_subdomain   = "app"
-  cdn_subdomain   = "cdn"
-  api_subdomain   = "api"
+  app_environment  = "production"
+  app_subdomain    = "app"
+  cdn_subdomain    = "cdn"
+  api_subdomain    = "api"
   verify_subdomain = "verify"
 
   app_image          = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image        = data.terraform_remote_state.core.outputs.nginx_ecr_repository
   aws_region         = var.aws_region
   aws_ses_region     = "us-east-1"
-  load_balancer      = data.terraform_remote_state.core_infrastructure.outputs.application_load_balancer
   global_accelerator = data.terraform_remote_state.core_infrastructure.outputs.global_accelerator
   listener_arn       = data.terraform_remote_state.core_infrastructure.outputs.https_listener.arn
   route53_zone       = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
@@ -29,6 +28,9 @@ module "somleng" {
   db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
   db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
   db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.id
+
+  redis_security_group = data.terraform_remote_state.core.outputs.redis_security_group.id
+  redis_url            = "redis://${data.terraform_remote_state.core.outputs.elasticache_redis_endpoint}/0"
 
   call_service_queue_name = "switch-services"
 

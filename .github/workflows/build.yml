@@ -44,7 +44,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "develop",
+              "branch": "switch-to-anycable",
               "environment": "staging",
               "friendly_image_tag": "beta",
               "image_tag": "stag-${{ github.sha }}",
@@ -393,6 +393,18 @@ jobs:
         with:
           task-definition: ${{ steps.render-fargate-worker-task-def.outputs.task-definition }}
 
+      - name: Get current anycable task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-anycable" --query 'taskDefinition' > task-definition.json
+
+      - name: Inject new app image into worker task definition
+        id: render-anycable-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: anycable
+          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+
       - name: Run DB Migrate using Fargate
         run: |
           network_configuration=$(aws ecs describe-services --cluster ${{ matrix.ecs_cluster }} --service ${{ matrix.identifier }}-worker --query 'services[0]' | jq 'with_entries(select([.key] | inside(["networkConfiguration"])))')
@@ -412,5 +424,13 @@ jobs:
         with:
           task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
           service: ${{ matrix.identifier}}-worker
+          cluster: ${{ matrix.ecs_cluster}}
+          wait-for-service-stability: true
+
+      - name: Deploy Anycable
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-anycable-task-def.outputs.task-definition }}
+          service: ${{ matrix.identifier}}-anycable
           cluster: ${{ matrix.ecs_cluster}}
           wait-for-service-stability: true

@@ -19,6 +19,7 @@ default: &default
   recaptcha_secret_key: <%= ENV.fetch("RECAPTCHA_SECRET_KEY", "recaptcha_secret_key") %>
   datawrapper_api_key: <%= ENV["DATAWRAPPER_API_KEY"] %>
   datawrapper_chart_id: <%= ENV["DATAWRAPPER_CHART_ID"] %>
+  redis_url: "<%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>"
   services_user: "services"
   services_password: "password"
   switch_host: <%= ENV.fetch("SWITCH_HOST", "http://localhost:8080") %>

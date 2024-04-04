@@ -26,7 +26,7 @@ RUN [[ "$(arch)" = "aarch64" ]] && arch="amd64" || arch="$(arch)" && \
   curl -s https://api.github.com/repos/grpc-ecosystem/grpc-health-probe/releases/latest \
   | jq ".assets[].browser_download_url" \
   | grep "grpc_health_probe-linux-$arch" \
-  | tr -d \" \
+  | tr -d '"' \
   | wget -qi - -O grpc-health-probe && \
   chmod +x grpc-health-probe && \
   mv grpc-health-probe /usr/local/bin

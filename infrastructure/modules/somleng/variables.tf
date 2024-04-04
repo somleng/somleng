@@ -7,15 +7,19 @@ variable "aws_region" {}
 variable "aws_ses_region" {}
 variable "vpc" {}
 variable "uploads_bucket" {}
-variable "load_balancer" {}
 variable "global_accelerator" {}
 variable "listener_arn" {}
+variable "internal_load_balancer" {}
 variable "route53_zone" {}
+variable "internal_route53_zone" {}
 variable "cdn_certificate" {}
+variable "load_balancer_certificate" {}
+variable "internal_load_balancer_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}
 variable "verify_subdomain" {}
+variable "anycable_subdomain" {}
 
 variable "call_service_queue_name" {}
 variable "raw_recordings_bucket_name" {}
@@ -36,10 +40,12 @@ variable "db_instance_identifier" {
 
 variable "pghero_other_databases" {
   description = "A comma separated list of other databases to show in the pghero console"
-  default = ""
+  default     = ""
 }
 
 variable "db_security_group" {}
+variable "redis_security_group" {}
+variable "redis_url" {}
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
 variable "appserver_max_tasks" {
@@ -52,6 +58,12 @@ variable "worker_max_tasks" {
   default = 4
 }
 variable "worker_min_tasks" {
+  default = 1
+}
+variable "anycable_max_tasks" {
+  default = 4
+}
+variable "anycable_min_tasks" {
   default = 1
 }
 # If the average CPU utilization over a minute drops to this threshold,
@@ -68,4 +80,8 @@ variable "ecs_as_cpu_high_threshold_per" {
 
 variable "sqs_visibility_timeout_seconds" {
   default = 1800
+}
+
+variable "anycable_rpc_port" {
+  default = 50051
 }
