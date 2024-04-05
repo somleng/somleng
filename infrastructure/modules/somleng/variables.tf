@@ -2,6 +2,9 @@ variable "cluster_name" {}
 variable "app_identifier" {}
 variable "app_environment" {}
 variable "app_image" {}
+variable "ws_image" {
+  default = "anycable/anycable-go:latest-alpine"
+}
 variable "nginx_image" {}
 variable "aws_region" {}
 variable "aws_ses_region" {}

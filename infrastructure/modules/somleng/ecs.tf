@@ -270,6 +270,22 @@ resource "aws_ecs_task_definition" "worker" {
   memory             = module.container_instances.ec2_instance_type.memory_size - 768
 }
 
+resource "aws_ecs_task_definition" "worker_fargate" {
+  family                   = "${var.app_identifier}-worker-fargate"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  container_definitions    = aws_ecs_task_definition.worker.container_definitions
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  execution_role_arn       = aws_iam_role.task_execution_role.arn
+  memory                   = 1024
+  cpu                      = 512
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+}
+
 resource "aws_ecs_task_definition" "anycable" {
   family                   = "${var.app_identifier}-anycable"
   network_mode             = "awsvpc"
@@ -328,20 +344,47 @@ resource "aws_ecs_task_definition" "anycable" {
   memory             = module.container_instances.ec2_instance_type.memory_size - 768
 }
 
-resource "aws_ecs_task_definition" "worker_fargate" {
-  family                   = "${var.app_identifier}-worker-fargate"
+resource "aws_ecs_task_definition" "ws" {
+  family                   = "${var.app_identifier}-ws"
   network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  container_definitions    = aws_ecs_task_definition.worker.container_definitions
-  task_role_arn            = aws_iam_role.ecs_task_role.arn
-  execution_role_arn       = aws_iam_role.task_execution_role.arn
-  memory                   = 1024
-  cpu                      = 512
+  requires_compatibilities = ["EC2"]
+  container_definitions = jsonencode(
+    [
+      {
+        name  = "ws",
+        image = "${var.ws_image}",
+        logConfiguration = {
+          logDriver = "awslogs",
+          options = {
+            awslogs-group         = aws_cloudwatch_log_group.ws.name,
+            awslogs-region        = var.aws_region,
+            awslogs-stream-prefix = var.app_environment
+          }
+        },
+        startTimeout = 120,
+        essential    = true,
+        healthCheck = {
+          command  = ["CMD-SHELL", "grpc-health-probe -addr :$ANYCABLE_RPC_PORT"],
+          interval = 10,
+          retries  = 10,
+          timeout  = 5
+        },
+        portMappings = [
+          {
+            containerPort = 80
+          }
+        ],
+        environment = [
 
-  runtime_platform {
-    operating_system_family = "LINUX"
-    cpu_architecture        = "ARM64"
-  }
+        ]
+        secrets = []
+      }
+    ]
+  )
+
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
+  execution_role_arn = aws_iam_role.task_execution_role.arn
+  memory             = module.container_instances.ec2_instance_type.memory_size - 768
 }
 
 resource "aws_ecs_service" "worker" {

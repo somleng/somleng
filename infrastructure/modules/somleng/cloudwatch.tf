@@ -17,3 +17,8 @@ resource "aws_cloudwatch_log_group" "anycable" {
   name              = "${var.app_identifier}-anycable"
   retention_in_days = 7
 }
+
+resource "aws_cloudwatch_log_group" "ws" {
+  name              = "${var.app_identifier}-ws"
+  retention_in_days = 7
+}

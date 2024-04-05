@@ -49,7 +49,7 @@ resource "aws_lb_target_group" "anycable" {
     path              = "/grpc.health.v1.Health/Check"
     healthy_threshold = 3
     interval          = 10
-    matcher           = "0-99"
+    matcher           = "0"
   }
 }
 
