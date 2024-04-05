@@ -21,7 +21,7 @@ RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add --update --no-cache wget curl jq
 
-RUN [[ "$(arch)" = "aarch64" ]] && arch="amd64" || arch="$(arch)" && \
+RUN [[ "$(arch)" = "aarch64" ]] && arch="arm64" || arch="$(arch)" && \
   curl -s https://api.github.com/repos/grpc-ecosystem/grpc-health-probe/releases/latest \
   | jq ".assets[].browser_download_url" \
   | grep "grpc_health_probe-linux-$arch" \
