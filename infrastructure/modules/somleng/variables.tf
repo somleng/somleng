@@ -8,13 +8,13 @@ variable "aws_ses_region" {}
 variable "vpc" {}
 variable "uploads_bucket" {}
 variable "global_accelerator" {}
-variable "listener_arn" {}
+variable "listener" {}
+variable "internal_listener" {}
 variable "internal_load_balancer" {}
 variable "route53_zone" {}
 variable "internal_route53_zone" {}
 variable "cdn_certificate" {}
 variable "load_balancer_certificate" {}
-variable "internal_load_balancer_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}

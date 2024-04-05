@@ -17,7 +17,7 @@ resource "aws_lb_target_group" "webserver" {
 resource "aws_lb_listener_rule" "webserver" {
   priority = var.app_environment == "production" ? 15 : 115
 
-  listener_arn = var.listener_arn
+  listener_arn = var.listener.arn
 
   action {
     type             = "forward"
@@ -49,18 +49,25 @@ resource "aws_lb_target_group" "anycable" {
     path              = "/grpc.health.v1.Health/Check"
     healthy_threshold = 3
     interval          = 10
+    matcher           = "0-99"
   }
 }
 
-resource "aws_lb_listener" "anycable" {
-  load_balancer_arn = var.internal_load_balancer.arn
-  port              = var.anycable_rpc_port
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = var.internal_load_balancer_certificate.arn
+resource "aws_lb_listener_rule" "anycable" {
+  priority = var.app_environment == "production" ? 10 : 110
 
-  default_action {
+  listener_arn = var.internal_listener.arn
+
+  action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.anycable.arn
+    target_group_arn = aws_lb_target_group.anycable.id
+  }
+
+  condition {
+    host_header {
+      values = [
+        aws_route53_record.anycable.fqdn
+      ]
+    }
   }
 }
