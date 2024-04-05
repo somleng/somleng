@@ -291,7 +291,7 @@ resource "aws_ecs_task_definition" "anycable" {
         startTimeout = 120,
         essential    = true,
         healthCheck = {
-          command  = ["CMD-SHELL", "grpc-health-probe -addr :$ANYCABLE_RPC_PORT}"],
+          command  = ["CMD-SHELL", "grpc-health-probe -addr :$ANYCABLE_RPC_PORT"],
           interval = 10,
           retries  = 10,
           timeout  = 5
