@@ -41,7 +41,7 @@ RUN apk update --no-cache && \
 # Install application gems
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle install -j8 && \
+RUN bundle install -j8 --verbose && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     find "${BUNDLE_PATH}" -name "*.o" -delete && find "${BUNDLE_PATH}" -name "*.c" -delete && \
     mkdir -p tmp/pids && \

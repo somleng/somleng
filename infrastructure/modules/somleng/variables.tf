@@ -92,7 +92,7 @@ variable "sqs_visibility_timeout_seconds" {
 }
 
 variable "ws_port" {
-  default = 8080
+  default = 80
 }
 
 variable "ws_path" {
