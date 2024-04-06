@@ -17,3 +17,13 @@ resource "aws_ssm_parameter" "services_password" {
     ignore_changes = [value]
   }
 }
+
+resource "aws_ssm_parameter" "anycable_secret" {
+  name  = "somleng.${var.app_environment}.anycable_secret"
+  type  = "SecureString"
+  value = "change-me"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}

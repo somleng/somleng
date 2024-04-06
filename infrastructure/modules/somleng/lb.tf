@@ -71,3 +71,45 @@ resource "aws_lb_listener_rule" "anycable" {
     }
   }
 }
+
+resource "aws_lb_target_group" "ws" {
+  name                 = "${var.app_identifier}-ws"
+  port                 = var.ws_port
+  protocol             = "HTTP"
+  vpc_id               = var.vpc.vpc_id
+  target_type          = "ip"
+  deregistration_delay = 60
+
+  health_check {
+    path              = var.ws_healthcheck_path
+    healthy_threshold = 3
+    interval          = 10
+  }
+}
+
+resource "aws_lb_listener_rule" "ws" {
+  priority = var.app_environment == "production" ? 16 : 116
+
+  listener_arn = var.listener.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ws.id
+  }
+
+  condition {
+    host_header {
+      values = [
+        aws_route53_record.app.fqdn
+      ]
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = [
+        var.ws_path
+      ]
+    }
+  }
+}

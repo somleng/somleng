@@ -69,6 +69,12 @@ variable "anycable_max_tasks" {
 variable "anycable_min_tasks" {
   default = 1
 }
+variable "ws_min_tasks" {
+  default = 1
+}
+variable "ws_max_tasks" {
+  default = 4
+}
 # If the average CPU utilization over a minute drops to this threshold,
 # the number of containers will be reduced (but not below ecs_autoscale_min_instances).
 variable "ecs_as_cpu_low_threshold_per" {
@@ -83,6 +89,18 @@ variable "ecs_as_cpu_high_threshold_per" {
 
 variable "sqs_visibility_timeout_seconds" {
   default = 1800
+}
+
+variable "ws_port" {
+  default = 8080
+}
+
+variable "ws_path" {
+  default = "/cable"
+}
+
+variable "ws_healthcheck_path" {
+  default = "/health"
 }
 
 variable "anycable_rpc_port" {

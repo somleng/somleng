@@ -376,6 +376,33 @@ jobs:
           container-name: worker
           image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
 
+      - name: Get current anycable task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-anycable" --query 'taskDefinition' > task-definition.json
+
+      - name: Inject new app image into anycable task definition
+        id: render-anycable-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: anycable
+          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+
+      - name: Get current websockets task definition
+        id: get-ws-task-def
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-ws" --query 'taskDefinition' > task-definition.json
+          image=$(cat task-definition.json | jq -r '.containerDefinitions[] | select(.name == "ws") .image')
+          echo "image=$(cat task-definition.json | jq -r '.containerDefinitions[] | select(.name == "ws") .image')" >> $GITHUB_OUTPUT
+
+      - name: Inject new app image into websockets task definition
+        id: render-ws-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ws
+          image: ${{ steps.get-ws-task-def.outputs.image }}
+
       - name: Get current Fargate worker task definition
         run: |
           aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-worker-fargate" --query 'taskDefinition' > task-definition.json
@@ -392,18 +419,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-fargate-worker-task-def.outputs.task-definition }}
-
-      - name: Get current anycable task definition
-        run: |
-          aws ecs describe-task-definition --task-definition "${{ matrix.identifier }}-anycable" --query 'taskDefinition' > task-definition.json
-
-      - name: Inject new app image into worker task definition
-        id: render-anycable-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: anycable
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
 
       - name: Run DB Migrate using Fargate
         run: |
@@ -432,5 +447,13 @@ jobs:
         with:
           task-definition: ${{ steps.render-anycable-task-def.outputs.task-definition }}
           service: ${{ matrix.identifier}}-anycable
+          cluster: ${{ matrix.ecs_cluster}}
+          wait-for-service-stability: true
+
+      - name: Deploy Websockets Server
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render-ws-task-def.outputs.task-definition }}
+          service: ${{ matrix.identifier}}-ws
           cluster: ${{ matrix.ecs_cluster}}
           wait-for-service-stability: true

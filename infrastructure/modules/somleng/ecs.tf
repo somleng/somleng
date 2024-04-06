@@ -199,45 +199,6 @@ resource "aws_ecs_task_definition" "appserver" {
   memory             = module.container_instances.ec2_instance_type.memory_size - 768
 }
 
-resource "aws_ecs_service" "appserver" {
-  name            = aws_ecs_task_definition.appserver.family
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.appserver.arn
-  desired_count   = var.appserver_min_tasks
-
-  network_configuration {
-    subnets = var.vpc.private_subnets
-    security_groups = [
-      aws_security_group.appserver.id,
-      var.db_security_group,
-      var.redis_security_group
-    ]
-  }
-
-  capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.this.name
-    weight            = 1
-  }
-
-  placement_constraints {
-    type = "distinctInstance"
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.webserver.arn
-    container_name   = "nginx"
-    container_port   = 80
-  }
-
-  lifecycle {
-    ignore_changes = [load_balancer, task_definition]
-  }
-
-  depends_on = [
-    aws_iam_role.task_execution_role
-  ]
-}
-
 resource "aws_ecs_task_definition" "worker" {
   family                   = "${var.app_identifier}-worker"
   network_mode             = "awsvpc"
@@ -364,20 +325,72 @@ resource "aws_ecs_task_definition" "ws" {
         startTimeout = 120,
         essential    = true,
         healthCheck = {
-          command  = ["CMD-SHELL", "grpc-health-probe -addr :$ANYCABLE_RPC_PORT"],
+          command  = ["CMD-SHELL", "wget --server-response --spider --quiet http://localhost:$ANYCABLE_PORT$ANYCABLE_HEALTH_PATH 2>&1 | grep '200 OK' > /dev/null"],
           interval = 10,
           retries  = 10,
           timeout  = 5
         },
         portMappings = [
           {
-            containerPort = 80
+            containerPort = var.ws_port
           }
         ],
         environment = [
-
+          {
+            name  = "REDIS_URL",
+            value = var.redis_url
+          },
+          {
+            name  = "ANYCABLE_RPC_HOST",
+            value = "https://${aws_route53_record.anycable.fqdn}",
+          },
+          {
+            name  = "ANYCABLE_BROADCAST_ADAPTER",
+            value = "redisx",
+          },
+          {
+            name  = "ANYCABLE_BROKER",
+            value = "memory",
+          },
+          {
+            name  = "ANYCABLE_PUBSUB",
+            value = "redis",
+          },
+          {
+            name  = "ANYCABLE_HEADERS",
+            value = "x-device-key",
+          },
+          {
+            name  = "ANYCABLE_DEBUG",
+            value = "1",
+          },
+          {
+            name  = "ANYCABLE_HEALTH_PATH",
+            value = var.ws_healthcheck_path,
+          },
+          {
+            name  = "ANYCABLE_PATH",
+            value = var.ws_path,
+          },
+          {
+            name  = "ANYCABLE_PORT",
+            value = tostring(var.ws_port),
+          },
+          {
+            name  = "ANYCABLE_DISABLE_TELEMETRY",
+            value = "true",
+          },
+          {
+            name  = "ANYCABLE_REDIS_CHANNEL",
+            value = "__anycable__",
+          },
         ]
-        secrets = []
+        secrets = [
+          {
+            name      = "ANYCABLE_SECRET"
+            valueFrom = aws_ssm_parameter.anycable_secret.arn
+          },
+        ]
       }
     ]
   )
@@ -385,6 +398,45 @@ resource "aws_ecs_task_definition" "ws" {
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
   memory             = module.container_instances.ec2_instance_type.memory_size - 768
+}
+
+resource "aws_ecs_service" "appserver" {
+  name            = aws_ecs_task_definition.appserver.family
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.appserver.arn
+  desired_count   = var.appserver_min_tasks
+
+  network_configuration {
+    subnets = var.vpc.private_subnets
+    security_groups = [
+      aws_security_group.appserver.id,
+      var.db_security_group,
+      var.redis_security_group
+    ]
+  }
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.this.name
+    weight            = 1
+  }
+
+  placement_constraints {
+    type = "distinctInstance"
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.webserver.arn
+    container_name   = "nginx"
+    container_port   = 80
+  }
+
+  lifecycle {
+    ignore_changes = [load_balancer, task_definition]
+  }
+
+  depends_on = [
+    aws_iam_role.task_execution_role
+  ]
 }
 
 resource "aws_ecs_service" "worker" {
@@ -445,6 +497,45 @@ resource "aws_ecs_service" "anycable" {
     subnets = var.vpc.private_subnets
     security_groups = [
       aws_security_group.anycable.id,
+      var.db_security_group,
+      var.redis_security_group
+    ]
+  }
+
+  depends_on = [
+    aws_iam_role.task_execution_role
+  ]
+
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
+  }
+}
+
+resource "aws_ecs_service" "ws" {
+  name            = aws_ecs_task_definition.ws.family
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.ws.arn
+  desired_count   = var.ws_min_tasks
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.this.name
+    weight            = 1
+  }
+
+  placement_constraints {
+    type = "distinctInstance"
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ws.arn
+    container_name   = "ws"
+    container_port   = var.ws_port
+  }
+
+  network_configuration {
+    subnets = var.vpc.private_subnets
+    security_groups = [
+      aws_security_group.ws.id,
       var.db_security_group,
       var.redis_security_group
     ]
