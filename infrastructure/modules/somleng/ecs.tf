@@ -396,6 +396,10 @@ resource "aws_ecs_task_definition" "ws" {
             name  = "ANYCABLE_REDIS_CHANNEL",
             value = "__anycable__",
           },
+          {
+            name  = "ANYCABLE_NOAUTH",
+            value = "true",
+          },
         ]
         secrets = [
           {
