@@ -373,6 +373,10 @@ resource "aws_ecs_task_definition" "ws" {
             value = var.ws_path,
           },
           {
+            name  = "ANYCABLE_HOST",
+            value = "0.0.0.0",
+          },
+          {
             name  = "ANYCABLE_PORT",
             value = tostring(var.ws_port),
           },
