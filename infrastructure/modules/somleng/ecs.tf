@@ -295,7 +295,15 @@ resource "aws_ecs_task_definition" "anycable" {
             }
           ]
         )
-        secrets = local.shared_container_secrets
+        secrets = concat(
+          local.shared_container_secrets,
+          [
+            {
+              name      = "ANYCABLE_SECRET"
+              valueFrom = aws_ssm_parameter.anycable_secret.arn
+            }
+          ]
+        )
       }
     ]
   )
@@ -393,7 +401,7 @@ resource "aws_ecs_task_definition" "ws" {
           {
             name      = "ANYCABLE_SECRET"
             valueFrom = aws_ssm_parameter.anycable_secret.arn
-          },
+          }
         ]
       }
     ]

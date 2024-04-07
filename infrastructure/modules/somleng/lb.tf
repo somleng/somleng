@@ -109,8 +109,7 @@ resource "aws_lb_listener_rule" "ws" {
   condition {
     path_pattern {
       values = [
-        var.ws_path,
-        var.ws_healthcheck_path
+        var.ws_path
       ]
     }
   }
