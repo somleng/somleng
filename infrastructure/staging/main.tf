@@ -39,14 +39,14 @@ module "somleng" {
 
   call_service_queue_name = "switch-services-staging"
 
-  appserver_min_tasks = 1
-  appserver_max_tasks = 2
-  worker_min_tasks    = 1
-  worker_max_tasks    = 2
-  anycable_min_tasks  = 1
-  anycable_max_tasks  = 2
-  ws_min_tasks        = 1
-  ws_max_tasks        = 2
+  appserver_min_tasks = 0
+  appserver_max_tasks = 1
+  worker_min_tasks    = 0
+  worker_max_tasks    = 1
+  anycable_min_tasks  = 0
+  anycable_max_tasks  = 1
+  ws_min_tasks        = 0
+  ws_max_tasks        = 1
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"
   pghero_other_databases     = "opensips_public_gateway_staging,opensips_client_gateway_staging"

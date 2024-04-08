@@ -400,6 +400,14 @@ resource "aws_ecs_task_definition" "ws" {
             name  = "ANYCABLE_NOAUTH",
             value = "true",
           },
+          {
+            name  = "ANYCABLE_LOG_FORMAT",
+            value = "json",
+          },
+          {
+            name  = "ANYCABLE_LOG_LEVEL",
+            value = "debug"
+          },
         ]
         secrets = [
           {
