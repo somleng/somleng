@@ -16,6 +16,7 @@ default: &default
   log_grpc: true
   # Use Redis to broadcast messages to AnyCable server
   broadcast_adapter: redisx
+  log_level: debug
   # You can use REDIS_URL env var to configure Redis URL.
   # Localhost is used by default.
   # redis_url: "redis://localhost:6379/1"
