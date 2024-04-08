@@ -408,6 +408,10 @@ resource "aws_ecs_task_definition" "ws" {
             name  = "ANYCABLE_LOG_LEVEL",
             value = "debug"
           },
+          {
+            name  = "ANYCABLE_RPC_ENABLE_TLS",
+            value = "true"
+          },
         ]
         secrets = [
           {
