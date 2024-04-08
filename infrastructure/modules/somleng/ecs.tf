@@ -350,7 +350,7 @@ resource "aws_ecs_task_definition" "ws" {
           },
           {
             name  = "ANYCABLE_RPC_HOST",
-            value = "https://${aws_route53_record.anycable.fqdn}",
+            value = aws_route53_record.anycable.fqdn,
           },
           {
             name  = "ANYCABLE_BROADCAST_ADAPTER",
