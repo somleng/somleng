@@ -57,15 +57,3 @@ resource "aws_route53_record" "verify" {
     evaluate_target_health = true
   }
 }
-
-resource "aws_route53_record" "anycable" {
-  zone_id = var.internal_route53_zone.zone_id
-  name    = var.anycable_subdomain
-  type    = "A"
-
-  alias {
-    name                   = var.internal_load_balancer.dns_name
-    zone_id                = var.internal_load_balancer.zone_id
-    evaluate_target_health = true
-  }
-}

@@ -4,22 +4,26 @@ module "somleng" {
   cluster_name   = "somleng"
   app_identifier = "somleng"
 
-  app_environment  = "production"
-  app_subdomain    = "app"
-  cdn_subdomain    = "cdn"
-  api_subdomain    = "api"
-  verify_subdomain = "verify"
+  app_environment    = "production"
+  app_subdomain      = "app"
+  cdn_subdomain      = "cdn"
+  api_subdomain      = "api"
+  verify_subdomain   = "verify"
+  anycable_subdomain = "anycable"
 
-  app_image          = data.terraform_remote_state.core.outputs.app_ecr_repository
-  nginx_image        = data.terraform_remote_state.core.outputs.nginx_ecr_repository
-  aws_region         = var.aws_region
-  aws_ses_region     = "us-east-1"
-  global_accelerator = data.terraform_remote_state.core_infrastructure.outputs.global_accelerator
-  listener           = data.terraform_remote_state.core_infrastructure.outputs.https_listener.arn
-  route53_zone       = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
-  cdn_certificate    = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
-  vpc                = data.terraform_remote_state.core_infrastructure.outputs.vpc
-  uploads_bucket     = "uploads.twilreapi.somleng.org"
+  app_image              = data.terraform_remote_state.core.outputs.app_ecr_repository
+  nginx_image            = data.terraform_remote_state.core.outputs.nginx_ecr_repository
+  aws_region             = var.aws_region
+  aws_ses_region         = "us-east-1"
+  global_accelerator     = data.terraform_remote_state.core_infrastructure.outputs.global_accelerator
+  listener               = data.terraform_remote_state.core_infrastructure.outputs.https_listener
+  internal_listener      = data.terraform_remote_state.core_infrastructure.outputs.internal_https_listener
+  internal_load_balancer = data.terraform_remote_state.core_infrastructure.outputs.internal_application_load_balancer
+  route53_zone           = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
+  internal_route53_zone  = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_internal_somleng_org
+  cdn_certificate        = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
+  vpc                    = data.terraform_remote_state.core_infrastructure.outputs.vpc
+  uploads_bucket         = "uploads.twilreapi.somleng.org"
 
   db_name                   = "somleng"
   db_username               = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.master_username

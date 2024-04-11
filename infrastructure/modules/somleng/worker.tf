@@ -1,20 +1,111 @@
-resource "aws_appautoscaling_policy" "appserver_cpu_utilization" {
-  name               = var.app_identifier
-  service_namespace  = aws_appautoscaling_target.appserver_scale_target.service_namespace
-  resource_id        = aws_appautoscaling_target.appserver_scale_target.resource_id
-  scalable_dimension = aws_appautoscaling_target.appserver_scale_target.scalable_dimension
-  policy_type        = "TargetTrackingScaling"
-
-  target_tracking_scaling_policy_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+locals {
+  worker_container_definitions = [
+    {
+      name  = "worker",
+      image = "${var.app_image}:latest",
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.worker.name,
+          awslogs-region        = var.aws_region,
+          awslogs-stream-prefix = var.app_environment
+        }
+      },
+      command      = ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],
+      startTimeout = 120,
+      essential    = true,
+      healthCheck  = local.shared_container_healthcheck,
+      environment  = local.shared_container_environment,
+      secrets      = local.shared_container_secrets
     }
+  ]
+}
 
-    target_value       = 50
-    scale_in_cooldown  = 300
-    scale_out_cooldown = 60
+# Security Group
+
+resource "aws_security_group" "worker" {
+  name   = "${var.app_identifier}-worker"
+  vpc_id = var.vpc.vpc_id
+}
+
+resource "aws_security_group_rule" "worker_egress" {
+  type              = "egress"
+  to_port           = 0
+  protocol          = "-1"
+  from_port         = 0
+  security_group_id = aws_security_group.worker.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+# Cloudwatch
+
+resource "aws_cloudwatch_log_group" "worker" {
+  name              = "${var.app_identifier}-worker"
+  retention_in_days = 7
+}
+
+# ECS
+
+resource "aws_ecs_task_definition" "worker" {
+  family                   = "${var.app_identifier}-worker"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["EC2"]
+  container_definitions    = jsonencode(local.worker_container_definitions)
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  execution_role_arn       = aws_iam_role.task_execution_role.arn
+  memory                   = module.container_instances.ec2_instance_type.memory_size - 768
+}
+
+resource "aws_ecs_task_definition" "worker_fargate" {
+  family                   = "${var.app_identifier}-worker-fargate"
+  network_mode             = aws_ecs_task_definition.worker.network_mode
+  requires_compatibilities = ["FARGATE"]
+  container_definitions    = jsonencode(local.worker_container_definitions)
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  execution_role_arn       = aws_iam_role.task_execution_role.arn
+  memory                   = 1024
+  cpu                      = 512
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
   }
 }
+
+resource "aws_ecs_service" "worker" {
+  name            = aws_ecs_task_definition.worker.family
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.worker.arn
+  desired_count   = var.worker_min_tasks
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.this.name
+    weight            = 1
+  }
+
+  placement_constraints {
+    type = "distinctInstance"
+  }
+
+  network_configuration {
+    subnets = var.vpc.private_subnets
+    security_groups = [
+      aws_security_group.worker.id,
+      var.db_security_group,
+      var.redis_security_group
+    ]
+  }
+
+  depends_on = [
+    aws_iam_role.task_execution_role
+  ]
+
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
+  }
+}
+
+# Autoscaling
 
 resource "aws_appautoscaling_policy" "worker_memory_utilization" {
   name               = var.app_identifier
@@ -272,14 +363,6 @@ resource "aws_appautoscaling_policy" "worker_down" {
       scaling_adjustment          = -1
     }
   }
-}
-
-resource "aws_appautoscaling_target" "appserver_scale_target" {
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.appserver.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = var.appserver_max_tasks
-  min_capacity       = var.appserver_min_tasks
 }
 
 resource "aws_appautoscaling_target" "worker_scale_target" {

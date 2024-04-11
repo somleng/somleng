@@ -17,7 +17,6 @@ variable "internal_load_balancer" {}
 variable "route53_zone" {}
 variable "internal_route53_zone" {}
 variable "cdn_certificate" {}
-variable "load_balancer_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}
