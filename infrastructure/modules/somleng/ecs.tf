@@ -137,6 +137,47 @@ locals {
     {
       name  = "PGHERO_OTHER_DATABASES",
       value = var.pghero_other_databases
+    },
+    {
+      name  = "ANYCABLE_REDIS_CHANNEL",
+      value = "__anycable__"
+    },
+    {
+      name  = "ANYCABLE_BROADCAST_ADAPTER",
+      value = "redisx"
+    },
+    {
+      name  = "ANYCABLE_DEBUG",
+      value = "1"
+    },
+    {
+      name  = "ANYCABLE_DEBUG",
+      value = "1"
+    },
+    {
+      name  = "ANYCABLE_LOG_LEVEL",
+      value = "debug"
+    }
+  ]
+
+  worker_container_definitions = [
+    {
+      name  = "worker",
+      image = "${var.app_image}:latest",
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.worker.name,
+          awslogs-region        = var.aws_region,
+          awslogs-stream-prefix = var.app_environment
+        }
+      },
+      command      = ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],
+      startTimeout = 120,
+      essential    = true,
+      healthCheck  = local.shared_container_healthcheck,
+      environment  = local.shared_container_environment,
+      secrets      = local.shared_container_secrets
     }
   ]
 }
@@ -203,39 +244,17 @@ resource "aws_ecs_task_definition" "worker" {
   family                   = "${var.app_identifier}-worker"
   network_mode             = "awsvpc"
   requires_compatibilities = ["EC2"]
-  container_definitions = jsonencode(
-    [
-      {
-        name  = "worker",
-        image = "${var.app_image}:latest",
-        logConfiguration = {
-          logDriver = "awslogs",
-          options = {
-            awslogs-group         = aws_cloudwatch_log_group.worker.name,
-            awslogs-region        = var.aws_region,
-            awslogs-stream-prefix = var.app_environment
-          }
-        },
-        command      = ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],
-        startTimeout = 120,
-        essential    = true,
-        healthCheck  = local.shared_container_healthcheck,
-        environment  = local.shared_container_environment,
-        secrets      = local.shared_container_secrets
-      }
-    ]
-  )
-
-  task_role_arn      = aws_iam_role.ecs_task_role.arn
-  execution_role_arn = aws_iam_role.task_execution_role.arn
-  memory             = module.container_instances.ec2_instance_type.memory_size - 768
+  container_definitions    = jsonencode(local.worker_container_definitions)
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  execution_role_arn       = aws_iam_role.task_execution_role.arn
+  memory                   = module.container_instances.ec2_instance_type.memory_size - 768
 }
 
 resource "aws_ecs_task_definition" "worker_fargate" {
   family                   = "${var.app_identifier}-worker-fargate"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  container_definitions    = aws_ecs_task_definition.worker.container_definitions
+  container_definitions    = jsonencode(local.worker_container_definitions)
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   execution_role_arn       = aws_iam_role.task_execution_role.arn
   memory                   = 1024
@@ -395,10 +414,6 @@ resource "aws_ecs_task_definition" "ws" {
           {
             name  = "ANYCABLE_REDIS_CHANNEL",
             value = "__anycable__",
-          },
-          {
-            name  = "ANYCABLE_NOAUTH",
-            value = "true",
           },
           {
             name  = "ANYCABLE_LOG_FORMAT",
