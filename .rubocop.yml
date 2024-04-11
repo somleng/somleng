@@ -1,4 +1,6 @@
-require: rubocop-rspec
+require:
+  - "rubocop-rspec"
+  - "anycable/rails/compatibility/rubocop"
 
 # Omakase Ruby styling for Rails
 inherit_gem:
@@ -21,3 +23,12 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+AnyCable/InstanceVars:
+  Enabled: true
+
+AnyCable/StreamFrom:
+  Enabled: true
+
+AnyCable/PeriodicalTimers:
+  Enabled: true

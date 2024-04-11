@@ -66,3 +66,7 @@ yarn-debug.log*
 /config/credentials/staging.key
 
 dump.rdb
+
+# 1password
+
+.op

@@ -14,6 +14,22 @@ ENV RAILS_ENV="production" \
     BUNDLE_WITHOUT="development test" \
     BUNDLE_FORCE_RUBY_PLATFORM="1"
 
+FROM public.ecr.aws/docker/library/alpine:latest AS binaries
+
+# Install packages needed to build binaries
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
+    apk add --update --no-cache wget curl jq
+
+RUN [[ "$(arch)" = "aarch64" ]] && arch="arm64" || arch="$(arch)" && \
+  curl -s https://api.github.com/repos/grpc-ecosystem/grpc-health-probe/releases/latest \
+  | jq ".assets[].browser_download_url" \
+  | grep "grpc_health_probe-linux-$arch" \
+  | tr -d '"' \
+  | wget -qi - -O grpc-health-probe && \
+  chmod +x grpc-health-probe && \
+  mv grpc-health-probe /usr/local/bin
+
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -53,8 +69,9 @@ RUN apk update --no-cache && \
     apk add --update --no-cache build-base gcompat postgresql-dev vips-dev ffmpeg
 
 # Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
+COPY --from=build --link /usr/local/bundle /usr/local/bundle
+COPY --from=build --link /rails /rails
+COPY --from=binaries --link /usr/local/bin/grpc-health-probe /usr/local/bin
 
 # Run and own only the runtime files as a non-root user for security
 RUN addgroup -S -g 1000 rails && \

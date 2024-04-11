@@ -2,8 +2,8 @@
 data "aws_iam_policy_document" "ecs_task_assume_role_policy" {
   version = "2012-10-17"
   statement {
-    sid = ""
-    effect = "Allow"
+    sid     = ""
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
 
     principals {
@@ -133,12 +133,12 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_policy" {
-  role = aws_iam_role.ecs_task_role.id
+  role       = aws_iam_role.ecs_task_role.id
   policy_arn = aws_iam_policy.ecs_task_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_exec_policy" {
-  role = aws_iam_role.ecs_task_role.id
+  role       = aws_iam_role.ecs_task_role.id
   policy_arn = aws_iam_policy.ecs_exec_policy.arn
 }
 
@@ -176,6 +176,7 @@ resource "aws_iam_policy" "task_execution_custom_policy" {
       "Resource": [
         "${aws_ssm_parameter.rails_master_key.arn}",
         "${aws_ssm_parameter.services_password.arn}",
+        "${aws_ssm_parameter.anycable_secret.arn}",
         "${var.db_password_parameter_arn}"
       ]
     }
@@ -185,11 +186,11 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "task_execution_role_policy" {
-  role = aws_iam_role.task_execution_role.id
+  role       = aws_iam_role.task_execution_role.id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "task_execution_custom_policy" {
-  role = aws_iam_role.task_execution_role.id
+  role       = aws_iam_role.task_execution_role.id
   policy_arn = aws_iam_policy.task_execution_custom_policy.arn
 }

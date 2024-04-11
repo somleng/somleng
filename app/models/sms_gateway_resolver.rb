@@ -19,7 +19,7 @@ class SMSGatewayResolver
 
     return if channel_group.blank?
 
-    [channel_group.sms_gateway, select_channel(channel_group)]
+    [ channel_group.sms_gateway, select_channel(channel_group) ]
   end
 
   private

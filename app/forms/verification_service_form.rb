@@ -54,12 +54,12 @@ class VerificationServiceForm
 
   def code_length_options_for_select
     VerificationService::VALID_CODE_LENGTHS.map do |code_length|
-      ["#{code_length} digits", code_length]
+      [ "#{code_length} digits", code_length ]
     end
   end
 
   def account_options_for_select
-    accounts_scope.map { |account| [account.name, account.id] }
+    accounts_scope.map { |account| [ account.name, account.id ] }
   end
 
   private

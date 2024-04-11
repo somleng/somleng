@@ -12,11 +12,13 @@ class SendOutboundMessage < ApplicationWorkflow
 
     SMSMessageChannel.broadcast_to(
       message.sms_gateway,
-      id: message.id,
-      body: message.body,
-      to: message.to,
-      from: message.from,
-      channel: message.channel
+      {
+        id: message.id,
+        body: message.body,
+        to: message.to,
+        from: message.from,
+        channel: message.channel
+      }
     )
 
     UpdateMessageStatus.new(message).call { message.mark_as_sending! }
