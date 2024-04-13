@@ -36,7 +36,7 @@ RSpec.describe Message do
 
     message.save!
 
-    expect(message.queued_at).to be_present
+    expect(message.reload.queued_at).to be_present
   end
 
   describe "#validity_period_expired?" do

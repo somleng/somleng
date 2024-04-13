@@ -2,8 +2,7 @@ class Message < ApplicationRecord
   include AASM
   extend Enumerize
 
-  before_create :set_beneficiary_data
-  after_create :set_status_timestamp
+  before_create :set_beneficiary_data, :set_status_timestamp
 
   attribute :beneficiary_fingerprint, SHA256Type.new
 
