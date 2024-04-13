@@ -23,16 +23,18 @@ class ApplicationSeeder
       sip_trunk:,
       phone_number:
     )
+    sms_gateway = create_sms_gateway(carrier:)
 
     puts(<<~INFO)
-      Account SID:           #{carrier_managed_account.id}
-      Auth Token:            #{carrier_managed_account.auth_token}
-      Inbound Phone Number:  #{phone_number.number}
+      Account SID:              #{carrier_managed_account.id}
+      Auth Token:               #{carrier_managed_account.auth_token}
+      Phone Number:             #{phone_number.number}
+      SMS Gateway Device Token: #{sms_gateway.device_token}
       ---------------------------------------------
-      URL:                   #{url_helpers.dashboard_root_url(host: carrier.subdomain_host)}
-      Carrier User Email:    #{carrier_owner.email}
-      Carrier User Password: #{USER_PASSWORD}
-      Carrier API Key:       #{carrier.api_key}
+      URL:                      #{url_helpers.dashboard_root_url(host: carrier.subdomain_host)}
+      Carrier User Email:       #{carrier_owner.email}
+      Carrier User Password:    #{USER_PASSWORD}
+      Carrier API Key:          #{carrier.api_key}
     INFO
   end
 
@@ -47,6 +49,10 @@ class ApplicationSeeder
         authentication_mode: :ip_address
       )
     )
+  end
+
+  def create_sms_gateway(**params)
+    SMSGateway.first_or_create!(name: "My SMS Gateway", **params)
   end
 
   def create_carrier_managed_account(**params)
