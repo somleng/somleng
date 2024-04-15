@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Services" do
+RSpec.describe "Services", :services do
   describe "POST /services/media_stream_events" do
     it "creates an media stream event" do
       media_stream = create(:media_stream)

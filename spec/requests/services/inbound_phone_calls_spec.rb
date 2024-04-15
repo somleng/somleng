@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Services" do
+RSpec.describe "Services", :services do
   describe "POST /services/inbound_phone_calls" do
     it "creates a phone call" do
       carrier = create(:carrier)

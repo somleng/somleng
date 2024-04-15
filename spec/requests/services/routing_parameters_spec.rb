@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Services" do
+RSpec.describe "Services", :services do
   describe "POST /services/routing_parameters" do
     it "return routing parameters" do
       carrier = create(:carrier)

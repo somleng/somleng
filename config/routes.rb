@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   scope(
-    as: :api, constraints: { subdomain: AppSettings.config_for(:api_subdomain) },
+    as: :api,
+    constraints: {
+      subdomain: [
+        AppSettings.config_for(:api_subdomain),
+        AppSettings.config_for(:internal_api_subdomain)
+      ]
+    },
     defaults: { format: "json" }
   ) do
     concern :recordings do

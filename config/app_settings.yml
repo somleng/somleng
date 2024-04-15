@@ -1,6 +1,7 @@
 default: &default
   app_subdomain: "app"
   api_subdomain: "api"
+  internal_api_subdomain: "api.internal"
   verify_subdomain: "verify"
   client_gateway_domain: "sip.somleng.org"
   call_service_queue_url: <%= ENV.fetch("CALL_SERVICE_QUEUE_URL", "https://amazonaws.com/12345/call_service_queue") %>
@@ -38,7 +39,7 @@ production: &production
   <<: *default
   app_url_host: "<%= ENV.fetch("APP_URL_HOST", "https://app.somleng.org") %>"
   asset_url_host: "<%= ENV.fetch("ASSET_URL_HOST", "https://cdn.somleng.org") %>"
-  switch_host: "<%= ENV.fetch("SWITCH_HOST", "https://ahn.somleng.org") %>"
+  switch_host: "<%= ENV.fetch("SWITCH_HOST", "https://switch.internal.somleng.org") %>"
   sentry_dsn: "<%= ENV.fetch("SENTRY_DSN") { Rails.application.credentials.sentry_dsn } %>"
   services_password: "<%= ENV.fetch("SERVICES_PASSWORD") { Rails.application.credentials.services_password } %>"
   recaptcha_site_key: "<%= ENV.fetch("RECAPTCHA_SITE_KEY") { Rails.application.credentials.recaptcha_site_key } %>"
@@ -57,10 +58,11 @@ staging:
   <<: *production
   app_subdomain: "app-staging"
   api_subdomain: "api-staging"
+  internal_api_subdomain: "api-staging.internal"
   verify_subdomain: "verify-staging"
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "https://app-staging.somleng.org") %>
   asset_url_host: <%= ENV.fetch("ASSET_URL_HOST", "https://cdn-staging.somleng.org") %>
-  switch_host: <%= ENV.fetch("SWITCH_HOST", "https://switch-staging.somleng.org") %>
+  switch_host: <%= ENV.fetch("SWITCH_HOST", "https://switch-staging.internal.somleng.org") %>
   sip_port: 6060
   client_gateway_domain: "Connect Via Public IP"
 
@@ -69,5 +71,5 @@ development: &development
 
 test:
   <<: *development
-  switch_host: "https://ahn.somleng.org"
+  switch_host: "https://switch.internal.somleng.org"
   app_url_host: "http://app.lvh.me"
