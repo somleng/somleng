@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Services" do
+RSpec.describe "Services", :services do
   describe "POST /services/phone_call_events" do
     it "creates a phone call event" do
       phone_call = create(

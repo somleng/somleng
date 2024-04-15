@@ -35,4 +35,8 @@ RSpec.configure do |config|
   config.before(:each, type: :request) do
     host! "api.somleng.org"
   end
+
+  config.before(:each, type: :request, services: true) do
+    host! "api.internal.somleng.org"
+  end
 end
