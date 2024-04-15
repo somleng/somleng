@@ -125,8 +125,14 @@ resource "aws_ecs_service" "appserver" {
     container_port   = 80
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.internal_webserver.arn
+    container_name   = "nginx"
+    container_port   = 80
+  }
+
   lifecycle {
-    ignore_changes = [load_balancer, task_definition]
+    ignore_changes = [task_definition]
   }
 
   depends_on = [
@@ -134,7 +140,81 @@ resource "aws_ecs_service" "appserver" {
   ]
 }
 
-# Target group
+# Route 53
+
+resource "aws_route53_record" "api" {
+  zone_id = var.route53_zone.zone_id
+  name    = var.api_subdomain
+  type    = "A"
+
+  alias {
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.hosted_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "app" {
+  zone_id = var.route53_zone.zone_id
+  name    = var.app_subdomain
+  type    = "A"
+
+  alias {
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.hosted_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "app_subdomains" {
+  zone_id = var.route53_zone.zone_id
+  name    = "*.${var.app_subdomain}"
+  type    = "A"
+
+  alias {
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.hosted_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "cdn" {
+  zone_id = var.route53_zone.zone_id
+  name    = var.cdn_subdomain
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.app.domain_name
+    zone_id                = aws_cloudfront_distribution.app.hosted_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "verify" {
+  zone_id = var.route53_zone.zone_id
+  name    = var.verify_subdomain
+  type    = "A"
+
+  alias {
+    name                   = var.global_accelerator.dns_name
+    zone_id                = var.global_accelerator.hosted_zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_route53_record" "internal_api" {
+  zone_id = var.internal_route53_zone.zone_id
+  name    = var.api_subdomain
+  type    = "A"
+
+  alias {
+    name                   = var.internal_load_balancer.dns_name
+    zone_id                = var.internal_load_balancer.zone_id
+    evaluate_target_health = true
+  }
+}
+
+# Target groups
 
 resource "aws_lb_target_group" "webserver" {
   name                 = var.app_identifier
@@ -169,6 +249,41 @@ resource "aws_lb_listener_rule" "webserver" {
         aws_route53_record.verify.fqdn,
         aws_route53_record.app.fqdn,
         "*.${aws_route53_record.app.fqdn}"
+      ]
+    }
+  }
+}
+
+resource "aws_lb_target_group" "internal_webserver" {
+  name                 = "${aws_lb_target_group.webserver.name}-internal"
+  port                 = aws_lb_target_group.webserver.port
+  protocol             = aws_lb_target_group.webserver.protocol
+  vpc_id               = aws_lb_target_group.webserver.vpc_id
+  target_type          = aws_lb_target_group.webserver.target_type
+  deregistration_delay = aws_lb_target_group.webserver.deregistration_delay
+
+  health_check {
+    protocol          = aws_lb_target_group.webserver.health_check[0].protocol
+    path              = aws_lb_target_group.webserver.health_check[0].path
+    healthy_threshold = aws_lb_target_group.webserver.health_check[0].healthy_threshold
+    interval          = aws_lb_target_group.webserver.health_check[0].interval
+  }
+}
+
+resource "aws_lb_listener_rule" "internal_webserver" {
+  priority = var.app_environment == "production" ? 15 : 115
+
+  listener_arn = var.internal_listener.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.internal_webserver.id
+  }
+
+  condition {
+    host_header {
+      values = [
+        aws_route53_record.internal_api.fqdn
       ]
     }
   }
