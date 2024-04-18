@@ -15,21 +15,29 @@ class PhoneNumber < ApplicationRecord
             format: { with: NUMBER_FORMAT, allow_blank: true }
 
   class << self
+    def available
+      enabled.where(account_id: nil)
+    end
+
     def enabled
       where(enabled: true)
     end
 
+    def supported_countries
+      select(:iso_country_code).distinct.order(:iso_country_code)
+    end
+
     def utilized
       scope = left_joins(:phone_calls).left_joins(:messages)
-      .where.not(phone_calls: { phone_number_id: nil }).or(where.not(messages: { phone_number_id: nil }))
-      .distinct
+              .where.not(phone_calls: { phone_number_id: nil }).or(where.not(messages: { phone_number_id: nil }))
+              .distinct
 
       where(id: scope.select(:id))
     end
 
     def unutilized
       left_joins(:phone_calls).left_joins(:messages)
-      .where(phone_calls: { phone_number_id: nil }, messages: { phone_number_id: nil })
+                .where(phone_calls: { phone_number_id: nil }, messages: { phone_number_id: nil })
     end
 
     def configured
@@ -39,6 +47,10 @@ class PhoneNumber < ApplicationRecord
     def unconfigured
       left_joins(:configuration).merge(PhoneNumberConfiguration.unconfigured)
     end
+  end
+
+  def country
+    ISO3166::Country.new(iso_country_code)
   end
 
   def release!

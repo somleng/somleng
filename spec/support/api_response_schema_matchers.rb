@@ -9,10 +9,10 @@ RSpec::Matchers.define :match_api_response_schema do |schema_name|
   end
 end
 
-RSpec::Matchers.define :match_api_response_collection_schema do |schema_name|
+RSpec::Matchers.define :match_api_response_collection_schema do |schema_name, options = {}|
   match do |response_body|
     @validator = APIResponseSchemaValidator.new(response_body, schema_name)
-    @validator.valid_collection?
+    @validator.valid_collection?(**options)
   end
 
   failure_message do
@@ -69,8 +69,10 @@ class APIResponseSchemaValidator
     validate_schema(schema)
   end
 
-  def valid_collection?
-    validate_schema(define_collection_schema)
+  def valid_collection?(**options)
+    schema = options.fetch(:pagination, true) ? define_collection_schema : define_collection_schema_with_no_pagination
+
+    validate_schema(schema)
   end
 
   def valid_verify_collection?
@@ -107,6 +109,18 @@ class APIResponseSchemaValidator
       required(:first_page_uri).filled(:str?, format?: %r{\A/})
       required(:next_page_uri).maybe(:str?, format?: %r{\A/})
       required(:previous_page_uri).maybe(:str?, format?: %r{\A/})
+    end
+  end
+
+  def define_collection_schema_with_no_pagination
+    __schema__ = schema
+    collection_name = schema_class_name.demodulize.underscore.pluralize.to_sym
+
+    Dry::Schema.JSON do
+      required(collection_name).value(:array).each do
+        schema(__schema__)
+      end
+      required(:uri).filled(:str?, format?: %r{\A/})
     end
   end
 

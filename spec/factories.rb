@@ -321,6 +321,7 @@ FactoryBot.define do
     end
 
     number { generate(:phone_number) }
+    iso_country_code { "KH" }
   end
 
   factory :phone_number_configuration do

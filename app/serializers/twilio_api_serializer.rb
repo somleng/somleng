@@ -8,7 +8,7 @@ class TwilioAPISerializer < ApplicationSerializer
 
   def hash_for_collection(options)
     data = object.map do |record|
-      self.class.new(record.decorated).serializable_hash(options)
+      self.class.new(record.decorated, serializer_options).serializable_hash(options)
     end
 
     results = { collection_name => data }
