@@ -2,6 +2,7 @@ module TwilioAPI
   class PhoneCallSerializer < ResourceSerializer
     def attributes
       super.merge(
+        account_sid: nil,
         annotation: nil,
         answered_by: nil,
         caller_name: nil,

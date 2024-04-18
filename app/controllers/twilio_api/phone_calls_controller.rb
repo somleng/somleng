@@ -41,6 +41,10 @@ module TwilioAPI
       current_account.phone_calls
     end
 
+    def respond_with_resource(resource, options)
+      super(resource.account, resource, options)
+    end
+
     def end_call(phone_call, params)
       return unless PhoneCallStatusEvent.new(phone_call).may_transition_to?(params[:status])
 

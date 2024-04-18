@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     end
 
     scope "/2010-04-01/Accounts/:account_id", module: :twilio_api, as: :twilio_account do
+      get "/" => "accounts#show"
+
       concerns :recordings
 
       resources :phone_calls, only: %i[index create show update], path: "Calls",

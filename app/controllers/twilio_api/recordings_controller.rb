@@ -55,9 +55,6 @@ module TwilioAPI
       end
     end
 
-    def phone_calls_scope
-    end
-
     def serializer_options
       { serializer_class: RecordingSerializer }
     end
