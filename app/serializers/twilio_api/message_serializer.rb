@@ -2,6 +2,7 @@ module TwilioAPI
   class MessageSerializer < ResourceSerializer
     def attributes
       super.merge(
+        account_sid: nil,
         body: nil,
         date_sent: nil,
         direction: nil,
@@ -19,6 +20,10 @@ module TwilioAPI
         to: nil,
         uri: nil
       )
+    end
+
+    def account_sid
+      account_id
     end
 
     def messaging_service_sid

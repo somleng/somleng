@@ -59,6 +59,10 @@ module TwilioAPI
       current_account.messages
     end
 
+    def respond_with_resource(resource, options)
+      super(resource.account, resource, options)
+    end
+
     def serializer_options
       { serializer_class: MessageSerializer }
     end

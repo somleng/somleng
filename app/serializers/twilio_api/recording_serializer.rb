@@ -2,6 +2,7 @@ module TwilioAPI
   class RecordingSerializer < ResourceSerializer
     def attributes
       super.merge(
+        account_sid: nil,
         call_sid: nil,
         conference_sid: nil,
         channels: nil,
@@ -20,6 +21,10 @@ module TwilioAPI
 
     def call_sid
       object.phone_call_id
+    end
+
+    def account_sid
+      account_id
     end
 
     def conference_sid; end

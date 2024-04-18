@@ -6,7 +6,6 @@ module TwilioAPI
       super.merge(
         "api_version" => nil,
         "sid" => nil,
-        "account_sid" => nil,
         "date_created" => nil,
         "date_updated" => nil
       )
@@ -18,10 +17,6 @@ module TwilioAPI
 
     def sid
       object.id
-    end
-
-    def account_sid
-      object.account_id
     end
 
     def date_created
