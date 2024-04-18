@@ -10,7 +10,7 @@ RSpec.describe CreateErrorLog do
   end
 
   it "notifies subscribed carrier team members" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, name: "Rocket Communications")
     subscribed_user = create_subscribed_user(carrier:)
     _unsubscribed_user = create_subscribed_user(carrier:, subscribed_notification_topics: [])
     _recent_identical_error_log_notification = create(
@@ -52,7 +52,7 @@ RSpec.describe CreateErrorLog do
         old_identical_error_log_notification.email
       ]
     )
-    expect(last_email_sent).to have_subject("Somleng - New Issue: An error message")
+    expect(last_email_sent).to have_subject("Rocket Communications - New Issue: An error message")
   end
 
   it "notifies subscribed account team members" do
