@@ -25,7 +25,7 @@ module TwilioAPI
     end
 
     def owner_account_sid
-      owner&.id
+      id
     end
 
     def subresource_uris
