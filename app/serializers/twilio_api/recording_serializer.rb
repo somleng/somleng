@@ -23,6 +23,10 @@ module TwilioAPI
       object.phone_call_id
     end
 
+    def account_sid
+      account_id
+    end
+
     def conference_sid; end
 
     def start_time

@@ -22,6 +22,10 @@ module TwilioAPI
       )
     end
 
+    def account_sid
+      account_id
+    end
+
     def messaging_service_sid
       messaging_service_id
     end

@@ -26,6 +26,10 @@ module TwilioAPI
       )
     end
 
+    def account_sid
+      account_id
+    end
+
     def annotation; end
 
     def answered_by; end

@@ -19,10 +19,6 @@ module TwilioAPI
       object.id
     end
 
-    def account_sid
-      object.account_id
-    end
-
     def date_created
       format_time(object.created_at)
     end
