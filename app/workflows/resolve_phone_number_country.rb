@@ -9,17 +9,10 @@ class ResolvePhoneNumberCountry < ApplicationWorkflow
   end
 
   def call
-    return possible_countries.first if possible_countries.one?
+    return phone_number.country if phone_number.country.present?
 
-    result = possible_countries.find { |country| country == fallback_country }
-    result || possible_countries.find { |country| FALLBACK_COUNTRIES.include?(country.alpha2) }
-  end
-
-  private
-
-  def possible_countries
-    @possible_countries ||= ISO3166::Country.find_all_country_by_country_code(
-      Phony.split(phone_number).first
-    )
+    result = phone_number.possible_countries.find { |country| country == fallback_country }
+    result ||= phone_number.possible_countries.find { |country| country.alpha2.in?(FALLBACK_COUNTRIES) }
+    result
   end
 end

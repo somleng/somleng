@@ -16,6 +16,10 @@ class TwilioAPISerializer < ApplicationSerializer
     results.merge(pagination_results)
   end
 
+  def pagination_serializer
+    TwilioAPI::PaginationSerializer.new(serializer_options.fetch(:pagination_info))
+  end
+
   def serializable_is_collection?
     object.respond_to?(:each) && object.respond_to?(:size)
   end

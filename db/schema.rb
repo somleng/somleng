@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_18_142625) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_19_060538) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -463,6 +463,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_18_142625) do
     t.uuid "carrier_id", null: false
     t.boolean "enabled", default: true, null: false
     t.string "iso_country_code", null: false
+    t.string "type"
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["enabled"], name: "index_phone_numbers_on_enabled"
@@ -470,6 +471,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_18_142625) do
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
     t.index ["number"], name: "index_phone_numbers_on_number"
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
+    t.index ["type"], name: "index_phone_numbers_on_type"
   end
 
   create_table "recordings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -3,8 +3,16 @@ class PhoneNumberDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :Message
   end
 
+  def number
+    phone_number_formatter.format(object.number, format: :e164)
+  end
+
   def number_formatted
     phone_number_formatter.format(object.number, format: :international)
+  end
+
+  def friendly_name
+    phone_number_formatter.format(object.number, format: :national)
   end
 
   private

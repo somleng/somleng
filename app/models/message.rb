@@ -74,15 +74,15 @@ class Message < ApplicationRecord
   private
 
   def set_beneficiary_data
-    beneficiary = Beneficiary.new(
-      phone_number: outbound? ? to : from,
+    phone_number = PhoneNumberParser.parse(outbound? ? to : from)
+
+    return unless phone_number.country_code.present?
+
+    self.beneficiary_fingerprint = phone_number.number
+    self.beneficiary_country_code = ResolvePhoneNumberCountry.call(
+      phone_number,
       fallback_country: carrier.country
-    )
-
-    return unless beneficiary.valid?
-
-    self.beneficiary_fingerprint = beneficiary.phone_number
-    self.beneficiary_country_code = beneficiary.country.alpha2
+    ).alpha2
   end
 
   def set_status_timestamp

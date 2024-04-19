@@ -6,7 +6,8 @@ RSpec.resource "Pagination", document: :twilio_api do
   HEREDOC
 
   parameter(
-    :PageSize, "How many resources to return in each list page. The default is 50, and the maximum is 100."
+    :PageSize, "How many resources to return in each list page. The default is 50, and the maximum is 100.",
+    :limit, "Upper limit for the number of records to return. Guarantees to never return more than limit.  Default is no limit"
   )
 
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do

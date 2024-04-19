@@ -1,5 +1,11 @@
 class PhoneNumber < ApplicationRecord
+  self.inheritance_column = :_type_disabled
+
   NUMBER_FORMAT = /\A\d+\z/
+
+  extend Enumerize
+
+  enumerize :type, in: [ :local, :mobile, :toll_free, :short_code ], skip_validations: ->(phone_number) { phone_number.nil? }
 
   belongs_to :carrier
   belongs_to :account, optional: true

@@ -103,6 +103,40 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :number)
     end
 
+    it "validates country" do
+      carrier = create(:carrier)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "1294",
+                country: "KH"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).to have_valid_field(:data, :attributes, :country)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "+855715100987",
+                country: "US"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).not_to have_valid_field(:data, :attributes, :country)
+    end
+
     it "validates account" do
       carrier = create(:carrier)
       account = create(:account, carrier:)
@@ -210,7 +244,7 @@ module CarrierAPI
           data: {
             type: "phone_number",
             attributes: {
-              number: "1294"
+              number: "+855715100987"
             },
             relationships: {
               account: {
@@ -226,8 +260,10 @@ module CarrierAPI
       )
 
       expect(schema.output).to include(
+        carrier:,
         account:,
-        number: "1294"
+        number: "855715100987",
+        iso_country_code: "KH"
       )
     end
 

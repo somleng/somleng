@@ -3,9 +3,9 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
 
   def self.attribute_rule(*args, &block)
     args = args.first if args.one?
-    rule(data: { attributes: args }) do
+    rule(data: { attributes: args }) do |context:|
       attributes = values.dig(:data, :attributes)
-      instance_exec(attributes, &block) if block_given?
+      instance_exec(attributes, context:, &block) if block_given?
     end
   end
 

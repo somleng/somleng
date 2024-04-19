@@ -25,7 +25,9 @@ Rails.application.routes.draw do
       post "Calls/:id" => "phone_calls#update"
 
       resources :messages, only: %i[index create show destroy], path: "Messages"
-      resources :available_phone_number_countries, only: %i[index show], path: "AvailablePhoneNumbers"
+      resources :available_phone_number_countries, only: %i[index show], path: "AvailablePhoneNumbers" do
+        get "/:type", to: "available_phone_numbers#index"
+      end
 
       post "Messages/:id" => "messages#update"
     end

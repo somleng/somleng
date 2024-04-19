@@ -5,12 +5,13 @@ class AddISOCountryCodeToPhoneNumbers < ActiveRecord::Migration[7.1]
     reversible do |dir|
       dir.up do
         PhoneNumber.includes(:carrier).find_each do |phone_number|
-          beneficiary = Beneficiary.new(
-            phone_number: phone_number.number,
-            fallback_country: phone_number.carrier.country
-          )
+          number = PhoneNumberParser.parse(phone_number.number)
 
-          country = beneficiary.valid? ? beneficiary.country : phone_number.carrier.country
+          country = if number.country_code.present?
+            ResolvePhoneNumberCountry.call(number, fallback_country: phone_number.carrier.country)
+          else
+            phone_number.carrier.country
+          end
 
           phone_number.update_columns(iso_country_code: country.alpha2)
         end
