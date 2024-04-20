@@ -235,7 +235,7 @@ module CarrierAPI
       ).to have_valid_field(:data, :relationships, :account)
     end
 
-    it "normalizes the output" do
+    it "handles output for new records" do
       carrier = create(:carrier)
       account = create(:account, carrier:)
 
@@ -259,13 +259,36 @@ module CarrierAPI
         options: { carrier: }
       )
 
-      expect(schema.output).to include(
+      expect(schema.output).to eq(
         carrier:,
         account:,
         number: "855715100987",
         iso_country_code: "KH"
       )
     end
+
+    it "handles output for existing records" do
+      carrier = create(:carrier)
+      phone_number = create(:phone_number, carrier:)
+
+      schema = validate_request_schema(
+        input_params: {
+          data: {
+            type: "phone_number",
+            attributes: {
+              number: phone_number.number,
+              enabled: false
+            }
+          }
+        },
+        options: { carrier:, resource: phone_number }
+      )
+
+      expect(schema.output).to include(
+        enabled: false
+      )
+    end
+
 
     def validate_request_schema(...)
       PhoneNumberRequestSchema.new(...)

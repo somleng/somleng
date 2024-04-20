@@ -94,13 +94,13 @@ class PhoneCall < ApplicationRecord
   private
 
   def set_beneficiary_data
-    phone_number = PhoneNumberParser.parse(outbound? ? to : from)
+    beneficiary_number = PhoneNumberParser.parse(outbound? ? to : from)
 
     return unless phone_number.country_code.present?
 
-    self.beneficiary_fingerprint = phone_number.number
+    self.beneficiary_fingerprint = beneficiary_number.number
     self.beneficiary_country_code = ResolvePhoneNumberCountry.call(
-      phone_number,
+      beneficiary_number,
       fallback_country: sip_trunk&.inbound_country || carrier.country
     ).alpha2
   end

@@ -1,6 +1,6 @@
 module CarrierAPI
   class PhoneNumberRequestSchema < CarrierAPIRequestSchema
-    option :phone_number_parser, default: -> { PhoneNumberParser.new }
+    option :phone_number_country_assignment_rules, default: -> { PhoneNumberCountryAssignmentRules.new }
 
     params do
       required(:data).value(:hash).schema do
@@ -37,20 +37,14 @@ module CarrierAPI
       next if attributes.blank?
       next if resource.blank? && attributes[:number].blank?
 
-      phone_number = phone_number_parser.parse(attributes.fetch(:number) { resource.number })
+      context[:country] = phone_number_country_assignment_rules.assign_country(
+        number: attributes[:number],
+        preferred_country: ISO3166::Country.new(attributes[:country]),
+        fallback_country: carrier.country,
+        existing_country: resource&.country
+      )
 
-      if attributes.key?(:country)
-        country = ISO3166::Country.new(attributes.fetch(:country))
-        context[:country] = country if phone_number.country_code.blank? || country.in?(phone_number.possible_countries)
-      else
-        context[:country] = if phone_number.country_code.present?
-          ResolvePhoneNumberCountry.call(phone_number, fallback_country: carrier.country)
-        else
-          carrier.country
-        end
-      end
-
-      key.failure("is invalid") unless context.key?(:country)
+      key.failure("is invalid") if context[:country].blank?
     end
 
     relationship_rule(:account) do
@@ -72,7 +66,7 @@ module CarrierAPI
       result[:number] = params.fetch(:number) if params.key?(:number)
       result[:enabled] = params.fetch(:enabled) if params.key?(:enabled)
       result[:account] = Account.find(params.fetch(:account)) if params.key?(:account)
-      result[:iso_country_code] = context.fetch(:country).alpha2 if context.key?(:country)
+      result[:iso_country_code] = context.fetch(:country).alpha2 if context[:country].present?
       result
     end
   end

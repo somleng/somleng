@@ -20,6 +20,8 @@ class PhoneNumber < ApplicationRecord
             uniqueness: { scope: :carrier_id },
             format: { with: NUMBER_FORMAT, allow_blank: true }
 
+  validates :iso_country_code, presence: true, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
+
   class << self
     def available
       enabled.where(account_id: nil)
