@@ -10,6 +10,12 @@
       %>
     <% end %>
 
+    <%= form.country_select(
+        :country,
+        { filter_value: params.dig(:filter, :country) },
+        { data: { behavior: "choices-input" }}
+      )
+    %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
 
     <%= form.boolean_select(:enabled, { filter_value: params.dig(:filter, :enabled) }) %>

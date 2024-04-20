@@ -694,6 +694,7 @@ DEPENDENCIES
   rqrcode
   rspec-rails
   rspec_api_documentation!
+  rubocop-capybara
   rubocop-rails-omakase
   rubocop-rspec
   sassc-rails

@@ -8,6 +8,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     messages: Field::HasMany,
     id: Field::String,
     number: Field::String,
+    country: Field::String,
     enabled: Field::String,
     configuration: Field::HasOne,
     created_at: Field::LocalTime,
@@ -16,6 +17,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
 
   COLLECTION_ATTRIBUTES = %i[
     id
+    country
     account
     number
     enabled
@@ -23,6 +25,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    country
     carrier
     account
     number

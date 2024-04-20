@@ -80,6 +80,7 @@ end
 group :development do
   gem "foreman", require: false
   gem "squasher", require: false
+  gem "rubocop-capybara", require: false
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rspec", require: false
 end

@@ -26,11 +26,12 @@ module Dashboard
     end
 
     def update
-      permitted_params = [ :enabled ]
+      permitted_params = [ :enabled, :country ]
       permitted_params << :account_id unless record.assigned?
       permitted_params = required_params.permit(permitted_params)
       @resource = initialize_form(permitted_params)
       @resource.phone_number = record
+      @resource.number = record.number
       @resource.save
 
       respond_with(:dashboard, @resource)

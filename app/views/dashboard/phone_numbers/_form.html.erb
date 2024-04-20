@@ -36,7 +36,21 @@
       </div>
     </div>
 
-    <div class="card mb-3">
+    <% if resource.persisted? %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Properties</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :country, only: resource.possible_countries, include_blank: false %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="card card border-danger mb-3">
       <div class="card-body">
         <h5 class="card-title">Danger Zone</h5>
 

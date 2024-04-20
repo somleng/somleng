@@ -47,10 +47,15 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def select(name, choices = nil, options = {}, html_options = {}, &)
-    title = options.fetch(:title, name.to_s.humanize)
-    filter_value = options.fetch(:filter_value)
-    options[:selected] ||= filter_value
-    html_options[:class] ||= "form-control"
+    title, filter_value, options, html_options = default_select_options(name, options, html_options)
+
+    @template.render("shared/filters/field", filter_value:, title:) do
+      super
+    end
+  end
+
+  def country_select(name, options = {}, html_options = {}, &)
+    title, filter_value, options, html_options = default_select_options(name, options, html_options)
 
     @template.render("shared/filters/field", filter_value:, title:) do
       super
@@ -98,5 +103,16 @@ class FilterFormBuilder < ActionView::Helpers::FormBuilder
     ) do
       @template.text_field_tag("#{@object_name}[#{name}]", value, class: "form-control", **options)
     end
+  end
+
+  private
+
+  def default_select_options(name, options, html_options)
+    title = options.fetch(:title, name.to_s.humanize)
+    filter_value = options.fetch(:filter_value)
+    options[:selected] ||= filter_value
+    html_options[:class] ||= "form-control"
+
+    [ title, filter_value, options, html_options ]
   end
 end

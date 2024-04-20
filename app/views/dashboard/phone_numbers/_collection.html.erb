@@ -4,6 +4,9 @@
       <th>
         Phone Number
       </th>
+      <th>
+        Country
+      </th>
       <% if policy(:account).show? %>
         <th>
           Account
@@ -30,6 +33,11 @@
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
           <%= link_to(phone_number.number_formatted, dashboard_phone_number_path(phone_number)) %>
+        </td>
+
+        <td>
+          <%= phone_number.country.emoji_flag %>
+          <%= phone_number.country.iso_short_name %>
         </td>
 
         <% if policy(:account).show? %>

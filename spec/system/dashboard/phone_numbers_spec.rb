@@ -9,6 +9,7 @@ RSpec.describe "Phone Numbers" do
       :utilized,
       :configured,
       carrier:,
+      iso_country_code: "KH",
       number: "855972222222",
       created_at: Time.utc(2021, 12, 1)
     )
@@ -28,7 +29,7 @@ RSpec.describe "Phone Numbers" do
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path(
-      filter: { from_date: "01/12/2021", to_date: "15/12/2021", enabled: true, utilized: true, configured: true }
+      filter: { country: "KH", from_date: "01/12/2021", to_date: "15/12/2021", enabled: true, utilized: true, configured: true }
     )
 
     expect(page).to have_content("+855 97 222 2222")
@@ -78,21 +79,22 @@ RSpec.describe "Phone Numbers" do
   end
 
   it "Create a phone number" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, country_code: "KH")
     user = create(:user, :carrier, :admin, carrier:)
     create(:account, carrier:, name: "Rocket Rides")
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path
 
-    click_link("New")
+    click_on("New")
     fill_in("Number", with: "1234")
-    select("Rocket Rides", from: "Account")
-    click_button("Create Phone number")
+    choices_select("Rocket Rides", from: "Account")
+    click_on("Create Phone number")
 
     expect(page).to have_content("Phone number was successfully created")
     expect(page).to have_content("1234")
     expect(page).to have_content("Rocket Rides")
+    expect(page).to have_content("Cambodia")
   end
 
   it "Handles validations" do
@@ -100,7 +102,7 @@ RSpec.describe "Phone Numbers" do
 
     carrier_sign_in(user)
     visit new_dashboard_phone_number_path
-    click_button("Create Phone number")
+    click_on("Create Phone number")
 
     expect(page).to have_content("can't be blank")
   end
@@ -110,18 +112,20 @@ RSpec.describe "Phone Numbers" do
     create(:account, carrier:, name: "Rocket Rides")
 
     user = create(:user, :carrier, carrier:)
-    phone_number = create(:phone_number, carrier:)
+    phone_number = create(:phone_number, carrier:, number: "12505550199", iso_country_code: "US")
 
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
-    click_link("Edit")
-    select("Rocket Rides", from: "Account")
+    click_on("Edit")
+    choices_select("Rocket Rides", from: "Account")
+    select("Canada", from: "Country")
 
-    click_button "Update Phone number"
+    click_on("Update Phone number")
 
     expect(page).to have_content("Phone number was successfully updated")
     expect(page).to have_content("Rocket Rides")
+    expect(page).to have_content("Canada")
   end
 
   it "Delete a phone number" do

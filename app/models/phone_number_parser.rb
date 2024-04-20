@@ -21,6 +21,7 @@ class PhoneNumberParser
 
     unless validator.valid?(number)
       result.e164 = false
+      result.possible_countries = ISO3166::Country.all
       return result
     end
 
