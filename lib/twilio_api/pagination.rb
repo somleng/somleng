@@ -53,7 +53,7 @@ module TwilioAPI
 
     def paginate_resources
       CursorPaginator.paginate(
-        apply_limit(resources),
+        resources,
         page_options: cursor_page_options,
         paginator_options: {
           order_key: :sequence_number
@@ -84,12 +84,6 @@ module TwilioAPI
 
     def page_token
       params[:PageToken]
-    end
-
-    def apply_limit(resources)
-      return resources if params[:limit].blank?
-
-      resources.limit(params[:limit])
     end
 
     def parse_params
