@@ -7,12 +7,17 @@ class PhoneNumberCountryAssignmentRules
 
   def assign_country(number:, preferred_country:, fallback_country:, existing_country: nil)
     return existing_country if preferred_country.blank? && existing_country.present?
-    return if number.blank?
 
     phone_number = phone_number_parser.parse(number)
-    return fallback_country if preferred_country.blank? && phone_number.e164?
-    return ResolvePhoneNumberCountry.call(phone_number, fallback_country:) if preferred_country.blank? && phone_number.e164?
 
-    preferred_country if !phone_number.e164? || preferred_country.in?(phone_number.possible_countries)
+    if phone_number.e164?
+      if preferred_country.present?
+        preferred_country if preferred_country.in?(phone_number.possible_countries)
+      else
+        ResolvePhoneNumberCountry.call(phone_number, fallback_country:)
+      end
+    else
+      preferred_country.present? ? preferred_country : fallback_country
+    end
   end
 end

@@ -25,7 +25,7 @@ class ImportCSV < ApplicationWorkflow
           import.error_line = index + 1
           case import.resource_type
           when "PhoneNumber"
-            ImportPhoneNumber.call(import, row_data)
+            ImportPhoneNumber.call(import:, data: row_data)
           end
         end
 

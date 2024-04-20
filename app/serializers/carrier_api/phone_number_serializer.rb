@@ -5,7 +5,7 @@ module CarrierAPI
     attributes :number, :country, :enabled
 
     attribute :country do |object|
-      object.iso_country_code.alpha2
+      object.iso_country_code
     end
   end
 end

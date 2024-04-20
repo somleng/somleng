@@ -10,6 +10,8 @@ module TwilioAPI
              default: -> { MessageDestinationSchemaRules.new }
       option :phone_call_destination_schema_rules,
              default: -> { PhoneCallDestinationSchemaRules.new }
+      option :phone_number_parser,
+              default: -> { PhoneNumberParser.new }
 
       params do
         required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -81,8 +83,10 @@ module TwilioAPI
       private
 
       def resolve_locale(params)
+        beneficiary_number = phone_number_parser.parse(params.fetch(:To))
+
         beneficiary_country = ResolvePhoneNumberCountry.call(
-          params.fetch(:To),
+          beneficiary_number,
           fallback_country: verification_service.carrier
         )
         locale = params.fetch(:Locale) do

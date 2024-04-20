@@ -3,9 +3,9 @@ class ImportPhoneNumber < ApplicationWorkflow
 
   class Error < Errors::ImportError; end
 
-  def initialize(import, data, phone_number_country_assignment_rules: PhoneNumberCountryAssignmentRules.new)
+  def initialize(import:, data:, phone_number_country_assignment_rules: PhoneNumberCountryAssignmentRules.new)
     @import = import
-    @data = data
+    @data = data.with_indifferent_access
     @phone_number_country_assignment_rules = phone_number_country_assignment_rules
   end
 
@@ -16,31 +16,27 @@ class ImportPhoneNumber < ApplicationWorkflow
   private
 
   def create_phone_number!
-    PhoneNumber.create!(
-      carrier: import.carrier,
-      number: data["number"],
-      enabled: data.fetch("enabled", true),
-      account: find_account(data["account_sid"]),
-      iso_country_code: assign_country(
-        number: data["number"],
-        iso_country_code: data["country"],
-        existing_country:
-      )
+    phone_number = PhoneNumber.find_or_initialize_by(
+      number: data[:number],
+      carrier: import.carrier
     )
+    phone_number.enabled = data.fetch(:enabled, true)
+
+    phone_number.iso_country_code = assign_country(
+      number: data[:number],
+      iso_country_code: data[:country],
+      existing_country: phone_number.country
+    )&.alpha2
+
+    phone_number.save!
+    phone_number
   rescue ActiveRecord::RecordInvalid => e
     raise Error.new(e)
   end
 
-  def find_account(account_id)
-    return if account_id.blank?
-
-    account = import.carrier.accounts.find_by(id: account_id)
-    raise Error, "account_sid is invalid" if account.blank?
-
-    account
-  end
-
   def assign_country(number:, iso_country_code:, existing_country:)
+    return if number.blank?
+
     phone_number_country_assignment_rules.assign_country(
       number:,
       preferred_country: ISO3166::Country.new(iso_country_code),

@@ -38,7 +38,7 @@ module CarrierAPI
       next if resource.blank? && attributes[:number].blank?
 
       context[:country] = phone_number_country_assignment_rules.assign_country(
-        number: attributes[:number],
+        number: attributes.fetch(:number) { resource.number },
         preferred_country: ISO3166::Country.new(attributes[:country]),
         fallback_country: carrier.country,
         existing_country: resource&.country

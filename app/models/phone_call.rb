@@ -96,7 +96,7 @@ class PhoneCall < ApplicationRecord
   def set_beneficiary_data
     beneficiary_number = PhoneNumberParser.parse(outbound? ? to : from)
 
-    return unless phone_number.country_code.present?
+    return unless beneficiary_number.country_code.present?
 
     self.beneficiary_fingerprint = beneficiary_number.number
     self.beneficiary_country_code = ResolvePhoneNumberCountry.call(
