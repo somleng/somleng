@@ -5,7 +5,7 @@ class PhoneNumberCountryAssignmentRules
     @phone_number_parser = phone_number_parser
   end
 
-  def assign_country(number:, preferred_country:, fallback_country:, existing_country: nil)
+  def country_for(number:, preferred_country:, fallback_country:, existing_country: nil)
     return existing_country if preferred_country.blank? && existing_country.present?
 
     phone_number = phone_number_parser.parse(number)

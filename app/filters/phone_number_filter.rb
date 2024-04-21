@@ -11,6 +11,18 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
+  class TypeFilter < ApplicationFilter
+    filter_params do
+      optional(:type).value(:string)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.where(type: filter_params.fetch(:type))
+    end
+  end
+
   class EnabledFilter < ApplicationFilter
     filter_params do
       optional(:enabled).value(:bool)
@@ -73,6 +85,7 @@ class PhoneNumberFilter < ResourceFilter
 
   filter_with(
     CountryFilter,
+    TypeFilter,
     EnabledFilter,
     AssignedFilter,
     UtilizedFilter,

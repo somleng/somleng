@@ -22,7 +22,7 @@ class ImportPhoneNumber < ApplicationWorkflow
     )
     phone_number.enabled = data.fetch(:enabled, true)
 
-    phone_number.iso_country_code = assign_country(
+    phone_number.iso_country_code = country_for(
       number: data[:number],
       iso_country_code: data[:country],
       existing_country: phone_number.country
@@ -34,10 +34,10 @@ class ImportPhoneNumber < ApplicationWorkflow
     raise Error.new(e)
   end
 
-  def assign_country(number:, iso_country_code:, existing_country:)
+  def country_for(number:, iso_country_code:, existing_country:)
     return if number.blank?
 
-    phone_number_country_assignment_rules.assign_country(
+    phone_number_country_assignment_rules.country_for(
       number:,
       preferred_country: ISO3166::Country.new(iso_country_code),
       fallback_country: import.carrier.country,

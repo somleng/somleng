@@ -7,6 +7,9 @@
       <th>
         Country
       </th>
+      <th>
+        Type
+      </th>
       <% if policy(:account).show? %>
         <th>
           Account
@@ -38,6 +41,10 @@
         <td>
           <%= phone_number.country.emoji_flag %>
           <%= phone_number.country.iso_short_name %>
+        </td>
+
+        <td>
+          <%= phone_number.type %>
         </td>
 
         <% if policy(:account).show? %>

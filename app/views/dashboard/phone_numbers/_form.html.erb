@@ -44,6 +44,17 @@
           <div class="col-sm-6">
             <%=
               f.input(
+                :type,
+                prompt: "Please Select",
+                required: true,
+                collection: PhoneNumber.type.values.map { |t| [t.text, t] }
+              )
+            %>
+          </div>
+
+          <div class="col-sm-6">
+            <%=
+              f.input(
                 :country,
                 only: resource.possible_countries,
                 include_blank: false,

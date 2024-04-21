@@ -8,6 +8,7 @@ module APIResponseSchema
         required(:number).filled(:str?)
         required(:enabled).filled(:bool?)
         required(:country).filled(:str?, included_in?: ISO3166::Country.all.map(&:alpha2))
+        required(:type).filled(:str?, included_in?: PhoneNumber.type.values)
         required(:created_at).filled(:str?)
         required(:updated_at).filled(:str?)
       end

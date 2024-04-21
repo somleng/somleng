@@ -463,7 +463,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_060538) do
     t.uuid "carrier_id", null: false
     t.boolean "enabled", default: true, null: false
     t.string "iso_country_code", null: false
-    t.string "type"
+    t.string "type", null: false
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["enabled"], name: "index_phone_numbers_on_enabled"

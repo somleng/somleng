@@ -11,6 +11,7 @@ RSpec.describe "Phone Numbers" do
       carrier:,
       iso_country_code: "KH",
       number: "855972222222",
+      type: :mobile,
       created_at: Time.utc(2021, 12, 1)
     )
     create(
@@ -29,7 +30,15 @@ RSpec.describe "Phone Numbers" do
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path(
-      filter: { country: "KH", from_date: "01/12/2021", to_date: "15/12/2021", enabled: true, utilized: true, configured: true }
+      filter: {
+        country: "KH",
+        type: "mobile",
+        from_date: "01/12/2021",
+        to_date: "15/12/2021",
+        enabled: true,
+        utilized: true,
+        configured: true
+      }
     )
 
     expect(page).to have_content("+855 97 222 2222")
@@ -88,11 +97,13 @@ RSpec.describe "Phone Numbers" do
 
     click_on("New")
     fill_in("Number", with: "1294")
+    choices_select("Short code", from: "Type")
     click_on("Create Phone number")
 
     expect(page).to have_content("Phone number was successfully created")
     expect(page).to have_content("1294")
     expect(page).to have_content("Cambodia")
+    expect(page).to have_content("Short code")
   end
 
   it "Handles validations" do
@@ -118,12 +129,14 @@ RSpec.describe "Phone Numbers" do
     click_on("Edit")
     choices_select("Rocket Rides", from: "Account")
     choices_select("Canada", from: "Country")
+    choices_select("Mobile", from: "Type")
 
     click_on("Update Phone number")
 
     expect(page).to have_content("Phone number was successfully updated")
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("Canada")
+    expect(page).to have_content("Mobile")
   end
 
   it "Delete a phone number" do

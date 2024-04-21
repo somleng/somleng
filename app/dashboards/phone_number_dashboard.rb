@@ -9,6 +9,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     id: Field::String,
     number: Field::String,
     country: Field::String,
+    type: Field::String,
     enabled: Field::String,
     configuration: Field::HasOne,
     created_at: Field::LocalTime,
@@ -17,15 +18,17 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
 
   COLLECTION_ATTRIBUTES = %i[
     id
-    country
-    account
     number
+    country
+    type
+    account
     enabled
   ].freeze
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
     country
+    type
     carrier
     account
     number

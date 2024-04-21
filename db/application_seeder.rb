@@ -92,7 +92,7 @@ class ApplicationSeeder
 
   def create_phone_number(params)
     PhoneNumber.first_or_create!(
-      params.reverse_merge(number: "1234", iso_country_code: "KH")
+      params.reverse_merge(number: "1234", iso_country_code: "KH", type: :short_code)
     ) do |record|
       record.build_configuration(
         voice_url: "https://demo.twilio.com/docs/voice.xml",

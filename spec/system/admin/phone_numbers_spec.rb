@@ -2,7 +2,13 @@ require "rails_helper"
 
 RSpec.describe "Admin/Phone Numbers" do
   it "List phone numbers" do
-    phone_number = create(:phone_number, :assigned_to_account, number: "1234", iso_country_code: "KH")
+    phone_number = create(
+      :phone_number,
+      :assigned_to_account,
+      number: "1234",
+      iso_country_code: "KH",
+      type: :short_code
+    )
     create(
       :phone_number_configuration,
       phone_number:,
@@ -14,6 +20,7 @@ RSpec.describe "Admin/Phone Numbers" do
 
     expect(page).to have_content("1234")
     expect(page).to have_content("Cambodia")
+    expect(page).to have_content("short_code")
 
     click_on("1234")
 

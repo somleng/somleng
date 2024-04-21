@@ -2,10 +2,13 @@ class PhoneNumber < ApplicationRecord
   self.inheritance_column = :_type_disabled
 
   NUMBER_FORMAT = /\A\d+\z/
+  SHORT_CODE_TYPES = [ :short_code ].freeze
+  E164_TYPES = [ :local, :mobile, :toll_free ].freeze
+  TYPES = (SHORT_CODE_TYPES + E164_TYPES).freeze
 
   extend Enumerize
 
-  enumerize :type, in: [ :local, :mobile, :toll_free, :short_code ], skip_validations: ->(phone_number) { phone_number.nil? }
+  enumerize :type, in: TYPES
 
   belongs_to :carrier
   belongs_to :account, optional: true
@@ -21,6 +24,7 @@ class PhoneNumber < ApplicationRecord
             format: { with: NUMBER_FORMAT, allow_blank: true }
 
   validates :iso_country_code, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
+  validates :type, phone_number_type: true
 
   class << self
     def available

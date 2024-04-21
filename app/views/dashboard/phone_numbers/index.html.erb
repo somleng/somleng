@@ -16,6 +16,14 @@
         { data: { behavior: "choices-input" }}
       )
     %>
+
+    <%= form.select(
+        :type,
+        PhoneNumber.type.values.map { |t| [t.text, t] },
+        { filter_value: params.dig(:filter, :type) }
+      )
+    %>
+
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
 
     <%= form.boolean_select(:enabled, { filter_value: params.dig(:filter, :enabled) }) %>
