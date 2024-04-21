@@ -54,7 +54,9 @@ class PhoneNumberForm
   end
 
   def possible_countries
-    parsed_number.possible_countries.map(&:alpha2)
+    return ISO3166::Country.all.map(&:alpha2) if new_record?
+
+    country_assignment_rules.phone_number_parser.parse(number).possible_countries.map(&:alpha2)
   end
 
   private
@@ -64,12 +66,6 @@ class PhoneNumberForm
     return unless carrier.phone_numbers.exists?(number:)
 
     errors.add(:number, :taken)
-  end
-
-  def parsed_number
-    return if number.blank?
-
-    @parsed_number ||= country_assignment_rules.phone_number_parser.parse(number)
   end
 
   def validate_country

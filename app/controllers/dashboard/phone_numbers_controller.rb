@@ -10,7 +10,7 @@ module Dashboard
     end
 
     def create
-      @resource = initialize_form(required_params.permit(:number, :account_id, :enabled))
+      @resource = initialize_form(required_params.permit(:number, :account_id, :enabled, :country))
       @resource.save
 
       respond_with(:dashboard, @resource)

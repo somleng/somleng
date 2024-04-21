@@ -26,29 +26,39 @@
           <div class="col-sm-6">
               <%= f.input :account_id,
                           collection: resource.account_options_for_select,
-                          hint: resource.account_id.blank? && "Optionally assign the phone number to an account",
+                          prompt: "Unassigned",
                           selected: resource.account_id,
                           disabled: resource.assigned?,
-                          prompt: "",
+                          include_blank: false,
                           input_html: { data: { behavior: "choices-input" } } %>
           </div>
         </div>
       </div>
     </div>
 
-    <% if resource.persisted? %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Properties</h5>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Properties</h5>
 
-          <div class="row">
-            <div class="col-sm-6">
-              <%= f.input :country, only: resource.possible_countries, include_blank: false %>
-            </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :country,
+                only: resource.possible_countries,
+                include_blank: false,
+                prompt: "Automatically select from phone number",
+                input_html: {
+                  data: {
+                    behavior: "choices-input"
+                  }
+                }
+              )
+            %>
           </div>
         </div>
       </div>
-    <% end %>
+    </div>
 
     <div class="card card border-danger mb-3">
       <div class="card-body">

@@ -87,13 +87,11 @@ RSpec.describe "Phone Numbers" do
     visit dashboard_phone_numbers_path
 
     click_on("New")
-    fill_in("Number", with: "1234")
-    choices_select("Rocket Rides", from: "Account")
+    fill_in("Number", with: "1294")
     click_on("Create Phone number")
 
     expect(page).to have_content("Phone number was successfully created")
-    expect(page).to have_content("1234")
-    expect(page).to have_content("Rocket Rides")
+    expect(page).to have_content("1294")
     expect(page).to have_content("Cambodia")
   end
 
@@ -119,7 +117,7 @@ RSpec.describe "Phone Numbers" do
 
     click_on("Edit")
     choices_select("Rocket Rides", from: "Account")
-    select("Canada", from: "Country")
+    choices_select("Canada", from: "Country")
 
     click_on("Update Phone number")
 
