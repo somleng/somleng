@@ -31,6 +31,27 @@ resource "Phone Numbers", document: :carrier_api do
 
     example "Create a phone number" do
       carrier = create(:carrier, country_code: "KH")
+
+      set_carrier_api_authorization_header(carrier)
+      do_request(
+        data: {
+          type: :phone_number,
+          attributes: {
+            number: "1294"
+          }
+        }
+      )
+
+      expect(response_status).to eq(201)
+      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
+      expect(jsonapi_response_attributes).to include(
+        "number" => "1294",
+        "country" => "KH"
+      )
+    end
+
+    example "Create a phone number and assign it to an account" do
+      carrier = create(:carrier)
       account = create(:account, carrier:)
 
       set_carrier_api_authorization_header(carrier)
@@ -53,10 +74,6 @@ resource "Phone Numbers", document: :carrier_api do
 
       expect(response_status).to eq(201)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
-      expect(jsonapi_response_attributes).to include(
-        "number" => "1294",
-        "country" => "KH"
-      )
       expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(account.id)
     end
   end
@@ -101,7 +118,14 @@ resource "Phone Numbers", document: :carrier_api do
     with_options scope: %i[data attributes] do
       parameter(
         :enabled,
-        "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts."
+        "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts.",
+        required: false
+      )
+
+      parameter(
+        :country,
+        "The ISO 3166-1 alpha-2 country code of the phone number.",
+        required: false
       )
     end
 

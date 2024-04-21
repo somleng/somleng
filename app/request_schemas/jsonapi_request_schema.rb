@@ -9,10 +9,6 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
     end
   end
 
-  def self.relationship_rule(name, &block)
-    rule(data: { relationships: { name => { data: :id } } }, &block)
-  end
-
   def self.error_serializer_class
     JSONAPIRequestSchemaErrorsSerializer
   end

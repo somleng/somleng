@@ -13,8 +13,8 @@ module CarrierAPI
         end
 
         optional(:relationships).value(:hash).schema do
-          required(:account).value(:hash).schema do
-            required(:data).value(:hash).schema do
+          required(:account).filled(:hash).schema do
+            required(:data).filled(:hash).schema do
               required(:type).filled(:str?, eql?: "account")
               required(:id).filled(:str?)
             end
@@ -47,14 +47,15 @@ module CarrierAPI
       key.failure("is invalid") if context[:country].blank?
     end
 
-    relationship_rule(:account) do
+
+    rule(data: { relationships: { account: { data: :id } } }) do |context:|
       next unless key?
 
-      account = carrier.accounts.find_by(id: value)
-      if account.blank?
+      context[:account] = carrier.accounts.find_by(id: value)
+      if context.fetch(:account).blank?
         key.failure("does not exist")
       elsif resource&.assigned?
-        key.failure("cannot be updated") if resource.account != account
+        key.failure("cannot be updated") if resource.account != context.fetch(:account)
       end
     end
 
@@ -65,7 +66,7 @@ module CarrierAPI
       result[:carrier] = params.fetch(:carrier)
       result[:number] = params.fetch(:number) if params.key?(:number)
       result[:enabled] = params.fetch(:enabled) if params.key?(:enabled)
-      result[:account] = Account.find(params.fetch(:account)) if params.key?(:account)
+      result[:account] = context.fetch(:account) if context[:account].present?
       result[:iso_country_code] = context.fetch(:country).alpha2 if context[:country].present?
       result
     end

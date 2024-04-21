@@ -26,7 +26,7 @@ class ApplicationRequestSchema < Dry::Validation::Contract
     next if date_range.valid?
 
     key(
-      [*key.path.keys, :date_range].join(".")
+      [ *key.path.keys, :date_range ].join(".")
     ).failure("invalid date range")
   end
 

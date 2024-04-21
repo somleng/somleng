@@ -269,15 +269,16 @@ module CarrierAPI
 
     it "handles output for existing records" do
       carrier = create(:carrier)
-      phone_number = create(:phone_number, carrier:)
+      account = create(:account, carrier:)
+      phone_number = create(:phone_number, number: "12366130851", carrier:, account:, iso_country_code: "US")
 
       schema = validate_request_schema(
         input_params: {
           data: {
             type: "phone_number",
             attributes: {
-              number: phone_number.number,
-              enabled: false
+              enabled: false,
+              country: "CA"
             }
           }
         },
@@ -285,10 +286,10 @@ module CarrierAPI
       )
 
       expect(schema.output).to include(
-        enabled: false
+        enabled: false,
+        iso_country_code: "CA"
       )
     end
-
 
     def validate_request_schema(...)
       PhoneNumberRequestSchema.new(...)
