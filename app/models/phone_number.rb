@@ -28,7 +28,15 @@ class PhoneNumber < ApplicationRecord
 
   class << self
     def available
-      enabled.where(account_id: nil)
+      enabled.unassigned
+    end
+
+    def assigned
+      where.not(account_id: nil)
+    end
+
+    def unassigned
+      where(account_id: nil)
     end
 
     def enabled
@@ -40,7 +48,7 @@ class PhoneNumber < ApplicationRecord
     end
 
     def utilized
-      scope = left_joins(:phone_calls).left_joins(:messages)
+      scope = assigned.left_joins(account: :phone_calls).left_joins(account: :messages)
               .where.not(phone_calls: { phone_number_id: nil }).or(where.not(messages: { phone_number_id: nil }))
               .distinct
 
@@ -48,8 +56,10 @@ class PhoneNumber < ApplicationRecord
     end
 
     def unutilized
-      left_joins(:phone_calls).left_joins(:messages)
-                .where(phone_calls: { phone_number_id: nil }, messages: { phone_number_id: nil })
+      assigned_unutilized = assigned.left_joins(account: :phone_calls).left_joins(account: :messages)
+                            .where(phone_calls: { phone_number_id: nil }, messages: { phone_number_id: nil })
+
+      unassigned.or(where(id: assigned_unutilized.select(:id)))
     end
 
     def configured
@@ -77,6 +87,8 @@ class PhoneNumber < ApplicationRecord
   end
 
   def utilized?
-    phone_calls.any? || messages.any?
+    return unless assigned?
+
+    account.phone_calls.where(phone_number_id: id).any? || account.messages.where(phone_number_id: id).any?
   end
 end

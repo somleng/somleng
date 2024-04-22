@@ -18,6 +18,10 @@ RSpec.describe PhoneNumber do
       utilized_phone_number_with_phone_call = create_utilized_phone_number(utilized_by: :phone_call)
       utilized_phone_number_with_message = create_utilized_phone_number(utilized_by: :message)
       _unutilized_phone_number = create(:phone_number)
+      utilized_phone_number_by_another_account = create_utilized_phone_number
+      utilized_phone_number_by_another_account.update!(
+        account: create(:account, carrier: utilized_phone_number_by_another_account.carrier)
+      )
 
       result = PhoneNumber.utilized
 
@@ -34,7 +38,8 @@ RSpec.describe PhoneNumber do
     it "returns unutilized phone numbers" do
       create_utilized_phone_number(utilized_by: :phone_call)
       create_utilized_phone_number(utilized_by: :message)
-      unutilized_phone_number = create(:phone_number)
+      unutilized_phone_number = create(:phone_number, :assigned_to_account)
+      create_list(:phone_call, 2, phone_number: unutilized_phone_number)
 
       result = PhoneNumber.unutilized
 
@@ -154,8 +159,10 @@ RSpec.describe PhoneNumber do
   end
 
   def create_utilized_phone_number(**params)
-    phone_number = create(:phone_number)
-    create_list(params.fetch(:utilized_by), 2, phone_number:)
+    carrier = params.fetch(:carrier) { create(:carrier) }
+    account = params.fetch(:account) { create(:account, carrier:) }
+    phone_number = create(:phone_number, carrier:, account:)
+    create_list(params.fetch(:utilized_by, :phone_call), 2, phone_number:, account:)
 
     phone_number
   end

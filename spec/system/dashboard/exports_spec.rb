@@ -18,10 +18,10 @@ RSpec.describe "Exports" do
 
     within(".alert") do
       expect(page).to have_content("Your export is being processed")
-      click_link("Exports")
+      click_on("Exports")
     end
 
-    click_link("accounts_")
+    click_on("accounts_")
 
     expect(page.response_headers["Content-Type"]).to eq("text/csv")
     expect(page).to have_content("Rocket Rides")
@@ -44,10 +44,10 @@ RSpec.describe "Exports" do
     end
     within(".alert") do
       expect(page).to have_content("Your export is being processed")
-      click_link("Exports")
+      click_on("Exports")
     end
 
-    click_link("phone_numbers_")
+    click_on("phone_numbers_")
     expect(page).to have_content("1234")
     expect(page).not_to have_content("9876")
   end

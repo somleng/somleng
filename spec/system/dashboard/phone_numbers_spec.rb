@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Phone Numbers" do
-  it "List and filter phone numbers" do
+  it "List, filter and bulk delete phone numbers" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
     create(
@@ -52,6 +52,48 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("+855 97 333 3333")
     expect(page).not_to have_content("+855 97 444 4444")
     expect(page).not_to have_selector(:link_or_button, "Delete")
+  end
+
+  it "Export phone numbers" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+
+    create(
+      :phone_number,
+      carrier:,
+      number: "855972222222",
+      iso_country_code: "KH"
+    )
+    create(
+      :phone_number,
+      carrier:,
+      number: "12513095542",
+      type: :local,
+    )
+
+    carrier_sign_in(user)
+    visit dashboard_phone_numbers_path(
+      filter: {
+        type: "mobile"
+      }
+    )
+
+    perform_enqueued_jobs do
+      click_on("Export")
+    end
+
+    within(".alert") do
+      expect(page).to have_content("Your export is being processed")
+      click_on("Exports")
+    end
+
+    click_on("phone_numbers_")
+
+    expect(page.response_headers["Content-Type"]).to eq("text/csv")
+    expect(page).to have_content("+855972222222")
+    expect(page).to have_content("mobile")
+    expect(page).to have_content("KH")
+    expect(page).not_to have_content("+12513095542")
   end
 
   it "List phone numbers as an account member" do
