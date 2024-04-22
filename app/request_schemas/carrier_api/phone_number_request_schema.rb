@@ -10,19 +10,22 @@ module CarrierAPI
       validates :type, phone_number_type: true
     end
 
-    CurrencyValidator = Struct.new(:currency, keyword_init: true) do
+    PriceValidator = Struct.new(:carrier, :phone_number, :price, :currency, keyword_init: true) do
       include ActiveModel::Validations
 
       def self.model_name
         ActiveModel::Name.new(self, nil, name.to_s)
       end
 
-      validates :currency, currency: true
+      validates :price,
+                billing_amount: {
+                  billing_currency: ->(this) { this.phone_number.present? ? this.phone_number.currency : this.carrier.billing_currency }
+                }
     end
 
     option :phone_number_country_assignment_rules, default: -> { PhoneNumberCountryAssignmentRules.new }
     option :type_validator, default: -> { TypeValidator.new }
-    option :currency_validator, default: -> { CurrencyValidator.new }
+    option :price_validator, default: -> { PriceValidator.new }
 
     params do
       required(:data).value(:hash).schema do
@@ -86,16 +89,19 @@ module CarrierAPI
     end
 
     attribute_rule(:price, :currency) do |attributes, context:|
-      if attributes.blank? || (!attributes.key?(:price) && !attributes.key?(:currency))
-        context[:price] = Money.new(0, carrier.billing_currency) if resource.blank?
-        next
+      next if attributes.blank? || (!attributes.key?(:price) && !attributes.key?(:currency))
+
+      price_validator.phone_number = resource
+      price_validator.carrier = carrier
+      price_validator.price = attributes[:price]
+      price_validator.currency = attributes[:currency]
+
+      if price_validator.valid?
+        context[:price] = Money.from_amount(attributes.fetch(:price), attributes.fetch(:currency))
+      else
+        attribute = price_validator.errors.first.attribute
+        key(attribute_key_path(attribute)).failure(price_validator.errors[attribute].to_sentence)
       end
-
-      next key(attribute_key_path(:currency)).failure("is missing") if !attributes.key?(:currency)
-      next key(attribute_key_path(:price)).failure("is missing") if !attributes.key?(:price)
-      next key(attribute_key_path(:currency)).failure("is invalid") if (resource.present? ? resource.currency : carrier.billing_currency) != attributes.fetch(:currency)
-
-      context[:price] = Money.from_amount(attributes.fetch(:price), attributes.fetch(:currency))
     end
 
     rule(data: { relationships: { account: { data: :id } } }) do |context:|

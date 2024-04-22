@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ImportCSV do
   it "imports a CSV" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, billing_currency: "USD")
     import = create(
       :import,
       carrier:,

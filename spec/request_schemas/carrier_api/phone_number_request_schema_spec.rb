@@ -420,8 +420,7 @@ module CarrierAPI
         account:,
         number: "855715100987",
         type: "mobile",
-        iso_country_code: "KH",
-        price: Money.new(0, "KHR")
+        iso_country_code: "KH"
       )
     end
 

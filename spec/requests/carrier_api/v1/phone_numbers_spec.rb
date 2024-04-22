@@ -66,6 +66,24 @@ resource "Phone Numbers", document: :carrier_api do
       )
     end
 
+    example "Handles invalid requests", document: false do
+      carrier = create(:carrier, country_code: "KH")
+
+      set_carrier_api_authorization_header(carrier)
+      do_request(
+        data: {
+          type: :phone_number,
+          attributes: {
+            number: "1294",
+            type: "local"
+          }
+        }
+      )
+
+      expect(response_status).to eq(422)
+      expect(response_body).to match_api_response_schema("jsonapi_error")
+    end
+
     example "Create a phone number and assign it to an account" do
       carrier = create(:carrier)
       account = create(:account, carrier:)

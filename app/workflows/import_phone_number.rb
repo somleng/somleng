@@ -28,6 +28,12 @@ class ImportPhoneNumber < ApplicationWorkflow
       existing_country: phone_number.country
     )&.alpha2
 
+    raise Error.new("both price and currency must be set") if data.values_at(:price, :currency).compact.one?
+
+    if data[:price].present? && data[:currency].present?
+      phone_number.price = Money.from_amount(data.fetch(:price).to_d, data.fetch(:currency))
+    end
+
     phone_number.save!
     phone_number
   rescue ActiveRecord::RecordInvalid => e

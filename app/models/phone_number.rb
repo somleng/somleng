@@ -13,6 +13,8 @@ class PhoneNumber < ApplicationRecord
     greater_than_or_equal_to: 0
   }
 
+  before_validation :set_defaults, on: :create
+
   attribute :currency, CurrencyType.new
 
   belongs_to :carrier
@@ -30,7 +32,14 @@ class PhoneNumber < ApplicationRecord
 
   validates :iso_country_code, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
   validates :type, phone_number_type: true
-  validates :currency, currency: true
+
+  with_options if: :new_record? do
+    validates :price, billing_amount: { billing_currency: ->(this) { this.carrier&.billing_currency } }
+  end
+
+  with_options if: :persisted? do
+    validates :currency, comparison: { equal_to: ->(this) { this.currency_was } }
+  end
 
   class << self
     def available
@@ -96,5 +105,14 @@ class PhoneNumber < ApplicationRecord
     return unless assigned?
 
     account.phone_calls.where(phone_number_id: id).any? || account.messages.where(phone_number_id: id).any?
+  end
+
+  private
+
+  def set_defaults
+    return if carrier.blank?
+
+    self.currency ||= carrier.billing_currency
+    self.price ||= Money.new(0, currency)
   end
 end

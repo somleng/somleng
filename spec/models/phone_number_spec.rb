@@ -1,6 +1,25 @@
 require "rails_helper"
 
 RSpec.describe PhoneNumber do
+  describe "validations" do
+    it "validates the currency matches the carrier's billing currency" do
+      carrier = create(:carrier, billing_currency: "USD")
+      phone_number = PhoneNumber.new(carrier:, price: Money.from_amount(1.00, "AUD"))
+
+      expect(phone_number.valid?).to eq(false)
+      expect(phone_number.errors[:currency]).to be_present
+    end
+
+    it "validates the currency cannot be changed" do
+      carrier = create(:carrier, billing_currency: "USD")
+      phone_number = create(:phone_number, carrier:, price: Money.from_amount(1.00, "USD"))
+      phone_number.price = Money.from_amount(1.00, "AUD")
+
+      expect(phone_number.valid?).to eq(false)
+      expect(phone_number.errors[:currency]).to be_present
+    end
+  end
+
   describe ".available" do
     it "returns available phone numbers" do
       _disabled_phone_number = create(:phone_number, :disabled)

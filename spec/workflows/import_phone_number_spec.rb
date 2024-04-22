@@ -5,7 +5,17 @@ RSpec.describe ImportPhoneNumber do
     carrier = create(:carrier, country_code: "KH")
     import = create(:import, carrier:, resource_type: "PhoneNumber")
 
-    phone_number = ImportPhoneNumber.call(import:, data: { number: "1234", type: "short_code", enabled: nil, country: nil })
+    phone_number = ImportPhoneNumber.call(
+      import:,
+      data: {
+        number: "1234",
+        type: "short_code",
+        enabled: nil,
+        country: nil,
+        price: nil,
+        currency: nil
+      }
+    )
     expect(phone_number).to have_attributes(
       number: "1234",
       type: "short_code",
@@ -15,7 +25,7 @@ RSpec.describe ImportPhoneNumber do
   end
 
   it "handles optional attributes" do
-    carrier = create(:carrier, country_code: "KH")
+    carrier = create(:carrier, country_code: "KH", billing_currency: "USD")
     import = create(:import, carrier:, resource_type: "PhoneNumber")
 
     phone_number = ImportPhoneNumber.call(
@@ -24,21 +34,32 @@ RSpec.describe ImportPhoneNumber do
         number: "1234",
         type: "short_code",
         enabled: false,
-        country: "US"
+        country: "US",
+        price: "1.15",
+        currency: "USD"
       }
     )
 
     expect(phone_number).to have_attributes(
       number: "1234",
       enabled: false,
-      country: ISO3166::Country.new("US")
+      country: ISO3166::Country.new("US"),
+      price: Money.from_amount(1.15, "USD")
     )
   end
 
   it "handles updates" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, billing_currency: "USD")
     import = create(:import, carrier:, resource_type: "PhoneNumber")
-    phone_number = create(:phone_number, number: "12513095542", type: :mobile, iso_country_code: "US", enabled: true, carrier:)
+    phone_number = create(
+      :phone_number,
+      number: "12513095542",
+      type: :mobile,
+      iso_country_code: "US",
+      enabled: true,
+      price: Money.from_amount(1.00, "USD"),
+      carrier:,
+    )
 
     ImportPhoneNumber.call(
       import:,
@@ -46,7 +67,9 @@ RSpec.describe ImportPhoneNumber do
         number: "12513095542",
         type: "local",
         enabled: false,
-        country: "CA"
+        country: "CA",
+        price: "1.15",
+        currency: "USD"
       }
     )
 
@@ -54,7 +77,8 @@ RSpec.describe ImportPhoneNumber do
       number: "12513095542",
       type: "local",
       enabled: false,
-      country: ISO3166::Country.new("CA")
+      country: ISO3166::Country.new("CA"),
+      price: Money.from_amount(1.15, "USD")
     )
   end
 

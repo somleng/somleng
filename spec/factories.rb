@@ -327,7 +327,6 @@ FactoryBot.define do
     number { generate(:phone_number) }
     type { PhoneNumberParser.parse(number).e164? ? :mobile : :short_code }
     iso_country_code { PhoneNumberCountryAssignmentRules.new.country_for(number:, preferred_country: nil, fallback_country: carrier.country).alpha2 }
-    price { Money.from_amount(0.0, carrier.billing_currency) }
   end
 
   factory :phone_number_configuration do

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Imports" do
   it "Import phone numbers" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, billing_currency: "USD")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
