@@ -1,3 +1,3 @@
-Number ,Enabled, Country
-"12513095542",false,CA
-"1234",true
+Number, Type,Enabled, Country
+"12513095542",local,false,CA
+"1234",short_code

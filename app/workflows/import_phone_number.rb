@@ -20,8 +20,8 @@ class ImportPhoneNumber < ApplicationWorkflow
       number: data[:number],
       carrier: import.carrier
     )
-    phone_number.enabled = data.fetch(:enabled, true)
-
+    phone_number.type = data[:type]
+    phone_number.enabled = data[:enabled].nil? ? true : data.fetch(:enabled)
     phone_number.iso_country_code = country_for(
       number: data[:number],
       iso_country_code: data[:country],

@@ -15,7 +15,7 @@ class PhoneNumberDecorator < SimpleDelegator
     phone_number_formatter.format(object.number, format: :national)
   end
 
-  def type
+  def type_formatted
     object.type.text
   end
 

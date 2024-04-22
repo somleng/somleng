@@ -103,6 +103,84 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :number)
     end
 
+    it "validates type" do
+      carrier = create(:carrier)
+      phone_number = create(:phone_number, carrier:, number: "12513095542", type: :local)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "1294",
+                type: "short_code"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).to have_valid_field(:data, :attributes, :type)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                type: "mobile"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).to have_valid_field(:data, :attributes, :type)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                type: "mobile"
+              }
+            }
+          },
+          options: { carrier:, resource: phone_number }
+        )
+      ).to have_valid_field(:data, :attributes, :type)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "+12513095542",
+                type: "short_code"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).not_to have_valid_field(:data, :attributes, :type)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "1294",
+                type: "local"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).not_to have_valid_field(:data, :attributes, :type)
+    end
+
     it "validates country" do
       carrier = create(:carrier)
 
@@ -244,7 +322,8 @@ module CarrierAPI
           data: {
             type: "phone_number",
             attributes: {
-              number: "+855715100987"
+              number: "+855715100987",
+              type: "mobile"
             },
             relationships: {
               account: {
@@ -263,6 +342,7 @@ module CarrierAPI
         carrier:,
         account:,
         number: "855715100987",
+        type: "mobile",
         iso_country_code: "KH"
       )
     end
@@ -278,7 +358,8 @@ module CarrierAPI
             type: "phone_number",
             attributes: {
               enabled: false,
-              country: "CA"
+              country: "CA",
+              type: "mobile"
             }
           }
         },
@@ -287,7 +368,8 @@ module CarrierAPI
 
       expect(schema.output).to include(
         enabled: false,
-        iso_country_code: "CA"
+        iso_country_code: "CA",
+        type: "mobile"
       )
     end
 

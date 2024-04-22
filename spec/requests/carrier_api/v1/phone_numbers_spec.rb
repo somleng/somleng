@@ -11,6 +11,11 @@ resource "Phone Numbers", document: :carrier_api do
         required: true
       )
       parameter(
+        :type,
+        "The type of the phone number. Must be one of #{PhoneNumber.type.values.map { |t| "`#{t}`" }.join(", ")}.",
+        required: true
+      )
+      parameter(
         :enabled,
         "Set to `false` to disable this number. Disabled phone numbers cannot be used by accounts. Enabled by default.",
         required: false
@@ -37,7 +42,8 @@ resource "Phone Numbers", document: :carrier_api do
         data: {
           type: :phone_number,
           attributes: {
-            number: "1294"
+            number: "1294",
+            type: "short_code"
           }
         }
       )
@@ -59,7 +65,8 @@ resource "Phone Numbers", document: :carrier_api do
         data: {
           type: :phone_number,
           attributes: {
-            number: "1294"
+            number: "1294",
+            type: "short_code"
           },
           relationships: {
             account: {
@@ -117,6 +124,12 @@ resource "Phone Numbers", document: :carrier_api do
   patch "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
     with_options scope: %i[data attributes] do
       parameter(
+        :type,
+        "Must be one of #{PhoneNumber.type.values.map { |t| "`#{t}`" }.join(", ")}.",
+        required: false
+      )
+
+      parameter(
         :enabled,
         "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts.",
         required: false
@@ -140,6 +153,7 @@ resource "Phone Numbers", document: :carrier_api do
           type: :phone_number,
           id: phone_number.id,
           attributes: {
+            type: "mobile",
             enabled: false,
             country: "US"
           }
@@ -149,8 +163,9 @@ resource "Phone Numbers", document: :carrier_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
       expect(jsonapi_response_attributes).to include(
+        "type" => "mobile",
         "enabled" => false,
-        "country" => "US"
+        "country" => "US",
       )
     end
   end

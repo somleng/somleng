@@ -5,9 +5,10 @@ RSpec.describe ImportPhoneNumber do
     carrier = create(:carrier, country_code: "KH")
     import = create(:import, carrier:, resource_type: "PhoneNumber")
 
-    phone_number = ImportPhoneNumber.call(import:, data: { number: "1234" })
+    phone_number = ImportPhoneNumber.call(import:, data: { number: "1234", type: "short_code", enabled: nil, country: nil })
     expect(phone_number).to have_attributes(
       number: "1234",
+      type: "short_code",
       enabled: true,
       country: ISO3166::Country.new("KH")
     )
@@ -21,6 +22,7 @@ RSpec.describe ImportPhoneNumber do
       import:,
       data: {
         number: "1234",
+        type: "short_code",
         enabled: false,
         country: "US"
       }
@@ -36,12 +38,13 @@ RSpec.describe ImportPhoneNumber do
   it "handles updates" do
     carrier = create(:carrier)
     import = create(:import, carrier:, resource_type: "PhoneNumber")
-    phone_number = create(:phone_number, number: "12513095542", iso_country_code: "US", enabled: true, carrier:)
+    phone_number = create(:phone_number, number: "12513095542", type: :mobile, iso_country_code: "US", enabled: true, carrier:)
 
     ImportPhoneNumber.call(
       import:,
       data: {
         number: "12513095542",
+        type: "local",
         enabled: false,
         country: "CA"
       }
@@ -49,6 +52,7 @@ RSpec.describe ImportPhoneNumber do
 
     expect(phone_number.reload).to have_attributes(
       number: "12513095542",
+      type: "local",
       enabled: false,
       country: ISO3166::Country.new("CA")
     )
@@ -59,7 +63,7 @@ RSpec.describe ImportPhoneNumber do
     import = create(:import, carrier:, resource_type: "PhoneNumber")
 
     expect {
-      ImportPhoneNumber.call(import:, data: { number: "12513095542", country: "KH" })
+      ImportPhoneNumber.call(import:, data: { number: "12513095542", type: "short_code" })
     }.to raise_error(Errors::ImportError)
   end
 end

@@ -1,6 +1,17 @@
 module CarrierAPI
   class PhoneNumberRequestSchema < CarrierAPIRequestSchema
+    Validator = Struct.new(:number, :type, keyword_init: true) do
+      include ActiveModel::Validations
+
+      def self.model_name
+        ActiveModel::Name.new(self, nil, "PhoneNumberValidator")
+      end
+
+      validates :type, phone_number_type: true
+    end
+
     option :phone_number_country_assignment_rules, default: -> { PhoneNumberCountryAssignmentRules.new }
+    option :validator, default: -> { Validator.new }
 
     params do
       required(:data).value(:hash).schema do
@@ -10,6 +21,7 @@ module CarrierAPI
           optional(:number).value(ApplicationRequestSchema::Types::Number, :filled?)
           optional(:enabled).filled(:bool?)
           optional(:country).filled(:str?, included_in?: ISO3166::Country.all.map(&:alpha2))
+          optional(:type).filled(:str?, included_in?: PhoneNumber.type.values)
         end
 
         optional(:relationships).value(:hash).schema do
@@ -47,6 +59,18 @@ module CarrierAPI
       key.failure("is invalid") if context[:country].blank?
     end
 
+    attribute_rule(:type) do |attributes|
+      next unless key?
+      next if resource.blank? && attributes[:number].blank?
+
+      validator.number = attributes.fetch(:number) { resource.number }
+      validator.type = value
+
+      next if validator.valid?
+      next if validator.errors[:type].blank?
+
+      key.failure(validator.errors[:type].to_sentence)
+    end
 
     rule(data: { relationships: { account: { data: :id } } }) do |context:|
       next unless key?
@@ -68,6 +92,7 @@ module CarrierAPI
       result[:enabled] = params.fetch(:enabled) if params.key?(:enabled)
       result[:account] = context.fetch(:account) if context[:account].present?
       result[:iso_country_code] = context.fetch(:country).alpha2 if context[:country].present?
+      result[:type] = params.fetch(:type) if params.key?(:type)
       result
     end
   end

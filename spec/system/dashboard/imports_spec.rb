@@ -7,16 +7,16 @@ RSpec.describe "Imports" do
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path
-    click_button("Import")
+    click_on("Import")
     attach_file("File", file_fixture("phone_numbers.csv"))
 
     perform_enqueued_jobs do
-      click_button("Upload")
+      click_on("Upload")
     end
 
     within(".alert") do
       expect(page).to have_content("Your import is being processed")
-      click_link("Imports")
+      click_on("Imports")
     end
 
     expect(page).to have_content("Completed")

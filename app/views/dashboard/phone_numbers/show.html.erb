@@ -84,7 +84,7 @@
           <%= @resource.country.iso_short_name %>
         <% end %>
 
-        <%= f.attribute :type %>
+        <%= f.attribute :type, value: phone_number.type_formatted %>
       </div>
     </div>
   <% end %>
