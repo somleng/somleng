@@ -26,6 +26,7 @@ class CarrierSettingsForm
   attribute :carrier
   attribute :name
   attribute :country
+  attribute :billing_currency, CurrencyType.new
   attribute :website
   attribute :subdomain, SubdomainType.new
   attribute :custom_app_host, HostnameType.new
@@ -49,6 +50,7 @@ class CarrierSettingsForm
             hostname: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }
 
   validates :custom_api_host, comparison: { other_than: :custom_app_host, allow_blank: true }
+  validates :billing_currency, currency: true
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "CarrierSettings")
@@ -61,6 +63,7 @@ class CarrierSettingsForm
       subdomain: carrier.subdomain,
       website: carrier.website,
       country: carrier.country_code,
+      billing_currency: carrier.billing_currency,
       logo: carrier.logo,
       favicon: carrier.favicon,
       webhook_url: carrier.webhook_endpoint&.url,
@@ -79,6 +82,7 @@ class CarrierSettingsForm
       subdomain:,
       custom_app_host:,
       custom_api_host:,
+      billing_currency:,
       country_code: country
     }
 
@@ -102,6 +106,10 @@ class CarrierSettingsForm
 
   def webhooks_disabled?
     webhook_configured? && !carrier.webhook_endpoint.enabled?
+  end
+
+  def available_currencies
+    CurrencyValidator::VALID_CURRENCIES.sort_by(&:priority)
   end
 
   private

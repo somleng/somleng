@@ -25,6 +25,16 @@ resource "Phone Numbers", document: :carrier_api do
         "The ISO 3166-1 alpha-2 country code of the phone number. If not specified, it's automatically resolved from the `number` parameter, or defaults to the carrier's country code if unresolvable.",
         required: false
       )
+      parameter(
+        :price,
+        "The price for the phone number.",
+        required: false
+      )
+      parameter(
+        :currency,
+        "The billing currency. Must match the default billing currency of the carrier.",
+        required: false
+      )
     end
 
     with_options scope: %i[data relationships] do
@@ -140,11 +150,29 @@ resource "Phone Numbers", document: :carrier_api do
         "The ISO 3166-1 alpha-2 country code of the phone number.",
         required: false
       )
+
+      parameter(
+        :price,
+        "The monthly price for the phone number.",
+        required: false
+      )
+
+      parameter(
+        :currency,
+        "The billing currency. Must match existing currency.",
+        required: false
+      )
     end
 
     example "Update a phone number" do
-      carrier = create(:carrier)
-      phone_number = create(:phone_number, number: "15067020972", iso_country_code: "CA", enabled: true, carrier:)
+      carrier = create(:carrier, billing_currency: "CAD")
+      phone_number = create(
+        :phone_number,
+        number: "15067020972",
+        iso_country_code: "CA",
+        enabled: true,
+        carrier:
+      )
 
       set_carrier_api_authorization_header(carrier)
       do_request(
@@ -155,7 +183,9 @@ resource "Phone Numbers", document: :carrier_api do
           attributes: {
             type: "mobile",
             enabled: false,
-            country: "US"
+            country: "US",
+            price: "1.15",
+            currency: "CAD"
           }
         }
       )
@@ -166,6 +196,8 @@ resource "Phone Numbers", document: :carrier_api do
         "type" => "mobile",
         "enabled" => false,
         "country" => "US",
+        "price" => "1.15",
+        "currency" => "CAD"
       )
     end
   end

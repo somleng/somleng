@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_19_060538) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_22_063934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -114,6 +114,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_060538) do
     t.citext "custom_app_host"
     t.citext "custom_api_host"
     t.text "custom_theme_css"
+    t.string "billing_currency", null: false
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
@@ -454,6 +455,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_060538) do
     t.index ["sequence_number"], name: "index_phone_number_configurations_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "phone_number_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "phone_number_id"
+    t.uuid "carrier_id"
+    t.uuid "account_id"
+    t.string "number", null: false
+    t.integer "price_cents", null: false
+    t.string "currency", null: false
+    t.datetime "started_at", null: false
+    t.datetime "canceled_at"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_phone_number_plans_on_account_id"
+    t.index ["carrier_id"], name: "index_phone_number_plans_on_carrier_id"
+    t.index ["phone_number_id"], name: "index_phone_number_plans_on_phone_number_id"
+    t.index ["sequence_number"], name: "index_phone_number_plans_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.string "number", null: false
@@ -464,6 +483,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_060538) do
     t.boolean "enabled", default: true, null: false
     t.string "iso_country_code", null: false
     t.string "type", null: false
+    t.integer "price_cents", null: false
+    t.string "currency", null: false
     t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["enabled"], name: "index_phone_numbers_on_enabled"
@@ -773,6 +794,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_060538) do
   add_foreign_key "phone_calls", "sip_trunks", on_delete: :nullify
   add_foreign_key "phone_number_configurations", "messaging_services", on_delete: :nullify
   add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
+  add_foreign_key "phone_number_plans", "accounts"
+  add_foreign_key "phone_number_plans", "carriers"
+  add_foreign_key "phone_number_plans", "phone_numbers", on_delete: :nullify
   add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"

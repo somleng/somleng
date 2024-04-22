@@ -1,5 +1,5 @@
 class OnboardCarrier < ApplicationWorkflow
-  attr_reader :name, :country_code, :owner_params, :restricted, :website, :subdomain
+  attr_reader :name, :country_code, :owner_params, :restricted, :website, :subdomain, :billing_currency
 
   def initialize(params)
     @name = params.fetch(:name)
@@ -8,6 +8,7 @@ class OnboardCarrier < ApplicationWorkflow
     @subdomain = params.fetch(:subdomain)
     @website = params.fetch(:website)
     @owner_params = params.fetch(:owner)
+    @billing_currency = params.fetch(:billing_currency) { ISO3166::Country.new(country_code).currency_code }
   end
 
   def call
@@ -27,7 +28,8 @@ class OnboardCarrier < ApplicationWorkflow
       country_code:,
       website:,
       subdomain:,
-      restricted:
+      restricted:,
+      billing_currency:,
     )
   end
 

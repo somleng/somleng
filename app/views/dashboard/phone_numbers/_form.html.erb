@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource]) do |f| %>
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
 
     <div class="card mb-3">
       <div class="card-body">
@@ -58,12 +58,18 @@
                 :country,
                 only: resource.possible_countries,
                 include_blank: false,
-                prompt: "Automatically select from phone number",
-                input_html: {
-                  data: {
-                    behavior: "choices-input"
-                  }
-                }
+                prompt: "Automatically select from phone number"
+              )
+            %>
+          </div>
+
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :price,
+                as: :decimal,
+                prepend: resource.new_record? ? resource.carrier.billing_currency.symbol : resource.phone_number.currency.symbol,
+                append: resource.new_record? ? resource.carrier.billing_currency.iso_code : resource.phone_number.currency.iso_code
               )
             %>
           </div>

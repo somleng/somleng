@@ -26,5 +26,18 @@ RSpec.describe PhoneNumberForm do
       expect(form).to be_invalid
       expect(form.errors[:country]).to be_present
     end
+
+    it "validates the price" do
+      carrier = create(:carrier)
+
+      form = PhoneNumberForm.new(
+        number: "12366130852",
+        price: "-0.1",
+        carrier:
+      )
+
+      expect(form).to be_invalid
+      expect(form.errors[:price]).to be_present
+    end
   end
 end

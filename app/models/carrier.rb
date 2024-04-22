@@ -25,6 +25,8 @@ class Carrier < ApplicationRecord
   has_one_attached :logo
   has_one_attached :favicon
 
+  attribute :billing_currency, CurrencyType.new
+
   def country
     ISO3166::Country.new(country_code)
   end

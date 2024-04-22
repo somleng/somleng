@@ -62,5 +62,14 @@ RSpec.describe CarrierSettingsForm do
 
       expect(form.errors[:website]).to be_empty
     end
+
+    it "validates the currency" do
+      form = CarrierSettingsForm.new(
+        billing_currency: "XTS"
+      )
+
+      expect(form).to be_invalid
+      expect(form.errors[:billing_currency]).to be_present
+    end
   end
 end

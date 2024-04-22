@@ -6,7 +6,7 @@ RSpec.describe "Admin/Carriers" do
 
     page.driver.browser.authorize("admin", "password")
     visit admin_carriers_path
-    click_link("My Carrier")
+    click_on("My Carrier")
 
     expect(page).to have_content("My Carrier")
   end

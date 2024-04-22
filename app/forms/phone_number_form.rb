@@ -9,8 +9,9 @@ class PhoneNumberForm
   attribute :account_id
   attribute :enabled, default: true
   attribute :phone_number, default: -> { PhoneNumber.new }
-  attribute :country
   attribute :type
+  attribute :country
+  attribute :price, :decimal, default: 0.0
   attribute :country_assignment_rules, default: -> { PhoneNumberCountryAssignmentRules.new }
 
   with_options if: :new_record? do
@@ -20,6 +21,8 @@ class PhoneNumberForm
   end
 
   validates :type, phone_number_type: true
+  validates :price, numericality: { greater_than_or_equal_to: 0 }
+
   validate :validate_country
 
   delegate :persisted?, :new_record?, :id, :assigned?, to: :phone_number
@@ -36,7 +39,8 @@ class PhoneNumberForm
       number: phone_number.decorated.number_formatted,
       enabled: phone_number.enabled,
       country: phone_number.iso_country_code,
-      type: phone_number.type
+      type: phone_number.type,
+      price: phone_number.price
     )
   end
 
@@ -46,8 +50,9 @@ class PhoneNumberForm
     phone_number.carrier = carrier
     phone_number.enabled = enabled
     phone_number.number = number if new_record?
-    phone_number.iso_country_code = country
     phone_number.type = type
+    phone_number.iso_country_code = country
+    phone_number.price = Money.from_amount(price, new_record? ? carrier.billing_currency : phone_number.currency)
     phone_number.account ||= carrier.accounts.find(account_id) if account_id.present?
 
     phone_number.save!

@@ -159,7 +159,7 @@ RSpec.describe "Phone Numbers" do
   end
 
   it "Update a phone number" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, billing_currency: "CAD")
     create(:account, carrier:, name: "Rocket Rides")
 
     user = create(:user, :carrier, carrier:)
@@ -172,6 +172,7 @@ RSpec.describe "Phone Numbers" do
     choices_select("Rocket Rides", from: "Account")
     choices_select("Canada", from: "Country")
     choices_select("Mobile", from: "Type")
+    fill_in("Price", with: "1.15")
 
     click_on("Update Phone number")
 
@@ -179,6 +180,7 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("Canada")
     expect(page).to have_content("Mobile")
+    expect(page).to have_content("$1.15")
   end
 
   it "Delete a phone number" do

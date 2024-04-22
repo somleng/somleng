@@ -9,6 +9,11 @@ class PhoneNumber < ApplicationRecord
   extend Enumerize
 
   enumerize :type, in: TYPES
+  monetize :price_cents, with_model_currency: :currency, numericality: {
+    greater_than_or_equal_to: 0
+  }
+
+  attribute :currency, CurrencyType.new
 
   belongs_to :carrier
   belongs_to :account, optional: true
@@ -25,6 +30,7 @@ class PhoneNumber < ApplicationRecord
 
   validates :iso_country_code, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
   validates :type, phone_number_type: true
+  validates :currency, currency: true
 
   class << self
     def available
