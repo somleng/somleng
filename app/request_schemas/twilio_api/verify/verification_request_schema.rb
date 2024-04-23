@@ -10,8 +10,6 @@ module TwilioAPI
              default: -> { MessageDestinationSchemaRules.new }
       option :phone_call_destination_schema_rules,
              default: -> { PhoneCallDestinationSchemaRules.new }
-      option :phone_number_parser,
-              default: -> { PhoneNumberParser.new }
 
       params do
         required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -62,8 +60,6 @@ module TwilioAPI
       def output
         params = super
 
-        country, locale = resolve_locale(params)
-
         {
           verification_service:,
           verification: context[:verification],
@@ -71,29 +67,12 @@ module TwilioAPI
           carrier: verification_service.carrier,
           channel: params.fetch(:Channel),
           to: params.fetch(:To),
-          country_code: country.alpha2,
-          locale:,
+          locale: params[:Locale],
           delivery_attempt: {
             phone_number: context.fetch(:sender),
             from: context.fetch(:sender).number
           }
         }.compact
-      end
-
-      private
-
-      def resolve_locale(params)
-        beneficiary_number = phone_number_parser.parse(params.fetch(:To))
-
-        beneficiary_country = ResolvePhoneNumberCountry.call(
-          beneficiary_number,
-          fallback_country: verification_service.carrier
-        )
-        locale = params.fetch(:Locale) do
-          VerificationLocales.find_by_country(beneficiary_country).locale
-        end
-
-        [ beneficiary_country, locale ]
       end
     end
   end

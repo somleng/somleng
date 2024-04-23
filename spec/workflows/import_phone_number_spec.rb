@@ -17,7 +17,7 @@ RSpec.describe ImportPhoneNumber do
       }
     )
     expect(phone_number).to have_attributes(
-      number: "1234",
+      number: have_attributes(value: "1234"),
       type: "short_code",
       enabled: true,
       country: ISO3166::Country.new("KH")
@@ -41,7 +41,7 @@ RSpec.describe ImportPhoneNumber do
     )
 
     expect(phone_number).to have_attributes(
-      number: "1234",
+      number: have_attributes(value: "1234"),
       enabled: false,
       country: ISO3166::Country.new("US"),
       price: Money.from_amount(1.15, "USD")
@@ -74,7 +74,7 @@ RSpec.describe ImportPhoneNumber do
     )
 
     expect(phone_number.reload).to have_attributes(
-      number: "12513095542",
+      number: have_attributes(value: "12513095542"),
       type: "local",
       enabled: false,
       country: ISO3166::Country.new("CA"),

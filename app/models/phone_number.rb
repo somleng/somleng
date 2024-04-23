@@ -16,6 +16,7 @@ class PhoneNumber < ApplicationRecord
   before_validation :set_defaults, on: :create
 
   attribute :currency, CurrencyType.new
+  attribute :number, PhoneNumberType.new
 
   belongs_to :carrier
   belongs_to :account, optional: true
@@ -30,7 +31,7 @@ class PhoneNumber < ApplicationRecord
             uniqueness: { scope: :carrier_id },
             format: { with: NUMBER_FORMAT, allow_blank: true }
 
-  validates :iso_country_code, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
+  validates :iso_country_code, phone_number_country: true
   validates :type, phone_number_type: true
 
   class << self
@@ -103,8 +104,11 @@ class PhoneNumber < ApplicationRecord
 
   def set_defaults
     return if carrier.blank?
+    return if number.blank?
 
     self.currency ||= carrier.billing_currency
     self.price ||= Money.new(0, currency)
+
+    self.iso_country_code ||= (number.e164? ? ResolvePhoneNumberCountry.call(number, fallback_country: carrier.country) : carrier.country).alpha2
   end
 end

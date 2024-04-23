@@ -1,12 +1,11 @@
 class ImportPhoneNumber < ApplicationWorkflow
-  attr_reader :import, :data, :phone_number_country_assignment_rules
+  attr_reader :import, :data
 
   class Error < Errors::ImportError; end
 
-  def initialize(import:, data:, phone_number_country_assignment_rules: PhoneNumberCountryAssignmentRules.new)
+  def initialize(import:, data:)
     @import = import
     @data = data.with_indifferent_access
-    @phone_number_country_assignment_rules = phone_number_country_assignment_rules
   end
 
   def call
@@ -22,28 +21,12 @@ class ImportPhoneNumber < ApplicationWorkflow
     )
     phone_number.type = data[:type]
     phone_number.enabled = data[:enabled].nil? ? true : data.fetch(:enabled)
-    phone_number.iso_country_code = country_for(
-      number: data[:number],
-      iso_country_code: data[:country],
-      existing_country: phone_number.country
-    )&.alpha2
-
+    phone_number.iso_country_code = data.fetch(:country) if data[:country].present?
     phone_number.price = Money.from_amount(data.fetch(:price).to_d, import.carrier.billing_currency) if data[:price].present?
 
     phone_number.save!
     phone_number
   rescue ActiveRecord::RecordInvalid => e
     raise Error.new(e)
-  end
-
-  def country_for(number:, iso_country_code:, existing_country:)
-    return if number.blank?
-
-    phone_number_country_assignment_rules.country_for(
-      number:,
-      preferred_country: ISO3166::Country.new(iso_country_code),
-      fallback_country: import.carrier.country,
-      existing_country:
-    )
   end
 end

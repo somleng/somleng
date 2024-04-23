@@ -12,7 +12,6 @@ class PhoneNumberForm
   attribute :type
   attribute :country
   attribute :price, :decimal, default: 0.0
-  attribute :country_assignment_rules, default: -> { PhoneNumberCountryAssignmentRules.new }
 
   with_options if: :new_record? do
     validates :number, presence: true
@@ -22,8 +21,7 @@ class PhoneNumberForm
 
   validates :type, phone_number_type: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }
-
-  validate :validate_country
+  validates :country, phone_number_country: true, allow_blank: true
 
   delegate :persisted?, :new_record?, :id, :assigned?, to: :phone_number
 
@@ -51,7 +49,7 @@ class PhoneNumberForm
     phone_number.enabled = enabled
     phone_number.number = number if new_record?
     phone_number.type = type
-    phone_number.iso_country_code = country
+    phone_number.iso_country_code = country if country.present?
     phone_number.price = Money.from_amount(price, carrier.billing_currency)
     phone_number.account ||= carrier.accounts.find(account_id) if account_id.present?
 
@@ -65,7 +63,7 @@ class PhoneNumberForm
   def possible_countries
     return ISO3166::Country.all.map(&:alpha2) if new_record?
 
-    parsed_phone_number.possible_countries.map(&:alpha2)
+    number.possible_countries.map(&:alpha2)
   end
 
   private
@@ -75,22 +73,5 @@ class PhoneNumberForm
     return unless carrier.phone_numbers.exists?(number:)
 
     errors.add(:number, :taken)
-  end
-
-  def validate_country
-    return if number.blank?
-
-    self.country = country_assignment_rules.country_for(
-      number:,
-      preferred_country: ISO3166::Country.new(country),
-      fallback_country: carrier.country,
-      existing_country: phone_number.country
-    )&.alpha2
-
-    errors.add(:country, :invalid) if country.blank?
-  end
-
-  def parsed_phone_number
-    @parsed_phone_number ||= country_assignment_rules.phone_number_parser.parse(number)
   end
 end

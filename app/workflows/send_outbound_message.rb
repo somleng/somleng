@@ -15,8 +15,8 @@ class SendOutboundMessage < ApplicationWorkflow
       {
         id: message.id,
         body: message.body,
-        to: message.to,
-        from: message.from,
+        to: message.to.to_s,
+        from: message.from.to_s,
         channel: message.channel
       }
     )

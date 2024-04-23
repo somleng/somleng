@@ -5,6 +5,8 @@ class Message < ApplicationRecord
   before_create :set_beneficiary_data, :set_status_timestamp
 
   attribute :beneficiary_fingerprint, SHA256Type.new
+  attribute :to, PhoneNumberType.new
+  attribute :from, PhoneNumberType.new
 
   belongs_to :carrier
   belongs_to :account
@@ -74,11 +76,11 @@ class Message < ApplicationRecord
   private
 
   def set_beneficiary_data
-    beneficiary_number = PhoneNumberParser.parse(outbound? ? to : from)
+    beneficiary_number = outbound? ? to : from
 
-    return unless beneficiary_number.country_code.present?
+    return unless beneficiary_number.e164?
 
-    self.beneficiary_fingerprint = beneficiary_number.number
+    self.beneficiary_fingerprint = beneficiary_number.value
     self.beneficiary_country_code = ResolvePhoneNumberCountry.call(
       beneficiary_number,
       fallback_country: carrier.country

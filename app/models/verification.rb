@@ -15,6 +15,8 @@ class Verification < ApplicationRecord
   enumerize :channel, in: %i[sms call]
   enumerize :locale, in: VerificationLocales.available_locales.map(&:iso_code)
 
+  attribute :to, PhoneNumberType.new
+
   encrypts :code
 
   delegate :may_fire_event?, :fire!, to: :aasm
@@ -22,6 +24,7 @@ class Verification < ApplicationRecord
 
   attribute :verification_code_generator, default: -> { VerificationCodeGenerator.new }
 
+  before_validation :set_country_and_locale, on: :create
   before_create :generate_code, :set_expiry
 
   aasm column: :status, timestamps: true do
@@ -80,5 +83,10 @@ class Verification < ApplicationRecord
 
   def set_expiry
     self.expired_at ||= 10.minutes.from_now
+  end
+
+  def set_country_and_locale
+    self.country_code ||= ResolvePhoneNumberCountry.call(to, fallback_country: carrier).alpha2
+    self.locale ||= VerificationLocales.find_by_country(country).locale
   end
 end

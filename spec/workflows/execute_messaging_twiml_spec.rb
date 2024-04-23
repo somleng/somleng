@@ -56,8 +56,8 @@ RSpec.describe ExecuteMessagingTwiML do
         direction: "outbound_reply",
         carrier: message.carrier,
         account: message.account,
-        from: "85512888888",
-        to: "85512345678",
+        from: have_attributes(value: "85512888888"),
+        to: have_attributes(value: "85512345678"),
         body: "Hello world",
         status: "sending",
         phone_number:
@@ -113,8 +113,8 @@ RSpec.describe ExecuteMessagingTwiML do
         carrier:,
         account:,
         phone_number: other_phone_number,
-        from: "85512777777",
-        to: "85512999999",
+        from: have_attributes(value: "85512777777"),
+        to: have_attributes(value: "85512999999"),
         body: "Hello world",
         status: "sending",
         status_callback_url: "https://www.example.com/message_status_callback.xml"

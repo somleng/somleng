@@ -374,8 +374,7 @@ module CarrierAPI
         carrier:,
         account:,
         number: "855715100987",
-        type: "mobile",
-        iso_country_code: "KH"
+        type: "mobile"
       )
     end
 

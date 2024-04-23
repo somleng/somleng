@@ -325,8 +325,8 @@ FactoryBot.define do
     end
 
     number { generate(:phone_number) }
-    type { PhoneNumberParser.parse(number).e164? ? :mobile : :short_code }
-    iso_country_code { PhoneNumberCountryAssignmentRules.new.country_for(number:, preferred_country: nil, fallback_country: carrier.country).alpha2 }
+    type { PhoneNumberType.new.cast(number).e164? ? :mobile : :short_code }
+    iso_country_code { PhoneNumberType.new.cast(number).e164? ? nil : "KH" }
   end
 
   factory :phone_number_configuration do
@@ -571,8 +571,6 @@ FactoryBot.define do
     channel { "sms" }
     to { "85512334667" }
     code { "1234" }
-    locale { "en" }
-    country_code { "KH" }
 
     traits_for_enum :status, %w[pending canceled approved]
 

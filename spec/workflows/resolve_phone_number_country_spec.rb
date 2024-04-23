@@ -29,6 +29,6 @@ RSpec.describe ResolvePhoneNumberCountry do
   end
 
   def build_phone_number(number)
-    PhoneNumberParser.parse(number)
+    PhoneNumberType.new.cast(number)
   end
 end

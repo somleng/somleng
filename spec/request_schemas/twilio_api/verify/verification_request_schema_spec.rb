@@ -84,7 +84,7 @@ module TwilioAPI
         expect(
           validate_request_schema(
             input_params: {
-              To: pending_verification_with_too_many_delivery_attempts.to,
+              To: pending_verification_with_too_many_delivery_attempts.to.to_s,
               Channel: "sms"
             },
             options: {
@@ -98,7 +98,7 @@ module TwilioAPI
         expect(
           validate_request_schema(
             input_params: {
-              To: pending_verification.to,
+              To: pending_verification.to.to_s,
               Channel: "sms"
             },
             options: {
@@ -219,8 +219,6 @@ module TwilioAPI
           carrier: verification_service.carrier,
           channel: "sms",
           to: "855715100987",
-          country_code: "KH",
-          locale: "km",
           delivery_attempt: {
             phone_number:,
             from: phone_number.number
@@ -234,7 +232,7 @@ module TwilioAPI
 
         schema = validate_request_schema(
           input_params: {
-            To: pending_verification.to,
+            To: pending_verification.to.to_s,
             Channel: "call"
           },
           options: {
@@ -259,10 +257,7 @@ module TwilioAPI
           options: { verification_service: }
         )
 
-        expect(schema.output).to include(
-          country_code: "KH",
-          locale: "de"
-        )
+        expect(schema.output).to include(locale: "de")
       end
 
       def validate_request_schema(input_params:, options: {})

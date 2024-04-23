@@ -47,7 +47,7 @@ module Services
       expect(
         validate_request_schema(
           input_params: {
-            to: configured_phone_number.number,
+            to: configured_phone_number.number.to_s,
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
@@ -56,7 +56,7 @@ module Services
       expect(
         validate_request_schema(
           input_params: {
-            to: unassigned_phone_number.number,
+            to: unassigned_phone_number.number.to_s,
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
@@ -74,7 +74,7 @@ module Services
       expect(
         validate_request_schema(
           input_params: {
-            to: unconfigured_phone_number.number,
+            to: unconfigured_phone_number.number.to_s,
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
@@ -85,7 +85,7 @@ module Services
       expect(
         validate_request_schema(
           input_params: {
-            to: disabled_phone_number.number,
+            to: disabled_phone_number.number.to_s,
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
@@ -102,7 +102,7 @@ module Services
       expect(
         validate_request_schema(
           input_params: {
-            to: phone_number.number,
+            to: phone_number.number.to_s,
             source_ip: sip_trunk.inbound_source_ip.to_s
           }
         )
@@ -262,7 +262,7 @@ module Services
       schema = validate_request_schema(
         input_params: {
           source_ip: sip_trunk.inbound_source_ip.to_s,
-          to: phone_number.number,
+          to: phone_number.number.to_s,
           from: "855716100230",
           external_id: "external-id"
         }

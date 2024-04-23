@@ -58,7 +58,7 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            From: phone_number.number
+            From: phone_number.number.to_s
           },
           options: { account: }
         )

@@ -54,8 +54,8 @@ class CreateVerification < ApplicationWorkflow
   def build_message_schema(delivery_attempt)
     TwilioAPI::MessageRequestSchema.new(
       input_params: {
-        From: delivery_attempt.from,
-        To: delivery_attempt.to,
+        From: delivery_attempt.from.to_s,
+        To: delivery_attempt.to.to_s,
         Body: delivery_attempt.verification.default_template.render_message
       },
       options: {
@@ -75,8 +75,8 @@ class CreateVerification < ApplicationWorkflow
   def build_phone_call_schema(delivery_attempt)
     TwilioAPI::PhoneCallRequestSchema.new(
       input_params: {
-        From: delivery_attempt.from,
-        To: delivery_attempt.to,
+        From: delivery_attempt.from.to_s,
+        To: delivery_attempt.to.to_s,
         Twiml: delivery_attempt.verification.default_template.render_voice_twiml
       },
       options: {

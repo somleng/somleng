@@ -2,8 +2,12 @@ require "rails_helper"
 
 RSpec.describe PhoneNumberTypeValidator do
   it "validates a phone number type" do
-    validatable_klass = Struct.new(:number, :type, keyword_init: true) do
-      include ActiveModel::Validations
+    validatable_klass = Class.new do
+      include ActiveModel::Model
+      include ActiveModel::Attributes
+
+      attribute :number, PhoneNumberType.new
+      attribute :type
 
       def self.model_name
         ActiveModel::Name.new(self, nil, "temp")
@@ -11,6 +15,7 @@ RSpec.describe PhoneNumberTypeValidator do
 
       validates :type, phone_number_type: true
     end
+
 
     expect(validatable_klass.new(number: "1294", type: "foobar").valid?).to eq(false)
 

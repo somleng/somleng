@@ -1,7 +1,11 @@
 module CarrierAPI
   class PhoneNumberRequestSchema < CarrierAPIRequestSchema
-    TypeValidator = Struct.new(:number, :type, keyword_init: true) do
-      include ActiveModel::Validations
+    class TypeValidator
+      include ActiveModel::Model
+      include ActiveModel::Attributes
+
+      attribute :number, PhoneNumberType.new
+      attribute :type
 
       def self.model_name
         ActiveModel::Name.new(self, nil, name.to_s)
@@ -10,8 +14,22 @@ module CarrierAPI
       validates :type, phone_number_type: true
     end
 
-    option :phone_number_country_assignment_rules, default: -> { PhoneNumberCountryAssignmentRules.new }
+    class CountryValidator
+      include ActiveModel::Model
+      include ActiveModel::Attributes
+
+      attribute :number, PhoneNumberType.new
+      attribute :country
+
+      def self.model_name
+        ActiveModel::Name.new(self, nil, name.to_s)
+      end
+
+      validates :country, phone_number_country: true, allow_blank: true
+    end
+
     option :type_validator, default: -> { TypeValidator.new }
+    option :country_validator, default: -> { CountryValidator.new }
 
     params do
       required(:data).value(:hash).schema do
@@ -46,18 +64,17 @@ module CarrierAPI
       end
     end
 
-    attribute_rule(:country) do |attributes, context:|
+    attribute_rule(:country) do |attributes|
       next if attributes.blank?
       next if resource.blank? && attributes[:number].blank?
 
-      context[:country] = phone_number_country_assignment_rules.country_for(
-        number: attributes.fetch(:number) { resource.number },
-        preferred_country: ISO3166::Country.new(attributes[:country]),
-        fallback_country: carrier.country,
-        existing_country: resource&.country
-      )
+      country_validator.number = attributes.fetch(:number) { resource.number }
+      country_validator.country = attributes[:country]
 
-      key.failure("is invalid") if context[:country].blank?
+      next if country_validator.valid?
+      next if country_validator.errors[:country].blank?
+
+      key.failure(country_validator.errors[:type].to_sentence)
     end
 
     attribute_rule(:type) do |attributes|
@@ -93,7 +110,7 @@ module CarrierAPI
       result[:enabled] = params.fetch(:enabled) if params.key?(:enabled)
       result[:account] = context.fetch(:account) if context[:account].present?
       result[:type] = params.fetch(:type) if params.key?(:type)
-      result[:iso_country_code] = context.fetch(:country).alpha2 if context[:country].present?
+      result[:iso_country_code] = params.fetch(:country) if params.key?(:country)
       result[:price] = Money.from_amount(params.fetch(:price), carrier.billing_currency) if params.key?(:price)
       result
     end

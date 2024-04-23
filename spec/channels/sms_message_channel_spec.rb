@@ -98,8 +98,8 @@ RSpec.describe SMSMessageChannel, type: :channel do
         sms_gateway:,
         account:,
         phone_number:,
-        from: "85510777777",
-        to: "85510888888",
+        from: have_attributes(value: "85510777777"),
+        to: have_attributes(value: "85510888888"),
         body: "message body",
         direction: "inbound"
       )

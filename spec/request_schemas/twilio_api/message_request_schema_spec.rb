@@ -40,7 +40,7 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            From: phone_number.number
+            From: phone_number.number.to_s
           },
           options: { account: }
         )
@@ -83,7 +83,7 @@ module TwilioAPI
         validate_request_schema(
           input_params: {
             MessagingServiceSid: messaging_service.id,
-            From: phone_number.number
+            From: phone_number.number.to_s
           },
           options: { account: }
         )

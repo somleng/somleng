@@ -9,9 +9,9 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
 
     example "Read a list of countries" do
       account = create(:account)
-      create(:phone_number, iso_country_code: "KH", carrier: account.carrier)
-      create(:phone_number, iso_country_code: "CA", carrier: account.carrier)
-      create(:phone_number, iso_country_code: "CA", carrier: account.carrier)
+      create(:phone_number, number: "85512345678", carrier: account.carrier)
+      create(:phone_number, number: "15678901234", iso_country_code: "CA", carrier: account.carrier)
+      create(:phone_number, number: "15678901235", iso_country_code: "CA", carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id)
@@ -40,7 +40,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
 
     example "Fetch a specific country" do
       account = create(:account)
-      create(:phone_number, iso_country_code: "CA", carrier: account.carrier)
+      create(:phone_number, number: "15067020972", iso_country_code: "CA", carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, country_code: "CA")
