@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_23_102157) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_23_105227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -463,15 +463,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_102157) do
     t.string "number", null: false
     t.integer "price_cents", null: false
     t.string "currency", null: false
-    t.datetime "started_at", null: false
+    t.string "status", null: false
     t.datetime "canceled_at"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_phone_number_plans_on_account_id"
     t.index ["carrier_id"], name: "index_phone_number_plans_on_carrier_id"
+    t.index ["number"], name: "index_phone_number_plans_on_number"
+    t.index ["phone_number_id", "status"], name: "index_phone_number_plans_on_phone_number_id_and_status", unique: true, where: "((status)::text = 'active'::text)"
     t.index ["phone_number_id"], name: "index_phone_number_plans_on_phone_number_id"
+    t.index ["price_cents", "currency"], name: "index_phone_number_plans_on_price_cents_and_currency"
     t.index ["sequence_number"], name: "index_phone_number_plans_on_sequence_number", unique: true, order: :desc
+    t.index ["status"], name: "index_phone_number_plans_on_status"
   end
 
   create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

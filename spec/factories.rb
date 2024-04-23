@@ -286,6 +286,11 @@ FactoryBot.define do
 
     trait :assigned_to_account do
       account { association :account, carrier: }
+
+      after(:build) do |phone_number|
+        phone_number.account ||= build(:account, carrier: phone_number.carrier)
+        phone_number.active_plan ||= build(:phone_number_plan, phone_number:)
+      end
     end
 
     trait :utilized do
@@ -648,5 +653,9 @@ FactoryBot.define do
     media_stream
     phone_call { media_stream.phone_call }
     traits_for_enum :type, %i[connect start disconnect connect_failed]
+  end
+
+  factory :phone_number_plan do
+    phone_number
   end
 end

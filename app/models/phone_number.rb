@@ -23,6 +23,7 @@ class PhoneNumber < ApplicationRecord
   has_many :phone_calls
   has_many :messages
   has_one :configuration, class_name: "PhoneNumberConfiguration"
+  has_one :active_plan, -> { active }, class_name: "PhoneNumberPlan"
 
   delegate :configured?, to: :configuration, allow_nil: true
 
@@ -110,5 +111,6 @@ class PhoneNumber < ApplicationRecord
     self.price ||= Money.new(0, currency)
 
     self.iso_country_code ||= (number.e164? ? ResolvePhoneNumberCountry.call(number, fallback_country: carrier.country) : carrier.country).alpha2
+    self.active_plan ||= build_active_plan if account.present?
   end
 end

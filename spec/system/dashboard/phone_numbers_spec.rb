@@ -181,10 +181,17 @@ RSpec.describe "Phone Numbers" do
     click_on("Update Phone number")
 
     expect(page).to have_content("Phone number was successfully updated")
-    expect(page).to have_content("Rocket Rides")
-    expect(page).to have_content("Canada")
-    expect(page).to have_content("Mobile")
-    expect(page).to have_content("$1.15")
+
+    within("#billing") do
+      expect(page).to have_content("Rocket Rides")
+      expect(page).to have_link("$1.15", href: dashboard_phone_number_plan_path(phone_number.active_plan))
+    end
+
+    within("#properties") do
+      expect(page).to have_content("Canada")
+      expect(page).to have_content("Mobile")
+      expect(page).to have_content("$1.15")
+    end
   end
 
   it "Delete a phone number" do

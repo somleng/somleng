@@ -123,6 +123,7 @@ Rails.application.routes.draw do
         patch :release, on: :member
         delete :bulk_destroy, on: :collection
       end
+      resources :phone_number_plans, only: [ :index, :show ]
       resources :messages, only: %i[index show]
       resources :messaging_services
       resources :verification_services

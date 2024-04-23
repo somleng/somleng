@@ -41,7 +41,7 @@
   <% phone_number = @resource.decorated %>
 
   <%= show_for(phone_number) do |f| %>
-    <div class="card mb-3">
+    <div id="general" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">General</h5>
 
@@ -61,21 +61,30 @@
       </div>
     </div>
 
-    <% if policy(:account).show? %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Account Settings</h5>
-
+    <div id="billing" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Billing</h5>
+        <% if policy(:account).show? %>
           <% if @resource.account.present? %>
             <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
           <% else %>
             <%= f.attribute :account %>
           <% end %>
-        </div>
-      </div>
-    <% end %>
+        <% end %>
 
-    <div class="card mb-3">
+        <% if @resource.active_plan.present? %>
+          <%= f.attribute :active_plan, value: external_link_to(@resource.active_plan.decorated.name, dashboard_phone_number_plan_path(@resource.active_plan)) %>
+        <% else %>
+          <%= f.attribute :active_plan %>
+        <% end %>
+
+        <% if policy(:phone_number_plan).index? %>
+          <%= f.attribute :plans, label: "All Plans", value: external_link_to("View", dashboard_phone_number_plans_path(filter: { number: @resource.number.to_s }), title: "View all plans") %>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="properties" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Properties</h5>
 
