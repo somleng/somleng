@@ -285,11 +285,12 @@ FactoryBot.define do
     carrier
 
     trait :assigned_to_account do
-      account { association :account, carrier: }
+      transient do
+        account { build(:account, carrier:) }
+      end
 
-      after(:build) do |phone_number|
-        phone_number.account ||= build(:account, carrier: phone_number.carrier)
-        phone_number.active_plan ||= build(:phone_number_plan, phone_number:)
+      after(:build) do |phone_number, evaluator|
+        phone_number.active_plan ||= build(:phone_number_plan, phone_number:, account: evaluator.account)
       end
     end
 
@@ -300,7 +301,7 @@ FactoryBot.define do
         next if phone_number.utilized?
 
         phone_number.phone_calls << build(
-          :phone_call, account: phone_number.account, carrier: phone_number.carrier
+          :phone_call, account: phone_number.active_plan.account, carrier: phone_number.carrier
         )
       end
     end
@@ -657,5 +658,6 @@ FactoryBot.define do
 
   factory :phone_number_plan do
     phone_number
+    account { association :account, carrier: phone_number.carrier }
   end
 end

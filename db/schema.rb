@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_23_105227) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -479,7 +479,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_105227) do
   end
 
   create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id"
     t.string "number", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -490,7 +489,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_105227) do
     t.string "type", null: false
     t.integer "price_cents", null: false
     t.string "currency", null: false
-    t.index ["account_id"], name: "index_phone_numbers_on_account_id"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["enabled"], name: "index_phone_numbers_on_enabled"
     t.index ["iso_country_code"], name: "index_phone_numbers_on_iso_country_code"
@@ -802,7 +800,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_105227) do
   add_foreign_key "phone_number_plans", "accounts"
   add_foreign_key "phone_number_plans", "carriers"
   add_foreign_key "phone_number_plans", "phone_numbers", on_delete: :nullify
-  add_foreign_key "phone_numbers", "accounts"
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"

@@ -33,8 +33,8 @@ RSpec.describe "Exports" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
     other_account = create(:account, carrier: account.carrier)
-    create(:phone_number, account:, carrier:, number: "1234")
-    create(:phone_number, account: other_account, carrier:, number: "9876")
+    create(:phone_number, :assigned_to_account, account:, carrier:, number: "1234")
+    create(:phone_number, :assigned_to_account, account: other_account, carrier:, number: "9876")
     user = create(:user, :with_account_membership, account:)
 
     carrier_sign_in(user)

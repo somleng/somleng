@@ -22,6 +22,7 @@ describe ApplicationSeeder do
     end
 
     expect(PhoneNumber.first.configuration).to be_present
+    expect(PhoneNumber.first.active_plan).to be_present
   end
 
   it "behaves idempotently" do

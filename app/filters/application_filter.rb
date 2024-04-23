@@ -18,7 +18,7 @@ class ApplicationFilter
   end
 
   def apply
-    resources_scope.where(scoped_to)
+    resources_scope.scoped_to(scoped_to)
   end
 
   private

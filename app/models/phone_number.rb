@@ -19,11 +19,11 @@ class PhoneNumber < ApplicationRecord
   attribute :number, PhoneNumberType.new
 
   belongs_to :carrier
-  belongs_to :account, optional: true
   has_many :phone_calls
   has_many :messages
   has_one :configuration, class_name: "PhoneNumberConfiguration"
   has_one :active_plan, -> { active }, class_name: "PhoneNumberPlan"
+  has_one :account, through: :active_plan
 
   delegate :configured?, to: :configuration, allow_nil: true
 
@@ -36,16 +36,24 @@ class PhoneNumber < ApplicationRecord
   validates :type, phone_number_type: true
 
   class << self
+    def scoped_to(scope)
+      if scope.key?(:account_id)
+        assigned.where(phone_number_plans: { account_id: scope.fetch(:account_id) })
+      else
+        super
+      end
+    end
+
     def available
       enabled.unassigned
     end
 
     def assigned
-      where.not(account_id: nil)
+      joins(:active_plan)
     end
 
     def unassigned
-      where(account_id: nil)
+      left_joins(:active_plan).where(phone_number_plans: { phone_number_id: nil })
     end
 
     def enabled
@@ -92,7 +100,7 @@ class PhoneNumber < ApplicationRecord
   end
 
   def assigned?
-    account_id.present?
+    account.present?
   end
 
   def utilized?
@@ -111,6 +119,5 @@ class PhoneNumber < ApplicationRecord
     self.price ||= Money.new(0, currency)
 
     self.iso_country_code ||= (number.e164? ? ResolvePhoneNumberCountry.call(number, fallback_country: carrier.country) : carrier.country).alpha2
-    self.active_plan ||= build_active_plan if account.present?
   end
 end

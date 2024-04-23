@@ -83,6 +83,18 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
+  class AccountIDFilter < ApplicationFilter
+    filter_params do
+      optional(:account_id).value(:string)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.joins(:active_plan).where(phone_number_plans: { account_id: filter_params.fetch(:account_id) })
+    end
+  end
+
   filter_with(
     CountryFilter,
     TypeFilter,
@@ -90,7 +102,7 @@ class PhoneNumberFilter < ResourceFilter
     AssignedFilter,
     UtilizedFilter,
     ConfiguredFilter,
-    :account_id_filter,
+    AccountIDFilter,
     :date_filter
   )
 end

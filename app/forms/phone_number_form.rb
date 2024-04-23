@@ -51,8 +51,7 @@ class PhoneNumberForm
     phone_number.type = type
     phone_number.iso_country_code = country if country.present?
     phone_number.price = Money.from_amount(price, carrier.billing_currency)
-    phone_number.account ||= carrier.accounts.find(account_id) if account_id.present?
-    phone_number.build_active_plan unless phone_number&.active_plan.present?
+    phone_number.account = carrier.accounts.find(account_id) if account_id.present?
 
     phone_number.save!
   end

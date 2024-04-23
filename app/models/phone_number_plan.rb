@@ -20,7 +20,6 @@ class PhoneNumberPlan < ApplicationRecord
     return if phone_number.blank?
 
     self.number = phone_number.number
-    self.account = phone_number.account
     self.carrier =  phone_number.carrier
     self.price = phone_number.price
   end

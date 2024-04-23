@@ -161,7 +161,7 @@ RSpec.describe PhoneNumber do
   def create_utilized_phone_number(**params)
     carrier = params.fetch(:carrier) { create(:carrier) }
     account = params.fetch(:account) { create(:account, carrier:) }
-    phone_number = create(:phone_number, carrier:, account:)
+    phone_number = create(:phone_number, :assigned_to_account, carrier:, account:)
     create_list(params.fetch(:utilized_by, :phone_call), 2, phone_number:, account:)
 
     phone_number

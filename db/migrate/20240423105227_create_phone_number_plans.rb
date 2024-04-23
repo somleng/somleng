@@ -22,7 +22,7 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
 
     reversible do |dir|
       dir.up do
-        PhoneNumber.assigned.find_each do |phone_number|
+        PhoneNumber.where.not(account_id: nil).find_each do |phone_number|
           PhoneNumberPlan.create!(
             phone_number:,
             number: phone_number.number,
