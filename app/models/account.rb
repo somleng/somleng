@@ -7,6 +7,7 @@ class Account < ApplicationRecord
   enumerize :status, in: %i[enabled disabled], predicates: true, default: :enabled
 
   attribute :default_tts_voice, TTSVoiceType.new
+  attribute :billing_currency, CurrencyType.new
 
   belongs_to :carrier
   belongs_to :sip_trunk, optional: true
@@ -29,11 +30,21 @@ class Account < ApplicationRecord
   has_many :interactions
   has_many :tts_events
 
+  before_create :set_defaults
+
   def auth_token
     access_token.token
   end
 
   def owner
     account_memberships.owner.first&.user
+  end
+
+  private
+
+  def set_defaults
+    return if carrier.blank?
+
+    self.billing_currency ||= carrier.billing_currency
   end
 end

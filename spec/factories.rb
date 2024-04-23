@@ -163,6 +163,7 @@ FactoryBot.define do
     with_access_token
     name { "Rocket Rides" }
     default_tts_voice { "Basic.Kal" }
+    billing_currency { carrier.billing_currency }
     traits_for_enum :type, %i[carrier_managed customer_managed]
     traits_for_enum :status, %w[enabled disabled]
     carrier_managed

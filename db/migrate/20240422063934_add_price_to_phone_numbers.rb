@@ -5,10 +5,9 @@ class AddPriceToPhoneNumbers < ActiveRecord::Migration[7.1]
 
     reversible do |dir|
       dir.up do
-        PhoneNumber.update_all(price_cents: 0)
         execute <<-SQL
           UPDATE phone_numbers
-          SET currency = carriers.billing_currency
+          SET currency = carriers.billing_currency, price_cents = 0
           FROM carriers where carriers.id = phone_numbers.carrier_id
         SQL
       end

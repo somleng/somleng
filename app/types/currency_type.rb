@@ -8,8 +8,6 @@ class CurrencyType < ActiveRecord::Type::String
   end
 
   def serialize(value)
-    return if value.blank?
-
-    value.iso_code
+    cast(value)&.iso_code
   end
 end

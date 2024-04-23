@@ -17,7 +17,7 @@
   <% end %>
 
   <%= show_for(@resource) do |f| %>
-    <div class="card mb-3">
+    <div id="general" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">General</h5>
 
@@ -33,6 +33,7 @@
         <% end %>
         <%= f.attribute :type, value: @resource.type.humanize %>
         <%= f.attribute :status, value: @resource.status.humanize %>
+        <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
         <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>
         <%= f.attribute :metadata do %>
           <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>
