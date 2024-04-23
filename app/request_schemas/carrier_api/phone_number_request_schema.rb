@@ -10,22 +10,8 @@ module CarrierAPI
       validates :type, phone_number_type: true
     end
 
-    PriceValidator = Struct.new(:carrier, :phone_number, :price, :currency, keyword_init: true) do
-      include ActiveModel::Validations
-
-      def self.model_name
-        ActiveModel::Name.new(self, nil, name.to_s)
-      end
-
-      validates :price,
-                billing_amount: {
-                  billing_currency: ->(this) { this.phone_number.present? ? this.phone_number.currency : this.carrier.billing_currency }
-                }
-    end
-
     option :phone_number_country_assignment_rules, default: -> { PhoneNumberCountryAssignmentRules.new }
     option :type_validator, default: -> { TypeValidator.new }
-    option :price_validator, default: -> { PriceValidator.new }
 
     params do
       required(:data).value(:hash).schema do
@@ -37,7 +23,6 @@ module CarrierAPI
           optional(:type).filled(:str?, included_in?: PhoneNumber.type.values)
           optional(:country).filled(:str?, included_in?: ISO3166::Country.all.map(&:alpha2))
           optional(:price).filled(:decimal, gteq?: 0)
-          optional(:currency).filled(:str?, included_in?: ::CurrencyValidator::VALID_CURRENCIES.map(&:iso_code))
         end
 
         optional(:relationships).value(:hash).schema do
@@ -88,22 +73,6 @@ module CarrierAPI
       key.failure(type_validator.errors[:type].to_sentence)
     end
 
-    attribute_rule(:price, :currency) do |attributes, context:|
-      next if attributes.blank? || (!attributes.key?(:price) && !attributes.key?(:currency))
-
-      price_validator.phone_number = resource
-      price_validator.carrier = carrier
-      price_validator.price = attributes[:price]
-      price_validator.currency = attributes[:currency]
-
-      if price_validator.valid?
-        context[:price] = Money.from_amount(attributes.fetch(:price), attributes.fetch(:currency))
-      else
-        attribute = price_validator.errors.first.attribute
-        key(attribute_key_path(attribute)).failure(price_validator.errors[attribute].to_sentence)
-      end
-    end
-
     rule(data: { relationships: { account: { data: :id } } }) do |context:|
       next unless key?
 
@@ -125,7 +94,7 @@ module CarrierAPI
       result[:account] = context.fetch(:account) if context[:account].present?
       result[:type] = params.fetch(:type) if params.key?(:type)
       result[:iso_country_code] = context.fetch(:country).alpha2 if context[:country].present?
-      result[:price] = context.fetch(:price) if context.key?(:price)
+      result[:price] = Money.from_amount(params.fetch(:price), carrier.billing_currency) if params.key?(:price)
       result
     end
   end

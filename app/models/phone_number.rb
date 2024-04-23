@@ -33,14 +33,6 @@ class PhoneNumber < ApplicationRecord
   validates :iso_country_code, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
   validates :type, phone_number_type: true
 
-  with_options if: :new_record? do
-    validates :price, billing_amount: { billing_currency: ->(this) { this.carrier&.billing_currency } }
-  end
-
-  with_options if: :persisted? do
-    validates :currency, comparison: { equal_to: ->(this) { this.currency_was } }
-  end
-
   class << self
     def available
       enabled.unassigned

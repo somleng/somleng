@@ -1,2 +1,2 @@
-number,type,enabled,country
-12505550199,local,true,CA
+number,type,enabled,country,price
+12505550199,local,true,CA,1.15

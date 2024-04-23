@@ -52,7 +52,7 @@ class PhoneNumberForm
     phone_number.number = number if new_record?
     phone_number.type = type
     phone_number.iso_country_code = country
-    phone_number.price = Money.from_amount(price, new_record? ? carrier.billing_currency : phone_number.currency)
+    phone_number.price = Money.from_amount(price, carrier.billing_currency)
     phone_number.account ||= carrier.accounts.find(account_id) if account_id.present?
 
     phone_number.save!

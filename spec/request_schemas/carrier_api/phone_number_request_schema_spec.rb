@@ -215,24 +215,22 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :country)
     end
 
-    it "validates the price and currency" do
-      carrier = create(:carrier, billing_currency: "USD")
+    it "validates price" do
+      carrier = create(:carrier)
 
-      valid_schema = validate_request_schema(
-        input_params: {
-          data: {
-            type: "phone_number",
-            attributes: {
-              price: "1.15",
-              currency: "USD"
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                price: "1.15"
+              }
             }
-          }
-        },
-        options: { carrier: }
-      )
-
-      expect(valid_schema).to have_valid_field(:data, :attributes, :price)
-      expect(valid_schema).to have_valid_field(:data, :attributes, :currency)
+          },
+          options: { carrier: }
+        )
+      ).to have_valid_field(:data, :attributes, :price)
 
       expect(
         validate_request_schema(
@@ -247,49 +245,6 @@ module CarrierAPI
           options: { carrier: }
         )
       ).not_to have_valid_field(:data, :attributes, :price)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_number",
-              attributes: {
-                price: "0.01"
-              }
-            }
-          },
-          options: { carrier: }
-        )
-      ).not_to have_valid_field(:data, :attributes, :currency)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_number",
-              attributes: {
-                currency: carrier.billing_currency.iso_code
-              }
-            }
-          },
-          options: { carrier: }
-        )
-      ).not_to have_valid_field(:data, :attributes, :price)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_number",
-              attributes: {
-                price: "1.15",
-                currency: "CAD"
-              }
-            }
-          },
-          options: { carrier: }
-        )
-      ).not_to have_valid_field(:data, :attributes, :currency)
     end
 
     it "validates account" do
@@ -391,7 +346,7 @@ module CarrierAPI
     end
 
     it "handles output for new records" do
-      carrier = create(:carrier, billing_currency: "KHR")
+      carrier = create(:carrier)
       account = create(:account, carrier:)
 
       schema = validate_request_schema(
@@ -432,8 +387,7 @@ module CarrierAPI
         number: "12366130851",
         carrier:,
         account:,
-        iso_country_code: "US",
-        price: Money.new(0, "CAD")
+        iso_country_code: "US"
       )
 
       schema = validate_request_schema(
@@ -444,8 +398,7 @@ module CarrierAPI
               enabled: false,
               country: "CA",
               type: "mobile",
-              price: "1.15",
-              currency: "CAD"
+              price: "1.15"
             }
           }
         },

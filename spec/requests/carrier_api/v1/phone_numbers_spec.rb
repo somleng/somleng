@@ -27,12 +27,7 @@ resource "Phone Numbers", document: :carrier_api do
       )
       parameter(
         :price,
-        "The price for the phone number.",
-        required: false
-      )
-      parameter(
-        :currency,
-        "The billing currency. Must match the default billing currency of the carrier.",
+        "The price for the phone number in the billing currency of the carrier.",
         required: false
       )
     end
@@ -171,13 +166,7 @@ resource "Phone Numbers", document: :carrier_api do
 
       parameter(
         :price,
-        "The monthly price for the phone number.",
-        required: false
-      )
-
-      parameter(
-        :currency,
-        "The billing currency. Must match existing currency.",
+        "The price for the phone number in the billing currency of the carrier.",
         required: false
       )
     end
@@ -202,8 +191,7 @@ resource "Phone Numbers", document: :carrier_api do
             type: "mobile",
             enabled: false,
             country: "US",
-            price: "1.15",
-            currency: "CAD"
+            price: "1.15"
           }
         }
       )

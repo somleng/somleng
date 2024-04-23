@@ -3,6 +3,7 @@ class CarrierSettingsForm
   include ActiveModel::Attributes
 
   COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
+  CURRENCIES = ISO3166::Country.all.map { |country| Money::Currency.new(country.currency_code) }.uniq.freeze
 
   class HostnameValidator < ActiveModel::EachValidator
     RESTRICTED_DOMAINS = [
@@ -50,7 +51,7 @@ class CarrierSettingsForm
             hostname: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }
 
   validates :custom_api_host, comparison: { other_than: :custom_app_host, allow_blank: true }
-  validates :billing_currency, currency: true
+  validates :billing_currency, inclusion: { in: CURRENCIES }
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "CarrierSettings")
@@ -109,7 +110,7 @@ class CarrierSettingsForm
   end
 
   def available_currencies
-    CurrencyValidator::VALID_CURRENCIES.sort_by(&:priority)
+    CURRENCIES.sort_by(&:priority)
   end
 
   private
