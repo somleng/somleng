@@ -4,11 +4,15 @@ class PhoneNumberPlanDecorator < SimpleDelegator
   end
 
   def name
-    price.format
+    amount.format
   end
 
   def number_formatted
     phone_number_formatter.format(object.number, format: :international)
+  end
+
+  def status_color
+    active? ? :success : :danger
   end
 
   private

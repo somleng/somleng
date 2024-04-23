@@ -461,7 +461,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.uuid "carrier_id"
     t.uuid "account_id"
     t.string "number", null: false
-    t.integer "price_cents", null: false
+    t.integer "amount_cents", null: false
     t.string "currency", null: false
     t.string "status", null: false
     t.datetime "canceled_at"
@@ -469,11 +469,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_phone_number_plans_on_account_id"
+    t.index ["amount_cents", "currency"], name: "index_phone_number_plans_on_amount_cents_and_currency"
     t.index ["carrier_id"], name: "index_phone_number_plans_on_carrier_id"
     t.index ["number"], name: "index_phone_number_plans_on_number"
     t.index ["phone_number_id", "status"], name: "index_phone_number_plans_on_phone_number_id_and_status", unique: true, where: "((status)::text = 'active'::text)"
     t.index ["phone_number_id"], name: "index_phone_number_plans_on_phone_number_id"
-    t.index ["price_cents", "currency"], name: "index_phone_number_plans_on_price_cents_and_currency"
     t.index ["sequence_number"], name: "index_phone_number_plans_on_sequence_number", unique: true, order: :desc
     t.index ["status"], name: "index_phone_number_plans_on_status"
   end

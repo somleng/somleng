@@ -44,9 +44,9 @@ class PhoneNumberFilter < ResourceFilter
       return super if filter_params.blank?
 
       if filter_params.fetch(:assigned)
-        super.where.not(account_id: nil)
+        super.assigned
       else
-        super.where(account_id: nil)
+        super.unassigned
       end
     end
   end
@@ -95,7 +95,20 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
+  class NumberFilter < ApplicationFilter
+    filter_params do
+      optional(:number).value(ApplicationRequestSchema::Types::Number)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.where(number: filter_params.fetch(:number))
+    end
+  end
+
   filter_with(
+    NumberFilter,
     CountryFilter,
     TypeFilter,
     EnabledFilter,

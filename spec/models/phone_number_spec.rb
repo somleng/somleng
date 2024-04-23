@@ -130,12 +130,17 @@ RSpec.describe PhoneNumber do
         :assigned_to_account,
         :configured
       )
+      plan = phone_number.active_plan
 
       phone_number.release!
 
       expect(phone_number.reload).to have_attributes(
         account: nil,
         configuration: nil
+      )
+      expect(plan.reload).to have_attributes(
+        status: "canceled",
+        canceled_at: be_present
       )
     end
   end

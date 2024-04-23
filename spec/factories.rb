@@ -657,7 +657,21 @@ FactoryBot.define do
   end
 
   factory :phone_number_plan do
-    phone_number
-    account { association :account, carrier: phone_number.carrier }
+    account
+    carrier { account.carrier }
+    amount { Money.from_amount(1.15, account.billing_currency) }
+    number { "1294" }
+
+    trait :active do
+      phone_number
+      account { association :account, carrier: phone_number.carrier }
+      number { phone_number.number }
+      amount { phone_number.price }
+    end
+
+    trait :canceled do
+      status { :canceled }
+      canceled_at { Time.current }
+    end
   end
 end

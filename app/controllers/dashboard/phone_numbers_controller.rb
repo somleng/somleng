@@ -44,7 +44,10 @@ module Dashboard
 
     def bulk_destroy
       @resources = apply_filters(phone_numbers_scope)
-      @resources.delete_all
+      ApplicationRecord.transaction do
+        @resources.release_all
+        @resources.destroy_all
+      end
 
       respond_with(@resources, location: dashboard_phone_numbers_path(filter: request.query_parameters["filter"]))
     end

@@ -52,6 +52,11 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("+855 97 333 3333")
     expect(page).not_to have_content("+855 97 444 4444")
     expect(page).not_to have_selector(:link_or_button, "Delete")
+
+    visit(dashboard_phone_number_plans_path)
+
+    expect(page).to have_content("855972222222")
+    expect(page).to have_content("canceled")
   end
 
   it "Export phone numbers" do
@@ -212,7 +217,7 @@ RSpec.describe "Phone Numbers" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
     account = create(:account, carrier:, name: "Rocket Rides")
-    phone_number = create(:phone_number, carrier:, account:, number: "1234")
+    phone_number = create(:phone_number, :assigned_to_account, carrier:, account:, number: "1234")
 
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)

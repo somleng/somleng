@@ -17,8 +17,22 @@
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
-    <% if policy(:phone_number).index? %>
-      <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-hashtag") %>
+    <% if %i[phone_number phone_number_plan].any? { |r| policy(r).index? } %>
+      <li id="phone_numbers_dropdown" class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-hashtag"></i> Phone Numbers
+        </a>
+
+        <ul class="nav-group-items">
+          <% if policy(:phone_number).index? %>
+            <%= sidebar_nav(current_user.carrier_user? ? "Inventory" : "My Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-list-ol") %>
+          <% end %>
+
+          <% if policy(:phone_number_plan).index? %>
+            <%= sidebar_nav(current_user.carrier_user? ? "Plans" : "Purchased", dashboard_phone_number_plans_path, icon_class: "fa-solid fa-receipt") %>
+          <% end %>
+        </ul>
+      </li>
     <% end %>
 
     <% if %i[sip_trunk phone_call tts_events].any? { |r| policy(r).index? } %>

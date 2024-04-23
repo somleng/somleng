@@ -7,7 +7,7 @@ module DashboardHelper
   def page_title(title:, subtitle: nil, &block)
     content_for(:page_title, title)
 
-    content_tag(:div, class: "card-header d-flex justify-content-between align-items-center") do
+    content_tag(:div, class: "page-title card-header d-flex justify-content-between align-items-center") do
       content = "".html_safe
       content += content_tag(:span, title, class: "h2")
 
@@ -121,10 +121,16 @@ module DashboardHelper
     end
   end
 
-  def status_badge(color)
+  def status_icon(color)
     icon_class = color == :success ? "fa-circle-check" : "fa-triangle-exclamation"
     tag.span(class: "text-#{color}") do
       tag.i(class: "fa-solid #{icon_class}")
+    end
+  end
+
+  def status_badge(status, color:)
+    tag.span(class: "badge text-bg-#{color} text-white") do
+      status
     end
   end
 end

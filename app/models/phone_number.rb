@@ -24,6 +24,7 @@ class PhoneNumber < ApplicationRecord
   has_one :configuration, class_name: "PhoneNumberConfiguration"
   has_one :active_plan, -> { active }, class_name: "PhoneNumberPlan"
   has_one :account, through: :active_plan
+  has_many :plans, class_name: "PhoneNumberPlan"
 
   delegate :configured?, to: :configuration, allow_nil: true
 
@@ -86,6 +87,10 @@ class PhoneNumber < ApplicationRecord
     def unconfigured
       left_joins(:configuration).merge(PhoneNumberConfiguration.unconfigured)
     end
+
+    def release_all
+      find_each(&:release!)
+    end
   end
 
   def country
@@ -94,7 +99,7 @@ class PhoneNumber < ApplicationRecord
 
   def release!
     transaction do
-      update!(account: nil)
+      active_plan.cancel!
       configuration&.destroy!
     end
   end

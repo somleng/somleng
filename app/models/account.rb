@@ -22,6 +22,7 @@ class Account < ApplicationRecord
   has_many :messaging_services
   has_many :verification_services
   has_many :verifications
+  has_many :phone_number_plans
   has_many :active_phone_number_plans, -> { active }, class_name: "PhoneNumberPlan"
   has_many :phone_numbers, through: :active_phone_number_plans
   has_many :account_memberships, dependent: :restrict_with_error

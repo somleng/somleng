@@ -5,7 +5,7 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
       t.references(:carrier, type: :uuid, foreign_key: true)
       t.references(:account, type: :uuid, foreign_key: true)
       t.string(:number, null: false)
-      t.integer(:price_cents, null: false)
+      t.integer(:amount_cents, null: false)
       t.string(:currency, null: false)
       t.string(:status, null: false)
       t.datetime(:canceled_at)
@@ -16,7 +16,7 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
 
       t.index(:number)
       t.index(:status)
-      t.index([ :price_cents, :currency ])
+      t.index([ :amount_cents, :currency ])
       t.index([ :phone_number_id, :status ], unique: true, where: "status = 'active'")
     end
 
@@ -30,7 +30,7 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
             carrier_id: phone_number.carrier_id,
             created_at: phone_number.updated_at,
             updated_at: phone_number.updated_at,
-            price: phone_number.price
+            amount: phone_number.price
           )
         end
       end

@@ -24,6 +24,7 @@
       )
     %>
 
+    <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
 
     <%= form.boolean_select(:enabled, { filter_value: params.dig(:filter, :enabled) }) %>
