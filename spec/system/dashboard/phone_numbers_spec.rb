@@ -55,14 +55,15 @@ RSpec.describe "Phone Numbers" do
   end
 
   it "Export phone numbers" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, billing_currency: "USD")
     user = create(:user, :carrier, carrier:)
 
     create(
       :phone_number,
       carrier:,
       number: "855972222222",
-      iso_country_code: "KH"
+      iso_country_code: "KH",
+      price: Money.from_amount(1.15, "USD")
     )
     create(
       :phone_number,
@@ -93,6 +94,9 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("+855972222222")
     expect(page).to have_content("mobile")
     expect(page).to have_content("KH")
+    expect(page).to have_content("1.15")
+    expect(page).to have_content("USD")
+
     expect(page).not_to have_content("+12513095542")
   end
 

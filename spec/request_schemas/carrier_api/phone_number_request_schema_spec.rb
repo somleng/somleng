@@ -190,8 +190,7 @@ module CarrierAPI
             data: {
               type: "phone_number",
               attributes: {
-                number: "1294",
-                country: "KH"
+                number: "1294"
               }
             }
           },

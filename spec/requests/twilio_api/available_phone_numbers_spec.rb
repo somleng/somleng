@@ -105,6 +105,20 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       expect(json_response.dig("available_phone_numbers", 0, "phone_number")).to eq("+18777318091")
     end
 
+    example "List the available short code numbers for a specific country" do
+      account = create(:account)
+      create(:phone_number, number: "1294", type: :short_code, iso_country_code: "CA", carrier: account.carrier)
+      create(:phone_number, number: generate(:canadian_local_number), type: :local, iso_country_code: "CA", carrier: account.carrier)
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id, country_code: "CA", type: "ShortCode")
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
+      expect(json_response.fetch("available_phone_numbers").count).to eq(1)
+      expect(json_response.dig("available_phone_numbers", 0, "phone_number")).to eq("1294")
+    end
+
     example "Handles invalid requests", document: false do
       account = create(:account)
 

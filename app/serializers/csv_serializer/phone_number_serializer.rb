@@ -7,6 +7,8 @@ module CSVSerializer
         "type" => nil,
         "enabled" => nil,
         "country" => nil,
+        "price" => nil,
+        "currency" => nil
       )
     end
 
