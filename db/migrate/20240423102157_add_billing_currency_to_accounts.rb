@@ -13,5 +13,6 @@ class AddBillingCurrencyToAccounts < ActiveRecord::Migration[7.1]
     end
 
     change_column_null(:accounts, :billing_currency, false)
+    add_index(:accounts, :billing_currency)
   end
 end

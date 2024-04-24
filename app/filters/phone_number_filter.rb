@@ -1,28 +1,4 @@
 class PhoneNumberFilter < ResourceFilter
-  class CountryFilter < ApplicationFilter
-    filter_params do
-      optional(:country).value(:string)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(iso_country_code: filter_params.fetch(:country))
-    end
-  end
-
-  class TypeFilter < ApplicationFilter
-    filter_params do
-      optional(:type).value(:string)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(type: filter_params.fetch(:type))
-    end
-  end
-
   class EnabledFilter < ApplicationFilter
     filter_params do
       optional(:enabled).value(:bool)
@@ -95,27 +71,15 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
-  class NumberFilter < ApplicationFilter
-    filter_params do
-      optional(:number).value(ApplicationRequestSchema::Types::Number)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(number: filter_params.fetch(:number))
-    end
-  end
-
   filter_with(
-    NumberFilter,
-    CountryFilter,
-    TypeFilter,
     EnabledFilter,
     AssignedFilter,
     UtilizedFilter,
     ConfiguredFilter,
     AccountIDFilter,
+    :phone_number_type_filter,
+    :country_filter,
+    :number_filter,
     :date_filter
   )
 end

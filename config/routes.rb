@@ -118,11 +118,12 @@ Rails.application.routes.draw do
       resource :carrier_settings, only: %i[show edit update]
       resource :home, only: :show
       resources :user_invitations, only: :update
+      resources :available_phone_numbers, only: [ :index ]
       resources :phone_numbers do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
         delete :bulk_destroy, on: :collection
       end
-      resources :phone_number_plans, only: [ :index, :show, :destroy ]
+      resources :phone_number_plans, only: [ :index, :show, :new, :create, :destroy ]
       resources :messages, only: %i[index show]
       resources :messaging_services
       resources :verification_services

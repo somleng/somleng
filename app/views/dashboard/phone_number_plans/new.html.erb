@@ -1,0 +1,40 @@
+<% phone_number = @resource.phone_number.decorated %>
+<%= page_title(title: "Buy #{phone_number.number_formatted}") %>
+
+<div class="card-body">
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Order Summary</h5>
+
+      <%= show_for(phone_number) do |f| %>
+        <%= f.attribute :number, value: phone_number.number_formatted %>
+
+        <%= f.attribute :country do %>
+          <%= phone_number.country.emoji_flag %>
+          <%= phone_number.country.iso_short_name %>
+        <% end %>
+
+        <%= f.attribute :type, value: phone_number.type_formatted %>
+        <%= f.attribute :price, label: "Monthly price", value: phone_number.price.format %>
+      <% end %>
+    </div>
+  </div>
+
+  <%= simple_form_for([:dashboard, @resource]) do |f| %>
+    <%= f.input(:phone_number_id, as: :hidden) %>
+
+    <% if current_user.carrier_user? %>
+      <div class="row">
+        <div class="col-sm-6">
+            <%= f.input :account_id,
+                        collection: @resource.account_options_for_select,
+                        prompt: "Please select",
+                        input_html: { data: { behavior: "choices-input" } } %>
+        </div>
+      </div>
+    <% end %>
+
+    <%= f.button :submit, "Buy #{phone_number.number_formatted}" %>
+    <%= link_to("Cancel", :back, class: "btn btn-secondary") %>
+  <% end %>
+</div>

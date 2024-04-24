@@ -54,7 +54,7 @@ RSpec.describe "Phone Number Plans" do
     active_plan = create(:phone_number_plan, :active, account:, number: "1294")
     canceled_plan = create(:phone_number_plan, :canceled, account:, number: "1279")
     create(:phone_number_plan, account: other_account, carrier:, number: "8888")
-    user = create(:user, :with_account_membership, account:)
+    user = create(:user, :with_account_membership, account:, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_phone_number_plans_path
@@ -85,6 +85,52 @@ RSpec.describe "Phone Number Plans" do
 
     expect(page).to have_link("1294", href: dashboard_phone_number_path(plan.phone_number))
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
+  end
+
+  it "Create a phone number plan as a carrier admin" do
+    carrier = create(:carrier)
+    create(:account, :carrier_managed, carrier:, name: "Rocket Rides")
+    create(:account, :customer_managed, carrier:, name: "Customer Account")
+    phone_number = create(:phone_number, number: "12513095500", carrier:)
+    user = create(:user, :carrier, :admin, carrier:)
+
+    carrier_sign_in(user)
+    visit(new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
+
+    expect(page).not_to have_choices_select("Account", with_options: [ "Customer Account" ])
+    choices_select("Rocket Rides", from: "Account")
+    click_on("Buy +1 (251) 309-5500")
+
+    expect(page).to have_content("Phone number plan was successfully created.")
+    expect(page).to have_content("Active")
+  end
+
+  it "Create a phone number plan as an account admin" do
+    carrier = create(:carrier)
+    account = create(:account, :customer_managed, carrier:)
+    phone_number = create(:phone_number, number: "12513095500", carrier:)
+    user = create(:user, :with_account_membership, account:, carrier:)
+
+    carrier_sign_in(user)
+    visit(new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
+
+    click_on("Buy +1 (251) 309-5500")
+
+    expect(page).to have_content("Phone number plan was successfully created.")
+    expect(page).to have_content("Active")
+  end
+
+  it "Handles validations" do
+    carrier = create(:carrier)
+    phone_number = create(:phone_number, number: "12513095500", carrier:)
+    user = create(:user, :carrier, :admin, carrier:)
+
+    carrier_sign_in(user)
+    visit(new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
+
+    click_on("Buy +1 (251) 309-5500")
+
+    expect(page).to have_content("can't be blank")
   end
 
   it "Cancel a phone number plan" do

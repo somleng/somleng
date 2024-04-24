@@ -1,0 +1,42 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Number
+      </th>
+      <th>
+        Country
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Monthly Fee
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |phone_number| %>
+      <% phone_number = phone_number.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(phone_number.number_formatted, new_dashboard_phone_number_plan_path(phone_number_id: phone_number)) %>
+        </td>
+
+        <td>
+          <%= phone_number.country.emoji_flag %>
+          <%= phone_number.country.iso_short_name %>
+        </td>
+
+        <td>
+          <%= phone_number.type_formatted %>
+        </td>
+
+        <td>
+          <%= phone_number.price.format %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

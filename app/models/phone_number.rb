@@ -54,7 +54,7 @@ class PhoneNumber < ApplicationRecord
     end
 
     def unassigned
-      left_joins(:active_plan).where(phone_number_plans: { phone_number_id: nil })
+      where.not(id: assigned.select(:id))
     end
 
     def enabled
@@ -63,6 +63,10 @@ class PhoneNumber < ApplicationRecord
 
     def supported_countries
       select(:iso_country_code).distinct.order(:iso_country_code)
+    end
+
+    def supported_currencies
+      select(:currency).distinct.order(:currency)
     end
 
     def utilized

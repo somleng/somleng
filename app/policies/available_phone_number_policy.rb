@@ -1,0 +1,1 @@
+class AvailablePhoneNumberPolicy < ApplicationPolicy; end

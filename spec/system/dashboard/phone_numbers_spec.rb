@@ -111,7 +111,7 @@ RSpec.describe "Phone Numbers" do
     other_account = create(:account, carrier: account.carrier)
     create(:phone_number, account:, carrier:, number: "1234")
     create(:phone_number, account: other_account, carrier:, number: "9876")
-    user = create(:user, :with_account_membership, account:)
+    user = create(:user, :with_account_membership, account:, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path

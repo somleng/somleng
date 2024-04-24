@@ -11,5 +11,6 @@ class AddBillingCurrencyToCarriers < ActiveRecord::Migration[7.1]
     end
 
     change_column_null(:carriers, :billing_currency, false)
+    add_index(:carriers, :billing_currency)
   end
 end

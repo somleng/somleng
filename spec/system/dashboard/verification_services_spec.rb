@@ -69,7 +69,7 @@ RSpec.describe "Verification Services" do
   it "Create verifiction service as an account admin" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
-    user = create(:user, :with_account_membership, account_role: :admin, account:)
+    user = create(:user, :with_account_membership, account_role: :admin, account:, carrier:)
 
     carrier_sign_in(user)
     visit new_dashboard_verification_service_path

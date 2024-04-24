@@ -18,3 +18,5 @@ en:
         update: "Save"
       notification_preferences:
         update: "Save"
+      phone_number_plan:
+        create: "Buy Number"
