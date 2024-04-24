@@ -9,7 +9,7 @@ module Dashboard
     end
 
     def destroy
-      record.phone_number.release!
+      record.phone_number.release!(canceled_by: current_user)
       respond_with(:dashboard, record)
     end
 

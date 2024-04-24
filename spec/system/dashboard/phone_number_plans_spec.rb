@@ -70,6 +70,8 @@ RSpec.describe "Phone Number Plans" do
     click_on("Cancel")
 
     expect(page).to have_content("Canceled")
+    expect(page).not_to have_link("1294")
+    expect(page).to have_content(user.name)
   end
 
   it "Show a phone number plan" do
@@ -97,5 +99,6 @@ RSpec.describe "Phone Number Plans" do
     click_on("Cancel")
     expect(page).to have_content("Phone number plan was successfully canceled")
     expect(page).to have_content("Canceled")
+    expect(page).to have_content(user.name)
   end
 end

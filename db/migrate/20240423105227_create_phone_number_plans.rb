@@ -4,6 +4,8 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
       t.references(:phone_number, type: :uuid, foreign_key: { on_delete: :nullify })
       t.references(:carrier, type: :uuid, foreign_key: true)
       t.references(:account, type: :uuid, foreign_key: true)
+      t.references(:canceled_by, type: :uuid, foreign_key: { to_table: :users, on_delete: :nullify })
+
       t.string(:number, null: false)
       t.integer(:amount_cents, null: false)
       t.string(:currency, null: false)

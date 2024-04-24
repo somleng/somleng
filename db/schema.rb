@@ -460,6 +460,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.uuid "phone_number_id"
     t.uuid "carrier_id"
     t.uuid "account_id"
+    t.uuid "canceled_by_id"
     t.string "number", null: false
     t.integer "amount_cents", null: false
     t.string "currency", null: false
@@ -470,6 +471,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_phone_number_plans_on_account_id"
     t.index ["amount_cents", "currency"], name: "index_phone_number_plans_on_amount_cents_and_currency"
+    t.index ["canceled_by_id"], name: "index_phone_number_plans_on_canceled_by_id"
     t.index ["carrier_id"], name: "index_phone_number_plans_on_carrier_id"
     t.index ["number"], name: "index_phone_number_plans_on_number"
     t.index ["phone_number_id", "status"], name: "index_phone_number_plans_on_phone_number_id_and_status", unique: true, where: "((status)::text = 'active'::text)"
@@ -800,6 +802,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
   add_foreign_key "phone_number_plans", "accounts"
   add_foreign_key "phone_number_plans", "carriers"
   add_foreign_key "phone_number_plans", "phone_numbers", on_delete: :nullify
+  add_foreign_key "phone_number_plans", "users", column: "canceled_by_id", on_delete: :nullify
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"

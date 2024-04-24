@@ -14,7 +14,7 @@
 
     <%= f.attribute :amount, value: plan.amount.format %>
 
-    <% if plan.phone_number.present? && policy(plan.phone_number).show? %>
+    <% if plan.phone_number.present? && (plan.active? || current_user.carrier_user?)%>
       <%= f.attribute :phone_number do %>
         <%= external_link_to(plan.number_formatted, dashboard_phone_number_path(plan.phone_number)) %>
       <% end %>
@@ -32,6 +32,10 @@
 
     <% if plan.canceled? %>
       <%= f.attribute :canceled_at, value: local_time(plan.canceled_at) %>
+    <% end %>
+
+    <% if plan.canceled_by.present? %>
+      <%= f.attribute :canceled_by, value: plan.canceled_by.name %>
     <% end %>
   <% end %>
 </div>

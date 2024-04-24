@@ -97,9 +97,9 @@ class PhoneNumber < ApplicationRecord
     ISO3166::Country.new(iso_country_code)
   end
 
-  def release!
+  def release!(...)
     transaction do
-      active_plan.cancel!
+      active_plan.cancel!(...)
       configuration&.destroy!
     end
   end
