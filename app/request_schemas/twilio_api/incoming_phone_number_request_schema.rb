@@ -1,9 +1,10 @@
 module TwilioAPI
   class IncomingPhoneNumberRequestSchema < TwilioAPIRequestSchema
+    option :phone_number, optional: true
     option :url_validator, default: -> { URLValidator.new(allow_http: true) }
 
     params do
-      required(:PhoneNumber).value(ApplicationRequestSchema::Types::Number, :filled?)
+      optional(:PhoneNumber).maybe(ApplicationRequestSchema::Types::Number, :filled?)
       optional(:VoiceUrl).filled(:str?)
       optional(:VoiceMethod).filled(
         ApplicationRequestSchema::Types::UppercaseString,
@@ -22,6 +23,11 @@ module TwilioAPI
     end
 
     rule(:PhoneNumber) do |context:|
+      if phone_number.present?
+        context[:phone_number] = phone_number
+        next
+      end
+
       context[:phone_number] = account.available_phone_numbers.find_by(number: value)
       key.failure("does not exist") if context[:phone_number].blank?
     end

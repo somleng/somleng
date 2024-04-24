@@ -39,8 +39,6 @@ module TwilioAPI
     end
 
     rule(:From) do |context:|
-      phone_numbers = account.phone_numbers
-
       context[:phone_number] = sender || account.phone_numbers.find_by(number: values[:From])
       next if sender.present? || phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
 

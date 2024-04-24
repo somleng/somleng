@@ -177,4 +177,91 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
       expect(response_body).to match_api_response_schema("twilio_api/api_errors")
     end
   end
+
+  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/IncomingPhoneNumbers/:sid" do
+    # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#update-an-incomingphonenumber-resource
+
+    parameter(
+      :SmsUrl,
+      "The URL we should call when the new phone number receives an incoming SMS message.",
+      required: false
+    )
+
+    parameter(
+      :SmsMethod,
+      "The HTTP method that we should use to call `sms_url`. Can be: `GET` or `POST` and defaults to `POST`.",
+      required: false
+    )
+
+    parameter(
+      :VoiceUrl,
+      "The URL that we should call to answer a call to the new phone number.",
+      required: false
+    )
+
+    parameter(
+      :VoiceMethod,
+      "The HTTP method that we should use to call `voice_url`. Can be: `GET` or `POST` and defaults to `POST`.",
+      required: false
+    )
+
+    parameter(
+      :StatusCallback,
+      "The URL we should call using the `status_callback_method` to send status information to your application.",
+      required: false
+    )
+
+    parameter(
+      :StatusCallbackMethod,
+      "The HTTP method we should use to call `status_callback`. Can be: `GET` or `POST` and defaults to `POST`.",
+      required: false
+    )
+
+    example "Update IncomingPhoneNumber to use a new Voice URL" do
+      account = create(:account)
+      phone_number = create(:phone_number, account:, carrier: account.carrier)
+
+      set_twilio_api_authorization_header(account)
+      do_request(
+        account_sid: account.id,
+        sid: phone_number.id,
+        VoiceUrl: "https://www.your-voice-url.com/example"
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/incoming_phone_number")
+      expect(json_response).to include(
+        "voice_url" => "https://www.your-voice-url.com/example"
+      )
+    end
+  end
+
+
+  delete "https://api.somleng.org/2010-04-01/Accounts/:account_sid/IncomingPhoneNumbers/:sid" do
+    # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#delete-an-incomingphonenumber-resource
+
+    explanation <<~HEREDOC
+      Release this phone number from your account.
+      We will no longer answer calls to this number, and you will stop being billed the monthly phone number fee.
+      The phone number will be recycled and potentially given to another customer, so use with care.
+    HEREDOC
+
+    example "Delete an IncomingPhoneNumber" do
+      account = create(:account)
+      phone_number = create(:phone_number, carrier: account.carrier)
+      plan = create(:phone_number_plan, :active, account:, phone_number:)
+
+      set_twilio_api_authorization_header(account)
+      do_request(
+        account_sid: account.id,
+        sid: phone_number.id
+      )
+
+      expect(response_status).to eq(204)
+      expect(plan.reload).to have_attributes(
+        status: "canceled",
+        canceled_at: be_present
+      )
+    end
+  end
 end

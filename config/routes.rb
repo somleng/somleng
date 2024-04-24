@@ -24,13 +24,15 @@ Rails.application.routes.draw do
 
       post "Calls/:id" => "phone_calls#update"
 
-      resources :messages, only: %i[index create show destroy], path: "Messages"
+      resources :messages, only: %i[index create show destroy update], path: "Messages"
+      post "Messages/:id" => "messages#update"
+
       resources :available_phone_number_countries, only: %i[index show], path: "AvailablePhoneNumbers" do
         get "/:type", to: "available_phone_numbers#index"
       end
-      resources :incoming_phone_numbers, only: [ :index, :show, :create ], path: "IncomingPhoneNumbers"
 
-      post "Messages/:id" => "messages#update"
+      resources :incoming_phone_numbers, only: %i[index create show destroy update], path: "IncomingPhoneNumbers"
+      post "IncomingPhoneNumbers/:id" => "incoming_phone_numbers#update"
     end
 
     scope "/carrier", as: :carrier, module: :carrier_api do
