@@ -8,6 +8,11 @@ module Dashboard
       @resource = record
     end
 
+    def destroy
+      record.phone_number.release!
+      respond_with(:dashboard, record)
+    end
+
     private
 
     def scope

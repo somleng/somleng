@@ -38,7 +38,10 @@ module Dashboard
     end
 
     def destroy
-      record.destroy
+      ApplicationRecord.transaction do
+        record.release!
+        record.destroy
+      end
       respond_with(:dashboard, record)
     end
 
@@ -50,11 +53,6 @@ module Dashboard
       end
 
       respond_with(@resources, location: dashboard_phone_numbers_path(filter: request.query_parameters["filter"]))
-    end
-
-    def release
-      record.release!
-      respond_with(:dashboard, record)
     end
 
     private
@@ -71,10 +69,6 @@ module Dashboard
       form = PhoneNumberForm.new(params)
       form.carrier = current_carrier
       form
-    end
-
-    def find_record?
-      super || action_name.in?(%w[release])
     end
 
     def record

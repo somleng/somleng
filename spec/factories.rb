@@ -290,7 +290,7 @@ FactoryBot.define do
       end
 
       after(:build) do |phone_number, evaluator|
-        phone_number.active_plan ||= build(:phone_number_plan, phone_number:, account: evaluator.account)
+        phone_number.active_plan ||= build(:phone_number_plan, :active, phone_number:, account: evaluator.account)
       end
     end
 
@@ -661,12 +661,11 @@ FactoryBot.define do
     carrier { account.carrier }
     amount { Money.from_amount(1.15, account.billing_currency) }
     number { "1294" }
+    status { :canceled }
 
     trait :active do
-      phone_number
-      account { association :account, carrier: phone_number.carrier }
-      number { phone_number.number }
-      amount { phone_number.price }
+      phone_number { association :phone_number, carrier:, price: amount, number: }
+      status { :active }
     end
 
     trait :canceled do

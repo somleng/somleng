@@ -1,5 +1,4 @@
 <%= page_title(title: "Phone Number") do %>
-  <% phone_number_policy = PhoneNumberPolicy.new(pundit_user, @resource) %>
   <% phone_number_configuration_policy = PhoneNumberConfigurationPolicy.new(pundit_user, @resource) %>
   <% display_dropdown = current_user.carrier_user? && phone_number_configuration_policy.edit? %>
 
@@ -24,12 +23,6 @@
 
   <% if policy(@resource).edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_path(@resource)) %>
-  <% end %>
-
-  <% if phone_number_policy.release? %>
-    <%= button_to(release_dashboard_phone_number_path(@resource), class: "btn btn-warning", title: "Release", form_class: "d-inline", method: :patch, form: { data: { turbo_confirm: "This action cannot be undone. Are you sure you want to release the number?" }}) do %>
-      <i class="fa-solid fa-unlink"></i>
-    <% end %>
   <% end %>
 
   <% if policy(@resource).destroy? %>

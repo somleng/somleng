@@ -1,4 +1,4 @@
-<%= page_title(title: current_user.carrier_user? ? "Phone Number Plans" : "Purchased Numbers") do %>
+<%= page_title(title: "Phone Number Plans") do %>
   <%= render("shared/filters") do |form| %>
     <% if policy(:account).show? %>
       <%= form.select(

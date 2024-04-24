@@ -7,7 +7,7 @@ module DashboardHelper
   def page_title(title:, subtitle: nil, &block)
     content_for(:page_title, title)
 
-    content_tag(:div, class: "page-title card-header d-flex justify-content-between align-items-center") do
+    content_tag(:div, class: "card-header d-flex justify-content-between align-items-center") do
       content = "".html_safe
       content += content_tag(:span, title, class: "h2")
 

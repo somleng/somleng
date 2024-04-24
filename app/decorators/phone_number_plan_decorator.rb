@@ -12,7 +12,7 @@ class PhoneNumberPlanDecorator < SimpleDelegator
   end
 
   def status_color
-    active? ? :success : :danger
+    active? ? :success : :secondary
   end
 
   private

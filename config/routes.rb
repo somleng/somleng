@@ -120,10 +120,9 @@ Rails.application.routes.draw do
       resources :user_invitations, only: :update
       resources :phone_numbers do
         resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
-        patch :release, on: :member
         delete :bulk_destroy, on: :collection
       end
-      resources :phone_number_plans, only: [ :index, :show ]
+      resources :phone_number_plans, only: [ :index, :show, :destroy ]
       resources :messages, only: %i[index show]
       resources :messaging_services
       resources :verification_services

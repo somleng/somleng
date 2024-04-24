@@ -3,10 +3,6 @@ class PhoneNumberPolicy < ApplicationPolicy
     true
   end
 
-  def release?
-    manage? && record.assigned?
-  end
-
   def bulk_destroy?
     manage?
   end

@@ -4,13 +4,13 @@ RSpec.describe "Phone Number Plans" do
   it "List, filter and export phone number plans" do
     carrier = create(:carrier, billing_currency: "USD")
     account = create(:account, carrier:, name: "Rocket Rides")
-    phone_number = create(
-      :phone_number,
+    _active_plan = create(
+      :phone_number_plan,
+      :active,
       number: "1294",
-      price: Money.from_amount(5.00, "USD"),
-      carrier:
+      amount: Money.from_amount(5.00, "USD"),
+      account:
     )
-    _active_plan = create(:phone_number_plan, phone_number:, account:)
     _canceled_plan = create(:phone_number_plan, :canceled, number: "1279", account:)
     user = create(:user, :carrier, carrier:)
 
@@ -21,14 +21,6 @@ RSpec.describe "Phone Number Plans" do
         status: :active
       }
     )
-
-    within("#phone_numbers_dropdown") do
-      expect(page).to have_link("Plans", href: dashboard_phone_number_plans_path)
-    end
-
-    within(".page-title") do
-      expect(page).to have_content("Phone Number Plans")
-    end
 
     expect(page).to have_content("1294")
     expect(page).to have_content("$5.00")
@@ -55,62 +47,55 @@ RSpec.describe "Phone Number Plans" do
     expect(page).to have_content(account.id)
   end
 
-  it "List phone number plans as an account member" do
+  it "Manage phone number plans as an account member" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
     other_account = create(:account, carrier: account.carrier)
-    create(:phone_number_plan, account:, carrier:, number: "1234")
-    create(:phone_number_plan, account: other_account, carrier:, number: "9876")
+    active_plan = create(:phone_number_plan, :active, account:, number: "1294")
+    canceled_plan = create(:phone_number_plan, :canceled, account:, number: "1279")
+    create(:phone_number_plan, account: other_account, carrier:, number: "8888")
     user = create(:user, :with_account_membership, account:)
 
     carrier_sign_in(user)
     visit dashboard_phone_number_plans_path
 
-    within("#phone_numbers_dropdown") do
-      expect(page).to have_link("Purchased", href: dashboard_phone_number_plans_path)
-    end
+    expect(page).to have_link("1294", href: dashboard_phone_number_plan_path(active_plan))
+    expect(page).to have_link("1279",  href: dashboard_phone_number_plan_path(canceled_plan))
+    expect(page).not_to have_content("8888")
 
-    within(".page-title") do
-      expect(page).to have_content("Purchased Numbers")
-    end
-    expect(page).to have_content("1234")
-    expect(page).not_to have_content("9876")
+    click_on("1294")
+
+    expect(page).to have_content("Active")
+
+    click_on("Cancel")
+
+    expect(page).to have_content("Canceled")
   end
 
   it "Show a phone number plan" do
     carrier = create(:carrier)
-    phone_number = create(:phone_number, carrier:)
+    account = create(:account, carrier:, name: "Rocket Rides")
+    plan = create(:phone_number_plan, :active, number: "1294", account:)
     user = create(:user, :carrier, :admin, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_phone_number_path(phone_number)
+    visit dashboard_phone_number_plan_path(plan)
 
-    expect(page).to have_link(
-      "View phone calls",
-      href: dashboard_phone_calls_path(filter: { phone_number_id: phone_number.id })
-    )
-    expect(page).to have_link(
-      "View messages",
-      href: dashboard_messages_path(filter: { phone_number_id: phone_number.id })
-    )
+    expect(page).to have_link("1294", href: dashboard_phone_number_path(plan.phone_number))
+    expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
   end
 
-  it "Create a phone number plan" do
-    carrier = create(:carrier, country_code: "KH")
+  it "Cancel a phone number plan" do
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    plan = create(:phone_number_plan, :active, account:)
     user = create(:user, :carrier, :admin, carrier:)
-    create(:account, carrier:, name: "Rocket Rides")
 
     carrier_sign_in(user)
-    visit dashboard_phone_numbers_path
+    visit dashboard_phone_number_plan_path(plan)
 
-    click_on("New")
-    fill_in("Number", with: "1294")
-    choices_select("Short code", from: "Type")
-    click_on("Create Phone number")
-
-    expect(page).to have_content("Phone number was successfully created")
-    expect(page).to have_content("1294")
-    expect(page).to have_content("Cambodia")
-    expect(page).to have_content("Short code")
+    click_on("Cancel")
+    expect(page).to have_content("Phone number plan was successfully canceled")
+    expect(page).to have_content("Canceled")
   end
 end

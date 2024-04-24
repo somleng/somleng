@@ -37,10 +37,11 @@ en:
           notice: Channel group was successfully destroyed.
           alert: Channel group could not be destroyed.
       phone_numbers:
-        release:
-          notice: '%{resource_name} was successfully released.'
         bulk_destroy:
           notice: 'Phone numbers were successfully destroyed.'
+      phone_number_plans:
+        destroy:
+          notice: "Phone number plan was successfully canceled."
       custom_domains:
         regenerate:
           notice: '%{resource_name} was successfully regenerated.'

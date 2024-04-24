@@ -55,8 +55,8 @@ RSpec.describe "Phone Numbers" do
 
     visit(dashboard_phone_number_plans_path)
 
-    expect(page).to have_content("855972222222")
-    expect(page).to have_content("canceled")
+    expect(page).to have_content("+855 97 222 2222")
+    expect(page).to have_content("Canceled")
   end
 
   it "Export phone numbers" do
@@ -203,6 +203,7 @@ RSpec.describe "Phone Numbers" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:, number: "1234")
+    phone_number_plan = create(:phone_number_plan, :active, phone_number:)
     create(:phone_call, :inbound, carrier:, phone_number:)
 
     carrier_sign_in(user)
@@ -211,19 +212,9 @@ RSpec.describe "Phone Numbers" do
     click_on("Delete")
     expect(page).to have_content("Phone number was successfully destroyed")
     expect(page).not_to have_content("1234")
-  end
 
-  it "Release a phone number" do
-    carrier = create(:carrier)
-    user = create(:user, :carrier, carrier:)
-    account = create(:account, carrier:, name: "Rocket Rides")
-    phone_number = create(:phone_number, :assigned_to_account, carrier:, account:, number: "1234")
+    visit(dashboard_phone_number_plans_path(phone_number_plan))
 
-    carrier_sign_in(user)
-    visit dashboard_phone_number_path(phone_number)
-
-    click_on("Release")
-    expect(page).to have_content("Phone number was successfully released")
-    expect(page).not_to have_content("Rocket Rides")
+    expect(page).to have_content("Canceled")
   end
 end

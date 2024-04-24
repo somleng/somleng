@@ -77,6 +77,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
       phone_number = create(
         :phone_number,
         :configured,
+        :assigned_to_account,
         sms_url: "https://www.example.com/messaging.xml",
         sms_method: "POST",
         carrier: sms_gateway.carrier,
