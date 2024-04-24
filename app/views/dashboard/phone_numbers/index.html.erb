@@ -1,15 +1,5 @@
 <%= page_title(title: "Phone Numbers") do %>
   <%= render("shared/filters") do |form| %>
-    <% if policy(:account).show? %>
-      <%= form.select(
-          :account_id,
-          current_carrier.accounts.map { |account| [account.name, account.id] },
-          { filter_value: params.dig(:filter, :account_id) },
-          { data: { behavior: "choices-input" }}
-        )
-      %>
-    <% end %>
-
     <%= form.country_select(
         :country,
         {

@@ -59,24 +59,11 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
-  class AccountIDFilter < ApplicationFilter
-    filter_params do
-      optional(:account_id).value(:string)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.joins(:active_plan).where(phone_number_plans: { account_id: filter_params.fetch(:account_id) })
-    end
-  end
-
   filter_with(
     EnabledFilter,
     AssignedFilter,
     UtilizedFilter,
     ConfiguredFilter,
-    AccountIDFilter,
     :phone_number_type_filter,
     { country_filter: { attribute_name: :iso_country_code } },
     :number_filter,
