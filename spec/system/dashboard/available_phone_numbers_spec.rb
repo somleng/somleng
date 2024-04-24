@@ -22,7 +22,8 @@ RSpec.describe "Available Phone Numbers" do
       }
     )
 
-    expect(page).to have_link("+1 (251) 309-5500", href: new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
+    expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_link("Buy", href: new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
     expect(page).to have_content("$5.00")
     expect(page).not_to have_content("+1 (251) 309-5501")
     expect(page).not_to have_content("+1 (251) 309-5502")
@@ -42,7 +43,8 @@ RSpec.describe "Available Phone Numbers" do
 
     visit dashboard_available_phone_numbers_path
 
-    expect(page).to have_link("+1 (251) 309-5500", href: new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
+    expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_link("Buy", href: new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
     expect(page).to have_content("$5.00")
     expect(page).not_to have_content("+1 (251) 309-5501")
   end

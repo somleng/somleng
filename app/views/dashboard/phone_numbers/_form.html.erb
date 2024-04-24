@@ -21,23 +21,6 @@
 
     <div class="card mb-3">
       <div class="card-body">
-        <h5 class="card-title">Account Settings</h5>
-        <div class="row">
-          <div class="col-sm-6">
-              <%= f.input :account_id,
-                          collection: resource.account_options_for_select,
-                          prompt: "Unassigned",
-                          selected: resource.account_id,
-                          disabled: resource.assigned?,
-                          include_blank: false,
-                          input_html: { data: { behavior: "choices-input" } } %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-body">
         <h5 class="card-title">Properties</h5>
 
         <div class="row">

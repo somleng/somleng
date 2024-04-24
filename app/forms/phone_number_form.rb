@@ -6,7 +6,6 @@ class PhoneNumberForm
 
   attribute :carrier
   attribute :number, PhoneNumberType.new
-  attribute :account_id
   attribute :enabled, default: true
   attribute :phone_number, default: -> { PhoneNumber.new }
   attribute :type
@@ -23,7 +22,7 @@ class PhoneNumberForm
   validates :price, numericality: { greater_than_or_equal_to: 0 }
   validates :country, phone_number_country: true, allow_blank: true
 
-  delegate :persisted?, :new_record?, :id, :assigned?, to: :phone_number
+  delegate :persisted?, :new_record?, :id, to: :phone_number
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "PhoneNumber")
@@ -32,7 +31,6 @@ class PhoneNumberForm
   def self.initialize_with(phone_number)
     new(
       phone_number:,
-      account_id: phone_number.account_id,
       carrier: phone_number.carrier,
       number: phone_number.decorated.number_formatted,
       enabled: phone_number.enabled,
@@ -51,13 +49,8 @@ class PhoneNumberForm
     phone_number.type = type
     phone_number.iso_country_code = country if country.present?
     phone_number.price = Money.from_amount(price, carrier.billing_currency)
-    phone_number.account = carrier.accounts.find(account_id) if account_id.present?
 
     phone_number.save!
-  end
-
-  def account_options_for_select
-    carrier.accounts.map { |account| [ account.name, account.id ] }
   end
 
   def possible_countries

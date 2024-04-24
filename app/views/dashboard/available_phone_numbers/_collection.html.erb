@@ -13,6 +13,8 @@
       <th>
         Monthly Fee
       </th>
+      <th>
+      </th>
     </tr>
   </thead>
 
@@ -21,7 +23,7 @@
       <% phone_number = phone_number.decorated %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(phone_number.number_formatted, new_dashboard_phone_number_plan_path(phone_number_id: phone_number)) %>
+          <%= phone_number.number_formatted %>
         </td>
 
         <td>
@@ -35,6 +37,12 @@
 
         <td>
           <%= phone_number.price.format %>
+        </td>
+
+        <td>
+          <%= link_to(new_dashboard_phone_number_plan_path(phone_number_id: phone_number), class: "btn btn-success btn-sm text-white") do %>
+            <i class="fa-solid fa-cart-plus"></i> Buy
+          <% end %>
         </td>
       </tr>
     <% end %>

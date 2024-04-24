@@ -122,11 +122,18 @@ RSpec.describe "Phone Numbers" do
 
   it "Show a phone number" do
     carrier = create(:carrier)
+    account = create(:account, carrier:, name: "Rocket Rides", billing_currency: "CAD")
     phone_number = create(:phone_number, carrier:)
+    active_plan = create(:phone_number_plan, :active, account:, phone_number:, amount: Money.from_amount(1.15, "CAD"))
     user = create(:user, :carrier, :admin, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
+
+    within("#billing") do
+      expect(page).to have_content("Rocket Rides")
+      expect(page).to have_link("$1.15", href: dashboard_phone_number_plan_path(active_plan))
+    end
 
     expect(page).to have_link(
       "View phone calls",
@@ -169,8 +176,6 @@ RSpec.describe "Phone Numbers" do
 
   it "Update a phone number" do
     carrier = create(:carrier, billing_currency: "CAD")
-    create(:account, carrier:, name: "Rocket Rides")
-
     user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:, number: "12505550199", iso_country_code: "US")
 
@@ -178,7 +183,6 @@ RSpec.describe "Phone Numbers" do
     visit dashboard_phone_number_path(phone_number)
 
     click_on("Edit")
-    choices_select("Rocket Rides", from: "Account")
     choices_select("Canada", from: "Country")
     choices_select("Mobile", from: "Type")
     fill_in("Price", with: "1.15")
@@ -186,11 +190,6 @@ RSpec.describe "Phone Numbers" do
     click_on("Update Phone number")
 
     expect(page).to have_content("Phone number was successfully updated")
-
-    within("#billing") do
-      expect(page).to have_content("Rocket Rides")
-      expect(page).to have_link("$1.15", href: dashboard_phone_number_plan_path(phone_number.active_plan))
-    end
 
     within("#properties") do
       expect(page).to have_content("Canada")

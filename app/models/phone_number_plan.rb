@@ -25,8 +25,9 @@ class PhoneNumberPlan < ApplicationRecord
   def set_defaults
     return if phone_number.blank?
 
-    self.number = phone_number.number
-    self.carrier =  phone_number.carrier
-    self.amount = phone_number.price
+    self.number ||= phone_number.number
+    self.carrier ||= phone_number.carrier
+    self.currency ||= phone_number.currency
+    self.amount ||= phone_number.price
   end
 end

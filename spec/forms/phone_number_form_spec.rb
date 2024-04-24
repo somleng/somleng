@@ -39,10 +39,8 @@ RSpec.describe PhoneNumberForm do
 
   it "saves new records" do
     carrier = create(:carrier)
-    account = create(:account, carrier:)
     form = PhoneNumberForm.new(
       number: "12366130852",
-      account_id: account.id,
       type: "local",
       carrier:
     )
@@ -52,26 +50,19 @@ RSpec.describe PhoneNumberForm do
     expect(result).to be_truthy
 
     expect(form.phone_number).to have_attributes(
-      account:,
       carrier:,
-      type: "local",
-      active_plan: have_attributes(
-        persisted?: true
-      )
+      type: "local"
     )
   end
 
   it "updates existing records" do
     carrier = create(:carrier, billing_currency: "USD")
-    account = create(:account, carrier:)
     phone_number = create(
       :phone_number,
-      :assigned_to_account,
       number: "12366130852",
       iso_country_code: "US",
       type: "local",
       price: Money.from_amount(1.15, "USD"),
-      account:,
       carrier:
     )
 
