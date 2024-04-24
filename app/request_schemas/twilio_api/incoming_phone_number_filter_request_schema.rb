@@ -5,7 +5,7 @@ module TwilioAPI
     end
 
     params do
-      optional(:PhoneNumber).value(ApplicationRequestSchema::Types::Number)
+      optional(:PhoneNumber).filled(ApplicationRequestSchema::Types::Number)
     end
 
     def output

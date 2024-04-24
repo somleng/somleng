@@ -38,6 +38,16 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
         "sid" => phone_number.id
       )
     end
+
+    example "Handles invalid requests", document: false do
+      account = create(:account)
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id, PhoneNumber: "invalid")
+
+      expect(response_status).to eq(400)
+      expect(response_body).to match_api_response_schema("twilio_api/api_errors")
+    end
   end
 
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/IncomingPhoneNumbers/:sid" do

@@ -7,7 +7,7 @@ module AttributeFilter
     def apply
       return super if filter_params.blank?
 
-      super.where(options.fetch(:attribute_name, :iso_country_code) => filter_params.fetch(:country))
+      super.where(options.fetch(:attribute_name, :country_code) => filter_params.fetch(:country))
     end
   end
 end

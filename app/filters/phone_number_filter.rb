@@ -78,7 +78,7 @@ class PhoneNumberFilter < ResourceFilter
     ConfiguredFilter,
     AccountIDFilter,
     :phone_number_type_filter,
-    :country_filter,
+    { country_filter: { attribute_name: :iso_country_code } },
     :number_filter,
     :date_filter
   )
