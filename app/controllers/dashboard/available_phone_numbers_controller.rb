@@ -10,10 +10,6 @@ module Dashboard
       parent_scope.available_phone_numbers
     end
 
-    def record
-      @record ||= scope.find(params[:id])
-    end
-
     def filter_class(*)
       AvailablePhoneNumberFilter
     end
