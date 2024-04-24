@@ -14,7 +14,7 @@ module TwilioAPI
     private
 
     def scope
-      current_account.carrier.phone_numbers.available
+      current_account.available_phone_numbers
     end
 
     def serializer_options
