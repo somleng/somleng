@@ -28,6 +28,7 @@ class SMSMessageChannel < ApplicationCable::Channel
         error_log_messages:
       }
     )
+
     if schema.success?
       attributes = schema.output
       return if drop_message?(attributes)

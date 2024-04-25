@@ -63,12 +63,11 @@ module TwilioAPI
     end
 
     it "validates MessagingServiceSid" do
-      account = create(:account)
-      messaging_service = create(:messaging_service, account:, carrier: account.carrier)
-      phone_number = create(:phone_number, :configured, messaging_service:, account:,
-                                                        carrier: account.carrier)
-      unconfigured_messaging_service = create(:messaging_service, account:,
-                                                                  carrier: account.carrier)
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      messaging_service = create(:messaging_service, account:, carrier:)
+      incoming_phone_number = create(:incoming_phone_number, messaging_service:, account:)
+      unconfigured_messaging_service = create(:messaging_service, account:, carrier:)
 
       expect(
         validate_request_schema(
@@ -83,7 +82,7 @@ module TwilioAPI
         validate_request_schema(
           input_params: {
             MessagingServiceSid: messaging_service.id,
-            From: phone_number.number.to_s
+            From: incoming_phone_number.number.to_s
           },
           options: { account: }
         )

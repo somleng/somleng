@@ -12,7 +12,7 @@ class MessagingServiceForm
   attribute :carrier
   attribute :account_id
   attribute :account
-  attribute :phone_number_ids, FilledArrayType.new, default: []
+  attribute :incoming_phone_number_ids, FilledArrayType.new, default: []
   attribute :name
   attribute :inbound_request_url
   attribute :inbound_request_method
@@ -53,7 +53,7 @@ class MessagingServiceForm
       account: messaging_service.account,
       account_id: messaging_service.account.id,
       carrier: messaging_service.carrier,
-      phone_number_ids: messaging_service.phone_number_ids,
+      incoming_phone_number_ids: messaging_service.incoming_phone_number_ids,
       inbound_message_behavior: messaging_service.inbound_message_behavior,
       inbound_request_url: messaging_service.inbound_request_url,
       inbound_request_method: messaging_service.inbound_request_method,
@@ -72,23 +72,19 @@ class MessagingServiceForm
     messaging_service.inbound_request_method = inbound_request_method
     messaging_service.status_callback_url = status_callback_url.presence
     messaging_service.smart_encoding = smart_encoding
+    messaging_service.incoming_phone_number_ids = incoming_phone_number_ids
     messaging_service.inbound_message_behavior = inbound_message_behavior
 
-    MessagingService.transaction do
-      messaging_service.save!
-      update_senders!
-    end
-
-    messaging_service
+    messaging_service.save!
   end
 
   def account_options_for_select
     accounts_scope.map { |account| [ account.name, account.id ] }
   end
 
-  def phone_numbers_options_for_select
-    PhoneNumber.where(id: sender_pool_select.all_values).map do |phone_number|
-      [ phone_number.decorated.number_formatted, phone_number.id ]
+  def incoming_phone_numbers_options_for_select
+    IncomingPhoneNumber.where(id: sender_pool_select.all_values).map do |incoming_phone_number|
+      [ incoming_phone_number.decorated.number_formatted, incoming_phone_number.id ]
     end
   end
 
@@ -116,29 +112,14 @@ class MessagingServiceForm
     return if errors.any?
     return if sender_pool_select.valid?
 
-    errors.add(:phone_number_ids, :invalid)
-  end
-
-  def update_senders!
-    attributes = sender_pool_select.values_to_remove.map do |phone_number_id|
-      { phone_number_id:, messaging_service_id: nil }
-    end
-
-    attributes += sender_pool_select.values_to_add.map do |phone_number_id|
-      { phone_number_id:, messaging_service_id: messaging_service.id }
-    end
-
-    return if attributes.empty?
-
-    PhoneNumberConfiguration.upsert_all(attributes, unique_by: :phone_number_id)
+    errors.add(:incoming_phone_number_ids, :invalid)
   end
 
   def sender_pool_select
     @sender_pool_select ||= MultiSelectFormComponent.new(
-      selected_values: phone_number_ids,
-      available_values: account.phone_numbers.left_joins(:configuration)
-                                .where(phone_number_configurations: { messaging_service_id: nil }).pluck(:id),
-      existing_values: messaging_service.phone_numbers.pluck(:id)
+      selected_values: incoming_phone_number_ids,
+      available_values: account.active_incoming_phone_numbers.where(messaging_service_id: nil).pluck(:id),
+      existing_values: messaging_service.incoming_phone_numbers.pluck(:id)
     )
   end
 end

@@ -121,11 +121,11 @@ Rails.application.routes.draw do
       resource :carrier_settings, only: %i[show edit update]
       resource :home, only: :show
       resources :user_invitations, only: :update
-      resources :available_phone_numbers, only: [ :index ]
       resources :phone_numbers do
-        resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
         delete :bulk_destroy, on: :collection
       end
+      resources :available_phone_numbers, only: [ :index ]
+      resources :incoming_phone_numbers, only: [ :index, :show ]
       resources :phone_number_plans, only: [ :index, :show, :new, :create, :destroy ]
       resources :messages, only: %i[index show]
       resources :messaging_services
@@ -167,6 +167,7 @@ Rails.application.routes.draw do
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]
       resources :phone_numbers, only: %i[show index]
+      resources :incoming_phone_numbers, only: %i[show index]
       resources :phone_calls, only: %i[show index]
       resources :messages, only: %i[show index]
       resources :users, only: %i[show index]
@@ -182,7 +183,6 @@ Rails.application.routes.draw do
 
       resources :account_memberships, only: :show
       resources :sip_trunks, only: :show
-      resources :phone_number_configurations, only: :show
       resources :phone_call_events, only: :show
       resources :call_data_records, only: :show
       resources :recordings, only: :show

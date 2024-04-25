@@ -33,8 +33,12 @@ class QueueOutboundMessage < ApplicationWorkflow
   def resolve_sender
     raise(MessagingServiceError, :messaging_service_blank) if messaging_service.blank?
 
-    if (phone_number = messaging_service.phone_numbers.order("RANDOM()").first)
-      message.update!(from: phone_number.number, phone_number:)
+    if (incoming_phone_number = messaging_service.incoming_phone_numbers.order("RANDOM()").first)
+      message.update!(
+        from: incoming_phone_number.number,
+        incoming_phone_number:,
+        phone_number: incoming_phone_number.phone_number
+      )
     else
       raise(MessagingServiceError, :messaging_service_no_senders_available)
     end

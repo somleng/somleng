@@ -1,42 +1,41 @@
 require "administrate/base_dashboard"
 
-class PhoneNumberDashboard < Administrate::BaseDashboard
+class PhoneNumberPlanDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
+    phone_number: Field::BelongsTo,
     carrier: Field::BelongsTo,
-    phone_calls: Field::HasMany,
-    messages: Field::HasMany,
+    account: Field::BelongsTo,
+    canceled_by: Field::BelongsTo,
     id: Field::String,
     number: Field::String,
-    country: Field::String,
-    type: Field::String,
-    enabled: Field::String,
-    price: Field::String,
+    amount: Field::String,
+    status: Field::String,
+    canceled_at: Field::LocalTime,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
     carrier
+    account
     number
-    country
-    type
-    enabled
-    price
+    status
+    amount
     created_at
   ].freeze
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
-    country
-    type
-    price
-    carrier
     number
-    enabled
+    amount
+    status
+    phone_number
+    carrier
+    account
+    canceled_by
+    canceled_at
     created_at
     updated_at
-    phone_calls
-    messages
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze

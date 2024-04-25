@@ -14,12 +14,6 @@
         Enabled
       </th>
       <th>
-        Configured
-      </th>
-      <th>
-        Utilized
-      </th>
-      <th>
         Created At
       </th>
     </tr>
@@ -44,14 +38,6 @@
 
         <td>
           <%= phone_number.enabled? ? t("show_for.yes") : t("show_for.no") %>
-        </td>
-
-        <td>
-          <%= phone_number.configured? ? t("show_for.yes") : t("show_for.no") %>
-        </td>
-
-        <td>
-          <%= phone_number.utilized? ? t("show_for.yes") : t("show_for.no") %>
         </td>
 
         <td>

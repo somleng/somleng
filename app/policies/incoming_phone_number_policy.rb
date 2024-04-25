@@ -1,4 +1,4 @@
-class PhoneNumberConfigurationPolicy < ApplicationPolicy
+class IncomingPhoneNumberPolicy < ApplicationPolicy
   def manage?
     account_admin? || carrier_managed?
   end

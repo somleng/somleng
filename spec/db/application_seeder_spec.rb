@@ -11,6 +11,8 @@ describe ApplicationSeeder do
     expect(Account.customer_managed.count).to eq(1)
     expect(ErrorLogNotification.count).to eq(2)
     expect(PhoneNumber.count).to eq(1)
+    expect(IncomingPhoneNumber.count).to eq(1)
+    expect(PhoneNumberPlan.count).to eq(1)
     expect(PhoneCall.count).to eq(1)
     expect(SMSGateway.count).to eq(1)
 
@@ -20,9 +22,6 @@ describe ApplicationSeeder do
         default_tts_voice: be_present
       )
     end
-
-    expect(PhoneNumber.first.configuration).to be_present
-    expect(PhoneNumber.first.active_plan).to be_present
   end
 
   it "behaves idempotently" do
@@ -35,6 +34,8 @@ describe ApplicationSeeder do
     expect(Account.carrier_managed.count).to eq(1)
     expect(Account.customer_managed.count).to eq(1)
     expect(PhoneNumber.count).to eq(1)
+    expect(IncomingPhoneNumber.count).to eq(1)
+    expect(PhoneNumberPlan.count).to eq(1)
     expect(PhoneCall.count).to eq(1)
     expect(SMSGateway.count).to eq(1)
     expect(ErrorLogNotification.count).to eq(2)

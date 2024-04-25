@@ -4,15 +4,11 @@ RSpec.describe "Services", :services do
   describe "POST /services/inbound_phone_calls" do
     it "creates a phone call" do
       carrier = create(:carrier)
-      phone_number = create(
-        :phone_number,
-        :assigned_to_account,
-        carrier:,
-        number: "16189124649"
-      )
+      account = create(:account, carrier:)
       create(
-        :phone_number_configuration,
-        phone_number:,
+        :incoming_phone_number,
+        account:,
+        number: "16189124649",
         voice_url: "https://example.com/voice.xml",
         voice_method: "POST",
         status_callback_url: "https://example.com/status_callback",
@@ -73,8 +69,9 @@ RSpec.describe "Services", :services do
 
     it "handles phone numbers which aren't configured" do
       carrier = create(:carrier)
-      unconfigured_phone_number = create(
-        :phone_number, :assigned_to_account, carrier:, number: "85568308532"
+      account = create(:account, carrier:)
+      unconfigured_incoming_phone_number = create(
+        :incoming_phone_number, account:, number: "85568308532"
       )
       create(
         :sip_trunk,
@@ -101,7 +98,7 @@ RSpec.describe "Services", :services do
       expect(response.body).to match_api_response_schema("services/api_errors")
       expect(ErrorLog.last).to have_attributes(
         carrier:,
-        account: unconfigured_phone_number.account,
+        account: account,
         error_message: "Phone number 85568308532 is unconfigured."
       )
     end

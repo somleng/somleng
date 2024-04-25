@@ -1,5 +1,14 @@
 module Dashboard
-  class PhoneNumberConfigurationsController < DashboardController
+  class IncomingPhoneNumbersController < DashboardController
+    def index
+      @filtered_resources = apply_filters(scope.includes(:account))
+      @resources = paginate_resources(@filtered_resources)
+    end
+
+    def show
+      @resource = record
+    end
+
     def edit
       @resource = PhoneNumberConfigurationForm.initialize_with(record)
     end
@@ -21,15 +30,12 @@ module Dashboard
       )
     end
 
-    def phone_numbers_scope
-      parent_scope.phone_numbers
+    def scope
+      parent_scope.active_incoming_phone_numbers
     end
 
     def record
-      @record ||= begin
-        phone_number = phone_numbers_scope.find(params[:phone_number_id])
-        phone_number.configuration || phone_number.build_configuration
-      end
+      @record ||= scope.find(params[:id])
     end
   end
 end

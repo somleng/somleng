@@ -52,17 +52,19 @@ module TwilioAPI
           next base.failure(schema_helper.build_schema_error(:messaging_service_blank))
         end
 
-        phone_numbers = context[:messaging_service].phone_numbers
-        if phone_numbers.empty?
+        incoming_phone_numbers = context[:messaging_service].incoming_phone_numbers
+        if incoming_phone_numbers.empty?
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
         next if values[:From].blank?
       else
-        phone_numbers = account.phone_numbers
+        incoming_phone_numbers = account.active_incoming_phone_numbers
       end
 
-      context[:phone_number] = sender || phone_numbers.find_by(number: values[:From])
-      next if sender.present? || phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+      next if sender.present?
+
+      context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: values[:From])
+      next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
 
       base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
     end

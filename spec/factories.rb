@@ -284,47 +284,8 @@ FactoryBot.define do
   factory :phone_number do
     carrier
 
-    trait :assigned_to_account do
-      after(:build) do |phone_number|
-        phone_number.account ||= build(:account, carrier: phone_number.carrier)
-      end
-    end
-
-    trait :utilized do
-      assigned_to_account
-
-      after(:build) do |phone_number|
-        next if phone_number.utilized?
-
-        phone_number.phone_calls << build(
-          :phone_call, account: phone_number.active_plan.account, carrier: phone_number.carrier
-        )
-      end
-    end
-
     trait :disabled do
       enabled { false }
-    end
-
-    trait :configured do
-      assigned_to_account
-
-      transient do
-        messaging_service { nil }
-        sms_url { nil }
-        sms_method { nil }
-      end
-
-      after(:build) do |phone_number, evaluator|
-        phone_number.configuration ||= build(
-          :phone_number_configuration,
-          :fully_configured,
-          phone_number:,
-          messaging_service: evaluator.messaging_service,
-          sms_url: evaluator.sms_url,
-          sms_method: evaluator.sms_method
-        )
-      end
     end
 
     number { generate(:phone_number) }
@@ -332,16 +293,21 @@ FactoryBot.define do
     iso_country_code { PhoneNumberType.new.cast(number).e164? ? nil : "KH" }
   end
 
-  factory :phone_number_configuration do
-    phone_number
+  factory :incoming_phone_number do
+    transient do
+      type { :mobile }
+    end
+
+    account
+    number { generate(:phone_number) }
+    phone_number_plan { association :phone_number_plan, :active, account:, number:, type: }
+    carrier { account.carrier }
+    phone_number { phone_number_plan.phone_number }
 
     trait :fully_configured do
       voice_url { "https://demo.twilio.com/docs/voice.xml" }
-      voice_method { "GET" }
       status_callback_url { "https://example.com/status-callback" }
-      status_callback_method { "POST" }
       sms_url { "https://demo.twilio.com/docs/messaging.xml" }
-      sms_method { "GET" }
     end
   end
 
@@ -653,14 +619,18 @@ FactoryBot.define do
   end
 
   factory :phone_number_plan do
+    transient do
+      type { :mobile }
+    end
+
     account
     carrier { account.carrier }
     amount { Money.from_amount(1.15, account.billing_currency) }
-    number { "1294" }
+    number { generate(:phone_number) }
     status { :canceled }
 
     trait :active do
-      phone_number { association :phone_number, carrier:, price: amount, number: }
+      phone_number { association :phone_number, carrier:, price: amount, number:, type: }
       status { :active }
     end
 

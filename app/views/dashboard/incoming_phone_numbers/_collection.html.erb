@@ -1,0 +1,71 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Number
+      </th>
+      <th>
+        Country
+      </th>
+      <th>
+        Friendly Name
+      </th>
+      <th>
+        Active Configuration
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |incoming_phone_number| %>
+      <% incoming_phone_number = incoming_phone_number.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(incoming_phone_number.number_formatted, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
+        </td>
+
+        <td>
+          <%= incoming_phone_number.country&.emoji_flag %>
+          <%= incoming_phone_number.country&.iso_short_name %>
+        </td>
+
+        <td>
+          <%= incoming_phone_number.friendly_name %>
+        </td>
+
+        <td>
+          <dl class="row" >
+            <dt class="col-sm-2 text-truncate"><small>Voice:</small></dt>
+            <dd class="col-sm-10 text-truncate">
+              <small>
+                <% if incoming_phone_number.voice_url.present? %>
+                  <span class="text-muted">
+                    Webhook to <%= incoming_phone_number.voice_method %>:
+                  </span>
+                  <%= incoming_phone_number.voice_url %>
+                <% else %>
+                  <%= translate("show_for.blank") %>
+                <% end %>
+              </small>
+            </dd>
+            <dt class="col-sm-2 text-truncate">
+              <small>SMS:</small>
+            </dt>
+            <dd class="col-sm-10 text-truncate">
+              <small>
+                <% if incoming_phone_number.sms_url.present? %>
+                  <span class="text-muted">
+                    Webhook to <%= incoming_phone_number.sms_method %>:
+                  </span>
+                  <%= incoming_phone_number.sms_url %>
+                <% else %>
+                  <%= translate("show_for.blank") %>
+                <% end %>
+              </small>
+            </dd>
+          </dl>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

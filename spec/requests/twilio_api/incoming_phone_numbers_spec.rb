@@ -22,20 +22,22 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     example "Read a list of Incoming Phone Numbers" do
-      account = create(:account)
-      phone_number = create(:phone_number, number: "12513095500", account:, carrier: account.carrier)
-      create(:phone_number, number: "12513095501", account:, carrier: account.carrier)
+      incoming_phone_number = create(
+        :incoming_phone_number,
+        number: "12513095500"
+      )
+      create(:incoming_phone_number, number: "12513095501", account: incoming_phone_number.account)
 
-      set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, PhoneNumber: "+12513095500")
+      set_twilio_api_authorization_header(incoming_phone_number.account)
+      do_request(account_sid: incoming_phone_number.account_id, PhoneNumber: "+12513095500")
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/incoming_phone_number")
       expect(json_response.fetch("incoming_phone_numbers").count).to eq(1)
       expect(json_response.dig("incoming_phone_numbers", 0)).to include(
         "phone_number" => "+12513095500",
-        "account_sid" => account.id,
-        "sid" => phone_number.id
+        "account_sid" => incoming_phone_number.account_id,
+        "sid" => incoming_phone_number.id
       )
     end
 
@@ -58,11 +60,10 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     HEREDOC
 
     example "Fetch an IncomingPhoneNumber resource" do
-      account = create(:account)
-      phone_number = create(:phone_number, number: "12513095500", account:, carrier: account.carrier)
+      incoming_phone_number = create(:incoming_phone_number, number: "12513095500")
 
-      set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, sid: phone_number.id)
+      set_twilio_api_authorization_header(incoming_phone_number.account)
+      do_request(account_sid: incoming_phone_number.account.id, sid: incoming_phone_number.id)
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/incoming_phone_number")
@@ -121,7 +122,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
 
     example "Provision a Phone Number" do
       account = create(:account)
-      phone_number = create(:phone_number, number: "12513095500", carrier: account.carrier)
+      create(:phone_number, number: "12513095500", carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(
@@ -132,7 +133,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
       expect(response_status).to eq(201)
       expect(response_body).to match_api_response_schema("twilio_api/incoming_phone_number")
       expect(json_response).to include(
-        "sid" => phone_number.id
+        "phone_number" => "+12513095500"
       )
     end
 
@@ -228,13 +229,12 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     example "Update IncomingPhoneNumber to use a new Voice URL" do
-      account = create(:account)
-      phone_number = create(:phone_number, account:, carrier: account.carrier)
+      incoming_phone_number = create(:incoming_phone_number)
 
-      set_twilio_api_authorization_header(account)
+      set_twilio_api_authorization_header(incoming_phone_number.account)
       do_request(
-        account_sid: account.id,
-        sid: phone_number.id,
+        account_sid: incoming_phone_number.account.id,
+        sid: incoming_phone_number.id,
         VoiceUrl: "https://www.your-voice-url.com/example"
       )
 
@@ -257,20 +257,21 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     HEREDOC
 
     example "Delete an IncomingPhoneNumber" do
-      account = create(:account)
-      phone_number = create(:phone_number, carrier: account.carrier)
-      plan = create(:phone_number_plan, :active, account:, phone_number:)
+      incoming_phone_number = create(:incoming_phone_number)
 
-      set_twilio_api_authorization_header(account)
+      set_twilio_api_authorization_header(incoming_phone_number.account)
       do_request(
-        account_sid: account.id,
-        sid: phone_number.id
+        account_sid: incoming_phone_number.account.id,
+        sid: incoming_phone_number.id
       )
 
       expect(response_status).to eq(204)
-      expect(plan.reload).to have_attributes(
-        status: "canceled",
-        canceled_at: be_present
+      expect(incoming_phone_number.reload).to have_attributes(
+        status: "inactive",
+        phone_number_plan: have_attributes(
+          status: "canceled",
+          canceled_at: be_present
+        )
       )
     end
   end

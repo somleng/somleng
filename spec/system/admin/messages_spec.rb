@@ -7,7 +7,7 @@ RSpec.describe "Admin/Messages" do
       :sms_gateway_channel_group,
       sms_gateway:,
       name: "Smart",
-      route_prefixes: ["85510"]
+      route_prefixes: [ "85510" ]
     )
     account = create(:account, carrier: sms_gateway.carrier, name: "Rocket Rides")
     messaging_service = create(
@@ -17,9 +17,8 @@ RSpec.describe "Admin/Messages" do
       name: "My Messaging Service",
       inbound_request_url: "https://example.com/messages.xml"
     )
-    phone_number = create(
-      :phone_number,
-      :configured,
+    incoming_phone_number = create(
+      :incoming_phone_number,
       number: "855718224112",
       messaging_service:,
       account:
@@ -30,7 +29,7 @@ RSpec.describe "Admin/Messages" do
       account:,
       sms_gateway:,
       messaging_service:,
-      phone_number:
+      incoming_phone_number:
     )
     internal_message = create(:message, :internal)
 
@@ -41,7 +40,7 @@ RSpec.describe "Admin/Messages" do
     click_on("855718224112")
 
     expect(page).to have_link("Rocket Rides", href: admin_account_path(account))
-    expect(page).to have_link("855718224112", href: admin_phone_number_path(phone_number))
+    expect(page).to have_link("855718224112", href: admin_incoming_phone_number_path(incoming_phone_number))
 
     click_on("My Messaging Service")
 

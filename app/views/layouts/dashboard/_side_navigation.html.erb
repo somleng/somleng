@@ -17,7 +17,7 @@
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
-    <% if %i[phone_number phone_number_plan available_phone_number].any? { |r| policy(r).index? } %>
+    <% if %i[phone_number incoming_phone_number phone_number_plan available_phone_number].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-hashtag"></i> Phone Numbers
@@ -25,11 +25,15 @@
 
         <ul class="nav-group-items">
           <% if policy(:phone_number).index? %>
-            <%= sidebar_nav("Manage", dashboard_phone_numbers_path, icon_class: "fa-solid fa-list-ol") %>
+            <%= sidebar_nav("Manage Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-list-ol") %>
+          <% end %>
+
+          <% if policy(:incoming_phone_number).index? %>
+            <%= sidebar_nav("Active Numbers", dashboard_incoming_phone_numbers_path, icon_class: "fa-solid fa-check-double") %>
           <% end %>
 
           <% if policy(:available_phone_number).index? %>
-            <%= sidebar_nav("Available", dashboard_available_phone_numbers_path, icon_class: "fa-solid fa-cart-plus") %>
+            <%= sidebar_nav("Available Numbers", dashboard_available_phone_numbers_path, icon_class: "fa-solid fa-cart-plus") %>
           <% end %>
 
           <% if policy(:phone_number_plan).index? %>

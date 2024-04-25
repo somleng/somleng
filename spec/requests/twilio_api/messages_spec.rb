@@ -138,10 +138,11 @@ RSpec.resource "Messages", document: :twilio_api do
       create(:sms_gateway, carrier: account.carrier)
       messaging_service = create(
         :messaging_service,
-        account:, carrier: account.carrier,
+        account:,
+        carrier: account.carrier,
         status_callback_url: "https://www.example.com/message_status_callback"
       )
-      create(:phone_number, :configured, messaging_service:, account:, carrier: account.carrier)
+      create(:incoming_phone_number, messaging_service:, account:)
       stub_request(:post, "https://www.example.com/message_status_callback")
 
       set_twilio_api_authorization_header(account)
@@ -172,11 +173,9 @@ RSpec.resource "Messages", document: :twilio_api do
       create(:sms_gateway, carrier: account.carrier)
       messaging_service = create(:messaging_service, account:, carrier: account.carrier)
       create(
-        :phone_number,
-        :configured,
+        :incoming_phone_number,
         messaging_service:,
-        account:,
-        carrier: account.carrier
+        account:
       )
 
       set_twilio_api_authorization_header(account)

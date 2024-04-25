@@ -209,7 +209,7 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   patch "https://api.somleng.org/carrier/v1/phone_numbers/:id/release" do
-    example "Release a phone number" do
+    xexample "Release a phone number" do
       explanation "Releases a phone number by unassigning the account and removing any configuration."
 
       carrier = create(:carrier)

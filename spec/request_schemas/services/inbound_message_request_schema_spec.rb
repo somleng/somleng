@@ -35,7 +35,7 @@ module Services
 
     it "normalizes the output" do
       carrier = create(:carrier)
-      account = create(:account)
+      account = create(:account, carrier:)
       sms_gateway = create(:sms_gateway, carrier:)
       messaging_service = create(
         :messaging_service,
@@ -43,11 +43,11 @@ module Services
         carrier:,
         account:
       )
-      phone_number = create(:phone_number, account:, carrier:, number: "855715222222")
-      create(
-        :phone_number_configuration,
-        phone_number:,
+      incoming_phone_number = create(
+        :incoming_phone_number,
+        account:,
         messaging_service:,
+        number: "855715222222",
         sms_url: "https://www.example.com/message.xml",
         sms_method: "GET"
       )
@@ -67,7 +67,7 @@ module Services
         account:,
         to: "855715222222",
         from: "855716100230",
-        phone_number:,
+        incoming_phone_number:,
         messaging_service:,
         sms_url: "https://www.example.com/message.xml",
         sms_method: "GET",

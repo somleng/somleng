@@ -47,44 +47,6 @@ RSpec.describe PhoneNumber do
     end
   end
 
-  describe ".configured" do
-    it "returns configured phone numbers" do
-      configured_phone_number_with_messaging_service = create_configured_phone_number(
-        messaging_service: true
-      )
-      configured_phone_number_with_sms_url = create_configured_phone_number(sms_url: true)
-      configured_phone_nuber_with_voice_url = create_configured_phone_number(voice_url: true)
-      _unconfigured_phone_number = create_configured_phone_number
-
-      result = PhoneNumber.configured
-
-      expect(result).to match_array(
-        [
-          configured_phone_number_with_messaging_service,
-          configured_phone_number_with_sms_url,
-          configured_phone_nuber_with_voice_url
-        ]
-      )
-    end
-  end
-
-  describe ".unconfigured" do
-    it "returns unconfigured phone numbers" do
-      create(:phone_number, :configured)
-      unconfigured_phone_number = create(:phone_number)
-      phone_number_with_empty_configuration = create_configured_phone_number
-
-      result = PhoneNumber.unconfigured
-
-      expect(result).to match_array(
-        [
-          unconfigured_phone_number,
-          phone_number_with_empty_configuration
-        ]
-      )
-    end
-  end
-
   describe ".supported_countries" do
     it "returns the supported countries" do
       create(:phone_number, number: "15064043338", iso_country_code: "CA")
@@ -143,24 +105,6 @@ RSpec.describe PhoneNumber do
         canceled_at: be_present
       )
     end
-  end
-
-  def create_configured_phone_number(**params)
-    defaults = attributes_for(:phone_number_configuration, :fully_configured)
-    configuration_params = {}
-
-    if params.delete(:messaging_service)
-      configuration_params[:messaging_service] = create(:messaging_service)
-      params[:account] = configuration_params[:messaging_service].account
-    end
-
-    configuration_params[:sms_url] = params.delete(:sms_url) && defaults.fetch(:sms_url)
-    configuration_params[:voice_url] = params.delete(:voice_url) && defaults.fetch(:voice_url)
-
-    phone_number = create(:phone_number, **params)
-    create(:phone_number_configuration, phone_number:, **configuration_params)
-
-    phone_number
   end
 
   def create_utilized_phone_number(**params)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -45,6 +45,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.string "default_tts_voice", null: false
     t.string "type", null: false
     t.string "billing_currency", null: false
+    t.index ["billing_currency"], name: "index_accounts_on_billing_currency"
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
@@ -116,6 +117,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.citext "custom_api_host"
     t.text "custom_theme_css"
     t.string "billing_currency", null: false
+    t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
@@ -189,6 +191,34 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.index ["carrier_id"], name: "index_imports_on_carrier_id"
     t.index ["sequence_number"], name: "index_imports_on_sequence_number", unique: true, order: :desc
     t.index ["user_id"], name: "index_imports_on_user_id"
+  end
+
+  create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "phone_number_plan_id", null: false
+    t.uuid "account_id", null: false
+    t.uuid "carrier_id", null: false
+    t.uuid "phone_number_id"
+    t.uuid "messaging_service_id"
+    t.string "number", null: false
+    t.string "status", null: false
+    t.string "voice_url"
+    t.string "voice_method", null: false
+    t.string "sms_url"
+    t.string "sms_method", null: false
+    t.string "status_callback_url"
+    t.string "status_callback_method", null: false
+    t.string "sip_domain"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_incoming_phone_numbers_on_account_id"
+    t.index ["carrier_id"], name: "index_incoming_phone_numbers_on_carrier_id"
+    t.index ["messaging_service_id"], name: "index_incoming_phone_numbers_on_messaging_service_id"
+    t.index ["number"], name: "index_incoming_phone_numbers_on_number"
+    t.index ["phone_number_id"], name: "index_incoming_phone_numbers_on_phone_number_id"
+    t.index ["phone_number_plan_id"], name: "index_incoming_phone_numbers_on_phone_number_plan_id", unique: true
+    t.index ["sequence_number"], name: "index_incoming_phone_numbers_on_sequence_number", unique: true, order: :desc
+    t.index ["status", "phone_number_id"], name: "index_incoming_phone_numbers_on_status_and_phone_number_id", unique: true, where: "((status)::text = 'active'::text)"
   end
 
   create_table "interactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -280,9 +310,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.uuid "messaging_service_id"
     t.datetime "delivered_at"
     t.boolean "internal", default: false, null: false
+    t.uuid "incoming_phone_number_id"
     t.index ["account_id"], name: "index_messages_on_account_id"
     t.index ["carrier_id"], name: "index_messages_on_carrier_id"
     t.index ["created_at"], name: "index_messages_on_created_at"
+    t.index ["incoming_phone_number_id"], name: "index_messages_on_incoming_phone_number_id"
     t.index ["internal"], name: "index_messages_on_internal"
     t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
@@ -413,6 +445,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.datetime "initiated_at"
     t.datetime "initiating_at"
     t.boolean "internal", default: false, null: false
+    t.uuid "incoming_phone_number_id"
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
@@ -424,6 +457,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.index ["direction"], name: "index_phone_calls_on_direction"
     t.index ["external_id"], name: "index_phone_calls_on_external_id", unique: true
     t.index ["from"], name: "index_phone_calls_on_from"
+    t.index ["incoming_phone_number_id"], name: "index_phone_calls_on_incoming_phone_number_id"
     t.index ["initiated_at"], name: "index_phone_calls_on_initiated_at"
     t.index ["initiating_at"], name: "index_phone_calls_on_initiating_at"
     t.index ["internal"], name: "index_phone_calls_on_internal"
@@ -436,24 +470,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
     t.index ["status"], name: "index_phone_calls_on_status"
     t.index ["to"], name: "index_phone_calls_on_to"
-  end
-
-  create_table "phone_number_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "phone_number_id", null: false
-    t.string "voice_url"
-    t.string "voice_method"
-    t.string "status_callback_url"
-    t.string "status_callback_method"
-    t.string "sip_domain"
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "sms_url"
-    t.string "sms_method"
-    t.uuid "messaging_service_id"
-    t.index ["messaging_service_id"], name: "index_phone_number_configurations_on_messaging_service_id"
-    t.index ["phone_number_id"], name: "index_phone_number_configurations_on_phone_number_id", unique: true
-    t.index ["sequence_number"], name: "index_phone_number_configurations_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "phone_number_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -774,6 +790,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
   add_foreign_key "exports", "users", on_delete: :cascade
   add_foreign_key "imports", "carriers", on_delete: :cascade
   add_foreign_key "imports", "users", on_delete: :cascade
+  add_foreign_key "incoming_phone_numbers", "accounts"
+  add_foreign_key "incoming_phone_numbers", "carriers"
+  add_foreign_key "incoming_phone_numbers", "messaging_services", on_delete: :nullify
+  add_foreign_key "incoming_phone_numbers", "phone_number_plans"
+  add_foreign_key "incoming_phone_numbers", "phone_numbers", on_delete: :nullify
   add_foreign_key "interactions", "accounts"
   add_foreign_key "interactions", "carriers"
   add_foreign_key "interactions", "messages", on_delete: :nullify
@@ -784,6 +805,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
   add_foreign_key "media_streams", "phone_calls"
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
+  add_foreign_key "messages", "incoming_phone_numbers"
   add_foreign_key "messages", "messaging_services", on_delete: :nullify
   add_foreign_key "messages", "phone_numbers", on_delete: :nullify
   add_foreign_key "messages", "sms_gateways", on_delete: :nullify
@@ -795,10 +817,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_121945) do
   add_foreign_key "phone_call_events", "phone_calls"
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "carriers"
+  add_foreign_key "phone_calls", "incoming_phone_numbers"
   add_foreign_key "phone_calls", "phone_numbers", on_delete: :nullify
   add_foreign_key "phone_calls", "sip_trunks", on_delete: :nullify
-  add_foreign_key "phone_number_configurations", "messaging_services", on_delete: :nullify
-  add_foreign_key "phone_number_configurations", "phone_numbers", on_delete: :cascade
   add_foreign_key "phone_number_plans", "accounts"
   add_foreign_key "phone_number_plans", "carriers"
   add_foreign_key "phone_number_plans", "phone_numbers", on_delete: :nullify

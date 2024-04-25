@@ -20,10 +20,10 @@ module Services
       next unless key?
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      context[:phone_number] = sms_gateway.carrier.phone_numbers.find_by(number: value)
+      context[:incoming_phone_number] = sms_gateway.carrier.active_incoming_phone_numbers.find_by(number: value)
 
-      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number]) do
-        InboundMessageBehavior.new(context[:phone_number]).configured?
+      next if phone_number_configuration_rules.valid?(context[:incoming_phone_number]) do
+        InboundMessageBehavior.new(context[:incoming_phone_number]).configured?
       end
 
       error_message = format(phone_number_configuration_rules.error_message, value:)
@@ -47,18 +47,19 @@ module Services
 
     def output
       params = super
-      phone_number = context.fetch(:phone_number)
+      incoming_phone_number = context.fetch(:incoming_phone_number)
       body = params.fetch(:body)
       encoding_result = sms_encoding.detect(body)
 
-      request_url, request_method = inbound_message_behavior.call(phone_number).webhook_request
+      request_url, request_method = inbound_message_behavior.call(incoming_phone_number).webhook_request
 
       {
-        account: phone_number.account,
+        account: incoming_phone_number.account,
         carrier: sms_gateway.carrier,
         sms_gateway:,
-        phone_number:,
-        messaging_service: phone_number.configuration.messaging_service,
+        incoming_phone_number:,
+        phone_number: incoming_phone_number.phone_number,
+        messaging_service: incoming_phone_number.messaging_service,
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         body:,

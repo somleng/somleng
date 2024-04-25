@@ -12,6 +12,7 @@ class Message < ApplicationRecord
   belongs_to :account
   belongs_to :sms_gateway, optional: true
   belongs_to :phone_number, optional: true
+  belongs_to :incoming_phone_number, optional: true
   belongs_to :messaging_service, optional: true
   has_one :interaction
   has_many :events

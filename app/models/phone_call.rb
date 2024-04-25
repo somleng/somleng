@@ -16,6 +16,7 @@ class PhoneCall < ApplicationRecord
   belongs_to :carrier
   belongs_to :account
   belongs_to :phone_number, optional: true
+  belongs_to :incoming_phone_number, optional: true
   belongs_to :sip_trunk, optional: true
 
   has_one    :call_data_record, -> { where(call_leg: :A) }

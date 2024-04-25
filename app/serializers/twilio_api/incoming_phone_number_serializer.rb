@@ -87,20 +87,12 @@ module TwilioAPI
 
     def sms_fallback_url; end
 
-    def sms_url
-      object.configuration&.sms_url
-    end
-
-    def sms_method
-      object.configuration&.sms_method || "POST"
-    end
-
     def status_callback
-      object.configuration&.status_callback_url
+      object.status_callback_url
     end
 
     def status_callback_method
-      object.configuration&.status_callback_method || "POST"
+      object.status_callback_method
     end
 
     def trunk_sid; end
@@ -120,14 +112,6 @@ module TwilioAPI
 
     def voice_fallback_url; end
 
-    def voice_method
-      object.configuration&.voice_method || "POST"
-    end
-
-    def voice_url
-      object.configuration&.voice_url
-    end
-
     def bundle_sid; end
 
     def voice_receive_mode
@@ -136,14 +120,6 @@ module TwilioAPI
 
     def status
       "in-use"
-    end
-
-    def date_created
-      format_time(object.active_plan.created_at)
-    end
-
-    def date_updated
-      format_time(object.active_plan.created_at)
     end
   end
 end

@@ -21,12 +21,9 @@ class PhoneNumber < ApplicationRecord
   belongs_to :carrier
   has_many :phone_calls
   has_many :messages
-  has_one :configuration, class_name: "PhoneNumberConfiguration"
   has_one :active_plan, -> { active }, class_name: "PhoneNumberPlan"
   has_one :account, through: :active_plan
   has_many :plans, class_name: "PhoneNumberPlan"
-
-  delegate :configured?, to: :configuration, allow_nil: true
 
   validates :number,
             presence: true,
@@ -82,14 +79,6 @@ class PhoneNumber < ApplicationRecord
                             .where(phone_calls: { phone_number_id: nil }, messages: { phone_number_id: nil })
 
       unassigned.or(where(id: assigned_unutilized.select(:id)))
-    end
-
-    def configured
-      joins(:configuration).merge(PhoneNumberConfiguration.configured)
-    end
-
-    def unconfigured
-      left_joins(:configuration).merge(PhoneNumberConfiguration.unconfigured)
     end
 
     def release_all

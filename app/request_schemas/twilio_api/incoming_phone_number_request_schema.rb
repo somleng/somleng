@@ -1,6 +1,6 @@
 module TwilioAPI
   class IncomingPhoneNumberRequestSchema < TwilioAPIRequestSchema
-    option :phone_number, optional: true
+    option :incoming_phone_number, optional: true
     option :url_validator, default: -> { URLValidator.new(allow_http: true) }
 
     params do
@@ -8,25 +8,22 @@ module TwilioAPI
       optional(:VoiceUrl).filled(:str?)
       optional(:VoiceMethod).filled(
         ApplicationRequestSchema::Types::UppercaseString,
-        included_in?: PhoneNumberConfiguration.voice_method.values
+        included_in?: IncomingPhoneNumber.voice_method.values
       )
       optional(:SmsUrl).filled(:str?)
       optional(:SmsMethod).filled(
         ApplicationRequestSchema::Types::UppercaseString,
-        included_in?: PhoneNumberConfiguration.sms_method.values
+        included_in?: IncomingPhoneNumber.sms_method.values
       )
       optional(:StatusCallback).filled(:str?)
       optional(:StatusCallbackMethod).filled(
         ApplicationRequestSchema::Types::UppercaseString,
-        included_in?: PhoneNumberConfiguration.status_callback_method.values
+        included_in?: IncomingPhoneNumber.status_callback_method.values
       )
     end
 
     rule(:PhoneNumber) do |context:|
-      if phone_number.present?
-        context[:phone_number] = phone_number
-        next
-      end
+      next if incoming_phone_number.present?
 
       context[:phone_number] = account.available_phone_numbers.find_by(number: value)
       key.failure("does not exist") if context[:phone_number].blank?
@@ -56,21 +53,15 @@ module TwilioAPI
     def output
       params = super
 
-      result = {
-        account:,
-        phone_number: context.fetch(:phone_number)
-      }
-
-      configuration = {}
-      configuration[:voice_url] = params.fetch(:VoiceUrl) if params.key?(:VoiceUrl)
-      configuration[:voice_method] = params.fetch(:VoiceMethod) if params.key?(:VoiceMethod)
-      configuration[:sms_url] = params.fetch(:SmsUrl) if params.key?(:SmsUrl)
-      configuration[:sms_method] = params.fetch(:SmsMethod) if params.key?(:SmsMethod)
-      configuration[:status_callback_url] = params.fetch(:StatusCallback) if params.key?(:StatusCallback)
-      configuration[:status_callback_method] = params.fetch(:StatusCallbackMethod) if params.key?(:StatusCallbackMethod)
-
-      result[:configuration] = configuration if configuration.any?
-
+      result = {}
+      result[:account] = account
+      result[:phone_number] = context.fetch(:phone_number) if context.key?(:phone_number)
+      result[:voice_url] = params.fetch(:VoiceUrl) if params.key?(:VoiceUrl)
+      result[:voice_method] = params.fetch(:VoiceMethod) if params.key?(:VoiceMethod)
+      result[:sms_url] = params.fetch(:SmsUrl) if params.key?(:SmsUrl)
+      result[:sms_method] = params.fetch(:SmsMethod) if params.key?(:SmsMethod)
+      result[:status_callback_url] = params.fetch(:StatusCallback) if params.key?(:StatusCallback)
+      result[:status_callback_method] = params.fetch(:StatusCallbackMethod) if params.key?(:StatusCallbackMethod)
       result
     end
   end

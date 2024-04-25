@@ -22,32 +22,27 @@ module TwilioAPI
         schema_options: { account: current_account },
         **serializer_options
       ) do |permitted_params|
-        configuration = permitted_params.delete(:configuration)
-        PhoneNumberPlan.transaction do
-          UpdatePhoneNumberConfiguration.call(permitted_params.fetch(:phone_number), configuration) if configuration.present?
-          PhoneNumberPlan.create!(permitted_params).phone_number
-        end
+        IncomingPhoneNumber.create!(permitted_params)
       end
     end
 
     def update
-      phone_number = scope.find(params[:id])
+      incoming_phone_number = scope.find(params[:id])
 
       validate_request_schema(
         with: IncomingPhoneNumberRequestSchema,
-        schema_options: { account: current_account, phone_number: },
+        schema_options: { account: current_account, incoming_phone_number: },
         status: :ok,
         **serializer_options
       ) do |permitted_params|
-        configuration = permitted_params.delete(:configuration)
-        UpdatePhoneNumberConfiguration.call(phone_number, configuration) if configuration.present?
-        phone_number
+        incoming_phone_number.update!(permitted_params)
+        incoming_phone_number
       end
     end
 
     def destroy
-      phone_number = scope.find(params[:id])
-      phone_number.release!
+      incoming_phone_number = scope.find(params[:id])
+      incoming_phone_number.release!
     end
 
     private
@@ -57,7 +52,7 @@ module TwilioAPI
     end
 
     def scope
-      current_account.phone_numbers
+      current_account.active_incoming_phone_numbers
     end
 
     def serializer_options

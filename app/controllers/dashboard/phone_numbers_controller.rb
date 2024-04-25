@@ -1,7 +1,7 @@
 module Dashboard
   class PhoneNumbersController < DashboardController
     def index
-      @filtered_resources = apply_filters(phone_numbers_scope.includes(:account))
+      @filtered_resources = apply_filters(scope.includes(:account))
       @resources = paginate_resources(@filtered_resources)
     end
 
@@ -45,7 +45,7 @@ module Dashboard
     end
 
     def bulk_destroy
-      @resources = apply_filters(phone_numbers_scope)
+      @resources = apply_filters(scope)
       ApplicationRecord.transaction do
         @resources.release_all
         @resources.destroy_all
@@ -60,8 +60,8 @@ module Dashboard
       params.require(:phone_number)
     end
 
-    def phone_numbers_scope
-      parent_scope.phone_numbers
+    def scope
+      current_carrier.phone_numbers
     end
 
     def initialize_form(params = {})
@@ -71,7 +71,7 @@ module Dashboard
     end
 
     def record
-      @record ||= phone_numbers_scope.find(params[:id])
+      @record ||= scope.find(params[:id])
     end
   end
 end

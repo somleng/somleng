@@ -1,0 +1,52 @@
+<% incoming_phone_number = @resource.decorated %>
+
+<%= page_title(title: incoming_phone_number.friendly_name) %>
+
+<div class="card-body">
+  <%= show_for(incoming_phone_number) do |f| %>
+    <div id="properties" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Properties</h5>
+
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= incoming_phone_number.id %>
+          </code>
+        <% end %>
+
+        <%= f.attribute :number, value: incoming_phone_number.number_formatted %>
+        <%= f.attribute :friendly_name %>
+        <%= f.attribute :type, value: incoming_phone_number.type_formatted %>
+
+        <% if incoming_phone_number.country.present? %>
+          <%= f.attribute :country do %>
+            <%= @resource.country.emoji_flag %>
+            <%= @resource.country.iso_short_name %>
+          <% end %>
+        <% else %>
+          <%= f.attribute :country %>
+        <% end %>
+
+        <% if policy(:phone_call).index? %>
+          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { incoming_phone_number_id: incoming_phone_number.id }), title: "View phone calls") %>
+        <% end %>
+
+        <% if policy(:message).index? %>
+          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { incoming_phone_number_id: incoming_phone_number.id }), title: "View messages") %>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="configuration" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Configuration</h5>
+        <%= f.attribute :voice_url %>
+        <%= f.attribute :voice_method %>
+        <%= f.attribute :sms_url %>
+        <%= f.attribute :sms_method %>
+        <%= f.attribute :status_callback_url %>
+        <%= f.attribute :status_callback_method %>
+      </div>
+    </div>
+  <% end %>
+</div>

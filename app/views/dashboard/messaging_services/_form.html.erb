@@ -35,10 +35,10 @@
           <div class="row">
             <div class="col-sm-12">
               <%= f.input(
-                :phone_number_ids,
+                :incoming_phone_number_ids,
                 label: "Phone numbers",
-                collection: resource.phone_numbers_options_for_select,
-                selected: resource.phone_number_ids,
+                collection: resource.incoming_phone_numbers_options_for_select,
+                selected: resource.incoming_phone_number_ids,
                 input_html: {
                   multiple: true,
                   data: {
