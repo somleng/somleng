@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/zipmark/rspec_api_documentation.git
-  revision: d3892cc7388460a98476734963face5a7a2ac158
+  revision: d32bf17932a379052e8bb7540fc29ce7e72712ae
   specs:
     rspec_api_documentation (6.1.0)
       activesupport (>= 3.0.0)
