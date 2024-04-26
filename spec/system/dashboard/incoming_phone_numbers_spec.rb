@@ -99,6 +99,7 @@ RSpec.describe "Incoming Phone Numbers" do
     visit dashboard_incoming_phone_number_path(incoming_phone_number)
     click_on("Edit")
 
+    fill_in("Friendly name", with: "My Awesome Phone Number")
     fill_in("Voice URL", with: "https://www.example.com/voice.xml")
     select("GET", from: "Voice method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
@@ -110,6 +111,10 @@ RSpec.describe "Incoming Phone Numbers" do
     click_on("Update +1 (251) 309-5500")
 
     expect(page).to have_content("Phone number configuration was successfully updated.")
+
+    within("#properties") do
+      expect(page).to have_content("My Awesome Phone Number")
+    end
 
     within("#voice-configuration") do
       expect(page).to have_content("https://www.example.com/voice.xml")

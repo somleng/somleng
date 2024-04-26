@@ -5,6 +5,7 @@ module TwilioAPI
 
     params do
       optional(:PhoneNumber).maybe(ApplicationRequestSchema::Types::Number, :filled?)
+      optional(:FriendlyName).filled(:str?, max_size?: 64)
       optional(:VoiceUrl).filled(:str?)
       optional(:VoiceMethod).filled(
         ApplicationRequestSchema::Types::UppercaseString,
@@ -56,6 +57,7 @@ module TwilioAPI
       result = {}
       result[:account] = account
       result[:phone_number] = context.fetch(:phone_number) if context.key?(:phone_number)
+      result[:friendly_name] = params.fetch(:FriendlyName) if params.key?(:FriendlyName)
       result[:voice_url] = params.fetch(:VoiceUrl) if params.key?(:VoiceUrl)
       result[:voice_method] = params.fetch(:VoiceMethod) if params.key?(:VoiceMethod)
       result[:sms_url] = params.fetch(:SmsUrl) if params.key?(:SmsUrl)

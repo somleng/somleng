@@ -24,6 +24,24 @@ module TwilioAPI
       ).not_to have_valid_field(:PhoneNumber)
     end
 
+    it "validates FriendlyName" do
+      expect(
+        validate_request_schema(
+          input_params: {
+            FriendlyName: "My Awesome Number"
+          }
+        )
+      ).to have_valid_field(:FriendlyName)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            FriendlyName: "A" * 65
+          }
+        )
+      ).not_to have_valid_field(:FriendlyName)
+    end
+
     it "validates VoiceUrl" do
       expect(
         validate_request_schema(
@@ -140,6 +158,7 @@ module TwilioAPI
       schema = validate_request_schema(
         input_params: {
           PhoneNumber: "+12513095500",
+          FriendlyName: "My Awesome Phone Number",
           VoiceUrl: "https://example.com/voice",
           VoiceMethod: "GET",
           SmsUrl: "https://example.com/sms",
@@ -153,6 +172,7 @@ module TwilioAPI
       expect(schema.output).to eq(
         account:,
         phone_number:,
+        friendly_name: "My Awesome Phone Number",
         voice_url: "https://example.com/voice",
         voice_method: "GET",
         sms_url: "https://example.com/sms",

@@ -29,6 +29,7 @@ module Dashboard
 
     def permitted_params
       params.require(:incoming_phone_number).permit(
+        :friendly_name,
         :voice_url, :voice_method, :status_callback_url, :status_callback_method, :sip_domain,
         :sms_url, :sms_method, :messaging_service_id
       )

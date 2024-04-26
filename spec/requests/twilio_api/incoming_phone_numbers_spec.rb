@@ -68,7 +68,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
   end
 
   post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/IncomingPhoneNumbers" do
-    # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#fetch-an-incomingphonenumber-resource
+    # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#create-an-incomingphonenumber-resource
 
     explanation <<~HEREDOC
       Create an IncomingPhoneNumber resource
@@ -79,6 +79,12 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
       :PhoneNumber,
       "The phone number to purchase specified in E.164 format.",
       required: true
+    )
+
+    parameter(
+      :FriendlyName,
+      "A descriptive string that you created to describe the new phone number. It can be up to 64 characters long. By default, this is a formatted version of the new phone number.",
+      required: false
     )
 
     parameter(
@@ -188,6 +194,12 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
 
   post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/IncomingPhoneNumbers/:sid" do
     # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#update-an-incomingphonenumber-resource
+
+    parameter(
+      :FriendlyName,
+      "A descriptive string that you created to describe the new phone number. It can be up to 64 characters long. By default, this is a formatted version of the new phone number.",
+      required: false
+    )
 
     parameter(
       :SmsUrl,

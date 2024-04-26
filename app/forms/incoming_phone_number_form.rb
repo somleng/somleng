@@ -2,6 +2,7 @@ class IncomingPhoneNumberForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  attribute :friendly_name
   attribute :voice_url
   attribute :voice_method
   attribute :status_callback_url
@@ -26,6 +27,8 @@ class IncomingPhoneNumberForm
 
   delegate :persisted?, :new_record?, :id, to: :incoming_phone_number
 
+  validates :friendly_name, presence: true, length: { maximum: 64 }
+
   def self.model_name
     ActiveModel::Name.new(self, nil, "IncomingPhoneNumber")
   end
@@ -33,6 +36,7 @@ class IncomingPhoneNumberForm
   def self.initialize_with(incoming_phone_number)
     new(
       incoming_phone_number:,
+      friendly_name: incoming_phone_number.friendly_name,
       voice_url: incoming_phone_number.voice_url,
       voice_method: incoming_phone_number.voice_method,
       status_callback_url: incoming_phone_number.status_callback_url,
@@ -48,6 +52,7 @@ class IncomingPhoneNumberForm
     return false if invalid?
 
     incoming_phone_number.update!(
+      friendly_name:,
       voice_url: voice_url.presence,
       voice_method: voice_method.presence,
       status_callback_url: status_callback_url.presence,
