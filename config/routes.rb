@@ -43,9 +43,7 @@ Rails.application.routes.draw do
 
         resources :phone_calls, only: %i[index show update]
         resources :messages, only: %i[index show update]
-        resources :phone_numbers, only: %i[index create show update destroy] do
-          patch :release, on: :member
-        end
+        resources :phone_numbers, only: %i[index create show update destroy]
       end
     end
 

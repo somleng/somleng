@@ -42,15 +42,6 @@ module CarrierAPI
           optional(:country).filled(:str?, included_in?: ISO3166::Country.all.map(&:alpha2))
           optional(:price).filled(:decimal, gteq?: 0)
         end
-
-        optional(:relationships).value(:hash).schema do
-          required(:account).filled(:hash).schema do
-            required(:data).filled(:hash).schema do
-              required(:type).filled(:str?, eql?: "account")
-              required(:id).filled(:str?)
-            end
-          end
-        end
       end
     end
 
@@ -90,17 +81,6 @@ module CarrierAPI
       key.failure(type_validator.errors[:type].to_sentence)
     end
 
-    rule(data: { relationships: { account: { data: :id } } }) do |context:|
-      next unless key?
-
-      context[:account] = carrier.accounts.find_by(id: value)
-      if context.fetch(:account).blank?
-        key.failure("does not exist")
-      elsif resource&.assigned?
-        key.failure("cannot be updated") if resource.account != context.fetch(:account)
-      end
-    end
-
     def output
       params = super
 
@@ -108,7 +88,6 @@ module CarrierAPI
       result[:carrier] = params.fetch(:carrier)
       result[:number] = params.fetch(:number) if params.key?(:number)
       result[:enabled] = params.fetch(:enabled) if params.key?(:enabled)
-      result[:account] = context.fetch(:account) if context[:account].present?
       result[:type] = params.fetch(:type) if params.key?(:type)
       result[:iso_country_code] = params.fetch(:country) if params.key?(:country)
       result[:price] = Money.from_amount(params.fetch(:price), carrier.billing_currency) if params.key?(:price)

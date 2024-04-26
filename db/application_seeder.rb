@@ -17,13 +17,13 @@ class ApplicationSeeder
     )
     carrier_managed_account = create_carrier_managed_account(carrier:)
     phone_number = create_phone_number(carrier:)
-    incoming_phone_number = create_incoming_phone_number(phone_number:, account: carrier_managed_account)
+    plan = create_phone_number_plan(phone_number:, account: carrier_managed_account)
     create_phone_call(
       carrier:,
       account: carrier_managed_account,
       sip_trunk:,
       phone_number:,
-      incoming_phone_number:
+      incoming_phone_number: plan.incoming_phone_number
     )
     sms_gateway = create_sms_gateway(carrier:)
 
@@ -99,6 +99,12 @@ class ApplicationSeeder
       type: :short_code,
       **params
     )
+  end
+
+  def create_phone_number_plan(phone_number:, **params)
+    return phone_number.active_plan if phone_number.assigned?
+
+    CreatePhoneNumberPlan.call(phone_number:, **params)
   end
 
   def create_incoming_phone_number(params)

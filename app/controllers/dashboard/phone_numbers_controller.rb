@@ -37,10 +37,7 @@ module Dashboard
     end
 
     def destroy
-      ApplicationRecord.transaction do
-        record.release!
-        record.destroy
-      end
+      record.destroy
       respond_with(:dashboard, record)
     end
 

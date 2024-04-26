@@ -35,12 +35,12 @@ module TwilioAPI
 
     it "validates From" do
       account = create(:account)
-      phone_number = create(:phone_number, account:)
+      incoming_phone_number = create(:incoming_phone_number, account:)
 
       expect(
         validate_request_schema(
           input_params: {
-            From: phone_number.number.to_s
+            From: incoming_phone_number.number.to_s
           },
           options: { account: }
         )
@@ -226,9 +226,10 @@ module TwilioAPI
     end
 
     it "handles post processing" do
-      account = create(:account)
-      phone_number = create(:phone_number, account:, number: "855716100234")
-      sms_gateway = create(:sms_gateway, carrier: account.carrier)
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      incoming_phone_number = create(:incoming_phone_number, account:, number: "855716100234")
+      sms_gateway = create(:sms_gateway, carrier:)
 
       schema = validate_request_schema(
         input_params: {
@@ -242,9 +243,9 @@ module TwilioAPI
         options: { account: }
       )
 
-      expect(schema.output).to eq(
+      expect(schema.output).to include(
         to: "85568308531",
-        from: "855716100234",
+        from: have_attributes(value: "855716100234"),
         body: "Hello World *",
         channel: nil,
         segments: 1,
@@ -252,7 +253,8 @@ module TwilioAPI
         account:,
         messaging_service: nil,
         carrier: account.carrier,
-        phone_number:,
+        incoming_phone_number:,
+        phone_number: incoming_phone_number.phone_number,
         sms_gateway:,
         status_callback_url: "https://example.com/status-callback",
         validity_period: 5,
@@ -271,7 +273,7 @@ module TwilioAPI
         smart_encoding: true,
         status_callback_url: "https://example.com/status-callback"
       )
-      create(:phone_number, :configured, messaging_service:, account:)
+      create(:incoming_phone_number, messaging_service:, account:)
       create(:sms_gateway, carrier: account.carrier)
       send_at = Time.parse(5.days.from_now.iso8601)
 
@@ -287,6 +289,7 @@ module TwilioAPI
 
       expect(schema.output).to include(
         from: nil,
+        incoming_phone_number: nil,
         phone_number: nil,
         body: "Hello World *",
         encoding: "GSM",

@@ -4,12 +4,12 @@ RSpec.describe "Phone Calls" do
   it "List and filter phone calls" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
-    phone_number = create(:phone_number, :assigned_to_account, carrier:, account:)
+    incoming_phone_number = create(:incoming_phone_number, account:)
     phone_call = create(
       :phone_call,
       :outbound,
       account:,
-      phone_number:,
+      incoming_phone_number:,
       to: "85512234232",
       from: "1294",
       created_at: Time.utc(2021, 12, 1),
@@ -37,7 +37,7 @@ RSpec.describe "Phone Calls" do
         to: "+855 12 234 232 ",
         from: "1294",
         id: phone_call.id,
-        phone_number_id: phone_number.id
+        phone_number_id: incoming_phone_number.id
       }
     )
 

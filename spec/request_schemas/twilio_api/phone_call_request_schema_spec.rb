@@ -3,7 +3,7 @@ require "rails_helper"
 module TwilioAPI
   RSpec.describe PhoneCallRequestSchema, type: :request_schema do
     it "validates To" do
-      account = create(:account, allowed_calling_codes: ["855"])
+      account = create(:account, allowed_calling_codes: [ "855" ])
       account_with_no_sip_trunks = create(:account)
       create(:sip_trunk, carrier: account.carrier)
       expect(
@@ -53,12 +53,12 @@ module TwilioAPI
 
     it "validates From" do
       account = create(:account)
-      phone_number = create(:phone_number, account:)
+      incoming_phone_number = create(:incoming_phone_number, account:)
 
       expect(
         validate_request_schema(
           input_params: {
-            From: phone_number.number.to_s
+            From: incoming_phone_number.number.to_s
           },
           options: { account: }
         )

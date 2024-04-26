@@ -1,8 +1,7 @@
 module Dashboard
   class IncomingPhoneNumbersController < DashboardController
     def index
-      @filtered_resources = apply_filters(scope.includes(:account))
-      @resources = paginate_resources(@filtered_resources)
+      @resources = paginate_resources(apply_filters(scope))
     end
 
     def show
@@ -36,7 +35,7 @@ module Dashboard
     end
 
     def scope
-      parent_scope.active_incoming_phone_numbers
+      parent_scope.active_managed_incoming_phone_numbers
     end
 
     def record

@@ -1,9 +1,10 @@
 class CreatePhoneNumberPlan < ApplicationWorkflow
-  attr_reader :phone_number, :account, :phone_number_formatter
+  attr_reader :phone_number, :account, :configuration, :phone_number_formatter
 
-  def initialize(phone_number:, account:, phone_number_formatter: PhoneNumberFormatter.new)
+  def initialize(phone_number:, account:, phone_number_formatter: PhoneNumberFormatter.new, **configuration)
     @phone_number = phone_number
     @account = account
+    @configuration = configuration
     @phone_number_formatter = phone_number_formatter
   end
 
@@ -30,9 +31,11 @@ class CreatePhoneNumberPlan < ApplicationWorkflow
     plan.build_incoming_phone_number(
       account:,
       phone_number:,
+      carrier: phone_number.carrier,
       account_type: account.type,
       number: phone_number.number,
-      friendly_name: phone_number_formatter.format(phone_number.number, format: :national)
+      friendly_name: phone_number_formatter.format(phone_number.number, format: :national),
+      **configuration
     )
   end
 end

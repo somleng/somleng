@@ -4,7 +4,8 @@ RSpec.describe PhoneNumber do
   describe ".available" do
     it "returns available phone numbers" do
       _disabled_phone_number = create(:phone_number, :disabled)
-      _assigned_phone_number = create(:phone_number, :assigned_to_account)
+      _assigned_phone_number = create(:phone_number, :assigned)
+
       phone_number = create(:phone_number)
 
       result = PhoneNumber.available

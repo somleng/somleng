@@ -19,6 +19,10 @@ class PhoneNumberDecorator < SimpleDelegator
     object.type.text
   end
 
+  def active_plan
+    object.active_plan&.decorated
+  end
+
   private
 
   def phone_number_formatter

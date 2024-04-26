@@ -22,7 +22,7 @@ module TwilioAPI
         schema_options: { account: current_account },
         **serializer_options
       ) do |permitted_params|
-        IncomingPhoneNumber.create!(permitted_params)
+        CreatePhoneNumberPlan.call(**permitted_params).incoming_phone_number
       end
     end
 
@@ -52,7 +52,7 @@ module TwilioAPI
     end
 
     def scope
-      current_account.active_incoming_phone_numbers
+      current_account.active_managed_incoming_phone_numbers
     end
 
     def serializer_options

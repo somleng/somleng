@@ -22,10 +22,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     example "Read a list of Incoming Phone Numbers" do
-      incoming_phone_number = create(
-        :incoming_phone_number,
-        number: "12513095500"
-      )
+      incoming_phone_number = create(:incoming_phone_number, number: "12513095500")
       create(:incoming_phone_number, number: "12513095501", account: incoming_phone_number.account)
 
       set_twilio_api_authorization_header(incoming_phone_number.account)
@@ -267,7 +264,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
 
       expect(response_status).to eq(204)
       expect(incoming_phone_number.reload).to have_attributes(
-        status: "inactive",
+        status: "released",
         phone_number_plan: have_attributes(
           status: "canceled",
           canceled_at: be_present

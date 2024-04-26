@@ -110,7 +110,7 @@ RSpec.resource "Messages", document: :twilio_api do
     example "Create a Message" do
       account = create(:account)
       create(:sms_gateway, carrier: account.carrier)
-      create(:phone_number, :configured, account:, number: "855716788999", carrier: account.carrier)
+      create(:incoming_phone_number, account:, number: "855716788999")
 
       set_twilio_api_authorization_header(account)
 

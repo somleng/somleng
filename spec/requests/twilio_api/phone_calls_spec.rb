@@ -67,7 +67,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     # https://www.twilio.com/docs/voice/api/call-resource#create-a-call-resource
     example "Create a call" do
       account = create(:account)
-      phone_number = create(:phone_number, :assigned_to_account, account:)
+      create(:incoming_phone_number, number: "12513095500", account:)
       create(:sip_trunk, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
@@ -75,7 +75,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       do_request(
         account_sid: account.id,
         "To" => "+299221234",
-        "From" => phone_number.number,
+        "From" => "+12513095500",
         "Url" => "https://demo.twilio.com/docs/voice.xml"
       )
 

@@ -199,7 +199,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.uuid "carrier_id", null: false
     t.uuid "phone_number_id"
     t.uuid "messaging_service_id"
-    t.string "friendly_name"
+    t.string "friendly_name", null: false
     t.string "account_type", null: false
     t.string "number", null: false
     t.string "status", null: false

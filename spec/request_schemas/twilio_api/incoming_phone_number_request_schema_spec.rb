@@ -153,14 +153,12 @@ module TwilioAPI
       expect(schema.output).to eq(
         account:,
         phone_number:,
-        configuration: {
-          voice_url: "https://example.com/voice",
-          voice_method: "GET",
-          sms_url: "https://example.com/sms",
-          sms_method: "GET",
-          status_callback_url: "https://example.com/status-callback",
-          status_callback_method: "GET"
-        }
+        voice_url: "https://example.com/voice",
+        voice_method: "GET",
+        sms_url: "https://example.com/sms",
+        sms_method: "GET",
+        status_callback_url: "https://example.com/status-callback",
+        status_callback_method: "GET"
       )
     end
 

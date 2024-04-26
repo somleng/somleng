@@ -29,7 +29,7 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
           t.references(:carrier, type: :uuid, null: false, foreign_key: true)
           t.references(:phone_number, type: :uuid, null: true, foreign_key: { on_delete: :nullify })
           t.references(:messaging_service, type: :uuid, null: true, foreign_key: { on_delete: :nullify })
-          t.string(:friendly_name)
+          t.string(:friendly_name, null: false)
           t.string(:account_type, null: false)
           t.index(:account_type)
           t.string(:number, null: false)
@@ -59,7 +59,8 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
             carrier: phone_number.carrier,
             created_at: phone_number.active_plan.created_at,
             updated_at: phone_number.active_plan.updated_at,
-            status: :active
+            status: :active,
+            friendly_name: PhoneNumberFormatter.new.format(phone_number.number, format: :national)
           )
 
           if phone_number.configuration.present?

@@ -246,107 +246,8 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :price)
     end
 
-    it "validates account" do
-      carrier = create(:carrier)
-      account = create(:account, carrier:)
-      same_carrier_account = create(:account, carrier:)
-      phone_number_with_account = create(:phone_number, account:)
-      other_carrier_account = create(:account)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_number"
-            }
-          },
-          options: { carrier: }
-        )
-      ).to have_valid_field(:data, :relationships, :account)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_number",
-              relationships: {
-                account: {
-                  data: {
-                    type: "account",
-                    id: account.id
-                  }
-                }
-              }
-            }
-          },
-          options: { carrier: }
-        )
-      ).to have_valid_field(:data, :relationships, :account)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_number",
-              relationships: {
-                account: {
-                  data: {
-                    type: "account",
-                    id: other_carrier_account.id
-                  }
-                }
-              }
-            }
-          },
-          options: { carrier: }
-        )
-      ).not_to have_valid_field(:data, :relationships, :account)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              id: phone_number_with_account.id,
-              type: "phone_number",
-              relationships: {
-                account: {
-                  data: {
-                    type: "account",
-                    id: same_carrier_account.id
-                  }
-                }
-              }
-            }
-          },
-          options: { carrier:, resource: phone_number_with_account }
-        )
-      ).not_to have_valid_field(:data, :relationships, :account)
-
-      phone_number_without_account = create(:phone_number, carrier:)
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              id: phone_number_without_account.id,
-              type: "phone_number",
-              relationships: {
-                account: {
-                  data: {
-                    type: "account",
-                    id: account.id
-                  }
-                }
-              }
-            }
-          },
-          options: { carrier:, resource: phone_number_without_account }
-        )
-      ).to have_valid_field(:data, :relationships, :account)
-    end
-
     it "handles output for new records" do
       carrier = create(:carrier)
-      account = create(:account, carrier:)
 
       schema = validate_request_schema(
         input_params: {
@@ -355,14 +256,6 @@ module CarrierAPI
             attributes: {
               number: "+855715100987",
               type: "mobile"
-            },
-            relationships: {
-              account: {
-                data: {
-                  type: "account",
-                  id: account.id
-                }
-              }
             }
           }
         },
@@ -371,7 +264,6 @@ module CarrierAPI
 
       expect(schema.output).to eq(
         carrier:,
-        account:,
         number: "855715100987",
         type: "mobile"
       )
@@ -379,14 +271,7 @@ module CarrierAPI
 
     it "handles output for existing records" do
       carrier = create(:carrier, billing_currency: "CAD")
-      account = create(:account, carrier:)
-      phone_number = create(
-        :phone_number,
-        number: "12366130851",
-        carrier:,
-        account:,
-        iso_country_code: "US"
-      )
+      phone_number = create(:phone_number, number: "12366130851", carrier:, iso_country_code: "US")
 
       schema = validate_request_schema(
         input_params: {

@@ -64,7 +64,7 @@ class PhoneNumber < ApplicationRecord
   end
 
   def assigned?
-    account.present?
+    active_plan.present?
   end
 
   private

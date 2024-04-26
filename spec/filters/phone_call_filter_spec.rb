@@ -52,15 +52,17 @@ RSpec.describe PhoneCallFilter do
   end
 
   it "filters by phone number" do
-    phone_number = create(:phone_number, :assigned_to_account)
-    phone_call = create(:phone_call, phone_number:, account: phone_number.account, carrier: phone_number.carrier)
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    incoming_phone_number = create(:incoming_phone_number, account:)
+    phone_call = create(:phone_call, incoming_phone_number:, account:, carrier:)
     _other_phone_call = create(:phone_call)
 
     filter = PhoneCallFilter.new(
       resources_scope: PhoneCall,
       input_params: {
         filter: {
-          phone_number_id: phone_number.id
+          phone_number_id: incoming_phone_number.id
         }
       }
     )

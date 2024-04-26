@@ -99,33 +99,23 @@ RSpec.describe "Phone Numbers" do
 
   it "Show a phone number" do
     carrier = create(:carrier)
-    account = create(:account, carrier:, name: "Rocket Rides", billing_currency: "CAD")
-    phone_number = create(:phone_number, carrier:)
-    active_plan = create(:phone_number_plan, :active, account:, phone_number:, amount: Money.from_amount(1.15, "CAD"))
-    user = create(:user, :carrier, :admin, carrier:)
+    phone_number = create(:phone_number, number: "12513095500", carrier:)
+    account = create(:account, carrier:)
+    active_plan = create(:phone_number_plan, phone_number:, account:, amount: Money.from_amount(1.15, "USD"))
+    user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
+    expect(page).to have_content("+1 (251) 309-5500")
     within("#billing") do
-      expect(page).to have_content("Rocket Rides")
       expect(page).to have_link("$1.15", href: dashboard_phone_number_plan_path(active_plan))
     end
-
-    expect(page).to have_link(
-      "View phone calls",
-      href: dashboard_phone_calls_path(filter: { phone_number_id: phone_number.id })
-    )
-    expect(page).to have_link(
-      "View messages",
-      href: dashboard_messages_path(filter: { phone_number_id: phone_number.id })
-    )
   end
 
   it "Create a phone number" do
     carrier = create(:carrier, country_code: "KH")
-    user = create(:user, :carrier, :admin, carrier:)
-    create(:account, carrier:, name: "Rocket Rides")
+    user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path
@@ -177,20 +167,16 @@ RSpec.describe "Phone Numbers" do
 
   it "Delete a phone number" do
     carrier = create(:carrier)
-    user = create(:user, :carrier, carrier:)
     phone_number = create(:phone_number, carrier:, number: "1234")
-    phone_number_plan = create(:phone_number_plan, :active, phone_number:)
     create(:phone_call, :inbound, carrier:, phone_number:)
+    user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
     click_on("Delete")
+
     expect(page).to have_content("Phone number was successfully destroyed")
     expect(page).not_to have_content("1234")
-
-    visit(dashboard_phone_number_plans_path(phone_number_plan))
-
-    expect(page).to have_content("Canceled")
   end
 end

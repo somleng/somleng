@@ -14,13 +14,13 @@ RSpec.describe PhoneNumberPlanFilter do
   end
 
   it "filters by number" do
-    filtered_plan = create(:phone_number_plan, number: "1294")
-    create(:phone_number_plan, number: "1279")
+    filtered_plan = create(:phone_number_plan, number: "12513095500")
+    create(:phone_number_plan, number: "12513095501")
 
     expect(
       PhoneNumberPlanFilter.new(
         resources_scope: PhoneNumberPlan,
-        input_params: { filter: { number: "1294" } }
+        input_params: { filter: { number: "12513095500" } }
       ).apply
     ).to match_array([ filtered_plan ])
   end

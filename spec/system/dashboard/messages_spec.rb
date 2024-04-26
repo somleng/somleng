@@ -4,13 +4,13 @@ RSpec.describe "Messages" do
   it "List and filter messages" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
-    phone_number = create(:phone_number, :assigned_to_account, account:, carrier:)
+    incoming_phone_number = create(:incoming_phone_number, account:)
     message = create(
       :message,
       :sending,
       direction: :outbound_api,
       account:,
-      phone_number:,
+      incoming_phone_number:,
       to: "85512234232",
       from: "1294",
       created_at: Time.utc(2021, 12, 1),
@@ -34,7 +34,7 @@ RSpec.describe "Messages" do
         to_date: "15/12/2021",
         to: "+855 12 234 232 ",
         from: "1294",
-        phone_number_id: phone_number.id,
+        phone_number_id: incoming_phone_number.id,
         status: :sending
       }
     )
@@ -50,10 +50,10 @@ RSpec.describe "Messages" do
 
     within(".alert") do
       expect(page).to have_content("Your export is being processed")
-      click_link("Exports")
+      click_on("Exports")
     end
 
-    click_link("messages_")
+    click_on("messages_")
 
     expect(page).to have_content(message.id)
     expect(page).to have_content("outbound-api")

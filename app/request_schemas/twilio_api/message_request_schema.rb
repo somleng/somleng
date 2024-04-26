@@ -58,7 +58,7 @@ module TwilioAPI
         end
         next if values[:From].blank?
       else
-        incoming_phone_numbers = account.active_incoming_phone_numbers
+        incoming_phone_numbers = account.active_managed_incoming_phone_numbers
       end
 
       next if sender.present?
@@ -107,7 +107,8 @@ module TwilioAPI
       {
         account:,
         carrier: account.carrier,
-        phone_number: context[:phone_number],
+        incoming_phone_number: context[:incoming_phone_number],
+        phone_number: context[:incoming_phone_number]&.phone_number,
         messaging_service:,
         sms_gateway: context.fetch(:sms_gateway),
         channel: context.fetch(:channel),
@@ -115,7 +116,7 @@ module TwilioAPI
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
-        from: context[:phone_number]&.number,
+        from: context[:incoming_phone_number]&.number || sender&.number,
         status_callback_url:,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,

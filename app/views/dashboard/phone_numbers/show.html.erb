@@ -1,30 +1,9 @@
 <%= page_title(title: "Phone Number") do %>
-  <% display_dropdown = current_user.carrier_user? && phone_number_configuration_policy.edit? %>
-
-  <% if display_dropdown %>
-    <div class="btn-group">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-phone-number-actions" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa-solid fa-cog"></i>
-      </button>
-
-      <div class="dropdown-menu" aria-labelledby="dropdown-menu-phone-number-actions">
-        <%= link_to(
-          edit_dashboard_phone_number_configuration_path(@resource),
-          class: "dropdown-item"
-        ) do %>
-          <i class="fa-solid fa-tools mfe-2"></i> Configure
-        <% end %>
-      </div>
-    </div>
-  <% elsif phone_number_configuration_policy.edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_configuration_path(@resource)) %>
-  <% end %>
-
   <% if policy(@resource).edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_path(@resource)) %>
   <% end %>
 
-  <% if policy(@resource).destroy? %>
+  <% if policy(@resource).destroy? && !@resource.assigned? %>
     <%= render("shared/destroy_resource_page_action", path: dashboard_phone_number_path(@resource)) %>
   <% end %>
 <% end %>
@@ -40,14 +19,6 @@
         <%= f.attribute :number, value: phone_number.number_formatted  %>
         <%= f.attribute :enabled %>
 
-        <% if policy(:phone_call).index? %>
-          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { phone_number_id: @resource.id }), title: "View phone calls") %>
-        <% end %>
-
-        <% if policy(:message).index? %>
-          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { phone_number_id: @resource.id }), title: "View messages") %>
-        <% end %>
-
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
       </div>
@@ -56,23 +27,11 @@
     <div id="billing" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Billing</h5>
-        <% if policy(:account).show? %>
-          <% if @resource.account.present? %>
-            <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
-          <% else %>
-            <%= f.attribute :account %>
-          <% end %>
+        <%= f.association :active_plan do |active_plan| %>
+          <%= external_link_to(active_plan.name, dashboard_phone_number_plan_path(active_plan)) %>
         <% end %>
 
-        <% if @resource.active_plan.present? %>
-          <%= f.attribute :active_plan, value: external_link_to(@resource.active_plan.decorated.name, dashboard_phone_number_plan_path(@resource.active_plan)) %>
-        <% else %>
-          <%= f.attribute :active_plan %>
-        <% end %>
-
-        <% if policy(:phone_number_plan).index? %>
-          <%= f.attribute :plans, label: "All Plans", value: external_link_to("View", dashboard_phone_number_plans_path(filter: { number: @resource.number.to_s }), title: "View all plans") %>
-        <% end %>
+        <%= f.attribute :plans, label: "All Plans", value: external_link_to("View", dashboard_phone_number_plans_path(filter: { number: @resource.number.to_s }), title: "View all plans") %>
       </div>
     </div>
 

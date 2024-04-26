@@ -20,15 +20,17 @@ RSpec.describe MessageFilter do
   end
 
   it "filters by phone number" do
-    phone_number = create(:phone_number, :assigned_to_account)
-    message = create(:message, phone_number:, account: phone_number.account, carrier: phone_number.carrier)
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    incoming_phone_number = create(:incoming_phone_number, account:)
+    message = create(:message, incoming_phone_number:, account:, carrier:)
     _other_message = create(:message)
 
     filter = MessageFilter.new(
       resources_scope: Message,
       input_params: {
         filter: {
-          phone_number_id: phone_number.id
+          phone_number_id: incoming_phone_number.id
         }
       }
     )

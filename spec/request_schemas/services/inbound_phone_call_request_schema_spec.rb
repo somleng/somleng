@@ -180,6 +180,7 @@ module Services
       )
       _incoming_phone_number = create(
         :incoming_phone_number,
+        type: :short_code,
         number: "1294",
         account:
       )
@@ -229,6 +230,7 @@ module Services
         :incoming_phone_number,
         account:,
         number: "2442",
+        type: :short_code,
         sip_domain: "example.sip.twilio.com"
       )
       schema = validate_request_schema(

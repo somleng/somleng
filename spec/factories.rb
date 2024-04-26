@@ -288,6 +288,20 @@ FactoryBot.define do
       enabled { false }
     end
 
+    trait :assigned do
+      transient do
+        account { build(:account, carrier:) }
+      end
+
+      after(:build) do |phone_number, evaluator|
+        phone_number.active_plan ||= build(
+          :phone_number_plan,
+          account: evaluator.account,
+          phone_number:
+        )
+      end
+    end
+
     number { generate(:phone_number) }
     type { PhoneNumberType.new.cast(number).e164? ? :mobile : :short_code }
     iso_country_code { PhoneNumberType.new.cast(number).e164? ? nil : "KH" }
@@ -302,8 +316,10 @@ FactoryBot.define do
     account { association :account, type: account_type }
     carrier { account.carrier }
     number { generate(:phone_number) }
+    friendly_name { PhoneNumberFormatter.new.format(PhoneNumberType.new.cast(number), format: :national) }
     phone_number { association :phone_number, carrier:, number:, type: }
     after(:build) do |incoming_phone_number|
+      incoming_phone_number.account_type = incoming_phone_number.account.type
       incoming_phone_number.phone_number_plan ||= build(
         :phone_number_plan,
         account: incoming_phone_number.account,

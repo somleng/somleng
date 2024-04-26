@@ -32,13 +32,6 @@ resource "Phone Numbers", document: :carrier_api do
       )
     end
 
-    with_options scope: %i[data relationships] do
-      parameter(
-        :account,
-        "The `id` of the `account` to associate the phone number with."
-      )
-    end
-
     example "Create a phone number" do
       carrier = create(:carrier, country_code: "KH")
 
@@ -77,70 +70,6 @@ resource "Phone Numbers", document: :carrier_api do
 
       expect(response_status).to eq(422)
       expect(response_body).to match_api_response_schema("jsonapi_error")
-    end
-
-    example "Create a phone number and assign it to an account" do
-      carrier = create(:carrier)
-      account = create(:account, carrier:)
-
-      set_carrier_api_authorization_header(carrier)
-      do_request(
-        data: {
-          type: :phone_number,
-          attributes: {
-            number: "1294",
-            type: "short_code"
-          },
-          relationships: {
-            account: {
-              data: {
-                type: :account,
-                id: account.id
-              }
-            }
-          }
-        }
-      )
-
-      expect(response_status).to eq(201)
-      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
-      expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(account.id)
-    end
-  end
-
-  patch "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
-    with_options scope: %i[data relationships] do
-      parameter(
-        :account,
-        "The `id` of the `account` to associate the phone number with."
-      )
-    end
-
-    example "Assign an account to a phone number" do
-      carrier = create(:carrier)
-      account = create(:account, carrier:)
-      phone_number = create(:phone_number, carrier:)
-
-      set_carrier_api_authorization_header(carrier)
-      do_request(
-        id: phone_number.id,
-        data: {
-          type: :phone_number,
-          id: phone_number.id,
-          relationships: {
-            account: {
-              data: {
-                type: :account,
-                id: account.id
-              }
-            }
-          }
-        }
-      )
-
-      expect(response_status).to eq(200)
-      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
-      expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(account.id)
     end
   end
 
@@ -208,23 +137,6 @@ resource "Phone Numbers", document: :carrier_api do
     end
   end
 
-  patch "https://api.somleng.org/carrier/v1/phone_numbers/:id/release" do
-    xexample "Release a phone number" do
-      explanation "Releases a phone number by unassigning the account and removing any configuration."
-
-      carrier = create(:carrier)
-      account = create(:account, carrier:)
-      phone_number = create(:phone_number, carrier:, account:)
-
-      set_carrier_api_authorization_header(carrier)
-      do_request(id: phone_number.id)
-
-      expect(response_status).to eq(200)
-      expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
-      expect(json_response.dig("data", "relationships", "account", "data", "id")).to eq(nil)
-    end
-  end
-
   get "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
     example "Retrieve a phone number" do
       carrier = create(:carrier)
@@ -256,7 +168,7 @@ resource "Phone Numbers", document: :carrier_api do
   delete "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
     example "Delete a phone number" do
       carrier = create(:carrier)
-      phone_number = create(:phone_number, :configured, carrier:)
+      phone_number = create(:phone_number, carrier:)
       create(:phone_call, :inbound, phone_number:, carrier:)
 
       set_carrier_api_authorization_header(carrier)

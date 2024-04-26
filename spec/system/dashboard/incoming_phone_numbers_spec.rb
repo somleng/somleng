@@ -63,7 +63,7 @@ RSpec.describe "Incoming Phone Numbers" do
       sms_url: "https://www.example.com/sms.xml",
       sms_method: "GET",
       messaging_service:,
-      account:,
+      account:
     )
     user = create(:user, :carrier, carrier:)
 
