@@ -21,7 +21,7 @@ class PhoneNumber < ApplicationRecord
   belongs_to :carrier
   has_many :phone_calls
   has_many :messages
-  has_one :active_plan, -> { active }, class_name: "PhoneNumberPlan"
+  has_one :active_plan, -> { active }, class_name: "PhoneNumberPlan", dependent: :restrict_with_error
   has_one :account, through: :active_plan
   has_many :plans, class_name: "PhoneNumberPlan"
 
@@ -34,14 +34,6 @@ class PhoneNumber < ApplicationRecord
   validates :type, phone_number_type: true
 
   class << self
-    def scoped_to(scope)
-      if scope.key?(:account_id)
-        assigned.where(phone_number_plans: { account_id: scope.fetch(:account_id) })
-      else
-        super
-      end
-    end
-
     def available
       enabled.unassigned
     end
@@ -65,46 +57,14 @@ class PhoneNumber < ApplicationRecord
     def supported_currencies
       select(:currency).distinct.order(:currency)
     end
-
-    def utilized
-      scope = assigned.left_joins(account: :phone_calls).left_joins(account: :messages)
-              .where.not(phone_calls: { phone_number_id: nil }).or(where.not(messages: { phone_number_id: nil }))
-              .distinct
-
-      where(id: scope.select(:id))
-    end
-
-    def unutilized
-      assigned_unutilized = assigned.left_joins(account: :phone_calls).left_joins(account: :messages)
-                            .where(phone_calls: { phone_number_id: nil }, messages: { phone_number_id: nil })
-
-      unassigned.or(where(id: assigned_unutilized.select(:id)))
-    end
-
-    def release_all
-      find_each(&:release!)
-    end
   end
 
   def country
     ISO3166::Country.new(iso_country_code)
   end
 
-  def release!(...)
-    transaction do
-      active_plan.cancel!(...)
-      configuration&.destroy!
-    end
-  end
-
   def assigned?
     account.present?
-  end
-
-  def utilized?
-    return unless assigned?
-
-    account.phone_calls.where(phone_number_id: id).any? || account.messages.where(phone_number_id: id).any?
   end
 
   private

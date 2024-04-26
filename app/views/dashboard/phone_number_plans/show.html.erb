@@ -1,25 +1,26 @@
-<%= page_title(title: "Phone Number Plan") do %>
-  <% if policy(@resource).destroy? %>
-    <%= render("shared/destroy_resource_page_action", text: "Cancel", title: "Cancel", path: dashboard_phone_number_plan_path(@resource)) %>
-  <% end %>
-<% end %>
+<% plan = @resource.decorated %>
+
+<%= page_title(title: "#{plan.friendly_name}") %>
 
 <div class="card-body">
-  <% plan = @resource.decorated %>
 
   <%= show_for(plan) do |f| %>
     <%= f.attribute :status do %>
       <%= status_badge(plan.status.text, color: plan.status_color) %>
     <% end %>
 
-    <%= f.attribute :amount, value: plan.amount.format %>
+    <%= f.attribute :amount, label: "Monthly amount", value: plan.amount.format %>
 
-    <% if plan.phone_number.present? && (plan.active? || current_user.carrier_user?)%>
-      <%= f.attribute :phone_number do %>
-        <%= external_link_to(plan.number_formatted, dashboard_phone_number_path(plan.phone_number)) %>
+    <% if policy(plan.incoming_phone_number).show? %>
+      <%= f.association :incoming_phone_number do |incoming_phone_number| %>
+        <%= external_link_to(incoming_phone_number.number_formatted, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
       <% end %>
-    <% else %>
-      <%= f.attribute :phone_number, value: plan.number_formatted %>
+    <% end %>
+
+    <% if policy(plan.phone_number).show? %>
+      <%= f.association :phone_number do |phone_number| %>
+        <%= external_link_to(phone_number.number_formatted, dashboard_phone_number_path(phone_number)) %>
+      <% end %>
     <% end %>
 
     <% if policy(:account).show? %>
@@ -32,10 +33,6 @@
 
     <% if plan.canceled? %>
       <%= f.attribute :canceled_at, value: local_time(plan.canceled_at) %>
-    <% end %>
-
-    <% if plan.canceled_by.present? %>
-      <%= f.attribute :canceled_by, value: plan.canceled_by.name %>
     <% end %>
   <% end %>
 </div>

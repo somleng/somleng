@@ -42,6 +42,8 @@ en:
       incoming_phone_numbers:
         update:
           notice: Phone number configuration was successfully updated.
+        destroy:
+          notice: Phone number was successfully released.
       phone_number_plans:
         destroy:
           notice: "Phone number plan was successfully canceled."

@@ -1,5 +1,4 @@
 <%= page_title(title: "Phone Number") do %>
-  <% phone_number_configuration_policy = PhoneNumberConfigurationPolicy.new(pundit_user, @resource) %>
   <% display_dropdown = current_user.carrier_user? && phone_number_configuration_policy.edit? %>
 
   <% if display_dropdown %>

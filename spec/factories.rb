@@ -298,11 +298,20 @@ FactoryBot.define do
       type { :mobile }
     end
 
-    account
-    number { generate(:phone_number) }
-    phone_number_plan { association :phone_number_plan, :active, account:, number:, type: }
+    account_type { :customer_managed }
+    account { association :account, type: account_type }
     carrier { account.carrier }
-    phone_number { phone_number_plan.phone_number }
+    number { generate(:phone_number) }
+    phone_number { association :phone_number, carrier:, number:, type: }
+    after(:build) do |incoming_phone_number|
+      incoming_phone_number.phone_number_plan ||= build(
+        :phone_number_plan,
+        account: incoming_phone_number.account,
+        phone_number: incoming_phone_number.phone_number,
+        carrier: incoming_phone_number.carrier,
+        amount: incoming_phone_number.phone_number.price
+      )
+    end
 
     trait :fully_configured do
       voice_url { "https://demo.twilio.com/docs/voice.xml" }
@@ -621,16 +630,27 @@ FactoryBot.define do
   factory :phone_number_plan do
     transient do
       type { :mobile }
+      account_type { :carrier_managed }
     end
 
-    account
+    account { association :account, type: account_type }
     carrier { account.carrier }
     amount { Money.from_amount(1.15, account.billing_currency) }
     number { generate(:phone_number) }
-    status { :canceled }
+    status { :active }
+    phone_number { association :phone_number, carrier:, number:, type:, price: amount }
+
+    after(:build) do |phone_number_plan, evaluator|
+      phone_number_plan.incoming_phone_number ||= build(
+        :incoming_phone_number,
+        phone_number_plan:,
+        account: phone_number_plan.account,
+        phone_number: phone_number_plan.phone_number,
+        account_type: evaluator.account_type
+      )
+    end
 
     trait :active do
-      phone_number { association :phone_number, carrier:, price: amount, number:, type: }
       status { :active }
     end
 

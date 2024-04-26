@@ -13,40 +13,6 @@ RSpec.describe PhoneNumber do
     end
   end
 
-  describe ".utilized" do
-    it "returns utilized phone numbers" do
-      utilized_phone_number_with_phone_call = create_utilized_phone_number(utilized_by: :phone_call)
-      utilized_phone_number_with_message = create_utilized_phone_number(utilized_by: :message)
-      _unutilized_phone_number = create(:phone_number)
-      utilized_phone_number_by_another_account = create_utilized_phone_number
-      utilized_phone_number_by_another_account.update!(
-        account: create(:account, carrier: utilized_phone_number_by_another_account.carrier)
-      )
-
-      result = PhoneNumber.utilized
-
-      expect(result).to match_array(
-        [
-          utilized_phone_number_with_phone_call,
-          utilized_phone_number_with_message
-        ]
-      )
-    end
-  end
-
-  describe ".unutilized" do
-    it "returns unutilized phone numbers" do
-      create_utilized_phone_number(utilized_by: :phone_call)
-      create_utilized_phone_number(utilized_by: :message)
-      unutilized_phone_number = create(:phone_number, :assigned_to_account)
-      create_list(:phone_call, 2, phone_number: unutilized_phone_number)
-
-      result = PhoneNumber.unutilized
-
-      expect(result).to match_array([ unutilized_phone_number ])
-    end
-  end
-
   describe ".supported_countries" do
     it "returns the supported countries" do
       create(:phone_number, number: "15064043338", iso_country_code: "CA")
@@ -83,36 +49,14 @@ RSpec.describe PhoneNumber do
       expect(other_phone_number.valid?).to eq(true)
       expect(other_carrier_phone_number.valid?).to eq(true)
     end
-  end
 
-  describe "#release!" do
-    it "releases a phone number from an account" do
-      phone_number = create(
-        :phone_number,
-        :assigned_to_account,
-        :configured
-      )
-      plan = phone_number.active_plan
+    it "validates the number is unassigned before deletion" do
+      phone_number = create(:phone_number)
+      account = create(:account, carrier: phone_number.carrier)
+      create(:phone_number_plan, phone_number:, account:)
 
-      phone_number.release!
-
-      expect(phone_number.reload).to have_attributes(
-        account: nil,
-        configuration: nil
-      )
-      expect(plan.reload).to have_attributes(
-        status: "canceled",
-        canceled_at: be_present
-      )
+      expect(phone_number.destroy).to eq(false)
+      expect(phone_number.errors[:base]).to be_present
     end
-  end
-
-  def create_utilized_phone_number(**params)
-    carrier = params.fetch(:carrier) { create(:carrier) }
-    account = params.fetch(:account) { create(:account, carrier:) }
-    phone_number = create(:phone_number, :assigned_to_account, carrier:, account:)
-    create_list(params.fetch(:utilized_by, :phone_call), 2, phone_number:, account:)
-
-    phone_number
   end
 end

@@ -20,10 +20,7 @@ class PhoneNumberPlanForm
   def save
     return false if invalid?
 
-    phone_number_plan.phone_number = phone_number
-    phone_number_plan.account = account || find_account
-
-    phone_number_plan.save!
+    CreatePhoneNumberPlan.call(phone_number:, account: account || find_account)
   end
 
   def account_options_for_select

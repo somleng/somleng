@@ -199,7 +199,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.uuid "carrier_id", null: false
     t.uuid "phone_number_id"
     t.uuid "messaging_service_id"
-    t.string "friendly_name", null: false
+    t.string "friendly_name"
     t.string "account_type", null: false
     t.string "number", null: false
     t.string "status", null: false
@@ -479,7 +479,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.uuid "phone_number_id"
     t.uuid "carrier_id"
     t.uuid "account_id"
-    t.uuid "canceled_by_id"
     t.string "number", null: false
     t.integer "amount_cents", null: false
     t.string "currency", null: false
@@ -490,7 +489,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_phone_number_plans_on_account_id"
     t.index ["amount_cents", "currency"], name: "index_phone_number_plans_on_amount_cents_and_currency"
-    t.index ["canceled_by_id"], name: "index_phone_number_plans_on_canceled_by_id"
     t.index ["carrier_id"], name: "index_phone_number_plans_on_carrier_id"
     t.index ["number"], name: "index_phone_number_plans_on_number"
     t.index ["phone_number_id", "status"], name: "index_phone_number_plans_on_phone_number_id_and_status", unique: true, where: "((status)::text = 'active'::text)"
@@ -515,6 +513,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.index ["iso_country_code"], name: "index_phone_numbers_on_iso_country_code"
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
     t.index ["number"], name: "index_phone_numbers_on_number"
+    t.index ["price_cents", "currency"], name: "index_phone_numbers_on_price_cents_and_currency"
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
     t.index ["type"], name: "index_phone_numbers_on_type"
   end
@@ -826,7 +825,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
   add_foreign_key "phone_number_plans", "accounts"
   add_foreign_key "phone_number_plans", "carriers"
   add_foreign_key "phone_number_plans", "phone_numbers", on_delete: :nullify
-  add_foreign_key "phone_number_plans", "users", column: "canceled_by_id", on_delete: :nullify
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"

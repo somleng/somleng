@@ -8,10 +8,11 @@ RSpec.describe "Phone Number Plans" do
       :phone_number_plan,
       :active,
       number: "1294",
+      type: :short_code,
       amount: Money.from_amount(5.00, "USD"),
       account:
     )
-    _canceled_plan = create(:phone_number_plan, :canceled, number: "1279", account:)
+    _canceled_plan = create(:phone_number_plan, :canceled, number: "1279", type: :short_code, account:)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -47,37 +48,10 @@ RSpec.describe "Phone Number Plans" do
     expect(page).to have_content(account.id)
   end
 
-  it "Manage phone number plans as an account member" do
-    carrier = create(:carrier)
-    account = create(:account, carrier:)
-    other_account = create(:account, carrier: account.carrier)
-    active_plan = create(:phone_number_plan, :active, account:, number: "1294")
-    canceled_plan = create(:phone_number_plan, :canceled, account:, number: "1279")
-    create(:phone_number_plan, account: other_account, carrier:, number: "8888")
-    user = create(:user, :with_account_membership, account:, carrier:)
-
-    carrier_sign_in(user)
-    visit dashboard_phone_number_plans_path
-
-    expect(page).to have_link("1294", href: dashboard_phone_number_plan_path(active_plan))
-    expect(page).to have_link("1279",  href: dashboard_phone_number_plan_path(canceled_plan))
-    expect(page).not_to have_content("8888")
-
-    click_on("1294")
-
-    expect(page).to have_content("Active")
-
-    click_on("Cancel")
-
-    expect(page).to have_content("Canceled")
-    expect(page).not_to have_link("1294")
-    expect(page).to have_content(user.name)
-  end
-
   it "Show a phone number plan" do
     carrier = create(:carrier)
     account = create(:account, carrier:, name: "Rocket Rides")
-    plan = create(:phone_number_plan, :active, number: "1294", account:)
+    plan = create(:phone_number_plan, :active, number: "1294", type: :short_code, account:)
     user = create(:user, :carrier, :admin, carrier:)
 
     carrier_sign_in(user)
@@ -87,7 +61,7 @@ RSpec.describe "Phone Number Plans" do
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
   end
 
-  it "Create a phone number plan as a carrier admin" do
+  it "Buy a phone number as a carrier admin" do
     carrier = create(:carrier)
     create(:account, :carrier_managed, carrier:, name: "Rocket Rides")
     create(:account, :customer_managed, carrier:, name: "Customer Account")
@@ -105,7 +79,7 @@ RSpec.describe "Phone Number Plans" do
     expect(page).to have_content("Active")
   end
 
-  it "Create a phone number plan as an account admin" do
+  it "Buy a phone number as an account admin" do
     carrier = create(:carrier)
     account = create(:account, :customer_managed, carrier:)
     phone_number = create(:phone_number, number: "12513095500", carrier:)
@@ -131,20 +105,5 @@ RSpec.describe "Phone Number Plans" do
     click_on("Buy +1 (251) 309-5500")
 
     expect(page).to have_content("can't be blank")
-  end
-
-  it "Cancel a phone number plan" do
-    carrier = create(:carrier)
-    account = create(:account, carrier:)
-    plan = create(:phone_number_plan, :active, account:)
-    user = create(:user, :carrier, :admin, carrier:)
-
-    carrier_sign_in(user)
-    visit dashboard_phone_number_plan_path(plan)
-
-    click_on("Cancel")
-    expect(page).to have_content("Phone number plan was successfully canceled")
-    expect(page).to have_content("Canceled")
-    expect(page).to have_content(user.name)
   end
 end

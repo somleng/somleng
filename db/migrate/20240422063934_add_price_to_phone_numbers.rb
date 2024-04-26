@@ -2,6 +2,7 @@ class AddPriceToPhoneNumbers < ActiveRecord::Migration[7.1]
   def change
     add_column(:phone_numbers, :price_cents, :integer)
     add_column(:phone_numbers, :currency, :string)
+    add_index(:phone_numbers, [ :price_cents, :currency ])
 
     reversible do |dir|
       dir.up do

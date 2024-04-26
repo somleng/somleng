@@ -1,4 +1,4 @@
-<%= page_title(title: "Phone Numbers") do %>
+<%= page_title(title: "Phone Number Inventory") do %>
   <%= render("shared/filters") do |form| %>
     <%= form.country_select(
         :country,
@@ -17,15 +17,13 @@
     %>
 
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
-    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
 
     <%= form.boolean_select(:enabled, { filter_value: params.dig(:filter, :enabled) }) %>
     <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>
-    <%= form.boolean_select(:configured, { filter_value: params.dig(:filter, :configured) }) %>
-    <%= form.boolean_select(:utilized, { filter_value: params.dig(:filter, :utilized) }) %>
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
 
-  <% if policy(:phone_number).bulk_destroy? && params[:filter].present? && @filtered_resources.any? %>
+  <% if policy(:phone_number).bulk_destroy? && params.dig(:filter, :assigned) == "false" && @filtered_resources.any? %>
     <%= render("shared/bulk_destroy_resource_page_action", path: bulk_destroy_dashboard_phone_numbers_path(filter: request.query_parameters["filter"]), total_records: @filtered_resources.count) %>
   <% end %>
 

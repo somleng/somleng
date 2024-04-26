@@ -5,7 +5,6 @@ class PhoneNumberPlanDashboard < Administrate::BaseDashboard
     phone_number: Field::BelongsTo,
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
-    canceled_by: Field::BelongsTo,
     id: Field::String,
     number: Field::String,
     amount: Field::String,
@@ -32,7 +31,6 @@ class PhoneNumberPlanDashboard < Administrate::BaseDashboard
     phone_number
     carrier
     account
-    canceled_by
     canceled_at
     created_at
     updated_at

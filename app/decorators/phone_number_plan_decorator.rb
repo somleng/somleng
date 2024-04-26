@@ -11,8 +11,20 @@ class PhoneNumberPlanDecorator < SimpleDelegator
     phone_number_formatter.format(object.number, format: :international)
   end
 
+  def friendly_name
+    phone_number_formatter.format(object.number, format: :national)
+  end
+
   def status_color
     active? ? :success : :secondary
+  end
+
+  def incoming_phone_number
+    object.incoming_phone_number.decorated
+  end
+
+  def phone_number
+    object.phone_number&.decorated
   end
 
   private

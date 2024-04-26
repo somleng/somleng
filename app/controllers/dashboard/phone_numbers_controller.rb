@@ -47,7 +47,6 @@ module Dashboard
     def bulk_destroy
       @resources = apply_filters(scope)
       ApplicationRecord.transaction do
-        @resources.release_all
         @resources.destroy_all
       end
 

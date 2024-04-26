@@ -19,11 +19,6 @@ module Dashboard
       respond_with(:dashboard, @resource)
     end
 
-    def destroy
-      record.phone_number.release!(canceled_by: current_user)
-      respond_with(:dashboard, record)
-    end
-
     private
 
     def initialize_form(options = {})

@@ -6,8 +6,6 @@ RSpec.describe "Phone Numbers" do
     user = create(:user, :carrier, carrier:)
     create(
       :phone_number,
-      :utilized,
-      :configured,
       carrier:,
       iso_country_code: "KH",
       number: "855972222222",
@@ -36,8 +34,7 @@ RSpec.describe "Phone Numbers" do
         from_date: "01/12/2021",
         to_date: "15/12/2021",
         enabled: true,
-        utilized: true,
-        configured: true
+        assigned: false
       }
     )
 
@@ -52,11 +49,6 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("+855 97 333 3333")
     expect(page).not_to have_content("+855 97 444 4444")
     expect(page).not_to have_selector(:link_or_button, "Delete")
-
-    visit(dashboard_phone_number_plans_path)
-
-    expect(page).to have_content("+855 97 222 2222")
-    expect(page).to have_content("Canceled")
   end
 
   it "Export phone numbers" do

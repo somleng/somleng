@@ -10,13 +10,10 @@ class IncomingPhoneNumber < ApplicationRecord
   enumerize :voice_method, in: %w[POST GET], default: "POST"
   enumerize :sms_method, in: %w[POST GET], default: "POST"
   enumerize :status_callback_method, in: %w[POST GET], default: "POST"
-  enumerize :status, in: %w[active inactive], default: :active, scope: :shallow, predicates: true
+  enumerize :status, in: %w[active released], default: :active, scope: :shallow, predicates: true
   enumerize :account_type, in: Account.type.values, scope: :shallow
 
   attribute :number, PhoneNumberType.new
-  attribute :phone_number_formatter, default: -> { PhoneNumberFormatter.new }
-
-  before_validation :set_defaults, on: :create
 
   delegate :country, :type, to: :phone_number, allow_nil: true
 
@@ -34,25 +31,8 @@ class IncomingPhoneNumber < ApplicationRecord
 
   def release!
     transaction do
-      update!(status: :inactive)
+      update!(status: :released)
       phone_number_plan.cancel!
     end
-  end
-
-  private
-
-  def set_defaults
-    return if account.blank? || phone_number.blank?
-
-    self.account_type ||= account.type
-    self.carrier ||= account.carrier
-    self.number ||= phone_number.number
-    self.friendly_name ||= phone_number_formatter.format(number, format: :national)
-    self.phone_number_plan ||= build_phone_number_plan(
-      phone_number:,
-      account:,
-      carrier: account.carrier,
-      number: phone_number.number
-    )
   end
 end

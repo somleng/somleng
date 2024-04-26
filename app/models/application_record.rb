@@ -10,8 +10,4 @@ class ApplicationRecord < ActiveRecord::Base
   def self.filter_class
     "#{model_name}Filter".constantize
   end
-
-  def self.scoped_to(scope)
-    where(scope)
-  end
 end

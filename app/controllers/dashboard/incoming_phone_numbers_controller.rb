@@ -21,6 +21,11 @@ module Dashboard
       respond_with(:dashboard, @resource)
     end
 
+    def destroy
+      record.release!
+      respond_with(:dashboard, record, location: dashboard_incoming_phone_numbers_path)
+    end
+
     private
 
     def permitted_params

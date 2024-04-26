@@ -88,12 +88,12 @@ RSpec.describe "Incoming Phone Numbers" do
     end
   end
 
-  it "Configure an incoming phone number as an account admin" do
+  it "Configure an incoming phone number" do
     carrier = create(:carrier)
-    account = create(:account, :customer_managed, carrier:)
-    user = create(:user, :with_account_membership, account_role: :admin, account:)
+    account = create(:account, :carrier_managed, carrier:)
     incoming_phone_number = create(:incoming_phone_number, number: "12513095500", account:)
     messaging_service = create(:messaging_service, name: "My Messaging Service", account:, carrier:)
+    user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_incoming_phone_number_path(incoming_phone_number)
@@ -123,5 +123,34 @@ RSpec.describe "Incoming Phone Numbers" do
       expect(page).to have_content("POST")
       expect(page).to have_link("My Messaging Service", href: dashboard_messaging_service_path(messaging_service))
     end
+  end
+
+  it "Handles validations" do
+    carrier = create(:carrier)
+    account = create(:account, :carrier_managed, carrier:)
+    incoming_phone_number = create(:incoming_phone_number, account:, number: "12513095500")
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit edit_dashboard_incoming_phone_number_path(incoming_phone_number)
+
+    fill_in("Voice URL", with: "ftp://invalid-url.com")
+    click_on("Update (251) 309-5500")
+
+    expect(page).to have_content("Voice URL is invalid")
+  end
+
+  it "Release an incoming phone number" do
+    carrier = create(:carrier)
+    account = create(:account, :carrier_managed, carrier:)
+    incoming_phone_number = create(:incoming_phone_number, number: "12513095500", account:)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_incoming_phone_number_path(incoming_phone_number)
+    click_on("Delete")
+
+    expect(page).to have_content("Phone number was successfully released.")
+    expect(page).not_to have_content("+1 (251) 309-5500")
   end
 end

@@ -25,7 +25,7 @@
 
         <ul class="nav-group-items">
           <% if policy(:phone_number).index? %>
-            <%= sidebar_nav("Manage Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-list-ol") %>
+            <%= sidebar_nav("Inventory", dashboard_phone_numbers_path, icon_class: "fa-solid fa-warehouse") %>
           <% end %>
 
           <% if policy(:incoming_phone_number).index? %>
@@ -33,7 +33,7 @@
           <% end %>
 
           <% if policy(:available_phone_number).index? %>
-            <%= sidebar_nav("Available Numbers", dashboard_available_phone_numbers_path, icon_class: "fa-solid fa-cart-plus") %>
+            <%= sidebar_nav("Available Numbers", dashboard_available_phone_numbers_path, icon_class: "fa-solid fa-tag") %>
           <% end %>
 
           <% if policy(:phone_number_plan).index? %>
