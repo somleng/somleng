@@ -63,13 +63,18 @@ RSpec.describe "Incoming Phone Numbers" do
       sms_url: "https://www.example.com/sms.xml",
       sms_method: "GET",
       messaging_service:,
-      account:
+      account:,
+      amount: Money.from_amount(5.00, "USD")
     )
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
 
     visit dashboard_incoming_phone_number_path(incoming_phone_number)
+
+    within("#billing") do
+      expect(page).to have_content("$5.00")
+    end
 
     within("#properties") do
       expect(page).to have_content("+1 (251) 309-5500")

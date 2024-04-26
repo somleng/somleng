@@ -310,18 +310,30 @@ FactoryBot.define do
   factory :incoming_phone_number do
     transient do
       type { :mobile }
+      amount { Money.from_amount(1.15, "USD") }
     end
 
+    trait :active do
+      status { :active }
+    end
+
+    trait :released do
+      status { :released }
+      released_at { Time.current }
+    end
+
+    status { :active }
     account_type { :customer_managed }
-    account { association :account, type: account_type }
+    account { association :account, type: account_type, billing_currency: amount.currency }
     carrier { account.carrier }
     number { generate(:phone_number) }
     friendly_name { PhoneNumberFormatter.new.format(PhoneNumberType.new.cast(number), format: :international) }
-    phone_number { association :phone_number, carrier:, number:, type: }
+    phone_number { association :phone_number, carrier:, number:, type:, price: amount }
     after(:build) do |incoming_phone_number|
       incoming_phone_number.account_type = incoming_phone_number.account.type
       incoming_phone_number.phone_number_plan ||= build(
         :phone_number_plan,
+        status: incoming_phone_number.active? ? :active : :canceled,
         account: incoming_phone_number.account,
         phone_number: incoming_phone_number.phone_number,
         carrier: incoming_phone_number.carrier,

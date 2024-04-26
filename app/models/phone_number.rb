@@ -67,6 +67,10 @@ class PhoneNumber < ApplicationRecord
     active_plan.present?
   end
 
+  def available?
+    enabled? && !assigned?
+  end
+
   private
 
   def set_defaults

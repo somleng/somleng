@@ -19,6 +19,9 @@
       <th>
         Created At
       </th>
+      <th>
+        Canceled At
+      </th>
     </tr>
   </thead>
 
@@ -52,6 +55,10 @@
 
         <td>
           <%= local_time(phone_number_plan.created_at) %>
+        </td>
+
+        <td>
+          <%= local_time(phone_number_plan.canceled_at) %>
         </td>
       </tr>
     <% end %>

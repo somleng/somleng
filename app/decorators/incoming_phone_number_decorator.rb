@@ -17,6 +17,10 @@ class IncomingPhoneNumberDecorator < SimpleDelegator
     object.phone_number&.decorated
   end
 
+  def phone_number_plan
+    object.phone_number_plan.decorated
+  end
+
   private
 
   def phone_number_formatter

@@ -277,6 +277,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
       expect(response_status).to eq(204)
       expect(incoming_phone_number.reload).to have_attributes(
         status: "released",
+        released_at: be_present,
         phone_number_plan: have_attributes(
           status: "canceled",
           canceled_at: be_present

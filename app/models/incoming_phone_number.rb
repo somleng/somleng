@@ -22,7 +22,7 @@ class IncomingPhoneNumber < ApplicationRecord
 
   def release!
     transaction do
-      update!(status: :released)
+      update!(status: :released, released_at: Time.current)
       phone_number_plan.cancel!
     end
   end

@@ -12,10 +12,6 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
     def self.assigned
       joins(:active_plan)
     end
-
-    def self.unassigned
-      where.not(id: assigned.select(:id))
-    end
   end
 
   def change
@@ -41,6 +37,8 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
           t.string(:status_callback_url)
           t.string(:status_callback_method, null: false)
           t.string(:sip_domain)
+          t.datetime(:released_at)
+          t.index(:released_at)
 
           t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
 
@@ -98,7 +96,7 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
           t.references(:messaging_service, type: :uuid, null: true, foreign_key: { on_delete: :nullify })
         end
 
-        IncomingPhoneNumber.find_each do |incoming_phone_number|
+        IncomingPhoneNumber.active.find_each do |incoming_phone_number|
           PhoneNumberConfiguration.create!(
             phone_number: incoming_phone_number.phone_number,
             voice_url: incoming_phone_number.voice_url,

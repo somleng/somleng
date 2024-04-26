@@ -37,6 +37,14 @@
       </div>
     </div>
 
+    <div id="billing" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Billing</h5>
+
+        <%= f.attribute :monthly_fee, value: incoming_phone_number.phone_number_plan.amount.format %>
+      </div>
+    </div>
+
     <div id="voice-configuration" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Voice</h5>

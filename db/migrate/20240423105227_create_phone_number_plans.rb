@@ -1,4 +1,14 @@
 class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
+  class PhoneNumber < ActiveRecord::Base
+    belongs_to :account, optional: true
+  end
+
+  class PhoneNumberPlan < ActiveRecord::Base
+    belongs_to :phone_number, optional: true
+    belongs_to :account
+    belongs_to :carrier
+  end
+
   def change
     create_table :phone_number_plans, id: :uuid do |t|
       t.references(:phone_number, type: :uuid, foreign_key: { on_delete: :nullify })
@@ -17,6 +27,7 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
 
       t.index(:number)
       t.index(:status)
+      t.index(:canceled_at)
       t.index([ :amount_cents, :currency ])
       t.index([ :phone_number_id, :status ], unique: true, where: "status = 'active'")
     end
@@ -31,7 +42,8 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
             carrier_id: phone_number.carrier_id,
             created_at: phone_number.updated_at,
             updated_at: phone_number.updated_at,
-            amount: phone_number.price
+            amount: phone_number.price,
+            status: :active
           )
         end
       end

@@ -210,6 +210,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.string "status_callback_url"
     t.string "status_callback_method", null: false
     t.string "sip_domain"
+    t.datetime "released_at"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -220,6 +221,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.index ["number"], name: "index_incoming_phone_numbers_on_number"
     t.index ["phone_number_id"], name: "index_incoming_phone_numbers_on_phone_number_id"
     t.index ["phone_number_plan_id"], name: "index_incoming_phone_numbers_on_phone_number_plan_id", unique: true
+    t.index ["released_at"], name: "index_incoming_phone_numbers_on_released_at"
     t.index ["sequence_number"], name: "index_incoming_phone_numbers_on_sequence_number", unique: true, order: :desc
     t.index ["status", "phone_number_id"], name: "index_incoming_phone_numbers_on_status_and_phone_number_id", unique: true, where: "((status)::text = 'active'::text)"
   end
@@ -489,6 +491,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_phone_number_plans_on_account_id"
     t.index ["amount_cents", "currency"], name: "index_phone_number_plans_on_amount_cents_and_currency"
+    t.index ["canceled_at"], name: "index_phone_number_plans_on_canceled_at"
     t.index ["carrier_id"], name: "index_phone_number_plans_on_carrier_id"
     t.index ["number"], name: "index_phone_number_plans_on_number"
     t.index ["phone_number_id", "status"], name: "index_phone_number_plans_on_phone_number_id_and_status", unique: true, where: "((status)::text = 'active'::text)"
