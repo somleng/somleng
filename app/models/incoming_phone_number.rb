@@ -7,6 +7,9 @@ class IncomingPhoneNumber < ApplicationRecord
   belongs_to :phone_number, optional: true
   belongs_to :messaging_service, optional: true
 
+  has_many :phone_calls
+  has_many :messages
+
   enumerize :voice_method, in: %w[POST GET], default: "POST"
   enumerize :sms_method, in: %w[POST GET], default: "POST"
   enumerize :status_callback_method, in: %w[POST GET], default: "POST"

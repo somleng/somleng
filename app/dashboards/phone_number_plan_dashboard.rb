@@ -3,6 +3,7 @@ require "administrate/base_dashboard"
 class PhoneNumberPlanDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     phone_number: Field::BelongsTo,
+    incoming_phone_number: Field::HasOne,
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
     id: Field::String,
@@ -15,6 +16,7 @@ class PhoneNumberPlanDashboard < Administrate::BaseDashboard
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
+    id
     carrier
     account
     number
@@ -28,6 +30,7 @@ class PhoneNumberPlanDashboard < Administrate::BaseDashboard
     number
     amount
     status
+    incoming_phone_number
     phone_number
     carrier
     account

@@ -24,6 +24,7 @@ class IncomingPhoneNumberDashboard < Administrate::BaseDashboard
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
+    id
     carrier
     account
     number
@@ -50,7 +51,6 @@ class IncomingPhoneNumberDashboard < Administrate::BaseDashboard
     phone_calls
     messages
     number
-    enabled
     created_at
     updated_at
   ].freeze

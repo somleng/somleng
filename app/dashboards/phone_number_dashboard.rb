@@ -3,6 +3,8 @@ require "administrate/base_dashboard"
 class PhoneNumberDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
+    active_plan: Field::HasOne,
+    plans: Field::HasMany,
     phone_calls: Field::HasMany,
     messages: Field::HasMany,
     id: Field::String,
@@ -35,6 +37,8 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     enabled
     created_at
     updated_at
+    active_plan
+    plans
     phone_calls
     messages
   ].freeze
