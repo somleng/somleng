@@ -92,15 +92,13 @@ resource "Phone Calls", document: :carrier_api do
   patch "https://api.somleng.org/carrier/v1/phone_calls/:id" do
     with_options scope: %i[data attributes] do
       parameter(
-        :price, "The charge for this call."
-      )
-      parameter(
-        :price_unit, "The currency in which `price` is measured, in <a href=\"https://www.iso.org/iso/home/standards/currency_codes.htm\">ISO 4127 </a> format. (e.g., `USD`, `EUR`, `JPY`). Always capitalized for calls."
+        :price, "The charge for this call in the account's billing currency"
       )
     end
 
     example "Update a phone call" do
-      phone_call = create(:phone_call, :completed, price: nil, price_unit: nil)
+      account = create(:account, billing_currency: "USD")
+      phone_call = create(:phone_call, :completed, account:, price: nil, price_unit: nil)
 
       set_carrier_api_authorization_header(phone_call.carrier)
       do_request(
@@ -109,8 +107,7 @@ resource "Phone Calls", document: :carrier_api do
           id: phone_call.id,
           type: :phone_call,
           attributes: {
-            price: "-0.05",
-            price_unit: "USD"
+            price: "-0.05"
           }
         }
       )
