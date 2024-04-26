@@ -125,7 +125,7 @@ Rails.application.routes.draw do
         delete :bulk_destroy, on: :collection
       end
       resources :available_phone_numbers, only: [ :index ]
-      resources :incoming_phone_numbers, only: [ :index, :show ]
+      resources :incoming_phone_numbers
       resources :phone_number_plans, only: [ :index, :show, :new, :create, :destroy ]
       resources :messages, only: %i[index show]
       resources :messaging_services

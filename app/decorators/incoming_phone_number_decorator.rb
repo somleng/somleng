@@ -13,10 +13,6 @@ class IncomingPhoneNumberDecorator < SimpleDelegator
     phone_number_formatter.format(object.number, format: :international)
   end
 
-  def friendly_name
-    phone_number_formatter.format(object.number, format: :national)
-  end
-
   def phone_number
     object.phone_number&.decorated
   end

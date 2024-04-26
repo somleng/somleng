@@ -199,6 +199,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.uuid "carrier_id", null: false
     t.uuid "phone_number_id"
     t.uuid "messaging_service_id"
+    t.string "friendly_name", null: false
+    t.string "account_type", null: false
     t.string "number", null: false
     t.string "status", null: false
     t.string "voice_url"
@@ -212,6 +214,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_25_081825) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_incoming_phone_numbers_on_account_id"
+    t.index ["account_type"], name: "index_incoming_phone_numbers_on_account_type"
     t.index ["carrier_id"], name: "index_incoming_phone_numbers_on_carrier_id"
     t.index ["messaging_service_id"], name: "index_incoming_phone_numbers_on_messaging_service_id"
     t.index ["number"], name: "index_incoming_phone_numbers_on_number"

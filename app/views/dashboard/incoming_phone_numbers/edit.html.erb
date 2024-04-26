@@ -1,7 +1,7 @@
-<%= page_title(title: "Configure Phone Number") %>
+<%= page_title(title: "Edit #{@resource.incoming_phone_number.friendly_name}") %>
 
 <div class="card-body">
-  <%= simple_form_for(@resource, url: dashboard_phone_number_configuration_path(@resource.phone_number)) do |f| %>
+  <%= simple_form_for([ :dashboard, @resource ]) do |f| %>
       <div class="card mb-3">
         <div class="card-body">
           <h5 class="card-title">Voice</h5>
@@ -12,7 +12,7 @@
             </div>
 
             <div class="col-sm-6">
-              <%= f.input :voice_method, collection: PhoneNumberConfiguration.voice_method.values, include_blank: true %>
+              <%= f.input :voice_method, collection: IncomingPhoneNumber.voice_method.values, include_blank: true %>
             </div>
           </div>
 
@@ -22,7 +22,7 @@
             </div>
 
             <div class="col-sm-6">
-              <%= f.input :status_callback_method, collection: PhoneNumberConfiguration.status_callback_method.values, include_blank: true %>
+              <%= f.input :status_callback_method, collection: IncomingPhoneNumber.status_callback_method.values, include_blank: true %>
             </div>
           </div>
 
@@ -56,12 +56,12 @@
             </div>
 
             <div class="col-sm-6">
-              <%= f.input :sms_method, collection: PhoneNumberConfiguration.sms_method.values, include_blank: true %>
+              <%= f.input :sms_method, collection: IncomingPhoneNumber.sms_method.values, include_blank: true %>
             </div>
           </div>
         </div>
       </div>
 
-    <%= f.button :submit, "Update Configuration" %>
+    <%= f.button :submit, "Update #{@resource.incoming_phone_number.friendly_name}" %>
   <% end %>
 </div>

@@ -105,21 +105,6 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("+12513095542")
   end
 
-  it "List phone numbers as an account member" do
-    carrier = create(:carrier)
-    account = create(:account, carrier:)
-    other_account = create(:account, carrier: account.carrier)
-    create(:phone_number, account:, carrier:, number: "1234")
-    create(:phone_number, account: other_account, carrier:, number: "9876")
-    user = create(:user, :with_account_membership, account:, carrier:)
-
-    carrier_sign_in(user)
-    visit dashboard_phone_numbers_path
-
-    expect(page).to have_content("1234")
-    expect(page).not_to have_content("9876")
-  end
-
   it "Show a phone number" do
     carrier = create(:carrier)
     account = create(:account, carrier:, name: "Rocket Rides", billing_currency: "CAD")

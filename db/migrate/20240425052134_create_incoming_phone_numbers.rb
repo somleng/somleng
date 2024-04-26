@@ -29,6 +29,9 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
           t.references(:carrier, type: :uuid, null: false, foreign_key: true)
           t.references(:phone_number, type: :uuid, null: true, foreign_key: { on_delete: :nullify })
           t.references(:messaging_service, type: :uuid, null: true, foreign_key: { on_delete: :nullify })
+          t.string(:friendly_name)
+          t.string(:account_type, null: false)
+          t.index(:account_type)
           t.string(:number, null: false)
           t.index(:number)
           t.string(:status, null: false)
@@ -52,6 +55,7 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
             number: phone_number.number,
             phone_number_plan: phone_number.active_plan,
             account: phone_number.active_plan.account,
+            account_type: phone_number.active_plan.account_type,
             carrier: phone_number.carrier,
             created_at: phone_number.active_plan.created_at,
             updated_at: phone_number.active_plan.updated_at,

@@ -10,21 +10,21 @@ module Dashboard
     end
 
     def edit
-      @resource = PhoneNumberConfigurationForm.initialize_with(record)
+      @resource = IncomingPhoneNumberForm.initialize_with(record)
     end
 
     def update
-      @resource = PhoneNumberConfigurationForm.new(permitted_params)
-      @resource.phone_number_configuration = record
+      @resource = IncomingPhoneNumberForm.new(permitted_params)
+      @resource.incoming_phone_number = record
       @resource.save
 
-      respond_with(:dashboard, @resource, location: edit_dashboard_phone_number_configuration_path(@resource.phone_number))
+      respond_with(:dashboard, @resource)
     end
 
     private
 
     def permitted_params
-      params.require(:phone_number_configuration).permit(
+      params.require(:incoming_phone_number).permit(
         :voice_url, :voice_method, :status_callback_url, :status_callback_method, :sip_domain,
         :sms_url, :sms_method, :messaging_service_id
       )
