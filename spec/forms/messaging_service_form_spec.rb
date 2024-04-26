@@ -38,6 +38,23 @@ RSpec.describe MessagingServiceForm do
       form.valid?
       expect(form.errors[:inbound_request_url]).to be_present
     end
+
+    it "validates the incoming phone number ids" do
+      account = create(:account)
+      create(:incoming_phone_number, account:)
+      messaging_service = create(:messaging_service)
+
+      form = MessagingServiceForm.new(
+        name: "My Service",
+        account:,
+        incoming_phone_number_ids: [ SecureRandom.uuid ],
+        messaging_service:
+      )
+
+      form.valid?
+
+      expect(form.errors[:incoming_phone_number_ids]).to be_present
+    end
   end
 
   describe "#save" do

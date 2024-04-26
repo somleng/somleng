@@ -34,10 +34,4 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
 
     result
   end
-
-  private
-
-  def attribute_key_path(name)
-    { data: { attributes: name } }
-  end
 end
