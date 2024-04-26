@@ -12,7 +12,7 @@ class PhoneNumberPlanDecorator < SimpleDelegator
   end
 
   def friendly_name
-    phone_number_formatter.format(object.number, format: :national)
+    phone_number_formatter.format(object.number, format: :international)
   end
 
   def status_color

@@ -1,8 +1,6 @@
 class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
   class PhoneNumberConfiguration < ActiveRecord::Base
     belongs_to :phone_number
-    belongs_to :phone_number_plan
-    belongs_to :account
   end
 
   class PhoneNumber < ActiveRecord::Base
@@ -60,7 +58,7 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
             created_at: phone_number.active_plan.created_at,
             updated_at: phone_number.active_plan.updated_at,
             status: :active,
-            friendly_name: PhoneNumberFormatter.new.format(phone_number.number, format: :national)
+            friendly_name: PhoneNumberFormatter.new.format(phone_number.number, format: :international)
           )
 
           if phone_number.configuration.present?

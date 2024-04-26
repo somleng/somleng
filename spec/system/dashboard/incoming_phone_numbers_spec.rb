@@ -107,7 +107,7 @@ RSpec.describe "Incoming Phone Numbers" do
     select("POST", from: "SMS method")
     choices_select("My Messaging Service", from: "Messaging service")
 
-    click_on("Update (251) 309-5500")
+    click_on("Update +1 (251) 309-5500")
 
     expect(page).to have_content("Phone number configuration was successfully updated.")
 
@@ -135,7 +135,7 @@ RSpec.describe "Incoming Phone Numbers" do
     visit edit_dashboard_incoming_phone_number_path(incoming_phone_number)
 
     fill_in("Voice URL", with: "ftp://invalid-url.com")
-    click_on("Update (251) 309-5500")
+    click_on("Update +1 (251) 309-5500")
 
     expect(page).to have_content("Voice URL is invalid")
   end

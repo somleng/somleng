@@ -24,7 +24,7 @@ RSpec.describe CreatePhoneNumberPlan do
         account:,
         number: phone_number.number,
         account_type: account.type,
-        friendly_name: "(251) 309-5500",
+        friendly_name: "+1 (251) 309-5500",
         voice_url: "https://example.com/voice.xml"
       )
     )

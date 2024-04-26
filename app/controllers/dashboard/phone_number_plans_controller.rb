@@ -16,7 +16,11 @@ module Dashboard
       @resource = initialize_form(permitted_params)
       @resource.save
 
-      respond_with(:dashboard, @resource)
+      respond_with(
+        :dashboard,
+        @resource,
+        location: -> { edit_dashboard_incoming_phone_number_path(@resource.phone_number_plan.incoming_phone_number) }
+      )
     end
 
     private

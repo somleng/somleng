@@ -34,7 +34,7 @@ class CreatePhoneNumberPlan < ApplicationWorkflow
       carrier: phone_number.carrier,
       account_type: account.type,
       number: phone_number.number,
-      friendly_name: phone_number_formatter.format(phone_number.number, format: :national),
+      friendly_name: phone_number_formatter.format(phone_number.number, format: :international),
       **configuration
     )
   end

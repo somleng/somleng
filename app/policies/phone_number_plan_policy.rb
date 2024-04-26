@@ -1,13 +1,9 @@
 class PhoneNumberPlanPolicy < ApplicationPolicy
   def index?
-    true
+    carrier_admin?
   end
 
-  def destroy?
-    manage? && record.active?
-  end
-
-  def manage?
+  def create?
     carrier_admin? || account_admin?
   end
 end

@@ -76,7 +76,7 @@ RSpec.describe "Phone Number Plans" do
     click_on("Buy +1 (251) 309-5500")
 
     expect(page).to have_content("Phone number plan was successfully created.")
-    expect(page).to have_content("Active")
+    expect(page).to have_content("Configure +1 (251) 309-5500")
   end
 
   it "Buy a phone number as an account admin" do
@@ -91,7 +91,7 @@ RSpec.describe "Phone Number Plans" do
     click_on("Buy +1 (251) 309-5500")
 
     expect(page).to have_content("Phone number plan was successfully created.")
-    expect(page).to have_content("Active")
+    expect(page).to have_content("Configure +1 (251) 309-5500")
   end
 
   it "Handles validations" do

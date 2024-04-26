@@ -316,7 +316,7 @@ FactoryBot.define do
     account { association :account, type: account_type }
     carrier { account.carrier }
     number { generate(:phone_number) }
-    friendly_name { PhoneNumberFormatter.new.format(PhoneNumberType.new.cast(number), format: :national) }
+    friendly_name { PhoneNumberFormatter.new.format(PhoneNumberType.new.cast(number), format: :international) }
     phone_number { association :phone_number, carrier:, number:, type: }
     after(:build) do |incoming_phone_number|
       incoming_phone_number.account_type = incoming_phone_number.account.type

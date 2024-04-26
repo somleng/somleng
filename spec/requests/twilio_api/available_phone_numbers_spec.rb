@@ -70,7 +70,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       expect(json_response.fetch("available_phone_numbers").count).to eq(1)
       expect(json_response.dig("available_phone_numbers", 0)).to include(
         "phone_number" => "+15067020972",
-        "friendly_name" => "(506) 702-0972",
+        "friendly_name" => "+1 (506) 702-0972",
         "iso_country" => "CA"
       )
     end
