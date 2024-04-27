@@ -112,7 +112,7 @@ RSpec.describe "Phone Numbers" do
   it "Show a phone number" do
     carrier = create(:carrier)
     phone_number = create(:phone_number, number: "12513095500", carrier:)
-    account = create(:account, carrier:)
+    account = create(:account, carrier:, name: "Rocket Rides")
     active_plan = create(:phone_number_plan, phone_number:, account:, amount: Money.from_amount(1.15, "USD"))
     user = create(:user, :carrier, carrier:)
 
@@ -121,6 +121,7 @@ RSpec.describe "Phone Numbers" do
 
     expect(page).to have_content("+1 (251) 309-5500")
     within("#billing") do
+      expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
       expect(page).to have_link("$1.15", href: dashboard_phone_number_plan_path(active_plan))
     end
   end
@@ -163,13 +164,14 @@ RSpec.describe "Phone Numbers" do
 
   it "Update a phone number" do
     carrier = create(:carrier, billing_currency: "CAD")
+    create(:account, :carrier_managed, carrier:, name: "My Carrier Account")
     user = create(:user, :carrier, carrier:)
     phone_number = create(
       :phone_number,
       carrier:,
       number: "12505550199",
       iso_country_code: "US",
-      visibility: :private
+      visibility: :public
     )
 
     carrier_sign_in(user)
@@ -179,7 +181,8 @@ RSpec.describe "Phone Numbers" do
     choices_select("Canada", from: "Country")
     choices_select("Mobile", from: "Type")
     fill_in("Price", with: "1.15")
-    choose("Public")
+    choose("Private")
+    choices_select("My Carrier Account", from: "Account")
 
     click_on("Update Phone number")
 
@@ -189,7 +192,11 @@ RSpec.describe "Phone Numbers" do
       expect(page).to have_content("Canada")
       expect(page).to have_content("Mobile")
       expect(page).to have_content("$1.15")
-      expect(page).to have_content("Public")
+      expect(page).to have_content("Private")
+    end
+
+    within("#billing") do
+      expect(page).to have_content("My Carrier Account")
     end
   end
 

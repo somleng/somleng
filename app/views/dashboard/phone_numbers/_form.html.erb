@@ -74,6 +74,24 @@
       </div>
     </div>
 
+    <% if resource.persisted? && resource.phone_number.available? %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Account</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :account_id,
+                collection: resource.account_options_for_select,
+                hint: "Optionally assign the phone number to one of your managed accounts.",
+                input_html: { data: { behavior: "choices-input" } }
+              %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <%= f.button :submit %>
   <% end %>
 </div>

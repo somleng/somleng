@@ -25,6 +25,10 @@
     <div id="billing" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Billing</h5>
+        <%= f.association :account do |account| %>
+          <%= external_link_to(account.name, dashboard_account_path(account)) %>
+        <% end %>
+
         <%= f.association :active_plan do |active_plan| %>
           <%= external_link_to(active_plan.name, dashboard_phone_number_plan_path(active_plan)) %>
         <% end %>

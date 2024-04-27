@@ -54,7 +54,7 @@
         <%= f.attribute :status_callback_method %>
 
         <% if policy(:phone_call).index? %>
-          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { incoming_phone_number_id: incoming_phone_number.id }), title: "View phone calls") %>
+          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View phone calls") %>
         <% end %>
       </div>
     </div>
@@ -69,7 +69,7 @@
         <% end %>
 
         <% if policy(:message).index? %>
-          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { incoming_phone_number_id: incoming_phone_number.id }), title: "View messages") %>
+          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View messages") %>
         <% end %>
       </div>
     </div>

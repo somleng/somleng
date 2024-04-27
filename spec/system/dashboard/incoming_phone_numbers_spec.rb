@@ -84,12 +84,14 @@ RSpec.describe "Incoming Phone Numbers" do
     within("#voice-configuration") do
       expect(page).to have_content("https://www.example.com/voice.xml")
       expect(page).to have_content("POST")
+      expect(page).to have_link("View", href: dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }))
     end
 
     within("#messaging-configuration") do
       expect(page).to have_content("https://www.example.com/sms.xml")
       expect(page).to have_content("GET")
       expect(page).to have_link("My Messaging Service", href: dashboard_messaging_service_path(messaging_service))
+      expect(page).to have_link("View", href: dashboard_messages_path(filter: { phone_number_id: incoming_phone_number.id }))
     end
   end
 

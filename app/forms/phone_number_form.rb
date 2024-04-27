@@ -19,6 +19,7 @@ class PhoneNumberForm
   attribute :country
   attribute :price, :decimal, default: 0.0
   attribute :visibility
+  attribute :account_id
 
   with_options if: :new_record? do
     validates :number, presence: true
@@ -58,7 +59,11 @@ class PhoneNumberForm
     phone_number.iso_country_code = country if country.present?
     phone_number.price = Money.from_amount(price, carrier.billing_currency)
 
-    phone_number.save!
+    PhoneNumber.transaction do
+      phone_number.save!
+      create_plan!
+      phone_number
+    end
   end
 
   def possible_countries
@@ -71,6 +76,21 @@ class PhoneNumberForm
     VISIBILITIES.map { |k, v| [ v.html_safe, k ] }
   end
 
+  def account_options_for_select
+    accounts_scope.map { |account| [ account.name, account.id ] }
+  end
+
+  def create_plan!
+    return if account_id.blank?
+    account = accounts_scope.find(account_id)
+
+    CreatePhoneNumberPlan.call(
+      phone_number:,
+      account:,
+      amount: Money.from_amount(0, account.billing_currency)
+    )
+  end
+
   private
 
   def validate_number
@@ -78,5 +98,9 @@ class PhoneNumberForm
     return unless carrier.phone_numbers.exists?(number:)
 
     errors.add(:number, :taken)
+  end
+
+  def accounts_scope
+    carrier.managed_accounts
   end
 end

@@ -29,4 +29,20 @@ RSpec.describe CreatePhoneNumberPlan do
       )
     )
   end
+
+  it "overrides the amount" do
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    phone_number = create(:phone_number, carrier:, number: "12513095500")
+
+    plan = CreatePhoneNumberPlan.call(
+      phone_number:,
+      account:,
+      amount: Money.from_amount(5.00, "USD")
+    )
+
+    expect(plan).to have_attributes(
+      amount: Money.from_amount(5.00, "USD")
+    )
+  end
 end
