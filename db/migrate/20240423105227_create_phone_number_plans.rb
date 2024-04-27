@@ -9,6 +9,12 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
     belongs_to :phone_number, optional: true
     belongs_to :account
     belongs_to :carrier
+
+    attribute :number, PhoneNumberType.new
+
+    monetize :amount_cents, with_model_currency: :currency, numericality: {
+      greater_than_or_equal_to: 0
+    }
   end
 
   def change
