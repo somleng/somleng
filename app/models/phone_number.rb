@@ -87,5 +87,6 @@ class PhoneNumber < ApplicationRecord
     self.visibility ||= price.zero? ? :private : :public
 
     self.iso_country_code ||= (number.e164? ? ResolvePhoneNumberCountry.call(number, fallback_country: carrier.country) : carrier.country).alpha2
+    self.area_code ||= number.area_code
   end
 end

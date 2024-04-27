@@ -56,6 +56,12 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
 
   get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/AvailablePhoneNumbers/:country_code/:type" do
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumberlocal-resource
+
+    parameter(
+      :AreaCode,
+      "The area code of the phone numbers to read. Applies to only phone numbers in the US and Canada."
+    )
+
     example "List the available local phone numbers for a specific country" do
       account = create(:account)
 
@@ -80,6 +86,33 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       expect(json_response.dig("available_phone_numbers", 0)).to include(
         "phone_number" => "+12513095500",
         "friendly_name" => "+1 (251) 309-5500",
+        "iso_country" => "CA"
+      )
+    end
+
+    # https://www.twilio.com/docs/phone-numbers/api/availablephonenumberlocal-resource#find-available-local-phone-numbers-by-area-code
+    example "Find available local phone numbers by area code" do
+      account = create(:account)
+
+      common_attributes = {
+        type: :local,
+        iso_country_code: "CA",
+        carrier: account.carrier,
+        visibility: :public
+      }
+
+      create(:phone_number, common_attributes.merge(number: "12013095500"))
+      create(:phone_number, common_attributes.merge(number: "12023095500"))
+
+      set_twilio_api_authorization_header(account)
+      do_request(account_sid: account.id, country_code: "CA", type: "Local", AreaCode: "201")
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
+      expect(json_response.fetch("available_phone_numbers").count).to eq(1)
+      expect(json_response.dig("available_phone_numbers", 0)).to include(
+        "phone_number" => "+12013095500",
+        "friendly_name" => "+1 (201) 309-5500",
         "iso_country" => "CA"
       )
     end
