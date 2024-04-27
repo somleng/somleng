@@ -15,10 +15,6 @@ class PhoneNumberPlanDecorator < SimpleDelegator
     object.phone_number&.decorated
   end
 
-  def phone_number_sid
-    phone_number_id
-  end
-
   private
 
   def phone_number_formatter
