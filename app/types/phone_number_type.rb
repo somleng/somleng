@@ -1,5 +1,7 @@
 class PhoneNumberType < ActiveRecord::Type::String
-  PhoneNumber = Struct.new(:value, :country_code, :e164, keyword_init: true) do
+  AREA_CODE_COUNTRY_PREFIXES = [ "1" ].freeze
+
+  PhoneNumber = Struct.new(:value, :country_code, :area_code, :e164, keyword_init: true) do
     def to_s
       value
     end
@@ -39,11 +41,15 @@ class PhoneNumberType < ActiveRecord::Type::String
 
     value = value.gsub(/\D/, "")
 
+    return if value.blank?
+
     result = PhoneNumber.new(value:)
 
     if validator.valid?(value)
       result.e164 = true
-      result.country_code = splitter.split(value).first
+      country_code, area_code, = splitter.split(value)
+      result.country_code = country_code
+      result.area_code = area_code if country_code.in?(AREA_CODE_COUNTRY_PREFIXES)
     else
       result.e164 = false
     end

@@ -23,6 +23,12 @@
       )
     %>
 
+    <%= form.text_field_tag(
+        :area_code,
+        params.dig(:filter, :area_code),
+        minlength: 3, maxlength: 3
+      )
+    %>
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
 
     <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>

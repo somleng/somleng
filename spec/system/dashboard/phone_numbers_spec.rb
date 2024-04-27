@@ -18,6 +18,7 @@ RSpec.describe "Phone Numbers" do
     create(:phone_number, common_attributes.merge(number: "12513095502", type: :mobile))
     create(:phone_number, common_attributes.merge(number: "12513095503", visibility: :private))
     create(:phone_number, common_attributes.merge(number: "12513095504", iso_country_code: "CA"))
+    create(:phone_number, common_attributes.merge(number: "12013095505"))
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path(
@@ -27,7 +28,8 @@ RSpec.describe "Phone Numbers" do
         from_date: "27/04/2024",
         to_date: "27/04/2024",
         assigned: false,
-        visibility: "public"
+        visibility: "public",
+        area_code: "251"
       }
     )
 
@@ -36,6 +38,7 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("+1 (251) 309-5502")
     expect(page).not_to have_content("+1 (251) 309-5503")
     expect(page).not_to have_content("+1 (251) 309-5504")
+    expect(page).not_to have_content("+1 (201) 309-5505")
 
     click_on("Delete")
 
