@@ -11,6 +11,7 @@ RSpec.describe "Available Phone Numbers" do
     create(:phone_number, :assigned, common_attributes.merge(number: "12513095503"))
     create(:phone_number, common_attributes.merge(number: "12513095504", visibility: :private))
     create(:phone_number, common_attributes.merge(number: "12513095505", price: Money.from_amount(5.00, "USD")))
+    create(:phone_number, common_attributes.merge(number: "12023095506"))
     user = create(:user, :with_account_membership, account:, carrier:)
 
     carrier_sign_in(user)
@@ -18,7 +19,8 @@ RSpec.describe "Available Phone Numbers" do
     visit dashboard_available_phone_numbers_path(
       filter: {
         country: "CA",
-        type: "local"
+        type: "local",
+        area_code: "251"
       }
     )
 
@@ -30,5 +32,6 @@ RSpec.describe "Available Phone Numbers" do
     expect(page).not_to have_content("+1 (251) 309-5503")
     expect(page).not_to have_content("+1 (251) 309-5504")
     expect(page).not_to have_content("+1 (251) 309-5505")
+    expect(page).not_to have_content("+1 (202) 309-5506")
   end
 end

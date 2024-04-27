@@ -27,22 +27,10 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
-  class AreaCodeFilter < ApplicationFilter
-    filter_params do
-      optional(:area_code).value(:string)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(area_code: filter_params.fetch(:area_code))
-    end
-  end
-
   filter_with(
     AssignedFilter,
     VisibilityFilter,
-    AreaCodeFilter,
+    :area_code_filter,
     :phone_number_type_filter,
     { country_filter: { attribute_name: :iso_country_code } },
     :number_filter,
