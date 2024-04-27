@@ -87,7 +87,7 @@ class PhoneNumberForm
     CreatePhoneNumberPlan.call(
       phone_number:,
       account:,
-      amount: Money.from_amount(0, account.billing_currency)
+      amount: Money.from_amount(0, carrier.billing_currency)
     )
   end
 
