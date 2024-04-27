@@ -1,12 +1,12 @@
 class PhoneNumber < ApplicationRecord
   self.inheritance_column = :_type_disabled
 
+  extend Enumerize
+
   NUMBER_FORMAT = /\A\d+\z/
   SHORT_CODE_TYPES = [ :short_code ].freeze
   E164_TYPES = [ :local, :mobile, :toll_free ].freeze
   TYPES = (SHORT_CODE_TYPES + E164_TYPES).freeze
-
-  extend Enumerize
 
   enumerize :type, in: TYPES
   enumerize :visibility,

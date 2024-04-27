@@ -1,20 +1,7 @@
 class AddPriceToPhoneNumbers < ActiveRecord::Migration[7.1]
   def change
-    add_column(:phone_numbers, :price_cents, :integer)
-    add_column(:phone_numbers, :currency, :string)
+    add_column(:phone_numbers, :price_cents, :integer, null: false)
+    add_column(:phone_numbers, :currency, :string, null: false)
     add_index(:phone_numbers, [ :price_cents, :currency ])
-
-    reversible do |dir|
-      dir.up do
-        execute <<-SQL
-          UPDATE phone_numbers
-          SET currency = carriers.billing_currency, price_cents = 0
-          FROM carriers where carriers.id = phone_numbers.carrier_id
-        SQL
-      end
-    end
-
-    change_column_null(:phone_numbers, :price_cents, false)
-    change_column_null(:phone_numbers, :currency, false)
   end
 end
