@@ -32,7 +32,7 @@
         <% end %>
 
         <% if policy(:incoming_phone_number).index? %>
-          <%= sidebar_nav("Active Numbers", dashboard_incoming_phone_numbers_path, icon_class: "fa-solid fa-check-double") %>
+          <%= sidebar_nav(current_user.carrier_user? ? "Managed Numbers" : "Active Numbers", dashboard_incoming_phone_numbers_path, icon_class: "fa-solid fa-check-double") %>
         <% end %>
 
         <% if policy(:available_phone_number).index? %>
