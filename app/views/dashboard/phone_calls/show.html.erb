@@ -13,8 +13,8 @@
       <%= f.attribute :account, value: external_link_to(phone_call.account.name, dashboard_account_path(phone_call.account)) %>
     <% end %>
 
-    <% if phone_call.incoming_phone_number.present? %>
-      <%= f.attribute :phone_number, value: external_link_to(phone_call.incoming_phone_number.number_formatted, dashboard_incoming_phone_number_path(phone_call.incoming_phone_number)) %>
+    <%= f.association(:incoming_phone_number, label: "Phone number SID") do |incoming_phone_number| %>
+      <%= external_link_to(incoming_phone_number.id, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
     <% end %>
 
     <% if policy(:sip_trunk).show? %>

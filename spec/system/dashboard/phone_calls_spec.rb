@@ -103,7 +103,7 @@ RSpec.describe "Phone Calls" do
       "SIP Trunk",
       href: dashboard_sip_trunk_path(sip_trunk)
     )
-    expect(page).to have_link("+1 (251) 309-5500", href: dashboard_incoming_phone_number_path(incoming_phone_number))
+    expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
     expect(page).to have_content("Recordings")

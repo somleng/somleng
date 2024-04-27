@@ -95,7 +95,7 @@ RSpec.describe "Messages" do
       "SMS Gateway",
       href: dashboard_sms_gateway_path(sms_gateway)
     )
-    expect(page).to have_link("+855 71 510 0980", href: dashboard_incoming_phone_number_path(incoming_phone_number))
+    expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
     expect(page).to have_content("GSM")

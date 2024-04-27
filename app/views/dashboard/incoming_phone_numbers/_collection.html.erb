@@ -2,19 +2,21 @@
   <thead>
     <tr role="row">
       <th>
+        SID
+      </th>
+      <th>
         Number
       </th>
       <th>
         Country
       </th>
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
       <th>
-        Type
-      </th>
-      <th>
-        Friendly Name
-      </th>
-      <th>
-        Actions
+        Created At
       </th>
     </tr>
   </thead>
@@ -24,7 +26,11 @@
       <% incoming_phone_number = incoming_phone_number.decorated %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(incoming_phone_number.number_formatted, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
+          <%= link_to(incoming_phone_number.id, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
+        </td>
+
+        <td>
+          <%= incoming_phone_number.number_formatted %>
         </td>
 
         <td>
@@ -32,16 +38,14 @@
           <%= incoming_phone_number.country&.iso_short_name %>
         </td>
 
-        <td>
-          <%= incoming_phone_number.type_formatted %>
-        </td>
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(incoming_phone_number.account.name, dashboard_account_path(incoming_phone_number.account)) %>
+          </td>
+        <% end %>
 
         <td>
-          <%= incoming_phone_number.friendly_name %>
-        </td>
-
-        <td>
-          <%= external_link_to("Configure", edit_dashboard_incoming_phone_number_path(incoming_phone_number)) %>
+          <%= local_time(incoming_phone_number.created_at) %>
         </td>
       </tr>
     <% end %>

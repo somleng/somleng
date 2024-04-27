@@ -1,10 +1,16 @@
 <% plan = @resource.decorated %>
 
-<%= page_title(title: "#{plan.friendly_name}") %>
+<%= page_title(title: "Phone Number Plan") %>
 
 <div class="card-body">
 
   <%= show_for(plan) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= plan.id %>
+      </code>
+    <% end %>
+
     <%= f.attribute :status do %>
       <%= status_badge(plan.status.text, color: plan.status_color) %>
     <% end %>

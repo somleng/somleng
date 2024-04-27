@@ -1,6 +1,17 @@
 <%= page_title(title: "Active Numbers") do %>
   <%= render("shared/filters") do |form| %>
+    <% if policy(:account).show? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.managed_accounts.map { |account| [account.name, account.id] },
+          { filter_value: params.dig(:filter, :account_id) },
+          { data: { behavior: "choices-input" }}
+        )
+      %>
+    <% end %>
+
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
 <% end %>
 
