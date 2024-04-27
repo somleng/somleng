@@ -1,4 +1,25 @@
 class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
+  class IncomingPhoneNumber < ApplicationRecord
+    extend Enumerize
+
+    belongs_to :carrier
+    belongs_to :phone_number_plan
+    belongs_to :account
+    belongs_to :phone_number, optional: true
+    belongs_to :messaging_service, optional: true
+
+    has_many :phone_calls
+    has_many :messages
+
+    enumerize :voice_method, in: %w[POST GET], default: "POST"
+    enumerize :sms_method, in: %w[POST GET], default: "POST"
+    enumerize :status_callback_method, in: %w[POST GET], default: "POST"
+    enumerize :status, in: %w[active released], default: :active, scope: :shallow, predicates: true
+    enumerize :account_type, in: Account.type.values, scope: :shallow
+
+    attribute :number, PhoneNumberType.new
+  end
+
   class PhoneNumberConfiguration < ActiveRecord::Base
     belongs_to :phone_number
   end
@@ -6,8 +27,11 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
   class PhoneNumber < ActiveRecord::Base
     self.inheritance_column = :_type_disabled
 
+    belongs_to :carrier
     has_one :configuration, class_name: "PhoneNumberConfiguration"
     has_one :active_plan, -> { active }, class_name: "PhoneNumberPlan"
+
+    attribute :number, PhoneNumberType.new
 
     def self.assigned
       joins(:active_plan)
@@ -51,7 +75,7 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
             number: phone_number.number,
             phone_number_plan: phone_number.active_plan,
             account: phone_number.active_plan.account,
-            account_type: phone_number.active_plan.account_type,
+            account_type: phone_number.active_plan.account.type,
             carrier: phone_number.carrier,
             created_at: phone_number.active_plan.created_at,
             updated_at: phone_number.active_plan.updated_at,
@@ -62,11 +86,11 @@ class CreateIncomingPhoneNumbers < ActiveRecord::Migration[7.1]
           if phone_number.configuration.present?
             incoming_phone_number.attributes = {
               voice_url: phone_number.configuration.voice_url,
-              voice_method: phone_number.configuration.voice_method,
+              voice_method: phone_number.configuration.voice_method || "POST",
               sms_url: phone_number.configuration.sms_url,
-              sms_method: phone_number.configuration.sms_method,
+              sms_method: phone_number.configuration.sms_method || "POST",
               status_callback_url: phone_number.configuration.status_callback_url,
-              status_callback_method: phone_number.configuration.status_callback_method,
+              status_callback_method: phone_number.configuration.status_callback_method || "POST",
               sip_domain: phone_number.configuration.sip_domain
             }
           end

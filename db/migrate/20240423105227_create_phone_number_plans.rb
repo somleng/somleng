@@ -3,6 +3,10 @@ class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
     self.inheritance_column = :_type_disabled
 
     belongs_to :account, optional: true
+
+    monetize :price_cents, with_model_currency: :currency, numericality: {
+      greater_than_or_equal_to: 0
+    }
   end
 
   class PhoneNumberPlan < ActiveRecord::Base
