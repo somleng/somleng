@@ -30,7 +30,7 @@
         <% end %>
 
         <%= f.association :active_plan do |active_plan| %>
-          <%= external_link_to(active_plan.name, dashboard_phone_number_plan_path(active_plan)) %>
+          <%= external_link_to(active_plan.amount, dashboard_phone_number_plan_path(active_plan)) %>
         <% end %>
 
         <%= f.attribute :plans, label: "All Plans", value: external_link_to("View", dashboard_phone_number_plans_path(filter: { number: @resource.number.to_s }), title: "View all plans") %>

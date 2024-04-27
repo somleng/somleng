@@ -3,15 +3,7 @@ class PhoneNumberPlanDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :PhoneNumberPlan
   end
 
-  def name
-    amount.format
-  end
-
   def number_formatted
-    phone_number_formatter.format(object.number, format: :international)
-  end
-
-  def friendly_name
     phone_number_formatter.format(object.number, format: :international)
   end
 
