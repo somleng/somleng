@@ -58,10 +58,6 @@ class PhoneNumber < ApplicationRecord
     def supported_countries
       select(:iso_country_code).distinct.order(:iso_country_code)
     end
-
-    def supported_currencies
-      select(:currency).distinct.order(:currency)
-    end
   end
 
   def country

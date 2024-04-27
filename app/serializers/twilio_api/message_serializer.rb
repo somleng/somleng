@@ -26,10 +26,6 @@ module TwilioAPI
       account_id
     end
 
-    def phone_number_sid
-      incoming_phone_number_id
-    end
-
     def messaging_service_sid
       messaging_service_id
     end
