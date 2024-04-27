@@ -37,7 +37,7 @@ module CarrierAPI
         required(:type).filled(:str?, eql?: "phone_number")
         optional(:attributes).value(:hash).schema do
           optional(:number).value(ApplicationRequestSchema::Types::Number, :filled?)
-          optional(:enabled).filled(:bool?)
+          optional(:visibility).filled(:str?, included_in?: PhoneNumber.visibility.values)
           optional(:type).filled(:str?, included_in?: PhoneNumber.type.values)
           optional(:country).filled(:str?, included_in?: ISO3166::Country.all.map(&:alpha2))
           optional(:price).filled(:decimal, gteq?: 0)
@@ -87,7 +87,7 @@ module CarrierAPI
       result = {}
       result[:carrier] = params.fetch(:carrier)
       result[:number] = params.fetch(:number) if params.key?(:number)
-      result[:enabled] = params.fetch(:enabled) if params.key?(:enabled)
+      result[:visibility] = params.fetch(:visibility) if params.key?(:visibility)
       result[:type] = params.fetch(:type) if params.key?(:type)
       result[:iso_country_code] = params.fetch(:country) if params.key?(:country)
       result[:price] = Money.from_amount(params.fetch(:price), carrier.billing_currency) if params.key?(:price)

@@ -9,6 +9,11 @@ class PhoneNumber < ApplicationRecord
   extend Enumerize
 
   enumerize :type, in: TYPES
+  enumerize :visibility,
+            in: [ :private, :public, :disabled ],
+            scope: :shallow,
+            predicates: true
+
   monetize :price_cents, with_model_currency: :currency, numericality: {
     greater_than_or_equal_to: 0
   }
@@ -47,7 +52,7 @@ class PhoneNumber < ApplicationRecord
     end
 
     def enabled
-      where(enabled: true)
+      where.not(visibility: :disabled)
     end
 
     def supported_countries
@@ -61,6 +66,10 @@ class PhoneNumber < ApplicationRecord
 
   def country
     ISO3166::Country.new(iso_country_code)
+  end
+
+  def enabled?
+    !disabled?
   end
 
   def assigned?
@@ -79,6 +88,7 @@ class PhoneNumber < ApplicationRecord
 
     self.currency ||= carrier.billing_currency
     self.price ||= Money.new(0, currency)
+    self.visibility ||= price.zero? ? :private : :public
 
     self.iso_country_code ||= (number.e164? ? ResolvePhoneNumberCountry.call(number, fallback_country: carrier.country) : carrier.country).alpha2
   end

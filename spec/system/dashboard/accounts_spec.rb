@@ -89,8 +89,9 @@ RSpec.describe "Accounts" do
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
-    within("#general") do
+    within("#billing") do
       expect(page).to have_content("United States Dollar")
+      expect(page).to have_link("Manage", href: dashboard_phone_number_plans_path(filter: { account_id: account.id }))
     end
 
     within("#voice") do

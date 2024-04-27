@@ -125,7 +125,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
 
     example "Provision a Phone Number" do
       account = create(:account)
-      create(:phone_number, number: "12513095500", carrier: account.carrier)
+      create(:phone_number, number: "12513095500", visibility: :public, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(
@@ -142,7 +142,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
 
     example "Provision a Phone Number with a Voice URL" do
       account = create(:account)
-      create(:phone_number, number: "12513095500", carrier: account.carrier)
+      create(:phone_number, number: "12513095500", visibility: :public, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(
@@ -161,7 +161,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
 
     example "Provision a Phone Number with an SMS URL" do
       account = create(:account)
-      create(:phone_number, number: "12513095500", carrier: account.carrier)
+      create(:phone_number, number: "12513095500", visibility: :public, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
       do_request(

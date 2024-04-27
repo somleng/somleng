@@ -58,9 +58,18 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumberlocal-resource
     example "List the available local phone numbers for a specific country" do
       account = create(:account)
-      create(:phone_number, number: "15067020972", type: :local, iso_country_code: "CA", carrier: account.carrier)
-      create(:phone_number, number: generate(:canadian_toll_free_number), type: :toll_free, iso_country_code: "CA", carrier: account.carrier)
-      create(:phone_number, number: generate(:us_local_number), type: :local, iso_country_code: "US", carrier: account.carrier)
+
+      common_attributes = {
+        type: :local,
+        iso_country_code: "CA",
+        carrier: account.carrier,
+        visibility: :public
+      }
+
+      create(:phone_number, common_attributes.merge(number: "12513095500"))
+      create(:phone_number, common_attributes.merge(number: "18777318091", type: :toll_free))
+      create(:phone_number, common_attributes.merge(number: "12513095502", iso_country_code: "US"))
+      create(:phone_number, common_attributes.merge(number: "12513095503", visibility: :private))
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, country_code: "CA", type: "Local")
@@ -69,8 +78,8 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
       expect(json_response.fetch("available_phone_numbers").count).to eq(1)
       expect(json_response.dig("available_phone_numbers", 0)).to include(
-        "phone_number" => "+15067020972",
-        "friendly_name" => "+1 (506) 702-0972",
+        "phone_number" => "+12513095500",
+        "friendly_name" => "+1 (251) 309-5500",
         "iso_country" => "CA"
       )
     end
@@ -78,8 +87,16 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumber-mobile-resource#read-multiple-availablephonenumbermobile-resources
     example "List the available mobile phone numbers for a specific country" do
       account = create(:account)
-      create(:phone_number, number: "15067020972", type: :mobile, iso_country_code: "CA", carrier: account.carrier)
-      create(:phone_number, number: generate(:canadian_toll_free_number), type: :toll_free, iso_country_code: "CA", carrier: account.carrier)
+      common_attributes = {
+        type: :mobile,
+        iso_country_code: "CA",
+        carrier: account.carrier,
+        visibility: :public
+      }
+
+      create(:phone_number, common_attributes.merge(number: "12513095500"))
+      create(:phone_number, common_attributes.merge(number: "12513095501", type: :local))
+      create(:phone_number, common_attributes.merge(number: "12513095502", visibility: :private))
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, country_code: "CA", type: "Mobile")
@@ -87,14 +104,21 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
       expect(json_response.fetch("available_phone_numbers").count).to eq(1)
-      expect(json_response.dig("available_phone_numbers", 0, "phone_number")).to eq("+15067020972")
+      expect(json_response.dig("available_phone_numbers", 0, "phone_number")).to eq("+12513095500")
     end
 
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumber-tollfree-resource#read-multiple-availablephonenumbertollfree-resources
     example "List the available toll free phone numbers for a specific country" do
       account = create(:account)
-      create(:phone_number, number: "18777318091", type: :toll_free, iso_country_code: "CA", carrier: account.carrier)
-      create(:phone_number, number: generate(:canadian_local_number), type: :local, iso_country_code: "CA", carrier: account.carrier)
+      common_attributes = {
+        type: :toll_free,
+        iso_country_code: "CA",
+        carrier: account.carrier,
+        visibility: :public
+      }
+      create(:phone_number, common_attributes.merge(number: "18777318091"))
+      create(:phone_number, common_attributes.merge(number: "12513095500", type: :local))
+      create(:phone_number, common_attributes.merge(number: "18777318092", visibility: :private))
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, country_code: "CA", type: "TollFree")
@@ -107,8 +131,14 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
 
     example "List the available short code numbers for a specific country" do
       account = create(:account)
-      create(:phone_number, number: "1294", type: :short_code, iso_country_code: "CA", carrier: account.carrier)
-      create(:phone_number, number: generate(:canadian_local_number), type: :local, iso_country_code: "CA", carrier: account.carrier)
+      common_attributes = {
+        type: :short_code,
+        iso_country_code: "CA",
+        carrier: account.carrier,
+        visibility: :public
+      }
+      create(:phone_number, common_attributes.merge(number: "1294"))
+      create(:phone_number, common_attributes.merge(number: "12513095500", type: :local))
 
       set_twilio_api_authorization_header(account)
       do_request(account_sid: account.id, country_code: "CA", type: "ShortCode")

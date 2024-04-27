@@ -64,7 +64,7 @@ class MessageDecorator < SimpleDelegator
   end
 
   def phone_number_sid
-    phone_number_id
+    incoming_phone_number_id
   end
 
   def direction

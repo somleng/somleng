@@ -4,13 +4,21 @@ class PhoneNumberForm
 
   extend Enumerize
 
+  VISIBILITIES = {
+    private: "Private <div class='form-text'>Only available for private use within your organization.</div>",
+    public: "Public <div class='form-text'>Available for private use within your organization and purchasable by your customers.</div>",
+    disabled: "Disabled <div class='form-text'>Disable this phone number.</div>"
+  }.freeze
+
+  enumerize :visibility, in: PhoneNumber.visibility.values, default: :private
+
   attribute :carrier
   attribute :number, PhoneNumberType.new
-  attribute :enabled, default: true
   attribute :phone_number, default: -> { PhoneNumber.new }
   attribute :type
   attribute :country
   attribute :price, :decimal, default: 0.0
+  attribute :visibility
 
   with_options if: :new_record? do
     validates :number, presence: true
@@ -33,10 +41,10 @@ class PhoneNumberForm
       phone_number:,
       carrier: phone_number.carrier,
       number: phone_number.decorated.number_formatted,
-      enabled: phone_number.enabled,
       country: phone_number.iso_country_code,
       type: phone_number.type,
-      price: phone_number.price
+      price: phone_number.price,
+      visibility: phone_number.visibility
     )
   end
 
@@ -44,8 +52,8 @@ class PhoneNumberForm
     return false if invalid?
 
     phone_number.carrier = carrier
-    phone_number.enabled = enabled
     phone_number.number = number if new_record?
+    phone_number.visibility = visibility
     phone_number.type = type
     phone_number.iso_country_code = country if country.present?
     phone_number.price = Money.from_amount(price, carrier.billing_currency)
@@ -57,6 +65,10 @@ class PhoneNumberForm
     return ISO3166::Country.all.map(&:alpha2) if new_record?
 
     number.possible_countries.map(&:alpha2)
+  end
+
+  def visibility_options_for_select
+    VISIBILITIES.map { |k, v| [ v.html_safe, k ] }
   end
 
   private

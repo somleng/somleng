@@ -1,8 +1,5 @@
 FactoryBot.define do
   sequence(:phone_number, "855972345678")
-  sequence(:canadian_local_number, "15067020972")
-  sequence(:us_local_number, "12513095542")
-  sequence(:canadian_toll_free_number, "18777318091")
 
   trait :with_status_callback_url do
     status_callback_url { "https://rapidpro.ngrok.com/handle/33/" }
@@ -285,8 +282,10 @@ FactoryBot.define do
     carrier
 
     trait :disabled do
-      enabled { false }
+      visibility { :disabled }
     end
+
+    visibility { :private }
 
     trait :assigned do
       transient do

@@ -79,6 +79,7 @@
       </div>
     </div>
 
-    <%= f.button :submit, "Update #{@resource.incoming_phone_number.friendly_name}" %>
+    <%= f.button :submit %>
+    <%= link_to("Cancel", :back, class: "btn btn-secondary") %>
   <% end %>
 </div>

@@ -181,6 +181,38 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :type)
     end
 
+    it "validates visibility" do
+      carrier = create(:carrier)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                visibility: "public"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).to have_valid_field(:data, :attributes, :visibility)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                visibility: "invalid"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).not_to have_valid_field(:data, :attributes, :visibility)
+    end
+
     it "validates country" do
       carrier = create(:carrier)
 
@@ -271,14 +303,20 @@ module CarrierAPI
 
     it "handles output for existing records" do
       carrier = create(:carrier, billing_currency: "CAD")
-      phone_number = create(:phone_number, number: "12366130851", carrier:, iso_country_code: "US")
+      phone_number = create(
+        :phone_number,
+        number: "12366130851",
+        carrier:,
+        iso_country_code: "US",
+        visibility: :private
+      )
 
       schema = validate_request_schema(
         input_params: {
           data: {
             type: "phone_number",
             attributes: {
-              enabled: false,
+              visibility: "public",
               country: "CA",
               type: "mobile",
               price: "1.15"
@@ -289,7 +327,7 @@ module CarrierAPI
       )
 
       expect(schema.output).to include(
-        enabled: false,
+        visibility: "public",
         iso_country_code: "CA",
         type: "mobile",
         price: Money.from_amount(1.15, "CAD")

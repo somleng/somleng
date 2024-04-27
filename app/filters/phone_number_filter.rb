@@ -15,9 +15,21 @@ class PhoneNumberFilter < ResourceFilter
     end
   end
 
+  class VisibilityFilter < ApplicationFilter
+    filter_params do
+      optional(:visibility).value(:string, included_in?: PhoneNumber.visibility.values)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.where(visibility: filter_params.fetch(:visibility))
+    end
+  end
+
   filter_with(
     AssignedFilter,
-    :enabled_filter,
+    VisibilityFilter,
     :phone_number_type_filter,
     { country_filter: { attribute_name: :iso_country_code } },
     :number_filter,

@@ -16,9 +16,15 @@
       )
     %>
 
+    <%= form.select(
+        :visibility,
+        PhoneNumber.visibility.values.map { |v| [v.text, v] },
+        { filter_value: params.dig(:filter, :visibility) }
+      )
+    %>
+
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
 
-    <%= form.boolean_select(:enabled, { filter_value: params.dig(:filter, :enabled) }) %>
     <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

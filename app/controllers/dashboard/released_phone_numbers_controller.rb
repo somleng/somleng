@@ -7,7 +7,7 @@ module Dashboard
     private
 
     def scope
-      parent_scope.released_managed_incoming_phone_numbers
+      current_account.released_managed_incoming_phone_numbers
     end
 
     def filter_class(*)

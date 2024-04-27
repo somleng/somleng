@@ -4,6 +4,6 @@ class PhoneNumberPlanPolicy < ApplicationPolicy
   end
 
   def create?
-    carrier_admin? || account_admin?
+    account_admin?
   end
 end

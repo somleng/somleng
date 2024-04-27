@@ -54,10 +54,10 @@ RSpec.describe "Phone Calls" do
 
     within(".alert") do
       expect(page).to have_content("Your export is being processed")
-      click_link("Exports")
+      click_on("Exports")
     end
 
-    click_link("phone_calls_")
+    click_on("phone_calls_")
     expect(page).to have_content(phone_call.id)
     expect(page).to have_content("outbound-api")
     expect(page).to have_content("-0.001")

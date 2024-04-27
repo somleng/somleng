@@ -2,11 +2,11 @@
 
 <%= page_title(title: incoming_phone_number.friendly_name) do %>
   <% if policy(@resource).edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_incoming_phone_number_path(@resource)) %>
+    <%= render("shared/edit_resource_page_action", title: "Configure", text: "Configure", path: edit_dashboard_incoming_phone_number_path(@resource)) %>
   <% end %>
 
   <% if policy(@resource).destroy? %>
-    <%= render("shared/destroy_resource_page_action", path: dashboard_incoming_phone_number_path(@resource)) %>
+    <%= render("shared/destroy_resource_page_action", title: "Release", text: "Release", path: dashboard_incoming_phone_number_path(@resource)) %>
   <% end %>
 <% end %>
 

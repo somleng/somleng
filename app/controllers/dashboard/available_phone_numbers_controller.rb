@@ -7,7 +7,7 @@ module Dashboard
     private
 
     def scope
-      parent_scope.available_phone_numbers
+      current_account.available_phone_numbers
     end
 
     def filter_class(*)

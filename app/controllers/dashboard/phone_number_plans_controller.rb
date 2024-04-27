@@ -26,10 +26,9 @@ module Dashboard
     private
 
     def initialize_form(options = {})
-      form = PhoneNumberPlanForm.new(options.except(:phone_number_id))
+      form = PhoneNumberPlanForm.new
       form.phone_number = phone_numbers_scope.find(options[:phone_number_id])
-      form.carrier = current_carrier
-      form.account = current_account unless current_user.carrier_user?
+      form.account = current_account
       form
     end
 
@@ -46,7 +45,7 @@ module Dashboard
     end
 
     def permitted_params
-      params.require(:phone_number_plan).permit(:phone_number_id, :account_id)
+      params.require(:phone_number_plan).permit(:phone_number_id)
     end
   end
 end

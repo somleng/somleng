@@ -1,5 +1,7 @@
 class CreatePhoneNumberPlans < ActiveRecord::Migration[7.1]
   class PhoneNumber < ActiveRecord::Base
+    self.inheritance_column = :_type_disabled
+
     belongs_to :account, optional: true
   end
 

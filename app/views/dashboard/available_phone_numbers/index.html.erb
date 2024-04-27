@@ -16,15 +16,6 @@
       )
     %>
 
-    <% if current_user.carrier_user? %>
-      <%= form.select(
-          :currency,
-          current_carrier.phone_numbers.supported_currencies.map(&:currency).map { |c| [c.name, c] },
-          { filter_value: params.dig(:filter, :currency) }
-        )
-      %>
-    <% end %>
-
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
   <% end %>
 <% end %>

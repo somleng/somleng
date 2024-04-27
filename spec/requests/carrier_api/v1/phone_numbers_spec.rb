@@ -16,8 +16,8 @@ resource "Phone Numbers", document: :carrier_api do
         required: true
       )
       parameter(
-        :enabled,
-        "Set to `false` to disable this number. Disabled phone numbers cannot be used by accounts. Enabled by default.",
+        :visibility,
+        "The visibility of the phone number. Must be one of #{PhoneNumber.visibility.values.map { |v| "`#{v}`" }.join(", ")}. Defaults to `public` for phone numbers with a price and `private` for phone numbers without one",
         required: false
       )
       parameter(
@@ -50,7 +50,8 @@ resource "Phone Numbers", document: :carrier_api do
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
       expect(jsonapi_response_attributes).to include(
         "number" => "1294",
-        "country" => "KH"
+        "country" => "KH",
+        "visibility" => "private"
       )
     end
 
@@ -82,8 +83,8 @@ resource "Phone Numbers", document: :carrier_api do
       )
 
       parameter(
-        :enabled,
-        "Set to `false` to disable the phone number or `true` to enable it. Disabled phone numbers cannot be used by accounts.",
+        :visibility,
+        "The visibility of the phone number. Must be one of #{PhoneNumber.visibility.values.map { |v| "`#{v}`" }.join(", ")}. Defaults to `public` for phone numbers with a price and `private` for phone numbers without one",
         required: false
       )
 
@@ -106,7 +107,7 @@ resource "Phone Numbers", document: :carrier_api do
         :phone_number,
         number: "15067020972",
         iso_country_code: "CA",
-        enabled: true,
+        visibility: :private,
         carrier:
       )
 
@@ -118,7 +119,7 @@ resource "Phone Numbers", document: :carrier_api do
           id: phone_number.id,
           attributes: {
             type: "mobile",
-            enabled: false,
+            visibility: "public",
             country: "US",
             price: "1.15"
           }
@@ -129,7 +130,7 @@ resource "Phone Numbers", document: :carrier_api do
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_number")
       expect(jsonapi_response_attributes).to include(
         "type" => "mobile",
-        "enabled" => false,
+        "visibility" => "public",
         "country" => "US",
         "price" => "1.15",
         "currency" => "CAD"

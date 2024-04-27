@@ -20,9 +20,9 @@ class ImportPhoneNumber < ApplicationWorkflow
       carrier: import.carrier
     )
     phone_number.type = data[:type]
-    phone_number.enabled = data[:enabled].nil? ? true : data.fetch(:enabled)
-    phone_number.iso_country_code = data.fetch(:country) if data[:country].present?
     phone_number.price = Money.from_amount(data.fetch(:price).to_d, import.carrier.billing_currency) if data[:price].present?
+    phone_number.visibility = data.fetch(:visibility) if data[:visibility].present?
+    phone_number.iso_country_code = data.fetch(:country) if data[:country].present?
 
     phone_number.save!
     phone_number

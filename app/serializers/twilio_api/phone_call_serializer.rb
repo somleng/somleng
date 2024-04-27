@@ -30,6 +30,10 @@ module TwilioAPI
       account_id
     end
 
+    def phone_number_sid
+      incoming_phone_number_id
+    end
+
     def annotation; end
 
     def answered_by; end

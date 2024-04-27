@@ -24,6 +24,18 @@
         <h5 class="card-title">Properties</h5>
 
         <div class="row">
+          <%=
+            f.input(
+              :visibility,
+              as: :radio_buttons,
+              required: true,
+              wrapper: :vertical_collection_novalidate,
+              collection: resource.visibility_options_for_select
+            )
+          %>
+        </div>
+
+        <div class="row">
           <div class="col-sm-6">
             <%=
               f.input(
@@ -45,7 +57,9 @@
               )
             %>
           </div>
+        </div>
 
+        <div class="row">
           <div class="col-sm-6">
             <%=
               f.input(
@@ -55,18 +69,6 @@
                 append: resource.new_record? ? resource.carrier.billing_currency.iso_code : resource.phone_number.currency.iso_code
               )
             %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card card border-danger mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Danger Zone</h5>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch, hint: "Phone numbers which are disabled are blocked from being used by any accounts." %>
           </div>
         </div>
       </div>

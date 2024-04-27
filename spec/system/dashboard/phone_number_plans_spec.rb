@@ -61,28 +61,10 @@ RSpec.describe "Phone Number Plans" do
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
   end
 
-  it "Buy a phone number as a carrier admin" do
-    carrier = create(:carrier)
-    create(:account, :carrier_managed, carrier:, name: "Rocket Rides")
-    create(:account, :customer_managed, carrier:, name: "Customer Account")
-    phone_number = create(:phone_number, number: "12513095500", carrier:)
-    user = create(:user, :carrier, :admin, carrier:)
-
-    carrier_sign_in(user)
-    visit(new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
-
-    expect(page).not_to have_choices_select("Account", with_options: [ "Customer Account" ])
-    choices_select("Rocket Rides", from: "Account")
-    click_on("Buy +1 (251) 309-5500")
-
-    expect(page).to have_content("Phone number plan was successfully created.")
-    expect(page).to have_content("Configure +1 (251) 309-5500")
-  end
-
-  it "Buy a phone number as an account admin" do
+  it "Buy a phone number" do
     carrier = create(:carrier)
     account = create(:account, :customer_managed, carrier:)
-    phone_number = create(:phone_number, number: "12513095500", carrier:)
+    phone_number = create(:phone_number, visibility: :public, number: "12513095500", carrier:)
     user = create(:user, :with_account_membership, account:, carrier:)
 
     carrier_sign_in(user)
@@ -92,18 +74,5 @@ RSpec.describe "Phone Number Plans" do
 
     expect(page).to have_content("Phone number plan was successfully created.")
     expect(page).to have_content("Configure +1 (251) 309-5500")
-  end
-
-  it "Handles validations" do
-    carrier = create(:carrier)
-    phone_number = create(:phone_number, number: "12513095500", carrier:)
-    user = create(:user, :carrier, :admin, carrier:)
-
-    carrier_sign_in(user)
-    visit(new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
-
-    click_on("Buy +1 (251) 309-5500")
-
-    expect(page).to have_content("can't be blank")
   end
 end

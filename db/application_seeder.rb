@@ -94,9 +94,10 @@ class ApplicationSeeder
 
   def create_phone_number(params)
     PhoneNumber.first_or_create!(
-      number: "1234",
+      number: "1294",
       iso_country_code: "KH",
       type: :short_code,
+      visibility: :public,
       **params
     )
   end

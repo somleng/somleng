@@ -16,6 +16,8 @@ en:
       messaging_service:
         create: "Next"
         update: "Save"
+      incoming_phone_number:
+        update: "Save"
       notification_preferences:
         update: "Save"
       phone_number_plan:

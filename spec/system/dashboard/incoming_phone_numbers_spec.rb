@@ -102,7 +102,7 @@ RSpec.describe "Incoming Phone Numbers" do
 
     carrier_sign_in(user)
     visit dashboard_incoming_phone_number_path(incoming_phone_number)
-    click_on("Edit")
+    click_on("Configure")
 
     fill_in("Friendly name", with: "My Awesome Phone Number")
     fill_in("Voice URL", with: "https://www.example.com/voice.xml")
@@ -113,7 +113,7 @@ RSpec.describe "Incoming Phone Numbers" do
     select("POST", from: "SMS method")
     choices_select("My Messaging Service", from: "Messaging service")
 
-    click_on("Update +1 (251) 309-5500")
+    click_on("Save")
 
     expect(page).to have_content("Phone number configuration was successfully updated.")
 
@@ -145,7 +145,7 @@ RSpec.describe "Incoming Phone Numbers" do
     visit edit_dashboard_incoming_phone_number_path(incoming_phone_number)
 
     fill_in("Voice URL", with: "ftp://invalid-url.com")
-    click_on("Update +1 (251) 309-5500")
+    click_on("Save")
 
     expect(page).to have_content("Voice URL is invalid")
   end
@@ -158,7 +158,7 @@ RSpec.describe "Incoming Phone Numbers" do
 
     carrier_sign_in(user)
     visit dashboard_incoming_phone_number_path(incoming_phone_number)
-    click_on("Delete")
+    click_on("Release")
 
     expect(page).to have_content("Phone number was successfully released.")
     expect(page).not_to have_content("+1 (251) 309-5500")

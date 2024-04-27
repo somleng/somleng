@@ -10,7 +10,7 @@ RSpec.describe ImportPhoneNumber do
       data: {
         number: "1234",
         type: "short_code",
-        enabled: nil,
+        visibility: nil,
         country: nil,
         price: nil,
         currency: nil
@@ -19,7 +19,7 @@ RSpec.describe ImportPhoneNumber do
     expect(phone_number).to have_attributes(
       number: have_attributes(value: "1234"),
       type: "short_code",
-      enabled: true,
+      visibility: "private",
       country: ISO3166::Country.new("KH")
     )
   end
@@ -33,7 +33,7 @@ RSpec.describe ImportPhoneNumber do
       data: {
         number: "1234",
         type: "short_code",
-        enabled: false,
+        visibility: "public",
         country: "US",
         price: "1.15",
         currency: "USD"
@@ -42,7 +42,7 @@ RSpec.describe ImportPhoneNumber do
 
     expect(phone_number).to have_attributes(
       number: have_attributes(value: "1234"),
-      enabled: false,
+      visibility: "public",
       country: ISO3166::Country.new("US"),
       price: Money.from_amount(1.15, "USD")
     )
@@ -56,7 +56,7 @@ RSpec.describe ImportPhoneNumber do
       number: "12513095542",
       type: :mobile,
       iso_country_code: "US",
-      enabled: true,
+      visibility: "public",
       price: Money.from_amount(1.00, "USD"),
       carrier:,
     )
@@ -66,7 +66,7 @@ RSpec.describe ImportPhoneNumber do
       data: {
         number: "12513095542",
         type: "local",
-        enabled: false,
+        visibility: "private",
         country: "CA",
         price: "1.15",
         currency: "USD"
@@ -76,7 +76,7 @@ RSpec.describe ImportPhoneNumber do
     expect(phone_number.reload).to have_attributes(
       number: have_attributes(value: "12513095542"),
       type: "local",
-      enabled: false,
+      visibility: "private",
       country: ISO3166::Country.new("CA"),
       price: Money.from_amount(1.15, "USD")
     )
@@ -87,7 +87,7 @@ RSpec.describe ImportPhoneNumber do
     import = create(:import, carrier:, resource_type: "PhoneNumber")
 
     expect {
-      ImportPhoneNumber.call(import:, data: { number: "12513095542", type: "short_code" })
+      ImportPhoneNumber.call(import:, data: { number: "12513095542", type: "short_code", visibility: "invalid" })
     }.to raise_error(Errors::ImportError)
   end
 end

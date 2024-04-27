@@ -4,12 +4,13 @@ module TwilioAPI
   RSpec.describe IncomingPhoneNumberRequestSchema, type: :request_schema do
     it "validates PhoneNumber" do
       account = create(:account)
-      phone_number = create(:phone_number, carrier: account.carrier)
+      public_number = create(:phone_number, visibility: :public, carrier: account.carrier)
+      private_number = create(:phone_number, visibility: :private, carrier: account.carrier)
 
       expect(
         validate_request_schema(
           input_params: {
-            PhoneNumber: phone_number.number.to_s
+            PhoneNumber: public_number.number.to_s
           },
           options: { account: }
         )
@@ -18,7 +19,7 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            To: "855716100235"
+            To: private_number.number.to_s
           }
         )
       ).not_to have_valid_field(:PhoneNumber)
@@ -153,7 +154,7 @@ module TwilioAPI
 
     it "handles post processing" do
       account = create(:account)
-      phone_number = create(:phone_number, number: "12513095500", carrier: account.carrier)
+      phone_number = create(:phone_number, number: "12513095500", visibility: :public, carrier: account.carrier)
 
       schema = validate_request_schema(
         input_params: {

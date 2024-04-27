@@ -19,17 +19,6 @@
           <%= show.attribute :type, value: phone_number.type_formatted %>
           <%= show.attribute :price, label: "Monthly price", value: phone_number.price.format %>
         <% end %>
-
-        <% if current_user.carrier_user? %>
-          <div class="row">
-            <div class="col-sm-6">
-                <%= form.input :account_id,
-                            collection: @resource.account_options_for_select,
-                            prompt: "Please select",
-                            input_html: { data: { behavior: "choices-input" } } %>
-            </div>
-          </div>
-        <% end %>
       </div>
     </div>
 

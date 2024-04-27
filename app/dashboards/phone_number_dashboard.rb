@@ -11,7 +11,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     number: Field::String,
     country: Field::String,
     type: Field::String,
-    enabled: Field::String,
+    visibility: Field::String,
     price: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
@@ -22,7 +22,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     number
     country
     type
-    enabled
+    visibility
     price
     created_at
   ].freeze
@@ -34,7 +34,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     price
     carrier
     number
-    enabled
+    visibility
     created_at
     updated_at
     active_plan

@@ -1,8 +1,6 @@
 module CarrierAPI
   class PhoneNumberSerializer < ResourceSerializer
-    belongs_to :account, if: ->(record, _params) { record.account_id.present? }
-
-    attributes :number, :country, :enabled, :type
+    attributes :number, :country, :visibility, :type
 
     attribute :currency do |object|
       object.currency.iso_code

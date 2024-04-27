@@ -11,7 +11,10 @@
         Type
       </th>
       <th>
-        Enabled
+        Visibility
+      </th>
+      <th>
+        Price
       </th>
       <th>
         Assigned
@@ -40,7 +43,11 @@
         </td>
 
         <td>
-          <%= phone_number.enabled? ? t("show_for.yes") : t("show_for.no") %>
+          <%= phone_number.visibility_formatted %>
+        </td>
+
+        <td>
+          <%= phone_number.price.format %>
         </td>
 
         <td>
