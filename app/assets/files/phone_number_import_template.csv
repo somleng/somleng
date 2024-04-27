@@ -1,2 +1,2 @@
-number,enabled,account_sid
-1234,false,
+number,type,visibility,country,price
+12505550199,local,public,CA,1.15

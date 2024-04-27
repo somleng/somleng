@@ -21,10 +21,18 @@ Rails.application.routes.draw do
 
       resources :phone_calls, only: %i[index create show update], path: "Calls",
                               concerns: :recordings
+
       post "Calls/:id" => "phone_calls#update"
 
-      resources :messages, only: %i[index create show destroy], path: "Messages"
+      resources :messages, only: %i[index create show destroy update], path: "Messages"
       post "Messages/:id" => "messages#update"
+
+      resources :available_phone_number_countries, only: %i[index show], path: "AvailablePhoneNumbers" do
+        get "/:type", to: "available_phone_numbers#index"
+      end
+
+      resources :incoming_phone_numbers, only: %i[index create show destroy update], path: "IncomingPhoneNumbers"
+      post "IncomingPhoneNumbers/:id" => "incoming_phone_numbers#update"
     end
 
     scope "/carrier", as: :carrier, module: :carrier_api do
@@ -35,9 +43,7 @@ Rails.application.routes.draw do
 
         resources :phone_calls, only: %i[index show update]
         resources :messages, only: %i[index show update]
-        resources :phone_numbers, only: %i[index create show update destroy] do
-          patch :release, on: :member
-        end
+        resources :phone_numbers, only: %i[index create show update destroy]
       end
     end
 
@@ -114,10 +120,12 @@ Rails.application.routes.draw do
       resource :home, only: :show
       resources :user_invitations, only: :update
       resources :phone_numbers do
-        resource :configuration, controller: "phone_number_configurations", only: %i[edit update]
-        patch :release, on: :member
         delete :bulk_destroy, on: :collection
       end
+      resources :available_phone_numbers, only: [ :index ]
+      resources :released_phone_numbers, only: [ :index ]
+      resources :incoming_phone_numbers
+      resources :phone_number_plans, only: [ :index, :show, :new, :create ]
       resources :messages, only: %i[index show]
       resources :messaging_services
       resources :verification_services
@@ -158,6 +166,8 @@ Rails.application.routes.draw do
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]
       resources :phone_numbers, only: %i[show index]
+      resources :incoming_phone_numbers, only: %i[show index]
+      resources :phone_number_plans, only: %i[show index]
       resources :phone_calls, only: %i[show index]
       resources :messages, only: %i[show index]
       resources :users, only: %i[show index]
@@ -173,7 +183,6 @@ Rails.application.routes.draw do
 
       resources :account_memberships, only: :show
       resources :sip_trunks, only: :show
-      resources :phone_number_configurations, only: :show
       resources :phone_call_events, only: :show
       resources :call_data_records, only: :show
       resources :recordings, only: :show

@@ -1,7 +1,7 @@
 class EventFilter < ResourceFilter
   class TypeFilter < ApplicationFilter
     filter_params do
-      optional(:type).value(:string)
+      optional(:type).value(:string, included_in?: Event.type.values)
     end
 
     def apply

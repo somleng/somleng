@@ -77,8 +77,8 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
   def build_message_schema(verb)
     TwilioAPI::MessageRequestSchema.new(
       input_params: {
-        From: verb.from || message.to,
-        To: verb.to || message.from,
+        From: verb.from || message.to.value,
+        To: verb.to || message.from.value,
         Body: verb.body,
         StatusCallback: action_url(verb.action),
         StatusCallbackMethod: verb.method

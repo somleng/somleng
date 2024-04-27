@@ -2,14 +2,14 @@ module CarrierAPI
   module V1
     class PhoneNumbersController < CarrierAPIController
       def index
-        respond_with_resource(phone_numbers_scope, serializer_options)
+        respond_with_resource(scope, serializer_options)
       end
 
       def create
         validate_request_schema(
           with: PhoneNumberRequestSchema, **serializer_options
         ) do |permitted_params|
-          phone_numbers_scope.create!(permitted_params)
+          scope.create!(permitted_params)
         end
       end
 
@@ -37,20 +37,14 @@ module CarrierAPI
         respond_with_resource(phone_number)
       end
 
-      def release
-        phone_number = find_phone_number
-        phone_number.release!
-        respond_with_resource(phone_number)
-      end
-
       private
 
-      def phone_numbers_scope
+      def scope
         current_carrier.phone_numbers
       end
 
       def find_phone_number
-        phone_numbers_scope.find(params[:id])
+        scope.find(params[:id])
       end
 
       def serializer_options

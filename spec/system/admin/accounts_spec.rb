@@ -7,7 +7,7 @@ RSpec.describe "Admin/Accounts" do
     page.driver.browser.authorize("admin", "password")
     visit admin_accounts_path
 
-    click_link("Rocket Rides")
+    click_on("Rocket Rides")
 
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("carrier_managed")

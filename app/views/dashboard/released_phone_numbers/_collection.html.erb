@@ -1,0 +1,62 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        Number
+      </th>
+      <th>
+        Country
+      </th>
+      <th>
+        Type
+      </th>
+      <th>
+        Monthly Fee
+      </th>
+      <th>
+        Released At
+      </th>
+      <th>
+        Actions
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |released_incoming_phone_number| %>
+      <% released_incoming_phone_number = released_incoming_phone_number.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= released_incoming_phone_number.number_formatted %>
+        </td>
+
+        <td>
+          <% if released_incoming_phone_number.phone_number.present? %>
+            <%= released_incoming_phone_number.phone_number.country.emoji_flag %>
+            <%= released_incoming_phone_number.phone_number.country.iso_short_name %>
+          <% end %>
+        </td>
+
+        <td>
+          <% if released_incoming_phone_number.phone_number.present? %>
+            <%= released_incoming_phone_number.phone_number.type_formatted %>
+          <% end %>
+        </td>
+
+        <td>
+          <%= released_incoming_phone_number.phone_number_plan.amount.format %>
+        </td>
+
+        <td>
+          <%= local_time(released_incoming_phone_number.released_at) %>
+        </td>
+
+        <td>
+          <% if released_incoming_phone_number.phone_number&.available? %>
+            <%= external_link_to("Repurchase", dashboard_available_phone_numbers_path(filter: { number: released_incoming_phone_number.number } )) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

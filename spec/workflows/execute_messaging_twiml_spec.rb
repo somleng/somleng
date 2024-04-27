@@ -26,15 +26,13 @@ RSpec.describe ExecuteMessagingTwiML do
     it "handles <Message> verbs" do
       sms_gateway = create(:sms_gateway, :connected)
       account = create(:account, carrier: sms_gateway.carrier)
-      phone_number = create(
-        :phone_number, :configured, account:, number: "85512888888", carrier: sms_gateway.carrier
-      )
+      incoming_phone_number = create(:incoming_phone_number, account:, number: "85512888888")
 
       message = create(
         :message,
         :inbound,
         account:,
-        phone_number:,
+        incoming_phone_number:,
         sms_gateway:,
         from: "85512345678",
         to: "85512888888",
@@ -56,11 +54,12 @@ RSpec.describe ExecuteMessagingTwiML do
         direction: "outbound_reply",
         carrier: message.carrier,
         account: message.account,
-        from: "85512888888",
-        to: "85512345678",
+        from: have_attributes(value: "85512888888"),
+        to: have_attributes(value: "85512345678"),
         body: "Hello world",
         status: "sending",
-        phone_number:
+        incoming_phone_number:,
+        phone_number: incoming_phone_number.phone_number
       )
     end
 
@@ -69,27 +68,14 @@ RSpec.describe ExecuteMessagingTwiML do
       _sms_gateway = create(:sms_gateway, :connected, carrier:)
       account = create(:account, carrier:)
 
-      phone_number = create(
-        :phone_number,
-        :configured,
-        carrier:,
-        account:,
-        number: "85512888888"
-      )
-
-      other_phone_number = create(
-        :phone_number,
-        :configured,
-        carrier:,
-        account:,
-        number: "85512777777"
-      )
+      incoming_phone_number = create(:incoming_phone_number, account:, number: "85512888888")
+      other_incoming_phone_number = create(:incoming_phone_number, account:, number: "85512777777")
 
       message = create(
         :message,
         :inbound,
         account:,
-        phone_number:,
+        incoming_phone_number:,
         from: "85512345678",
         to: "85512888888",
         sms_url: "https://www.example.com/messaging.xml",
@@ -112,9 +98,10 @@ RSpec.describe ExecuteMessagingTwiML do
         direction: "outbound_reply",
         carrier:,
         account:,
-        phone_number: other_phone_number,
-        from: "85512777777",
-        to: "85512999999",
+        incoming_phone_number: other_incoming_phone_number,
+        phone_number: other_incoming_phone_number.phone_number,
+        from: have_attributes(value: "85512777777"),
+        to: have_attributes(value: "85512999999"),
         body: "Hello world",
         status: "sending",
         status_callback_url: "https://www.example.com/message_status_callback.xml"

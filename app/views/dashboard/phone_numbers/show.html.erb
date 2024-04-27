@@ -1,38 +1,9 @@
 <%= page_title(title: "Phone Number") do %>
-  <% phone_number_policy = PhoneNumberPolicy.new(pundit_user, @resource) %>
-  <% phone_number_configuration_policy = PhoneNumberConfigurationPolicy.new(pundit_user, @resource) %>
-  <% display_dropdown = current_user.carrier_user? && phone_number_configuration_policy.edit? %>
-
-  <% if display_dropdown %>
-    <div class="btn-group">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-phone-number-actions" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa-solid fa-cog"></i>
-      </button>
-
-      <div class="dropdown-menu" aria-labelledby="dropdown-menu-phone-number-actions">
-        <%= link_to(
-          edit_dashboard_phone_number_configuration_path(@resource),
-          class: "dropdown-item"
-        ) do %>
-          <i class="fa-solid fa-tools mfe-2"></i> Configure
-        <% end %>
-      </div>
-    </div>
-  <% elsif phone_number_configuration_policy.edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_configuration_path(@resource)) %>
-  <% end %>
-
   <% if policy(@resource).edit? %>
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_phone_number_path(@resource)) %>
   <% end %>
 
-  <% if phone_number_policy.release? %>
-    <%= button_to(release_dashboard_phone_number_path(@resource), class: "btn btn-warning", title: "Release", form_class: "d-inline", method: :patch, form: { data: { turbo_confirm: "This action cannot be undone. Are you sure you want to release the number?" }}) do %>
-      <i class="fa-solid fa-unlink"></i>
-    <% end %>
-  <% end %>
-
-  <% if policy(@resource).destroy? %>
+  <% if policy(@resource).destroy? && !@resource.assigned? %>
     <%= render("shared/destroy_resource_page_action", path: dashboard_phone_number_path(@resource)) %>
   <% end %>
 <% end %>
@@ -41,38 +12,45 @@
   <% phone_number = @resource.decorated %>
 
   <%= show_for(phone_number) do |f| %>
-    <div class="card mb-3">
+    <div id="general" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">General</h5>
 
         <%= f.attribute :number, value: phone_number.number_formatted  %>
-        <%= f.attribute :enabled %>
-
-        <% if policy(:phone_call).index? %>
-          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { phone_number_id: @resource.id }), title: "View phone calls") %>
-        <% end %>
-
-        <% if policy(:message).index? %>
-          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { phone_number_id: @resource.id }), title: "View messages") %>
-        <% end %>
-
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
       </div>
     </div>
 
-    <% if policy(:account).show? %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Account Settings</h5>
+    <div id="billing" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Billing</h5>
+        <%= f.association :account, label: "Assigned to account" do |account| %>
+          <%= external_link_to(account.name, dashboard_account_path(account)) %>
+        <% end %>
 
-          <% if @resource.account.present? %>
-            <%= f.attribute :account, value: external_link_to(@resource.account.name, dashboard_account_path(@resource.account)) %>
-          <% else %>
-            <%= f.attribute :account %>
-          <% end %>
-        </div>
+        <%= f.association :active_plan do |active_plan| %>
+          <%= external_link_to(active_plan.amount.format, dashboard_phone_number_plan_path(active_plan)) %>
+        <% end %>
+
+        <%= f.attribute :plans, label: "All Plans", value: external_link_to("View", dashboard_phone_number_plans_path(filter: { number: @resource.number.to_s }), title: "View all plans") %>
       </div>
-    <% end %>
+    </div>
+
+    <div id="properties" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Properties</h5>
+
+        <%= f.attribute :visibility, value: phone_number.visibility_formatted %>
+        <%= f.attribute :type, value: phone_number.type_formatted %>
+
+        <%= f.attribute :country do %>
+          <%= @resource.country.emoji_flag %>
+          <%= @resource.country.iso_short_name %>
+        <% end %>
+
+        <%= f.attribute :price, value: phone_number.price.format %>
+      </div>
+    </div>
   <% end %>
 </div>

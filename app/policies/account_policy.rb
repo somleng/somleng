@@ -10,7 +10,7 @@ class AccountPolicy < ApplicationPolicy
   end
 
   def show_auth_token?
-    read? && record.carrier_managed?
+    read? && carrier_managed?
   end
 
   def manage?

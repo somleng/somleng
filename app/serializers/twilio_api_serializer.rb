@@ -8,12 +8,16 @@ class TwilioAPISerializer < ApplicationSerializer
 
   def hash_for_collection(options)
     data = object.map do |record|
-      self.class.new(record.decorated).serializable_hash(options)
+      self.class.new(record.decorated, serializer_options).serializable_hash(options)
     end
 
     results = { collection_name => data }
     pagination_results = pagination_serializer.serializable_hash
     results.merge(pagination_results)
+  end
+
+  def pagination_serializer
+    TwilioAPI::PaginationSerializer.new(serializer_options.fetch(:pagination_info))
   end
 
   def serializable_is_collection?

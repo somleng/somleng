@@ -6,6 +6,7 @@ class MessageDashboard < Administrate::BaseDashboard
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
     phone_number: Field::BelongsTo,
+    incoming_phone_number: Field::BelongsTo,
     sms_gateway: Field::BelongsTo,
     messaging_service: Field::BelongsTo,
     channel: Field::String,
@@ -55,6 +56,7 @@ class MessageDashboard < Administrate::BaseDashboard
     carrier
     account
     phone_number
+    incoming_phone_number
     sms_gateway
     messaging_service
     channel

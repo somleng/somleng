@@ -1,7 +1,7 @@
 module Dashboard
   class PhoneNumbersController < DashboardController
     def index
-      @filtered_resources = apply_filters(phone_numbers_scope.includes(:account))
+      @filtered_resources = apply_filters(scope.includes(:active_plan))
       @resources = paginate_resources(@filtered_resources)
     end
 
@@ -10,7 +10,7 @@ module Dashboard
     end
 
     def create
-      @resource = initialize_form(required_params.permit(:number, :account_id, :enabled))
+      @resource = initialize_form(required_params.permit(:number, :visibility, :type, :country, :price))
       @resource.save
 
       respond_with(:dashboard, @resource)
@@ -26,11 +26,11 @@ module Dashboard
     end
 
     def update
-      permitted_params = [ :enabled ]
-      permitted_params << :account_id unless record.assigned?
+      permitted_params = [ :visibility, :type, :country, :price, :account_id ]
       permitted_params = required_params.permit(permitted_params)
       @resource = initialize_form(permitted_params)
       @resource.phone_number = record
+      @resource.number = record.number
       @resource.save
 
       respond_with(:dashboard, @resource)
@@ -42,15 +42,12 @@ module Dashboard
     end
 
     def bulk_destroy
-      @resources = apply_filters(phone_numbers_scope)
-      @resources.delete_all
+      @resources = apply_filters(scope)
+      ApplicationRecord.transaction do
+        @resources.destroy_all
+      end
 
       respond_with(@resources, location: dashboard_phone_numbers_path(filter: request.query_parameters["filter"]))
-    end
-
-    def release
-      record.release!
-      respond_with(:dashboard, record)
     end
 
     private
@@ -59,8 +56,8 @@ module Dashboard
       params.require(:phone_number)
     end
 
-    def phone_numbers_scope
-      parent_scope.phone_numbers
+    def scope
+      current_carrier.phone_numbers
     end
 
     def initialize_form(params = {})
@@ -69,12 +66,8 @@ module Dashboard
       form
     end
 
-    def find_record?
-      super || action_name.in?(%w[release])
-    end
-
     def record
-      @record ||= phone_numbers_scope.find(params[:id])
+      @record ||= scope.find(params[:id])
     end
   end
 end

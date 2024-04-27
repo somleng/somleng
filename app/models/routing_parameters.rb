@@ -3,7 +3,7 @@ class RoutingParameters
 
   def initialize(sip_trunk:, destination:)
     @sip_trunk = sip_trunk
-    @destination = destination
+    @destination = destination.to_s
   end
 
   def to_h

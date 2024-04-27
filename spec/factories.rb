@@ -1,5 +1,5 @@
 FactoryBot.define do
-  sequence :phone_number, 855_972_345_678, &:to_s
+  sequence(:phone_number, "855972345678")
 
   trait :with_status_callback_url do
     status_callback_url { "https://rapidpro.ngrok.com/handle/33/" }
@@ -47,6 +47,7 @@ FactoryBot.define do
   factory :carrier do
     name { "AT&T" }
     country_code { "KH" }
+    billing_currency { ISO3166::Country.new(country_code).currency_code }
     sequence(:subdomain) { |n| "at-t#{n}" }
     website { "https://at-t.com" }
     with_oauth_application
@@ -159,6 +160,7 @@ FactoryBot.define do
     with_access_token
     name { "Rocket Rides" }
     default_tts_voice { "Basic.Kal" }
+    billing_currency { carrier.billing_currency }
     traits_for_enum :type, %i[carrier_managed customer_managed]
     traits_for_enum :status, %w[enabled disabled]
     carrier_managed
@@ -279,60 +281,69 @@ FactoryBot.define do
   factory :phone_number do
     carrier
 
-    trait :assigned_to_account do
-      account { association :account, carrier: }
-    end
-
-    trait :utilized do
-      assigned_to_account
-
-      after(:build) do |phone_number|
-        next if phone_number.utilized?
-
-        phone_number.phone_calls << build(
-          :phone_call, account: phone_number.account, carrier: phone_number.carrier
-        )
-      end
-    end
-
     trait :disabled do
-      enabled { false }
+      visibility { :disabled }
     end
 
-    trait :configured do
-      assigned_to_account
+    visibility { :private }
 
+    trait :assigned do
       transient do
-        messaging_service { nil }
-        sms_url { nil }
-        sms_method { nil }
+        account { build(:account, carrier:) }
       end
 
       after(:build) do |phone_number, evaluator|
-        phone_number.configuration ||= build(
-          :phone_number_configuration,
-          :fully_configured,
-          phone_number:,
-          messaging_service: evaluator.messaging_service,
-          sms_url: evaluator.sms_url,
-          sms_method: evaluator.sms_method
+        phone_number.active_plan ||= build(
+          :phone_number_plan,
+          account: evaluator.account,
+          phone_number:
         )
       end
     end
 
     number { generate(:phone_number) }
+    type { PhoneNumberType.new.cast(number).e164? ? :mobile : :short_code }
+    iso_country_code { PhoneNumberType.new.cast(number).e164? ? nil : "KH" }
   end
 
-  factory :phone_number_configuration do
-    phone_number
+  factory :incoming_phone_number do
+    transient do
+      type { :mobile }
+      amount { Money.from_amount(1.15, "USD") }
+    end
+
+    trait :active do
+      status { :active }
+    end
+
+    trait :released do
+      status { :released }
+      released_at { Time.current }
+    end
+
+    status { :active }
+    account_type { :customer_managed }
+    account { association :account, type: account_type, billing_currency: amount.currency }
+    carrier { account.carrier }
+    number { generate(:phone_number) }
+    friendly_name { PhoneNumberFormatter.new.format(PhoneNumberType.new.cast(number), format: :international) }
+    phone_number { association :phone_number, carrier:, number:, type:, price: amount }
+    after(:build) do |incoming_phone_number|
+      incoming_phone_number.account_type = incoming_phone_number.account.type
+      incoming_phone_number.phone_number_plan ||= build(
+        :phone_number_plan,
+        status: incoming_phone_number.active? ? :active : :canceled,
+        account: incoming_phone_number.account,
+        phone_number: incoming_phone_number.phone_number,
+        carrier: incoming_phone_number.carrier,
+        amount: incoming_phone_number.phone_number.price
+      )
+    end
 
     trait :fully_configured do
       voice_url { "https://demo.twilio.com/docs/voice.xml" }
-      voice_method { "GET" }
       status_callback_url { "https://example.com/status-callback" }
-      status_callback_method { "POST" }
       sms_url { "https://demo.twilio.com/docs/messaging.xml" }
-      sms_method { "GET" }
     end
   end
 
@@ -565,8 +576,6 @@ FactoryBot.define do
     channel { "sms" }
     to { "85512334667" }
     code { "1234" }
-    locale { "en" }
-    country_code { "KH" }
 
     traits_for_enum :status, %w[pending canceled approved]
 
@@ -643,5 +652,38 @@ FactoryBot.define do
     media_stream
     phone_call { media_stream.phone_call }
     traits_for_enum :type, %i[connect start disconnect connect_failed]
+  end
+
+  factory :phone_number_plan do
+    transient do
+      type { :mobile }
+      account_type { :carrier_managed }
+    end
+
+    account { association :account, type: account_type }
+    carrier { account.carrier }
+    amount { Money.from_amount(1.15, account.billing_currency) }
+    number { generate(:phone_number) }
+    status { :active }
+    phone_number { association :phone_number, carrier:, number:, type:, price: amount }
+
+    after(:build) do |phone_number_plan, evaluator|
+      phone_number_plan.incoming_phone_number ||= build(
+        :incoming_phone_number,
+        phone_number_plan:,
+        account: phone_number_plan.account,
+        phone_number: phone_number_plan.phone_number,
+        account_type: evaluator.account_type
+      )
+    end
+
+    trait :active do
+      status { :active }
+    end
+
+    trait :canceled do
+      status { :canceled }
+      canceled_at { Time.current }
+    end
   end
 end

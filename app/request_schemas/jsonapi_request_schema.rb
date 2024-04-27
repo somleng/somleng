@@ -3,14 +3,10 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
 
   def self.attribute_rule(*args, &block)
     args = args.first if args.one?
-    rule(data: { attributes: args }) do
+    rule(data: { attributes: args }) do |context:|
       attributes = values.dig(:data, :attributes)
-      instance_exec(attributes, &block) if block_given?
+      instance_exec(attributes, context:, &block) if block_given?
     end
-  end
-
-  def self.relationship_rule(name, &block)
-    rule(data: { relationships: { name => { data: :id } } }, &block)
   end
 
   def self.error_serializer_class
@@ -37,11 +33,5 @@ class JSONAPIRequestSchema < ApplicationRequestSchema
     end
 
     result
-  end
-
-  private
-
-  def attribute_key_path(name)
-    { data: { attributes: name } }
   end
 end

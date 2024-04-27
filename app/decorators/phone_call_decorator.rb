@@ -57,7 +57,7 @@ class PhoneCallDecorator < SimpleDelegator
   end
 
   def phone_number_sid
-    phone_number_id
+    incoming_phone_number_id
   end
 
   def direction
@@ -86,6 +86,10 @@ class PhoneCallDecorator < SimpleDelegator
 
   def call_data_record
     object.call_data_record || NullCallDataRecord.new
+  end
+
+  def incoming_phone_number
+    object.incoming_phone_number&.decorated
   end
 
   private

@@ -39,7 +39,7 @@ class CarrierForm
   def save
     return false if invalid?
 
-    carrier, owner = OnboardCarrier.call(
+    _carrier, owner = OnboardCarrier.call(
       name: company,
       country_code: country,
       website:,

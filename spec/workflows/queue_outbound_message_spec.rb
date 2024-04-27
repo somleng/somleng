@@ -3,12 +3,7 @@ require "rails_helper"
 RSpec.describe QueueOutboundMessage do
   it "queues a message" do
     message = create(:message, :accepted)
-    create(
-      :phone_number,
-      :configured,
-      account: message.account,
-      messaging_service: message.messaging_service
-    )
+    create(:incoming_phone_number, account: message.account, messaging_service: message.messaging_service)
 
     QueueOutboundMessage.call(message)
 
@@ -17,12 +12,7 @@ RSpec.describe QueueOutboundMessage do
 
   it "handles scheduled messages" do
     message = create(:message, :scheduled)
-    create(
-      :phone_number,
-      :configured,
-      account: message.account,
-      messaging_service: message.messaging_service
-    )
+    create(:incoming_phone_number, account: message.account, messaging_service: message.messaging_service)
 
     QueueOutboundMessage.call(message)
 

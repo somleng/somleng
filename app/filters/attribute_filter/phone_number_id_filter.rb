@@ -7,7 +7,7 @@ module AttributeFilter
     def apply
       return super if filter_params.blank?
 
-      super.where(phone_number_id: filter_params.fetch(:phone_number_id))
+      super.where(options.fetch(:attribute_name, :phone_number_id) => filter_params.fetch(:phone_number_id))
     end
   end
 end

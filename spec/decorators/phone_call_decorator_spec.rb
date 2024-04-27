@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe PhoneCallDecorator do
   it "decorates a phone call" do
-    phone_call = create(:phone_call, status: :session_timeout, from: "16189124649", to: "2442")
+    phone_call = create(:phone_call, :inbound, status: :session_timeout, from: "16189124649", to: "2442")
 
     phone_call_decorator = PhoneCallDecorator.new(phone_call)
 

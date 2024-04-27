@@ -14,13 +14,22 @@ class ResourceFilter < ApplicationFilter
   private
 
   def initialize_filter(filter, result)
+    filter_options = {}
+
     case filter
     when Symbol
-      filter_class = "attribute_filter/#{filter}".classify.constantize
+      filter_class = attribute_filter_from(filter)
     when Class
       filter_class = filter
+    when Hash
+      filter_class = attribute_filter_from(filter.keys.first)
+      filter_options = filter.values.first
     end
 
-    filter_class.new(resources_scope: result, input_params:)
+    filter_class.new(resources_scope: result, input_params:, options: filter_options)
+  end
+
+  def attribute_filter_from(name)
+    "attribute_filter/#{name}".classify.constantize
   end
 end

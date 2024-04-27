@@ -25,6 +25,7 @@
           <%= @resource.country.emoji_flag %>
           <%= @resource.country.iso_short_name %>
         <% end %>
+        <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
       <% end %>
     </div>
   </div>

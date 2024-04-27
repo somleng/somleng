@@ -1,10 +1,6 @@
 class PhoneNumberPolicy < ApplicationPolicy
   def index?
-    true
-  end
-
-  def release?
-    manage? && record.assigned?
+    managing_carrier?
   end
 
   def bulk_destroy?

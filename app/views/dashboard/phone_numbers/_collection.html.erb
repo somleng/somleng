@@ -4,19 +4,20 @@
       <th>
         Phone Number
       </th>
-      <% if policy(:account).show? %>
-        <th>
-          Account
-        </th>
-      <% end %>
       <th>
-        Enabled
+        Country
       </th>
       <th>
-        Configured
+        Type
       </th>
       <th>
-        Utilized
+        Visibility
+      </th>
+      <th>
+        Price
+      </th>
+      <th>
+        Assigned
       </th>
       <th>
         Created At
@@ -32,26 +33,25 @@
           <%= link_to(phone_number.number_formatted, dashboard_phone_number_path(phone_number)) %>
         </td>
 
-        <% if policy(:account).show? %>
-          <td>
-            <% if phone_number.account.present? %>
-              <%= external_link_to(phone_number.account.name, dashboard_account_path(phone_number.account)) %>
-            <% else %>
-              <%= t("show_for.blank") %>
-            <% end %>
-          </td>
-        <% end %>
-
         <td>
-          <%= phone_number.enabled? ? t("show_for.yes") : t("show_for.no") %>
+          <%= phone_number.country.emoji_flag %>
+          <%= phone_number.country.iso_short_name %>
         </td>
 
         <td>
-          <%= phone_number.configured? ? t("show_for.yes") : t("show_for.no") %>
+          <%= phone_number.type_formatted %>
         </td>
 
         <td>
-          <%= phone_number.utilized? ? t("show_for.yes") : t("show_for.no") %>
+          <%= phone_number.visibility_formatted %>
+        </td>
+
+        <td>
+          <%= phone_number.price.format %>
+        </td>
+
+        <td>
+          <%= phone_number.assigned? ? t("show_for.yes") : t("show_for.no") %>
         </td>
 
         <td>

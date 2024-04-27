@@ -30,6 +30,24 @@
           <div class="col-6">
             <%= f.input :country %>
           </div>
+
+          <div class="col-6">
+            <%=
+              f.input(
+                :billing_currency,
+                collection: @resource.available_currencies.map {|currency| [currency.name, currency.iso_code] },
+                include_blank: false,
+                input_html: {
+                  data: {
+                    behavior: "choices-input",
+                    choices_options: {
+                      position: "bottom"
+                    }
+                  }
+                }
+              )
+            %>
+          </div>
         </div>
       </div>
     </div>

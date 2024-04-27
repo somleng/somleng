@@ -29,13 +29,13 @@ RSpec.describe "Accounts" do
         to_date: "15/12/2021"
       }
     )
-    click_button("Filter")
+    click_on("Filter")
     check("Status")
     select("Enabled", from: "filter[status]")
     check("Metadata")
     fill_in("Key", with: "customer.id")
     fill_in("Value", with: "RR1234")
-    click_button("Done")
+    click_on("Done")
 
     expect(page).to have_content("Filter 3")
     expect(page).to have_content("Rocket Rides")
@@ -50,13 +50,13 @@ RSpec.describe "Accounts" do
 
     carrier_sign_in(user)
     visit dashboard_accounts_path
-    click_link("New")
+    click_on("New")
 
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
 
     choices_select("Basic.Slt", from: "Default TTS voice")
-    click_button "Create Account"
+    click_on("Create Account")
 
     expect(page).to have_content("Account was successfully created")
     within("#voice") do
@@ -76,17 +76,23 @@ RSpec.describe "Accounts" do
 
     carrier_sign_in(user)
     visit new_dashboard_account_path
-    click_button "Create Account"
+    click_on("Create Account")
 
     expect(page).to have_content("can't be blank")
   end
 
   it "Shows an account" do
-    account = create(:account)
+    carrier = create(:carrier, billing_currency: "USD")
+    account = create(:account, carrier:)
     user = create(:user, :carrier, carrier: account.carrier)
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
+
+    within("#billing") do
+      expect(page).to have_content("United States Dollar")
+      expect(page).to have_link("Manage", href: dashboard_phone_number_plans_path(filter: { account_id: account.id }))
+    end
 
     within("#voice") do
       expect(page).to have_link(
@@ -127,7 +133,7 @@ RSpec.describe "Accounts" do
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
-    click_link("Edit")
+    click_on("Edit")
     choices_select("Main SIP Trunk", from: "SIP trunk")
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
@@ -135,7 +141,7 @@ RSpec.describe "Accounts" do
     uncheck("Enabled")
 
     perform_enqueued_jobs do
-      click_button "Update Account"
+      click_on("Update Account")
     end
 
     expect(page).to have_content("Account was successfully updated")
@@ -163,7 +169,7 @@ RSpec.describe "Accounts" do
     visit edit_dashboard_account_path(account)
 
     choices_select("", from: "SIP trunk")
-    click_button "Update Account"
+    click_on("Update Account")
 
     expect(page).to have_content("Account was successfully updated")
     expect(page).not_to have_link(
@@ -190,7 +196,7 @@ RSpec.describe "Accounts" do
 
     choices_select("Main SIP Trunk", from: "SIP trunk")
 
-    click_button "Update Account"
+    click_on("Update Account")
 
     expect(page).to have_content("Account was successfully updated")
     expect(page).to have_content("Basic.Slt (Female, en-US)")

@@ -4,11 +4,22 @@ class PhoneNumberForm
 
   extend Enumerize
 
+  VISIBILITIES = {
+    private: "Private <div class='form-text'>Only available for private use within your organization.</div>",
+    public: "Public <div class='form-text'>Available for private use within your organization and purchasable by your customers.</div>",
+    disabled: "Disabled <div class='form-text'>Disable this phone number.</div>"
+  }.freeze
+
+  enumerize :visibility, in: PhoneNumber.visibility.values, default: :private
+
   attribute :carrier
   attribute :number, PhoneNumberType.new
-  attribute :account_id
-  attribute :enabled, default: true
   attribute :phone_number, default: -> { PhoneNumber.new }
+  attribute :type
+  attribute :country
+  attribute :price, :decimal, default: 0.0
+  attribute :visibility
+  attribute :account_id
 
   with_options if: :new_record? do
     validates :number, presence: true
@@ -16,7 +27,11 @@ class PhoneNumberForm
     validate :validate_number
   end
 
-  delegate :persisted?, :new_record?, :id, :assigned?, to: :phone_number
+  validates :type, phone_number_type: true
+  validates :price, numericality: { greater_than_or_equal_to: 0 }
+  validates :country, phone_number_country: true, allow_blank: true
+
+  delegate :persisted?, :new_record?, :id, to: :phone_number
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "PhoneNumber")
@@ -25,10 +40,12 @@ class PhoneNumberForm
   def self.initialize_with(phone_number)
     new(
       phone_number:,
-      account_id: phone_number.account_id,
       carrier: phone_number.carrier,
       number: phone_number.decorated.number_formatted,
-      enabled: phone_number.enabled
+      country: phone_number.iso_country_code,
+      type: phone_number.type,
+      price: phone_number.price,
+      visibility: phone_number.visibility
     )
   end
 
@@ -36,15 +53,42 @@ class PhoneNumberForm
     return false if invalid?
 
     phone_number.carrier = carrier
-    phone_number.enabled = enabled
     phone_number.number = number if new_record?
-    phone_number.account ||= carrier.accounts.find(account_id) if account_id.present?
+    phone_number.visibility = visibility
+    phone_number.type = type
+    phone_number.iso_country_code = country if country.present?
+    phone_number.price = Money.from_amount(price, carrier.billing_currency)
 
-    phone_number.save!
+    PhoneNumber.transaction do
+      phone_number.save!
+      create_plan!
+      phone_number
+    end
+  end
+
+  def possible_countries
+    return ISO3166::Country.all.map(&:alpha2) if new_record?
+
+    number.possible_countries.map(&:alpha2)
+  end
+
+  def visibility_options_for_select
+    VISIBILITIES.map { |k, v| [ v.html_safe, k ] }
   end
 
   def account_options_for_select
-    carrier.accounts.map { |account| [ account.name, account.id ] }
+    accounts_scope.map { |account| [ account.name, account.id ] }
+  end
+
+  def create_plan!
+    return if account_id.blank?
+    account = accounts_scope.find(account_id)
+
+    CreatePhoneNumberPlan.call(
+      phone_number:,
+      account:,
+      amount: Money.from_amount(0, carrier.billing_currency)
+    )
   end
 
   private
@@ -54,5 +98,9 @@ class PhoneNumberForm
     return unless carrier.phone_numbers.exists?(number:)
 
     errors.add(:number, :taken)
+  end
+
+  def accounts_scope
+    carrier.managed_accounts
   end
 end

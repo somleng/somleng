@@ -17,9 +17,33 @@
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
     <% end %>
 
-    <% if policy(:phone_number).index? %>
-      <%= sidebar_nav("Phone Numbers", dashboard_phone_numbers_path, icon_class: "fa-solid fa-hashtag") %>
-    <% end %>
+    <li class="nav-group" data-coreui="navigation">
+      <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+        <i class="nav-icon fa-solid fa-hashtag"></i> Phone Numbers
+      </a>
+
+      <ul class="nav-group-items">
+        <% if policy(:phone_number).index? %>
+          <%= sidebar_nav("Inventory", dashboard_phone_numbers_path, icon_class: "fa-solid fa-warehouse") %>
+        <% end %>
+
+        <% if policy(:phone_number_plan).index? %>
+          <%= sidebar_nav("Plans", dashboard_phone_number_plans_path, icon_class: "fa-solid fa-receipt") %>
+        <% end %>
+
+        <% if policy(:incoming_phone_number).index? %>
+          <%= sidebar_nav(current_user.carrier_user? ? "Managed Numbers" : "Active Numbers", dashboard_incoming_phone_numbers_path, icon_class: "fa-solid fa-check-double") %>
+        <% end %>
+
+        <% if policy(:available_phone_number).index? %>
+          <%= sidebar_nav("Available Numbers", dashboard_available_phone_numbers_path, icon_class: "fa-solid fa-tag") %>
+        <% end %>
+
+        <% if policy(:released_phone_number).index? %>
+          <%= sidebar_nav("Released Numbers", dashboard_released_phone_numbers_path, icon_class: "fa-solid fa-ban") %>
+        <% end %>
+      </ul>
+    </li>
 
     <% if %i[sip_trunk phone_call tts_events].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">

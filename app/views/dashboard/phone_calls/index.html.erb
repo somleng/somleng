@@ -14,7 +14,7 @@
 
     <%= form.select(
         :phone_number_id,
-        parent_scope.phone_numbers.map { |phone_number| [phone_number.decorated.number_formatted, phone_number.id] },
+        parent_scope.active_managed_incoming_phone_numbers.map { |incoming_phone_number| [incoming_phone_number.friendly_name, incoming_phone_number.id] },
         { filter_value: params.dig(:filter, :phone_number_id) },
         { data: { behavior: "choices-input" }}
       )

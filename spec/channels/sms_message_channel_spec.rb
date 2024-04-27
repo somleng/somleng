@@ -74,15 +74,14 @@ RSpec.describe SMSMessageChannel, type: :channel do
     it "handles an inbound message" do
       sms_gateway = stub_current_sms_gateway
       account = create(:account, carrier: sms_gateway.carrier)
-      phone_number = create(
-        :phone_number,
-        :configured,
+      incoming_phone_number = create(
+        :incoming_phone_number,
+        account:,
         sms_url: "https://www.example.com/messaging.xml",
         sms_method: "POST",
-        carrier: sms_gateway.carrier,
         number: "85510888888",
-        account:
       )
+
       stub_request(:post, "https://www.example.com/messaging.xml").to_return(body: <<~TWIML)
         <?xml version="1.0" encoding="UTF-8" ?>
         <Response></Response>
@@ -97,9 +96,10 @@ RSpec.describe SMSMessageChannel, type: :channel do
       expect(last_message).to have_attributes(
         sms_gateway:,
         account:,
-        phone_number:,
-        from: "85510777777",
-        to: "85510888888",
+        incoming_phone_number:,
+        phone_number: incoming_phone_number.phone_number,
+        from: have_attributes(value: "85510777777"),
+        to: have_attributes(value: "85510888888"),
         body: "message body",
         direction: "inbound"
       )
@@ -126,12 +126,10 @@ RSpec.describe SMSMessageChannel, type: :channel do
         :messaging_service, :drop, account:, carrier: sms_gateway.carrier
       )
       create(
-        :phone_number,
-        :configured,
+        :incoming_phone_number,
         messaging_service:,
         sms_url: "https://www.example.com/messaging.xml",
         sms_method: "POST",
-        carrier: sms_gateway.carrier,
         number: "85510888888",
         account:
       )

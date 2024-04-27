@@ -13,7 +13,7 @@ module AttributeFilter
 
       return super unless date_range.valid?
 
-      super.where(created_at: date_range.to_range)
+      super.where(options.fetch(:timestamp_column, :created_at) => date_range.to_range)
     end
   end
 end

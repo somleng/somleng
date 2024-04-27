@@ -1,0 +1,27 @@
+<%= page_title(title: "Available Phone Numbers") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.country_select(
+        :country,
+        {
+          only: current_carrier.phone_numbers.supported_countries.map(&:iso_country_code),
+          filter_value: params.dig(:filter, :country)
+        }
+      )
+    %>
+
+    <%= form.select(
+        :type,
+        PhoneNumber.type.values.map { |t| [t.text, t] },
+        { filter_value: params.dig(:filter, :type) }
+      )
+    %>
+
+    <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

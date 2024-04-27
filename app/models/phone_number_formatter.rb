@@ -6,12 +6,13 @@ class PhoneNumberFormatter
   end
 
   def format(value, options = {})
-    return value unless formatter.plausible?(value)
+    return value if value.blank?
+    return value.to_s unless value.e164?
 
     if options[:format] == :e164
       "+#{value}"
     else
-      formatter.format(value, options)
+      formatter.format(value.to_s, options)
     end
   end
 end

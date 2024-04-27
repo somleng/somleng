@@ -6,20 +6,21 @@ module CarrierAPI
       carrier = create(:carrier)
       phone_call = create(:phone_call, carrier:)
 
-      schema = validate_request_schema(
-        input_params: {
-          data: {
-            type: "phone_call",
-            id: phone_call.id,
-            attributes: {}
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_call",
+              id: phone_call.id,
+              attributes: {}
+            }
+          },
+          options: {
+            carrier:,
+            resource: phone_call
           }
-        },
-        options: {
-          carrier:,
-          resource: phone_call
-        }
-      )
-      expect(schema.success?).to eq(true)
+        ).success?
+      ).to eq(true)
 
       expect(
         validate_request_schema(
@@ -37,7 +38,7 @@ module CarrierAPI
             resource: phone_call
           }
         )
-      ).not_to have_valid_field(:data, :attributes, :price_unit)
+      ).to have_valid_field(:data, :attributes, :price)
 
       expect(
         validate_request_schema(
@@ -56,61 +57,29 @@ module CarrierAPI
           }
         )
       ).not_to have_valid_field(:data, :attributes, :price)
+    end
 
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_call",
-              id: phone_call.id,
-              attributes: {
-                price_unit: "USD"
-              }
-            }
-          },
-          options: {
-            carrier:,
-            resource: phone_call
-          }
-        )
-      ).not_to have_valid_field(:data, :attributes, :price)
+    it "handles post processing" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:, billing_currency: "USD")
+      phone_call = create(:phone_call, account:)
 
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_call",
-              id: phone_call.id,
-              attributes: {
-                price_unit: "USDT"
-              }
+      schema = validate_request_schema(
+        input_params: {
+          data: {
+            type: "phone_number",
+            attributes: {
+              price: "-0.01"
             }
-          },
-          options: {
-            carrier:,
-            resource: phone_call
           }
-        )
-      ).not_to have_valid_field(:data, :attributes, :price_unit)
+        },
+        options: { carrier:, resource: phone_call }
+      )
 
-      expect(
-        validate_request_schema(
-          input_params: {
-            data: {
-              type: "phone_call",
-              id: phone_call.id,
-              attributes: {
-                price: "-0.01",
-                price_unit: "USD"
-              }
-            }
-          },
-          options: {
-            carrier:,
-            resource: phone_call
-          }
-        )
-      ).to have_valid_field(:data, :attributes, :price)
+      expect(schema.output).to eq(
+        price: -0.01,
+        price_unit: "USD"
+      )
     end
 
     def validate_request_schema(...)

@@ -1,0 +1,59 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Status
+      </th>
+      <th>
+        Phone Number
+      </th>
+      <th>
+        Monthly Amount
+      </th>
+      <th>
+        Account
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |phone_number_plan| %>
+      <% phone_number_plan = phone_number_plan.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(phone_number_plan.id, dashboard_phone_number_plan_path(phone_number_plan)) %>
+        </td>
+
+        <td>
+          <%= status_badge(phone_number_plan.status.text, color: phone_number_plan.status_color) %>
+        </td>
+
+        <td>
+          <% if phone_number_plan.phone_number.present? %>
+            <%= external_link_to(phone_number_plan.number_formatted, dashboard_phone_number_path(phone_number_plan.phone_number)) %>
+          <% else %>
+            <%= phone_number_plan.number_formatted %>
+          <% end %>
+        </td>
+
+        <td>
+          <%= phone_number_plan.amount.format %>
+        </td>
+
+        <td>
+          <%= external_link_to(phone_number_plan.account.name, dashboard_account_path(phone_number_plan.account)) %>
+        </td>
+
+        <td>
+          <%= local_time(phone_number_plan.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

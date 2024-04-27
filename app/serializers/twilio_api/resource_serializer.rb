@@ -29,10 +29,6 @@ module TwilioAPI
 
     private
 
-    def pagination_serializer
-      PaginationSerializer.new(serializer_options.fetch(:pagination_info))
-    end
-
     def format_time(value)
       return if value.blank?
 

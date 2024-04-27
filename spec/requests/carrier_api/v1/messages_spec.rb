@@ -74,15 +74,13 @@ resource "Messages", document: :carrier_api do
   patch "https://api.somleng.org/carrier/v1/messages/:id" do
     with_options scope: %i[data attributes] do
       parameter(
-        :price, "The charge for this message."
-      )
-      parameter(
-        :price_unit, "The currency in which `price` is measured, in <a href=\"https://www.iso.org/iso/home/standards/currency_codes.htm\">ISO 4127 </a> format. (e.g., `USD`, `EUR`, `JPY`). Always capitalized for messages."
+        :price, "The charge for this call in the account's billing currency"
       )
     end
 
     example "Update a message" do
-      message = create(:message, :sent, price: nil, price_unit: nil)
+      account = create(:account, billing_currency: "USD")
+      message = create(:message, :sent, account:, price: nil, price_unit: nil)
 
       set_carrier_api_authorization_header(message.carrier)
       do_request(
@@ -91,8 +89,7 @@ resource "Messages", document: :carrier_api do
           id: message.id,
           type: :message,
           attributes: {
-            price: "-0.05",
-            price_unit: "USD"
+            price: "-0.05"
           }
         }
       )

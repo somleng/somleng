@@ -3,7 +3,7 @@ require "rails_helper"
 module TwilioAPI
   RSpec.describe PhoneCallRequestSchema, type: :request_schema do
     it "validates To" do
-      account = create(:account, allowed_calling_codes: ["855"])
+      account = create(:account, allowed_calling_codes: [ "855" ])
       account_with_no_sip_trunks = create(:account)
       create(:sip_trunk, carrier: account.carrier)
       expect(
@@ -53,12 +53,12 @@ module TwilioAPI
 
     it "validates From" do
       account = create(:account)
-      phone_number = create(:phone_number, account:)
+      incoming_phone_number = create(:incoming_phone_number, account:)
 
       expect(
         validate_request_schema(
           input_params: {
-            From: phone_number.number
+            From: incoming_phone_number.number.to_s
           },
           options: { account: }
         )
@@ -147,13 +147,14 @@ module TwilioAPI
     end
 
     it "handles post processing" do
-      account = create(:account)
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
       sip_trunk = create(
         :sip_trunk,
         carrier: account.carrier,
         outbound_host: "sip.example.com"
       )
-      phone_number = create(:phone_number, :assigned_to_account, account:, number: "85568308530")
+      incoming_phone_number = create(:incoming_phone_number, account:, number: "85568308530")
       schema = validate_request_schema(
         input_params: {
           To: "+855 68 308 531",
@@ -173,7 +174,8 @@ module TwilioAPI
         to: "85568308531",
         from: "85568308530",
         caller_id: "+85568308530",
-        phone_number:,
+        incoming_phone_number:,
+        phone_number: incoming_phone_number.phone_number,
         account:,
         carrier: account.carrier,
         sip_trunk:,

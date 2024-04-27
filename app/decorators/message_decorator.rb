@@ -64,7 +64,7 @@ class MessageDecorator < SimpleDelegator
   end
 
   def phone_number_sid
-    phone_number_id
+    incoming_phone_number_id
   end
 
   def direction
@@ -77,6 +77,10 @@ class MessageDecorator < SimpleDelegator
 
   def price_formatted
     price_formatter.format(price, object.price_unit)
+  end
+
+  def incoming_phone_number
+    object.incoming_phone_number&.decorated
   end
 
   private

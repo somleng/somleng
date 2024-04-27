@@ -20,19 +20,19 @@ RSpec.describe CreateVerification do
     expect(verification).to have_attributes(
       delivery_attempts_count: 1,
       delivery_attempts: be_present,
-      to: "85512334667",
+      to: have_attributes(value: "85512334667"),
       country_code: "KH",
       locale: "en"
     )
     expect(verification.delivery_attempts.first).to have_attributes(
       phone_number:,
       from: phone_number.number,
-      to: "85512334667",
+      to: have_attributes(value: "85512334667"),
       channel: "sms",
       message: have_attributes(
         body: "Your Rocket Rides verification code is: #{verification.code}.",
         from: phone_number.number,
-        to: "85512334667",
+        to: have_attributes(value: "85512334667"),
         internal: true,
         sms_gateway:,
         direction: "outbound"
@@ -56,18 +56,18 @@ RSpec.describe CreateVerification do
     expect(verification).to have_attributes(
       delivery_attempts_count: 1,
       delivery_attempts: be_present,
-      to: "85512334667"
+      to: have_attributes(value: "85512334667")
     )
 
     expect(verification.delivery_attempts.first).to have_attributes(
       from: phone_number.number,
-      to: "85512334667",
+      to: have_attributes(value: "85512334667"),
       channel: "call",
       phone_call: have_attributes(
         twiml: include("Your Rocket Rides verification code is: #{verification.code.chars.join(', ')}."),
         internal: true,
         from: phone_number.number,
-        to: "85512334667",
+        to: have_attributes(value: "85512334667"),
         direction: "outbound",
         sip_trunk:,
         phone_number:

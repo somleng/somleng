@@ -17,23 +17,27 @@
   <% end %>
 
   <%= show_for(@resource) do |f| %>
-    <div class="card mb-3">
+    <div id="general" class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">General</h5>
-
-        <%= f.attribute :name, value: @resource.name %>
         <%= f.attribute :id, label: "SID" do %>
           <code>
             <%= @resource.id %>
           </code>
         <% end %>
 
+        <%= f.attribute :name, value: @resource.name %>
+
         <% if policy(@resource).show_auth_token? %>
           <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
         <% end %>
-        <%= f.attribute :type, value: @resource.type.humanize %>
-        <%= f.attribute :status, value: @resource.status.humanize %>
-        <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage phone numbers") %>
+        <%= f.attribute :type, value: @resource.type.text %>
+        <%= f.attribute :status, value: @resource.status.text %>
+
+        <% if @resource.carrier_managed? %>
+          <%= f.attribute :phone_numbers, value: external_link_to("Manage", dashboard_incoming_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage") %>
+        <% end %>
+
         <%= f.attribute :metadata do %>
           <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>
         <% end %>
@@ -49,6 +53,15 @@
 
         <%= f.attribute :name, value: @resource.owner&.name %>
         <%= f.attribute :email, value: @resource.owner&.email %>
+      </div>
+    </div>
+
+    <div id="billing" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Billing</h5>
+
+        <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
+        <%= f.attribute :phone_number_plans, value: external_link_to("View", dashboard_phone_number_plans_path(filter: {account_id: @resource.id}), title: "Manage") %>
       </div>
     </div>
 

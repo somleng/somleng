@@ -1,5 +1,6 @@
 require:
   - "rubocop-rspec"
+  - "rubocop-capybara"
   - "anycable/rails/compatibility/rubocop"
 
 # Omakase Ruby styling for Rails
@@ -23,6 +24,9 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+Capybara/ClickLinkOrButtonStyle:
+  Enabled: true
 
 AnyCable/InstanceVars:
   Enabled: true

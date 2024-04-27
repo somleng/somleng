@@ -20,7 +20,7 @@ class DashboardController < ApplicationController
   end
 
   def apply_filters(resources_scope)
-    resources_scope.filter_class.new(
+    filter_class(resources_scope).new(
       resources_scope:,
       input_params: request.params
     ).apply
@@ -28,5 +28,9 @@ class DashboardController < ApplicationController
 
   def paginate_resources(resources_scope)
     resources_scope.latest_first.page(params[:page]).without_count
+  end
+
+  def filter_class(resources_scope)
+    resources_scope.filter_class
   end
 end

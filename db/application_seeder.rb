@@ -16,12 +16,14 @@ class ApplicationSeeder
       error_message: "Phone number 12264131459 is unconfigured."
     )
     carrier_managed_account = create_carrier_managed_account(carrier:)
-    phone_number = create_phone_number(carrier:, account: carrier_managed_account)
+    phone_number = create_phone_number(carrier:)
+    plan = create_phone_number_plan(phone_number:, account: carrier_managed_account)
     create_phone_call(
       carrier:,
       account: carrier_managed_account,
       sip_trunk:,
-      phone_number:
+      phone_number:,
+      incoming_phone_number: plan.incoming_phone_number
     )
     sms_gateway = create_sms_gateway(carrier:)
 
@@ -92,13 +94,26 @@ class ApplicationSeeder
 
   def create_phone_number(params)
     PhoneNumber.first_or_create!(
-      params.reverse_merge(number: "1234")
-    ) do |record|
-      record.build_configuration(
-        voice_url: "https://demo.twilio.com/docs/voice.xml",
-        voice_method: "GET"
-      )
-    end
+      number: "1294",
+      iso_country_code: "KH",
+      type: :short_code,
+      visibility: :public,
+      **params
+    )
+  end
+
+  def create_phone_number_plan(phone_number:, **params)
+    return phone_number.active_plan if phone_number.assigned?
+
+    CreatePhoneNumberPlan.call(phone_number:, **params)
+  end
+
+  def create_incoming_phone_number(params)
+    IncomingPhoneNumber.first_or_create!(
+      voice_url: "https://demo.twilio.com/docs/voice.xml",
+      voice_method: "GET",
+      **params
+    )
   end
 
   def url_helpers

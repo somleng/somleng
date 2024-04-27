@@ -1,0 +1,77 @@
+<% incoming_phone_number = @resource.decorated %>
+
+<%= page_title(title: incoming_phone_number.friendly_name) do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", title: "Configure", text: "Configure", path: edit_dashboard_incoming_phone_number_path(@resource)) %>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", title: "Release", text: "Release", path: dashboard_incoming_phone_number_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(incoming_phone_number) do |f| %>
+    <div id="properties" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Properties</h5>
+
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= incoming_phone_number.id %>
+          </code>
+        <% end %>
+
+        <%= f.attribute :number, value: incoming_phone_number.number_formatted %>
+        <%= f.attribute :friendly_name %>
+        <%= f.attribute :type, value: incoming_phone_number.type_formatted %>
+
+        <% if incoming_phone_number.country.present? %>
+          <%= f.attribute :country do %>
+            <%= @resource.country.emoji_flag %>
+            <%= @resource.country.iso_short_name %>
+          <% end %>
+        <% else %>
+          <%= f.attribute :country %>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="billing" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Billing</h5>
+
+        <%= f.attribute :monthly_fee, value: incoming_phone_number.phone_number_plan.amount.format %>
+      </div>
+    </div>
+
+    <div id="voice-configuration" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Voice</h5>
+        <%= f.attribute :voice_url %>
+        <%= f.attribute :voice_method %>
+        <%= f.attribute :status_callback_url %>
+        <%= f.attribute :status_callback_method %>
+
+        <% if policy(:phone_call).index? %>
+          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View phone calls") %>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="messaging-configuration" class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Messaging</h5>
+        <%= f.attribute :sms_url %>
+        <%= f.attribute :sms_method %>
+        <%= f.association :messaging_service do |messaging_service| %>
+          <%= link_to(messaging_service.name, dashboard_messaging_service_path(messaging_service)) %>
+        <% end %>
+
+        <% if policy(:message).index? %>
+          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View messages") %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

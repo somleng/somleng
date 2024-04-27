@@ -13,10 +13,8 @@
       <%= f.attribute :account, value: external_link_to(message.account.name, dashboard_account_path(message.account)) %>
     <% end %>
 
-    <% if policy(:phone_number).show? %>
-      <% if message.phone_number.present? %>
-        <%= f.attribute :phone_number, value: external_link_to(message.phone_number.decorated.number_formatted, dashboard_phone_number_path(message.phone_number)) %>
-      <% end %>
+    <%= f.association(:incoming_phone_number, label: "Phone number SID") do |incoming_phone_number| %>
+      <%= external_link_to(incoming_phone_number.id, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
     <% end %>
 
     <% if policy(:sms_gateway).show? %>

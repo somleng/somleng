@@ -33,10 +33,10 @@ module Services
       next if context[:sip_trunk].blank?
 
       context[:to] = normalize_number(value, context[:sip_trunk])
-      phone_numbers = context[:sip_trunk].carrier.phone_numbers
-      context[:phone_number] = phone_numbers.find_by(number: context[:to])
-      next if phone_number_configuration_rules.valid?(phone_number: context[:phone_number]) do
-        context[:phone_number].configuration&.voice_url.present?
+      incoming_phone_numbers = context[:sip_trunk].carrier.active_incoming_phone_numbers
+      context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: context[:to])
+      next if phone_number_configuration_rules.valid?(context[:incoming_phone_number]) do
+        context[:incoming_phone_number].voice_url.present?
       end
 
       error_message = format(phone_number_configuration_rules.error_message, value: context[:to])
@@ -58,12 +58,12 @@ module Services
 
     rule do |context:|
       error_log_messages.carrier = context[:sip_trunk]&.carrier
-      error_log_messages.account = context[:phone_number]&.account
+      error_log_messages.account = context[:incoming_phone_number]&.account
     end
 
     rule do |context:|
-      next if context[:phone_number].blank?
-      next if CarrierStanding.new(context[:phone_number].carrier).good_standing?
+      next if context[:incoming_phone_number].blank?
+      next if CarrierStanding.new(context[:incoming_phone_number].carrier).good_standing?
 
       error = schema_helper.fetch_error(:carrier_standing)
       base.failure(text: error.message, code: error.code)
@@ -77,18 +77,19 @@ module Services
       result[:external_id] = params.fetch(:external_id)
       result[:variables] = params.fetch(:variables) if params.key?(:variables)
 
-      phone_number = context.fetch(:phone_number)
-      result[:phone_number] = phone_number
+      incoming_phone_number = context.fetch(:incoming_phone_number)
+      result[:incoming_phone_number] = incoming_phone_number
+      result[:phone_number] = incoming_phone_number.phone_number
       result[:sip_trunk] = context.fetch(:sip_trunk)
       result[:direction] = :inbound
-      result[:account] = phone_number.account
-      result[:carrier] = phone_number.carrier
-      result[:voice_url] = phone_number.configuration.voice_url
-      result[:voice_method] = phone_number.configuration.voice_method
-      result[:status_callback_url] = phone_number.configuration.status_callback_url
-      result[:status_callback_method] = phone_number.configuration.status_callback_method
-      if phone_number.configuration.sip_domain.present?
-        result[:twiml] = route_to_sip_domain(phone_number)
+      result[:account] = incoming_phone_number.account
+      result[:carrier] = incoming_phone_number.carrier
+      result[:voice_url] = incoming_phone_number.voice_url
+      result[:voice_method] = incoming_phone_number.voice_method
+      result[:status_callback_url] = incoming_phone_number.status_callback_url
+      result[:status_callback_method] = incoming_phone_number.status_callback_method
+      if incoming_phone_number.sip_domain.present?
+        result[:twiml] = route_to_sip_domain(incoming_phone_number)
       end
       result[:to] = context[:to]
       result[:from] = context[:from]
@@ -105,10 +106,10 @@ module Services
       number.sub(/\A(?:#{country.national_prefix})/, country.country_code)
     end
 
-    def route_to_sip_domain(phone_number)
+    def route_to_sip_domain(incoming_phone_number)
       response = Twilio::TwiML::VoiceResponse.new
       response.dial do |dial|
-        dial.sip("sip:#{phone_number.number}@#{phone_number.configuration.sip_domain}")
+        dial.sip("sip:#{incoming_phone_number.number}@#{incoming_phone_number.sip_domain}")
       end
       response.to_xml
     end

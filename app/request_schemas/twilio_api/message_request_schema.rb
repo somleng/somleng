@@ -52,17 +52,19 @@ module TwilioAPI
           next base.failure(schema_helper.build_schema_error(:messaging_service_blank))
         end
 
-        phone_numbers = context[:messaging_service].phone_numbers
-        if phone_numbers.empty?
+        incoming_phone_numbers = context[:messaging_service].incoming_phone_numbers
+        if incoming_phone_numbers.empty?
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
         next if values[:From].blank?
       else
-        phone_numbers = account.phone_numbers
+        incoming_phone_numbers = account.active_managed_incoming_phone_numbers
       end
 
-      context[:phone_number] = sender || phone_numbers.find_by(number: values[:From])
-      next if sender.present? || phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+      next if sender.present?
+
+      context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: values[:From])
+      next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
 
       base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
     end
@@ -105,7 +107,8 @@ module TwilioAPI
       {
         account:,
         carrier: account.carrier,
-        phone_number: context[:phone_number],
+        incoming_phone_number: context[:incoming_phone_number],
+        phone_number: context[:incoming_phone_number]&.phone_number,
         messaging_service:,
         sms_gateway: context.fetch(:sms_gateway),
         channel: context.fetch(:channel),
@@ -113,7 +116,7 @@ module TwilioAPI
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
-        from: context[:phone_number]&.number,
+        from: context[:incoming_phone_number]&.number || sender&.number,
         status_callback_url:,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,

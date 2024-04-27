@@ -110,7 +110,7 @@ resource "Accounts", document: :carrier_api do
       )
     end
 
-    example "Update a customer managed account with invalid attributes", document: false do
+    example "Handles invalid requests", document: false do
       account = create(:account, :customer_managed)
 
       set_carrier_api_authorization_header(

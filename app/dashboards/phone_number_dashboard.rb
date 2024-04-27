@@ -3,33 +3,42 @@ require "administrate/base_dashboard"
 class PhoneNumberDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
-    account: Field::BelongsTo,
+    active_plan: Field::HasOne,
+    plans: Field::HasMany,
     phone_calls: Field::HasMany,
     messages: Field::HasMany,
     id: Field::String,
     number: Field::String,
-    enabled: Field::String,
-    configuration: Field::HasOne,
+    country: Field::String,
+    type: Field::String,
+    visibility: Field::String,
+    price: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
-    id
-    account
+    carrier
     number
-    enabled
+    country
+    type
+    visibility
+    price
+    created_at
   ].freeze
 
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    country
+    type
+    price
     carrier
-    account
     number
-    enabled
-    configuration
+    visibility
     created_at
     updated_at
+    active_plan
+    plans
     phone_calls
     messages
   ].freeze

@@ -4,8 +4,6 @@ class AccountDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
     sip_trunk: Field::BelongsTo,
-    phone_calls: Field::HasMany.with_options(sort_by: :sequence_number, direction: :desc),
-    phone_numbers: Field::HasMany,
     id: Field::String,
     type: Field::String,
     name: Field::String,
@@ -37,8 +35,6 @@ class AccountDashboard < Administrate::BaseDashboard
     sip_trunk
     created_at
     updated_at
-    phone_calls
-    phone_numbers
     allowed_calling_codes
     metadata
   ].freeze

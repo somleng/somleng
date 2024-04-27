@@ -5,6 +5,8 @@ class PhoneCall < ApplicationRecord
   before_create :set_beneficiary_data
 
   attribute :beneficiary_fingerprint, SHA256Type.new
+  attribute :to, PhoneNumberType.new
+  attribute :from, PhoneNumberType.new
 
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]
@@ -13,7 +15,9 @@ class PhoneCall < ApplicationRecord
 
   belongs_to :carrier
   belongs_to :account
+  belongs_to :incoming_phone_number, optional: true
   belongs_to :phone_number, optional: true
+  belongs_to :incoming_phone_number, optional: true
   belongs_to :sip_trunk, optional: true
 
   has_one    :call_data_record, -> { where(call_leg: :A) }
@@ -94,14 +98,14 @@ class PhoneCall < ApplicationRecord
   private
 
   def set_beneficiary_data
-    beneficiary = Beneficiary.new(
-      phone_number: outbound? ? to : from,
+    beneficiary_number = outbound? ? to : from
+
+    return unless beneficiary_number.e164?
+
+    self.beneficiary_fingerprint = beneficiary_number.value
+    self.beneficiary_country_code = ResolvePhoneNumberCountry.call(
+      beneficiary_number,
       fallback_country: sip_trunk&.inbound_country || carrier.country
-    )
-
-    return unless beneficiary.valid?
-
-    self.beneficiary_fingerprint = beneficiary.phone_number
-    self.beneficiary_country_code = beneficiary.country.alpha2
+    ).alpha2
   end
 end

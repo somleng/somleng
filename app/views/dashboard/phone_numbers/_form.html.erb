@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource]) do |f| %>
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
 
     <div class="card mb-3">
       <div class="card-body">
@@ -21,32 +21,76 @@
 
     <div class="card mb-3">
       <div class="card-body">
-        <h5 class="card-title">Account Settings</h5>
+        <h5 class="card-title">Properties</h5>
+
+        <div class="row">
+          <%=
+            f.input(
+              :visibility,
+              as: :radio_buttons,
+              required: true,
+              wrapper: :vertical_collection_novalidate,
+              collection: resource.visibility_options_for_select
+            )
+          %>
+        </div>
+
         <div class="row">
           <div class="col-sm-6">
+            <%=
+              f.input(
+                :type,
+                prompt: "Please Select",
+                required: true,
+                collection: PhoneNumber.type.values.map { |t| [t.text, t] }
+              )
+            %>
+          </div>
+
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :country,
+                only: resource.possible_countries,
+                include_blank: false,
+                prompt: "Automatically select from phone number"
+              )
+            %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :price,
+                as: :decimal,
+                prepend: resource.new_record? ? resource.carrier.billing_currency.symbol : resource.phone_number.currency.symbol,
+                append: resource.new_record? ? resource.carrier.billing_currency.iso_code : resource.phone_number.currency.iso_code
+              )
+            %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if resource.persisted? && resource.phone_number.available? %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Account</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
               <%= f.input :account_id,
-                          collection: resource.account_options_for_select,
-                          hint: resource.account_id.blank? && "Optionally assign the phone number to an account",
-                          selected: resource.account_id,
-                          disabled: resource.assigned?,
-                          prompt: "",
-                          input_html: { data: { behavior: "choices-input" } } %>
+                collection: resource.account_options_for_select,
+                hint: "Optionally assign the phone number to one of your managed accounts.",
+                input_html: { data: { behavior: "choices-input" } }
+              %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Danger Zone</h5>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch, hint: "Phone numbers which are disabled are blocked from being used by any accounts." %>
-          </div>
-        </div>
-      </div>
-    </div>
+    <% end %>
 
     <%= f.button :submit %>
   <% end %>

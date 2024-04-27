@@ -5,7 +5,7 @@ class MessagingServiceDashboard < Administrate::BaseDashboard
     id: Field::String,
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
-    phone_numbers: Field::HasMany,
+    incoming_phone_numbers: Field::HasMany,
     messages: Field::HasMany,
     name: Field::String,
     inbound_message_behavior: Field::String,
@@ -34,7 +34,7 @@ class MessagingServiceDashboard < Administrate::BaseDashboard
     smart_encoding
     created_at
     updated_at
-    phone_numbers
+    incoming_phone_numbers
     messages
   ].freeze
 

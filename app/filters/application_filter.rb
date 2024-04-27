@@ -1,7 +1,7 @@
 class ApplicationFilter
-  attr_reader :resources_scope, :input_params, :scoped_to
+  attr_reader :resources_scope, :input_params, :scoped_to, :options
 
-  class_attribute :filter_schema
+  class_attribute :filter_schema, :options
 
   def self.filter_params(&block)
     self.filter_schema = Dry::Validation.Contract do
@@ -11,10 +11,11 @@ class ApplicationFilter
     end
   end
 
-  def initialize(resources_scope:, input_params:, scoped_to: {})
-    @resources_scope = resources_scope
-    @input_params = input_params.to_h
-    @scoped_to = scoped_to.symbolize_keys
+  def initialize(**options)
+    @resources_scope = options.fetch(:resources_scope)
+    @input_params = options.fetch(:input_params).to_h
+    @scoped_to = options.fetch(:scoped_to, {}).symbolize_keys
+    @options = options.fetch(:options, {})
   end
 
   def apply
@@ -24,7 +25,7 @@ class ApplicationFilter
   private
 
   def filter_params
-    result = filter_schema.call(input_params)
+    result = filter_schema.call(input_params, options: {})
     result.success? ? result.values.fetch(:filter, {}) : {}
   end
 end

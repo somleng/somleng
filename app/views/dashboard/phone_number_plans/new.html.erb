@@ -1,0 +1,29 @@
+<% phone_number = @resource.phone_number.decorated %>
+<%= page_title(title: "Buy #{phone_number.number_formatted}") %>
+
+<div class="card-body">
+  <%= simple_form_for([:dashboard, @resource]) do |form| %>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Order Summary</h5>
+
+        <%= show_for(phone_number) do |show| %>
+          <%= show.attribute :number, value: phone_number.number_formatted %>
+
+          <%= show.attribute :country do %>
+            <%= phone_number.country.emoji_flag %>
+            <%= phone_number.country.iso_short_name %>
+          <% end %>
+
+          <%= show.attribute :type, value: phone_number.type_formatted %>
+          <%= show.attribute :price, label: "Monthly price", value: phone_number.price.format %>
+        <% end %>
+      </div>
+    </div>
+
+    <%= form.input(:phone_number_id, as: :hidden) %>
+    <%= form.button :submit, "Buy #{phone_number.number_formatted}" %>
+    <%= link_to("Cancel", :back, class: "btn btn-secondary") %>
+  <% end %>
+</div>

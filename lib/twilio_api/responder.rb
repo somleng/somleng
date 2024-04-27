@@ -3,16 +3,13 @@ module TwilioAPI
     def display(resource, given_options = {})
       serializer_class = options.delete(:serializer_class)
       serializer_options = options.delete(:serializer_options) || {}
+      serializable_resource = if resource_is_collection?(resource)
+        prepare_collection(resource, serializer_options)
+      else
+        resource.decorated
+      end
 
-      resource = if resource_is_collection?(resource)
-                   pagination = Pagination.new(resource, request.url)
-                   serializer_options[:pagination_info] = pagination.info
-                   pagination.paginated_collection.map(&:decorated)
-                 else
-                   resource.decorated
-                 end
-
-      super(serializer_class.new(resource, serializer_options), given_options)
+      super(serializer_class.new(serializable_resource, serializer_options), given_options)
     end
 
     def api_behavior(*args, &)
@@ -25,6 +22,17 @@ module TwilioAPI
 
     def resource_is_collection?(resource)
       resource.respond_to?(:size) && !resource.respond_to?(:each_pair)
+    end
+
+    def prepare_collection(collection, options = {})
+      if options.fetch(:paginate, true)
+        pagination = Pagination.new(collection, request.url)
+        options[:pagination_info] = pagination.info
+        pagination.paginated_collection.map(&:decorated)
+      else
+        options[:pagination_info] = Pagination::Info.new(uri: URI.parse(request.url))
+        collection.map(&:decorated)
+      end
     end
   end
 end

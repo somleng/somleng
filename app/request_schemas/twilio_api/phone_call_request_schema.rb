@@ -39,10 +39,10 @@ module TwilioAPI
     end
 
     rule(:From) do |context:|
-      phone_numbers = account.phone_numbers
+      next if sender.present?
 
-      context[:phone_number] = sender || account.phone_numbers.find_by(number: values[:From])
-      next if sender.present? || phone_number_configuration_rules.valid?(phone_number: context[:phone_number])
+      context[:incoming_phone_number] = account.active_managed_incoming_phone_numbers.find_by(number: values[:From])
+      next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
 
       base.failure(schema_helper.build_schema_error(:unverified_source_number))
     end
@@ -84,7 +84,8 @@ module TwilioAPI
         sip_trunk: context.fetch(:sip_trunk),
         to: params.fetch(:To),
         from: params.fetch(:From),
-        phone_number: context.fetch(:phone_number),
+        incoming_phone_number: context[:incoming_phone_number],
+        phone_number: context[:incoming_phone_number]&.phone_number || sender,
         caller_id:,
         voice_url: params[:Url],
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
