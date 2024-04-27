@@ -7,8 +7,7 @@ module CSVSerializer
         "status" => nil,
         "canceled_at" => nil,
         "amount" => nil,
-        "currency" => nil,
-        "phone_number_sid" => nil
+        "currency" => nil
       )
     end
 
