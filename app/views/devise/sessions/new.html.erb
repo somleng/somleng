@@ -9,7 +9,15 @@
 <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { turbo: false } }) do |f| %>
   <%= f.input :email, required: false, autofocus: true, input_html: { autocomplete: "email" } %>
   <%= f.input :password, required: false, input_html: { autocomplete: "current-password" } %>
-  <%= f.input :otp_attempt, label: "OTP Code", required: false, minlength: 6, maxlength: 6, input_html: { inputmode: "numeric" }, hint: "Leave blank if you have not yet setup 2FA" %>
+  <%= f.input(
+      :otp_attempt,
+      label: "OTP Code",
+      required: false,
+      minlength: 6, maxlength: 6,
+      input_html: { inputmode: "numeric" },
+      hint: "Leave blank if you have not yet setup 2FA. If you have already setup 2FA but no longer have access to the 2FA device, please contact the account owner."
+    )
+  %>
 
   <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
 
