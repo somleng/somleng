@@ -54,12 +54,26 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     end
   end
 
-  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/AvailablePhoneNumbers/:country_code/:type" do
+  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/AvailablePhoneNumbers/:CountryCode/:Type" do
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumberlocal-resource
+    parameter(
+      :AcountSid,
+      "*Path Parameter*: The SID of the Account requesting the AvailablePhoneNumber resources."
+    )
+
+    parameter(
+      :CountryCode,
+      "*Path Parameter*: The [ISO-3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code of the country from which to read phone numbers."
+    )
+
+    parameter(
+      :Type,
+      "*Path Parameter*: Type of phone numbers to read. One of `Local`, `Mobile`, `TollFree` or `ShortCode`."
+    )
 
     parameter(
       :AreaCode,
-      "The area code of the phone numbers to read. Applies to only phone numbers in the US and Canada."
+      "*Query Parameter*: The area code of the phone numbers to read. Applies to only phone numbers in the US and Canada."
     )
 
     example "List the available local phone numbers for a specific country" do
@@ -78,7 +92,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       create(:phone_number, common_attributes.merge(number: "12513095503", visibility: :private))
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, country_code: "CA", type: "Local")
+      do_request(AccountSid: account.id, CountryCode: "CA", Type: "Local")
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
@@ -105,7 +119,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       create(:phone_number, common_attributes.merge(number: "12023095500"))
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, country_code: "CA", type: "Local", AreaCode: "201")
+      do_request(AccountSid: account.id, CountryCode: "CA", Type: "Local", AreaCode: "201")
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
@@ -132,7 +146,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       create(:phone_number, common_attributes.merge(number: "12513095502", visibility: :private))
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, country_code: "CA", type: "Mobile")
+      do_request(AccountSid: account.id, CountryCode: "CA", Type: "Mobile")
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
@@ -154,7 +168,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       create(:phone_number, common_attributes.merge(number: "18777318092", visibility: :private))
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, country_code: "CA", type: "TollFree")
+      do_request(AccountSid: account.id, CountryCode: "CA", Type: "TollFree")
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
@@ -174,7 +188,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       create(:phone_number, common_attributes.merge(number: "12513095500", type: :local))
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, country_code: "CA", type: "ShortCode")
+      do_request(AccountSid: account.id, CountryCode: "CA", Type: "ShortCode")
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
@@ -186,7 +200,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       account = create(:account)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, country_code: "CA", type: "Invalid")
+      do_request(AccountSid: account.id, CountryCode: "CA", Type: "Invalid")
 
       expect(response_status).to eq(400)
       expect(response_body).to match_api_response_schema("twilio_api/api_errors")
