@@ -29,8 +29,14 @@
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
 
-  <% if policy(:phone_number).bulk_destroy? && params.dig(:filter, :assigned) == "false" && @filtered_resources.any? %>
-    <%= render("shared/bulk_destroy_resource_page_action", path: bulk_destroy_dashboard_phone_numbers_path(filter: request.query_parameters["filter"]), total_records: @filtered_resources.count) %>
+  <% if policy(:phone_number).bulk_destroy? %>
+    <%= render(
+      "shared/bulk_destroy_resource_page_action",
+      disabled_title: "Filter by unassigned to delete phone numbers.",
+      disabled: params.dig(:filter, :assigned) != "false" || @filtered_resources.blank?,
+      path: bulk_destroy_dashboard_phone_numbers_path(filter: request.query_parameters["filter"]),
+      total_records: @filtered_resources.count)
+    %>
   <% end %>
 
   <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>
