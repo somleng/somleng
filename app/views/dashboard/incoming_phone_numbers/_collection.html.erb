@@ -8,10 +8,13 @@
         Country
       </th>
       <th>
+        Type
+      </th>
+      <th>
         Friendly Name
       </th>
       <th>
-        Active Configuration
+        Actions
       </th>
     </tr>
   </thead>
@@ -30,40 +33,15 @@
         </td>
 
         <td>
+          <%= incoming_phone_number.type_formatted %>
+        </td>
+
+        <td>
           <%= incoming_phone_number.friendly_name %>
         </td>
 
         <td>
-          <dl class="row" >
-            <dt class="col-sm-2 text-truncate"><small>Voice:</small></dt>
-            <dd class="col-sm-10 text-truncate">
-              <small>
-                <% if incoming_phone_number.voice_url.present? %>
-                  <span class="text-muted">
-                    Webhook to <%= incoming_phone_number.voice_method %>:
-                  </span>
-                  <%= incoming_phone_number.voice_url %>
-                <% else %>
-                  <%= translate("show_for.blank") %>
-                <% end %>
-              </small>
-            </dd>
-            <dt class="col-sm-2 text-truncate">
-              <small>SMS:</small>
-            </dt>
-            <dd class="col-sm-10 text-truncate">
-              <small>
-                <% if incoming_phone_number.sms_url.present? %>
-                  <span class="text-muted">
-                    Webhook to <%= incoming_phone_number.sms_method %>:
-                  </span>
-                  <%= incoming_phone_number.sms_url %>
-                <% else %>
-                  <%= translate("show_for.blank") %>
-                <% end %>
-              </small>
-            </dd>
-          </dl>
+          <%= external_link_to("Configure", edit_dashboard_incoming_phone_number_path(incoming_phone_number)) %>
         </td>
       </tr>
     <% end %>

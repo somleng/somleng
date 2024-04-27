@@ -22,8 +22,6 @@ RSpec.describe "Incoming Phone Numbers" do
     visit dashboard_incoming_phone_numbers_path
 
     expect(page).to have_link("+1 (251) 309-5500", href: dashboard_incoming_phone_number_path(incoming_phone_number))
-    expect(page).to have_content("Webhook to POST: https://www.example.com/voice.xml")
-    expect(page).to have_content("Webhook to GET: https://www.example.com/sms.xml")
     expect(page).to have_link("+1 (251) 309-5501")
 
     click_on("Filter")

@@ -65,7 +65,7 @@ RSpec.describe "Messages" do
   it "Shows a message" do
     carrier = create(:carrier)
     account = create(:account, name: "Rocket Rides", carrier:)
-    phone_number = create(:phone_number, carrier:, number: "855715100980")
+    incoming_phone_number = create(:incoming_phone_number, account:, number: "855715100980")
     sms_gateway = create(:sms_gateway, name: "My SMS Gateway", carrier:)
     message = create(
       :message,
@@ -75,7 +75,7 @@ RSpec.describe "Messages" do
       to: "855715999999",
       sms_gateway:,
       account:,
-      phone_number:,
+      incoming_phone_number:,
       price: "-0.001",
       price_unit: "MXN",
       encoding: "GSM"
@@ -95,7 +95,7 @@ RSpec.describe "Messages" do
       "SMS Gateway",
       href: dashboard_sms_gateway_path(sms_gateway)
     )
-    expect(page).to have_link("+855 71 510 0980", href: dashboard_phone_number_path(phone_number))
+    expect(page).to have_link("+855 71 510 0980", href: dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
     expect(page).to have_content("GSM")

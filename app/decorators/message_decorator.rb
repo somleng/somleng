@@ -79,6 +79,10 @@ class MessageDecorator < SimpleDelegator
     price_formatter.format(price, object.price_unit)
   end
 
+  def incoming_phone_number
+    object.incoming_phone_number&.decorated
+  end
+
   private
 
   def phone_number_formatter

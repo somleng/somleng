@@ -71,17 +71,17 @@ RSpec.describe "Phone Calls" do
   it "Shows a phone call" do
     carrier = create(:carrier)
     account = create(:account, name: "Rocket Rides", carrier:)
-    phone_number = create(:phone_number, carrier:, number: "1294")
+    incoming_phone_number = create(:incoming_phone_number, account:, number: "12513095500")
     sip_trunk = create(:sip_trunk, name: "SIP Trunk", carrier:)
     phone_call = create(
       :phone_call,
       :inbound,
       from: "855715100980",
-      to: "1294",
+      to: "12513095500",
       voice_url: "https://demo.twilio.com/docs/voice.xml",
       sip_trunk:,
       account:,
-      phone_number:,
+      incoming_phone_number:,
       price: "-0.001",
       price_unit: "MXN"
     )
@@ -94,7 +94,7 @@ RSpec.describe "Phone Calls" do
 
     expect(page).to have_content(phone_call.id)
     expect(page).to have_content("+855 71 510 0980")
-    expect(page).to have_content("1294")
+    expect(page).to have_content("+1 (251) 309-5500")
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
     expect(page).to have_content("5 seconds")
     expect(page).to have_content("Inbound")
@@ -103,7 +103,7 @@ RSpec.describe "Phone Calls" do
       "SIP Trunk",
       href: dashboard_sip_trunk_path(sip_trunk)
     )
-    expect(page).to have_link("1294", href: dashboard_phone_number_path(phone_number))
+    expect(page).to have_link("+1 (251) 309-5500", href: dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_content("-$0.001000")
     expect(page).to have_content("MXN")
     expect(page).to have_content("Recordings")

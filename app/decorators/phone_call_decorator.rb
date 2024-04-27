@@ -88,6 +88,10 @@ class PhoneCallDecorator < SimpleDelegator
     object.call_data_record || NullCallDataRecord.new
   end
 
+  def incoming_phone_number
+    object.incoming_phone_number&.decorated
+  end
+
   private
 
   def phone_number_formatter
