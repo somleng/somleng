@@ -35,11 +35,7 @@
         </td>
 
         <td>
-          <% if phone_number_plan.phone_number.present? %>
-            <%= external_link_to(phone_number_plan.number_formatted, dashboard_phone_number_path(phone_number_plan.phone_number)) %>
-          <% else %>
-            <%= phone_number_plan.number_formatted %>
-          <% end %>
+          <%= external_link_to(phone_number_plan.number_formatted, dashboard_incoming_phone_number_path(phone_number_plan.incoming_phone_number_id)) %>
         </td>
 
         <td>

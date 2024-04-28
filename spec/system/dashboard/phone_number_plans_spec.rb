@@ -4,30 +4,29 @@ RSpec.describe "Phone Number Plans" do
   it "List, filter and export phone number plans" do
     carrier = create(:carrier, billing_currency: "USD")
     account = create(:account, carrier:, name: "Rocket Rides")
-    _active_plan = create(
+    active_plan = create(
       :phone_number_plan,
       :active,
-      number: "1294",
-      type: :short_code,
+      number: "12513095500",
       amount: Money.from_amount(5.00, "USD"),
       account:
     )
-    _canceled_plan = create(:phone_number_plan, :canceled, number: "1279", type: :short_code, account:)
+    canceled_plan = create(:phone_number_plan, :canceled, number: "12513095501", account:)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
+    visit dashboard_phone_number_plans_path
 
-    visit dashboard_phone_number_plans_path(
-      filter: {
-        status: :active
-      }
-    )
+    expect(page).to have_link("+1 (251) 309-5500", href: dashboard_incoming_phone_number_path(active_plan.incoming_phone_number))
+    expect(page).to have_link("+1 (251) 309-5501", href: dashboard_incoming_phone_number_path(canceled_plan.incoming_phone_number))
 
-    expect(page).to have_content("1294")
+    visit dashboard_phone_number_plans_path(filter: { status: :active })
+
+    expect(page).to have_link("+1 (251) 309-5500")
     expect(page).to have_content("$5.00")
     expect(page).to have_content("Active")
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
-    expect(page).not_to have_content("1279")
+    expect(page).not_to have_content("+1 (251) 309-5501")
 
     perform_enqueued_jobs do
       click_on("Export")
@@ -41,7 +40,7 @@ RSpec.describe "Phone Number Plans" do
     click_on("phone_number_plans_")
 
     expect(page.response_headers["Content-Type"]).to eq("text/csv")
-    expect(page).to have_content("1294")
+    expect(page).to have_content("12513095500")
     expect(page).to have_content("5.00")
     expect(page).to have_content("USD")
     expect(page).to have_content("active")
