@@ -34,6 +34,12 @@
         <% else %>
           <%= f.attribute :country %>
         <% end %>
+
+        <% if policy(:phone_number).show? %>
+          <%= f.association :phone_number, label: "Phone number" do |phone_number| %>
+            <%= external_link_to("Manage", dashboard_phone_number_path(phone_number))%>
+          <% end %>
+        <% end %>
       </div>
     </div>
 
@@ -41,7 +47,19 @@
       <div class="card-body">
         <h5 class="card-title">Billing</h5>
 
-        <%= f.attribute :monthly_fee, value: incoming_phone_number.phone_number_plan.amount.format %>
+        <% if policy(:phone_number_plan).show? %>
+          <%= f.association :phone_number_plan, label: "Plan" do |plan| %>
+            <%= external_link_to("View", dashboard_phone_number_plan_path(incoming_phone_number.phone_number_plan))%>
+          <% end %>
+        <% end %>
+
+        <%= f.association :phone_number_plan, label: "Monthly fee" do |plan| %>
+          <%= plan.amount.format %>
+        <% end %>
+
+        <%= f.association :phone_number_plan, label: "Status" do |plan| %>
+          <%= status_badge(plan.status.text, color: plan.status_color) %>
+        <% end %>
       </div>
     </div>
 

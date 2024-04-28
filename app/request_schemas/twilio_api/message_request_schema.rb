@@ -58,7 +58,7 @@ module TwilioAPI
         end
         next if values[:From].blank?
       else
-        incoming_phone_numbers = account.active_managed_incoming_phone_numbers
+        incoming_phone_numbers = account.active_incoming_phone_numbers
       end
 
       next if sender.present?

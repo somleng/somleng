@@ -118,7 +118,7 @@ class MessagingServiceForm
   def sender_pool_select
     @sender_pool_select ||= MultiSelectFormComponent.new(
       selected_values: incoming_phone_number_ids,
-      available_values: account.active_managed_incoming_phone_numbers.where(messaging_service_id: nil).pluck(:id),
+      available_values: account.active_incoming_phone_numbers.where(messaging_service_id: nil).pluck(:id),
       existing_values: messaging_service.incoming_phone_numbers.pluck(:id)
     )
   end

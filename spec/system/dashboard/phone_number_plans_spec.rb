@@ -57,7 +57,7 @@ RSpec.describe "Phone Number Plans" do
     carrier_sign_in(user)
     visit dashboard_phone_number_plan_path(plan)
 
-    expect(page).to have_link("1294", href: dashboard_phone_number_path(plan.phone_number))
+    expect(page).to have_link(plan.incoming_phone_number.id, href: dashboard_incoming_phone_number_path(plan.incoming_phone_number))
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
   end
 
