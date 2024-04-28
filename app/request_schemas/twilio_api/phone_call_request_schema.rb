@@ -41,7 +41,7 @@ module TwilioAPI
     rule(:From) do |context:|
       next if sender.present?
 
-      context[:incoming_phone_number] = account.active_incoming_phone_numbers.find_by(number: values[:From])
+      context[:incoming_phone_number] = account.incoming_phone_numbers.active.find_by(number: values[:From])
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
 
       base.failure(schema_helper.build_schema_error(:unverified_source_number))

@@ -9,6 +9,10 @@ class IncomingPhoneNumberDecorator < SimpleDelegator
     phone_number_formatter.format(object.number, format: :e164)
   end
 
+  def status_color
+    active? ? :success : :secondary
+  end
+
   def number_formatted
     phone_number_formatter.format(object.number, format: :international)
   end

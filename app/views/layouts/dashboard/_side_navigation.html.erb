@@ -32,15 +32,12 @@
         <% end %>
 
         <% if policy(:incoming_phone_number).index? %>
-          <%= sidebar_nav("Active Numbers", dashboard_incoming_phone_numbers_path, icon_class: "fa-solid fa-check-double") %>
+          <%= sidebar_nav("Active Numbers", dashboard_incoming_phone_numbers_path(filter: { status: :active }), icon_class: "fa-solid fa-check-double") %>
+          <%= sidebar_nav("Released Numbers", dashboard_incoming_phone_numbers_path(filter: { status: :released }), icon_class: "fa-solid fa-ban") %>
         <% end %>
 
         <% if policy(:available_phone_number).index? %>
           <%= sidebar_nav("Available Numbers", dashboard_available_phone_numbers_path, icon_class: "fa-solid fa-tag") %>
-        <% end %>
-
-        <% if policy(:released_phone_number).index? %>
-          <%= sidebar_nav("Released Numbers", dashboard_released_phone_numbers_path, icon_class: "fa-solid fa-ban") %>
         <% end %>
       </ul>
     </li>

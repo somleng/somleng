@@ -1,6 +1,12 @@
 <% incoming_phone_number = @resource.decorated %>
 
-<%= page_title(title: incoming_phone_number.friendly_name) do %>
+<%= page_title(title: incoming_phone_number.number_formatted) do %>
+  <% if @resource.released? && policy(:available_phone_number).index? %>
+    <%= link_to(dashboard_available_phone_numbers_path(filter: { number: incoming_phone_number.number } ), class: "btn btn-outline-success", title: local_assigns.fetch(:title, "Repurchase")) do %>
+      <i class="fa-solid fa-tag"></i> Repurchase
+    <% end %>
+  <% end %>
+
   <% if policy(@resource).edit? %>
     <%= render("shared/edit_resource_page_action", title: "Configure", text: "Configure", path: edit_dashboard_incoming_phone_number_path(@resource)) %>
   <% end %>
@@ -20,6 +26,10 @@
           <code>
             <%= incoming_phone_number.id %>
           </code>
+        <% end %>
+
+        <%= f.attribute :status do %>
+          <%= status_badge(incoming_phone_number.status.text, color: incoming_phone_number.status_color) %>
         <% end %>
 
         <%= f.attribute :number, value: incoming_phone_number.number_formatted %>

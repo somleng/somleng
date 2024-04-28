@@ -1,5 +1,12 @@
-<%= page_title(title: "Active Numbers") do %>
+<%= page_title(title: "Phone Numbers") do %>
   <%= render("shared/filters") do |form| %>
+    <%= form.select(
+        :status,
+        IncomingPhoneNumber.status.values.map { |t| [t.text, t] },
+        { filter_value: params.dig(:filter, :status) }
+      )
+    %>
+
     <% if policy(:account).show? %>
       <%= form.select(
           :account_id,

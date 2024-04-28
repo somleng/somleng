@@ -20,7 +20,7 @@ module Services
       next unless key?
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      context[:incoming_phone_number] = sms_gateway.carrier.active_incoming_phone_numbers.find_by(number: value)
+      context[:incoming_phone_number] = sms_gateway.carrier.incoming_phone_numbers.active.find_by(number: value)
 
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number]) do
         InboundMessageBehavior.new(context[:incoming_phone_number]).configured?

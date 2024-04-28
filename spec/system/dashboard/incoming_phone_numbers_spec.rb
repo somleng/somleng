@@ -14,19 +14,21 @@ RSpec.describe "Incoming Phone Numbers" do
       sms_method: "GET",
       account:
     )
-    create(:incoming_phone_number, account: customer_managed_account, number: "12513095501")
+    released_incoming_phone_number = create(:incoming_phone_number, :released, account: customer_managed_account, number: "12513095501")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_incoming_phone_numbers_path
 
-    expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
-    expect(page).to have_link("My Carrier Account", href: dashboard_account_path(account))
+    expect(page).to have_content("+1 (251) 309-5500")
     expect(page).to have_content("+1 (251) 309-5501")
-
-    visit dashboard_incoming_phone_numbers_path(filter: { account_id: account.id })
-
     expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
+    expect(page).to have_link(released_incoming_phone_number.id, href: dashboard_incoming_phone_number_path(released_incoming_phone_number))
+    expect(page).to have_link("My Carrier Account", href: dashboard_account_path(account))
+
+    visit dashboard_incoming_phone_numbers_path(filter: { status: :active })
+
+    expect(page).to have_content("+1 (251) 309-5500")
     expect(page).not_to have_content("+1 (251) 309-5501")
   end
 
@@ -90,6 +92,29 @@ RSpec.describe "Incoming Phone Numbers" do
     end
   end
 
+  it "Repurchase a released number" do
+    carrier = create(:carrier)
+    account = create(:account, :customer_managed, carrier:, billing_currency: "USD")
+    released_number = create(
+      :incoming_phone_number,
+      :released,
+      visibility: :public,
+      account:,
+      carrier:,
+      number: "12513095500",
+      amount: Money.from_amount(5.00, "USD")
+    )
+    user = create(:user, :with_account_membership, account:, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_incoming_phone_number_path(released_number)
+
+    click_on("Repurchase")
+
+    expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_link("Buy")
+  end
+
   it "Configure an incoming phone number" do
     carrier = create(:carrier)
     account = create(:account, :carrier_managed, carrier:)
@@ -150,7 +175,7 @@ RSpec.describe "Incoming Phone Numbers" do
   it "Release an incoming phone number" do
     carrier = create(:carrier)
     account = create(:account, :carrier_managed, carrier:)
-    incoming_phone_number = create(:incoming_phone_number, number: "12513095500", account:)
+    incoming_phone_number = create(:incoming_phone_number, :active, number: "12513095500", account:)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -158,6 +183,7 @@ RSpec.describe "Incoming Phone Numbers" do
     click_on("Release")
 
     expect(page).to have_content("Phone number was successfully released.")
-    expect(page).not_to have_content("+1 (251) 309-5500")
+    expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_content("Released")
   end
 end
