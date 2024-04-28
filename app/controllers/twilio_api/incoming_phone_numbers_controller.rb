@@ -52,7 +52,7 @@ module TwilioAPI
     end
 
     def scope
-      current_account.active_managed_incoming_phone_numbers
+      current_account.active_incoming_phone_numbers
     end
 
     def serializer_options

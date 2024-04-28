@@ -11,7 +11,6 @@ class Carrier < ApplicationRecord
   has_many :phone_numbers
   has_many :phone_number_plans
   has_many :active_incoming_phone_numbers, -> { active }, class_name: "IncomingPhoneNumber"
-  has_many :active_managed_incoming_phone_numbers, -> { active.carrier_managed }, class_name: "IncomingPhoneNumber"
   has_many :available_phone_numbers, -> { available }, class_name: "PhoneNumber"
   has_many :messages, -> { where(internal: false) }
   has_many :messaging_services

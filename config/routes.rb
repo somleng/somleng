@@ -124,7 +124,7 @@ Rails.application.routes.draw do
       end
       resources :available_phone_numbers, only: [ :index ]
       resources :released_phone_numbers, only: [ :index ]
-      resources :incoming_phone_numbers
+      resources :incoming_phone_numbers, only: [ :index, :show, :edit, :update, :destroy ]
       resources :phone_number_plans, only: [ :index, :show, :new, :create ]
       resources :messages, only: %i[index show]
       resources :messaging_services

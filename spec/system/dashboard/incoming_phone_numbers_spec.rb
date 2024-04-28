@@ -4,7 +4,6 @@ RSpec.describe "Incoming Phone Numbers" do
   it "List and filter incoming numbers" do
     carrier = create(:carrier)
     account = create(:account, :carrier_managed, carrier:, name: "My Carrier Account")
-    other_account = create(:account, :carrier_managed, carrier:)
     customer_managed_account = create(:account, :customer_managed, carrier:)
     incoming_phone_number = create(
       :incoming_phone_number,
@@ -15,8 +14,7 @@ RSpec.describe "Incoming Phone Numbers" do
       sms_method: "GET",
       account:
     )
-    create(:incoming_phone_number, account: other_account, number: "12513095501")
-    create(:incoming_phone_number, account: customer_managed_account, number: "12513095502")
+    create(:incoming_phone_number, account: customer_managed_account, number: "12513095501")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -25,7 +23,6 @@ RSpec.describe "Incoming Phone Numbers" do
     expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_link("My Carrier Account", href: dashboard_account_path(account))
     expect(page).to have_content("+1 (251) 309-5501")
-    expect(page).not_to have_content("+1 (251) 309-5502")
 
     visit dashboard_incoming_phone_numbers_path(filter: { account_id: account.id })
 
