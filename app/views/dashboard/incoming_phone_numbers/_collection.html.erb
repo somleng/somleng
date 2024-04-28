@@ -10,6 +10,9 @@
       <th>
         Country
       </th>
+      <th>
+        Status
+      </th>
       <% if policy(:account).show? %>
         <th>
           Account
@@ -36,6 +39,10 @@
         <td>
           <%= incoming_phone_number.country&.emoji_flag %>
           <%= incoming_phone_number.country&.iso_short_name %>
+        </td>
+
+        <td>
+          <%= status_badge(incoming_phone_number.status.text, color: incoming_phone_number.status_color) %>
         </td>
 
         <% if policy(:account).show? %>

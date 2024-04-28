@@ -14,8 +14,7 @@ class IncomingPhoneNumber < ApplicationRecord
   enumerize :sms_method, in: %w[POST GET], default: "POST"
   enumerize :status_callback_method, in: %w[POST GET], default: "POST"
   enumerize :status, in: %w[active released], default: :active, scope: :shallow, predicates: true
-  enumerize :account_type, in: Account.type.values, scope: :shallow
-
+  enumerize :account_type, in: Account.type.values, scope: :shallow, predicates: true
   attribute :number, PhoneNumberType.new
 
   delegate :country, :type, to: :phone_number, allow_nil: true

@@ -33,7 +33,7 @@
         <% end %>
         <%= f.attribute :type, value: @resource.type.text %>
         <%= f.attribute :status, value: @resource.status.text %>
-        <%= f.attribute :active_phone_numbers, value: external_link_to("Manage", dashboard_incoming_phone_numbers_path(filter: {account_id: @resource.id}), title: "Manage") %>
+        <%= f.attribute :active_phone_numbers, value: external_link_to("Manage", dashboard_incoming_phone_numbers_path(filter: { status: :active, account_id: @resource.id}), title: "Manage") %>
 
         <%= f.attribute :metadata do %>
           <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>

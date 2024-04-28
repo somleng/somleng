@@ -52,13 +52,13 @@ module TwilioAPI
           next base.failure(schema_helper.build_schema_error(:messaging_service_blank))
         end
 
-        incoming_phone_numbers = context[:messaging_service].incoming_phone_numbers
+        incoming_phone_numbers = context[:messaging_service].incoming_phone_numbers.active
         if incoming_phone_numbers.empty?
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
         next if values[:From].blank?
       else
-        incoming_phone_numbers = account.active_incoming_phone_numbers
+        incoming_phone_numbers = account.incoming_phone_numbers.active
       end
 
       next if sender.present?

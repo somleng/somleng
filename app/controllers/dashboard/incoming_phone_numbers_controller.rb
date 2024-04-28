@@ -36,7 +36,7 @@ module Dashboard
     end
 
     def scope
-      parent_scope.active_incoming_phone_numbers
+      parent_scope.incoming_phone_numbers
     end
 
     def record

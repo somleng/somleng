@@ -33,7 +33,7 @@ module Services
       next if context[:sip_trunk].blank?
 
       context[:to] = normalize_number(value, context[:sip_trunk])
-      incoming_phone_numbers = context[:sip_trunk].carrier.active_incoming_phone_numbers
+      incoming_phone_numbers = context[:sip_trunk].carrier.incoming_phone_numbers.active
       context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: context[:to])
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number]) do
         context[:incoming_phone_number].voice_url.present?

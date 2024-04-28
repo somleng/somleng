@@ -17,8 +17,8 @@
 
     <%= f.attribute :amount, label: "Monthly amount", value: plan.amount.format %>
 
-    <%= f.association :incoming_phone_number, label: "Phone number SID" do |incoming_phone_number| %>
-      <%= external_link_to(incoming_phone_number.id, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
+    <%= f.association :incoming_phone_number, label: "Number" do |incoming_phone_number| %>
+      <%= external_link_to(plan.number_formatted, dashboard_incoming_phone_number_path(incoming_phone_number)) %>
     <% end %>
 
     <%= f.attribute :account do %>

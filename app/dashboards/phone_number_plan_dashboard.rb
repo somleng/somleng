@@ -40,8 +40,4 @@ class PhoneNumberPlanDashboard < Administrate::BaseDashboard
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze
-
-  def display_resource(phone_number)
-    phone_number.number
-  end
 end

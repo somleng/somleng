@@ -19,5 +19,14 @@ RSpec.describe IncomingPhoneNumberPolicy, type: :policy do
 
       expect(policy.update?).to eq(false)
     end
+
+    it "denies updates to released numbers" do
+      user = build_stubbed(:user, :carrier, :owner)
+      incoming_phone_number = build_stubbed(:incoming_phone_number, :released, account_type: :carrier_managed)
+
+      policy = IncomingPhoneNumberPolicy.new(user, incoming_phone_number)
+
+      expect(policy.update?).to eq(false)
+    end
   end
 end
