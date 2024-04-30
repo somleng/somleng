@@ -1,13 +1,12 @@
 module Dashboard
   class ErrorLogsController < DashboardController
     def index
-      @resources = apply_filters(error_logs_scope.includes(:account))
-      @resources = paginate_resources(@resources)
+      @resources = paginate_resources(apply_filters(scope.includes(:account)))
     end
 
     private
 
-    def error_logs_scope
+    def scope
       parent_scope.error_logs
     end
   end

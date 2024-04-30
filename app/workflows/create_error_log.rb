@@ -20,9 +20,7 @@ class CreateErrorLog < ApplicationWorkflow
   end
 
   def notify_subscribed_recipients(error_log)
-    recipients = find_potential_recipients(error_log).reject do |recipient|
-      recipient_recently_notified?(recipient, error_log.error_message)
-    end
+    recipients = find_potential_recipients(error_log)
 
     notifications = recipients.map do |recipient|
       ErrorLogNotification.create!(
@@ -48,14 +46,6 @@ class CreateErrorLog < ApplicationWorkflow
     end
 
     users.where.not(confirmed_at: nil)
-         .subscribed_to_notifications_for(:error_logs)
-  end
-
-  def recipient_recently_notified?(user, error_message)
-    ErrorLogNotification.exists?(
-      user:,
-      message_digest: error_message,
-      created_at: 1.month.ago..
-    )
+         .subscribed_to_notifications_for("error_logs.#{error_log.type}")
   end
 end

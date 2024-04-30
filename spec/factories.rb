@@ -551,7 +551,11 @@ FactoryBot.define do
   end
 
   factory :error_log do
-    error_message { "error message" }
+    inbound_message
+
+    error_message { "Phone number 12513095500 does not exist" }
+
+    traits_for_enum :type, %w[inbound_message inbound_call]
   end
 
   factory :tts_event do

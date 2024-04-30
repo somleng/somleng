@@ -1,6 +1,9 @@
 <table class="table table-bordered table-striped">
   <thead>
     <tr role="row">
+      <th>
+        Type
+      </th>
       <% if policy(:account).show? %>
         <th>
           Account
@@ -18,6 +21,10 @@
   <tbody>
     <% resources.each do |error_log| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= error_log.type.text %>
+        </td>
+
         <% if policy(:account).show? %>
           <td>
             <% if error_log.account.present? %>

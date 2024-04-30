@@ -22,6 +22,7 @@ module Services
       return if error_log_messages.empty?
 
       CreateErrorLog.call(
+        type: :inbound_call,
         carrier: error_log_messages.carrier,
         account: error_log_messages.account,
         error_message: error_log_messages.messages.to_sentence

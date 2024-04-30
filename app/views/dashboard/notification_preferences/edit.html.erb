@@ -1,13 +1,16 @@
 <%= page_title(title: "Notification Preferences") %>
 <div class="card-body">
   <%= simple_form_for(@resource, url: dashboard_notification_preferences_path) do |f| %>
-    <%= f.input(
-      :subscribed_notification_topics,
-      as: :check_boxes,
-      wrapper: :vertical_collection_inline,
-      label: "",
-      hint: "Select the topics to receive notifications."
-    ) %>
+    <% @resource.notification_topics.group_by(&:category).each do |category, notification_topics| %>
+      <%= f.input(
+        :subscribed_notification_topics,
+        as: :check_boxes,
+        wrapper: :vertical_collection_inline,
+        label: category.humanize,
+        collection: notification_topics.map { |topic| [ topic.name.humanize, topic.identifier ] },
+        hint: "Select the #{category.humanize} topics to receive notifications for."
+      ) %>
+    <% end  %>
 
     <%= f.button :submit %>
   <% end %>
