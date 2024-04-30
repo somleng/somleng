@@ -23,7 +23,6 @@ RSpec.describe "Account Switcher" do
   def create_account_membership(user:, current_membership: false, **account_attributes)
     account = create(:account, account_attributes)
     account_membership = create(:account_membership, user:, account:)
-    binding.pry
     user.update!(current_account_membership: account_membership) if current_membership
     account_membership
   end

@@ -9,7 +9,7 @@ describe ApplicationSeeder do
     expect(User.count).to eq(2)
     expect(Account.carrier_managed.count).to eq(1)
     expect(Account.customer_managed.count).to eq(1)
-    expect(ErrorLogNotification.count).to eq(2)
+    expect(ErrorLogNotification.count).to eq(1)
     expect(PhoneNumber.count).to eq(1)
     expect(IncomingPhoneNumber.count).to eq(1)
     expect(PhoneNumberPlan.count).to eq(1)
@@ -38,6 +38,6 @@ describe ApplicationSeeder do
     expect(PhoneNumberPlan.count).to eq(1)
     expect(PhoneCall.count).to eq(1)
     expect(SMSGateway.count).to eq(1)
-    expect(ErrorLogNotification.count).to eq(2)
+    expect(ErrorLogNotification.count).to eq(1)
   end
 end

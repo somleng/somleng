@@ -15,7 +15,7 @@ module ApplicationCable
       CreateErrorLog.call(
         type: :sms_gateway_disconnect,
         carrier: current_sms_gateway.carrier,
-        error_message: "SMS Gateway: #{current_sms_gateway.name} disconnected."
+        error_message: "SMS Gateway: '#{current_sms_gateway.name}' was disconnected."
       )
     end
   end

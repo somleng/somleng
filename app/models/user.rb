@@ -81,6 +81,5 @@ class User < ApplicationRecord
 
   def set_defaults
     self.otp_secret ||= User.generate_otp_secret
-    self.subscribed_notification_topics = [ :error_logs ] if subscribed_notification_topics.blank?
   end
 end
