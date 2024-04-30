@@ -11,7 +11,7 @@ RSpec.describe "Account Switcher" do
     visit dashboard_account_settings_path
 
     within("#accountSwitcher") do
-      click_button("Rocket Rides")
+      click_on("Rocket Rides")
       click_on("Bob's Bananas")
     end
 

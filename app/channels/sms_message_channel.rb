@@ -44,6 +44,7 @@ class SMSMessageChannel < ApplicationCable::Channel
       )
     elsif error_log_messages.messages.present?
       CreateErrorLog.call(
+        type: :inbound_message,
         carrier: error_log_messages.carrier,
         account: error_log_messages.account,
         error_message: error_log_messages.messages.to_sentence

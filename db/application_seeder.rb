@@ -4,18 +4,14 @@ class ApplicationSeeder
   def seed!
     carrier, carrier_owner = create_carrier
     sip_trunk = create_sip_trunk(carrier:)
-    customer_managed_account, customer = create_customer_managed_account(carrier:)
+    carrier_managed_account = create_carrier_managed_account(carrier:)
+    create_customer_managed_account(carrier:)
     create_error_log_notification(
       carrier:,
       user: carrier_owner,
+      type: :inbound_message,
       error_message: "Phone number 523346380009 does not exist."
     )
-    create_error_log_notification(
-      account: customer_managed_account,
-      user: customer,
-      error_message: "Phone number 12264131459 is unconfigured."
-    )
-    carrier_managed_account = create_carrier_managed_account(carrier:)
     phone_number = create_phone_number(carrier:)
     plan = create_phone_number_plan(phone_number:, account: carrier_managed_account)
     create_phone_call(
@@ -139,12 +135,13 @@ class ApplicationSeeder
   def create_error_log_notification(**params)
     account = params.delete(:account)
     carrier = params.delete(:carrier) || account&.carrier
+    type = params.delete(:type)
     user = params.fetch(:user)
     error_message = params.delete(:error_message) || "An error occurred"
 
     return if ErrorLogNotification.exists?(user:, message_digest: error_message)
 
-    error_log = ErrorLog.create!(carrier:, account:, error_message:)
+    error_log = ErrorLog.create!(carrier:, account:, error_message:, type:)
 
     ErrorLogNotification.create!(
       error_log:,

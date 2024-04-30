@@ -8,7 +8,15 @@ module ApplicationCable
     end
 
     def disconnect
-      current_sms_gateway&.disconnect!
+      return if current_sms_gateway.blank?
+
+      current_sms_gateway.disconnect!
+
+      CreateErrorLog.call(
+        type: :sms_gateway_disconnect,
+        carrier: current_sms_gateway.carrier,
+        error_message: "SMS Gateway: '#{current_sms_gateway.name}' was disconnected."
+      )
     end
   end
 end

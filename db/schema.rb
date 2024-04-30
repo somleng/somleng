@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_27_150957) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_28_062055) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -145,6 +145,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_27_150957) do
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type", null: false
     t.index ["account_id"], name: "index_error_logs_on_account_id"
     t.index ["carrier_id"], name: "index_error_logs_on_carrier_id"
     t.index ["sequence_number"], name: "index_error_logs_on_sequence_number", unique: true, order: :desc

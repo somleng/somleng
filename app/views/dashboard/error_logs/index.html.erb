@@ -1,5 +1,12 @@
 <%= page_title(title: "Error Logs") do %>
   <%= render("shared/filters") do |form| %>
+    <%= form.select(
+        :type,
+        ErrorLog.type.values.map { |t| [t.text, t] },
+        { filter_value: params.dig(:filter, :type) }
+      )
+    %>
+
     <% if policy(:account).show? %>
       <%= form.select(
           :account_id,

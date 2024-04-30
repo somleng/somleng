@@ -17,7 +17,7 @@ module ApplicationCable
     end
 
     it "successfully disconnects" do
-      sms_gateway = create(:sms_gateway)
+      sms_gateway = create(:sms_gateway, name: "My SMS Gateway")
 
       connect("/cable", headers: { "X-Device-Key" => sms_gateway.device_token })
       sms_gateway.receive_ping
@@ -26,6 +26,12 @@ module ApplicationCable
       disconnect
 
       expect(sms_gateway.reload.connected?).to eq(false)
+
+      expect(ErrorLog.last).to have_attributes(
+        carrier: sms_gateway.carrier,
+        error_message: "SMS Gateway: 'My SMS Gateway' was disconnected.",
+        type: "sms_gateway_disconnect"
+      )
     end
   end
 end
