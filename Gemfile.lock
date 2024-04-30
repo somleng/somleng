@@ -108,7 +108,7 @@ GEM
       kaminari (~> 1.2.2)
       sassc-rails (~> 2.1)
       selectize-rails (~> 0.6)
-    administrate-field-active_storage (1.0.1)
+    administrate-field-active_storage (1.0.2)
       administrate (>= 0.2.2)
       rails (>= 7.0)
     after_commit_everywhere (1.4.0)
@@ -475,7 +475,7 @@ GEM
     redis-client (0.22.0)
       connection_pool
     regexp_parser (2.9.0)
-    reline (0.5.3)
+    reline (0.5.4)
       io-console (~> 0.5)
     request_store (1.6.0)
       rack (>= 1.4)
