@@ -5,9 +5,9 @@ class User < ApplicationRecord
   enumerize :carrier_role, in: %i[owner admin member], predicates: true
   enumerize :subscribed_notification_topics,
             in: [
-              :"error_logs.inbound_message",
-              :"error_logs.inbound_call",
-              :"error_logs.sms_gateway_disconnect"
+              "error_logs.inbound_message",
+              "error_logs.inbound_call",
+              "error_logs.sms_gateway_disconnect"
             ],
             multiple: true
 

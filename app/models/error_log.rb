@@ -8,4 +8,5 @@ class ErrorLog < ApplicationRecord
   has_many :notifications, class_name: "ErrorLogNotification"
 
   enumerize :type, in: [ :inbound_message, :inbound_call, :sms_gateway_disconnect ]
+  validates :error_message, presence: true
 end
