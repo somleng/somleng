@@ -1,8 +1,8 @@
 module AttributeFilter
   class DateFilter < ApplicationFilter
     filter_params do
-      optional(:from_date).value(:date)
-      optional(:to_date).value(:date)
+      optional(:from_date).value(:time)
+      optional(:to_date).value(:time)
     end
 
     def apply
