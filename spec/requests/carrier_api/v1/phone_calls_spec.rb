@@ -29,7 +29,7 @@ resource "Phone Calls", document: :carrier_api do
       account = create(:account, carrier:)
       other_account = create(:account, carrier:)
       phone_call = create(
-        :phone_call, :outbound, :initiated, account:, created_at: Time.utc(2021, 11, 1)
+        :phone_call, :outbound, :initiated, account:, created_at: Time.utc(2021, 11, 1, 1)
       )
       create(
         :phone_call,
@@ -57,7 +57,7 @@ resource "Phone Calls", document: :carrier_api do
         direction: phone_call.direction,
         status: phone_call.status,
         account: phone_call.account,
-        created_at: Time.utc(2021, 11, 2)
+        created_at: Time.utc(2021, 11, 2, 1)
       )
 
       set_carrier_api_authorization_header(carrier)

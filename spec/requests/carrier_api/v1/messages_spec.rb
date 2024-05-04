@@ -30,7 +30,7 @@ resource "Messages", document: :carrier_api do
       other_account = create(:account, carrier:)
       message = create(
         :message,
-        status: :sent, direction: :outbound_api, account:, created_at: Time.utc(2021, 11, 1)
+        status: :sent, direction: :outbound_api, account:, created_at: Time.utc(2021, 11, 1, 1)
       )
       create(:message, status: message.status, account: message.account, direction: :inbound)
       create(:message, status: message.status, account: other_account, direction: message.direction)
@@ -39,7 +39,7 @@ resource "Messages", document: :carrier_api do
         account: message.account,
         status: message.status,
         direction: message.direction,
-        created_at: Time.utc(2021, 11, 2)
+        created_at: Time.utc(2021, 11, 2, 1)
       )
 
       set_carrier_api_authorization_header(carrier)
