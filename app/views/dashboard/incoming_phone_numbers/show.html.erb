@@ -73,33 +73,35 @@
       </div>
     </div>
 
-    <div id="voice-configuration" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Voice</h5>
-        <%= f.attribute :voice_url %>
-        <%= f.attribute :voice_method %>
-        <%= f.attribute :status_callback_url %>
-        <%= f.attribute :status_callback_method %>
+    <% if incoming_phone_number.active? %>
+      <div id="voice-configuration" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Voice</h5>
+          <%= f.attribute :voice_url %>
+          <%= f.attribute :voice_method %>
+          <%= f.attribute :status_callback_url %>
+          <%= f.attribute :status_callback_method %>
 
-        <% if policy(:phone_call).index? %>
-          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View phone calls") %>
-        <% end %>
+          <% if policy(:phone_call).index? %>
+            <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View phone calls") %>
+          <% end %>
+        </div>
       </div>
-    </div>
 
-    <div id="messaging-configuration" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Messaging</h5>
-        <%= f.attribute :sms_url %>
-        <%= f.attribute :sms_method %>
-        <%= f.association :messaging_service do |messaging_service| %>
-          <%= link_to(messaging_service.name, dashboard_messaging_service_path(messaging_service)) %>
-        <% end %>
+      <div id="messaging-configuration" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Messaging</h5>
+          <%= f.attribute :sms_url %>
+          <%= f.attribute :sms_method %>
+          <%= f.association :messaging_service do |messaging_service| %>
+            <%= link_to(messaging_service.name, dashboard_messaging_service_path(messaging_service)) %>
+          <% end %>
 
-        <% if policy(:message).index? %>
-          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View messages") %>
-        <% end %>
+          <% if policy(:message).index? %>
+            <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View messages") %>
+          <% end %>
+        </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 </div>
