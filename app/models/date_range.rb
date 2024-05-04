@@ -7,7 +7,7 @@ class DateRange
   end
 
   def to_range
-    Range.new(from_date, to_date + 1.day)
+    Range.new(from_date, to_date && (to_date + 1.day))
   end
 
   def valid?
