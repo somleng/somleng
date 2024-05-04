@@ -2,7 +2,7 @@ module TwilioAPI
   class PhoneCallRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :url_validator, default: -> { URLValidator.new(allow_http: true) }
-    option :twiml_validator, default: -> { TwiMLValidator.new }
+    option :twiml_validator, default: -> { VoiceTwiMLValidator.new }
     option :phone_call_destination_schema_rules, default: -> { PhoneCallDestinationSchemaRules.new }
     option :phone_number_configuration_rules, default: -> { PhoneNumberConfigurationRules.new }
     option :sender, optional: true

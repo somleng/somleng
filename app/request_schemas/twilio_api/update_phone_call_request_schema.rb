@@ -2,7 +2,7 @@ module TwilioAPI
   class UpdatePhoneCallRequestSchema < TwilioAPIRequestSchema
     option :phone_call
     option :url_validator, default: -> { URLValidator.new(allow_http: true) }
-    option :twiml_validator, default: -> { TwiMLValidator.new }
+    option :twiml_validator, default: -> { VoiceTwiMLValidator.new }
 
     params do
       optional(:Status).filled(:str?, included_in?: PhoneCallStatusEvent::EVENTS.keys)
