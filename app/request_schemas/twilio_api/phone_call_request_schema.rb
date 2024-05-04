@@ -2,6 +2,7 @@ module TwilioAPI
   class PhoneCallRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :url_validator, default: -> { URLValidator.new(allow_http: true) }
+    option :twiml_validator, default: -> { TwiMLValidator.new }
     option :phone_call_destination_schema_rules, default: -> { PhoneCallDestinationSchemaRules.new }
     option :phone_number_configuration_rules, default: -> { PhoneNumberConfigurationRules.new }
     option :sender, optional: true
@@ -48,12 +49,9 @@ module TwilioAPI
     end
 
     rule(:Twiml) do
-      if key? && value.present?
-        Nokogiri::XML(value) do |c|
-          c.options = Nokogiri::XML::ParseOptions::STRICT
-        end
-      end
-    rescue Nokogiri::XML::SyntaxError
+      next if value.blank?
+      next if twiml_validator.valid?(value)
+
       key.failure("is invalid")
     end
 

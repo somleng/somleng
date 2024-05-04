@@ -25,7 +25,12 @@ module TwilioAPI
         status: :ok,
         **serializer_options
       ) do |permitted_params|
-        end_call(phone_call, permitted_params)
+        if permitted_params.key?(:status)
+          end_call(phone_call, permitted_params)
+        else
+          phone_call.update!(permitted_params)
+          update_call(phone_call, permitted_params)
+        end
         phone_call
       end
     end

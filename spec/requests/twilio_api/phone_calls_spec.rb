@@ -121,17 +121,65 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
   end
 
-  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls/:sid" do
+  post "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls/:Sid" do
+    explanation <<~HEREDOC
+      Updating a Call resource allows you to modify an active call.
+
+      Real-time call modification allows you to interrupt an in-progress call and terminate it or have it begin processing TwiML from either a new URL or from the TwiML provided with modification.
+      Call modification is useful for any application where you want to change the behavior of a running call asynchronously, e.g., hold music, call queues, transferring calls, or forcing a hangup.
+
+      By sending an HTTP `POST` request to a specific Call instance, you can redirect a call that is in progress or you can terminate a call.
+    HEREDOC
+
     parameter(
-      "Status",
-      "The new status of the resource. Can be: `canceled` or `completed`. Specifying `canceled` will attempt to hang up calls that are `queued` or `ringing`; however, it will not affect calls already in progress. Specifying `completed` will attempt to hang up a call even if it's already in progress.",
+      :AcountSid,
+      "*Path Parameter*: The SID of the Account that created the Call resource(s) to update."
+    )
+
+    parameter(
+      :Sid,
+      "*Path Parameter*: The ID that uniquely identifies the Call resource to update."
+    )
+
+    parameter(
+      :Url,
+      "*Request Body Parameter*: The absolute URL that returns the TwiML instructions for the call. We will call this URL using the method when the call connects.",
+      required: false
+    )
+
+    parameter(
+      :Method,
+      "*Request Body Parameter*: The HTTP method we should use when calling the url. Can be: `GET` or `POST` and the default is `POST`.",
+      required: false
+    )
+
+    parameter(
+      :StatusCallback,
+      "*Request Body Parameter*: The URL we should call using the `status_callback_method` to send status information to your application. URLs must contain a valid hostname (underscores are not permitted).",
+      required: false
+    )
+
+    parameter(
+      :StatusCallbackMethod,
+      "*Request Body Parameter*: The HTTP method we should use when requesting the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
+      required: false
+    )
+
+    parameter(
+      :Twiml,
+      "*Request Body Parameter*: TwiML instructions for the call to be used without fetching Twiml from url. `Twiml` and `Url` parameters are mutually exclusive.",
+      required: false
+    )
+
+    parameter(
+      :Status,
+      "*Request Body Parameter*: The new status of the resource. Can be: `canceled` or `completed`. Specifying `canceled` will attempt to hang up calls that are `queued` or `ringing`; however, it will not affect calls already in progress. Specifying `completed` will attempt to hang up a call even if it's already in progress.",
       required: false,
       example: "completed"
     )
 
-    # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-resource
-
-    example "Update a call" do
+    # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-in-progress-with-twiml
+    example "Update a Call in progress with TwiML" do
       account = create(:account)
       phone_call = create(:phone_call, :answered, account:, call_service_host: "10.10.1.13")
       stub_request(:delete, "http://10.10.1.13/calls/#{phone_call.external_id}")
@@ -139,8 +187,47 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
       perform_enqueued_jobs do
         do_request(
-          account_sid: account.id,
-          sid: phone_call.id,
+          AccountSid: account.id,
+          Sid: phone_call.id,
+          "Twiml" => "<Response><Say>Ahoy there</Say></Response>"
+        )
+      end
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/call")
+    end
+
+    # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a--call-in-progress-with-url
+    example "Update a Call in progress with URL" do
+      account = create(:account)
+      phone_call = create(:phone_call, :answered, account:, call_service_host: "10.10.1.13")
+      stub_request(:delete, "http://10.10.1.13/calls/#{phone_call.external_id}")
+      set_twilio_api_authorization_header(account)
+
+      perform_enqueued_jobs do
+        do_request(
+          AccountSid: account.id,
+          Sid: phone_call.id,
+          "Url" => "https://demo.twilio.com/docs/voice.xml",
+          "Method" => "POST"
+        )
+      end
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_schema("twilio_api/call")
+    end
+
+    # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-resource-to-end-the-call
+    example "End a call" do
+      account = create(:account)
+      phone_call = create(:phone_call, :answered, account:, call_service_host: "10.10.1.13")
+      stub_request(:delete, "http://10.10.1.13/calls/#{phone_call.external_id}")
+      set_twilio_api_authorization_header(account)
+
+      perform_enqueued_jobs do
+        do_request(
+          AccountSid: account.id,
+          Sid: phone_call.id,
           "Status" => "completed"
         )
       end
@@ -149,7 +236,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       expect(response_body).to match_api_response_schema("twilio_api/call")
     end
 
-    example "Cancels a call", document: false do
+    example "Cancel a call", document: false do
       account = create(:account)
       phone_call = create(:phone_call, :queued, account:)
 
