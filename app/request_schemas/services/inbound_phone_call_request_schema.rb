@@ -10,6 +10,7 @@ module Services
       required(:from).value(ApplicationRequestSchema::Types::Number, :filled?)
       required(:source_ip).filled(:str?)
       required(:external_id).filled(:str?)
+      required(:host).filled(:str?)
       optional(:client_identifier).maybe(:str?)
       optional(:variables).maybe(:hash)
     end
@@ -88,6 +89,7 @@ module Services
       result[:voice_method] = incoming_phone_number.voice_method
       result[:status_callback_url] = incoming_phone_number.status_callback_url
       result[:status_callback_method] = incoming_phone_number.status_callback_method
+      result[:call_service_host] = params.fetch(:host)
       if incoming_phone_number.sip_domain.present?
         result[:twiml] = route_to_sip_domain(incoming_phone_number)
       end

@@ -374,6 +374,7 @@ FactoryBot.define do
 
     trait :initiated do
       external_id { SecureRandom.uuid }
+      call_service_host { "10.10.1.13" }
       initiated_at { Time.current }
       status { :initiated }
     end

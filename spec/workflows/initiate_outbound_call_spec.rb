@@ -23,14 +23,19 @@ RSpec.describe InitiateOutboundCall do
       voice_url: "http://example.com/voice_url",
       voice_method: "POST"
     )
-    stub_switch_request(external_call_id: "123456789")
+    stub_switch_request(external_call_id: "123456789", host: "10.10.1.13")
 
     InitiateOutboundCall.call(phone_call)
 
-    expect(phone_call.external_id).to eq("123456789")
-    expect(phone_call.status).to eq("initiated")
-    expect(phone_call.initiating_at.present?).to eq(true)
-    expect(phone_call.initiated_at.present?).to eq(true)
+    expect(phone_call).to have_attributes(
+      external_id: "123456789",
+      status: "initiated",
+      initiating_at: be_present,
+      initiated_at: be_present,
+      call_service_host: have_attributes(
+        to_s: "10.10.1.13"
+      )
+    )
 
     expect(WebMock).to have_requested(:post, "https://switch.internal.somleng.org/calls").with(
       body: {
@@ -127,8 +132,9 @@ RSpec.describe InitiateOutboundCall do
     expect(phone_calls.last.status).to eq("initiated")
   end
 
-  def stub_switch_request(external_call_id: SecureRandom.uuid)
-    responses = Array(external_call_id).map { |id| { body: { id: }.to_json } }
+  def stub_switch_request(external_call_id: SecureRandom.uuid, **response_params)
+    response_params[:host] ||= "10.10.1.13"
+    responses = Array(external_call_id).map { |id| { body: { id:, **response_params }.to_json } }
     stub_request(:post, "https://switch.internal.somleng.org/calls").to_return(responses)
   end
 end

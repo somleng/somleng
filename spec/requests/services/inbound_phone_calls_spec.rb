@@ -23,6 +23,7 @@ RSpec.describe "Services", :services do
           "to" => "16189124649",
           "from" => "16189124650",
           "external_id" => SecureRandom.uuid,
+          "host" => "10.10.1.13",
           "variables" => {
             "sip_from_host" => "1.1.1.1"
           }

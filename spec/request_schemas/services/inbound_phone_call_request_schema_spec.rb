@@ -145,6 +145,7 @@ module Services
           to: "12513095500",
           from: "855716100230",
           external_id: "external-id",
+          host: "10.10.1.13",
           variables: {
             "sip_from_host" => "103.9.189.2"
           }
@@ -163,6 +164,7 @@ module Services
         voice_method: "GET",
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "POST",
+        call_service_host: "10.10.1.13",
         variables: {
           "sip_from_host" => "103.9.189.2"
         }
@@ -189,7 +191,8 @@ module Services
           source_ip: "175.100.7.240",
           to: "1294",
           from: "068308531",
-          external_id: "external-id"
+          external_id: "external-id",
+          host: "10.10.1.13"
         }
       )
 
@@ -215,7 +218,8 @@ module Services
           source_ip: "175.100.7.240",
           to: "02092960310",
           from: "02092960314",
-          external_id: "external-id"
+          external_id: "external-id",
+          host: "10.10.1.13"
         }
       )
 
@@ -238,7 +242,8 @@ module Services
           source_ip: sip_trunk.inbound_source_ip.to_s,
           to: incoming_phone_number.number.to_s,
           from: "855716100230",
-          external_id: "external-id"
+          external_id: "external-id",
+          host: "10.10.1.13"
         }
       )
 

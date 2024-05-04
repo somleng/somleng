@@ -133,18 +133,20 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
     example "Update a call" do
       account = create(:account)
-      phone_call = create(:phone_call, :answered, account:)
-
+      phone_call = create(:phone_call, :answered, account:, call_service_host: "10.10.1.13")
+      stub_request(:delete, "http://10.10.1.13/calls/#{phone_call.external_id}")
       set_twilio_api_authorization_header(account)
-      do_request(
-        account_sid: account.id,
-        sid: phone_call.id,
-        "Status" => "completed"
-      )
+
+      perform_enqueued_jobs do
+        do_request(
+          account_sid: account.id,
+          sid: phone_call.id,
+          "Status" => "completed"
+        )
+      end
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/call")
-      expect(EndCallJob).to have_been_enqueued.with(phone_call)
     end
 
     example "Cancels a call", document: false do

@@ -2,6 +2,18 @@ require "rails_helper"
 
 module CallService
   RSpec.describe Client do
+    describe "#end_call" do
+      it "ends a call" do
+        client = Client.new
+        phone_call_id = SecureRandom.uuid
+        stub_request(:delete, %r{http://10.10.1.13}).to_return(status: 204)
+
+        client.end_call(id: phone_call_id, host: "10.10.1.13")
+
+        expect(WebMock).to have_requested(:delete, "http://10.10.1.13/calls/#{phone_call_id}")
+      end
+    end
+
     describe "#add_permission" do
       it "Authorizes the IP" do
         sqs_client = Aws::SQS::Client.new(stub_responses: true)

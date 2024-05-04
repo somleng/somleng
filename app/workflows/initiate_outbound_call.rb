@@ -15,7 +15,10 @@ class InitiateOutboundCall < ApplicationWorkflow
 
     response = create_remote_call
 
-    mark_as_initiated!(response.fetch(:id))
+    mark_as_initiated!(
+      response.fetch(:id),
+      call_service_host: response.fetch(:host)
+    )
   end
 
   private
@@ -75,9 +78,10 @@ class InitiateOutboundCall < ApplicationWorkflow
     phone_call.mark_as_initiating!
   end
 
-  def mark_as_initiated!(external_id)
+  def mark_as_initiated!(external_id, **attributes)
     phone_call.external_id = external_id
     phone_call.initiated_at = Time.current
+    phone_call.attributes = attributes
     phone_call.mark_as_initiated!
   end
 

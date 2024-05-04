@@ -6,7 +6,10 @@ class EndCallJob < ApplicationJob
   def perform(phone_call, call_service_client: CallService::Client.new)
     return unless phone_call.was_initiated?
 
-    response = call_service_client.end_call(phone_call.external_id)
+    response = call_service_client.end_call(
+      id: phone_call.external_id,
+      host: phone_call.call_service_host
+    )
 
     raise RetryJob, "Response body: #{response.body}" unless response.success?
   end

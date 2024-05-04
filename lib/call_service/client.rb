@@ -13,8 +13,8 @@ module CallService
       execute_request(:post, "/calls", params)
     end
 
-    def end_call(id)
-      execute_request(:delete, "/calls/#{id}")
+    def end_call(id:, host:)
+      execute_request(:delete, "http://#{host}/calls/#{id}")
     end
 
     def create_subscriber(username:, password:)
