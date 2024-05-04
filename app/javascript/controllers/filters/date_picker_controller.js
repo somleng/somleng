@@ -14,9 +14,9 @@ export default class extends Controller {
       buttons: ["clear"],
       toggleSelected: false,
       multipleDatesSeparator: "-",
-      dateFormat: "dd/MM/yyyy",
       autoClose: true,
       onSelect: ({ date, formattedDate }) => {
+        if (formattedDate.length == 0) return;
         if (formattedDate.length == 1) {
           if ("maxDateRangeMonths" in this.dateRangePickerTarget.dataset) {
             const maxDateRangeMonths = parseInt(
@@ -34,8 +34,8 @@ export default class extends Controller {
         }
 
         const [fromDate, toDate] = formattedDate;
-        this.fromDateTarget.value = fromDate;
-        this.toDateTarget.value = toDate;
+        this.fromDateTarget.value = new Date(fromDate).toISOString();
+        this.toDateTarget.value = new Date(toDate).toISOString();
       },
     };
 
