@@ -7,6 +7,7 @@ class ErrorLogDashboard < Administrate::BaseDashboard
     notifications: Field::HasMany,
     id: Field::String,
     error_message: Field::String,
+    type: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
   }.freeze
@@ -14,6 +15,7 @@ class ErrorLogDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     carrier
     account
+    type
     error_message
     created_at
   ].freeze
@@ -22,6 +24,7 @@ class ErrorLogDashboard < Administrate::BaseDashboard
     id
     carrier
     account
+    type
     error_message
     notifications
     created_at
