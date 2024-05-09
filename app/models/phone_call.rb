@@ -95,6 +95,14 @@ class PhoneCall < ApplicationRecord
     initiated_at.present?
   end
 
+  def uncompleted?
+    status.in?([ "queued", "initiating", "initiated", "ringing", "answered" ])
+  end
+
+  def user_terminated?
+    user_terminated_at.present?
+  end
+
   private
 
   def set_beneficiary_data

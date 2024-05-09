@@ -2,13 +2,9 @@ require "administrate/base_dashboard"
 
 class PhoneCallDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
-    account: Field::BelongsTo.with_options(
-      transform_on_export: ->(field) { field.data.id }
-    ),
+    account: Field::BelongsTo,
     sip_trunk: Field::BelongsTo,
-    call_data_record: Field::BelongsTo.with_options(
-      transform_on_export: ->(field) { field.data&.id }
-    ),
+    call_data_record: Field::BelongsTo,
     phone_call_events: Field::HasMany,
     media_streams: Field::HasMany,
     events: Field::HasMany,
@@ -24,6 +20,9 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     price_unit: Field::String,
     status_callback_url: Field::String,
     status_callback_method: Field::String,
+    call_service_host: Field::String,
+    user_terminated_at: Field::LocalTime,
+    user_updated_at: Field::LocalTime,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime,
     external_id: Field::String,
@@ -56,6 +55,9 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     price_unit
     status_callback_url
     status_callback_method
+    call_service_host
+    user_terminated_at
+    user_updated_at
     created_at
     updated_at
     sip_trunk

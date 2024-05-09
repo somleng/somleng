@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_28_062055) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_04_084912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -452,6 +452,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_062055) do
     t.datetime "initiating_at"
     t.boolean "internal", default: false, null: false
     t.uuid "incoming_phone_number_id"
+    t.inet "call_service_host"
+    t.datetime "user_terminated_at"
+    t.datetime "user_updated_at"
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
@@ -476,6 +479,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_28_062055) do
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
     t.index ["status"], name: "index_phone_calls_on_status"
     t.index ["to"], name: "index_phone_calls_on_to"
+    t.index ["user_terminated_at"], name: "index_phone_calls_on_user_terminated_at"
+    t.index ["user_updated_at"], name: "index_phone_calls_on_user_updated_at"
   end
 
   create_table "phone_number_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

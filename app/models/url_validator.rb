@@ -1,7 +1,7 @@
 class URLValidator
   attr_reader :options
 
-  BAD_HOSTS = ["localhost"].freeze
+  BAD_HOSTS = [ "localhost" ].freeze
 
   def initialize(options = {})
     @options = options
@@ -29,7 +29,7 @@ class URLValidator
   end
 
   def allowed_schemes
-    allowed_schemes = options.fetch(:schemes, ["https"])
+    allowed_schemes = options.fetch(:schemes, [ "https" ])
     allowed_schemes << "http" if options[:allow_http]
     allowed_schemes
   end

@@ -74,6 +74,10 @@ module ApplicationError
       verify_could_not_find_valid_phone_number: Error.new(
         code: "S60232",
         message: "Could not find a valid phone number to send the verification from."
+      ),
+      invalid_call_state: Error.new(
+        code: "21220",
+        message: "You attempted a realtime operation on a Call that was not in-progress. Calls that have completed cannot be recorded or redirected."
       )
     }.freeze
 

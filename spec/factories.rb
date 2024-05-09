@@ -363,6 +363,14 @@ FactoryBot.define do
       association :account, factory: %i[account with_sip_trunk]
     end
 
+    trait :user_terminated do
+      user_terminated_at { Time.current }
+    end
+
+    trait :user_updated do
+      user_updated_at { Time.current }
+    end
+
     trait :internal do
       internal { true }
     end
@@ -374,6 +382,7 @@ FactoryBot.define do
 
     trait :initiated do
       external_id { SecureRandom.uuid }
+      call_service_host { "10.10.1.13" }
       initiated_at { Time.current }
       status { :initiated }
     end
