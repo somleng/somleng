@@ -3,16 +3,24 @@ require "rails_helper"
 RSpec.resource "Phone Calls", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
-  # https://www.twilio.com/docs/voice/api/call-resource#create-a-call-resource
-  #
-  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
+  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls" do
+    explanation <<~HEREDOC
+      Return a list of phone calls made to and from an account, identified by its `AccountSid`.
+    HEREDOC
+
+    parameter(
+      "AccountSid",
+      "*Path Parameter*: The SID of the Account that created the Call resource(s) to read."
+    )
+
+    # https://www.twilio.com/docs/voice/api/call-resource#read-multiple-call-resources
     example "List phone calls" do
       account = create(:account)
       phone_call = create(:phone_call, account:)
       _other_phone_call = create(:phone_call)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id)
+      do_request(AccountSid: account.id)
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_collection_schema("twilio_api/call")
@@ -20,22 +28,30 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
   end
 
-  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls" do
+  post "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls" do
+    explanation <<~HEREDOC
+      Calls can be made via the REST API to phone numbers. To place a new outbound call, make an `HTTP POST` request to your account's Call resource.
+    HEREDOC
+
+    parameter(
+      "AccountSid",
+      "*Path Parameter*: The SID of the Account that will create the resource."
+    )
     parameter(
       "To",
-      "The phone number to call.",
+      "*Request Body Parameter*: The phone number to call.",
       required: true,
-      example: "+299221234"
+      example: "+18288822789"
     )
     parameter(
       "From",
-      "The phone number to use as the caller id",
+      "*Request Body Parameter*: The phone number to use as the caller id.",
       required: true,
-      example: "1234"
+      example: "+16189124649"
     )
     parameter(
       "Url",
-      "The absolute URL that returns the TwiML instructions for the call. We will call this URL using the `method` when the call connects.",
+      "*Request Body Parameter*: The absolute URL that returns the TwiML instructions for the call. We will call this URL using the `method` when the call connects.",
       required: false,
       example: "https://demo.twilio.com/docs/voice.xml"
     )
@@ -47,19 +63,19 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
     parameter(
       "Twiml",
-      "TwiML instructions for the call Somleng will use without fetching Twiml from `Url` parameter. If both `Twiml` and `Url` are provided then `Twiml` parameter will be ignored.",
+      "*Request Body Parameter*: TwiML instructions for the call Somleng will use without fetching Twiml from `Url` parameter. If both `Twiml` and `Url` are provided then `Twiml` parameter will be ignored.",
       required: false,
       example: "<Response><Say>Ahoy there!</Say></Response>"
     )
     parameter(
       "StatusCallback",
-      "The URL we should call using the `status_callback_method` to send status information to your application. URLs must contain a valid hostname (underscores are not permitted).",
+      "*Request Body Parameter*: The URL we should call using the `status_callback_method` to send status information to your application. URLs must contain a valid hostname (underscores are not permitted).",
       required: false,
       example: "https://example.com/status_callback"
     )
     parameter(
       "StatusCallbackMethod",
-      "The HTTP method we should use when calling the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
+      "*Request Body Parameter*: The HTTP method we should use when calling the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
       required: false,
       example: "POST"
     )
@@ -73,7 +89,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       set_twilio_api_authorization_header(account)
 
       do_request(
-        account_sid: account.id,
+        AccountSid: account.id,
         "To" => "+299221234",
         "From" => "+12513095500",
         "Url" => "https://demo.twilio.com/docs/voice.xml"
@@ -89,7 +105,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
       set_twilio_api_authorization_header(account)
       do_request(
-        account_sid: account.id,
+        AccountSid: account.id,
         "To" => "+299221234",
         "From" => "1234",
         "Url" => "https://demo.twilio.com/docs/voice.xml"
@@ -106,15 +122,27 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
   end
 
-  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Calls/:sid" do
-    # https://www.twilio.com/docs/api/rest/call#instance-get
+  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls/:Sid" do
+    explanation <<~HEREDOC
+      This API call returns the Call resource of an individual call, identified by its `Sid`.
+    HEREDOC
 
+    parameter(
+      "AccountSid",
+      "*Path Parameter*: The SID of the Account that created the Call resource(s) to fetch."
+    )
+    parameter(
+      "Sid",
+      "*Path Parameter*: The SID of the Call resource to fetch."
+    )
+
+    # https://www.twilio.com/docs/voice/api/call-resource#fetch-a-call-resource
     example "Fetch a call" do
       account = create(:account)
       phone_call = create(:phone_call, account:)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, sid: phone_call.id)
+      do_request(AccountSid: account.id, Sid: phone_call.id)
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/call")
@@ -132,47 +160,40 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     HEREDOC
 
     parameter(
-      :AcountSid,
+      "AccountSid",
       "*Path Parameter*: The SID of the Account that created the Call resource(s) to update."
     )
-
     parameter(
-      :Sid,
+      "Sid",
       "*Path Parameter*: The ID that uniquely identifies the Call resource to update."
     )
-
     parameter(
-      :Url,
+      "Url",
       "*Request Body Parameter*: The absolute URL that returns the TwiML instructions for the call. We will call this URL using the method when the call connects.",
       required: false
     )
-
     parameter(
-      :Method,
+      "Method",
       "*Request Body Parameter*: The HTTP method we should use when calling the url. Can be: `GET` or `POST` and the default is `POST`.",
       required: false
     )
-
     parameter(
-      :StatusCallback,
+      "StatusCallback",
       "*Request Body Parameter*: The URL we should call using the `status_callback_method` to send status information to your application. URLs must contain a valid hostname (underscores are not permitted).",
       required: false
     )
-
     parameter(
-      :StatusCallbackMethod,
+      "StatusCallbackMethod",
       "*Request Body Parameter*: The HTTP method we should use when requesting the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
       required: false
     )
-
     parameter(
-      :Twiml,
+      "Twiml",
       "*Request Body Parameter*: TwiML instructions for the call to be used without fetching Twiml from url. `Twiml` and `Url` parameters are mutually exclusive.",
       required: false
     )
-
     parameter(
-      :Status,
+      "Status",
       "*Request Body Parameter*: The new status of the resource. Can be: `canceled` or `completed`. Specifying `canceled` will attempt to hang up calls that are `queued` or `ringing`; however, it will not affect calls already in progress. Specifying `completed` will attempt to hang up a call even if it's already in progress.",
       required: false,
       example: "completed"

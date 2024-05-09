@@ -2,13 +2,9 @@ require "administrate/base_dashboard"
 
 class PhoneCallDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
-    account: Field::BelongsTo.with_options(
-      transform_on_export: ->(field) { field.data.id }
-    ),
+    account: Field::BelongsTo,
     sip_trunk: Field::BelongsTo,
-    call_data_record: Field::BelongsTo.with_options(
-      transform_on_export: ->(field) { field.data&.id }
-    ),
+    call_data_record: Field::BelongsTo,
     phone_call_events: Field::HasMany,
     media_streams: Field::HasMany,
     events: Field::HasMany,
