@@ -25,12 +25,7 @@ module TwilioAPI
         status: :ok,
         **serializer_options
       ) do |permitted_params|
-        if permitted_params.key?(:status)
-          end_call(phone_call, permitted_params)
-        else
-          phone_call.update!(permitted_params)
-          update_call(phone_call, permitted_params)
-        end
+        UpdatePhoneCall.call(phone_call, **permitted_params)
         phone_call
       end
     end
@@ -48,12 +43,6 @@ module TwilioAPI
 
     def respond_with_resource(resource, options)
       super(resource.account, resource, options)
-    end
-
-    def end_call(phone_call, params)
-      return unless PhoneCallStatusEvent.new(phone_call).may_transition_to?(params[:status])
-
-      phone_call.was_initiated? ? EndCallJob.perform_later(phone_call) : phone_call.cancel!
     end
 
     def serializer_options

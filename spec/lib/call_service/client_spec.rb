@@ -5,12 +5,27 @@ module CallService
     describe "#end_call" do
       it "ends a call" do
         client = Client.new
-        phone_call_id = SecureRandom.uuid
         stub_request(:delete, %r{http://10.10.1.13}).to_return(status: 204)
 
-        client.end_call(id: phone_call_id, host: "10.10.1.13")
+        client.end_call(id: "call-id", host: "10.10.1.13")
 
-        expect(WebMock).to have_requested(:delete, "http://10.10.1.13/calls/#{phone_call_id}")
+        expect(WebMock).to have_requested(:delete, "http://10.10.1.13/calls/call-id")
+      end
+    end
+
+    describe "#update_call" do
+      it "updates a call" do
+        client = Client.new
+        stub_request(:patch, %r{http://10.10.1.13}).to_return(status: 204)
+
+        client.update_call(id: "call-id", host: "10.10.1.13", twiml: "<Response><Say>Ahoy there!</Say></Response>")
+
+        expect(WebMock).to(have_requested(:patch, "http://10.10.1.13/calls/call-id").with { |request|
+          body = JSON.parse(request.body)
+          expect(body).to eq(
+            "twiml" => "<Response><Say>Ahoy there!</Say></Response>"
+          )
+        })
       end
     end
 

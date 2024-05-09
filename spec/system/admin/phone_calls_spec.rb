@@ -5,6 +5,7 @@ RSpec.describe "Admin/Phone Calls" do
     sip_trunk = create(:sip_trunk)
     phone_call = create(
       :phone_call,
+      :initiated,
       sip_trunk:,
       carrier: sip_trunk.carrier,
       status_callback_url: "https://example.com/call-status-callback",

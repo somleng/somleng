@@ -2,6 +2,31 @@ require "rails_helper"
 
 module TwilioAPI
   RSpec.describe UpdatePhoneCallRequestSchema, type: :request_schema do
+    it "validates the call status" do
+      expect(
+        validate_request_schema(
+          input_params: {},
+          options: { phone_call: build_stubbed(:phone_call, :queued) }
+        )
+      ).to have_valid_schema
+
+      expect(
+        validate_request_schema(
+          input_params: {},
+          options: { phone_call: build_stubbed(:phone_call, :initiated) }
+        )
+      ).to have_valid_schema
+
+      expect(
+        validate_request_schema(
+          input_params: { Url: "https://www.example.com" },
+          options: { phone_call: build_stubbed(:phone_call, :completed) }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:invalid_call_state).message
+      )
+    end
+
     it "validates Status" do
       expect(
         validate_request_schema(input_params: { Status: "completed" })
@@ -88,7 +113,8 @@ module TwilioAPI
         voice_url: "https://www.example.com/voice_url.xml",
         voice_method: "GET",
         status_callback_url: "https://example.com/status-callback",
-        status_callback_method: "GET"
+        status_callback_method: "GET",
+        twiml: nil
       )
     end
 
@@ -100,7 +126,8 @@ module TwilioAPI
       )
 
       expect(schema.output).to eq(
-        twiml: "<Response><Say>Ahoy there!</Say></Response>"
+        twiml: "<Response><Say>Ahoy there!</Say></Response>",
+        voice_url: nil
       )
     end
 

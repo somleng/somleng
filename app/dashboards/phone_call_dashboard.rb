@@ -24,6 +24,9 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     price_unit: Field::String,
     status_callback_url: Field::String,
     status_callback_method: Field::String,
+    call_service_host: Field::String,
+    user_terminated_at: Field::LocalTime,
+    user_updated_at: Field::LocalTime,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime,
     external_id: Field::String,
@@ -56,6 +59,9 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     price_unit
     status_callback_url
     status_callback_method
+    call_service_host
+    user_terminated_at
+    user_updated_at
     created_at
     updated_at
     sip_trunk

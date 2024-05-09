@@ -181,8 +181,8 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-in-progress-with-twiml
     example "Update a Call in progress with TwiML" do
       account = create(:account)
-      phone_call = create(:phone_call, :answered, account:, call_service_host: "10.10.1.13")
-      stub_request(:delete, "http://10.10.1.13/calls/#{phone_call.external_id}")
+      phone_call = create(:phone_call, :answered, account:)
+      stub_call_update(phone_call)
       set_twilio_api_authorization_header(account)
 
       perform_enqueued_jobs do
@@ -200,8 +200,8 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a--call-in-progress-with-url
     example "Update a Call in progress with URL" do
       account = create(:account)
-      phone_call = create(:phone_call, :answered, account:, call_service_host: "10.10.1.13")
-      stub_request(:delete, "http://10.10.1.13/calls/#{phone_call.external_id}")
+      phone_call = create(:phone_call, :answered, account:)
+      stub_call_update(phone_call)
       set_twilio_api_authorization_header(account)
 
       perform_enqueued_jobs do
@@ -220,8 +220,8 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-resource-to-end-the-call
     example "End a call" do
       account = create(:account)
-      phone_call = create(:phone_call, :answered, account:, call_service_host: "10.10.1.13")
-      stub_request(:delete, "http://10.10.1.13/calls/#{phone_call.external_id}")
+      phone_call = create(:phone_call, :answered, account:)
+      stub_call_update(phone_call)
       set_twilio_api_authorization_header(account)
 
       perform_enqueued_jobs do
@@ -242,8 +242,8 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
       set_twilio_api_authorization_header(account)
       do_request(
-        account_sid: account.id,
-        sid: phone_call.id,
+        AccountSid: account.id,
+        Sid: phone_call.id,
         "Status" => "canceled"
       )
 
@@ -254,17 +254,21 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
     example "Handles invalid requests", document: false do
       account = create(:account)
-      phone_call = create(:phone_call, :answered, account:)
+      phone_call = create(:phone_call, :completed, account:)
 
       set_twilio_api_authorization_header(account)
       do_request(
-        account_sid: account.id,
-        sid: phone_call.id,
-        "Status" => "busy"
+        AccountSid: account.id,
+        Sid: phone_call.id,
+        "Twiml" => "<Response><Say>Ahoy there</Say></Response>"
       )
 
       expect(response_status).to eq(422)
       expect(response_body).to match_api_response_schema("twilio_api/api_errors")
     end
+  end
+
+  def stub_call_update(phone_call)
+    stub_request(:any, "http://#{phone_call.call_service_host}/calls/#{phone_call.external_id}")
   end
 end

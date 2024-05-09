@@ -1,4 +1,4 @@
-class VoiceTwiMLValidator
+class TwiMLValidator
   attr_reader :options
 
   def valid?(value)
