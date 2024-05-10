@@ -29,11 +29,9 @@ module TwilioAPI
     end
 
     def subresource_uris
-      {
-        local: url_helpers.api_twilio_account_available_phone_number_country_path(account, country_code, format: :json),
-        toll_free: url_helpers.api_twilio_account_available_phone_number_country_path(account, country_code, format: :json),
-        mobile: url_helpers.api_twilio_account_available_phone_number_country_path(account, country_code, format: :json)
-      }
+      PhoneNumber.type.values.each_with_object({}) do |type, result|
+        result[type] = url_helpers.api_twilio_account_available_phone_numbers_path(account, country_code, type.to_s.camelize, format: :json)
+      end
     end
 
     private

@@ -3,36 +3,7 @@ require "rails_helper"
 RSpec.resource "Phone Calls", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
-  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls" do
-    explanation <<~HEREDOC
-      Return a list of phone calls made to and from an account, identified by its `AccountSid`.
-    HEREDOC
-
-    parameter(
-      "AccountSid",
-      "*Path Parameter*: The SID of the Account that created the Call resource(s) to read."
-    )
-
-    # https://www.twilio.com/docs/voice/api/call-resource#read-multiple-call-resources
-    example "List phone calls" do
-      account = create(:account)
-      phone_call = create(:phone_call, account:)
-      _other_phone_call = create(:phone_call)
-
-      set_twilio_api_authorization_header(account)
-      do_request(AccountSid: account.id)
-
-      expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_collection_schema("twilio_api/call")
-      expect(json_response.fetch("calls").pluck("sid")).to contain_exactly(phone_call.id)
-    end
-  end
-
   post "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls" do
-    explanation <<~HEREDOC
-      Calls can be made via the REST API to phone numbers. To place a new outbound call, make an `HTTP POST` request to your account's Call resource.
-    HEREDOC
-
     parameter(
       "AccountSid",
       "*Path Parameter*: The SID of the Account that will create the resource."
@@ -63,7 +34,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
     parameter(
       "Twiml",
-      "*Request Body Parameter*: TwiML instructions for the call Somleng will use without fetching Twiml from `Url` parameter. If both `Twiml` and `Url` are provided then `Twiml` parameter will be ignored.",
+      "*Request Body Parameter*: TwiML instructions for the call to be used without fetching TwiML from `Url` parameter. If both `Twiml` and `Url` are provided then `Twiml` parameter will be ignored.",
       required: false,
       example: "<Response><Say>Ahoy there!</Say></Response>"
     )
@@ -81,7 +52,11 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/call-resource#create-a-call-resource
-    example "Create a call" do
+    example "1. Create a call" do
+      explanation <<~HEREDOC
+        Calls can be made via the REST API to phone numbers. To place a new outbound call, make an `HTTP POST` request to your account's Call resource.
+      HEREDOC
+
       account = create(:account)
       create(:incoming_phone_number, number: "12513095500", account:)
       create(:sip_trunk, carrier: account.carrier)
@@ -123,10 +98,6 @@ RSpec.resource "Phone Calls", document: :twilio_api do
   end
 
   get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls/:Sid" do
-    explanation <<~HEREDOC
-      This API call returns the Call resource of an individual call, identified by its `Sid`.
-    HEREDOC
-
     parameter(
       "AccountSid",
       "*Path Parameter*: The SID of the Account that created the Call resource(s) to fetch."
@@ -137,7 +108,11 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/call-resource#fetch-a-call-resource
-    example "Fetch a call" do
+    example "2. Fetch a call" do
+      explanation <<~HEREDOC
+        This API call returns the Call resource of an individual call, identified by its `Sid`.
+      HEREDOC
+
       account = create(:account)
       phone_call = create(:phone_call, account:)
 
@@ -149,16 +124,32 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
   end
 
+  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls" do
+    parameter(
+      "AccountSid",
+      "*Path Parameter*: The SID of the Account that created the Call resource(s) to read."
+    )
+
+    # https://www.twilio.com/docs/voice/api/call-resource#read-multiple-call-resources
+    example "3. List phone calls" do
+      explanation <<~HEREDOC
+        Return a list of phone calls made to and from an account, identified by its `AccountSid`.
+      HEREDOC
+
+      account = create(:account)
+      phone_call = create(:phone_call, account:)
+      _other_phone_call = create(:phone_call)
+
+      set_twilio_api_authorization_header(account)
+      do_request(AccountSid: account.id)
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_collection_schema("twilio_api/call")
+      expect(json_response.fetch("calls").pluck("sid")).to contain_exactly(phone_call.id)
+    end
+  end
+
   post "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls/:Sid" do
-    explanation <<~HEREDOC
-      Updating a Call resource allows you to modify an active call.
-
-      Real-time call modification allows you to interrupt an in-progress call and terminate it or have it begin processing TwiML from either a new URL or from the TwiML provided with modification.
-      Call modification is useful for any application where you want to change the behavior of a running call asynchronously, e.g., hold music, call queues, transferring calls, or forcing a hangup.
-
-      By sending an HTTP `POST` request to a specific Call instance, you can redirect a call that is in progress or you can terminate a call.
-    HEREDOC
-
     parameter(
       "AccountSid",
       "*Path Parameter*: The SID of the Account that created the Call resource(s) to update."
@@ -200,7 +191,18 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-in-progress-with-twiml
-    example "Update a Call in progress with TwiML" do
+    example "4. Update a Call in progress with TwiML" do
+      explanation <<~HEREDOC
+        Updating a Call resource allows you to modify an active call.
+
+        Real-time call modification allows you to interrupt an in-progress call and terminate it or have it begin processing TwiML from either a new URL or from the TwiML provided with modification.
+        Call modification is useful for any application where you want to change the behavior of a running call asynchronously, e.g., hold music, call queues, transferring calls, or forcing a hangup.
+
+        By sending an HTTP POST request to a specific Call instance, you can redirect a call that is in progress or you can terminate a call.
+
+        This example interrupts an in-progress call and begins processing TwiML from a the TwiML provided.
+      HEREDOC
+
       account = create(:account)
       phone_call = create(:phone_call, :answered, account:)
       stub_call_update(phone_call)
@@ -219,7 +221,11 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
 
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a--call-in-progress-with-url
-    example "Update a Call in progress with URL" do
+    example "5. Update a Call in progress with URL" do
+      explanation <<~HEREDOC
+        This example interrupts an in-progress call and begins processing TwiML from a new URL.
+      HEREDOC
+
       account = create(:account)
       phone_call = create(:phone_call, :answered, account:)
       stub_call_update(phone_call)
@@ -239,7 +245,11 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
 
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-resource-to-end-the-call
-    example "End a call" do
+    example "6. End a call" do
+      explanation <<~HEREDOC
+        This example interrupts an in-progress call and terminates it.
+      HEREDOC
+
       account = create(:account)
       phone_call = create(:phone_call, :answered, account:)
       stub_call_update(phone_call)

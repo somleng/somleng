@@ -8,9 +8,10 @@ module APIResponseSchema
       required(:uri).filled(:str?)
       required(:beta).filled(:bool?)
       required(:subresource_uris).hash do
-        required(:local).filled(:string)
-        required(:toll_free).filled(:string)
-        required(:mobile).filled(:string)
+        required(:local).filled(:string, format?: /\/AvailablePhoneNumbers\/[A-Z]{2}\/Local\z/)
+        required(:toll_free).filled(:string, format?: /\/AvailablePhoneNumbers\/[A-Z]{2}\/TollFree\z/)
+        required(:mobile).filled(:string, format?: /\/AvailablePhoneNumbers\/[A-Z]{2}\/Mobile\z/)
+        required(:short_code).filled(:string, format?: /\/AvailablePhoneNumbers\/[A-Z]{2}\/ShortCode\z/)
       end
     end
   end
