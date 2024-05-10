@@ -3,111 +3,79 @@ require "rails_helper"
 RSpec.resource "Messages", document: :twilio_api do
   header("Content-Type", "application/x-www-form-urlencoded")
 
-  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages" do
-    example "List messages" do
-      account = create(:account)
-      message = create(:message, account:)
-      _other_message = create(:message)
-
-      set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id)
-
-      expect(response_status).to eq(200)
-      expect(response_body).to match_api_response_collection_schema("twilio_api/message")
-      expect(json_response.fetch("messages").pluck("sid")).to contain_exactly(message.id)
-    end
-  end
-
-  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages" do
-    # https://www.twilio.com/docs/sms/api/message-resource#create-a-message-resource
-
-    explanation <<~HEREDOC
-      To send a new outgoing message, make an HTTP POST to this Messages list resource URI.
-
-      When creating a new message via the API,
-      you must include the `To` parameter. This value should be either a destination phone number.
-      You also need to pass a `Body` containing the message's content.
-
-      You must also include either the `From` parameter or `MessagingServiceSid` parameter.
-      You may use `MessagingServiceSid` if sending your message with a messaging service.
-      Alternatively, you can choose a specific number in a messaging service to set as the `From`.
-
-      There is a slight difference in how the API responds based on the parameter you include:
-
-      * From: The API will validate the phone numbers synchronously.
-        The API returns either a `queued` status or an error.
-      * MessagingServiceSid: the API will first return a status of `accepted`.
-        It then determines the optimal `From` phone number.
-        Any delivery errors will be sent asynchronously to your StatusCallback URL.
-
-      If the body of your message is more than 160 GSM-7 characters (or 70 UCS-2 characters),
-      we will send the message as a segmented SMS.
-    HEREDOC
-
+  post "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Messages" do
+    parameter(
+      "AccountSid",
+      "*Path Parameter*: The SID of the Account creating the Message resource.",
+    )
     parameter(
       "From",
-      "A phone number in E.164 format. Required if MessagingServiceSid is not passed",
+      "*Request Body Parameter*: A phone number in E.164 format. Required if MessagingServiceSid is not passed",
       required: false,
       example: "+855716788999"
     )
-
     parameter(
       "MessagingServiceSid",
-      "The SID of the Messaging Service you want to associate with the Message. Set this parameter to use the Messaging Service Settings you have configured and leave the `From` parameter empty. When only this parameter is set, we will select the `From` phone number for delivery.",
+      "*Request Body Parameter*: The SID of the Messaging Service you want to associate with the Message. Set this parameter to use the Messaging Service Settings you have configured and leave the `From` parameter empty. When only this parameter is set, we will select the `From` phone number for delivery.",
       required: false,
       example: SecureRandom.uuid
     )
-
     parameter(
       "Body",
-      "The text of the message you want to send. Can be up to 1,600 characters in length.",
+      "*Request Body Parameter*: The text of the message you want to send. Can be up to 1,600 characters in length.",
       required: true,
       example: "Hello World"
     )
     parameter(
       "To",
-      "The destination phone number in E.164 format",
+      "*Request Body Parameter*: The destination phone number in E.164 format",
       required: true,
       example: "+855716788123"
     )
     parameter(
       "StatusCallback",
-      "The URL we should call to send status information to your application. If specified, we POST these message status changes to the URL: `queued`, `failed`, `sent`, `delivered`, or `undelivered`. Somleng will POST its standard request parameters as well as some additional parameters including `MessageSid`, `MessageStatus`, and `ErrorCode`. URLs must contain a valid hostname (underscores are not permitted).",
+      "*Request Body Parameter*: The URL we should call to send status information to your application. If specified, we POST these message status changes to the URL: `queued`, `failed`, `sent`, `delivered`, or `undelivered`. Somleng will POST its standard request parameters as well as some additional parameters including `MessageSid`, `MessageStatus`, and `ErrorCode`. URLs must contain a valid hostname (underscores are not permitted).",
       required: false,
       example: "https://example.com/status_callback"
     )
     parameter(
       "StatusCallbackMethod",
-      "The HTTP method we should use when calling the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
+      "*Request Body Parameter*: The HTTP method we should use when calling the `status_callback` URL. Can be: `GET` or `POST` and the default is `POST`.",
       required: false,
       example: "POST"
     )
     parameter(
       "ValidityPeriod",
-      "How long in seconds the message can remain in our outgoing message queue. After this period elapses, the message fails and we call your status callback. Can be between 1 and the default value of 14,400 seconds. After a message has been accepted by a carrier, however, we cannot guarantee that the message will not be queued after this period. We recommend that this value be at least 5 seconds.",
+      "*Request Body Parameter*: How long in seconds the message can remain in our outgoing message queue. After this period elapses, the message fails and we call your status callback. Can be between 1 and the default value of 14,400 seconds. After a message has been accepted by a carrier, however, we cannot guarantee that the message will not be queued after this period. We recommend that this value be at least 5 seconds.",
       required: false,
       example: "60"
     )
     parameter(
       "SmartEncoded",
-      "Whether to detect Unicode characters that have a similar GSM-7 character and replace them. Can be: `true` or `false`.",
+      "*Request Body Parameter*: Whether to detect Unicode characters that have a similar GSM-7 character and replace them. Can be: `true` or `false`.",
       required: false,
       example: true
     )
     parameter(
       "ScheduleType",
-      "Indicates your intent to schedule a message. Pass the value `fixed` to schedule a message at a fixed time.",
+      "*Request Body Parameter*: Indicates your intent to schedule a message. Pass the value `fixed` to schedule a message at a fixed time.",
       required: false,
       example: "fixed"
     )
     parameter(
       "SendAt",
-      "The time that we will send the message. Must be in ISO 8601 format.",
+      "*Request Body Parameter*: The time that we will send the message. Must be in ISO 8601 format.",
       required: false,
       example: 5.days.from_now.iso8601
     )
 
-    example "Create a Message" do
+    # https://www.twilio.com/docs/messaging/api/message-resource#send-an-sms-message-1
+    example "1. Send an SMS Message" do
+      explanation <<~HEREDOC
+        The example below shows how to create a Message resource with an SMS recipient.
+        Sending this `POST` request creates text message from `+855716788999` (a phone number belonging to the Account sending the request) to `+855716788123`. The content of the text message is `Hello World`.
+      HEREDOC
+
       account = create(:account)
       create(:sms_gateway, carrier: account.carrier)
       create(:incoming_phone_number, account:, number: "855716788999")
@@ -116,9 +84,9 @@ RSpec.resource "Messages", document: :twilio_api do
 
       perform_enqueued_jobs do
         do_request(
-          account_sid: account.id,
-          "To" => "+855 716 788 123",
-          "From" => "+855 716 788 999",
+          AccountSid: account.id,
+          "To" => "+855716788123",
+          "From" => "+855716788999",
           "Body" => "Hello World"
         )
       end
@@ -133,7 +101,18 @@ RSpec.resource "Messages", document: :twilio_api do
       )
     end
 
-    example "Create a Message through a Messaging Service" do
+    # https://www.twilio.com/docs/messaging/api/message-resource#send-a-message-with-a-messaging-service
+    example "2. Send a message with a Messaging Service" do
+      explanation <<~HEREDOC
+        When sending a message with a Messaging Service, you must provide a **recipient** via the `To` parameter and **content** via the `Body` parameter. In addition, you must provide the `MessagingServiceSid`.
+
+        If you provide a `MessagingServiceSid` and no `From` parameter, the optimal `From` value wil be determined from your Sender Pool. In this case, the Message resource's initial `Status` value is `accepted`.
+
+        Optionally, you can provide a` MessagingServiceSid` *and* a `From` parameter. The `From` parameter must be a sender from your Messaging Service's Sender Pool. In this case, the Message resource's initial `Status` value is `queued`.
+
+        With Messaging Services, you can also schedule messages to be sent in the future.
+      HEREDOC
+
       account = create(:account)
       create(:sms_gateway, carrier: account.carrier)
       messaging_service = create(
@@ -149,7 +128,7 @@ RSpec.resource "Messages", document: :twilio_api do
 
       perform_enqueued_jobs do
         do_request(
-          account_sid: account.id,
+          AccountSid: account.id,
           "To" => "+855716788123",
           "MessagingServiceSid" => messaging_service.id,
           "Body" => "Hello World"
@@ -168,7 +147,11 @@ RSpec.resource "Messages", document: :twilio_api do
       )
     end
 
-    example "Schedule a Message" do
+    example "3. Schedule a Message" do
+      explanation <<~HEREDOC
+        The example below shows how to schedule a Message to be sent in the future.
+      HEREDOC
+
       account = create(:account)
       create(:sms_gateway, carrier: account.carrier)
       messaging_service = create(:messaging_service, account:, carrier: account.carrier)
@@ -182,7 +165,7 @@ RSpec.resource "Messages", document: :twilio_api do
 
       travel_to(Time.current) do
         do_request(
-          account_sid: account.id,
+          AccountSid: account.id,
           "To" => "+855716788123",
           "Body" => "Hello World",
           "SendAt" => 5.days.from_now.iso8601,
@@ -209,7 +192,7 @@ RSpec.resource "Messages", document: :twilio_api do
 
       set_twilio_api_authorization_header(account)
       do_request(
-        account_sid: account.id,
+        AccountSid: account.id,
         "To" => "+855716788123",
         "From" => "+855716788999",
         "Body" => "Hello World"
@@ -226,77 +209,95 @@ RSpec.resource "Messages", document: :twilio_api do
     end
   end
 
-  get "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages/:sid" do
-    # https://www.twilio.com/docs/sms/api/message-resource#fetch-a-message-resource
+  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Messages/:Sid" do
+    parameter(
+      "AccountSid",
+      "*Path Parameter*: The SID of the Account associated with the Message resource.",
+    )
+    parameter(
+      "Sid",
+      "*Path Parameter*: The SID of the Message resource to be fetched.",
+    )
 
-    example "Fetch a message" do
+    # https://www.twilio.com/docs/sms/api/message-resource#fetch-a-message-resource
+    example "4. Fetch a Message" do
+      explanation <<~HEREDOC
+        Returns a single Message resource specified by the provided Message `SID`.
+      HEREDOC
+
       account = create(:account)
       message = create(:message, account:)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, sid: message.id)
+      do_request(AccountSid: account.id, Sid: message.id)
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/message")
     end
   end
 
-  post "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages/:sid" do
-    # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
-
-    explanation <<~HEREDOC
-      Updates the body of a message resource or cancels a scheduled message.
-
-      *Redacting a message*
-
-      This action can be used to redact messages: to do so, POST to the above URI and set the
-      `Body` parameter as an empty string: "". This will allow you to effectively redact the text of a message
-      while keeping the other message resource properties intact.
-
-      *Canceling a scheduled message*
-
-      Before you use this functionality:
-
-      1. Ensure the status value of canceled is spelled with one "l", (**canceled**) and not two (cancelled).
-      2. Ensure that you store the `MessageSid` of the messages you schedule. You need to reference the `MessageSid` for each message cancelation request.
-      3. There is no bulk cancelation. If you'd like to cancel multiple messages, you must send in a cancelation request for each message and reference the `MessageSid`.
-      4. There is a new status callback event for `Canceled`. You can continue to receive existing callback events by including the optional `StatusCallBack` parameter in the message request.
-    HEREDOC
-
+  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Messages" do
     parameter(
       "AccountSid",
-      "The SID of the Account that created the Message resources to update.",
-      required: true
+      "*Path Parameter*: The SID of the Account associated with the Message resources.",
     )
 
+    # https://www.twilio.com/docs/messaging/api/message-resource#read-multiple-message-resources
+    example "5. List all messages" do
+      explanation <<~HEREDOC
+        Returns a list of all Message resources associated with your Account
+      HEREDOC
+
+      account = create(:account)
+      message = create(:message, account:)
+      _other_message = create(:message)
+
+      set_twilio_api_authorization_header(account)
+      do_request(AccountSid: account.id)
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_collection_schema("twilio_api/message")
+      expect(json_response.fetch("messages").pluck("sid")).to contain_exactly(message.id)
+    end
+  end
+
+  post "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Messages/:Sid" do
+    parameter(
+      "AccountSid",
+      "*Path Parameter*: The SID of the Account that created the Message resources to update.",
+    )
     parameter(
       "Sid",
-      "The ID that uniquely identifies the Message resource to update.",
-      required: true
+      "*Path Parameter*: The SID of the Message resource to be updated.",
     )
-
     parameter(
       "Body",
-      'Must be an empty string (""). Required for redacting a message',
+      "*Request Body Parameter*: The new body of the Message resource. To redact the text content of a Message, this parameter's value must be an empty string",
       required: false,
       example: ""
     )
-
     parameter(
       "Status",
-      "When set as `canceled`, allows a message cancelation request if a message has not yet been sent.",
+      "*Request Body Parameter*: Set as `canceled` to prevent a not-yet-sent Message from being sent. Can be used to cancel sending a scheduled Message.",
       required: false,
       example: "canceled"
     )
 
-    example "Redact a message" do
+    # https://www.twilio.com/docs/messaging/api/message-resource#redact-the-body-of-a-message-resource
+    example "6. Redact a message" do
+      explanation <<~HEREDOC
+        This action can be used to redact messages: to do so, POST to the above URI and set the
+        `Body` parameter as an empty string: "". This will allow you to effectively redact the text of a message
+        while keeping the other message resource properties intact.
+      HEREDOC
+
       account = create(:account)
       message = create(:message, :sent, account:)
 
       set_twilio_api_authorization_header(account)
       do_request(
-        account_sid: account.id,
-        sid: message.id,
+        AccountSid: account.id,
+        Sid: message.id,
         "Body" => ""
       )
 
@@ -305,7 +306,16 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(json_response.fetch("body")).to eq("")
     end
 
-    example "Cancel a scheduled message" do
+    example "7. Cancel a scheduled message" do
+      explanation <<~HEREDOC
+        Before you use this functionality:
+
+        1. Ensure the status value of canceled is spelled with one "l", (**canceled**) and not two (cancelled).
+        2. Ensure that you store the `MessageSid` of the messages you schedule. You need to reference the `MessageSid` for each message cancelation request.
+        3. There is no bulk cancelation. If you'd like to cancel multiple messages, you must send in a cancelation request for each message and reference the `MessageSid`.
+        4. There is a new status callback event for `Canceled`. You can continue to receive existing callback events by including the optional `StatusCallBack` parameter in the message request.
+     HEREDOC
+
       account = create(:account)
       message = create(
         :message,
@@ -318,8 +328,8 @@ RSpec.resource "Messages", document: :twilio_api do
       set_twilio_api_authorization_header(account)
       perform_enqueued_jobs do
         do_request(
-          account_sid: account.id,
-          sid: message.id,
+          AccountSid: account.id,
+          Sid: message.id,
           "Status" => "canceled"
         )
       end
@@ -334,9 +344,7 @@ RSpec.resource "Messages", document: :twilio_api do
     end
   end
 
-  delete "https://api.somleng.org/2010-04-01/Accounts/:account_sid/Messages/:sid" do
-    # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
-
+  delete "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Messages/:Sid" do
     explanation <<~HEREDOC
       Deletes a message record from your account. Once the record is deleted, it will no longer appear in the API and Account Portal logs.
 
@@ -347,23 +355,29 @@ RSpec.resource "Messages", document: :twilio_api do
 
     parameter(
       "AccountSid",
-      "The SID of the Account that created the Message resources to delete.",
-      required: true
+      "*Path Parameter*: The SID of the Account associated with the Message resource.",
     )
-
     parameter(
       "Sid",
-      "The ID that uniquely identifies the Message resource to delete.",
-      required: true
+      "*Path Parameter*: The SID of the Message resource you wish to delete.",
     )
 
-    example "Delete a message" do
+    # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
+    example "8. Delete a Message" do
+      explanation <<~HEREDOC
+        To delete a Message resource, send a `DELETE` request to the Message resource's URI.
+
+        If the `DELETE` request is successful, the response status code is `HTTP 204 (No Content)`.
+
+        A deleted Message resource no longer appears in your Account's Messaging logs. Deleted messages cannot be recovered.
+      HEREDOC
+
       account = create(:account)
       message = create(:message, :sent, account:)
       create(:interaction, message:, account:, carrier: account.carrier)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, sid: message.id)
+      do_request(AccountSid: account.id, Sid: message.id)
 
       expect(response_status).to eq(204)
       expect(account.interactions.count).to eq(1)
@@ -374,7 +388,7 @@ RSpec.resource "Messages", document: :twilio_api do
       message = create(:message, :queued, account:)
 
       set_twilio_api_authorization_header(account)
-      do_request(account_sid: account.id, sid: message.id)
+      do_request(AccountSid: account.id, Sid: message.id)
 
       expect(response_status).to eq(422)
       expect(response_body).to match_api_response_schema("twilio_api/api_errors")
