@@ -138,7 +138,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     end
   end
 
-  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/IncomingPhoneNumbers/:sid" do
+  get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/IncomingPhoneNumbers/:Sid" do
     parameter(
       "AccountSid",
       "*Path Parameter*: The SID of the Account that created the IncomingPhoneNumber resource to fetch.",
@@ -157,7 +157,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
       incoming_phone_number = create(:incoming_phone_number, number: "12513095500")
 
       set_twilio_api_authorization_header(incoming_phone_number.account)
-      do_request(AccountSid: incoming_phone_number.account.id, sid: incoming_phone_number.id)
+      do_request(AccountSid: incoming_phone_number.account.id, Sid: incoming_phone_number.id)
 
       expect(response_status).to eq(200)
       expect(response_body).to match_api_response_schema("twilio_api/incoming_phone_number")
