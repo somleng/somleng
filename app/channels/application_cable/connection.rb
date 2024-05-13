@@ -12,10 +12,11 @@ module ApplicationCable
 
       current_sms_gateway.disconnect!
 
-      CreateErrorLog.call(
-        type: :sms_gateway_disconnect,
-        carrier: current_sms_gateway.carrier,
-        error_message: "SMS Gateway: '#{current_sms_gateway.name}' was disconnected."
+      ScheduledJob.perform_later(
+        ExecuteWorkflowJob.to_s,
+        NotifySMSGatewayDown.to_s,
+        current_sms_gateway,
+        wait_until: 5.minutes.from_now
       )
     end
   end
