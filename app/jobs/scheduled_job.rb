@@ -14,7 +14,7 @@ class ScheduledJob < ApplicationJob
 
     return job_class.constantize.perform_later(*job_args) if scheduled_at.past?
 
-    delay = [scheduled_at - Time.current, MAX_DELAY].min
+    delay = [ scheduled_at - Time.current, MAX_DELAY ].min
     self.class.set(wait: delay).perform_later(job_class, *args, **options)
   end
 end
