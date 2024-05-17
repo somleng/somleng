@@ -108,7 +108,7 @@ GEM
       kaminari (~> 1.2.2)
       sassc-rails (~> 2.1)
       selectize-rails (~> 0.6)
-    administrate-field-active_storage (1.0.2)
+    administrate-field-active_storage (1.0.3)
       administrate (>= 0.2.2)
       rails (>= 7.0)
     after_commit_everywhere (1.4.0)
