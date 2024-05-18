@@ -23,6 +23,18 @@
       )
     %>
 
+    <%= form.text_field_tag(
+        :region,
+        params.dig(:filter, :region)
+      )
+    %>
+
+    <%= form.text_field_tag(
+        :locality,
+        params.dig(:filter, :locality)
+      )
+    %>
+
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
   <% end %>
 <% end %>

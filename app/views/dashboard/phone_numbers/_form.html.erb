@@ -57,6 +57,20 @@
               )
             %>
           </div>
+
+          <div class="col-sm-6">
+            <%= f.input(
+              :region,
+              hint: "The state or province abbreviation of this phone number's location."
+            ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(
+              :locality,
+              hint: "The locality or city of this phone number's location."
+            ) %>
+          </div>
         </div>
 
         <div class="row">

@@ -23,6 +23,8 @@
       )
     %>
 
+    <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
+
     <%= form.text_field_tag(
         :area_code,
         params.dig(:filter, :area_code),
@@ -30,7 +32,17 @@
       )
     %>
 
-    <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
+    <%= form.text_field_tag(
+        :region,
+        params.dig(:filter, :region)
+      )
+    %>
+
+    <%= form.text_field_tag(
+        :locality,
+        params.dig(:filter, :locality)
+      )
+    %>
 
     <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>

@@ -16,6 +16,9 @@
             <%= phone_number.country.iso_short_name %>
           <% end %>
 
+          <%= show.attribute :region, value: phone_number.region_name %>
+          <%= show.attribute :locality %>
+
           <%= show.attribute :type, value: phone_number.type_formatted %>
           <%= show.attribute :price, label: "Monthly price", value: phone_number.price.format %>
         <% end %>

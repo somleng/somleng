@@ -26,8 +26,6 @@ module TwilioAPI
     def rate_center; end
     def latitude; end
     def longitude; end
-    def locality; end
-    def region; end
     def postal_code; end
     def address_requirements
       "none"
@@ -35,6 +33,10 @@ module TwilioAPI
 
     def iso_country
       iso_country_code
+    end
+
+    def region
+      iso_region_code
     end
 
     def capabilities

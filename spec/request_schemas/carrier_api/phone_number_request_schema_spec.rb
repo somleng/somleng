@@ -246,6 +246,42 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :country)
     end
 
+    it "validates region" do
+      carrier = create(:carrier)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "12513095542",
+                region: "ON",
+                country: "CA"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).to have_valid_field(:data, :attributes, :region)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "12513095542",
+                region: "AK",
+                country: "CA"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).not_to have_valid_field(:data, :attributes, :region)
+    end
+
     it "validates price" do
       carrier = create(:carrier)
 
@@ -308,7 +344,9 @@ module CarrierAPI
         number: "12366130851",
         carrier:,
         iso_country_code: "US",
-        visibility: :private
+        visibility: :private,
+        iso_region_code: "AK",
+        locality: "Little Rock"
       )
 
       schema = validate_request_schema(
@@ -319,7 +357,9 @@ module CarrierAPI
               visibility: "public",
               country: "CA",
               type: "mobile",
-              price: "1.15"
+              price: "1.15",
+              region: "ON",
+              locality: "Toronto"
             }
           }
         },
@@ -330,7 +370,9 @@ module CarrierAPI
         visibility: "public",
         iso_country_code: "CA",
         type: "mobile",
-        price: Money.from_amount(1.15, "CAD")
+        price: Money.from_amount(1.15, "CAD"),
+        iso_region_code: "ON",
+        locality: "Toronto"
       )
     end
 

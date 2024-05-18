@@ -3,7 +3,7 @@ class IncomingPhoneNumberDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :IncomingPhoneNumber
   end
 
-  delegate :type_formatted, to: :phone_number, allow_nil: true
+  delegate :type_formatted, :formatted_location, :region_name, :locality, to: :phone_number, allow_nil: true
 
   def number
     phone_number_formatter.format(object.number, format: :e164)

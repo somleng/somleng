@@ -6,9 +6,9 @@ module APIResponseSchema
 
       required(:attributes).schema do
         required(:number).filled(:str?)
-        required(:visibility).filled(:str?, included_in?: PhoneNumber.visibility.values)
+        required(:visibility).filled(:str?, included_in?: [ "public", "private", "disabled" ])
         required(:country).filled(:str?, included_in?: ISO3166::Country.all.map(&:alpha2))
-        required(:type).filled(:str?, included_in?: PhoneNumber.type.values)
+        required(:type).filled(:str?, included_in?: [ "short_code", "mobile", "toll_free", "local" ])
         required(:price).filled(:str?)
         required(:currency).filled(:str?)
         required(:created_at).filled(:str?)

@@ -23,6 +23,15 @@ RSpec.describe PhoneNumberForm do
       expect(form.errors[:country]).to be_present
     end
 
+    it "validates the region" do
+      carrier = create(:carrier)
+
+      form = PhoneNumberForm.new(number: "12513095542", country: "CA", region: "AK", carrier:)
+
+      expect(form).to be_invalid
+      expect(form.errors[:region]).to be_present
+    end
+
     it "validates the price" do
       carrier = create(:carrier)
 
