@@ -31,14 +31,10 @@ class PhoneNumberDecorator < SimpleDelegator
     object.locality&.titleize
   end
 
-  def region_name
-    object.region&.name
-  end
-
   def formatted_location
     return object.country.iso_short_name if object.iso_region_code.blank? && object.locality.blank?
 
-    [ object.locality, region_name, object.country.alpha2 ].compact.join(", ")
+    [ locality, region_name, object.country.alpha2 ].compact.join(", ")
   end
 
   private

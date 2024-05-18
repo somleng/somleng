@@ -39,6 +39,8 @@ class PhoneNumber < ApplicationRecord
   validates :iso_region_code, country_subdivision: { country_code: ->(record) { record.iso_country_code } }
   validates :type, phone_number_type: true
 
+  delegate :name, to: :region, prefix: true, allow_nil: true
+
   class << self
     def available
       enabled.unassigned

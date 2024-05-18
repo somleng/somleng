@@ -13,7 +13,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     type: Field::String,
     visibility: Field::String,
     price: Field::String,
-    region: Field::String,
+    region_name: Field::String,
     locality: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
@@ -23,7 +23,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
     carrier
     number
     country
-    region
+    region_name
     locality
     type
     visibility
@@ -34,7 +34,7 @@ class PhoneNumberDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     id
     country
-    region
+    region_name
     locality
     type
     price
