@@ -32,7 +32,7 @@ resource "Phone Numbers", document: :carrier_api do
       )
       parameter(
         :region,
-        "The two-letter state or province abbreviation of this phone number's location.",
+        "The state or province abbreviation of this phone number's location.",
         required: false
       )
       parameter(
