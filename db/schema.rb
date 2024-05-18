@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_04_084912) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_17_081155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -455,6 +455,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_084912) do
     t.inet "call_service_host"
     t.datetime "user_terminated_at"
     t.datetime "user_updated_at"
+    t.uuid "parent_call_id"
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
@@ -470,6 +471,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_084912) do
     t.index ["initiated_at"], name: "index_phone_calls_on_initiated_at"
     t.index ["initiating_at"], name: "index_phone_calls_on_initiating_at"
     t.index ["internal"], name: "index_phone_calls_on_internal"
+    t.index ["parent_call_id"], name: "index_phone_calls_on_parent_call_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
@@ -831,6 +833,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_084912) do
   add_foreign_key "phone_calls", "accounts"
   add_foreign_key "phone_calls", "carriers"
   add_foreign_key "phone_calls", "incoming_phone_numbers"
+  add_foreign_key "phone_calls", "phone_calls", column: "parent_call_id", on_delete: :cascade
   add_foreign_key "phone_calls", "phone_numbers", on_delete: :nullify
   add_foreign_key "phone_calls", "sip_trunks", on_delete: :nullify
   add_foreign_key "phone_number_plans", "accounts"
