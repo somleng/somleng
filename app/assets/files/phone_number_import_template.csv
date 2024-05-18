@@ -1,2 +1,2 @@
-number,type,visibility,country,price
-12505550199,local,public,CA,1.15
+number,type,visibility,country,price,region,locality
+16475550199,local,public,CA,1.15,ON,Toronto

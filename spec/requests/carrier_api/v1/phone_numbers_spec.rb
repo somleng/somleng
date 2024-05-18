@@ -30,6 +30,16 @@ resource "Phone Numbers", document: :carrier_api do
         "The price for the phone number in the billing currency of the carrier.",
         required: false
       )
+      parameter(
+        :region,
+        "The state or province abbreviation of this phone number's location.",
+        required: false
+      )
+      parameter(
+        :locality,
+        "The locality or city of this phone number's location.",
+        required: false
+      )
     end
 
     example "Create a phone number" do
@@ -108,6 +118,7 @@ resource "Phone Numbers", document: :carrier_api do
         number: "15067020972",
         iso_country_code: "CA",
         visibility: :private,
+        type: "mobile",
         carrier:
       )
 
@@ -121,7 +132,9 @@ resource "Phone Numbers", document: :carrier_api do
             type: "mobile",
             visibility: "public",
             country: "US",
-            price: "1.15"
+            price: "1.15",
+            region: "AK",
+            locality: "Little Rock"
           }
         }
       )
@@ -133,7 +146,9 @@ resource "Phone Numbers", document: :carrier_api do
         "visibility" => "public",
         "country" => "US",
         "price" => "1.15",
-        "currency" => "CAD"
+        "currency" => "CAD",
+        "region" => "AK",
+        "locality" => "Little Rock"
       )
     end
   end

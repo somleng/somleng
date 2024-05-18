@@ -49,6 +49,9 @@
           <%= @resource.country.iso_short_name %>
         <% end %>
 
+        <%= f.attribute :region, value: phone_number.region_name %>
+        <%= f.attribute :locality %>
+
         <%= f.attribute :price, value: phone_number.price.format %>
       </div>
     </div>

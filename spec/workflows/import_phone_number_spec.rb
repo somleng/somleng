@@ -13,7 +13,9 @@ RSpec.describe ImportPhoneNumber do
         visibility: nil,
         country: nil,
         price: nil,
-        currency: nil
+        currency: nil,
+        region: nil,
+        locality: nil
       }
     )
     expect(phone_number).to have_attributes(
@@ -25,26 +27,29 @@ RSpec.describe ImportPhoneNumber do
   end
 
   it "handles optional attributes" do
-    carrier = create(:carrier, country_code: "KH", billing_currency: "USD")
+    carrier = create(:carrier, country_code: "CA", billing_currency: "CAD")
     import = create(:import, carrier:, resource_type: "PhoneNumber")
 
     phone_number = ImportPhoneNumber.call(
       import:,
       data: {
-        number: "1234",
-        type: "short_code",
+        number: "16473095500",
+        type: "local",
         visibility: "public",
-        country: "US",
+        country: "CA",
         price: "1.15",
-        currency: "USD"
+        region: "ON",
+        locality: "Toronto"
       }
     )
 
     expect(phone_number).to have_attributes(
-      number: have_attributes(value: "1234"),
+      number: have_attributes(value: "16473095500"),
       visibility: "public",
-      country: ISO3166::Country.new("US"),
-      price: Money.from_amount(1.15, "USD")
+      country: ISO3166::Country.new("CA"),
+      price: Money.from_amount(1.15, "CAD"),
+      iso_region_code: "ON",
+      locality: "Toronto"
     )
   end
 

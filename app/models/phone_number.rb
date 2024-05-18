@@ -36,7 +36,10 @@ class PhoneNumber < ApplicationRecord
             format: { with: NUMBER_FORMAT, allow_blank: true }
 
   validates :iso_country_code, phone_number_country: true
+  validates :iso_region_code, country_subdivision: { country_code: ->(record) { record.iso_country_code } }
   validates :type, phone_number_type: true
+
+  delegate :name, to: :region, prefix: true, allow_nil: true
 
   class << self
     def available
@@ -62,6 +65,12 @@ class PhoneNumber < ApplicationRecord
 
   def country
     ISO3166::Country.new(iso_country_code)
+  end
+
+  def region
+    return if iso_region_code.blank?
+
+    country.subdivisions.fetch(iso_region_code)
   end
 
   def enabled?

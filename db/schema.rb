@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_04_084912) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_18_020325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -518,9 +518,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_04_084912) do
     t.string "currency", null: false
     t.string "visibility", null: false
     t.string "area_code"
+    t.citext "iso_region_code"
+    t.citext "locality"
     t.index ["area_code"], name: "index_phone_numbers_on_area_code"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["iso_country_code"], name: "index_phone_numbers_on_iso_country_code"
+    t.index ["iso_region_code"], name: "index_phone_numbers_on_iso_region_code"
+    t.index ["locality"], name: "index_phone_numbers_on_locality"
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
     t.index ["number"], name: "index_phone_numbers_on_number"
     t.index ["price_cents", "currency"], name: "index_phone_numbers_on_price_cents_and_currency"

@@ -11,7 +11,7 @@ RSpec.describe "Admin/Imports" do
     expect(page).to have_content("PhoneNumber")
     expect(page).to have_link("John Doe")
 
-    click_link("John Doe")
+    click_on("John Doe")
     expect(page).to have_content(user.id)
   end
 end

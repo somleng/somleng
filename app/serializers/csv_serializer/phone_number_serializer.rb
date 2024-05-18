@@ -7,12 +7,18 @@ module CSVSerializer
         "visibility" => nil,
         "country" => nil,
         "price" => nil,
-        "currency" => nil
+        "currency" => nil,
+        "region" => nil,
+        "locality" => nil
       )
     end
 
     def country
       iso_country_code
+    end
+
+    def region
+      iso_region_code&.upcase
     end
   end
 end

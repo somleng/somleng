@@ -38,12 +38,15 @@
 
         <% if incoming_phone_number.country.present? %>
           <%= f.attribute :country do %>
-            <%= @resource.country.emoji_flag %>
-            <%= @resource.country.iso_short_name %>
+            <%= incoming_phone_number.country.emoji_flag %>
+            <%= incoming_phone_number.country.iso_short_name %>
           <% end %>
         <% else %>
           <%= f.attribute :country %>
         <% end %>
+
+        <%= f.attribute :region, value: incoming_phone_number.region_name %>
+        <%= f.attribute :locality %>
 
         <% if policy(:phone_number).show? %>
           <%= f.association :phone_number, label: "Phone number" do |phone_number| %>
