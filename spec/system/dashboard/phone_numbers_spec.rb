@@ -10,15 +10,19 @@ RSpec.describe "Phone Numbers" do
       iso_country_code: "US",
       type: :local,
       created_at: Time.utc(2024, 4, 27),
-      visibility: :public
+      visibility: :public,
+      iso_region_code: "AK",
+      locality: "Little Rock"
     }
 
     create(:phone_number, common_attributes.merge(number: "12513095500"))
     create(:phone_number, common_attributes.merge(number: "12513095501", created_at: Time.utc(2021, 10, 10)))
     create(:phone_number, common_attributes.merge(number: "12513095502", type: :mobile))
     create(:phone_number, common_attributes.merge(number: "12513095503", visibility: :private))
-    create(:phone_number, common_attributes.merge(number: "12513095504", iso_country_code: "CA"))
-    create(:phone_number, common_attributes.merge(number: "12013095505"))
+    create(:phone_number, common_attributes.merge(number: "12513095504", iso_country_code: "CA", iso_region_code: "ON"))
+    create(:phone_number, common_attributes.merge(number: "12513095505", iso_region_code: "CA"))
+    create(:phone_number, common_attributes.merge(number: "12513095506", locality: "Bentonville"))
+    create(:phone_number, common_attributes.merge(number: "12013095507"))
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path(
@@ -29,7 +33,9 @@ RSpec.describe "Phone Numbers" do
         to_date: "27/04/2024",
         assigned: false,
         visibility: "public",
-        area_code: "251"
+        area_code: "251",
+        region: "AK",
+        locality: "Little Rock"
       }
     )
 
@@ -38,7 +44,9 @@ RSpec.describe "Phone Numbers" do
     expect(page).not_to have_content("+1 (251) 309-5502")
     expect(page).not_to have_content("+1 (251) 309-5503")
     expect(page).not_to have_content("+1 (251) 309-5504")
-    expect(page).not_to have_content("+1 (201) 309-5505")
+    expect(page).not_to have_content("+1 (251) 309-5505")
+    expect(page).not_to have_content("+1 (251) 309-5506")
+    expect(page).not_to have_content("+1 (201) 309-5507")
 
     click_on("Delete")
 
@@ -57,7 +65,10 @@ RSpec.describe "Phone Numbers" do
       number: "12513095500",
       price: Money.from_amount(1.15, "USD"),
       visibility: :public,
-      type: :local
+      type: :local,
+      iso_country_code: "US",
+      iso_region_code: "AK",
+      locality: "Little Rock"
     )
     create(:phone_number, carrier:, number: "12513095501", visibility: :private)
 
@@ -86,6 +97,8 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("US")
     expect(page).to have_content("1.15")
     expect(page).to have_content("USD")
+    expect(page).to have_content("AK")
+    expect(page).to have_content("Little Rock")
 
     expect(page).not_to have_content("+12513095501")
   end
@@ -182,6 +195,8 @@ RSpec.describe "Phone Numbers" do
 
     click_on("Edit")
     choices_select("Canada", from: "Country")
+    fill_in("Region", with: "ON")
+    fill_in("Locality", with: "Toronto")
     choices_select("Mobile", from: "Type")
     fill_in("Price", with: "1.15")
     choose("Private")
@@ -193,6 +208,8 @@ RSpec.describe "Phone Numbers" do
 
     within("#properties") do
       expect(page).to have_content("Canada")
+      expect(page).to have_content("Ontario")
+      expect(page).to have_content("Toronto")
       expect(page).to have_content("Mobile")
       expect(page).to have_content("$1.15")
       expect(page).to have_content("Private")
@@ -206,6 +223,8 @@ RSpec.describe "Phone Numbers" do
   it "Delete a phone number" do
     carrier = create(:carrier)
     phone_number = create(:phone_number, carrier:, number: "1234")
+    account = create(:account, carrier:)
+    incoming_phone_number = create(:incoming_phone_number, :released, number: "1234", phone_number:, account:)
     create(:phone_call, :inbound, carrier:, phone_number:)
     user = create(:user, :carrier, carrier:)
 
@@ -216,5 +235,8 @@ RSpec.describe "Phone Numbers" do
 
     expect(page).to have_content("Phone number was successfully destroyed")
     expect(page).not_to have_content("1234")
+
+    visit(dashboard_incoming_phone_number_path(incoming_phone_number))
+    expect(page).to have_content("1234")
   end
 end

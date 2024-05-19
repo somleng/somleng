@@ -30,6 +30,8 @@ class PhoneNumberFilter < ResourceFilter
   filter_with(
     AssignedFilter,
     VisibilityFilter,
+    :region_filter,
+    :locality_filter,
     :area_code_filter,
     :phone_number_type_filter,
     { country_filter: { attribute_name: :iso_country_code } },

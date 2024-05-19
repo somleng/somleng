@@ -63,15 +63,28 @@ RSpec.describe "Phone Number Plans" do
   it "Buy a phone number" do
     carrier = create(:carrier)
     account = create(:account, :customer_managed, carrier:)
-    phone_number = create(:phone_number, visibility: :public, number: "12513095500", carrier:)
+    phone_number = create(
+      :phone_number,
+      visibility:
+      :public,
+      iso_country_code: "CA",
+      number: "16473095500",
+      iso_region_code: "ON",
+      locality: "Toronto",
+      carrier:
+    )
     user = create(:user, :with_account_membership, account:, carrier:)
 
     carrier_sign_in(user)
     visit(new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
 
-    click_on("Buy +1 (251) 309-5500")
+    expect(page).to have_content("Canada")
+    expect(page).to have_content("Toronto")
+    expect(page).to have_content("Ontario")
+
+    click_on("Buy +1 (647) 309-5500")
 
     expect(page).to have_content("Phone number plan was successfully created.")
-    expect(page).to have_content("Configure +1 (251) 309-5500")
+    expect(page).to have_content("Configure +1 (647) 309-5500")
   end
 end

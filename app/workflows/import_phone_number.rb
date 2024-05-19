@@ -23,6 +23,8 @@ class ImportPhoneNumber < ApplicationWorkflow
     phone_number.price = Money.from_amount(data.fetch(:price).to_d, import.carrier.billing_currency) if data[:price].present?
     phone_number.visibility = data.fetch(:visibility) if data[:visibility].present?
     phone_number.iso_country_code = data.fetch(:country) if data[:country].present?
+    phone_number.iso_region_code = data.fetch(:region) if data[:region].present?
+    phone_number.locality = data.fetch(:locality) if data[:locality].present?
 
     phone_number.save!
     phone_number
