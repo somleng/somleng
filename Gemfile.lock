@@ -410,7 +410,7 @@ GEM
     pg (1.5.6)
     pg_query (5.1.0)
       google-protobuf (>= 3.22.3)
-    pghero (3.4.1)
+    pghero (3.5.0)
       activerecord (>= 6)
     phony (2.20.12)
     premailer (1.23.0)
