@@ -34,12 +34,12 @@ RSpec.describe ImportPhoneNumber do
       import:,
       data: {
         number: "16473095500",
-        type: "local",
-        visibility: "public",
+        type: "local ",
+        visibility: "public ",
         country: "CA",
         price: "1.15",
-        region: "ON",
-        locality: "Toronto"
+        region: "ON ",
+        locality: "   Kitchener   Waterloo "
       }
     )
 
@@ -49,7 +49,7 @@ RSpec.describe ImportPhoneNumber do
       country: ISO3166::Country.new("CA"),
       price: Money.from_amount(1.15, "CAD"),
       iso_region_code: "ON",
-      locality: "Toronto"
+      locality: "Kitchener Waterloo"
     )
   end
 
