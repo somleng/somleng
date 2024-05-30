@@ -19,16 +19,20 @@ class ImportPhoneNumber < ApplicationWorkflow
       number: data[:number],
       carrier: import.carrier
     )
-    phone_number.type = data[:type]
+    phone_number.type = sanitize(data.fetch(:type)) if data[:type].present?
     phone_number.price = Money.from_amount(data.fetch(:price).to_d, import.carrier.billing_currency) if data[:price].present?
-    phone_number.visibility = data.fetch(:visibility) if data[:visibility].present?
-    phone_number.iso_country_code = data.fetch(:country) if data[:country].present?
-    phone_number.iso_region_code = data.fetch(:region) if data[:region].present?
-    phone_number.locality = data.fetch(:locality) if data[:locality].present?
+    phone_number.visibility = sanitize(data.fetch(:visibility)) if data[:visibility].present?
+    phone_number.iso_country_code = sanitize(data.fetch(:country)) if data[:country].present?
+    phone_number.iso_region_code = sanitize(data.fetch(:region)) if data[:region].present?
+    phone_number.locality = sanitize(data.fetch(:locality)) if data[:locality].present?
 
     phone_number.save!
     phone_number
   rescue ActiveRecord::RecordInvalid => e
     raise Error.new(e)
+  end
+
+  def sanitize(data)
+    data.squish
   end
 end
