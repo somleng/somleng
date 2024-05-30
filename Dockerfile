@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Make sure RUBY_VERSION matches the Ruby version in .tool-versions
-ARG RUBY_VERSION=3.2
+ARG RUBY_VERSION=3.3
 FROM public.ecr.aws/docker/library/ruby:$RUBY_VERSION-alpine AS base
 
 # Rails app lives here
@@ -79,6 +79,7 @@ RUN addgroup -S -g 1000 rails && \
     chown -R rails:rails db storage log tmp
 
 USER 1000:1000
+ENV RUBY_YJIT_ENABLE=true
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
