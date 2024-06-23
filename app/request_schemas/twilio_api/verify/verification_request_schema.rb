@@ -9,7 +9,7 @@ module TwilioAPI
       option :message_destination_schema_rules,
              default: -> { MessageDestinationSchemaRules.new }
       option :phone_call_destination_schema_rules,
-             default: -> { PhoneCallDestinationSchemaRules.new }
+             default: -> { SchemaRules::PhoneCallDestinationSchemaRules.new }
 
       params do
         required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -32,10 +32,7 @@ module TwilioAPI
             base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
           end
         elsif values[:Channel] == "call"
-          phone_call_destination_schema_rules.account = account
-          phone_call_destination_schema_rules.destination = values[:To]
-
-          if phone_call_destination_schema_rules.valid?
+          if phone_call_destination_schema_rules.valid?(account:, destination: values[:To])
             context[:sender] = phone_call_destination_schema_rules.sip_trunk.default_sender
           else
             base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))

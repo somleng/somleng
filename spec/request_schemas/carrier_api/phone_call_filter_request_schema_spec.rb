@@ -95,7 +95,7 @@ module CarrierAPI
 
       expect(schema.output).to include(
         account_id: "account-id",
-        direction: ["outbound"],
+        direction: [ "outbound_api" ],
         status: match_array(%w[queued initiating initiated])
       )
     end

@@ -17,7 +17,8 @@ class PhoneCallDecorator < SimpleDelegator
 
   TWILIO_CALL_DIRECTIONS = {
     "inbound" => "inbound",
-    "outbound" => "outbound-api"
+    "outbound_api" => "outbound-api",
+    "outbound_dial" => "outbound-dial"
   }.freeze
 
   class << self

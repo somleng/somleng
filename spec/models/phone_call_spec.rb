@@ -4,14 +4,14 @@ RSpec.describe PhoneCall do
   it "handles beneficiary data" do
     outbound_call = build(
       :phone_call,
-      direction: :outbound,
+      :outbound,
       to: "16472437399",
       from: "16472437327",
     )
 
     inbound_call = build(
       :phone_call,
-      direction: :inbound,
+      :inbound,
       to: "16472437327",
       from: "16472437399",
       sip_trunk: create(:sip_trunk, inbound_country_code: "CA")

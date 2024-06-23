@@ -184,7 +184,7 @@ module TwilioAPI
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "GET",
         twiml: nil,
-        direction: :outbound
+        direction: :outbound_api
       )
     end
 

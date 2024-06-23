@@ -13,16 +13,16 @@ module Services
 
     rule do |context:|
       next key(:destinations).failure(schema_helper.build_schema_error(:invalid_parameter, text: "is blank")) if values[:destinations].blank?
-      parent_phone_call = PhoneCall.find_by(id: values[:parent_call_sid])
-      next key(:parent_call_sid).failure(schema_helper.build_schema_error(:invalid_parameter, text: "is invalid")) if parent_phone_call.blank?
-      context[:parent_phone_call] = parent_phone_call
+      parent_call = PhoneCall.find_by(id: values[:parent_call_sid])
+      next key(:parent_call_sid).failure(schema_helper.build_schema_error(:invalid_parameter, text: "is invalid")) if parent_call.blank?
+      context[:parent_call] = parent_call
 
-      context[:from], error = validate_from(from: values[:from], parent_phone_call: parent_phone_call)
+      context[:from], context[:incoming_phone_number], error = validate_from(from: values[:from], parent_call: parent_call)
 
       next key(:from).failure(error) if error.present?
 
       context[:destinations], error = validate_destinations(
-        account: context[:parent_phone_call].account,
+        account: context[:parent_call].account,
         destinations: values.fetch(:destinations)
       )
 
@@ -31,8 +31,9 @@ module Services
 
     def output
       {
-        parent_phone_call: context.fetch(:parent_phone_call),
+        parent_call: context.fetch(:parent_call),
         from: context.fetch(:from),
+        incoming_phone_number: context.fetch(:incoming_phone_number),
         destinations: context.fetch(:destinations)
       }
     end
@@ -57,11 +58,11 @@ module Services
       [ valid_destinations ]
     end
 
-    def validate_from(from:, parent_phone_call:)
-      return  parent_phone_call.inbound? ? parent_phone_call.from : parent_phone_call.to if from.blank?
+    def validate_from(from:, parent_call:)
+      return parent_call.inbound? ? parent_call.from : parent_call.to if from.blank?
 
-      incoming_phone_number = parent_phone_call.account.incoming_phone_numbers.active.find_by(number: from)
-      phone_number_configuration_rules.valid?(incoming_phone_number) ? from : [ nil, schema_helper.build_schema_error(:unverified_source_number) ]
+      incoming_phone_number = parent_call.account.incoming_phone_numbers.active.find_by(number: from)
+      phone_number_configuration_rules.valid?(incoming_phone_number) ? [ from, incoming_phone_number ] : [ nil, nil, schema_helper.build_schema_error(:unverified_source_number) ]
     end
   end
 end

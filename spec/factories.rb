@@ -406,7 +406,7 @@ FactoryBot.define do
     end
 
     trait :outbound do
-      direction { :outbound }
+      direction { :outbound_api }
 
       after(:build) do |phone_call|
         phone_call.sip_trunk ||= build(:sip_trunk, carrier: phone_call.carrier)
