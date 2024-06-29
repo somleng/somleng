@@ -68,7 +68,7 @@ RSpec.describe CreateVerification do
         internal: true,
         from: phone_number.number,
         to: have_attributes(value: "85512334667"),
-        direction: "outbound",
+        direction: "outbound_api",
         sip_trunk:,
         phone_number:
       )

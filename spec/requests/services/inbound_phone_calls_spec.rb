@@ -32,7 +32,7 @@ RSpec.describe "Services", :services do
       )
 
       expect(response.code).to eq("201")
-      expect(response.body).to match_api_response_schema("services/phone_call")
+      expect(response.body).to match_api_response_schema("services/inbound_phone_call")
       expect(json_response(response.body)).to include(
         "to" => "+16189124649",
         "from" => "+16189124650",
@@ -71,7 +71,7 @@ RSpec.describe "Services", :services do
     it "handles phone numbers which aren't configured" do
       carrier = create(:carrier)
       account = create(:account, carrier:)
-      unconfigured_incoming_phone_number = create(
+      _unconfigured_incoming_phone_number = create(
         :incoming_phone_number, account:, number: "85568308532"
       )
       create(

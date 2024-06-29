@@ -2,9 +2,10 @@ module APIResponseSchema
   module TwilioAPI
     CallSchema = Dry::Schema.Params do
       required(:annotation).maybe(:str?)
+      required(:parent_call_sid).maybe(:str?)
       required(:answered_by).maybe(:str?)
       required(:caller_name).maybe(:str?)
-      required(:direction).filled(:str?, included_in?: %w[inbound outbound-api])
+      required(:direction).filled(:str?, included_in?: %w[inbound outbound-api outbound-dial])
       required(:duration).maybe(:str?)
       required(:end_time).maybe(:str?)
       required(:forwarded_from).maybe(:str?)

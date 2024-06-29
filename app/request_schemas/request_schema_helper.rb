@@ -1,7 +1,7 @@
 class RequestSchemaHelper
-  def build_schema_error(error_code)
+  def build_schema_error(error_code, **options)
     error = fetch_error(error_code)
-    { text: error.message, code: error.code }
+    { text: options.fetch(:text, error.message), code: error.code }
   end
 
   def fetch_error(error_code)

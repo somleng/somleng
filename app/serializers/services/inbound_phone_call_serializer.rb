@@ -1,5 +1,5 @@
 module Services
-  class PhoneCallSerializer < ResourceSerializer
+  class InboundPhoneCallSerializer < ResourceSerializer
     def attributes
       super.merge(
         "voice_url" => nil,

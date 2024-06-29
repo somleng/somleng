@@ -158,7 +158,7 @@ class ApplicationSeeder
     phone_number = params.fetch(:phone_number)
 
     PhoneCall.create!(
-      direction: :outbound,
+      direction: :outbound_api,
       from: phone_number.number,
       to: "855715100678",
       **params

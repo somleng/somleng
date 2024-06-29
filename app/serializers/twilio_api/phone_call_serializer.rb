@@ -48,7 +48,9 @@ module TwilioAPI
 
     def group_sid; end
 
-    def parent_call_sid; end
+    def parent_call_sid
+      parent_call_id
+    end
 
     def start_time
       format_time(call_data_record.start_time)

@@ -16,6 +16,11 @@ RSpec.describe PhoneNumberType do
       value: "1294",
       e164?: false
     )
+    expect(klass.new(number: "  sip:example.com:5080 ").number).to have_attributes(
+      value: "sip:example.com:5080",
+      sip?: true,
+      sip_address: "example.com:5080"
+    )
 
     cambodian_number = klass.new(number: "+855 97 222 2222").number
     expect(cambodian_number).to have_attributes(

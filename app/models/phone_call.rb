@@ -11,7 +11,7 @@ class PhoneCall < ApplicationRecord
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]
   enumerize :recording_status_callback_method, in: %w[POST GET]
-  enumerize :direction, in: %i[inbound outbound], predicates: true, scope: :shallow
+  enumerize :direction, in: %i[inbound outbound_api outbound_dial], predicates: true, scope: :shallow
 
   belongs_to :carrier
   belongs_to :account
@@ -19,8 +19,9 @@ class PhoneCall < ApplicationRecord
   belongs_to :phone_number, optional: true
   belongs_to :incoming_phone_number, optional: true
   belongs_to :sip_trunk, optional: true
+  belongs_to :parent_call, optional: true, class_name: "PhoneCall"
 
-  has_one    :call_data_record, -> { where(call_leg: :A) }
+  has_one    :call_data_record
   has_one    :interaction
   has_many   :events
   has_many   :phone_call_events
@@ -101,6 +102,10 @@ class PhoneCall < ApplicationRecord
 
   def user_terminated?
     user_terminated_at.present?
+  end
+
+  def outbound?
+    outbound_api? || outbound_dial?
   end
 
   private

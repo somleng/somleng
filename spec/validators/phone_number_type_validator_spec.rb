@@ -16,7 +16,6 @@ RSpec.describe PhoneNumberTypeValidator do
       validates :type, phone_number_type: true
     end
 
-
     expect(validatable_klass.new(number: "1294", type: "foobar").valid?).to eq(false)
 
     expect(validatable_klass.new(number: "1294", type: "short_code").valid?).to eq(true)

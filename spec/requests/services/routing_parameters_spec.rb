@@ -36,7 +36,7 @@ RSpec.describe "Services", :services do
     it "handles an unsupported number" do
       carrier = create(:carrier)
       _sip_trunk = create(
-        :sip_trunk, carrier:, outbound_host: "27.109.112.141", outbound_route_prefixes: ["85512"]
+        :sip_trunk, carrier:, outbound_host: "27.109.112.141", outbound_route_prefixes: [ "85512" ]
       )
       account = create(:account, carrier:)
 
