@@ -15,7 +15,6 @@ FactoryBot.define do
 
   factory :call_data_record do
     association :file, factory: :active_storage_attachment, filename: "freeswitch_cdr.json"
-    call_leg { "A" }
 
     transient do
       account { build(:account) }

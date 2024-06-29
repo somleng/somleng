@@ -9,45 +9,40 @@ module Services
       super.merge(
         "sid" => nil,
         "parent_call_sid" => nil,
-        "to" => nil,
-        "dial_string_prefix" => nil,
-        "plus_prefix" => nil,
-        "national_dialing" => nil,
-        "host" => nil,
-        "username" => nil,
-        "symmetric_latching" => nil
+        "account_sid" => nil,
+        "from" => nil,
+        "routing_parameters" => nil,
+        "address" => nil
       )
+    end
+
+    def sid
+      object.id
     end
 
     def parent_call_sid
       object.parent_call_id
     end
 
-    def dial_string_prefix
-      object.sip_trunk.outbound_dial_string_prefix
+    def account_sid
+      object.account_id
     end
 
-    def plus_prefix
-      object.sip_trunk.outbound_plus_prefix?
+    def address
+      phone_call.to.sip_address
     end
 
-    def national_dialing
-      object.sip_trunk.outbound_national_dialing?
-    end
+    def routing_parameters
+      return if phone_call.to.sip?
 
-    def host
-      object.sip_trunk.outbound_host
-    end
-
-    def username
-      object.sip_trunk.username
-    end
-
-    def symmetric_latching
-      object.sip_trunk.outbound_symmetric_latching_supported?
+      RoutingParameters.new(sip_trunk: object.sip_trunk, destination: object.to).to_h
     end
 
     private
+
+    def phone_call
+      object.phone_call
+    end
 
     def hash_for_collection(options)
       data = object.map do |record|

@@ -16,8 +16,7 @@ class CallDataRecordDashboard < Administrate::BaseDashboard
     answer_time: Field::LocalTime,
     sip_term_status: Field::String,
     sip_invite_failure_status: Field::String,
-    sip_invite_failure_phrase: Field::String,
-    call_leg: Field::String
+    sip_invite_failure_phrase: Field::String
   }.freeze
 
   SHOW_PAGE_ATTRIBUTES = %i[
@@ -34,7 +33,6 @@ class CallDataRecordDashboard < Administrate::BaseDashboard
     sip_term_status
     sip_invite_failure_status
     sip_invite_failure_phrase
-    call_leg
     created_at
     updated_at
   ].freeze

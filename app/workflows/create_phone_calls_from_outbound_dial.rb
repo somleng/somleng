@@ -32,36 +32,4 @@ class CreatePhoneCallsFromOutboundDial < ApplicationWorkflow
       direction: :outbound_dial
     )
   end
-
-  # destination_rules = DestinationRules.new(account:, destination:)
-
-  # if destination_rules.valid?
-  #   sip_trunk = destination_rules.sip_trunk
-  #   routing_parameters = RoutingParameters.new(sip_trunk:, destination:).to_h
-
-  #   render(
-  #     json: routing_parameters,
-  #     status: :created
-  #   )
-  # else
-  #   head :not_implemented
-  # end
-
-
-  # {
-  #   account:,
-  #   carrier: account.carrier,
-  #   sip_trunk: context.fetch(:sip_trunk),
-  #   to: params.fetch(:To),
-  #   from: params.fetch(:From),
-  #   incoming_phone_number: context[:incoming_phone_number],
-  #   phone_number: context[:incoming_phone_number]&.phone_number || sender,
-  #   caller_id:,
-  #   voice_url: params[:Url],
-  #   voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
-  #   status_callback_url: params[:StatusCallback],
-  #   status_callback_method: params[:StatusCallbackMethod],
-  #   twiml: (params[:Twiml] unless params.key?(:Url)),
-  #   direction: :outbound
-  # }
 end

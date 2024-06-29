@@ -93,6 +93,10 @@ class PhoneCallDecorator < SimpleDelegator
     object.incoming_phone_number&.decorated
   end
 
+  def phone_call
+    object
+  end
+
   private
 
   def phone_number_formatter

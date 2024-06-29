@@ -5,9 +5,24 @@ module Services
     option :phone_call_destination_schema_rules, default: -> { SchemaRules::PhoneCallDestinationSchemaRules.new }
     option :phone_number_configuration_rules, default: -> { PhoneNumberConfigurationRules.new }
 
+    class DialString
+      include ActiveModel::Model
+      include ActiveModel::Attributes
+
+      attribute :number, PhoneNumberType.new
+    end
+
+    module Types
+      include Dry.Types()
+
+      DialStringType = String.constructor do |string|
+        DialString.new(number: string).number.value
+      end
+    end
+
     params do
       required(:parent_call_sid).filled(:str?)
-      required(:destinations).array(ApplicationRequestSchema::Types::Number, :filled?)
+      required(:destinations).array(Types::DialStringType, :filled?)
       optional(:from).maybe(ApplicationRequestSchema::Types::Number)
     end
 
@@ -19,14 +34,14 @@ module Services
 
       context[:from], context[:incoming_phone_number], error = validate_from(from: values[:from], parent_call: parent_call)
 
-      next key(:from).failure(error) if error.present?
+      next base.failure(error) if error.present?
 
       context[:destinations], error = validate_destinations(
-        account: context[:parent_call].account,
-        destinations: values.fetch(:destinations)
+        destinations: values.fetch(:destinations),
+        parent_call: context[:parent_call]
       )
 
-      key(:destinations).failure(error) if error.present?
+      base.failure(error) if error.present?
     end
 
     def output
@@ -40,14 +55,19 @@ module Services
 
     private
 
-    def validate_destinations(account:, destinations:)
+    def validate_destinations(parent_call:, destinations:)
       valid_destinations = destinations.each_with_object([]) do |destination, result|
+        if DialString.new(number: destination).number.sip?
+          result << { destination:, sip_trunk: parent_call.sip_trunk }
+          next
+        end
+
         return [
           nil,
           schema_helper.build_schema_error(:invalid_parameter, text: "#{destination} is invalid")
         ] unless phone_number_validator.valid?(destination)
 
-        if phone_call_destination_schema_rules.valid?(account:, destination:)
+        if phone_call_destination_schema_rules.valid?(account: parent_call.account, destination:)
           result << { destination:, sip_trunk: phone_call_destination_schema_rules.sip_trunk }
         else
           error = schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code)

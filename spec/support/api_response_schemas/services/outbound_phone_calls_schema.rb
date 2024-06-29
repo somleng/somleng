@@ -5,13 +5,19 @@ module APIResponseSchema
         schema do
           required(:sid).filled(:str?)
           required(:parent_call_sid).filled(:str?)
-          required(:to).filled(:str?)
-          required(:dial_string_prefix).maybe(:str?)
-          required(:plus_prefix).filled(:bool?)
-          required(:national_dialing).filled(:bool?)
-          required(:host).filled(:str?)
-          required(:username).maybe(:str?)
-          required(:symmetric_latching).filled(:bool?)
+          required(:from).filled(:str?)
+          required(:address).maybe(:str?)
+          required(:routing_parameters).maybe(:hash?) do
+            schema do
+              required(:destination).filled(:str?)
+              required(:dial_string_prefix).maybe(:str?)
+              required(:plus_prefix).filled(:bool?)
+              required(:national_dialing).filled(:bool?)
+              required(:host).filled(:str?)
+              required(:username).maybe(:str?)
+              required(:symmetric_latching).filled(:bool?)
+            end
+          end
         end
       end
     end

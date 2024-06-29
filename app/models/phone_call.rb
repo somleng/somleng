@@ -21,7 +21,7 @@ class PhoneCall < ApplicationRecord
   belongs_to :sip_trunk, optional: true
   belongs_to :parent_call, optional: true, class_name: "PhoneCall"
 
-  has_one    :call_data_record, -> { where(call_leg: :A) }
+  has_one    :call_data_record
   has_one    :interaction
   has_many   :events
   has_many   :phone_call_events

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_18_020325) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_25_080755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -99,7 +99,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_18_020325) do
     t.string "sip_invite_failure_status"
     t.string "sip_invite_failure_phrase"
     t.bigserial "sequence_number", null: false
-    t.string "call_leg", null: false
     t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id"
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
   end
