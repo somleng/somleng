@@ -405,7 +405,7 @@ GEM
     okcomputer (1.18.5)
     orm_adapter (0.5.0)
     parallel (1.25.1)
-    parser (3.3.2.0)
+    parser (3.3.3.0)
       ast (~> 2.4.1)
       racc
     pg (1.5.6)
@@ -483,7 +483,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.3.0)
+    rexml (3.3.1)
       strscan
     rotp (6.3.0)
     rqrcode (2.2.0)
@@ -542,7 +542,7 @@ GEM
       rubocop-minitest
       rubocop-performance
       rubocop-rails
-    rubocop-rspec (3.0.1)
+    rubocop-rspec (3.0.2)
       rubocop (~> 1.61)
     ruby-next-core (1.0.3)
     ruby-progressbar (1.13.0)
