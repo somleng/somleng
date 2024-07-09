@@ -55,7 +55,6 @@ Rails.application.routes.draw do
       resources :recordings, only: %i[create update]
       resources :media_streams, only: :create
       resources :media_stream_events, only: :create
-      resource :routing_parameters, only: :create
     end
   end
 

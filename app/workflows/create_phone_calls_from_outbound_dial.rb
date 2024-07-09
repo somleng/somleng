@@ -10,7 +10,7 @@ class CreatePhoneCallsFromOutboundDial < ApplicationWorkflow
 
   def call
     destinations.map do |destination|
-       create_phone_call(
+      create_phone_call(
         to: destination.fetch(:destination),
         sip_trunk: destination.fetch(:sip_trunk)
       )
@@ -29,7 +29,8 @@ class CreatePhoneCallsFromOutboundDial < ApplicationWorkflow
       to:,
       from:,
       phone_number: incoming_phone_number&.phone_number,
-      direction: :outbound_dial
+      direction: :outbound_dial,
+      status: :initiated
     )
   end
 end
