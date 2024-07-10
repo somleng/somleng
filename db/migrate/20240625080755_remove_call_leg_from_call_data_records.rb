@@ -4,8 +4,8 @@ class RemoveCallLegFromCallDataRecords < ActiveRecord::Migration[7.1]
       dir.up do
         CallDataRecord.where(call_leg: "B").delete_all
 
-        unique = CallDataRecord.select("DISTINCT ON(phone_call_id) id")
-        CallDataRecord.where.not(id: unique).delete_all
+        duplicate_cdrs = CallDataRecord.where(phone_call_id: CallDataRecord.select(:phone_call_id).group(:phone_call_id).having("count(phone_call_id) > 1"))
+        duplicate_cdrs.where.not(id: duplicate_cdrs.select("DISTINCT ON(phone_call_id) id")).delete_all
       end
     end
 
