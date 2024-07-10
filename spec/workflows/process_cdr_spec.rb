@@ -37,6 +37,19 @@ RSpec.describe ProcessCDR do
     )
   end
 
+  it "handles duplicates" do
+    cdr = build_cdr
+    phone_call = create(
+      :phone_call, :initiated, :with_status_callback_url,
+      id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
+    )
+
+    2.times { ProcessCDR.call(compress(cdr)) }
+
+    expect(CallDataRecord.count).to eq(1)
+    expect(phone_call.call_data_record).to be_present
+  end
+
   it "creates a call data record for a failed inbound call" do
     cdr = build_cdr(
       variables: {
