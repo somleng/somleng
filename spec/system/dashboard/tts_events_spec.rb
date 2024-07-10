@@ -10,8 +10,8 @@ RSpec.describe "TTS Events" do
     visit dashboard_tts_events_path(
       filter: {
         account_id: tts_event.account_id,
-        from_date: tts_event.created_at.to_date,
-        to_date: tts_event.created_at.to_date
+        from_date: tts_event.created_at,
+        to_date: tts_event.created_at
       }
     )
 
@@ -19,15 +19,15 @@ RSpec.describe "TTS Events" do
     expect(page).not_to have_content(other_tts_event.id)
 
     perform_enqueued_jobs do
-      click_button("Export")
+      click_on("Export")
     end
 
     within(".alert") do
       expect(page).to have_content("Your export is being processed")
-      click_link("Exports")
+      click_on("Exports")
     end
 
-    click_link("tts_events_")
+    click_on("tts_events_")
 
     expect(page).to have_content(tts_event.id)
     expect(page).to have_content(tts_event.account_id)
