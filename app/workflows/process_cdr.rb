@@ -18,15 +18,15 @@ class ProcessCDR < ApplicationWorkflow
     phone_call = find_phone_call
 
     CallDataRecord.create_or_find_by!(phone_call:) do |call_data_record|
-      call_data_record.hangup_cause = cdr_variables.fetch("hangup_cause"),
-      call_data_record.direction = cdr_variables.fetch("direction"),
-      call_data_record.duration_sec = cdr_variables.fetch("duration"),
-      call_data_record.bill_sec = cdr_variables.fetch("billsec"),
-      call_data_record.start_time = parse_epoch(cdr_variables.fetch("start_epoch")),
-      call_data_record.end_time = parse_epoch(cdr_variables.fetch("end_epoch")),
-      call_data_record.answer_time = parse_epoch(cdr_variables.fetch("answer_epoch")),
-      call_data_record.sip_term_status = cdr_variables["sip_term_status"],
-      call_data_record.sip_invite_failure_status = cdr_variables["sip_invite_failure_status"],
+      call_data_record.hangup_cause = cdr_variables.fetch("hangup_cause")
+      call_data_record.direction = cdr_variables.fetch("direction")
+      call_data_record.duration_sec = cdr_variables.fetch("duration")
+      call_data_record.bill_sec = cdr_variables.fetch("billsec")
+      call_data_record.start_time = parse_epoch(cdr_variables.fetch("start_epoch"))
+      call_data_record.end_time = parse_epoch(cdr_variables.fetch("end_epoch"))
+      call_data_record.answer_time = parse_epoch(cdr_variables.fetch("answer_epoch"))
+      call_data_record.sip_term_status = cdr_variables["sip_term_status"]
+      call_data_record.sip_invite_failure_status = cdr_variables["sip_invite_failure_status"]
       call_data_record.sip_invite_failure_phrase = URI.decode_www_form_component(
         cdr_variables.fetch("sip_invite_failure_phrase", "")
       ).presence,

@@ -7,7 +7,8 @@ RSpec.describe ProcessCDR do
         sip_term_status: "487",
         answer_epoch: "0",
         start_epoch: "1474362923",
-        end_epoch: "1474362924"
+        end_epoch: "1474362924",
+        hangup_cause: "NORMAL_UNSPECIFIED"
       }
     )
 
@@ -20,6 +21,7 @@ RSpec.describe ProcessCDR do
 
     expect(phone_call.reload.status).to eq("not_answered")
     expect(phone_call.call_data_record).to have_attributes(
+      hangup_cause: "NORMAL_UNSPECIFIED",
       start_time: Time.utc(2016, 9, 20, 9, 15, 23),
       end_time: Time.utc(2016, 9, 20, 9, 15, 24),
       answer_time: nil,
