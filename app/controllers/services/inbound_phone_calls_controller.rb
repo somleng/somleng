@@ -3,7 +3,7 @@ module Services
     def create
       validate_request_schema(
         with: InboundPhoneCallRequestSchema,
-        serializer_class: PhoneCallSerializer,
+        serializer_class: InboundPhoneCallSerializer,
         location: nil,
         schema_options: { error_log_messages: },
         on_error: ->(schema) { handle_errors(schema) }
@@ -17,6 +17,8 @@ module Services
         end
       end
     end
+
+    private
 
     def handle_errors(_schema)
       return if error_log_messages.empty?

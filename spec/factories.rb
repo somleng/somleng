@@ -15,7 +15,6 @@ FactoryBot.define do
 
   factory :call_data_record do
     association :file, factory: :active_storage_attachment, filename: "freeswitch_cdr.json"
-    call_leg { "A" }
 
     transient do
       account { build(:account) }
@@ -406,7 +405,7 @@ FactoryBot.define do
     end
 
     trait :outbound do
-      direction { :outbound }
+      direction { :outbound_api }
 
       after(:build) do |phone_call|
         phone_call.sip_trunk ||= build(:sip_trunk, carrier: phone_call.carrier)

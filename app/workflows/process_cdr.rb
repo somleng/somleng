@@ -7,8 +7,6 @@ class ProcessCDR < ApplicationWorkflow
 
   def call
     call_data_record = create_call_data_record
-    return unless call_data_record.call_leg.A?
-
     update_phone_call_status(call_data_record.phone_call)
     notify_status_callback_url(call_data_record.phone_call)
     create_event(call_data_record.phone_call)
@@ -19,31 +17,25 @@ class ProcessCDR < ApplicationWorkflow
   def create_call_data_record
     phone_call = find_phone_call
 
-    CallDataRecord.create!(
-      phone_call:,
-      call_leg: call_leg_B?(cdr) ? "B" : "A",
-      hangup_cause: cdr_variables.fetch("hangup_cause"),
-      direction: cdr_variables.fetch("direction"),
-      duration_sec: cdr_variables.fetch("duration"),
-      bill_sec: cdr_variables.fetch("billsec"),
-      start_time: parse_epoch(cdr_variables.fetch("start_epoch")),
-      end_time: parse_epoch(cdr_variables.fetch("end_epoch")),
-      answer_time: parse_epoch(cdr_variables.fetch("answer_epoch")),
-      sip_term_status: cdr_variables["sip_term_status"],
-      sip_invite_failure_status: cdr_variables["sip_invite_failure_status"],
-      sip_invite_failure_phrase: URI.decode_www_form_component(
+    CallDataRecord.create_or_find_by!(phone_call:) do |call_data_record|
+      call_data_record.hangup_cause = cdr_variables.fetch("hangup_cause"),
+      call_data_record.direction = cdr_variables.fetch("direction"),
+      call_data_record.duration_sec = cdr_variables.fetch("duration"),
+      call_data_record.bill_sec = cdr_variables.fetch("billsec"),
+      call_data_record.start_time = parse_epoch(cdr_variables.fetch("start_epoch")),
+      call_data_record.end_time = parse_epoch(cdr_variables.fetch("end_epoch")),
+      call_data_record.answer_time = parse_epoch(cdr_variables.fetch("answer_epoch")),
+      call_data_record.sip_term_status = cdr_variables["sip_term_status"],
+      call_data_record.sip_invite_failure_status = cdr_variables["sip_invite_failure_status"],
+      call_data_record.sip_invite_failure_phrase = URI.decode_www_form_component(
         cdr_variables.fetch("sip_invite_failure_phrase", "")
       ).presence,
-      file: {
+      call_data_record.file = {
         io: StringIO.new(cdr.to_json),
         filename: "#{cdr_variables.fetch('uuid')}.json",
         content_type: "application/json"
       }
-    )
-  end
-
-  def call_leg_B?(cdr)
-    cdr.fetch("callflow").any? { |callflow| callflow.dig("caller_profile", "originatee").present? }
+    end
   end
 
   def update_phone_call_status(phone_call)

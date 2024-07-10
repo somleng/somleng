@@ -1,13 +1,17 @@
 class PhoneNumberType < ActiveRecord::Type::String
   AREA_CODE_COUNTRY_PREFIXES = [ "1" ].freeze
 
-  PhoneNumber = Struct.new(:value, :country_code, :area_code, :e164, keyword_init: true) do
+  PhoneNumber = Struct.new(:value, :country_code, :area_code, :e164, :sip, :sip_address, keyword_init: true) do
     def to_s
       value
     end
 
     def e164?
       e164
+    end
+
+    def sip?
+      sip
     end
 
     def ==(other)
@@ -38,6 +42,13 @@ class PhoneNumberType < ActiveRecord::Type::String
   def cast(value)
     return if value.blank?
     return value if value.is_a?(PhoneNumber)
+    if value.strip.start_with?("sip:")
+      return PhoneNumber.new(
+        value: value.strip,
+        sip_address: value.strip.delete_prefix("sip:"),
+        sip: true
+      )
+    end
 
     value = value.gsub(/\D/, "")
 

@@ -32,7 +32,7 @@ class DestinationRules
 
   def find_sip_trunk_by_route_prefix(sip_trunks)
     sip_trunk_route_prefixes = sip_trunks.select(&:outbound_route_prefixes?).flat_map do |sip_trunk|
-      sip_trunk.outbound_route_prefixes.map { |prefix| [sip_trunk, prefix] }
+      sip_trunk.outbound_route_prefixes.map { |prefix| [ sip_trunk, prefix ] }
     end
 
     longest_prefix_first = sip_trunk_route_prefixes.sort_by { |(_, prefix)| -prefix.length }

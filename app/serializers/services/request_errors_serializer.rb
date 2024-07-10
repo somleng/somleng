@@ -7,7 +7,7 @@ module Services
     end
 
     def message
-      errors(full: true).to_h.values.flatten.to_sentence
+      errors(full: true).map(&:text).to_sentence
     end
   end
 end

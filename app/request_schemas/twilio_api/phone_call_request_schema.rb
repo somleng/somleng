@@ -3,7 +3,7 @@ module TwilioAPI
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :url_validator, default: -> { URLValidator.new(allow_http: true) }
     option :twiml_validator, default: -> { TwiMLValidator.new }
-    option :phone_call_destination_schema_rules, default: -> { PhoneCallDestinationSchemaRules.new }
+    option :phone_call_destination_schema_rules, default: -> { SchemaRules::PhoneCallDestinationSchemaRules.new }
     option :phone_number_configuration_rules, default: -> { PhoneNumberConfigurationRules.new }
     option :sender, optional: true
 
@@ -29,10 +29,7 @@ module TwilioAPI
       next unless key?
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      phone_call_destination_schema_rules.account = account
-      phone_call_destination_schema_rules.destination = value
-
-      if phone_call_destination_schema_rules.valid?
+      if phone_call_destination_schema_rules.valid?(account:, destination: value)
         context[:sip_trunk] = phone_call_destination_schema_rules.sip_trunk
       else
         base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
@@ -90,7 +87,7 @@ module TwilioAPI
         status_callback_url: params[:StatusCallback],
         status_callback_method: params[:StatusCallbackMethod],
         twiml: (params[:Twiml] unless params.key?(:Url)),
-        direction: :outbound
+        direction: :outbound_api
       }
     end
   end

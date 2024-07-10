@@ -51,6 +51,7 @@ module ApplicationError
       call_blocked_by_blocked_list: Error.new(
         code: "13225", message: "Call blocked by block list"
       ),
+      invalid_parameter: Error.new(code: "20422", message: "Invalid parameter"),
       calling_number_unsupported_or_invalid: Error.new(
         code: "13224",
         message: "Calling this number is unsupported or the number is invalid"
