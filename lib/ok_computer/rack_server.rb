@@ -14,9 +14,9 @@ module OkComputer
       checks.run
 
       if checks.success?
-        [200, {}, ["200 OK"]]
+        [ 200, {}, [ "200 OK" ] ]
       else
-        [500, {}, [checks.to_text]]
+        [ 500, {}, [ checks.to_text ] ]
       end
     end
   end
