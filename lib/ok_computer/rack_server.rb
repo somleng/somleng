@@ -1,8 +1,10 @@
+require "rackup/handler"
+
 module OkComputer
   module RackServer
     def self.run!(port: 3000)
       fork do
-        handler = Rack::Handler.get(:puma)
+        handler = Rackup::Handler.get(:puma)
         handler.run(self, Port: port, Threads: "1:3", workers: 0)
       end
     end
