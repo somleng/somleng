@@ -29,7 +29,7 @@ class ProcessCDR < ApplicationWorkflow
       call_data_record.sip_invite_failure_status = cdr_variables["sip_invite_failure_status"]
       call_data_record.sip_invite_failure_phrase = URI.decode_www_form_component(
         cdr_variables.fetch("sip_invite_failure_phrase", "")
-      ).presence,
+      ).presence
       call_data_record.file = {
         io: StringIO.new(cdr.to_json),
         filename: "#{cdr_variables.fetch('uuid')}.json",
