@@ -33,7 +33,7 @@ module Services
             parent_call_sid: parent_call.id
           }
         )
-      ).not_to have_valid_field(:destinations)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:calling_number_unsupported_or_invalid).message)
 
       expect(
         validate_request_schema(
@@ -42,7 +42,7 @@ module Services
             parent_call_sid: parent_call.id
           }
         )
-        ).not_to have_valid_field(:destinations)
+      ).not_to have_valid_schema(error_message: "1234 is invalid")
     end
 
     it "validates from" do
@@ -77,7 +77,7 @@ module Services
             **valid_attributes
           }
         )
-      ).not_to have_valid_field(:from)
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:unverified_source_number).message)
     end
 
     it "normalizes the output" do

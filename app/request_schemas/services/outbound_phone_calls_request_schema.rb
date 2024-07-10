@@ -1,6 +1,5 @@
 module Services
   class OutboundPhoneCallsRequestSchema < ServicesRequestSchema
-    option :error_log_messages
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_call_destination_schema_rules, default: -> { SchemaRules::PhoneCallDestinationSchemaRules.new }
     option :phone_number_configuration_rules, default: -> { PhoneNumberConfigurationRules.new }

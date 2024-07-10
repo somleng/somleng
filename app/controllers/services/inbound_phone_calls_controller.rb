@@ -18,6 +18,8 @@ module Services
       end
     end
 
+    private
+
     def handle_errors(_schema)
       return if error_log_messages.empty?
 
