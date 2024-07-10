@@ -9,11 +9,5 @@ class AddParentCallIDToPhoneCalls < ActiveRecord::Migration[7.1]
         on_delete: :cascade
       }
     )
-
-    reversible do |dir|
-      dir.up do
-        PhoneCall.where(direction: "outbound").update_all(direction: "outbound_api")
-      end
-    end
   end
 end
