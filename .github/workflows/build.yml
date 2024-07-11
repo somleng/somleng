@@ -333,7 +333,7 @@ jobs:
       matrix: ${{fromJSON(needs.build.outputs.matrix)}}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
