@@ -342,7 +342,7 @@ jobs:
           SENTRY_ORG: somleng
           SENTRY_PROJECT: somleng
         with:
-          environment: ${{ matrix.identifier }}
+          environment: ${{ matrix.environment }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
