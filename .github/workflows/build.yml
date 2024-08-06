@@ -426,7 +426,7 @@ jobs:
           image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
 
       - name: Register Fargate task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.render-fargate-worker-task-def.outputs.task-definition }}
 
@@ -437,7 +437,7 @@ jobs:
           aws ecs run-task --cli-input-json $run_task_params
 
       - name: Deploy App Server
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.render-appserver-task-def.outputs.task-definition }}
           service: ${{ matrix.identifier}}-appserver
@@ -445,7 +445,7 @@ jobs:
           wait-for-service-stability: true
 
       - name: Deploy Worker
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.render-worker-task-def.outputs.task-definition }}
           service: ${{ matrix.identifier}}-worker
@@ -453,7 +453,7 @@ jobs:
           wait-for-service-stability: true
 
       - name: Deploy Anycable
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.render-anycable-task-def.outputs.task-definition }}
           service: ${{ matrix.identifier}}-anycable
@@ -461,7 +461,7 @@ jobs:
           wait-for-service-stability: true
 
       - name: Deploy Websockets Server
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.render-ws-task-def.outputs.task-definition }}
           service: ${{ matrix.identifier}}-ws
