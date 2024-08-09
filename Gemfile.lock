@@ -587,7 +587,7 @@ GEM
       aws-sdk-core (>= 2)
       concurrent-ruby
       thor
-    shoulda-matchers (6.2.0)
+    shoulda-matchers (6.3.0)
       activesupport (>= 5.2.0)
     show_for (0.8.1)
       actionpack (>= 5.2)
