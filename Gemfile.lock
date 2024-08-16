@@ -379,7 +379,7 @@ GEM
     mini_magick (4.13.2)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
-    minitest (5.25.0)
+    minitest (5.25.1)
     monetize (1.13.0)
       money (~> 6.12)
     money (6.19.0)
@@ -583,7 +583,7 @@ GEM
       aws-sdk-core (>= 2)
       concurrent-ruby
       thor
-    shoulda-matchers (6.3.1)
+    shoulda-matchers (6.4.0)
       activesupport (>= 5.2.0)
     show_for (0.8.1)
       actionpack (>= 5.2)
