@@ -16,6 +16,7 @@ variable "internal_listener" {}
 variable "internal_load_balancer" {}
 variable "route53_zone" {}
 variable "internal_route53_zone" {}
+variable "internal_route53_zone_old" {}
 variable "cdn_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}

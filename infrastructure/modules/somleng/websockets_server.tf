@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "ws" {
           },
           {
             name  = "ANYCABLE_RPC_HOST",
-            value = "${aws_route53_record.anycable.fqdn}:${var.internal_listener.port}",
+            value = "${aws_route53_record.anycable_old.fqdn}:${var.internal_listener.port}",
           },
           {
             name  = "ANYCABLE_BROADCAST_ADAPTER",

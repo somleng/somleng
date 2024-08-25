@@ -214,6 +214,18 @@ resource "aws_route53_record" "internal_api" {
   }
 }
 
+resource "aws_route53_record" "internal_api_old" {
+  zone_id = var.internal_route53_zone_old.zone_id
+  name    = var.api_subdomain
+  type    = "A"
+
+  alias {
+    name                   = var.internal_load_balancer.dns_name
+    zone_id                = var.internal_load_balancer.zone_id
+    evaluate_target_health = true
+  }
+}
+
 # Target groups
 
 resource "aws_lb_target_group" "webserver" {
@@ -284,6 +296,25 @@ resource "aws_lb_listener_rule" "internal_webserver" {
     host_header {
       values = [
         aws_route53_record.internal_api.fqdn
+      ]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "internal_webserver_old" {
+  priority = var.app_environment == "production" ? 16 : 116
+
+  listener_arn = var.internal_listener.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.internal_webserver.id
+  }
+
+  condition {
+    host_header {
+      values = [
+        aws_route53_record.internal_api_old.fqdn
       ]
     }
   }
