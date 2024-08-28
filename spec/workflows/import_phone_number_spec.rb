@@ -69,7 +69,7 @@ RSpec.describe ImportPhoneNumber do
     ImportPhoneNumber.call(
       import:,
       data: {
-        number: "12513095542",
+        number: "+(1) 251-309-5542",
         type: "local",
         visibility: "private",
         country: "CA",
