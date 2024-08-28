@@ -9,12 +9,14 @@ class ImportPhoneNumber < ApplicationWorkflow
   end
 
   def call
-    create_phone_number!
+    marked_for_deletion? ? delete_phone_number! : create_phone_number!
   end
 
   private
 
   def create_phone_number!
+    raise Error.new("Cannot create phone numbers when import contains 'marked_for_deletion' flags. Remove the 'marked_for_deletion' column and try again") if data.key?(:marked_for_deletion)
+
     phone_number = PhoneNumber.find_or_initialize_by(
       number: data[:number],
       carrier: import.carrier
@@ -32,7 +34,28 @@ class ImportPhoneNumber < ApplicationWorkflow
     raise Error.new(e)
   end
 
+  def delete_phone_number!
+    phone_number = PhoneNumber.find_by(
+      number: data[:number],
+      carrier: import.carrier
+    )
+
+    raise Error.new("Cannot find phone number") if phone_number.blank?
+
+    phone_number.destroy!
+  rescue ActiveRecord::RecordNotDestroyed => e
+    raise Error.new(e)
+  end
+
   def sanitize(data)
     data.squish
+  end
+
+  def marked_for_deletion?
+    return if data[:marked_for_deletion].blank?
+    raise Error.new("'marked_for_deletion' must be set to true'") if data.fetch(:marked_for_deletion).downcase != "true"
+    raise Error.new("must contain only 'number' and 'marked_for_deletion'") if data.keys.difference(["number", "marked_for_deletion"]).any?
+
+    true
   end
 end
