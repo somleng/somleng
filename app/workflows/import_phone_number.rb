@@ -54,7 +54,7 @@ class ImportPhoneNumber < ApplicationWorkflow
   def marked_for_deletion?
     return if data[:marked_for_deletion].blank?
     raise Error.new("'marked_for_deletion' must be set to true'") if data.fetch(:marked_for_deletion).downcase != "true"
-    raise Error.new("must contain only 'number' and 'marked_for_deletion'") if data.keys.difference(["number", "marked_for_deletion"]).any?
+    raise Error.new("must contain only 'number' and 'marked_for_deletion'") if data.keys.difference([ "number", "marked_for_deletion" ]).any?
 
     true
   end
