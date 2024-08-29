@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem "rails", "~> 7.1.3"
+gem "rails", "~> 7.2.1"
 
 # For Administrate
 gem "administrate"
@@ -27,6 +27,7 @@ gem "bootstrap-email", "1.5.1"
 gem "country_select"
 gem "cssbundling-rails"
 gem "cursor_paginator"
+gem "csv"
 gem "devise"
 gem "devise_invitable"
 gem "devise-two-factor"

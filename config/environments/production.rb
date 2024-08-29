@@ -13,7 +13,7 @@ Rails.application.configure do
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
   # Ensures that a master key has been made available in ENV["RAILS_MASTER_KEY"], config/master.key, or an environment
@@ -26,15 +26,15 @@ Rails.application.configure do
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
 
-  # Do not fallback to assets pipeline if a precompiled asset is missed.
+  # Do not fall back to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   config.asset_host = Rails.configuration.app_settings.fetch(:asset_url_host)
 
   # Specifies the header that your server uses for sending files.
-  # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
-  # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
+  # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
+  # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :amazon
@@ -53,6 +53,7 @@ Rails.application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
+  # Skip http-to-https redirect for the default health check endpoint.
   config.ssl_options = { redirect: { exclude: ->(request) { request.path =~ /health_checks/ } } }
 
   config.lograge.enabled = true
@@ -67,13 +68,13 @@ Rails.application.configure do
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
-                                       .tap  { |logger| logger.formatter = Logger::Formatter.new }
-                                       .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
+    .tap  { |logger| logger.formatter = Logger::Formatter.new }
+    .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
-  # Info include generic and useful information about system operation, but avoids logging too much
+  # "info" includes generic and useful information about system operation, but avoids logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII). If you
   # want to log everything, set the level to "debug".
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
@@ -82,9 +83,15 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter     = :resque
+  # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "somleng_production"
   config.active_job.queue_adapter = :shoryuken
+  # Explicity set this value as otherwise ActiveJob will call queue_adapter.enqueue_after_transaction_commit?
+  # which Shoruken doesn't define
+  config.active_job.enqueue_after_transaction_commit = :never
+
+  # Disable caching for Action Mailer templates even if Action Controller
+  # caching is enabled.
   config.action_mailer.perform_caching = false
 
   config.active_storage.queue = config.active_job.default_queue_name
