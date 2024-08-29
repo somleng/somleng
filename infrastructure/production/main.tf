@@ -13,17 +13,13 @@ module "somleng" {
 
   app_image                 = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image               = data.terraform_remote_state.core.outputs.nginx_ecr_repository
-  aws_region                = var.aws_region
+  region                    = data.terraform_remote_state.core_infrastructure.outputs.hydrogen_region
   aws_ses_region            = "us-east-1"
   global_accelerator        = data.terraform_remote_state.core_infrastructure.outputs.global_accelerator
-  listener                  = data.terraform_remote_state.core_infrastructure.outputs.https_listener
-  internal_listener         = data.terraform_remote_state.core_infrastructure.outputs.internal_https_listener
-  internal_load_balancer    = data.terraform_remote_state.core_infrastructure.outputs.internal_application_load_balancer
   route53_zone              = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
   internal_route53_zone_old = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_internal_somleng_org_old
   internal_route53_zone     = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_internal_somleng_org
   cdn_certificate           = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
-  vpc                       = data.terraform_remote_state.core_infrastructure.outputs.vpc_hydrogen.vpc
   uploads_bucket            = "uploads.twilreapi.somleng.org"
 
   db_name                   = "somleng"

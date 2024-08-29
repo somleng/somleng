@@ -52,7 +52,7 @@ locals {
     },
     {
       name  = "AWS_DEFAULT_REGION",
-      value = var.aws_region
+      value = var.region.aws_region
     },
     {
       name  = "AWS_SES_REGION",

@@ -2,7 +2,7 @@
 
 resource "aws_security_group" "anycable" {
   name   = "${var.app_identifier}-anycable"
-  vpc_id = var.vpc.vpc_id
+  vpc_id = var.region.vpc.vpc_id
 }
 
 resource "aws_security_group_rule" "anycable_ingress" {
@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "anycable" {
           logDriver = "awslogs",
           options = {
             awslogs-group         = aws_cloudwatch_log_group.anycable.name,
-            awslogs-region        = var.aws_region,
+            awslogs-region        = var.region.aws_region,
             awslogs-stream-prefix = var.app_environment
           }
         },
@@ -124,7 +124,7 @@ resource "aws_ecs_service" "anycable" {
   }
 
   network_configuration {
-    subnets = var.vpc.private_subnets
+    subnets = var.region.vpc.private_subnets
     security_groups = [
       aws_security_group.anycable.id,
       var.db_security_group,
@@ -148,7 +148,7 @@ resource "aws_lb_target_group" "anycable" {
   port                 = var.anycable_rpc_port
   protocol             = "HTTP"
   protocol_version     = "GRPC"
-  vpc_id               = var.vpc.vpc_id
+  vpc_id               = var.region.vpc.vpc_id
   target_type          = "ip"
   deregistration_delay = 60
 
@@ -168,8 +168,8 @@ resource "aws_route53_record" "anycable" {
   type    = "A"
 
   alias {
-    name                   = var.internal_load_balancer.dns_name
-    zone_id                = var.internal_load_balancer.zone_id
+    name                   = var.region.internal_load_balancer.this.dns_name
+    zone_id                = var.region.internal_load_balancer.this.zone_id
     evaluate_target_health = true
   }
 }
@@ -180,8 +180,8 @@ resource "aws_route53_record" "anycable_old" {
   type    = "A"
 
   alias {
-    name                   = var.internal_load_balancer.dns_name
-    zone_id                = var.internal_load_balancer.zone_id
+    name                   = var.region.internal_load_balancer.this.dns_name
+    zone_id                = var.region.internal_load_balancer.this.zone_id
     evaluate_target_health = true
   }
 }
@@ -191,7 +191,7 @@ resource "aws_route53_record" "anycable_old" {
 resource "aws_lb_listener_rule" "anycable" {
   priority = var.app_environment == "production" ? 10 : 110
 
-  listener_arn = var.internal_listener.arn
+  listener_arn = var.region.internal_load_balancer.https_listener.arn
 
   action {
     type             = "forward"
@@ -211,7 +211,7 @@ resource "aws_lb_listener_rule" "anycable" {
 resource "aws_lb_listener_rule" "anycable_old" {
   priority = var.app_environment == "production" ? 11 : 111
 
-  listener_arn = var.internal_listener.arn
+  listener_arn = var.region.internal_load_balancer.https_listener.arn
 
   action {
     type             = "forward"

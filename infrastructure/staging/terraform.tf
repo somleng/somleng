@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = var.aws_default_region
 }
 
 data "terraform_remote_state" "core" {
@@ -17,7 +17,7 @@ data "terraform_remote_state" "core" {
   config = {
     bucket = "infrastructure.somleng.org"
     key    = "twilreapi_core.tfstate"
-    region = var.aws_region
+    region = var.aws_default_region
   }
 }
 
@@ -27,6 +27,6 @@ data "terraform_remote_state" "core_infrastructure" {
   config = {
     bucket = "infrastructure.somleng.org"
     key    = "core.tfstate"
-    region = var.aws_region
+    region = var.aws_default_region
   }
 }

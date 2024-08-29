@@ -50,12 +50,12 @@ resource "aws_iam_instance_profile" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs" {
-  role = aws_iam_role.this.id
+  role       = aws_iam_role.this.id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_ec2_role" {
-  role = aws_iam_role.this.id
+  role       = aws_iam_role.this.id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
@@ -66,25 +66,25 @@ resource "aws_iam_role_policy_attachment" "ssm" {
 
 # Launch Template
 resource "aws_launch_template" "this" {
-  name_prefix                  = var.identifier
-  image_id                     = jsondecode(data.aws_ssm_parameter.this_ami.value).image_id
-  instance_type                = data.aws_ec2_instance_type.this.instance_type
+  name_prefix   = var.identifier
+  image_id      = jsondecode(data.aws_ssm_parameter.this_ami.value).image_id
+  instance_type = data.aws_ec2_instance_type.this.instance_type
 
   iam_instance_profile {
     name = aws_iam_instance_profile.this.name
   }
 
   network_interfaces {
-    associate_public_ip_address  = var.associate_public_ip_address
-    security_groups = concat([aws_security_group.this.id], var.security_groups)
+    associate_public_ip_address = var.associate_public_ip_address
+    security_groups             = concat([aws_security_group.this.id], var.security_groups)
   }
 
   user_data = base64encode(join("\n", [
     "#cloud-config",
     yamlencode({
       # https://cloudinit.readthedocs.io/en/latest/topics/modules.html
-      write_files: local.user_data,
-      runcmd: [for i, v in local.user_data : v.path]
+      write_files : local.user_data,
+      runcmd : [for i, v in local.user_data : v.path]
     })
   ]))
 
@@ -106,25 +106,25 @@ resource "aws_security_group_rule" "egress" {
   protocol          = "-1"
   from_port         = 0
   security_group_id = aws_security_group.this.id
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 # Autoscaling Group
 
 resource "aws_autoscaling_group" "this" {
-  name                 = var.identifier
+  name = var.identifier
 
   launch_template {
     id      = aws_launch_template.this.id
     version = aws_launch_template.this.latest_version
   }
 
-  vpc_zone_identifier  = var.instance_subnets
-  max_size             = var.max_capacity
-  min_size             = 0
-  desired_capacity     = 0
+  vpc_zone_identifier       = var.instance_subnets
+  max_size                  = var.max_capacity
+  min_size                  = 0
+  desired_capacity          = 0
   wait_for_capacity_timeout = 0
-  protect_from_scale_in = true
+  protect_from_scale_in     = true
 
   tag {
     key                 = "Name"
@@ -139,7 +139,7 @@ resource "aws_autoscaling_group" "this" {
   }
 
   lifecycle {
-    ignore_changes = [desired_capacity]
+    ignore_changes        = [desired_capacity]
     create_before_destroy = true
   }
 }

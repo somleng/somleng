@@ -2,7 +2,7 @@
 
 resource "aws_security_group" "appserver" {
   name   = "${var.app_identifier}-appserver"
-  vpc_id = var.vpc.vpc_id
+  vpc_id = var.region.vpc.vpc_id
 }
 
 resource "aws_security_group_rule" "appserver_ingress" {
@@ -49,7 +49,7 @@ resource "aws_ecs_task_definition" "appserver" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.nginx.name,
-          awslogs-region        = var.aws_region,
+          awslogs-region        = var.region.aws_region,
           awslogs-stream-prefix = var.app_environment
         }
       },
@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "appserver" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.appserver.name,
-          awslogs-region        = var.aws_region,
+          awslogs-region        = var.region.aws_region,
           awslogs-stream-prefix = var.app_environment
         }
       },
@@ -102,12 +102,17 @@ resource "aws_ecs_service" "appserver" {
   desired_count   = var.appserver_min_tasks
 
   network_configuration {
-    subnets = var.vpc.private_subnets
+    subnets = var.region.vpc.private_subnets
     security_groups = [
       aws_security_group.appserver.id,
       var.db_security_group,
       var.redis_security_group
     ]
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
   }
 
   capacity_provider_strategy {
@@ -208,8 +213,8 @@ resource "aws_route53_record" "internal_api" {
   type    = "A"
 
   alias {
-    name                   = var.internal_load_balancer.dns_name
-    zone_id                = var.internal_load_balancer.zone_id
+    name                   = var.region.internal_load_balancer.this.dns_name
+    zone_id                = var.region.internal_load_balancer.this.zone_id
     evaluate_target_health = true
   }
 }
@@ -220,8 +225,8 @@ resource "aws_route53_record" "internal_api_old" {
   type    = "A"
 
   alias {
-    name                   = var.internal_load_balancer.dns_name
-    zone_id                = var.internal_load_balancer.zone_id
+    name                   = var.region.internal_load_balancer.this.dns_name
+    zone_id                = var.region.internal_load_balancer.this.zone_id
     evaluate_target_health = true
   }
 }
@@ -232,7 +237,7 @@ resource "aws_lb_target_group" "webserver" {
   name                 = var.app_identifier
   port                 = 80
   protocol             = "HTTP"
-  vpc_id               = var.vpc.vpc_id
+  vpc_id               = var.region.vpc.vpc_id
   target_type          = "ip"
   deregistration_delay = 60
 
@@ -247,7 +252,7 @@ resource "aws_lb_target_group" "webserver" {
 resource "aws_lb_listener_rule" "webserver" {
   priority = var.app_environment == "production" ? 15 : 115
 
-  listener_arn = var.listener.arn
+  listener_arn = var.region.public_load_balancer.https_listener.arn
 
   action {
     type             = "forward"
@@ -285,7 +290,7 @@ resource "aws_lb_target_group" "internal_webserver" {
 resource "aws_lb_listener_rule" "internal_webserver" {
   priority = var.app_environment == "production" ? 15 : 115
 
-  listener_arn = var.internal_listener.arn
+  listener_arn = var.region.internal_load_balancer.https_listener.arn
 
   action {
     type             = "forward"
@@ -304,7 +309,7 @@ resource "aws_lb_listener_rule" "internal_webserver" {
 resource "aws_lb_listener_rule" "internal_webserver_old" {
   priority = var.app_environment == "production" ? 16 : 116
 
-  listener_arn = var.internal_listener.arn
+  listener_arn = var.region.internal_load_balancer.https_listener.arn
 
   action {
     type             = "forward"
