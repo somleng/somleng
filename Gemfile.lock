@@ -220,6 +220,7 @@ GEM
       addressable
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
+    csv (3.2.8)
     cursor_paginator (0.2.1)
       activesupport (>= 3)
     date (3.3.4)
@@ -673,6 +674,7 @@ DEPENDENCIES
   capybara
   country_select
   cssbundling-rails
+  csv
   cursor_paginator
   devise
   devise-two-factor
