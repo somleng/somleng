@@ -27,7 +27,8 @@ module TwilioAPI
           message_destination_schema_rules.destination = values[:To]
 
           if message_destination_schema_rules.valid?
-            context[:sender] = message_destination_schema_rules.sms_gateway.default_sender
+            sms_gateway, = message_destination_schema_rules.sms_gateway
+            context[:sender] = sms_gateway.default_sender
           else
             base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
           end
