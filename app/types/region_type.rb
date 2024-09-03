@@ -3,7 +3,7 @@ class RegionType < ActiveRecord::Type::String
     return if value.blank?
     return value if value.is_a?(SomlengRegions::Region)
 
-    SomlengRegions.regions.find_by(alias: value)
+    SomlengRegions.regions.find_by(alias: value.to_s)
   end
 
   def serialize(value)

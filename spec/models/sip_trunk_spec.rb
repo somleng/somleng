@@ -124,6 +124,22 @@ RSpec.describe SIPTrunk do
     expect(fake_call_service_client.ip_addresses.keys).to eq([ "175.100.7.241" ])
   end
 
+  it "revokes the old and authorizes the new source IP on region change" do
+    fake_call_service_client = build_fake_call_service_client
+    sip_trunk = create(
+      :sip_trunk,
+      region: "hydrogen",
+      inbound_source_ip: "175.100.7.240",
+      call_service_client: fake_call_service_client
+    )
+
+    sip_trunk.update!(region: "helium", inbound_source_ip: "175.100.7.240")
+
+    expect(fake_call_service_client.ip_addresses).to eq(
+      IPAddr.new("175.100.7.240") => [ { group_id: 2 } ]
+    )
+  end
+
   it "handles switching to client credentials authorization mode" do
     fake_call_service_client = build_fake_call_service_client
     sip_trunk = create(

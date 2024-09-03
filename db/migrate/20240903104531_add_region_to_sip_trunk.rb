@@ -4,7 +4,7 @@ class AddRegionToSIPTrunk < ActiveRecord::Migration[7.2]
 
     reversible do |dir|
       dir.up do
-        SIPTrunk.update_all(region: :hydrogen)
+        SIPTrunk.update_all(region: "hydrogen")
       end
     end
 

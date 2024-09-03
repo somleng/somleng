@@ -17,7 +17,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "account_memberships", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "account_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.uuid "user_id", null: false
     t.string "role", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["user_id"], name: "index_account_memberships_on_user_id"
   end
 
-  create_table "accounts", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "status", null: false
@@ -52,7 +52,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["type"], name: "index_accounts_on_type"
   end
 
-  create_table "active_storage_attachments", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.uuid "record_id", null: false
@@ -64,7 +64,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_active_storage_attachments_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "active_storage_blobs", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "active_storage_blobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -78,13 +78,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_active_storage_blobs_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "active_storage_variant_records", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "active_storage_variant_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "call_data_records", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "phone_call_id", null: false
     t.integer "bill_sec", null: false
     t.integer "duration_sec", null: false
@@ -103,7 +103,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "carriers", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
@@ -150,7 +150,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_error_logs_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "events", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.uuid "phone_call_id"
     t.string "type", null: false
@@ -165,7 +165,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_events_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "exports", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "exports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.jsonb "filter_params", default: {}, null: false
     t.jsonb "scoped_to", default: {}, null: false
@@ -179,7 +179,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["user_id"], name: "index_exports_on_user_id"
   end
 
-  create_table "imports", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "resource_type", null: false
     t.string "status", null: false
     t.string "error_message"
@@ -226,7 +226,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["status", "phone_number_id"], name: "index_incoming_phone_numbers_on_status_and_phone_number_id", unique: true, where: "((status)::text = 'active'::text)"
   end
 
-  create_table "interactions", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "interactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "interactable_type", null: false
     t.uuid "phone_call_id"
     t.uuid "carrier_id", null: false
@@ -344,7 +344,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_messaging_services_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "oauth_access_grants", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "resource_owner_id", null: false
     t.uuid "application_id", null: false
     t.string "token", null: false
@@ -359,7 +359,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
-  create_table "oauth_access_tokens", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "oauth_access_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "resource_owner_id"
     t.uuid "application_id"
     t.string "token", null: false
@@ -375,7 +375,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
   end
 
-  create_table "oauth_applications", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "oauth_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "uid", null: false
     t.uuid "owner_id", null: false
@@ -412,7 +412,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["database", "captured_at"], name: "index_pghero_space_stats_on_database_and_captured_at"
   end
 
-  create_table "phone_call_events", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "phone_call_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "phone_call_id", null: false
     t.json "params", default: {}, null: false
     t.string "type", null: false
@@ -423,7 +423,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_phone_call_events_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "phone_calls", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "phone_calls", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.string "to", null: false
     t.string "from", null: false
@@ -507,7 +507,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["status"], name: "index_phone_number_plans_on_status"
   end
 
-  create_table "phone_numbers", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "number", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -534,7 +534,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["visibility"], name: "index_phone_numbers_on_visibility"
   end
 
-  create_table "recordings", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "recordings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.uuid "phone_call_id", null: false
     t.string "status", null: false
@@ -652,7 +652,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["tts_voice"], name: "index_tts_events_on_tts_voice"
   end
 
-  create_table "users", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "carrier_role"
     t.string "name", null: false
@@ -764,7 +764,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["verification_service_id"], name: "index_verifications_on_verification_service_id"
   end
 
-  create_table "webhook_endpoints", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "webhook_endpoints", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "oauth_application_id", null: false
     t.string "url", null: false
     t.string "signing_secret", null: false
@@ -776,7 +776,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
     t.index ["sequence_number"], name: "index_webhook_endpoints_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "webhook_request_logs", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "webhook_request_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "event_id", null: false
     t.uuid "webhook_endpoint_id", null: false
     t.string "url", null: false

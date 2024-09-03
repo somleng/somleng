@@ -100,8 +100,9 @@ class SIPTrunk < ApplicationRecord
 
   def update_inbound_source_ip
     old_inbound_source_ip, new_inbound_source_ip = previous_changes[:inbound_source_ip]
+    old_region, new_region = previous_changes[:region]
 
-    return if old_inbound_source_ip == new_inbound_source_ip
+    return if old_inbound_source_ip == new_inbound_source_ip && old_region == new_region
 
     revoke_inbound_source_ip(ip: old_inbound_source_ip)
     authorize_inbound_source_ip
