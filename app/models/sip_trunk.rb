@@ -12,6 +12,7 @@ class SIPTrunk < ApplicationRecord
 
   attribute :call_service_client, default: CallService::Client.new
   attribute :username_generator, default: UsernameGenerator.new
+  attribute :region, RegionType.new
 
   before_save :generate_client_credentials
   after_create :create_subscriber
@@ -27,7 +28,7 @@ class SIPTrunk < ApplicationRecord
   end
 
   def outbound_example_dial_string
-    dial_string = format(
+    format(
       DIAL_STRING_FORMAT,
       plus_prefix: outbound_plus_prefix? ? "+" : "",
       dial_string_prefix: outbound_dial_string_prefix,
@@ -88,7 +89,7 @@ class SIPTrunk < ApplicationRecord
   def authorize_inbound_source_ip
     return if inbound_source_ip.blank?
 
-    call_service_client.add_permission(inbound_source_ip)
+    call_service_client.add_permission(inbound_source_ip, group_id: region.group_id)
   end
 
   def revoke_inbound_source_ip(ip: inbound_source_ip)

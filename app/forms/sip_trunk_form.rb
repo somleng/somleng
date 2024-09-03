@@ -15,6 +15,7 @@ class SIPTrunkForm
   attribute :max_channels
   attribute :authentication_mode
   attribute :route_prefixes, RoutePrefixesType.new
+  attribute :region, RegionType.new
 
   attribute :country
   attribute :source_ip
@@ -27,7 +28,7 @@ class SIPTrunkForm
 
   enumerize :authentication_mode, in: SIPTrunk.authentication_mode.values
 
-  validates :name, presence: true
+  validates :name, :region, presence: true
   validates :max_channels, numericality: { greater_than: 0 }, allow_blank: true
   validates :authentication_mode, presence: true
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
@@ -55,7 +56,8 @@ class SIPTrunkForm
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
-      default_sender_id: sip_trunk.default_sender_id
+      default_sender_id: sip_trunk.default_sender_id,
+      region: sip_trunk.region
     )
   end
 
@@ -72,6 +74,7 @@ class SIPTrunkForm
       authentication_mode:,
       name:,
       max_channels:,
+      region:,
       inbound_source_ip: source_ip,
       inbound_country_code: country.presence,
       outbound_host: host.to_s.strip.presence,
@@ -88,6 +91,12 @@ class SIPTrunkForm
   def default_sender_options_for_select
     default_sender_scope.map do |phone_number|
       [ phone_number.decorated.number_formatted, phone_number.id ]
+    end
+  end
+
+  def region_options_for_select
+    SomlengRegions.regions.all.map do |region|
+      [ region.human_name, region.alias ]
     end
   end
 

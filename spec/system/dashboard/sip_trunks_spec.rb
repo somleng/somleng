@@ -32,8 +32,9 @@ RSpec.describe "SIP Trunks" do
 
     carrier_sign_in(user)
     visit dashboard_sip_trunks_path
-    click_link("New")
+    click_on("New")
     fill_in("Name", with: "Main SIP Trunk")
+    select("North America (Virginia, US)", from: "Region")
     choose("IP address")
     fill_in("Source IP", with: "175.100.7.240")
     select("Mexico", from: "Default country code")
@@ -44,9 +45,10 @@ RSpec.describe "SIP Trunks" do
     check("Plus prefix")
     fill_in("Route prefixes", with: "85510")
 
-    click_button "Create SIP trunk"
+    click_on("Create SIP trunk")
 
     expect(page).to have_content("SIP trunk was successfully created")
+    expect(page).to have_content("North America (Virginia, US)")
     expect(page).to have_content("IP address")
     expect(page).to have_content("175.100.7.240")
     expect(page).to have_content("Mexico (52)")
@@ -61,7 +63,7 @@ RSpec.describe "SIP Trunks" do
 
     carrier_sign_in(user)
     visit dashboard_sip_trunks_path
-    click_link("New")
+    click_on("New")
     choose("Client credentials")
     fill_in("Name", with: "Main SIP Trunk")
     fill_in("Max channels", with: 32)
@@ -69,7 +71,7 @@ RSpec.describe "SIP Trunks" do
     check("National dialing")
     uncheck("Plus prefix")
 
-    click_button "Create SIP trunk"
+    click_on("Create SIP trunk")
 
     expect(page).to have_content("SIP trunk was successfully created")
     expect(page).to have_content("Username")
@@ -85,7 +87,7 @@ RSpec.describe "SIP Trunks" do
 
     carrier_sign_in(user)
     visit new_dashboard_sip_trunk_path
-    click_button "Create SIP trunk"
+    click_on("Create SIP trunk")
 
     expect(page).to have_content("can't be blank")
   end
@@ -109,8 +111,9 @@ RSpec.describe "SIP Trunks" do
     carrier_sign_in(user)
     visit dashboard_sip_trunk_path(sip_trunk)
 
-    click_link("Edit")
+    click_on("Edit")
     fill_in("Name", with: "Main Trunk")
+    select("North America (Virginia, US)", from: "Region")
     fill_in("Source IP", with: "96.9.66.131")
     select("Cambodia", from: "Default country code")
     fill_in("Host", with: "96.9.66.131")
@@ -119,10 +122,11 @@ RSpec.describe "SIP Trunks" do
     uncheck("National dialing")
     uncheck("Plus prefix")
 
-    click_button "Update SIP trunk"
+    click_on("Update SIP trunk")
 
     expect(page).to have_content("SIP trunk was successfully updated")
     expect(page).to have_content("Main Trunk")
+    expect(page).to have_content("North America (Virginia, US)")
     expect(page).to have_content("96.9.66.131")
     expect(page).to have_content("Cambodia")
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.131")

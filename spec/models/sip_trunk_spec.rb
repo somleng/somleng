@@ -99,13 +99,16 @@ RSpec.describe SIPTrunk do
     fake_call_service_client = build_fake_call_service_client
     sip_trunk = build(
       :sip_trunk,
+      region: "hydrogen",
       inbound_source_ip: "175.100.7.240",
       call_service_client: fake_call_service_client
     )
 
     sip_trunk.save!
 
-    expect(fake_call_service_client.ip_addresses).to eq(["175.100.7.240"])
+    expect(fake_call_service_client.ip_addresses).to eq(
+      IPAddr.new("175.100.7.240") => [ { group_id: 1 } ]
+    )
   end
 
   it "revokes the old and authorizes the new source IP on update" do
@@ -118,7 +121,7 @@ RSpec.describe SIPTrunk do
 
     sip_trunk.update!(inbound_source_ip: "175.100.7.241")
 
-    expect(fake_call_service_client.ip_addresses).to eq(["175.100.7.241"])
+    expect(fake_call_service_client.ip_addresses.keys).to eq([ "175.100.7.241" ])
   end
 
   it "handles switching to client credentials authorization mode" do
@@ -131,7 +134,7 @@ RSpec.describe SIPTrunk do
 
     sip_trunk.update!(inbound_source_ip: nil)
 
-    expect(fake_call_service_client.ip_addresses).to eq([])
+    expect(fake_call_service_client.ip_addresses).to eq({})
   end
 
   it "handles switching to ip address authorization mode" do
@@ -144,7 +147,7 @@ RSpec.describe SIPTrunk do
 
     sip_trunk.update!(inbound_source_ip: "175.100.7.240")
 
-    expect(fake_call_service_client.ip_addresses).to eq(["175.100.7.240"])
+    expect(fake_call_service_client.ip_addresses.keys).to eq([ "175.100.7.240" ])
   end
 
   def build_fake_call_service_client
@@ -153,7 +156,7 @@ RSpec.describe SIPTrunk do
 
       def initialize
         @subscribers = []
-        @ip_addresses = []
+        @ip_addresses = {}
       end
 
       def create_subscriber(username:, password:)
@@ -165,8 +168,8 @@ RSpec.describe SIPTrunk do
         subscribers.delete(username)
       end
 
-      def add_permission(ip)
-        ip_addresses << ip
+      def add_permission(ip, *args)
+        ip_addresses[ip] = args
       end
 
       def remove_permission(ip)
