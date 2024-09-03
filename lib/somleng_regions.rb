@@ -28,11 +28,10 @@ module SomlengRegions
     alias config configuration
 
     def regions
-      @regions ||= Collection.new(configuration.stub_regions ? MOCK_REGIONS : Parser.new.parse(configuration.region_data))
+      @regions ||= Collection.new(configuration.stub_regions ? MOCK_REGIONS : configuration.region_data.map { |region| Region.new(region) })
     end
   end
 end
 
 require_relative "somleng_regions/configuration"
-require_relative "somleng_regions/parser"
 require_relative "somleng_regions/collection"
