@@ -21,7 +21,7 @@ class SIPTrunk < ApplicationRecord
 
   after_create :authorize_inbound_source_ip
   after_destroy :revoke_inbound_source_ip
-  after_update :update_inbound_source_ip
+  after_update :update_inbound_source_ip, :update_region
 
   def inbound_country
     ISO3166::Country.new(inbound_country_code) if inbound_country_code.present?
@@ -100,11 +100,19 @@ class SIPTrunk < ApplicationRecord
 
   def update_inbound_source_ip
     old_inbound_source_ip, new_inbound_source_ip = previous_changes[:inbound_source_ip]
-    old_region, new_region = previous_changes[:region]
 
-    return if old_inbound_source_ip == new_inbound_source_ip && old_region == new_region
+    return if old_inbound_source_ip == new_inbound_source_ip
 
     revoke_inbound_source_ip(ip: old_inbound_source_ip)
+    authorize_inbound_source_ip
+  end
+
+  def update_region
+    old_region, new_region = previous_changes[:region]
+
+    return if old_region == new_region
+
+    revoke_inbound_source_ip(ip: inbound_source_ip)
     authorize_inbound_source_ip
   end
 end

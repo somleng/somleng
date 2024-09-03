@@ -41,6 +41,7 @@
               :region,
               collection: resource.region_options_for_select,
               include_blank: false,
+              selected: f.object.region&.alias,
               hint: "Select the closest region"
             ) %>
           </div>

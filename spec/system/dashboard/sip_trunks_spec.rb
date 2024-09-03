@@ -34,7 +34,6 @@ RSpec.describe "SIP Trunks" do
     visit dashboard_sip_trunks_path
     click_on("New")
     fill_in("Name", with: "Main SIP Trunk")
-    select("North America (Virginia, US)", from: "Region")
     choose("IP address")
     fill_in("Source IP", with: "175.100.7.240")
     select("Mexico", from: "Default country code")
@@ -48,7 +47,7 @@ RSpec.describe "SIP Trunks" do
     click_on("Create SIP trunk")
 
     expect(page).to have_content("SIP trunk was successfully created")
-    expect(page).to have_content("North America (Virginia, US)")
+    expect(page).to have_content("South East Asia (Singapore)")
     expect(page).to have_content("IP address")
     expect(page).to have_content("175.100.7.240")
     expect(page).to have_content("Mexico (52)")
@@ -105,18 +104,21 @@ RSpec.describe "SIP Trunks" do
       outbound_dial_string_prefix: "1234",
       outbound_national_dialing: true,
       outbound_plus_prefix: true,
-      default_sender: phone_number
+      default_sender: phone_number,
+      region: :helium
     )
 
     carrier_sign_in(user)
     visit dashboard_sip_trunk_path(sip_trunk)
 
     click_on("Edit")
+
+    expect(page).to have_select("Region", selected: "North America (Virginia, US)")
     fill_in("Name", with: "Main Trunk")
-    select("North America (Virginia, US)", from: "Region")
+    select("South East Asia (Singapore)", from: "Region")
     fill_in("Source IP", with: "96.9.66.131")
     select("Cambodia", from: "Default country code")
-    fill_in("Host", with: "96.9.66.131")
+    fill_in("Host", with: "96.9.66.132")
     fill_in("Dial string prefix", with: "")
     choices_select("", from: "Default sender")
     uncheck("National dialing")
@@ -126,10 +128,10 @@ RSpec.describe "SIP Trunks" do
 
     expect(page).to have_content("SIP trunk was successfully updated")
     expect(page).to have_content("Main Trunk")
-    expect(page).to have_content("North America (Virginia, US)")
+    expect(page).to have_content("South East Asia (Singapore)")
     expect(page).to have_content("96.9.66.131")
     expect(page).to have_content("Cambodia")
-    expect(page).to have_content("XXXXXXXXXXX@96.9.66.131")
+    expect(page).to have_content("XXXXXXXXXXX@96.9.66.132")
     expect(page).to have_no_link("+855 71 577 7777", href: dashboard_phone_number_path(phone_number))
   end
 

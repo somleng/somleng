@@ -133,7 +133,7 @@ RSpec.describe SIPTrunk do
       call_service_client: fake_call_service_client
     )
 
-    sip_trunk.update!(region: "helium", inbound_source_ip: "175.100.7.240")
+    sip_trunk.update!(region: "helium")
 
     expect(fake_call_service_client.ip_addresses).to eq(
       IPAddr.new("175.100.7.240") => [ { group_id: 2 } ]
@@ -185,6 +185,8 @@ RSpec.describe SIPTrunk do
       end
 
       def add_permission(ip, *args)
+        raise "Permission already exists for #{ip}" if ip_addresses.key?(ip)
+
         ip_addresses[ip] = args
       end
 
