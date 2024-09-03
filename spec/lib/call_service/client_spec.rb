@@ -34,12 +34,13 @@ module CallService
         sqs_client = Aws::SQS::Client.new(stub_responses: true)
         client = Client.new(sqs_client:)
 
-        client.add_permission("175.100.7.240")
+        client.add_permission("175.100.7.240", group_id: 1)
 
         authorize_rule_request = sqs_client.api_requests.first
         expect(authorize_rule_request).to match(
           sqs_request(
             "175.100.7.240",
+            { group_id: 1 },
             job_class: "CreateOpenSIPSPermissionJob"
           )
         )
