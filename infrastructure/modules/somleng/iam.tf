@@ -177,7 +177,8 @@ resource "aws_iam_policy" "task_execution_custom_policy" {
         "${aws_ssm_parameter.rails_master_key.arn}",
         "${aws_ssm_parameter.services_password.arn}",
         "${aws_ssm_parameter.anycable_secret.arn}",
-        "${var.db_password_parameter_arn}"
+        "${var.db_password_parameter_arn}",
+        "${data.aws_ssm_parameter.region_data.arn}"
       ]
     }
   ]

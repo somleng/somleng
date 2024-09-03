@@ -11,6 +11,10 @@ locals {
     {
       name      = "SERVICES_PASSWORD"
       valueFrom = aws_ssm_parameter.services_password.arn
+    },
+    {
+      name      = "REGION_DATA"
+      valueFrom = data.aws_ssm_parameter.region_data.arn
     }
   ]
 

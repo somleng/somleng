@@ -1,3 +1,7 @@
+data "aws_ssm_parameter" "region_data" {
+  name = "somleng.${var.app_environment}.region_data"
+}
+
 resource "aws_ssm_parameter" "rails_master_key" {
   name  = "somleng.${var.app_environment}.rails_master_key"
   type  = "SecureString"
