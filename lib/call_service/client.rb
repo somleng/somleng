@@ -41,12 +41,16 @@ module CallService
       enqueue_job("DeleteOpenSIPSSubscriberJob", username:)
     end
 
-    def add_permission(ip, **)
-      enqueue_job("CreateOpenSIPSPermissionJob", ip, **)
+    def add_permission(*)
+      enqueue_job("CreateOpenSIPSPermissionJob", *)
     end
 
-    def remove_permission(ip)
-      enqueue_job("DeleteOpenSIPSPermissionJob", ip)
+    def update_permission(*)
+      enqueue_job("UpdateOpenSIPSPermissionJob", *)
+    end
+
+    def remove_permission(*)
+      enqueue_job("DeleteOpenSIPSPermissionJob", *)
     end
 
     private

@@ -11,7 +11,7 @@ module Dashboard
 
     def create
       @resource = initialize_form(permitted_params)
-      @resource.save
+      CreateSIPTrunk.call(@resource.sip_trunk) if @resource.save
 
       respond_with(:dashboard, @resource)
     end
@@ -27,13 +27,13 @@ module Dashboard
     def update
       @resource = initialize_form(permitted_params)
       @resource.sip_trunk = record
-      @resource.save
+      UpdateSIPTrunk.call(record) if @resource.save
 
       respond_with(:dashboard, @resource)
     end
 
     def destroy
-      record.destroy
+      DeleteSIPTrunk.call(record) if record.destroy
       respond_with(:dashboard, record)
     end
 

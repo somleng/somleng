@@ -10,18 +10,10 @@ class SIPTrunk < ApplicationRecord
 
   enumerize :authentication_mode, in: %i[ip_address client_credentials]
 
-  attribute :call_service_client, default: CallService::Client.new
   attribute :username_generator, default: UsernameGenerator.new
   attribute :region, RegionType.new
 
   before_save :generate_client_credentials
-  after_create :create_subscriber
-  after_destroy :delete_subscriber
-  after_update :update_subscriber
-
-  after_create :authorize_inbound_source_ip
-  after_destroy :revoke_inbound_source_ip
-  after_update :update_inbound_source_ip, :update_region
 
   def inbound_country
     ISO3166::Country.new(inbound_country_code) if inbound_country_code.present?
@@ -63,56 +55,5 @@ class SIPTrunk < ApplicationRecord
     end
 
     raise "Unable to generate unique username"
-  end
-
-  def create_subscriber
-    return if username.blank?
-
-    call_service_client.create_subscriber(username:, password:)
-  end
-
-  def delete_subscriber(username_to_delete: username)
-    return if username_to_delete.blank?
-
-    call_service_client.delete_subscriber(username: username_to_delete)
-  end
-
-  def update_subscriber
-    old_username, new_username = previous_changes[:username]
-
-    return if old_username == new_username
-
-    delete_subscriber(username_to_delete: old_username)
-    create_subscriber
-  end
-
-  def authorize_inbound_source_ip
-    return if inbound_source_ip.blank?
-
-    call_service_client.add_permission(inbound_source_ip, group_id: region.group_id)
-  end
-
-  def revoke_inbound_source_ip(ip: inbound_source_ip)
-    return if ip.blank?
-
-    call_service_client.remove_permission(ip)
-  end
-
-  def update_inbound_source_ip
-    old_inbound_source_ip, new_inbound_source_ip = previous_changes[:inbound_source_ip]
-
-    return if old_inbound_source_ip == new_inbound_source_ip
-
-    revoke_inbound_source_ip(ip: old_inbound_source_ip)
-    authorize_inbound_source_ip
-  end
-
-  def update_region
-    old_region, new_region = previous_changes[:region]
-
-    return if old_region == new_region
-
-    revoke_inbound_source_ip(ip: inbound_source_ip)
-    authorize_inbound_source_ip
   end
 end
