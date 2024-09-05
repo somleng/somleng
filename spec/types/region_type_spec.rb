@@ -11,7 +11,7 @@ RSpec.describe RegionType do
 
     expect(klass.new(region: nil).region).to eq(nil)
     expect(klass.new(region: "foo").region).to eq(nil)
-    expect(klass.new(region: "hydrogen").region).to be_a(SomlengRegions::Region)
-    expect(klass.new(region: :hydrogen).region).to be_a(SomlengRegions::Region)
+    expect(klass.new(region: "hydrogen").region).to be_a(SomlengRegion::Region)
+    expect(klass.new(region: :hydrogen).region).to be_a(SomlengRegion::Region)
   end
 end

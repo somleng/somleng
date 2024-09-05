@@ -27,8 +27,8 @@ class UpdateSIPTrunk < ApplicationWorkflow
 
   def update_subscriber
     previous_username = previous_changes[:username].first
-    call_service_client.delete_subscriber(username: previous_username)
-    call_service_client.create_subscriber(username:, password:)
+    call_service_client.delete_subscriber(username: previous_username) if previous_username.present?
+    call_service_client.create_subscriber(username:, password:) if username.present?
   end
 
   def attribute_changed?(attribute)

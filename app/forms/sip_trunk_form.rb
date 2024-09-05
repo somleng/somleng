@@ -95,7 +95,7 @@ class SIPTrunkForm
   end
 
   def region_options_for_select
-    SomlengRegions.regions.all.map do |region|
+    SomlengRegion::Region.all.map do |region|
       [ region.human_name, region.alias ]
     end
   end
