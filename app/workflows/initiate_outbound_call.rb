@@ -43,6 +43,7 @@ class InitiateOutboundCall < ApplicationWorkflow
 
   def create_remote_call
     response = call_service_client.create_call(
+      region: phone_call.sip_trunk.region.alias,
       sid: decorated_phone_call.sid,
       account_sid: decorated_phone_call.account_sid,
       account_auth_token: decorated_phone_call.account.auth_token,

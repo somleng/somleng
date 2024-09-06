@@ -22,7 +22,8 @@ default: &default
   datawrapper_chart_id: <%= ENV["DATAWRAPPER_CHART_ID"] %>
   services_user: "services"
   services_password: "password"
-  switch_host: <%= ENV.fetch("SWITCH_HOST", "http://localhost:8080") %>
+  switch_default_host: <%= ENV.fetch("SWITCH_DEFAULT_HOST", "http://localhost:8080") %>
+  switch_default_region: <%= ENV.fetch("SWITCH_DEFAULT_REGION", "hydrogen") %>
   switch_username: "adhearsion"
   switch_password: "password"
   admin_username: "admin"
@@ -41,7 +42,8 @@ production: &production
   <<: *default
   app_url_host: "<%= ENV.fetch("APP_URL_HOST", "https://app.somleng.org") %>"
   asset_url_host: "<%= ENV.fetch("ASSET_URL_HOST", "https://cdn.somleng.org") %>"
-  switch_host: "<%= ENV.fetch("SWITCH_HOST", "https://switch.internal.somleng.org") %>"
+  switch_default_host: "<%= ENV.fetch("SWITCH_DEFAULT_HOST", "https://switch.hydrogen.somleng.org") %>"
+  switch_default_region: "<%= ENV.fetch("SWITCH_DEFAULT_REGION", "hydrogen") %>"
   sentry_dsn: "<%= ENV.fetch("SENTRY_DSN") { Rails.application.credentials.sentry_dsn } %>"
   services_password: "<%= ENV.fetch("SERVICES_PASSWORD") { Rails.application.credentials.services_password } %>"
   recaptcha_site_key: "<%= ENV.fetch("RECAPTCHA_SITE_KEY") { Rails.application.credentials.recaptcha_site_key } %>"
@@ -65,7 +67,7 @@ staging:
   verify_subdomain: "verify-staging"
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "https://app-staging.somleng.org") %>
   asset_url_host: <%= ENV.fetch("ASSET_URL_HOST", "https://cdn-staging.somleng.org") %>
-  switch_host: <%= ENV.fetch("SWITCH_HOST", "https://switch-staging.internal.somleng.org") %>
+  switch_default_host: <%= ENV.fetch("SWITCH_DEFAULT_HOST", "https://switch-staging.hydrogen.somleng.org") %>
   sip_port: 6060
   client_gateway_domain: "Connect Via Public IP"
 
@@ -74,5 +76,6 @@ development: &development
 
 test:
   <<: *development
-  switch_host: "https://switch.internal.somleng.org"
+  switch_default_host: "https://switch.hydrogen.somleng.org"
+  switch_default_region: "hydrogen"
   app_url_host: "http://app.lvh.me"
