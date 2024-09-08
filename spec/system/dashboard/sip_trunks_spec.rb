@@ -35,7 +35,7 @@ RSpec.describe "SIP Trunks" do
 
     click_on("New")
 
-    expect(page).to have_content("The following IP address will be used for RTP and to intitiate outbound calls to your SIP trunk in the South East Asia (Singapore) region: 13.250.230.15")
+    expect(page).to have_content("Select the closest region. The following IP address will be used for media and signaling when connecting to your SIP trunk in the South East Asia (Singapore) region: 13.250.230.15. Please make sure it's allowed on your firewall.")
 
     fill_in("Name", with: "Main SIP Trunk")
     choose("IP address")
