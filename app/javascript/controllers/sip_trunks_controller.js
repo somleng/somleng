@@ -40,9 +40,9 @@ export default class extends Controller {
     const element = this.regionInputTarget;
     const hint = this.regionHintTarget;
     const regionNameHint = hint.querySelector(hint.dataset.regionNameTarget);
-    const ipAddressesHint = hint.querySelector(hint.dataset.ipAddressesTarget);
+    const ipAddressHint = hint.querySelector(hint.dataset.ipAddressTarget);
     const selectedRegion = element.options[element.selectedIndex];
     regionNameHint.textContent = selectedRegion.text;
-    ipAddressesHint.textContent = selectedRegion.dataset.ipAddresses;
+    ipAddressHint.textContent = selectedRegion.dataset.ipAddress;
   }
 }

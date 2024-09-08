@@ -19,7 +19,7 @@
           <%= @resource.max_channels.present? ? @resource.max_channels : "Unlimited" %>
         <% end %>
         <%= f.attribute :region, value: @resource.region.human_name %>
-        <%= f.attribute :region_ip_address, value: @resource.region.nat_public_ips.to_sentence %>
+        <%= f.attribute :region_ip_address, value: @resource.region.nat_ip %>
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
       <% end %>

@@ -96,7 +96,7 @@ class SIPTrunkForm
 
   def region_options_for_select
     SomlengRegion::Region.all.map do |region|
-      [ region.human_name, region.alias, { data: { ip_addresses: region.nat_public_ips.to_sentence } } ]
+      [ region.human_name, region.alias, { data: { ip_address: region.nat_ip } } ]
     end
   end
 
