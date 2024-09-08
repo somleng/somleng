@@ -32,7 +32,11 @@ RSpec.describe "SIP Trunks" do
 
     carrier_sign_in(user)
     visit dashboard_sip_trunks_path
+
     click_on("New")
+
+    expect(page).to have_content("The following IP address will be used for RTP and to intitiate outbound calls to your SIP trunk in the South East Asia (Singapore) region: 13.250.230.15")
+
     fill_in("Name", with: "Main SIP Trunk")
     choose("IP address")
     fill_in("Source IP", with: "175.100.7.240")
@@ -48,6 +52,7 @@ RSpec.describe "SIP Trunks" do
 
     expect(page).to have_content("SIP trunk was successfully created")
     expect(page).to have_content("South East Asia (Singapore)")
+    expect(page).to have_content("13.250.230.15")
     expect(page).to have_content("IP address")
     expect(page).to have_content("175.100.7.240")
     expect(page).to have_content("Mexico (52)")
@@ -113,7 +118,7 @@ RSpec.describe "SIP Trunks" do
 
     click_on("Edit")
 
-    expect(page).to have_select("Region", selected: "North America (Virginia, US)")
+    expect(page).to have_select("Region", selected: "North America (North Virginia, USA)")
     fill_in("Name", with: "Main Trunk")
     select("South East Asia (Singapore)", from: "Region")
     fill_in("Source IP", with: "96.9.66.131")
