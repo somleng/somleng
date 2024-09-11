@@ -6,16 +6,13 @@ variable "ws_image" {
   default = "anycable/anycable-go:latest-alpine"
 }
 variable "nginx_image" {}
-variable "aws_region" {}
 variable "aws_ses_region" {}
-variable "vpc" {}
+variable "region" {}
 variable "uploads_bucket" {}
 variable "global_accelerator" {}
-variable "listener" {}
-variable "internal_listener" {}
-variable "internal_load_balancer" {}
 variable "route53_zone" {}
 variable "internal_route53_zone" {}
+variable "internal_route53_zone_old" {}
 variable "cdn_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}

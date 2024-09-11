@@ -7,7 +7,7 @@ locals {
         logDriver = "awslogs",
         options = {
           awslogs-group         = aws_cloudwatch_log_group.worker.name,
-          awslogs-region        = var.aws_region,
+          awslogs-region        = var.region.aws_region,
           awslogs-stream-prefix = var.app_environment
         }
       },
@@ -25,7 +25,7 @@ locals {
 
 resource "aws_security_group" "worker" {
   name   = "${var.app_identifier}-worker"
-  vpc_id = var.vpc.vpc_id
+  vpc_id = var.region.vpc.vpc_id
 }
 
 resource "aws_security_group_rule" "worker_egress" {
@@ -88,7 +88,7 @@ resource "aws_ecs_service" "worker" {
   }
 
   network_configuration {
-    subnets = var.vpc.private_subnets
+    subnets = var.region.vpc.private_subnets
     security_groups = [
       aws_security_group.worker.id,
       var.db_security_group,

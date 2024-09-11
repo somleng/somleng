@@ -6,6 +6,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     default_sender: Field::BelongsTo,
     id: Field::String,
     name: Field::String,
+    region: Field::String,
     max_channels: Field::String,
     inbound_country_code: Field::String,
     inbound_source_ip: Field::String.with_options(searchable: false),
@@ -20,6 +21,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
 
   COLLECTION_ATTRIBUTES = %i[
     name
+    region
     inbound_source_ip
     outbound_host
   ].freeze
@@ -28,6 +30,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     carrier
     id
     name
+    region
     max_channels
     inbound_source_ip
     inbound_country_code

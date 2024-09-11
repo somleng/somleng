@@ -3,5 +3,5 @@ variable "aws_region" {
 }
 
 locals {
-  vpc = data.terraform_remote_state.core_infrastructure.outputs.vpc
+  vpc = data.terraform_remote_state.core_infrastructure.outputs.hydrogen_region.vpc
 }

@@ -11,6 +11,10 @@ locals {
     {
       name      = "SERVICES_PASSWORD"
       valueFrom = aws_ssm_parameter.services_password.arn
+    },
+    {
+      name      = "REGION_DATA"
+      valueFrom = data.aws_ssm_parameter.region_data.arn
     }
   ]
 
@@ -52,7 +56,7 @@ locals {
     },
     {
       name  = "AWS_DEFAULT_REGION",
-      value = var.aws_region
+      value = var.region.aws_region
     },
     {
       name  = "AWS_SES_REGION",

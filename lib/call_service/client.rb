@@ -2,15 +2,22 @@ require "digest"
 
 module CallService
   class Client
-    attr_reader :http_client, :sqs_client
+    attr_reader :default_host, :default_region, :username, :password, :queue_url, :subscriber_realm, :http_client, :sqs_client
 
-    def initialize(http_client: nil, sqs_client: Aws::SQS::Client.new)
-      @http_client = http_client || default_http_client
-      @sqs_client = sqs_client
+    def initialize(**options)
+      @default_host = options.fetch(:default_host) { CallService.configuration.default_host }
+      @default_region = options.fetch(:default_region) { CallService.configuration.default_region }
+      @username = options.fetch(:username) { CallService.configuration.username }
+      @password = options.fetch(:password) { CallService.configuration.password }
+      @queue_url = options.fetch(:queue_url) { CallService.configuration.queue_url }
+      @subscriber_realm = options.fetch(:subscriber_realm) { CallService.configuration.subscriber_realm }
+      @http_client = options.fetch(:http_client) { default_http_client }
+      @sqs_client = options.fetch(:sqs_client) { Aws::SQS::Client.new }
     end
 
-    def create_call(params)
-      execute_request(:post, "/calls", params)
+    def create_call(region: default_region, **params)
+      base_url = default_host.gsub(default_region, region.to_s)
+      execute_request(:post, "#{base_url}/calls", params)
     end
 
     def end_call(id:, host:)
@@ -22,7 +29,7 @@ module CallService
     end
 
     def create_subscriber(username:, password:)
-      input = "#{username}:#{CallService.configuration.subscriber_realm}:#{password}"
+      input = "#{username}:#{subscriber_realm}:#{password}"
 
       md5_password = Digest::MD5.hexdigest(input).first(32)
       sha256_password = Digest::SHA256.hexdigest(input).first(64)
@@ -41,12 +48,16 @@ module CallService
       enqueue_job("DeleteOpenSIPSSubscriberJob", username:)
     end
 
-    def add_permission(ip)
-      enqueue_job("CreateOpenSIPSPermissionJob", ip)
+    def add_permission(*)
+      enqueue_job("CreateOpenSIPSPermissionJob", *)
     end
 
-    def remove_permission(ip)
-      enqueue_job("DeleteOpenSIPSPermissionJob", ip)
+    def update_permission(*)
+      enqueue_job("UpdateOpenSIPSPermissionJob", *)
+    end
+
+    def remove_permission(*)
+      enqueue_job("DeleteOpenSIPSPermissionJob", *)
     end
 
     private
@@ -58,7 +69,7 @@ module CallService
     end
 
     def default_http_client
-      Faraday.new(url: CallService.configuration.host) do |conn|
+      Faraday.new(url: default_host) do |conn|
         conn.headers["Accept"] = "application/json"
         conn.headers["Content-Type"] = "application/json"
 
@@ -67,15 +78,15 @@ module CallService
         conn.request(
           :authorization,
           :basic,
-          CallService.configuration.username,
-          CallService.configuration.password
+          username,
+          password
         )
       end
     end
 
     def enqueue_job(job_class, *args)
       sqs_client.send_message(
-        queue_url: CallService.configuration.queue_url,
+        queue_url:,
         message_body: {
           job_class:,
           job_args: args

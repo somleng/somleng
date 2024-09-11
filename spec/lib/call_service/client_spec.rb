@@ -2,6 +2,26 @@ require "rails_helper"
 
 module CallService
   RSpec.describe Client do
+    describe "#create_call" do
+      it "creates a call in the hydrogen region" do
+        client = Client.new(region: :hydrogen, host: "https://switch.hydrogen.somleng.org")
+        stub_request(:post, %r{https://switch.hydrogen.somleng.org})
+
+        client.create_call(region: :hydrogen)
+
+        expect(WebMock).to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
+      end
+
+      it "creates a call in the helium region" do
+        client = Client.new(region: :helium, host: "https://switch.hydrogen.somleng.org")
+        stub_request(:post, %r{https://switch.helium.somleng.org})
+
+        client.create_call(region: :helium)
+
+        expect(WebMock).to have_requested(:post, "https://switch.helium.somleng.org/calls")
+      end
+    end
+
     describe "#end_call" do
       it "ends a call" do
         client = Client.new
@@ -34,13 +54,32 @@ module CallService
         sqs_client = Aws::SQS::Client.new(stub_responses: true)
         client = Client.new(sqs_client:)
 
-        client.add_permission("175.100.7.240")
+        client.add_permission("175.100.7.240", group_id: 1)
 
         authorize_rule_request = sqs_client.api_requests.first
         expect(authorize_rule_request).to match(
           sqs_request(
             "175.100.7.240",
+            { group_id: 1 },
             job_class: "CreateOpenSIPSPermissionJob"
+          )
+        )
+      end
+    end
+
+    describe "#udpate_permission" do
+      it "Updates a permission" do
+        sqs_client = Aws::SQS::Client.new(stub_responses: true)
+        client = Client.new(sqs_client:)
+
+        client.update_permission("175.100.7.240", group_id: 1)
+
+        authorize_rule_request = sqs_client.api_requests.first
+        expect(authorize_rule_request).to match(
+          sqs_request(
+            "175.100.7.240",
+            { group_id: 1 },
+            job_class: "UpdateOpenSIPSPermissionJob"
           )
         )
       end

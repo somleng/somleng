@@ -90,6 +90,7 @@ FactoryBot.define do
   factory :sip_trunk do
     carrier
     name { "My SIP trunk" }
+    region { "hydrogen" }
     ip_address_authentication
 
     trait :ip_address_authentication do

@@ -11,7 +11,7 @@ module Dashboard
 
     def create
       @resource = initialize_form(permitted_params)
-      @resource.save
+      CreateSIPTrunk.call(@resource.sip_trunk) if @resource.save
 
       respond_with(:dashboard, @resource)
     end
@@ -27,13 +27,13 @@ module Dashboard
     def update
       @resource = initialize_form(permitted_params)
       @resource.sip_trunk = record
-      @resource.save
+      UpdateSIPTrunk.call(record) if @resource.save
 
       respond_with(:dashboard, @resource)
     end
 
     def destroy
-      record.destroy
+      DeleteSIPTrunk.call(record) if record.destroy
       respond_with(:dashboard, record)
     end
 
@@ -47,7 +47,7 @@ module Dashboard
 
     def permitted_params
       params.require(:sip_trunk).permit(
-        :authentication_mode, :name, :max_channels,
+        :authentication_mode, :name, :region, :max_channels,
         :source_ip, :country,
         :host, :dial_string_prefix, :national_dialing,
         :plus_prefix, :route_prefixes, :default_sender_id

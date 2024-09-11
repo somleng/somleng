@@ -42,6 +42,7 @@ class ApplicationSeeder
     SIPTrunk.first_or_create!(
       params.reverse_merge(
         name: "My SIP Trunk",
+        region: "hydrogen",
         outbound_host: "host.docker.internal:5061",
         inbound_source_ip: ENV.fetch("HOST_IP", "127.0.0.1"),
         authentication_mode: :ip_address

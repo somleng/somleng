@@ -7,6 +7,7 @@ RSpec.describe InitiateOutboundCall do
       :sip_trunk,
       outbound_symmetric_latching_supported: false,
       outbound_host: "sip.example.com",
+      region: :helium,
       carrier:
     )
 
@@ -23,7 +24,7 @@ RSpec.describe InitiateOutboundCall do
       voice_url: "http://example.com/voice_url",
       voice_method: "POST"
     )
-    stub_switch_request(external_call_id: "123456789", host: "10.10.1.13")
+    stub_switch_request(region: :helium, external_call_id: "123456789", host: "10.10.1.13")
 
     InitiateOutboundCall.call(phone_call)
 
@@ -37,7 +38,7 @@ RSpec.describe InitiateOutboundCall do
       )
     )
 
-    expect(WebMock).to have_requested(:post, "https://switch.internal.somleng.org/calls").with(
+    expect(WebMock).to have_requested(:post, "https://switch.helium.somleng.org/calls").with(
       body: {
         sid: phone_call.id,
         account_sid: phone_call.account.id,
@@ -64,11 +65,17 @@ RSpec.describe InitiateOutboundCall do
   end
 
   it "handles already canceled calls" do
-    phone_call = create(:phone_call, :outbound, :routable, :canceled, external_id: nil)
+    carrier = create(:carrier)
+    sip_trunk = create(
+      :sip_trunk,
+      region: :hydrogen,
+      carrier:
+    )
+    phone_call = create(:phone_call, :outbound, :routable,  :canceled, sip_trunk:, carrier:, external_id: nil)
 
     InitiateOutboundCall.call(phone_call)
 
-    expect(WebMock).not_to have_requested(:post, "https://switch.internal.somleng.org/calls")
+    expect(WebMock).not_to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
   end
 
   it "handles deleted SIP trunks" do
@@ -85,7 +92,7 @@ RSpec.describe InitiateOutboundCall do
 
   it "handles failed outbound calls" do
     phone_call = create(:phone_call, :outbound, :queued, :routable)
-    stub_request(:post, "https://switch.internal.somleng.org/calls").to_return(status: 500)
+    stub_request(:post, "https://switch.hydrogen.somleng.org/calls").to_return(status: 500)
 
     expect do
       InitiateOutboundCall.call(phone_call)
@@ -94,7 +101,7 @@ RSpec.describe InitiateOutboundCall do
     expect(phone_call.status).to eq("initiating")
     expect(phone_call.initiating_at.present?).to eq(true)
     expect(phone_call.initiated_at).to eq(nil)
-    expect(WebMock).to have_requested(:post, "https://switch.internal.somleng.org/calls")
+    expect(WebMock).to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
   end
 
   it "handles max number of channels" do
@@ -132,9 +139,9 @@ RSpec.describe InitiateOutboundCall do
     expect(phone_calls.last.status).to eq("initiated")
   end
 
-  def stub_switch_request(external_call_id: SecureRandom.uuid, **response_params)
+  def stub_switch_request(region: :hydrogen, external_call_id: SecureRandom.uuid, **response_params)
     response_params[:host] ||= "10.10.1.13"
     responses = Array(external_call_id).map { |id| { body: { id:, **response_params }.to_json } }
-    stub_request(:post, "https://switch.internal.somleng.org/calls").to_return(responses)
+    stub_request(:post, "https://switch.#{region}.somleng.org/calls").to_return(responses)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_25_080755) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_03_104531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -569,9 +569,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_25_080755) do
     t.string "inbound_country_code"
     t.integer "max_channels"
     t.uuid "default_sender_id"
+    t.string "region", null: false
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["default_sender_id"], name: "index_sip_trunks_on_default_sender_id"
     t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
+    t.index ["region"], name: "index_sip_trunks_on_region"
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
   end

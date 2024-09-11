@@ -34,6 +34,25 @@
             <%= f.input :max_channels, as: :integer, hint: "The maximum number of channels/concurrent calls. Leave blank for unlimited channels" %>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(
+              :region,
+              collection: resource.region_options_for_select,
+              include_blank: false,
+              selected: f.object.region&.alias,
+              hint: "Select the closest region. The following IP address will be used for media and signaling when connecting to your SIP trunk in the <strong><span class=\"region-name\"></span></strong> region: <strong><span class=\"ip-address\"></strong>. Please make sure it's allowed on your firewall.".html_safe,
+              hint_html: { class: "region-hint", data: { sip_trunks_target: "regionHint", ip_address_target: ".ip-address", region_name_target: ".region-name" } },
+              input_html: {
+                data: {
+                  sip_trunks_target: "regionInput",
+                  action: "change->sip-trunks#toggleRegion",
+                }
+              }
+            ) %>
+          </div>
+        </div>
       </div>
     </div>
 
