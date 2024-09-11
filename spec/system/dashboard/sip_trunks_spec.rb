@@ -28,7 +28,13 @@ RSpec.describe "SIP Trunks" do
 
   it "Create a SIP Trunk", :js do
     user = create(:user, :carrier, :admin)
-    phone_number = create(:phone_number, carrier: user.carrier, number: "1234", type: :alphanumeric_sender_id)
+    alphanumeric_sender_id = create(
+      :phone_number,
+      carrier: user.carrier,
+      number: "123456",
+      type: :alphanumeric_sender_id,
+      visibility: :private
+    )
 
     carrier_sign_in(user)
     visit dashboard_sip_trunks_path
@@ -43,7 +49,7 @@ RSpec.describe "SIP Trunks" do
     select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
-    choices_select("1234", from: "Default sender")
+    choices_select("123456", from: "Default sender")
     check("National dialing")
     check("Plus prefix")
     fill_in("Route prefixes", with: "85510")
@@ -58,7 +64,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("Mexico (52)")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_content("Unlimited")
-    expect(page).to have_link("1234", href: dashboard_phone_number_path(phone_number))
+    expect(page).to have_link("123456", href: dashboard_phone_number_path(alphanumeric_sender_id))
   end
 
   it "Creates a SIP trunk with client credentials", :js do
@@ -99,7 +105,14 @@ RSpec.describe "SIP Trunks" do
   it "Update a SIP Trunk" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
-    phone_number = create(:phone_number, carrier:, number: "855715777777")
+    alphanumeric_sender_id = create(
+      :phone_number,
+      carrier:,
+      number: "123456",
+      visibility: :private,
+      type: :alphanumeric_sender_id
+    )
+
     sip_trunk = create(
       :sip_trunk,
       carrier:,
@@ -109,7 +122,7 @@ RSpec.describe "SIP Trunks" do
       outbound_dial_string_prefix: "1234",
       outbound_national_dialing: true,
       outbound_plus_prefix: true,
-      default_sender: phone_number,
+      default_sender: alphanumeric_sender_id,
       region: :helium
     )
 
@@ -137,7 +150,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("96.9.66.131")
     expect(page).to have_content("Cambodia")
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.132")
-    expect(page).to have_no_link("+855 71 577 7777", href: dashboard_phone_number_path(phone_number))
+    expect(page).to have_no_link("123456", href: dashboard_phone_number_path(alphanumeric_sender_id))
   end
 
   it "Delete a SIP Trunk" do

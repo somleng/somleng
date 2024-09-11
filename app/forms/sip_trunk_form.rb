@@ -112,6 +112,6 @@ class SIPTrunkForm
   end
 
   def default_sender_scope
-    carrier.phone_numbers.available.where(type: :alphanumeric_sender_id)
+    carrier.phone_numbers.private.available.where(type: :alphanumeric_sender_id)
   end
 end
