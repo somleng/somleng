@@ -26,19 +26,25 @@ RSpec.describe "SMS Gateways" do
 
   it "Create a SMS Gateway" do
     user = create(:user, :carrier, :admin)
-    phone_number = create(:phone_number, number: "855715777777", carrier: user.carrier)
+    alphanumeric_sender_id = create(
+      :phone_number,
+      number: "123456",
+      type: :alphanumeric_sender_id,
+      visibility: :private,
+      carrier: user.carrier
+    )
 
     carrier_sign_in(user)
     visit dashboard_sms_gateways_path
-    click_link("New")
+    click_on("New")
     fill_in("Name", with: "Main SMS Gateway")
-    choices_select("+855 71 577 7777", from: "Default sender")
+    choices_select("123456", from: "Default sender")
 
-    click_button "Create SMS gateway"
+    click_on "Create SMS gateway"
 
     expect(page).to have_content("SMS gateway was successfully created")
     expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_link("+855 71 577 7777", href: dashboard_phone_number_path(phone_number))
+    expect(page).to have_link("1234", href: dashboard_phone_number_path(alphanumeric_sender_id))
   end
 
   it "Handles validations" do
@@ -46,7 +52,7 @@ RSpec.describe "SMS Gateways" do
 
     carrier_sign_in(user)
     visit new_dashboard_sms_gateway_path
-    click_button "Create SMS gateway"
+    click_on "Create SMS gateway"
 
     expect(page).to have_content("can't be blank")
   end
@@ -71,26 +77,32 @@ RSpec.describe "SMS Gateways" do
   it "Update a SMS Gateway" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
-    phone_number = create(:phone_number, number: "855715777777", carrier:)
+    alphanumeric_sender_id = create(
+      :phone_number,
+      number: "123456",
+      type: :alphanumeric_sender_id,
+      visibility: :private,
+      carrier:
+    )
     sms_gateway = create(
       :sms_gateway,
       carrier:,
       name: "My SMS Gateway",
-      default_sender: phone_number
+      default_sender: alphanumeric_sender_id
     )
 
     carrier_sign_in(user)
     visit dashboard_sms_gateway_path(sms_gateway)
 
-    click_link("Edit")
+    click_on("Edit")
     fill_in("Name", with: "Main SMS Gateway")
     choices_select("", from: "Default sender")
 
-    click_button "Update SMS gateway"
+    click_on "Update SMS gateway"
 
     expect(page).to have_content("SMS gateway was successfully updated")
     expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_no_link("+855 71 577 7777", href: dashboard_phone_number_path(phone_number))
+    expect(page).to have_no_link("+855 71 577 7777", href: dashboard_phone_number_path(alphanumeric_sender_id))
   end
 
   it "Delete a SMS Gateway" do
