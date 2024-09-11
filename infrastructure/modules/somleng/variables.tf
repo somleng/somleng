@@ -12,7 +12,6 @@ variable "uploads_bucket" {}
 variable "global_accelerator" {}
 variable "route53_zone" {}
 variable "internal_route53_zone" {}
-variable "internal_route53_zone_old" {}
 variable "cdn_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}
