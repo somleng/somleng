@@ -118,7 +118,7 @@ RSpec.describe "SIP Trunks" do
 
     click_on("Edit")
 
-    expect(page).to have_select("Region", selected: "North America (North Virginia, USA)")
+    expect(page).to have_select("Region", selected: "North America (N. Virginia, USA)")
     fill_in("Name", with: "Main Trunk")
     select("South East Asia (Singapore)", from: "Region")
     fill_in("Source IP", with: "96.9.66.131")

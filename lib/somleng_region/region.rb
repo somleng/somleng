@@ -16,7 +16,7 @@ module SomlengRegion
         identifier: "us-east-1",
         alias: "helium",
         group_id: 2,
-        human_name: "North America (North Virginia, USA)",
+        human_name: "North America (N. Virginia, USA)",
         nat_ip: "52.4.242.134"
       )
     ]
