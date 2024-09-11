@@ -10,14 +10,13 @@ module "somleng" {
   verify_subdomain   = "verify-staging"
   anycable_subdomain = "anycable-staging"
 
-  app_image                 = data.terraform_remote_state.core.outputs.app_ecr_repository
-  nginx_image               = data.terraform_remote_state.core.outputs.nginx_ecr_repository
-  aws_ses_region            = "us-east-1"
-  region                    = data.terraform_remote_state.core_infrastructure.outputs.hydrogen_region
-  global_accelerator        = data.terraform_remote_state.core_infrastructure.outputs.global_accelerator
-  route53_zone              = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
-  internal_route53_zone_old = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_internal_somleng_org_old
-  internal_route53_zone     = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_internal_somleng_org
+  app_image             = data.terraform_remote_state.core.outputs.app_ecr_repository
+  nginx_image           = data.terraform_remote_state.core.outputs.nginx_ecr_repository
+  aws_ses_region        = "us-east-1"
+  region                = data.terraform_remote_state.core_infrastructure.outputs.hydrogen_region
+  global_accelerator    = data.terraform_remote_state.core_infrastructure.outputs.global_accelerator
+  route53_zone          = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_somleng_org
+  internal_route53_zone = data.terraform_remote_state.core_infrastructure.outputs.route53_zone_internal_somleng_org
 
   cdn_certificate = data.terraform_remote_state.core_infrastructure.outputs.cdn_certificate
 

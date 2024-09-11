@@ -174,18 +174,6 @@ resource "aws_route53_record" "anycable" {
   }
 }
 
-resource "aws_route53_record" "anycable_old" {
-  zone_id = var.internal_route53_zone_old.zone_id
-  name    = var.anycable_subdomain
-  type    = "A"
-
-  alias {
-    name                   = var.region.internal_load_balancer.this.dns_name
-    zone_id                = var.region.internal_load_balancer.this.zone_id
-    evaluate_target_health = true
-  }
-}
-
 # Load Balancer
 
 resource "aws_lb_listener_rule" "anycable" {
@@ -202,26 +190,6 @@ resource "aws_lb_listener_rule" "anycable" {
     host_header {
       values = [
         aws_route53_record.anycable.fqdn
-      ]
-    }
-  }
-}
-
-
-resource "aws_lb_listener_rule" "anycable_old" {
-  priority = var.app_environment == "production" ? 11 : 111
-
-  listener_arn = var.region.internal_load_balancer.https_listener.arn
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.anycable.id
-  }
-
-  condition {
-    host_header {
-      values = [
-        aws_route53_record.anycable_old.fqdn
       ]
     }
   }
