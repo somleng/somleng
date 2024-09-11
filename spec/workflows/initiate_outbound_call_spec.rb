@@ -65,11 +65,17 @@ RSpec.describe InitiateOutboundCall do
   end
 
   it "handles already canceled calls" do
-    phone_call = create(:phone_call, :outbound, :routable, :canceled, external_id: nil)
+    carrier = create(:carrier)
+    sip_trunk = create(
+      :sip_trunk,
+      region: :hydrogen,
+      carrier:
+    )
+    phone_call = create(:phone_call, :outbound, :routable,  :canceled, sip_trunk:, carrier:, external_id: nil)
 
     InitiateOutboundCall.call(phone_call)
 
-    expect(WebMock).not_to have_requested(:post, "https://switch.internal.somleng.org/calls")
+    expect(WebMock).not_to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
   end
 
   it "handles deleted SIP trunks" do
