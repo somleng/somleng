@@ -46,9 +46,15 @@ class SMSGatewayForm
     sms_gateway.save!
   end
 
+  def default_sender_options_for_select
+    default_sender_scope.map do |phone_number|
+      [ phone_number.decorated.number_formatted, phone_number.id ]
+    end
+  end
+
   private
 
   def default_sender_scope
-    carrier.phone_numbers.enabled
+    carrier.phone_numbers.available.where(type: :alphanumeric_sender_id)
   end
 end

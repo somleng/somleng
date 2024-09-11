@@ -28,7 +28,7 @@ RSpec.describe "SIP Trunks" do
 
   it "Create a SIP Trunk", :js do
     user = create(:user, :carrier, :admin)
-    phone_number = create(:phone_number, carrier: user.carrier, number: "855715777777")
+    phone_number = create(:phone_number, carrier: user.carrier, number: "1234", type: :alphanumeric_sender_id)
 
     carrier_sign_in(user)
     visit dashboard_sip_trunks_path
@@ -43,7 +43,7 @@ RSpec.describe "SIP Trunks" do
     select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
-    choices_select("+855 71 577 7777", from: "Default sender")
+    choices_select("1234", from: "Default sender")
     check("National dialing")
     check("Plus prefix")
     fill_in("Route prefixes", with: "85510")
@@ -58,7 +58,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("Mexico (52)")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_content("Unlimited")
-    expect(page).to have_link("+855 71 577 7777", href: dashboard_phone_number_path(phone_number))
+    expect(page).to have_link("1234", href: dashboard_phone_number_path(phone_number))
   end
 
   it "Creates a SIP trunk with client credentials", :js do

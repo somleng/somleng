@@ -88,6 +88,12 @@ class SIPTrunkForm
     sip_trunk.save!
   end
 
+  def default_sender_options_for_select
+    default_sender_scope.map do |phone_number|
+      [ phone_number.decorated.number_formatted, phone_number.id ]
+    end
+  end
+
   def region_options_for_select
     SomlengRegion::Region.all.map do |region|
       [ region.human_name, region.alias, { data: { ip_address: region.nat_ip } } ]
@@ -106,6 +112,6 @@ class SIPTrunkForm
   end
 
   def default_sender_scope
-    carrier.phone_numbers.enabled
+    carrier.phone_numbers.available.where(type: :alphanumeric_sender_id)
   end
 end
