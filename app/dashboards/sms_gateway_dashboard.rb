@@ -4,7 +4,7 @@ class SMSGatewayDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::String,
     carrier: Field::BelongsTo,
-    default_sender: Field::BelongsTo,
+    default_sender: Field::String,
     channel_groups: Field::HasMany,
     name: Field::String,
     max_channels: Field::String,

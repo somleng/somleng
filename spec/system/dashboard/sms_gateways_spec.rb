@@ -26,25 +26,18 @@ RSpec.describe "SMS Gateways" do
 
   it "Create a SMS Gateway" do
     user = create(:user, :carrier, :admin)
-    alphanumeric_sender_id = create(
-      :phone_number,
-      number: "123456",
-      type: :alphanumeric_sender_id,
-      visibility: :private,
-      carrier: user.carrier
-    )
 
     carrier_sign_in(user)
     visit dashboard_sms_gateways_path
     click_on("New")
     fill_in("Name", with: "Main SMS Gateway")
-    choices_select("123456", from: "Default sender")
+    fill_in("Default sender", with: "123456")
 
     click_on "Create SMS gateway"
 
     expect(page).to have_content("SMS gateway was successfully created")
     expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_link("1234", href: dashboard_phone_number_path(alphanumeric_sender_id))
+    expect(page).to have_content("123456")
   end
 
   it "Handles validations" do
@@ -77,18 +70,11 @@ RSpec.describe "SMS Gateways" do
   it "Update a SMS Gateway" do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
-    alphanumeric_sender_id = create(
-      :phone_number,
-      number: "123456",
-      type: :alphanumeric_sender_id,
-      visibility: :private,
-      carrier:
-    )
     sms_gateway = create(
       :sms_gateway,
       carrier:,
       name: "My SMS Gateway",
-      default_sender: alphanumeric_sender_id
+      default_sender: "123456"
     )
 
     carrier_sign_in(user)
@@ -96,13 +82,13 @@ RSpec.describe "SMS Gateways" do
 
     click_on("Edit")
     fill_in("Name", with: "Main SMS Gateway")
-    choices_select("", from: "Default sender")
+    fill_in("Default sender", with: "")
 
     click_on "Update SMS gateway"
 
     expect(page).to have_content("SMS gateway was successfully updated")
     expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_no_link("+855 71 577 7777", href: dashboard_phone_number_path(alphanumeric_sender_id))
+    expect(page).not_to have_content("123456")
   end
 
   it "Delete a SMS Gateway" do

@@ -187,8 +187,8 @@ RSpec.describe CreateVerification do
   def create_verification_service(attributes = {})
     verification_service = create(:verification_service, attributes)
     phone_number = create(:phone_number, carrier: verification_service.carrier)
-    sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number)
-    sip_trunk = create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number)
+    sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number.number)
+    sip_trunk = create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number.number)
     [ verification_service, phone_number, sms_gateway, sip_trunk ]
   end
 end

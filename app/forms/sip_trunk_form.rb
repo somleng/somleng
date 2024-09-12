@@ -16,6 +16,7 @@ class SIPTrunkForm
   attribute :authentication_mode
   attribute :route_prefixes, RoutePrefixesType.new
   attribute :region, RegionType.new
+  attribute :default_sender, PhoneNumberType.new
 
   attribute :country
   attribute :source_ip
@@ -24,7 +25,6 @@ class SIPTrunkForm
   attribute :dial_string_prefix
   attribute :national_dialing, :boolean, default: false
   attribute :plus_prefix, :boolean, default: false
-  attribute :default_sender_id
 
   enumerize :authentication_mode, in: SIPTrunk.authentication_mode.values
 
@@ -56,7 +56,7 @@ class SIPTrunkForm
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
-      default_sender_id: sip_trunk.default_sender_id,
+      default_sender: sip_trunk.default_sender,
       region: sip_trunk.region
     )
   end
@@ -82,16 +82,10 @@ class SIPTrunkForm
       outbound_national_dialing: national_dialing,
       outbound_plus_prefix: plus_prefix,
       outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes),
-      default_sender: default_sender_id.present? && default_sender_scope.find(default_sender_id)
+      default_sender:
     }
 
     sip_trunk.save!
-  end
-
-  def default_sender_options_for_select
-    default_sender_scope.map do |phone_number|
-      [ phone_number.decorated.number_formatted, phone_number.id ]
-    end
   end
 
   def region_options_for_select
@@ -109,9 +103,5 @@ class SIPTrunkForm
     return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
 
     errors.add(:source_ip, :taken)
-  end
-
-  def default_sender_scope
-    carrier.phone_numbers.private.available.where(type: :alphanumeric_sender_id)
   end
 end
