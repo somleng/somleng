@@ -46,5 +46,17 @@ module SomlengRegion
         SomlengRegion.configuration
       end
     end
+
+    def to_s
+      self[:alias]
+    end
+
+    def ==(other)
+      if other.is_a?(self.class)
+        self[:alias] == other.alias
+      else
+        self[:alias] == other
+      end
+    end
   end
 end

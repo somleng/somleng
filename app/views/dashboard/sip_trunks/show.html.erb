@@ -75,6 +75,8 @@
       <h5 class="card-title">Outbound Dialing</h5>
 
       <%= show_for(@resource) do |f| %>
+        <% sip_trunk = @resource.decorated %>
+
         <% if @resource.outbound_host.present? %>
           <%= f.attribute :outbound_host, label: "Host" %>
         <% end %>
@@ -87,15 +89,10 @@
           <%= f.attribute :outbound_route_prefixes, label: "Route prefixes" %>
         <% end %>
 
-        <% if @resource.default_sender.present? %>
-          <%= f.attribute :default_sender, value: external_link_to(@resource.default_sender.decorated.number_formatted, dashboard_phone_number_path(@resource.default_sender)) %>
-        <% else %>
-          <%= f.attribute :default_sender %>
-        <% end %>
-
+        <%= f.attribute :default_sender, value: sip_trunk.default_sender_formatted %>
         <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
           <code>
-            <%= @resource.outbound_example_dial_string %>
+            <%= sip_trunk.outbound_example_dial_string %>
           </code>
         <% end %>
       <% end %>

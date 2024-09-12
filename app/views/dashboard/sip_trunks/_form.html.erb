@@ -123,19 +123,11 @@
 
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :default_sender_id,
-                        collection: resource.default_sender_options_for_select,
-                        hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified.",
-                        include_blank: true,
-                        input_html: {
-                          data: {
-                            behavior: "choices-input",
-                            choices_options: {
-                              removeItemButton: true
-                            }
-                          }
-                        }
-              %>
+            <%= f.input(
+                :default_sender,
+                hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified. Must be a phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
+              )
+            %>
           </div>
         </div>
 

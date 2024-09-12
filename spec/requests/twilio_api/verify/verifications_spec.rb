@@ -348,8 +348,8 @@ RSpec.resource "Verifications", document: :twilio_api do
   def create_verification_service(attributes = {})
     verification_service = create(:verification_service, attributes)
     phone_number = create(:phone_number, carrier: verification_service.carrier)
-    create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number)
-    create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number)
+    create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number.number)
+    create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number.number)
     verification_service
   end
 end

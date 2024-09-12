@@ -4,7 +4,6 @@ class SIPTrunk < ApplicationRecord
   extend Enumerize
 
   has_many :phone_calls
-  belongs_to :default_sender, class_name: "PhoneNumber", optional: true
   belongs_to :carrier
   encrypts :password
 
@@ -12,6 +11,7 @@ class SIPTrunk < ApplicationRecord
 
   attribute :username_generator, default: UsernameGenerator.new
   attribute :region, RegionType.new
+  attribute :default_sender, PhoneNumberType.new
 
   before_save :generate_client_credentials
 

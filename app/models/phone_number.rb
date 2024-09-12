@@ -4,8 +4,8 @@ class PhoneNumber < ApplicationRecord
   extend Enumerize
 
   NUMBER_FORMAT = /\A\d+\z/
-  E164_TYPES = [ :local, :mobile, :toll_free, :alphanumeric_sender_id ].freeze
-  NON_164_TYPES = [ :short_code, :alphanumeric_sender_id ].freeze
+  E164_TYPES = [ :local, :mobile, :toll_free ].freeze
+  NON_164_TYPES = [ :short_code ].freeze
   TYPES = (NON_164_TYPES + E164_TYPES).uniq.freeze
 
   enumerize :type, in: TYPES

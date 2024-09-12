@@ -271,10 +271,10 @@ module TwilioAPI
       def create_verification_service(attributes = {})
         verification_service = create(:verification_service, attributes)
         phone_number = create(:phone_number, carrier: verification_service.carrier)
-        sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number)
+        sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number.number)
         channel_group = create(:sms_gateway_channel_group, sms_gateway:, route_prefixes: [])
         create(:sms_gateway_channel, slot_index: 1, channel_group:, sms_gateway:)
-        create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number)
+        create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number.number)
         [ verification_service, phone_number ]
       end
     end

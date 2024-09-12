@@ -175,13 +175,13 @@ Rails.application.routes.draw do
       resources :imports, only: %i[index show]
       resources :webhook_request_logs, only: %i[index show]
       resources :verifications, only: %i[show index]
+      resources :sip_trunks, only: %i[show index]
+      resources :sms_gateways, only: %i[show index]
 
       resources :account_memberships, only: :show
-      resources :sip_trunks, only: :show
       resources :phone_call_events, only: :show
       resources :call_data_records, only: :show
       resources :recordings, only: :show
-      resources :sms_gateways, only: :show
       resources :sms_gateway_channel_groups, only: :show
       resources :messaging_services, only: :show
       resources :verification_services, only: :show

@@ -50,7 +50,7 @@ module TwilioAPI
       end
 
       rule do |context:|
-        next if context[:sender]&.enabled?
+        next if context[:sender].present?
 
         base.failure(schema_helper.build_schema_error(:verify_could_not_find_valid_phone_number))
       end
@@ -67,8 +67,8 @@ module TwilioAPI
           to: params.fetch(:To),
           locale: params[:Locale],
           delivery_attempt: {
-            phone_number: context.fetch(:sender),
-            from: context.fetch(:sender).number
+            phone_number: verification_service.carrier.phone_numbers.find_by(number: context.fetch(:sender)),
+            from: context.fetch(:sender)
           }
         }.compact
       end

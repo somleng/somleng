@@ -3,7 +3,7 @@ require "administrate/base_dashboard"
 class SIPTrunkDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
-    default_sender: Field::BelongsTo,
+    default_sender: Field::String,
     id: Field::String,
     name: Field::String,
     region: Field::String,

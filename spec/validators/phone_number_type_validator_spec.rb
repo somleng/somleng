@@ -19,7 +19,6 @@ RSpec.describe PhoneNumberTypeValidator do
     expect(validatable_klass.new(number: "1294", type: "foobar").valid?).to eq(false)
 
     expect(validatable_klass.new(number: "1294", type: "short_code").valid?).to eq(true)
-    expect(validatable_klass.new(number: "1294", type: "alphanumeric_sender_id").valid?).to eq(true)
     expect(validatable_klass.new(number: "1294", type: "mobile").valid?).to eq(false)
     expect(validatable_klass.new(number: "1294", type: "local").valid?).to eq(false)
     expect(validatable_klass.new(number: "1294", type: "toll_free").valid?).to eq(false)
@@ -28,6 +27,5 @@ RSpec.describe PhoneNumberTypeValidator do
     expect(validatable_klass.new(number: "12513095542", type: "mobile").valid?).to eq(true)
     expect(validatable_klass.new(number: "12513095542", type: "local").valid?).to eq(true)
     expect(validatable_klass.new(number: "12513095542", type: "toll_free").valid?).to eq(true)
-    expect(validatable_klass.new(number: "12513095542", type: "alphanumeric_sender_id").valid?).to eq(true)
   end
 end
