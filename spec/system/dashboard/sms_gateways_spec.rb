@@ -31,13 +31,13 @@ RSpec.describe "SMS Gateways" do
     visit dashboard_sms_gateways_path
     click_on("New")
     fill_in("Name", with: "Main SMS Gateway")
-    fill_in("Default sender", with: "123456")
+    fill_in("Default sender", with: "+1 (234) 234-5678")
 
     click_on "Create SMS gateway"
 
     expect(page).to have_content("SMS gateway was successfully created")
     expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_content("123456")
+    expect(page).to have_content("+1 (234) 234-5678")
   end
 
   it "Handles validations" do

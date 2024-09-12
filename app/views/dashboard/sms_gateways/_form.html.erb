@@ -15,7 +15,7 @@
       <div class="col-sm-6">
         <%= f.input(
             :default_sender,
-            hint: "The caller ID shown for outbound messages when there is otherwise no caller ID specified."
+            hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified. Must be a phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
           )
         %>
       </div>

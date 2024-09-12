@@ -7,6 +7,7 @@ RSpec.describe "SIP Trunks" do
     create(
       :sip_trunk,
       carrier:,
+      region: :hydrogen,
       name: "Main SIP Trunk",
       created_at: Time.utc(2021, 12, 1)
     )
@@ -23,6 +24,7 @@ RSpec.describe "SIP Trunks" do
     )
 
     expect(page).to have_content("Main SIP Trunk")
+    expect(page).to have_content("South East Asia (Singapore)")
     expect(page).not_to have_content("Old SIP Trunk")
   end
 
@@ -41,7 +43,7 @@ RSpec.describe "SIP Trunks" do
     select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
-    fill_in("Default sender", with: "999999")
+    fill_in("Default sender", with: "+1 (234) 234-5678")
     check("National dialing")
     check("Plus prefix")
     fill_in("Route prefixes", with: "85510")
@@ -56,7 +58,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("Mexico (52)")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_content("Unlimited")
-    expect(page).to have_content("999999")
+    expect(page).to have_content("+1 (234) 234-5678")
   end
 
   it "Creates a SIP trunk with client credentials", :js do

@@ -5,6 +5,9 @@
         Name
       </th>
       <th>
+        Region
+      </th>
+      <th>
         Authentication mode
       </th>
       <th>
@@ -19,6 +22,10 @@
 
         <td>
           <%= link_to(sip_trunk.name, polymorphic_path([:dashboard, sip_trunk])) %>
+        </td>
+
+        <td>
+          <%= sip_trunk.region.human_name %>
         </td>
 
         <td>

@@ -10,6 +10,8 @@
 
 <div class="card-body">
   <%= show_for(@resource) do |f| %>
+    <% sms_gateway = @resource.decorated %>
+
     <%= f.attribute :name %>
     <%= f.attribute :device_token do %>
       <%= mask_content(@resource.device_token) %>
@@ -24,7 +26,7 @@
     <% end %>
 
     <%= f.attribute :channels, value: @resource.configured_channel_slots.join(", ")  %>
-    <%= f.attribute :default_sender %>
+    <%= f.attribute :default_sender, value: sms_gateway.default_sender_formatted %>
 
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
