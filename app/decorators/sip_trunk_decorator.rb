@@ -1,6 +1,6 @@
 class SIPTrunkDecorator < SimpleDelegator
   class << self
-    delegate :model_name, :human_attribute_name, to: :SipTrunk
+    delegate :model_name, :human_attribute_name, to: :SIPTrunk
   end
 
   def default_sender_formatted
