@@ -230,7 +230,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-two-factor (5.1.0)
+    devise-two-factor (6.0.0)
       activesupport (~> 7.0)
       devise (~> 4.0)
       railties (~> 7.0)
@@ -320,7 +320,7 @@ GEM
     http-cookie (1.0.6)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    i18n (1.14.5)
+    i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     image_processing (1.13.0)
       mini_magick (>= 4.9.5, < 5)
