@@ -302,7 +302,7 @@ GEM
     foreman (0.88.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-protobuf (3.25.4)
+    google-protobuf (3.25.5)
     googleapis-common-protos-types (1.16.0)
       google-protobuf (>= 3.18, < 5.a)
     grpc (1.66.0)
