@@ -119,7 +119,7 @@ resource "aws_appautoscaling_policy" "worker_memory_utilization" {
       predefined_metric_type = "ECSServiceAverageMemoryUtilization"
     }
 
-    target_value       = 50
+    target_value       = 75
     scale_in_cooldown  = 300
     scale_out_cooldown = 60
   }
