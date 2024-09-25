@@ -6,7 +6,7 @@ class AccountForm
   attribute :carrier
   attribute :name
   attribute :enabled, :boolean, default: true
-  attribute :account, default: -> { Account.new(access_token: Doorkeeper::AccessToken.new) }
+  attribute :account, default: -> { Account.new(type: :carrier_managed, access_token: Doorkeeper::AccessToken.new) }
   attribute :sip_trunk_id
   attribute :owner_name
   attribute :owner_email
@@ -55,18 +55,7 @@ class AccountForm
       account.status = enabled ? "enabled" : "disabled"
       account.calls_per_second = calls_per_second
       account.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
-
-      if new_record? || account.carrier_managed?
-        account.name = name
-        account.default_tts_voice = default_tts_voice
-
-        if owner_email.present?
-          account.type = :customer_managed
-          invite_owner!
-        else
-          account.type = :carrier_managed
-        end
-      end
+      update_carrier_account_attributes
 
       account.save!
     end
@@ -74,10 +63,22 @@ class AccountForm
 
   def sip_trunk_options_for_select
     sip_trunks = carrier.sip_trunks.select(&:configured_for_outbound_dialing?)
-    sip_trunks.map { |item| [item.name, item.id] }
+    sip_trunks.map { |item| [ item.name, item.id ] }
   end
 
   private
+
+  def update_carrier_account_attributes
+    return if customer_managed?
+
+    account.name = name
+    account.default_tts_voice = default_tts_voice
+
+    if owner_email.present?
+      account.type = :customer_managed
+      invite_owner!
+    end
+  end
 
   def validate_owner
     return if owner_email.blank? && owner_name.blank?
