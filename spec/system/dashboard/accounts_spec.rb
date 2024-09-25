@@ -125,9 +125,10 @@ RSpec.describe "Accounts" do
     user = create(:user, :carrier)
     account = create(
       :account,
+      :carrier_managed,
       :enabled,
       carrier: user.carrier,
-      default_tts_voice: "Basic.Kal"
+      default_tts_voice: "Basic.Kal",
     )
     sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
 
@@ -156,7 +157,7 @@ RSpec.describe "Accounts" do
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
-  it "remove a SIP trunk" do
+  it "Remove a SIP trunk" do
     user = create(:user, :carrier)
     sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
     account = create(
@@ -200,6 +201,7 @@ RSpec.describe "Accounts" do
 
     expect(page).to have_content("Account was successfully updated")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
+    expect(page).to have_content("Customer managed")
   end
 
   it "Resend invitation" do

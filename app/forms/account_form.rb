@@ -14,9 +14,10 @@ class AccountForm
   attribute :calls_per_second, :integer, default: 1
   attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
 
-  delegate :persisted?, :id, :customer_managed?, to: :account
+  delegate :new_record?, :persisted?, :id, :customer_managed?, to: :account
 
-  validates :name, :default_tts_voice, presence: true
+  validates :default_tts_voice, presence: true
+  validates :name, presence: true, unless: :customer_managed?
   validates :owner_email, email_format: true, allow_blank: true, allow_nil: true
   validates :calls_per_second,
             presence: true,
@@ -49,19 +50,25 @@ class AccountForm
   def save
     return false if invalid?
 
-    account.carrier = carrier
-    account.status = enabled ? "enabled" : "disabled"
-    account.name = name
-    account.default_tts_voice = default_tts_voice
-    account.calls_per_second = calls_per_second
-    account.type = owner_email.present? ? :customer_managed : :carrier_managed
-
-    account.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
-
     Account.transaction do
+      account.carrier = carrier
+      account.status = enabled ? "enabled" : "disabled"
+      account.calls_per_second = calls_per_second
+      account.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
+
+      if new_record? || account.carrier_managed?
+        account.name = name
+        account.default_tts_voice = default_tts_voice
+
+        if owner_email.present?
+          account.type = :customer_managed
+          invite_owner!
+        else
+          account.type = :carrier_managed
+        end
+      end
+
       account.save!
-      invite_owner! if owner_email.present?
-      true
     end
   end
 
@@ -79,10 +86,6 @@ class AccountForm
     return errors.add(:owners_email, :invalid) if customer_managed?
 
     errors.add(:owner_email, :taken) if User.exists?(carrier:, email: owner_email)
-  end
-
-  def validate_name
-    errors.add(:name, :invalid) if name.present? && customer_managed?
   end
 
   def invite_owner!

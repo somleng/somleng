@@ -26,10 +26,6 @@ module Dashboard
 
     def update
       @resource = initialize_form(permitted_params)
-      if record.customer_managed?
-        @resource.name = record.name
-        @resource.default_tts_voice = record.default_tts_voice
-      end
       @resource.account = record
       @resource.save
 
