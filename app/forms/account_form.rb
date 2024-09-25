@@ -55,7 +55,7 @@ class AccountForm
       account.status = enabled ? "enabled" : "disabled"
       account.calls_per_second = calls_per_second
       account.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
-      update_carrier_account_attributes
+      update_carrier_managed_attributes
 
       account.save!
     end
@@ -68,7 +68,7 @@ class AccountForm
 
   private
 
-  def update_carrier_account_attributes
+  def update_carrier_managed_attributes
     return if customer_managed?
 
     account.name = name
