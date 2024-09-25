@@ -87,11 +87,12 @@ RSpec.describe AccountForm do
       expect(ActionMailer::MailDeliveryJob).to have_been_enqueued
     end
 
-    it "updates an account" do
+    it "updates a carrier managed account" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:)
       account = create(
         :account,
+        :carrier_managed,
         carrier:,
         sip_trunk:,
         name: "Rocket Rides",
@@ -114,6 +115,34 @@ RSpec.describe AccountForm do
           identifier: "Basic.Slt"
         ),
         sip_trunk: nil
+      )
+    end
+
+    it "updates a customer managed account" do
+      carrier = create(:carrier)
+      sip_trunk = create(:sip_trunk, carrier:)
+      account = create(
+        :account,
+        :customer_managed,
+        carrier:,
+        sip_trunk:,
+        calls_per_second: 1
+      )
+
+      form = AccountForm.new(
+        carrier:,
+        account:,
+        sip_trunk_id: nil,
+        calls_per_second: 10
+      )
+
+      result = form.save
+
+      expect(result).to eq(true)
+      expect(form.account).to have_attributes(
+        sip_trunk: nil,
+        calls_per_second: 10,
+        type: "customer_managed"
       )
     end
   end
