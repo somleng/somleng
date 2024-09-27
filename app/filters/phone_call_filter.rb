@@ -15,7 +15,7 @@ class PhoneCallFilter < ResourceFilter
     StatusFilter,
     :id_filter,
     :account_id_filter,
-    { phone_number_id_filter: { attribute_name: :incoming_phone_number_id } },
+    :number_filter,
     :to_filter,
     :from_filter,
     :date_filter

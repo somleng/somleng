@@ -12,14 +12,6 @@
       %>
     <% end %>
 
-    <%= form.select(
-        :phone_number_id,
-        parent_scope.incoming_phone_numbers.map { |incoming_phone_number| [incoming_phone_number.decorated.number_formatted, incoming_phone_number.id] },
-        { filter_value: params.dig(:filter, :phone_number_id) },
-        { data: { behavior: "choices-input" }}
-      )
-    %>
-
     <%= form.select :status, PhoneCallDecorator.statuses.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
     <%= form.text_field_tag(:to, params.dig(:filter, :to)) %>
     <%= form.text_field_tag(:from, params.dig(:filter, :from)) %>
