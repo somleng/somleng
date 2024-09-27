@@ -51,18 +51,18 @@ RSpec.describe PhoneCallFilter do
     expect(result).to contain_exactly(queued_phone_call, initiated_phone_call)
   end
 
-  it "filters by phone number" do
+  it "filters by to" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
     incoming_phone_number = create(:incoming_phone_number, account:)
-    phone_call = create(:phone_call, incoming_phone_number:, account:, carrier:)
+    phone_call = create(:phone_call, :inbound, incoming_phone_number:, account:, carrier:, to: incoming_phone_number.number)
     _other_phone_call = create(:phone_call)
 
     filter = PhoneCallFilter.new(
       resources_scope: PhoneCall,
       input_params: {
         filter: {
-          phone_number_id: incoming_phone_number.id
+          to: phone_call.to.value
         }
       }
     )

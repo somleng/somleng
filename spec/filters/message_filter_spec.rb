@@ -19,18 +19,18 @@ RSpec.describe MessageFilter do
     expect(result).to eq([ sending_message ])
   end
 
-  it "filters by phone number" do
+  it "filters by to" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
     incoming_phone_number = create(:incoming_phone_number, account:)
-    message = create(:message, incoming_phone_number:, account:, carrier:)
+    message = create(:message, :inbound, incoming_phone_number:, to: incoming_phone_number.number, account:, carrier:)
     _other_message = create(:message)
 
     filter = MessageFilter.new(
       resources_scope: Message,
       input_params: {
         filter: {
-          phone_number_id: incoming_phone_number.id
+          to: incoming_phone_number.number.value
         }
       }
     )
