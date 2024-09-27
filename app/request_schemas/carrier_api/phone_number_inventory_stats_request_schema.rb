@@ -20,6 +20,9 @@ module CarrierAPI
       required(:filter).value(:hash).hash do
         required(:type).value(:string, eql?: "local")
         required(:available).value(:bool, eql?: true)
+        optional(:country).value(:string)
+        optional(:region).value(:string)
+        optional(:locality).value(:string)
       end
       required(:group_by).value(array[:string])
       optional(:having).value(:hash).hash do
@@ -48,9 +51,14 @@ module CarrierAPI
     def output
       params = super
 
+      filter = params.fetch(:filter)
+      conditions = filter.slice(:type, :locality)
+      conditions[:iso_country_code] = filter.fetch(:country) if filter.key?(:country)
+      conditions[:iso_region_code] = filter.fetch(:region) if filter.key?(:region)
+
       {
         named_scopes: :available,
-        conditions: params.fetch(:filter).slice(:type),
+        conditions:,
         groups: context.fetch(:groups),
         having: params.fetch(:having)
       }

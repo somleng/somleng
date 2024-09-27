@@ -3,9 +3,9 @@ class AggregateDataQuery
 
   def initialize(**options)
     @named_scopes = Array(options[:named_scopes])
-    @conditions = options.fetch(:conditions)
+    @conditions = options.fetch(:conditions, {})
     @groups = Array(options.fetch(:groups))
-    @having = options.fetch(:having)
+    @having = options.fetch(:having, {})
   end
 
   def apply(scope)
