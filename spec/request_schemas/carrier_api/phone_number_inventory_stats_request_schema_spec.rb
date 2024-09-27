@@ -108,6 +108,29 @@ module CarrierAPI
       ).not_to have_valid_field(:having)
     end
 
+    it "handles post processing" do
+      schema = validate_request_schema(
+        input_params: {
+          filter: {
+            available: true,
+            type: "local"
+          },
+          group_by: [ "country", "region", "locality" ],
+          having: { count: { lt: 2 } }
+        }
+      )
+
+      result = schema.output
+
+      expect(result).to include(
+        named_scopes: :available,
+        conditions: { type: "local" },
+        having: { count: { lt: 2 } }
+      )
+
+      expect(result.fetch(:groups).map(&:name)).to eq([ "country", "locality", "region" ])
+    end
+
     def validate_request_schema(...)
       PhoneNumberInventoryStatsRequestSchema.new(...)
     end
