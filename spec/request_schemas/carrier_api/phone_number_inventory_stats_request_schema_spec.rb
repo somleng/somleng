@@ -113,7 +113,9 @@ module CarrierAPI
         input_params: {
           filter: {
             available: true,
-            type: "local"
+            type: "local",
+            country: "US",
+            region: "AL"
           },
           group_by: [ "country", "region", "locality" ],
           having: { count: { lt: 2 } }
@@ -124,7 +126,7 @@ module CarrierAPI
 
       expect(result).to include(
         named_scopes: :available,
-        conditions: { type: "local" },
+        conditions: { type: "local", iso_country_code: "US", iso_region_code: "AL" },
         having: { count: { lt: 2 } }
       )
 

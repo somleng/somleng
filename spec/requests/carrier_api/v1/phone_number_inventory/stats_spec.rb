@@ -6,7 +6,7 @@ resource "Phone Number Inventory:Stats", document: :carrier_api do
   get "https://api.somleng.org/carrier/v1/phone_number_inventory/stats" do
     with_options scope: :filter do
       parameter(
-        :available, "Whether to return only available phone numbers. Must be `true`",
+        :available, "Return only available phone numbers. Must be `true`",
         required: true
       )
       parameter(
@@ -18,11 +18,11 @@ resource "Phone Number Inventory:Stats", document: :carrier_api do
         required: false
       )
       parameter(
-        :type, "The ISO region code. E.g. `AK`",
+        :region, "The ISO region code. E.g. `AK`",
         required: false
       )
       parameter(
-        :type, "The locality name. e.g. `Little Rock`",
+        :locality, "The locality or city name. e.g. `Little Rock`",
         required: false
       )
     end
