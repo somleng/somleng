@@ -51,7 +51,10 @@ resource "Phone Numbers", document: :carrier_api do
           type: :phone_number,
           attributes: {
             number: "1294",
-            type: "short_code"
+            type: "short_code",
+            metadata: {
+              my_custom_field: "my_custom_field_value"
+            }
           }
         }
       )
@@ -61,7 +64,10 @@ resource "Phone Numbers", document: :carrier_api do
       expect(jsonapi_response_attributes).to include(
         "number" => "1294",
         "country" => "KH",
-        "visibility" => "private"
+        "visibility" => "private",
+        "metadata" => {
+          "my_custom_field" => "my_custom_field_value"
+        }
       )
     end
 

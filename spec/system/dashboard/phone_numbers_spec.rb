@@ -127,7 +127,14 @@ RSpec.describe "Phone Numbers" do
 
   it "Show a phone number" do
     carrier = create(:carrier)
-    phone_number = create(:phone_number, number: "12513095500", carrier:)
+    phone_number = create(
+      :phone_number,
+      number: "12513095500",
+      carrier:,
+      metadata: {
+        my_custom_field: "my_custom_field_value"
+      }
+    )
     account = create(:account, carrier:, name: "Rocket Rides")
     active_plan = create(:phone_number_plan, phone_number:, account:, amount: Money.from_amount(1.15, "USD"))
     user = create(:user, :carrier, carrier:)
@@ -136,6 +143,9 @@ RSpec.describe "Phone Numbers" do
     visit dashboard_phone_number_path(phone_number)
 
     expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_content("my_custom_field")
+    expect(page).to have_content("my_custom_field_value")
+
     within("#billing") do
       expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
       expect(page).to have_link("$1.15", href: dashboard_phone_number_plan_path(active_plan))

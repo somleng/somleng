@@ -314,6 +314,62 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :price)
     end
 
+    it "validates metadata" do
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                metadata: {}
+              }
+            }
+          }
+        )
+      ).to have_valid_field(:data, :attributes, :metadata)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                metadata: {
+                  foo: "bar"
+                }
+              }
+            }
+          }
+        )
+      ).to have_valid_field(:data, :attributes, :metadata)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                metadata: nil
+              }
+            }
+          }
+        )
+      ).not_to have_valid_field(:data, :attributes, :metadata)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                metadata: "foo"
+              }
+            }
+          }
+        )
+      ).not_to have_valid_field(:data, :attributes, :metadata)
+    end
+
     it "handles output for new records" do
       carrier = create(:carrier)
 
@@ -323,7 +379,10 @@ module CarrierAPI
             type: "phone_number",
             attributes: {
               number: "+855715100987",
-              type: "mobile"
+              type: "mobile",
+              metadata: {
+                foo: "bar"
+              }
             }
           }
         },
@@ -333,7 +392,8 @@ module CarrierAPI
       expect(schema.output).to eq(
         carrier:,
         number: "855715100987",
-        type: "mobile"
+        type: "mobile",
+        metadata: { "foo" => "bar" }
       )
     end
 
@@ -376,8 +436,11 @@ module CarrierAPI
       )
     end
 
-    def validate_request_schema(...)
-      PhoneNumberRequestSchema.new(...)
+    def validate_request_schema(input_params: {}, options: {})
+      options.reverse_merge!(
+        carrier: build_stubbed(:carrier)
+      )
+      PhoneNumberRequestSchema.new(input_params:, options:)
     end
   end
 end

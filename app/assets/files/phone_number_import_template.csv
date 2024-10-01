@@ -1,2 +1,2 @@
-number,type,visibility,country,price,region,locality
-16475550199,local,public,CA,1.15,ON,Toronto
+number,type,visibility,country,price,region,locality,meta_my_custom_field,meta_another_custom_field
+16475550199,local,public,CA,1.15,ON,Toronto,My custom field value,Another custom field value
