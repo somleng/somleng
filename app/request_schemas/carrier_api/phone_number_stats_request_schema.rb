@@ -56,12 +56,13 @@ module CarrierAPI
       conditions[:iso_country_code] = filter.fetch(:country) if filter.key?(:country)
       conditions[:iso_region_code] = filter.fetch(:region) if filter.key?(:region)
 
-      {
-        named_scopes: :available,
-        conditions:,
-        groups: context.fetch(:groups),
-        having: params.fetch(:having)
-      }
+      result = {}
+
+      result[:named_scopes] = :available
+      result[:conditions] = conditions
+      result[:groups] = context.fetch(:groups)
+      result[:having] = params.fetch(:having) if params.key?(:having)
+      result
     end
 
     private
