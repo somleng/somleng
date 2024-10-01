@@ -40,6 +40,11 @@ resource "Phone Numbers", document: :carrier_api do
         "The locality or city of this phone number's location.",
         required: false
       )
+      parameter(
+        :metadata,
+        "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+        required: false
+      )
     end
 
     example "1. Create a phone number" do
