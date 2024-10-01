@@ -39,10 +39,10 @@ Rails.application.routes.draw do
 
         resources :phone_calls, only: %i[index show update]
         resources :messages, only: %i[index show update]
-        resources :phone_numbers, only: %i[index create show update destroy]
-        namespace :phone_number_inventory do
+        namespace :phone_numbers do
           resources :stats, only: :index
         end
+        resources :phone_numbers, only: %i[index create show update destroy]
       end
     end
 

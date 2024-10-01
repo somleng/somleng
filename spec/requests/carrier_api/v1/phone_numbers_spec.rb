@@ -42,7 +42,7 @@ resource "Phone Numbers", document: :carrier_api do
       )
     end
 
-    example "Create a phone number" do
+    example "1. Create a phone number" do
       carrier = create(:carrier, country_code: "KH")
 
       set_carrier_api_authorization_header(carrier)
@@ -111,7 +111,7 @@ resource "Phone Numbers", document: :carrier_api do
       )
     end
 
-    example "Update a phone number" do
+    example "2. Update a phone number" do
       carrier = create(:carrier, billing_currency: "CAD")
       phone_number = create(
         :phone_number,
@@ -154,7 +154,7 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   get "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
-    example "Retrieve a phone number" do
+    example "3. Retrieve a phone number" do
       carrier = create(:carrier)
       phone_number = create(:phone_number, carrier:)
 
@@ -167,7 +167,7 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   get "https://api.somleng.org/carrier/v1/phone_numbers" do
-    example "List all phone numbers" do
+    example "4. List all phone numbers" do
       carrier = create(:carrier)
       phone_numbers = create_list(:phone_number, 2, carrier:)
       _other_phone_number = create(:phone_number)
@@ -182,7 +182,7 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   delete "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
-    example "Delete a phone number" do
+    example "5. Delete a phone number" do
       carrier = create(:carrier)
       phone_number = create(:phone_number, carrier:)
       create(:phone_call, :inbound, phone_number:, carrier:)
@@ -191,6 +191,100 @@ resource "Phone Numbers", document: :carrier_api do
       do_request(id: phone_number.id)
 
       expect(response_status).to eq(204)
+    end
+  end
+
+  get "https://api.somleng.org/carrier/v1/phone_numbers/stats" do
+    with_options scope: :filter do
+      parameter(
+        :available, "Return only available phone numbers. Must be `true`",
+        required: true
+      )
+      parameter(
+        :type, "The phone number type. Must be `local`",
+        required: true
+      )
+      parameter(
+        :country, "The ISO country code. E.g. `US`",
+        required: false
+      )
+      parameter(
+        :region, "The ISO region code. E.g. `AK`",
+        required: false
+      )
+      parameter(
+        :locality, "The locality or city name. e.g. `Little Rock`",
+        required: false
+      )
+    end
+
+    parameter(
+      :group_by,
+      "An array of fields to group by. Must be `['country', 'locality', 'region']`",
+      reguired: true
+    )
+
+    with_options scope: [ :having, :count ] do
+      parameter(
+        :operator, "One of `eq`, `neq`, `gt`, `gteq`, `lt`, `lteq`"
+      )
+      parameter(
+        :value, "The value of the count. Must be an integer greater than or equal to 0"
+      )
+    end
+
+    example "6. Get number of available phone numbers per locality having a count less than 2" do
+      carrier = create(:carrier)
+      create(:phone_number, carrier:, type: :local, number: "12513095500", iso_country_code: "US", iso_region_code: "AK", locality: "Little Rock")
+      create(:phone_number, carrier:, type: :local, number: "12513095502", iso_country_code: "US", iso_region_code: "AL", locality: "Tuscaloosa")
+      create(:phone_number, carrier:, type: :local, number: "12513095503", iso_country_code: "US", iso_region_code: "AL", locality: "Birmingham")
+      create(:phone_number, carrier:, type: :local, number: "12513095504", iso_country_code: "US", iso_region_code: "AL", locality: "Huntsville")
+
+      set_carrier_api_authorization_header(carrier)
+      do_request(
+        filter: {
+          available: true,
+          type: :local,
+          country: "US",
+          region: "AL"
+        },
+        group_by: [ "country", "region", "locality" ],
+        having: {
+          count: { lt: 2 }
+        },
+        page: {
+          after: AggregateData::IDGenerator.new.generate_id([ "US", "Birmingham", "AL" ])
+        }
+      )
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_jsonapi_resource_collection_schema("carrier_api/aggregate_data")
+      statistics = json_response.fetch("data").map { |data| data.dig("attributes", "statistic") }
+      expect(statistics).to eq(
+        [
+          {
+            "country" => "US",
+            "region" => "AL",
+            "locality" => "Huntsville",
+            "value" => 1
+          },
+          {
+            "country" => "US",
+            "region" => "AL",
+            "locality" => "Tuscaloosa",
+            "value" => 1
+          }
+        ]
+      )
+    end
+
+    example "Handles invalid requests", document: false do
+      carrier = create(:carrier)
+
+      set_carrier_api_authorization_header(carrier)
+      do_request
+
+      expect(response_status).to eq(400)
     end
   end
 end

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module CarrierAPI
-  RSpec.describe PhoneNumberInventoryStatsRequestSchema, type: :request_schema do
+  RSpec.describe PhoneNumberStatsRequestSchema, type: :request_schema do
     it "validates the filter type" do
       expect(
         validate_request_schema(
@@ -134,7 +134,7 @@ module CarrierAPI
     end
 
     def validate_request_schema(...)
-      PhoneNumberInventoryStatsRequestSchema.new(...)
+      PhoneNumberStatsRequestSchema.new(...)
     end
   end
 end

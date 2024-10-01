@@ -1,10 +1,10 @@
 module CarrierAPI
   module V1
-    module PhoneNumberInventory
+    module PhoneNumbers
       class StatsController < CarrierAPIController
         def index
           validate_request_schema(
-            with: PhoneNumberInventoryStatsRequestSchema,
+            with: PhoneNumberStatsRequestSchema,
             input_params: request.query_parameters,
             **serializer_options
           ) do |permitted_params|

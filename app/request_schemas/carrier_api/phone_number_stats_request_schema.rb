@@ -1,5 +1,5 @@
 module CarrierAPI
-  class PhoneNumberInventoryStatsRequestSchema < ApplicationRequestSchema
+  class PhoneNumberStatsRequestSchema < ApplicationRequestSchema
     Group = Struct.new(:name, :column, keyword_init: true)
 
     COUNTRY_GROUP = Group.new(name: "country", column: :iso_country_code)
