@@ -243,7 +243,7 @@ resource "Phone Numbers", document: :carrier_api do
 
     parameter(
       :group_by,
-      "An array of fields to group by. Must be `['country', 'locality', 'region']`",
+      "An array of fields to group by. Must be `['country', 'region', 'locality']`",
       required: true
     )
 
