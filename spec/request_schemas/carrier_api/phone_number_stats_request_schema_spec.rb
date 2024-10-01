@@ -113,9 +113,11 @@ module CarrierAPI
         input_params: {
           filter: {
             available: true,
-            type: "local"
+            type: "local",
+            country: "US",
+            region: "AL",
           },
-          group_by: [ "country", "region", "locality" ]
+          group_by: [ "locality", "country", "region" ]
         }
       )
 
@@ -123,10 +125,14 @@ module CarrierAPI
 
       expect(result).to include(
         named_scopes: :available,
-        conditions: { type: "local" }
+        conditions: {
+          type: "local",
+          iso_country_code: "US",
+          iso_region_code: "AL"
+        }
       )
 
-      expect(result.fetch(:groups).map(&:name)).to eq([ "country", "locality", "region" ])
+      expect(result.fetch(:groups).map(&:name)).to eq([ "country", "region", "locality" ])
     end
 
     it "handles post processing of having clause" do
@@ -134,9 +140,7 @@ module CarrierAPI
         input_params: {
           filter: {
             available: true,
-            type: "local",
-            country: "US",
-            region: "AL"
+            type: "local"
           },
           group_by: [ "country", "region", "locality" ],
           having: { count: { lt: 2 } }
@@ -145,13 +149,7 @@ module CarrierAPI
 
       result = schema.output
 
-      expect(result).to include(
-        named_scopes: :available,
-        conditions: { type: "local", iso_country_code: "US", iso_region_code: "AL" },
-        having: { count: { lt: 2 } }
-      )
-
-      expect(result.fetch(:groups).map(&:name)).to eq([ "country", "locality", "region" ])
+      expect(result).to include(having: { count: { lt: 2 } })
     end
 
     def validate_request_schema(...)
