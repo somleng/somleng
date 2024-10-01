@@ -9,7 +9,7 @@ module CarrierAPI
     GROUPS = [ COUNTRY_GROUP, REGION_GROUP, LOCALITY_GROUP ].freeze
 
     VALID_GROUP_BY_OPTIONS = [
-      [ COUNTRY_GROUP, LOCALITY_GROUP, REGION_GROUP ]
+      [ COUNTRY_GROUP, REGION_GROUP, LOCALITY_GROUP ]
     ]
 
     def self.error_serializer_class
@@ -68,7 +68,7 @@ module CarrierAPI
     private
 
     def find_groups(group_names)
-      VALID_GROUP_BY_OPTIONS.find { |group_list| group_list.map(&:name) == group_names.sort }
+      VALID_GROUP_BY_OPTIONS.find { |group_list| group_list.map(&:name).sort == group_names.sort }
     end
   end
 end

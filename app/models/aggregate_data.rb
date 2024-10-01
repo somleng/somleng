@@ -1,7 +1,7 @@
 class AggregateData
   class IDGenerator
     def generate_id(key)
-      Digest::SHA256.hexdigest(key.map(&:downcase).join(":"))
+      Digest::SHA256.hexdigest(key.reject(&:blank?).map(&:downcase).join(":"))
     end
   end
 
