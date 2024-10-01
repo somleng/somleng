@@ -244,7 +244,7 @@ resource "Phone Numbers", document: :carrier_api do
     parameter(
       :group_by,
       "An array of fields to group by. Must be `['country', 'locality', 'region']`",
-      reguired: true
+      required: true
     )
 
     with_options scope: [ :having, :count ] do
