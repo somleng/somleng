@@ -120,6 +120,12 @@ resource "Phone Numbers", document: :carrier_api do
         "The price for the phone number in the billing currency of the carrier.",
         required: false
       )
+
+      parameter(
+        :metadata,
+        "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
+        required: false
+      )
     end
 
     example "2. Update a phone number" do
@@ -145,7 +151,10 @@ resource "Phone Numbers", document: :carrier_api do
             country: "US",
             price: "1.15",
             region: "AK",
-            locality: "Little Rock"
+            locality: "Little Rock",
+            metadata: {
+              my_custom_field: "my_custom_field_value"
+            }
           }
         }
       )
@@ -159,7 +168,10 @@ resource "Phone Numbers", document: :carrier_api do
         "price" => "1.15",
         "currency" => "CAD",
         "region" => "AK",
-        "locality" => "Little Rock"
+        "locality" => "Little Rock",
+        "metadata" => {
+          "my_custom_field" => "my_custom_field_value"
+        }
       )
     end
   end
