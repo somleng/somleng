@@ -39,7 +39,9 @@ RSpec.describe ImportPhoneNumber do
         country: "CA",
         price: "1.15",
         region: "ON ",
-        locality: "   Kitchener   Waterloo "
+        locality: "   Kitchener   Waterloo ",
+        meta_my_custom_field: "   My custom  field  value   ",
+        meta_another_custom_field: "   Another   custom   field  value   "
       }
     )
 
@@ -49,7 +51,11 @@ RSpec.describe ImportPhoneNumber do
       country: ISO3166::Country.new("CA"),
       price: Money.from_amount(1.15, "CAD"),
       iso_region_code: "ON",
-      locality: "Kitchener Waterloo"
+      locality: "Kitchener Waterloo",
+      metadata: {
+        "my_custom_field" => "My custom field value",
+        "another_custom_field" => "Another custom field value"
+      }
     )
   end
 
@@ -131,7 +137,7 @@ RSpec.describe ImportPhoneNumber do
 
   it "fails to delete a number if other attributes are given" do
     import = create_import
-    phone_number = create(
+    create(
       :phone_number,
       number: "12513095542",
       carrier: import.carrier
@@ -151,7 +157,7 @@ RSpec.describe ImportPhoneNumber do
 
   it "fails to delete a number not explicitly marked for deletion" do
     import = create_import
-    phone_number = create(
+    create(
       :phone_number,
       number: "12513095542",
       carrier: import.carrier
@@ -184,7 +190,7 @@ RSpec.describe ImportPhoneNumber do
   it "fails to delete a phone number with an active plan" do
     import = create_import
     account = create(:account, carrier: import.carrier)
-    phone_number = create(
+    create(
       :phone_number,
       :assigned,
       account:,

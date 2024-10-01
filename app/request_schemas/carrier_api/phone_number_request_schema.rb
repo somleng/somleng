@@ -45,6 +45,7 @@ module CarrierAPI
           optional(:price).filled(:decimal, gteq?: 0)
           optional(:region).filled(:str?)
           optional(:locality).filled(:str?)
+          optional(:metadata).value(:hash)
         end
       end
     end
@@ -101,6 +102,7 @@ module CarrierAPI
       result[:price] = Money.from_amount(params.fetch(:price), carrier.billing_currency) if params.key?(:price)
       result[:iso_region_code] = params.fetch(:region) if params.key?(:region)
       result[:locality] = params.fetch(:locality) if params.key?(:locality)
+      result[:metadata] = params.fetch(:metadata) if params.key?(:metadata)
       result
     end
   end

@@ -113,6 +113,27 @@ module CarrierAPI
         input_params: {
           filter: {
             available: true,
+            type: "local"
+          },
+          group_by: [ "country", "region", "locality" ]
+        }
+      )
+
+      result = schema.output
+
+      expect(result).to include(
+        named_scopes: :available,
+        conditions: { type: "local" }
+      )
+
+      expect(result.fetch(:groups).map(&:name)).to eq([ "country", "locality", "region" ])
+    end
+
+    it "handles post processing of having clause" do
+      schema = validate_request_schema(
+        input_params: {
+          filter: {
+            available: true,
             type: "local",
             country: "US",
             region: "AL"

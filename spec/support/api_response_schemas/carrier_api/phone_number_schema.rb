@@ -11,6 +11,7 @@ module APIResponseSchema
         required(:type).filled(:str?, included_in?: [ "short_code", "mobile", "toll_free", "local" ])
         required(:price).filled(:str?)
         required(:currency).filled(:str?)
+        required(:metadata).maybe(:hash?)
         required(:created_at).filled(:str?)
         required(:updated_at).filled(:str?)
       end

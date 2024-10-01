@@ -27,6 +27,7 @@ class ImportPhoneNumber < ApplicationWorkflow
     phone_number.iso_country_code = sanitize(data.fetch(:country)) if data[:country].present?
     phone_number.iso_region_code = sanitize(data.fetch(:region)) if data[:region].present?
     phone_number.locality = sanitize(data.fetch(:locality)) if data[:locality].present?
+    phone_number.metadata = extract_metadata(data)
 
     phone_number.save!
     phone_number
@@ -48,7 +49,7 @@ class ImportPhoneNumber < ApplicationWorkflow
   end
 
   def sanitize(data)
-    data.squish
+    data.to_s.squish.presence
   end
 
   def marked_for_deletion?
@@ -57,5 +58,11 @@ class ImportPhoneNumber < ApplicationWorkflow
     raise Error.new("must contain only 'number' and 'marked_for_deletion'") if data.keys.difference([ "number", "marked_for_deletion" ]).any?
 
     true
+  end
+
+  def extract_metadata(data)
+    data.select { |k, _v| k.start_with?("meta_") }
+        .transform_keys { |k| k.delete_prefix("meta_") }
+        .transform_values { |v| sanitize(v) }
   end
 end

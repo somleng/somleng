@@ -17,6 +17,13 @@
         <h5 class="card-title">General</h5>
 
         <%= f.attribute :number, value: phone_number.number_formatted  %>
+        <% if phone_number.metadata.present? %>
+          <%= f.attribute :metadata do %>
+            <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>
+          <% end %>
+        <% else %>
+          <%= f.attribute :metadata %>
+        <% end %>
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
       </div>
