@@ -5,7 +5,7 @@ class APIDocumentationClient < RspecApiDocumentation::RackTestClient
     attr_accessor :content_type, :docs_group
 
     def post
-      super unless content_type == "application/x-www-form-urlencoded"
+      return super unless content_type == "application/x-www-form-urlencoded"
 
       post_data = Rack::Utils.parse_query(data).each_with_object([]) do |(key, value), result|
         result << "--data-urlencode \"#{key}=#{value}\""

@@ -1,10 +1,11 @@
 class JSONAPIPagination
-  attr_reader :paginated_collection, :resources, :original_uri, :params
+  attr_reader :paginated_collection, :resources, :original_uri, :params, :pagination_options
 
-  def initialize(resources, original_url)
+  def initialize(resources, original_url, **options)
     @resources = resources
     @original_uri = URI.parse(original_url)
     @params = parse_params
+    @pagination_options = options.fetch(:pagination_options, {})
     @paginated_collection = paginate_resources
   end
 
@@ -39,7 +40,7 @@ class JSONAPIPagination
       resources,
       page_options: page_params.slice(:before, :after, :size),
       paginator_options: {
-        order_key: :sequence_number
+        order_key: :sequence_number, **pagination_options
       }
     )
   end

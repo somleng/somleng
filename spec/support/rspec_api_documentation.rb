@@ -3,7 +3,7 @@ require "rspec_api_documentation/dsl"
 RspecApiDocumentation.configure do |config|
   config.api_name = "Somleng API Documentation"
 
-  config.format = [ :slate ]
+  config.format = [ :somleng_slate ]
   config.curl_host = ""
   config.curl_headers_to_filter = %w[Host Cookie Version]
 

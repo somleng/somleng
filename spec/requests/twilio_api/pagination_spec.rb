@@ -27,7 +27,7 @@ RSpec.resource "Pagination", document: :twilio_api do
         | page              | The current page number. Zero-indexed, so the first page is 0. |
         | page_size         | How many items are in each page                                |
 
-        ** Paging Through API Resources **
+        **Paging Through API Resources**
 
         When fetching multiple pages of API results, use the provided `next_page_uri` parameter to retrieve the next page of results.
 
