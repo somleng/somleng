@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_06_052838) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -103,16 +103,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "carrier_sip_trunk_permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "carrier_id", null: false
-    t.uuid "sip_trunk_permission_id", null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["carrier_id", "sip_trunk_permission_id"], name: "idx_on_carrier_id_sip_trunk_permission_id_a60ae737bf", unique: true
-    t.index ["sequence_number"], name: "index_carrier_sip_trunk_permissions_on_sequence_number", unique: true, order: :desc
-  end
-
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.bigserial "sequence_number", null: false
@@ -201,6 +191,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
     t.index ["carrier_id"], name: "index_imports_on_carrier_id"
     t.index ["sequence_number"], name: "index_imports_on_sequence_number", unique: true, order: :desc
     t.index ["user_id"], name: "index_imports_on_user_id"
+  end
+
+  create_table "inbound_source_ip_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.inet "source_ip", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_inbound_source_ip_addresses_on_sequence_number", unique: true, order: :desc
+    t.index ["source_ip"], name: "index_inbound_source_ip_addresses_on_source_ip", unique: true
   end
 
   create_table "incoming_phone_numbers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -562,19 +561,19 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
     t.index ["sequence_number"], name: "index_recordings_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "sip_trunk_permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.inet "source_ip", null: false
+  create_table "sip_trunk_inbound_source_ip_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "sip_trunk_id", null: false
+    t.uuid "inbound_source_ip_address_id", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["sequence_number"], name: "index_sip_trunk_permissions_on_sequence_number", unique: true, order: :desc
-    t.index ["source_ip"], name: "index_sip_trunk_permissions_on_source_ip", unique: true
+    t.index ["sequence_number"], name: "index_sip_trunk_inbound_source_ip_addresses_on_sequence_number", unique: true, order: :desc
+    t.index ["sip_trunk_id", "inbound_source_ip_address_id"], name: "idx_on_sip_trunk_id_inbound_source_ip_address_id_0d96412c08", unique: true
   end
 
   create_table "sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "name", null: false
-    t.inet "inbound_source_ip"
     t.string "outbound_host"
     t.string "outbound_route_prefixes", default: [], null: false, array: true
     t.string "outbound_dial_string_prefix"
@@ -593,7 +592,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
     t.string "default_sender"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["default_sender"], name: "index_sip_trunks_on_default_sender"
-    t.index ["inbound_source_ip"], name: "index_sip_trunks_on_inbound_source_ip", unique: true
     t.index ["region"], name: "index_sip_trunks_on_region"
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
@@ -821,8 +819,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
-  add_foreign_key "carrier_sip_trunk_permissions", "carriers", on_delete: :cascade
-  add_foreign_key "carrier_sip_trunk_permissions", "sip_trunk_permissions", on_delete: :cascade
   add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "users", on_delete: :cascade
   add_foreign_key "error_logs", "accounts"
@@ -870,6 +866,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
+  add_foreign_key "sip_trunk_inbound_source_ip_addresses", "inbound_source_ip_addresses", on_delete: :cascade
+  add_foreign_key "sip_trunk_inbound_source_ip_addresses", "sip_trunks", on_delete: :cascade
   add_foreign_key "sip_trunks", "carriers"
   add_foreign_key "sms_gateway_channel_groups", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
