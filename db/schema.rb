@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_01_035940) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_06_025934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -101,6 +101,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_01_035940) do
     t.bigserial "sequence_number", null: false
     t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id", unique: true
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "carrier_sip_trunk_permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.uuid "sip_trunk_permission_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id", "sip_trunk_permission_id"], name: "idx_on_carrier_id_sip_trunk_permission_id_a60ae737bf", unique: true
+    t.index ["sequence_number"], name: "index_carrier_sip_trunk_permissions_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -552,6 +562,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_01_035940) do
     t.index ["sequence_number"], name: "index_recordings_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "sip_trunk_permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.inet "source_ip", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_sip_trunk_permissions_on_sequence_number", unique: true, order: :desc
+    t.index ["source_ip"], name: "index_sip_trunk_permissions_on_source_ip", unique: true
+  end
+
   create_table "sip_trunks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "name", null: false
@@ -802,6 +821,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_01_035940) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "carrier_sip_trunk_permissions", "carriers", on_delete: :cascade
+  add_foreign_key "carrier_sip_trunk_permissions", "sip_trunk_permissions", on_delete: :cascade
   add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "users", on_delete: :cascade
   add_foreign_key "error_logs", "accounts"

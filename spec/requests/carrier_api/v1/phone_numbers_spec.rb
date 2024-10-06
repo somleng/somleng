@@ -258,9 +258,9 @@ resource "Phone Numbers", document: :carrier_api do
 
     example "6. Get number of available phone numbers per locality having a count less than 2" do
       carrier = create(:carrier)
-      create(:phone_number, carrier:, type: :local, number: "12513095500", iso_country_code: "US", iso_region_code: "AK", locality: "Little Rock")
-      create(:phone_number, carrier:, type: :local, number: "12513095501", iso_country_code: "US", iso_region_code: "AK", locality: "Little Rock")
-      create(:phone_number, carrier:, type: :local, number: "12513095502", iso_country_code: "US", iso_region_code: "AK", locality: "Hot Springs")
+      create(:phone_number, carrier:, type: :local, number: "12513095500", iso_country_code: "US", iso_region_code: "AK", locality: "Anchorage")
+      create(:phone_number, carrier:, type: :local, number: "12513095501", iso_country_code: "US", iso_region_code: "AK", locality: "Anchorage")
+      create(:phone_number, carrier:, type: :local, number: "12513095502", iso_country_code: "US", iso_region_code: "AK", locality: "Fairbanks")
       create(:phone_number, carrier:, type: :local, number: "12513095503", iso_country_code: "US", iso_region_code: "AL", locality: "Tuscaloosa")
       create(:phone_number, carrier:, type: :local, number: "12513095504", iso_country_code: "US", iso_region_code: "AL", locality: "Birmingham")
       create(:phone_number, carrier:, type: :local, number: "12513095505", iso_country_code: "US", iso_region_code: "AL", locality: "Huntsville")
@@ -287,7 +287,7 @@ resource "Phone Numbers", document: :carrier_api do
           {
             "country" => "US",
             "region" => "AK",
-            "locality" => "Hot Springs",
+            "locality" => "Fairbanks",
             "value" => 1
           },
           {
