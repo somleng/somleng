@@ -61,7 +61,11 @@ FactoryBot.define do
     end
 
     trait :with_favicon do
-      association :favicon, factory: :active_storage_attachment, filename: "favicon-32x32.png"
+      transient do
+        filename { "favicon-32x32.png" }
+      end
+
+      favicon { association(:active_storage_attachment, filename:) }
     end
 
     trait :with_oauth_application do
