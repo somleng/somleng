@@ -1,5 +1,6 @@
 FactoryBot.define do
   sequence(:phone_number, "855972345678")
+  sequence(:ip_address) { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
 
   trait :with_status_callback_url do
     status_callback_url { "https://rapidpro.ngrok.com/handle/33/" }
@@ -95,13 +96,12 @@ FactoryBot.define do
 
     trait :ip_address_authentication do
       authentication_mode { :ip_address }
-      inbound_source_ip { IPAddr.new(SecureRandom.random_number(2**32), Socket::AF_INET) }
+      inbound_source_ips { generate(:ip_address) }
       outbound_host { "sip.example.com" }
     end
 
     trait :client_credentials_authentication do
       authentication_mode { :client_credentials }
-      inbound_source_ip { nil }
       outbound_host { nil }
       outbound_plus_prefix { true }
     end
@@ -114,6 +114,15 @@ FactoryBot.define do
         )
       end
     end
+  end
+
+  factory :inbound_source_ip_address do
+    ip { generate(:ip_address) }
+  end
+
+  factory :sip_trunk_inbound_source_ip_address do
+    association :sip_trunk
+    association :inbound_source_ip_address
   end
 
   factory :sms_gateway do

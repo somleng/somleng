@@ -1,6 +1,26 @@
 require "rails_helper"
 
 RSpec.describe SIPTrunk do
+  it "handles ACL" do
+    create(:inbound_source_ip_address, ip: "2.2.2.2")
+    sip_trunk = build(:sip_trunk, inbound_source_ips: [ "96.9.66.256", "1.1.1.1", "1.1.1.1", "2.2.2.2", "3.3.3.3" ])
+    expect(sip_trunk.inbound_source_ips).to eq([ "1.1.1.1", "2.2.2.2", "3.3.3.3" ])
+
+    sip_trunk.save!
+
+    expect(SIPTrunk.find(sip_trunk.id).inbound_source_ips).to eq([ "1.1.1.1", "2.2.2.2", "3.3.3.3" ])
+
+    sip_trunk.inbound_source_ips = [ "1.1.1.1" ]
+    sip_trunk.save!
+
+    expect(SIPTrunk.find(sip_trunk.id).inbound_source_ips).to eq([ "1.1.1.1" ])
+    expect(InboundSourceIPAddress.pluck(:ip)).to contain_exactly(
+      IPAddr.new("1.1.1.1"),
+      IPAddr.new("2.2.2.2"),
+      IPAddr.new("3.3.3.3")
+    )
+  end
+
   describe "#configured_for_outbound_dialing?" do
     it "returns true for sip trunks configured for outbound dialing" do
       client_credentials_sip_trunk = build_stubbed(:sip_trunk, :client_credentials_authentication)

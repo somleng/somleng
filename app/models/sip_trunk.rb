@@ -4,7 +4,7 @@ class SIPTrunk < ApplicationRecord
   extend Enumerize
 
   has_many :phone_calls
-  has_many :sip_trunk_inbound_source_ip_addresses
+  has_many :sip_trunk_inbound_source_ip_addresses, autosave: true, dependent: :delete_all
   has_many :inbound_source_ip_addresses, through: :sip_trunk_inbound_source_ip_addresses
   belongs_to :carrier
   encrypts :password
@@ -16,6 +16,8 @@ class SIPTrunk < ApplicationRecord
   attribute :default_sender, PhoneNumberType.new
 
   before_save :generate_client_credentials
+
+  delegate :inbound_source_ips, :inbound_source_ips=, to: :acl
 
   def inbound_country
     ISO3166::Country.new(inbound_country_code) if inbound_country_code.present?
@@ -34,6 +36,17 @@ class SIPTrunk < ApplicationRecord
 
   def configured_for_outbound_dialing?
     authentication_mode.client_credentials? || outbound_host.present?
+  end
+
+  def inbound_source_ips
+    @inbound_source_ips ||= sip_trunk_inbound_source_ip_addresses.pluck(:ip)
+  end
+
+  def inbound_source_ips=(ips)
+    @inbound_source_ips = Array(ips).select { |ip| Resolv::IPv4::Regex.match?(ip) }.uniq
+    self.sip_trunk_inbound_source_ip_addresses = @inbound_source_ips.each_with_object([]) do |ip, result|
+      result << sip_trunk_inbound_source_ip_addresses.find_or_initialize_by(ip:)
+    end
   end
 
   private

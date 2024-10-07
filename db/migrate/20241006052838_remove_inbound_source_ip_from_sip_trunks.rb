@@ -3,7 +3,7 @@ class RemoveInboundSourceIPFromSIPTrunks < ActiveRecord::Migration[7.2]
     reversible do |dir|
       dir.up do
         SIPTrunk.where.not(inbound_source_ip: nil).find_each do |sip_trunk|
-          sip_trunk.inbound_source_ip_addresses.create_or_find_by!(source_ip: sip_trunk.inbound_source_ip)
+          sip_trunk.inbound_source_ips = sip_trunk.inbound_source_ip
         end
 
         remove_column(:sip_trunks, :inbound_source_ip, :inet)
@@ -11,10 +11,10 @@ class RemoveInboundSourceIPFromSIPTrunks < ActiveRecord::Migration[7.2]
 
       dir.down do
         add_column(:sip_trunks, :inbound_source_ip, :inet)
-        SIPTrunkInboundSourceIPAddress.includes(:sip_trunk, :inbound_source_ip_address).find_each do |sip_trunk_inbound_source_ip|
-          sip_trunk = sip_trunk_inbound_source_ip.sip_trunk
-          inbound_source_ip = sip_trunk_inbound_source_ip.inbound_source_ip_address.source_ip
-          sip_trunk.update_columns(inbound_source_ip:)
+
+        SIPTrunk.find_each do |sip_trunk|
+          sip_trunk_inbound_source_ip_address = sip_trunk.sip_trunk_inbound_source_ip_addresses.first
+          sip_trunk.update_columns(inbound_source_ip: sip_trunk_inbound_source_ip_address.ip)
         end
       end
     end

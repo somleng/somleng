@@ -19,7 +19,7 @@ class SIPTrunkForm
   attribute :default_sender, PhoneNumberType.new
 
   attribute :country
-  attribute :source_ip
+  attribute :source_ips, FilledArrayType.new(unique: true), default: []
 
   attribute :host
   attribute :dial_string_prefix
@@ -32,9 +32,9 @@ class SIPTrunkForm
   validates :max_channels, numericality: { greater_than: 0 }, allow_blank: true
   validates :authentication_mode, presence: true
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
-  validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
-  validate :validate_source_ip
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
+
+  validate :validate_source_ips
 
   delegate :new_record?, :persisted?, :id, to: :sip_trunk
 
@@ -96,12 +96,9 @@ class SIPTrunkForm
 
   private
 
-  def validate_source_ip
-    return if source_ip.blank?
-    return if errors[:source_ip].any?
-    return if sip_trunk.inbound_source_ip == source_ip
-    return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
-
-    errors.add(:source_ip, :taken)
+  def validate_source_ips
+    Array(source_ips).each do |ip|
+      return errors.add(:source_ips, :invalid) unless Resolv::IPv4::Regex.match?(ip)
+    end
   end
 end
