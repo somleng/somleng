@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_01_035940) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_09_135913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -522,15 +522,19 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_01_035940) do
     t.citext "iso_region_code"
     t.citext "locality"
     t.jsonb "metadata", default: {}, null: false
+    t.citext "rate_center"
+    t.string "lata"
     t.index ["area_code"], name: "index_phone_numbers_on_area_code"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["iso_country_code"], name: "index_phone_numbers_on_iso_country_code"
     t.index ["iso_region_code"], name: "index_phone_numbers_on_iso_region_code"
+    t.index ["lata"], name: "index_phone_numbers_on_lata"
     t.index ["locality"], name: "index_phone_numbers_on_locality"
     t.index ["metadata"], name: "index_phone_numbers_on_metadata", using: :gin
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true
     t.index ["number"], name: "index_phone_numbers_on_number"
     t.index ["price_cents", "currency"], name: "index_phone_numbers_on_price_cents_and_currency"
+    t.index ["rate_center"], name: "index_phone_numbers_on_rate_center"
     t.index ["sequence_number"], name: "index_phone_numbers_on_sequence_number", unique: true, order: :desc
     t.index ["type"], name: "index_phone_numbers_on_type"
     t.index ["visibility"], name: "index_phone_numbers_on_visibility"

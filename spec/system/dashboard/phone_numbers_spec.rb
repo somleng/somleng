@@ -11,10 +11,13 @@ RSpec.describe "Phone Numbers" do
       type: :local,
       created_at: Time.utc(2024, 4, 27),
       visibility: :public,
-      iso_region_code: "AK",
-      locality: "Little Rock"
+      iso_region_code: "AR",
+      locality: "Little Rock",
+      lata: "528",
+      rate_center: "LITTLEROCK"
     }
 
+    create(:phone_number, common_attributes.merge(number: "12013095500"))
     create(:phone_number, common_attributes.merge(number: "12513095500"))
     create(:phone_number, common_attributes.merge(number: "12513095501", created_at: Time.utc(2021, 10, 10)))
     create(:phone_number, common_attributes.merge(number: "12513095502", type: :mobile))
@@ -22,7 +25,7 @@ RSpec.describe "Phone Numbers" do
     create(:phone_number, common_attributes.merge(number: "12513095504", iso_country_code: "CA", iso_region_code: "ON"))
     create(:phone_number, common_attributes.merge(number: "12513095505", iso_region_code: "CA"))
     create(:phone_number, common_attributes.merge(number: "12513095506", locality: "Bentonville"))
-    create(:phone_number, common_attributes.merge(number: "12013095507"))
+    create(:phone_number, common_attributes.merge(number: "12513095507", lata: "528", rate_center: "ABERDEEN"))
 
     carrier_sign_in(user)
     visit dashboard_phone_numbers_path(
@@ -34,19 +37,22 @@ RSpec.describe "Phone Numbers" do
         assigned: false,
         visibility: "public",
         area_code: "251",
-        region: "AK",
-        locality: "Little Rock"
+        region: "AR",
+        locality: "Little Rock",
+        lata: "528",
+        rate_center: "LITTLEROCK"
       }
     )
 
     expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).not_to have_content("+1 (201) 309-5500")
     expect(page).not_to have_content("+1 (251) 309-5501")
     expect(page).not_to have_content("+1 (251) 309-5502")
     expect(page).not_to have_content("+1 (251) 309-5503")
     expect(page).not_to have_content("+1 (251) 309-5504")
     expect(page).not_to have_content("+1 (251) 309-5505")
     expect(page).not_to have_content("+1 (251) 309-5506")
-    expect(page).not_to have_content("+1 (201) 309-5507")
+    expect(page).not_to have_content("+1 (251) 309-5507")
 
     click_on("Delete")
 
@@ -67,8 +73,10 @@ RSpec.describe "Phone Numbers" do
       visibility: :public,
       type: :local,
       iso_country_code: "US",
-      iso_region_code: "AK",
-      locality: "Little Rock"
+      iso_region_code: "AR",
+      locality: "Little Rock",
+      lata: "528",
+      rate_center: "LITTLEROCK"
     )
     create(:phone_number, carrier:, number: "12513095501", visibility: :private)
 
@@ -97,8 +105,10 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("US")
     expect(page).to have_content("1.15")
     expect(page).to have_content("USD")
-    expect(page).to have_content("AK")
+    expect(page).to have_content("AR")
     expect(page).to have_content("Little Rock")
+    expect(page).to have_content("528")
+    expect(page).to have_content("LITTLEROCK")
 
     expect(page).not_to have_content("+12513095501")
   end
@@ -133,7 +143,14 @@ RSpec.describe "Phone Numbers" do
       carrier:,
       metadata: {
         my_custom_field: "my_custom_field_value"
-      }
+      },
+      type: :local,
+      visibility: :public,
+      iso_country_code: "US",
+      iso_region_code: "AR",
+      locality: "Little Rock",
+      lata: "528",
+      rate_center: "LITTLEROCK"
     )
     account = create(:account, carrier:, name: "Rocket Rides")
     active_plan = create(:phone_number_plan, phone_number:, account:, amount: Money.from_amount(1.15, "USD"))
@@ -145,6 +162,13 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("+1 (251) 309-5500")
     expect(page).to have_content("my_custom_field")
     expect(page).to have_content("my_custom_field_value")
+    expect(page).to have_content("Local")
+    expect(page).to have_content("Public")
+    expect(page).to have_content("United States of America")
+    expect(page).to have_content("Arkansas")
+    expect(page).to have_content("Little Rock")
+    expect(page).to have_content("528")
+    expect(page).to have_content("LITTLEROCK")
 
     within("#billing") do
       expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
@@ -204,12 +228,15 @@ RSpec.describe "Phone Numbers" do
     visit dashboard_phone_number_path(phone_number)
 
     click_on("Edit")
-    choices_select("Canada", from: "Country")
+
+    select("Canada", from: "Country")
     fill_in("Region", with: "ON")
     fill_in("Locality", with: "Toronto")
-    choices_select("Mobile", from: "Type")
+    select("Mobile", from: "Type")
     fill_in("Price", with: "1.15")
     choose("Private")
+    fill_in("LATA", with: "888")
+    fill_in("Rate center", with: "NEWTORONTO")
     choices_select("My Carrier Account", from: "Account")
 
     click_on("Update Phone number")
@@ -223,6 +250,8 @@ RSpec.describe "Phone Numbers" do
       expect(page).to have_content("Mobile")
       expect(page).to have_content("$1.15")
       expect(page).to have_content("Private")
+      expect(page).to have_content("888")
+      expect(page).to have_content("NEWTORONTO")
     end
 
     within("#billing") do

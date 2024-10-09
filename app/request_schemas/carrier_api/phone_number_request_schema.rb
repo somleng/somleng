@@ -14,6 +14,19 @@ module CarrierAPI
       validates :type, phone_number_type: true
     end
 
+    class LATAValidator
+      include ActiveModel::Model
+      include ActiveModel::Attributes
+
+      attribute :lata
+
+      def self.model_name
+        ActiveModel::Name.new(self, nil, name.to_s)
+      end
+
+      validates :lata, lata: true
+    end
+
     class CountryValidator
       include ActiveModel::Model
       include ActiveModel::Attributes
@@ -32,6 +45,7 @@ module CarrierAPI
 
     option :type_validator, default: -> { TypeValidator.new }
     option :country_validator, default: -> { CountryValidator.new }
+    option :lata_validator, default: -> { LATAValidator.new }
 
     params do
       required(:data).value(:hash).schema do
@@ -45,6 +59,8 @@ module CarrierAPI
           optional(:price).filled(:decimal, gteq?: 0)
           optional(:region).filled(:str?)
           optional(:locality).filled(:str?)
+          optional(:rate_center).filled(:str?)
+          optional(:lata).filled(:str?)
           optional(:metadata).value(:hash)
         end
       end
@@ -90,6 +106,15 @@ module CarrierAPI
       key.failure(type_validator.errors[:type].to_sentence)
     end
 
+    attribute_rule(:lata) do |attributes|
+      next unless key?
+
+      lata_validator.lata = attributes.fetch(:lata)
+      next if lata_validator.valid?
+
+      key.failure(lata_validator.errors[:lata].to_sentence)
+    end
+
     def output
       params = super
 
@@ -102,6 +127,8 @@ module CarrierAPI
       result[:price] = Money.from_amount(params.fetch(:price), carrier.billing_currency) if params.key?(:price)
       result[:iso_region_code] = params.fetch(:region) if params.key?(:region)
       result[:locality] = params.fetch(:locality) if params.key?(:locality)
+      result[:rate_center] = params.fetch(:rate_center).upcase if params.key?(:rate_center)
+      result[:lata] = params.fetch(:lata) if params.key?(:lata)
       result[:metadata] = params.fetch(:metadata) if params.key?(:metadata)
       result
     end

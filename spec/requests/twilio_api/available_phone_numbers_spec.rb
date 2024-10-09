@@ -26,6 +26,14 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       "InLocality",
       "*Query Parameter*: Limit results to a particular locality or city."
     )
+    parameter(
+      "InLata",
+      "*Query Parameter*: Limit results to a specific local access and transport area ([LATA](https://en.wikipedia.org/wiki/Local_access_and_transport_area)). Applies to only phone numbers in the US and Canada."
+    )
+    parameter(
+      "InRateCenter",
+      "*Query Parameter*: Limit results to a specific rate center. Requires `in_lata` to be set as well. Applies to only phone numbers in the US and Canada."
+    )
 
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumberlocal-resource
     example "1. List the available Local phone numbers for a specific country" do
@@ -155,8 +163,41 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       )
     end
 
+    example "5. Find available local phone numbers by LATA and Rate center" do
+      explanation <<~HEREDOC
+        Find available `Local` phone numbers in LATA `888` and Rate Center `NEWTORONTO`.
+      HEREDOC
+
+      account = create(:account)
+
+      common_attributes = {
+        type: :local,
+        iso_country_code: "CA",
+        carrier: account.carrier,
+        visibility: :public
+      }
+
+      create(:phone_number, common_attributes.merge(number: "16473095500", iso_region_code: "ON", locality: "Toronto", lata: "888", rate_center: "NEWTORONTO"))
+      create(:phone_number, common_attributes.merge(number: "16473095501", iso_region_code: "ON", locality: "Toronto", lata: "888", rate_center: "AGINCOURT"))
+
+      set_twilio_api_authorization_header(account)
+      do_request(AccountSid: account.id, Type: "Local", CountryCode: "CA", InLata: "888", InRateCenter: "NEWTORONTO")
+
+      expect(response_status).to eq(200)
+      expect(response_body).to match_api_response_collection_schema("twilio_api/available_phone_number")
+      expect(json_response.fetch("available_phone_numbers").count).to eq(1)
+      expect(json_response.dig("available_phone_numbers", 0)).to include(
+        "phone_number" => "+16473095500",
+        "iso_country" => "CA",
+        "region" => "ON",
+        "locality" => "Toronto",
+        "lata" => "888",
+        "rate_center" => "NEWTORONTO"
+      )
+    end
+
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumber-mobile-resource#read-multiple-availablephonenumbermobile-resources
-    example "5. List the available Mobile phone numbers for a specific country" do
+    example "6. List the available Mobile phone numbers for a specific country" do
       explanation <<~HEREDOC
         This API lets you search for `Mobile` phone numbers that are available for you to purchase.
       HEREDOC
@@ -183,7 +224,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     end
 
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumber-tollfree-resource#read-multiple-availablephonenumbertollfree-resources
-    example "6. List the available Toll Free phone numbers for a specific country" do
+    example "7. List the available Toll Free phone numbers for a specific country" do
       explanation <<~HEREDOC
         This API lets you search for `TollFree` phone numbers that are available for you to purchase.
       HEREDOC
@@ -208,7 +249,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       expect(json_response.dig("available_phone_numbers", 0, "phone_number")).to eq("+18777318091")
     end
 
-    example "7. List the available Short Code numbers for a specific country" do
+    example "8. List the available Short Code numbers for a specific country" do
       explanation <<~HEREDOC
         This API lets you search for `Short Code` phone numbers that are available for you to purchase.
       HEREDOC
@@ -250,7 +291,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumber-resource#read-a-list-of-countries
-    example "8. Read a list of countries" do
+    example "9. Read a list of countries" do
       explanation <<~HEREDOC
         You can query the `AvailablePhoneNumbers` to get a list of `subresources` available for your account by ISO Country.
         This API gets the subresources available for all supported countries.
@@ -292,7 +333,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumberlocal-resource#read-multiple-availablephonenumberlocal-resources
-    example "9. Fetch a specific country" do
+    example "10. Fetch a specific country" do
       explanation <<~HEREDOC
         Fetch the `subresources` available for a specific country. The `subresources` will contain a list of endpoints which can be used to fetch
         available phone numbers for that country.

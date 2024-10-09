@@ -35,6 +35,18 @@
       )
     %>
 
+    <%= form.text_field_tag(
+        :lata,
+        params.dig(:filter, :lata)
+      )
+    %>
+
+    <%= form.text_field_tag(
+        :rate_center,
+        params.dig(:filter, :rate_center)
+      )
+    %>
+
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
   <% end %>
 <% end %>

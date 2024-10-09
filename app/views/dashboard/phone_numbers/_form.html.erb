@@ -57,7 +57,9 @@
               )
             %>
           </div>
+        </div>
 
+        <div class="row">
           <div class="col-sm-6">
             <%= f.input(
               :region,
@@ -69,6 +71,22 @@
             <%= f.input(
               :locality,
               hint: "The locality or city of this phone number's location."
+            ) %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(
+              :lata,
+              hint: "Local access and transport area (LATA). Applies to only phone numbers in the US and Canada."
+            ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(
+              :rate_center,
+              hint: "Applies to only phone numbers in the US and Canada."
             ) %>
           </div>
         </div>
