@@ -22,8 +22,6 @@ module TwilioAPI
       number
     end
 
-    def lata; end
-    def rate_center; end
     def latitude; end
     def longitude; end
     def postal_code; end

@@ -19,6 +19,8 @@ class PhoneNumberForm
   attribute :country
   attribute :region
   attribute :locality
+  attribute :lata
+  attribute :rate_center
   attribute :price, :decimal, default: 0.0
   attribute :visibility
   attribute :account_id
@@ -33,6 +35,7 @@ class PhoneNumberForm
   validates :price, numericality: { greater_than_or_equal_to: 0 }
   validates :country, phone_number_country: true, allow_blank: true
   validates :region, country_subdivision: { country_attribute: :country, country_code: ->(record) { record.country } }, allow_blank: true
+  validates :lata, lata: true, allow_blank: true
 
   delegate :persisted?, :new_record?, :id, to: :phone_number
 
@@ -48,6 +51,8 @@ class PhoneNumberForm
       country: phone_number.iso_country_code,
       region: phone_number.iso_region_code,
       locality: phone_number.locality,
+      lata: phone_number.lata,
+      rate_center: phone_number.rate_center,
       type: phone_number.type,
       price: phone_number.price,
       visibility: phone_number.visibility
@@ -64,6 +69,8 @@ class PhoneNumberForm
     phone_number.iso_country_code = country if country.present?
     phone_number.iso_region_code = region.presence
     phone_number.locality = locality.presence
+    phone_number.lata = lata.presence
+    phone_number.rate_center = rate_center.to_s.upcase.presence
     phone_number.price = Money.from_amount(price, carrier.billing_currency)
 
     PhoneNumber.transaction do

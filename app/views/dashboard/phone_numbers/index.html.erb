@@ -44,6 +44,18 @@
       )
     %>
 
+    <%= form.text_field_tag(
+        :lata,
+        params.dig(:filter, :lata)
+      )
+    %>
+
+    <%= form.text_field_tag(
+        :rate_center,
+        params.dig(:filter, :rate_center)
+      )
+    %>
+
     <%= form.boolean_select(:assigned, { filter_value: params.dig(:filter, :assigned) }) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

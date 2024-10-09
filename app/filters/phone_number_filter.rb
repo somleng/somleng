@@ -32,6 +32,7 @@ class PhoneNumberFilter < ResourceFilter
     VisibilityFilter,
     :region_filter,
     :locality_filter,
+    :lata_and_rate_center_filter,
     :area_code_filter,
     :phone_number_type_filter,
     { country_filter: { attribute_name: :iso_country_code } },

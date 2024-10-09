@@ -282,6 +282,44 @@ module CarrierAPI
       ).not_to have_valid_field(:data, :attributes, :region)
     end
 
+    it "validates lata" do
+      carrier = create(:carrier)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "12513095542",
+                region: "CA",
+                country: "US",
+                lata: "730"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).to have_valid_field(:data, :attributes, :lata)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            data: {
+              type: "phone_number",
+              attributes: {
+                number: "12513095542",
+                region: "CA",
+                country: "US",
+                lata: "001"
+              }
+            }
+          },
+          options: { carrier: }
+        )
+      ).not_to have_valid_field(:data, :attributes, :lata)
+    end
+
     it "validates price" do
       carrier = create(:carrier)
 
@@ -405,8 +443,10 @@ module CarrierAPI
         carrier:,
         iso_country_code: "US",
         visibility: :private,
-        iso_region_code: "AK",
-        locality: "Little Rock"
+        iso_region_code: "AR",
+        locality: "Little Rock",
+        rate_center: "LITTLEROCK",
+        lata: "528"
       )
 
       schema = validate_request_schema(
@@ -419,7 +459,9 @@ module CarrierAPI
               type: "mobile",
               price: "1.15",
               region: "ON",
-              locality: "Toronto"
+              locality: "Toronto",
+              rate_center: "newtoronto",
+              lata: "888"
             }
           }
         },
@@ -432,7 +474,9 @@ module CarrierAPI
         type: "mobile",
         price: Money.from_amount(1.15, "CAD"),
         iso_region_code: "ON",
-        locality: "Toronto"
+        locality: "Toronto",
+        rate_center: "NEWTORONTO",
+        lata: "888"
       )
     end
 
