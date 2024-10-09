@@ -163,7 +163,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
       )
     end
 
-    example "5. Find available local phone numbers by LATA and Rate Center" do
+    example "5. Find available local phone numbers by LATA and Rate center" do
       explanation <<~HEREDOC
         Find available `Local` phone numbers in LATA `888` and Rate Center `NEWTORONTO`.
       HEREDOC
@@ -291,7 +291,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumber-resource#read-a-list-of-countries
-    example "8. Read a list of countries" do
+    example "9. Read a list of countries" do
       explanation <<~HEREDOC
         You can query the `AvailablePhoneNumbers` to get a list of `subresources` available for your account by ISO Country.
         This API gets the subresources available for all supported countries.
@@ -333,7 +333,7 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/availablephonenumberlocal-resource#read-multiple-availablephonenumberlocal-resources
-    example "9. Fetch a specific country" do
+    example "10. Fetch a specific country" do
       explanation <<~HEREDOC
         Fetch the `subresources` available for a specific country. The `subresources` will contain a list of endpoints which can be used to fetch
         available phone numbers for that country.
