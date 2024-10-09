@@ -7,7 +7,6 @@ class FilledArrayType < ActiveRecord::Type::String
   end
 
   def cast(value)
-    binding.pry
     result = Array(value).reject(&:blank?)
     result = result.uniq if unique
     result

@@ -3,7 +3,7 @@ require "rails_helper"
 module Services
   RSpec.describe InboundPhoneCallRequestSchema, type: :request_schema do
     it "validates inbound source_ip" do
-      _sip_trunk = create(:sip_trunk, inbound_source_ip: "175.100.7.240")
+      _sip_trunk = create(:sip_trunk, inbound_source_ips: [ "175.100.7.240" ])
 
       expect(
         validate_request_schema(input_params: { source_ip: "175.100.7.240" })

@@ -43,7 +43,7 @@ class SIPTrunk < ApplicationRecord
   end
 
   def inbound_source_ips=(ips)
-    @inbound_source_ips = Array(ips).select { |ip| Resolv::IPv4::Regex.match?(ip) }.uniq
+    @inbound_source_ips = Array(ips).select { |ip| ip.is_a?(IPAddr) || Resolv::IPv4::Regex.match?(ip) }.uniq
     self.sip_trunk_inbound_source_ip_addresses = @inbound_source_ips.each_with_object([]) do |ip, result|
       result << sip_trunk_inbound_source_ip_addresses.find_or_initialize_by(ip:)
     end
