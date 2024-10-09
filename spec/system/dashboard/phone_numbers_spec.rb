@@ -74,7 +74,9 @@ RSpec.describe "Phone Numbers" do
       type: :local,
       iso_country_code: "US",
       iso_region_code: "AR",
-      locality: "Little Rock"
+      locality: "Little Rock",
+      lata: "528",
+      rate_center: "LITTLEROCK"
     )
     create(:phone_number, carrier:, number: "12513095501", visibility: :private)
 
@@ -105,6 +107,8 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("USD")
     expect(page).to have_content("AR")
     expect(page).to have_content("Little Rock")
+    expect(page).to have_content("528")
+    expect(page).to have_content("LITTLEROCK")
 
     expect(page).not_to have_content("+12513095501")
   end
