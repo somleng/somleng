@@ -116,7 +116,7 @@ module TwilioAPI
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
-        from: context[:incoming_phone_number]&.number || sender&.number,
+        from: context[:incoming_phone_number]&.number || sender,
         status_callback_url:,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,
