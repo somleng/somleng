@@ -1,2 +1,2 @@
-number,type,visibility,country,price,region,locality,lata,rate_center,meta_my_custom_field,meta_another_custom_field
-16475550199,local,public,CA,1.15,ON,Toronto,888,NEWTORONTO,My custom field value,Another custom field value
+number,type,visibility,country,price,region,locality,lata,rate_center,latitude,longitude,meta_my_custom_field,meta_another_custom_field
+16475550199,local,public,CA,1.15,ON,Toronto,888,NEWTORONTO,43.6008,-79.5053,My custom field value,Another custom field value

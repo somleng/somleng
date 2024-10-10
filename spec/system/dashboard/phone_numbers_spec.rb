@@ -76,7 +76,9 @@ RSpec.describe "Phone Numbers" do
       iso_region_code: "AR",
       locality: "Little Rock",
       lata: "528",
-      rate_center: "LITTLEROCK"
+      rate_center: "LITTLEROCK",
+      latitude: "34.748463",
+      longitude: "-92.284434",
     )
     create(:phone_number, carrier:, number: "12513095501", visibility: :private)
 
@@ -109,6 +111,8 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("Little Rock")
     expect(page).to have_content("528")
     expect(page).to have_content("LITTLEROCK")
+    expect(page).to have_content("34.748463")
+    expect(page).to have_content("-92.284434")
 
     expect(page).not_to have_content("+12513095501")
   end
@@ -185,7 +189,7 @@ RSpec.describe "Phone Numbers" do
 
     click_on("New")
     fill_in("Number", with: "1294")
-    choices_select("Short code", from: "Type")
+    select("Short code", from: "Type")
     choose("Public")
     click_on("Create Phone number")
 
@@ -237,6 +241,8 @@ RSpec.describe "Phone Numbers" do
     choose("Private")
     fill_in("LATA", with: "888")
     fill_in("Rate center", with: "NEWTORONTO")
+    fill_in("Latitude", with: "43.6008")
+    fill_in("Longitude", with: "-79.5053")
     choices_select("My Carrier Account", from: "Account")
 
     click_on("Update Phone number")
@@ -252,6 +258,8 @@ RSpec.describe "Phone Numbers" do
       expect(page).to have_content("Private")
       expect(page).to have_content("888")
       expect(page).to have_content("NEWTORONTO")
+      expect(page).to have_content("43.6008")
+      expect(page).to have_content("-79.5053")
     end
 
     within("#billing") do

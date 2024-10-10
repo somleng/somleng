@@ -61,6 +61,8 @@ module CarrierAPI
           optional(:locality).filled(:str?)
           optional(:rate_center).filled(:str?)
           optional(:lata).filled(:str?)
+          optional(:latitude).filled(:decimal)
+          optional(:longitude).filled(:decimal)
           optional(:metadata).value(:hash)
         end
       end
@@ -129,6 +131,8 @@ module CarrierAPI
       result[:locality] = params.fetch(:locality) if params.key?(:locality)
       result[:rate_center] = params.fetch(:rate_center).upcase if params.key?(:rate_center)
       result[:lata] = params.fetch(:lata) if params.key?(:lata)
+      result[:latitude] = params.fetch(:latitude) if params.key?(:latitude)
+      result[:longitude] = params.fetch(:longitude) if params.key?(:longitude)
       result[:metadata] = params.fetch(:metadata) if params.key?(:metadata)
       result
     end
