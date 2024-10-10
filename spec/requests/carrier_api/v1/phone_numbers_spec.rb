@@ -42,12 +42,22 @@ resource "Phone Numbers", document: :carrier_api do
       )
       parameter(
         :lata,
-        "The [lata](https://en.wikipedia.org/wiki/Local_access_and_transport_area) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        "The [LATA](https://en.wikipedia.org/wiki/Local_access_and_transport_area) of this phone number. Applicable only to phone numbers from the US and Canada.",
         required: false
       )
       parameter(
         :rate_center,
         "The [rate center](https://en.wikipedia.org/wiki/Rate_center) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :latitude,
+        "The latitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :longitude,
+        "The longitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
         required: false
       )
       parameter(
@@ -139,12 +149,22 @@ resource "Phone Numbers", document: :carrier_api do
       )
       parameter(
         :lata,
-        "The [lata](https://en.wikipedia.org/wiki/Local_access_and_transport_area) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        "The [LATA](https://en.wikipedia.org/wiki/Local_access_and_transport_area) of this phone number. Applicable only to phone numbers from the US and Canada.",
         required: false
       )
       parameter(
         :rate_center,
         "The [rate center](https://en.wikipedia.org/wiki/Rate_center) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :latitude,
+        "The latitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :longitude,
+        "The longitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
         required: false
       )
       parameter(
@@ -180,6 +200,8 @@ resource "Phone Numbers", document: :carrier_api do
             locality: "Little Rock",
             rate_center: "LITTLEROCK",
             lata: "528",
+            latitude: "34.748463",
+            longitude: "-92.284434",
             metadata: {
               my_custom_field: "my_custom_field_value"
             }
@@ -197,7 +219,10 @@ resource "Phone Numbers", document: :carrier_api do
         "currency" => "CAD",
         "region" => "AR",
         "locality" => "Little Rock",
+        "lata" => "528",
         "rate_center" => "LITTLEROCK",
+        "latitude" => "34.748463",
+        "longitude" => "-92.284434",
         "metadata" => {
           "my_custom_field" => "my_custom_field_value"
         }

@@ -21,6 +21,8 @@ class PhoneNumberForm
   attribute :locality
   attribute :lata
   attribute :rate_center
+  attribute :latitude, :decimal, precision: 10
+  attribute :longitude, :decimal, precision: 10
   attribute :price, :decimal, default: 0.0
   attribute :visibility
   attribute :account_id
@@ -53,6 +55,8 @@ class PhoneNumberForm
       locality: phone_number.locality,
       lata: phone_number.lata,
       rate_center: phone_number.rate_center,
+      latitude: phone_number.latitude,
+      longitude: phone_number.longitude,
       type: phone_number.type,
       price: phone_number.price,
       visibility: phone_number.visibility
@@ -71,6 +75,8 @@ class PhoneNumberForm
     phone_number.locality = locality.presence
     phone_number.lata = lata.presence
     phone_number.rate_center = rate_center.to_s.upcase.presence
+    phone_number.latitude = latitude.presence
+    phone_number.longitude = longitude.presence
     phone_number.price = Money.from_amount(price, carrier.billing_currency)
 
     PhoneNumber.transaction do

@@ -11,7 +11,7 @@ module Dashboard
 
     def create
       @resource = initialize_form(
-        required_params.permit(:number, :visibility, :type, :country, :region, :locality, :lata, :rate_center, :price)
+        required_params.permit(:number, :visibility, :type, :country, :region, :locality, :lata, :rate_center, :latitude, :longitude, :price)
       )
       @resource.save
 
@@ -28,7 +28,7 @@ module Dashboard
     end
 
     def update
-      permitted_params = [ :visibility, :type, :country, :region, :locality, :lata, :rate_center, :price, :account_id ]
+      permitted_params = [ :visibility, :type, :country, :region, :locality, :lata, :rate_center, :latitude, :longitude, :price, :account_id ]
       permitted_params = required_params.permit(permitted_params)
       @resource = initialize_form(permitted_params)
       @resource.phone_number = record

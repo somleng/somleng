@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_10_070156) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -524,11 +524,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_10_070156) do
     t.jsonb "metadata", default: {}, null: false
     t.citext "rate_center"
     t.string "lata"
+    t.decimal "latitude", precision: 10, scale: 6
+    t.decimal "longitude", precision: 10, scale: 6
     t.index ["area_code"], name: "index_phone_numbers_on_area_code"
     t.index ["carrier_id"], name: "index_phone_numbers_on_carrier_id"
     t.index ["iso_country_code"], name: "index_phone_numbers_on_iso_country_code"
     t.index ["iso_region_code"], name: "index_phone_numbers_on_iso_region_code"
     t.index ["lata"], name: "index_phone_numbers_on_lata"
+    t.index ["latitude", "longitude"], name: "index_phone_numbers_on_latitude_and_longitude"
     t.index ["locality"], name: "index_phone_numbers_on_locality"
     t.index ["metadata"], name: "index_phone_numbers_on_metadata", using: :gin
     t.index ["number", "carrier_id"], name: "index_phone_numbers_on_number_and_carrier_id", unique: true

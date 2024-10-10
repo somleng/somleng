@@ -11,7 +11,9 @@ module CSVSerializer
         "region" => nil,
         "locality" => nil,
         "lata" => nil,
-        "rate_center" => nil
+        "rate_center" => nil,
+        "latitude" => nil,
+        "longitude" => nil
       )
     end
 

@@ -27,8 +27,10 @@ class ImportPhoneNumber < ApplicationWorkflow
     phone_number.iso_country_code = sanitize(data.fetch(:country)) if data[:country].present?
     phone_number.iso_region_code = sanitize(data.fetch(:region)) if data[:region].present?
     phone_number.locality = sanitize(data.fetch(:locality)) if data[:locality].present?
-    phone_number.rate_center = sanitize(data.fetch(:rate_center)).upcase if data[:rate_center].present?
     phone_number.lata = sanitize(data.fetch(:lata)) if data[:lata].present?
+    phone_number.rate_center = sanitize(data.fetch(:rate_center)).upcase if data[:rate_center].present?
+    phone_number.latitude = data.fetch(:latitude) if data[:latitude].present?
+    phone_number.longitude = data.fetch(:longitude) if data[:longitude].present?
     phone_number.metadata = extract_metadata(data)
 
     phone_number.save!
