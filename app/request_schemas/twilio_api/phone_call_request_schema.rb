@@ -80,7 +80,7 @@ module TwilioAPI
         to: params.fetch(:To),
         from: params.fetch(:From),
         incoming_phone_number: context[:incoming_phone_number],
-        phone_number: context[:incoming_phone_number]&.phone_number || sender,
+        phone_number: context[:incoming_phone_number]&.phone_number,
         caller_id:,
         voice_url: params[:Url],
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
