@@ -1,6 +1,6 @@
 module CarrierAPI
   class PhoneNumberSerializer < ResourceSerializer
-    attributes :number, :country, :visibility, :type, :locality, :metadata
+    attributes :number, :country, :visibility, :type, :locality, :rate_center, :lata, :latitude, :longitude, :metadata
 
     attribute :currency do |object|
       object.currency.iso_code

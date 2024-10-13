@@ -40,6 +40,10 @@ RSpec.describe ImportPhoneNumber do
         price: "1.15",
         region: "ON ",
         locality: "   Kitchener   Waterloo ",
+        lata: "888",
+        rate_center: "stclements",
+        latitude: "43.450436",
+        longitude: "-80.507928",
         meta_my_custom_field: "   My custom  field  value   ",
         meta_another_custom_field: "   Another   custom   field  value   "
       }
@@ -52,6 +56,10 @@ RSpec.describe ImportPhoneNumber do
       price: Money.from_amount(1.15, "CAD"),
       iso_region_code: "ON",
       locality: "Kitchener Waterloo",
+      lata: "888",
+      rate_center: "STCLEMENTS",
+      latitude: "43.450436".to_d,
+      longitude: "-80.507928".to_d,
       metadata: {
         "my_custom_field" => "My custom field value",
         "another_custom_field" => "Another custom field value"

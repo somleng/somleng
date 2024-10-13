@@ -67,7 +67,6 @@ module TwilioAPI
           to: params.fetch(:To),
           locale: params[:Locale],
           delivery_attempt: {
-            phone_number: verification_service.carrier.phone_numbers.find_by(number: context.fetch(:sender)),
             from: context.fetch(:sender)
           }
         }.compact

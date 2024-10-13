@@ -9,7 +9,11 @@ module CSVSerializer
         "price" => nil,
         "currency" => nil,
         "region" => nil,
-        "locality" => nil
+        "locality" => nil,
+        "lata" => nil,
+        "rate_center" => nil,
+        "latitude" => nil,
+        "longitude" => nil
       )
     end
 

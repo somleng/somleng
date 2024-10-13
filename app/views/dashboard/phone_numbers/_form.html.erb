@@ -57,7 +57,9 @@
               )
             %>
           </div>
+        </div>
 
+        <div class="row">
           <div class="col-sm-6">
             <%= f.input(
               :region,
@@ -80,9 +82,56 @@
                 :price,
                 as: :decimal,
                 prepend: resource.new_record? ? resource.carrier.billing_currency.symbol : resource.phone_number.currency.symbol,
-                append: resource.new_record? ? resource.carrier.billing_currency.iso_code : resource.phone_number.currency.iso_code
+                append: resource.new_record? ? resource.carrier.billing_currency.iso_code : resource.phone_number.currency.iso_code,
+                hint: "The monthly amount to charge customers for this phone number"
               )
             %>
+          </div>
+        </div>
+
+        <div class="accordion" id="more-properties-wrapper">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#more-properties" aria-expanded="true" aria-controls="more-properties">
+                More
+              </button>
+            </h2>
+
+            <div id="more-properties" class="accordion-collapse collapse" data-bs-parent="#more-properties-wrapper">
+              <div class="accordion-body">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <%= f.input(
+                      :lata,
+                      hint: "Local access and transport area (<a href=\"https://en.wikipedia.org/wiki/Local_access_and_transport_area\" target=\"_blank\">LATA</a>). Applies to only phone numbers in the US and Canada.".html_safe
+                    ) %>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <%= f.input(
+                      :rate_center,
+                      hint: "Name of the <a href=\"https://en.wikipedia.org/wiki/Rate_center\" target=\"_blank\">Rate center</a>. Applies to only phone numbers in the US and Canada.".html_safe
+                    ) %>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6">
+                    <%= f.input(
+                      :latitude,
+                      hint: "The latitude of this phone number's location. Applicable only for phone numbers from the US and Canada."
+                    ) %>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <%= f.input(
+                      :longitude,
+                      hint: "The longitude of this phone number's location. Applicable only for phone numbers from the US and Canada."
+                    ) %>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -170,10 +170,10 @@ module TwilioAPI
         )
       end
 
-      it "validates a phone number is enabled" do
+      it "requires a default sender" do
         verification_service = create(:verification_service)
         create(:phone_number, :disabled, carrier: verification_service.carrier)
-        verification_service_from_carrier_with_configured_phone_number, = create_verification_service
+        verification_service_from_carrier_with_configured_sms_gateway, = create_verification_service
 
         expect(
           validate_request_schema(
@@ -182,7 +182,7 @@ module TwilioAPI
               Channel: "sms"
             },
             options: {
-              verification_service: verification_service_from_carrier_with_configured_phone_number
+              verification_service: verification_service_from_carrier_with_configured_sms_gateway
             }
           )
         ).to have_valid_schema
@@ -203,7 +203,7 @@ module TwilioAPI
       end
 
       it "handles post processing" do
-        verification_service, phone_number = create_verification_service
+        verification_service, sms_gateway, = create_verification_service
 
         schema = validate_request_schema(
           input_params: {
@@ -220,8 +220,7 @@ module TwilioAPI
           channel: "sms",
           to: "855715100987",
           delivery_attempt: {
-            phone_number:,
-            from: phone_number.number
+            from: sms_gateway.default_sender
           }
         )
       end
@@ -270,12 +269,11 @@ module TwilioAPI
 
       def create_verification_service(attributes = {})
         verification_service = create(:verification_service, attributes)
-        phone_number = create(:phone_number, carrier: verification_service.carrier)
-        sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: phone_number.number)
+        sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: generate(:phone_number))
+        sip_trunk = create(:sip_trunk, carrier: verification_service.carrier, default_sender: generate(:phone_number))
         channel_group = create(:sms_gateway_channel_group, sms_gateway:, route_prefixes: [])
         create(:sms_gateway_channel, slot_index: 1, channel_group:, sms_gateway:)
-        create(:sip_trunk, carrier: verification_service.carrier, default_sender: phone_number.number)
-        [ verification_service, phone_number ]
+        [ verification_service, sms_gateway, sip_trunk ]
       end
     end
   end

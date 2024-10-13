@@ -60,7 +60,7 @@ class CreateVerification < ApplicationWorkflow
       },
       options: {
         account: delivery_attempt.verification.account,
-        sender: delivery_attempt.phone_number
+        sender: delivery_attempt.from
       }
     )
   end
@@ -81,14 +81,12 @@ class CreateVerification < ApplicationWorkflow
       },
       options: {
         account: delivery_attempt.verification.account,
-        sender: delivery_attempt.phone_number
+        sender: delivery_attempt.from
       }
     )
   end
 
   def check_schema!(schema)
-    return if schema.success?
-
-    raise(Error, schema.errors(full: true).map(&:text).to_sentence)
+    raise(Error, schema.errors(full: true).map(&:text).to_sentence) unless schema.success?
   end
 end

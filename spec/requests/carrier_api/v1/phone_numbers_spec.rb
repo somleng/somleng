@@ -41,6 +41,26 @@ resource "Phone Numbers", document: :carrier_api do
         required: false
       )
       parameter(
+        :lata,
+        "The [LATA](https://en.wikipedia.org/wiki/Local_access_and_transport_area) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :rate_center,
+        "The [rate center](https://en.wikipedia.org/wiki/Rate_center) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :latitude,
+        "The latitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :longitude,
+        "The longitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
         :metadata,
         "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
         required: false
@@ -99,28 +119,54 @@ resource "Phone Numbers", document: :carrier_api do
     with_options scope: %i[data attributes] do
       parameter(
         :type,
-        "Must be one of #{PhoneNumber.type.values.map { |t| "`#{t}`" }.join(", ")}.",
+        "The type of the phone number. Must be one of #{PhoneNumber.type.values.map { |t| "`#{t}`" }.join(", ")}.",
         required: false
       )
-
       parameter(
         :visibility,
         "The visibility of the phone number. Must be one of #{PhoneNumber.visibility.values.map { |v| "`#{v}`" }.join(", ")}. Defaults to `public` for phone numbers with a price and `private` for phone numbers without one",
         required: false
       )
-
       parameter(
         :country,
-        "The ISO 3166-1 alpha-2 country code of the phone number.",
+        "The ISO 3166-1 alpha-2 country code of the phone number. If not specified, it's automatically resolved from the `number` parameter, or defaults to the carrier's country code if unresolvable.",
         required: false
       )
-
       parameter(
         :price,
         "The price for the phone number in the billing currency of the carrier.",
         required: false
       )
-
+      parameter(
+        :region,
+        "The state or province abbreviation of this phone number's location.",
+        required: false
+      )
+      parameter(
+        :locality,
+        "The locality or city of this phone number's location.",
+        required: false
+      )
+      parameter(
+        :lata,
+        "The [LATA](https://en.wikipedia.org/wiki/Local_access_and_transport_area) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :rate_center,
+        "The [rate center](https://en.wikipedia.org/wiki/Rate_center) of this phone number. Applicable only to phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :latitude,
+        "The latitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
+        required: false
+      )
+      parameter(
+        :longitude,
+        "The longitude of this phone number's location. Applicable only for phone numbers from the US and Canada.",
+        required: false
+      )
       parameter(
         :metadata,
         "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format.",
@@ -150,8 +196,12 @@ resource "Phone Numbers", document: :carrier_api do
             visibility: "public",
             country: "US",
             price: "1.15",
-            region: "AK",
+            region: "AR",
             locality: "Little Rock",
+            rate_center: "LITTLEROCK",
+            lata: "528",
+            latitude: "34.748463",
+            longitude: "-92.284434",
             metadata: {
               my_custom_field: "my_custom_field_value"
             }
@@ -167,8 +217,12 @@ resource "Phone Numbers", document: :carrier_api do
         "country" => "US",
         "price" => "1.15",
         "currency" => "CAD",
-        "region" => "AK",
+        "region" => "AR",
         "locality" => "Little Rock",
+        "lata" => "528",
+        "rate_center" => "LITTLEROCK",
+        "latitude" => "34.748463",
+        "longitude" => "-92.284434",
         "metadata" => {
           "my_custom_field" => "my_custom_field_value"
         }
@@ -232,7 +286,7 @@ resource "Phone Numbers", document: :carrier_api do
         required: false
       )
       parameter(
-        :region, "The ISO region code. E.g. `AK`",
+        :region, "The ISO region code. E.g. `AR`",
         required: false
       )
       parameter(
@@ -258,9 +312,9 @@ resource "Phone Numbers", document: :carrier_api do
 
     example "6. Get number of available phone numbers per locality having a count less than 2" do
       carrier = create(:carrier)
-      create(:phone_number, carrier:, type: :local, number: "12513095500", iso_country_code: "US", iso_region_code: "AK", locality: "Anchorage")
-      create(:phone_number, carrier:, type: :local, number: "12513095501", iso_country_code: "US", iso_region_code: "AK", locality: "Anchorage")
-      create(:phone_number, carrier:, type: :local, number: "12513095502", iso_country_code: "US", iso_region_code: "AK", locality: "Fairbanks")
+      create(:phone_number, carrier:, type: :local, number: "12513095500", iso_country_code: "US", iso_region_code: "AR", locality: "Little Rock")
+      create(:phone_number, carrier:, type: :local, number: "12513095501", iso_country_code: "US", iso_region_code: "AR", locality: "Little Rock")
+      create(:phone_number, carrier:, type: :local, number: "12513095502", iso_country_code: "US", iso_region_code: "AR", locality: "Hot Springs")
       create(:phone_number, carrier:, type: :local, number: "12513095503", iso_country_code: "US", iso_region_code: "AL", locality: "Tuscaloosa")
       create(:phone_number, carrier:, type: :local, number: "12513095504", iso_country_code: "US", iso_region_code: "AL", locality: "Birmingham")
       create(:phone_number, carrier:, type: :local, number: "12513095505", iso_country_code: "US", iso_region_code: "AL", locality: "Huntsville")
@@ -286,12 +340,6 @@ resource "Phone Numbers", document: :carrier_api do
         [
           {
             "country" => "US",
-            "region" => "AK",
-            "locality" => "Fairbanks",
-            "value" => 1
-          },
-          {
-            "country" => "US",
             "region" => "AL",
             "locality" => "Birmingham",
             "value" => 1
@@ -306,6 +354,12 @@ resource "Phone Numbers", document: :carrier_api do
             "country" => "US",
             "region" => "AL",
             "locality" => "Tuscaloosa",
+            "value" => 1
+          },
+          {
+            "country" => "US",
+            "region" => "AR",
+            "locality" => "Hot Springs",
             "value" => 1
           },
           {

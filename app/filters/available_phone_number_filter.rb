@@ -5,6 +5,7 @@ class AvailablePhoneNumberFilter < ResourceFilter
     :region_filter,
     :locality_filter,
     { country_filter: { attribute_name: :iso_country_code } },
-    :number_filter
+    :number_filter,
+    :lata_and_rate_center_filter
   )
 end

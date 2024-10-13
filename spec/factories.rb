@@ -290,11 +290,12 @@ FactoryBot.define do
   factory :active_storage_attachment, class: "ActiveStorage::Blob" do
     transient do
       filename { "phone_numbers.csv" }
+      pathname { nil }
     end
 
     initialize_with do
       ActiveStorage::Blob.create_and_upload!(
-        io: File.open("#{RSpec.configuration.file_fixture_path}/#{filename}"),
+        io: pathname.present? ? pathname.open : File.open("#{RSpec.configuration.file_fixture_path}/#{filename}"),
         filename:
       )
     end
