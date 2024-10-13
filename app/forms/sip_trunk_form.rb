@@ -19,7 +19,7 @@ class SIPTrunkForm
   attribute :default_sender, PhoneNumberType.new
 
   attribute :country
-  attribute :source_ips, FilledArrayType.new(unique: true), default: []
+  attribute :source_ip_addresses, CommaSeparatedListType.new, default: []
 
   attribute :host
   attribute :dial_string_prefix
@@ -34,7 +34,7 @@ class SIPTrunkForm
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
 
-  validate :validate_source_ips
+  validate :validate_source_ip_addresses
 
   delegate :new_record?, :persisted?, :id, to: :sip_trunk
 
@@ -50,7 +50,7 @@ class SIPTrunkForm
       name: sip_trunk.name,
       max_channels: sip_trunk.max_channels,
       country: sip_trunk.inbound_country_code,
-      source_ip: sip_trunk.inbound_source_ip.presence,
+      source_ip_addresses: sip_trunk.inbound_source_ips,
       host: sip_trunk.outbound_host,
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
       national_dialing: sip_trunk.outbound_national_dialing,
@@ -75,13 +75,13 @@ class SIPTrunkForm
       name:,
       max_channels:,
       region:,
-      inbound_source_ip: source_ip,
+      inbound_source_ips: source_ip_addresses,
       inbound_country_code: country.presence,
       outbound_host: host.to_s.strip.presence,
       outbound_dial_string_prefix: dial_string_prefix.presence,
       outbound_national_dialing: national_dialing,
       outbound_plus_prefix: plus_prefix,
-      outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes),
+      outbound_route_prefixes: route_prefixes,
       default_sender:
     }
 
@@ -96,9 +96,9 @@ class SIPTrunkForm
 
   private
 
-  def validate_source_ips
-    Array(source_ips).each do |ip|
-      return errors.add(:source_ips, :invalid) unless Resolv::IPv4::Regex.match?(ip)
+  def validate_source_ip_addresses
+    Array(source_ip_addresses).each do |ip|
+      return errors.add(:source_ip_addresses, :invalid) unless Resolv::IPv4::Regex.match?(ip)
     end
   end
 end

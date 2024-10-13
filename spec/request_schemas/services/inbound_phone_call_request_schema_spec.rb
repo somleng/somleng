@@ -6,11 +6,21 @@ module Services
       _sip_trunk = create(:sip_trunk, inbound_source_ips: [ "175.100.7.240" ])
 
       expect(
-        validate_request_schema(input_params: { source_ip: "175.100.7.240" })
+        validate_request_schema(
+          input_params: {
+            source_ip: "175.100.7.240",
+            to: "85568308531"
+          }
+        )
       ).to have_valid_field(:source_ip)
 
       expect(
-        validate_request_schema(input_params: { source_ip: "175.100.7.241" })
+        validate_request_schema(
+          input_params: {
+            source_ip: "175.100.7.241",
+            to: "85568308531"
+          }
+        )
       ).not_to have_valid_schema(error_message: "175.100.7.241 doesn't exist")
     end
 
@@ -19,13 +29,21 @@ module Services
 
       expect(
         validate_request_schema(
-          input_params: { source_ip: "127.0.0.1", client_identifier: sip_trunk.username }
+          input_params: {
+            source_ip: "127.0.0.1",
+            client_identifier: sip_trunk.username,
+            to: "85568308531"
+          }
         )
       ).to have_valid_field(:client_identifier)
 
       expect(
         validate_request_schema(
-          input_params: { source_ip: "127.0.0.1", client_identifier: "invalid-user" }
+          input_params: {
+            source_ip: "127.0.0.1",
+            client_identifier: "invalid-user",
+            to: "85568308531"
+          }
         )
       ).not_to have_valid_schema(error_message: "invalid-user doesn't exist")
     end
@@ -33,7 +51,7 @@ module Services
     it "validates to" do
       carrier = create(:carrier)
       account = create(:account, carrier:)
-      sip_trunk = create(:sip_trunk, carrier:)
+      sip_trunk = create(:sip_trunk, carrier:, inbound_source_ips: "89.0.142.86")
       configured_incoming_phone_number = create(
         :incoming_phone_number, :fully_configured, account:
       )
@@ -45,7 +63,7 @@ module Services
         validate_request_schema(
           input_params: {
             to: configured_incoming_phone_number.number.to_s,
-            source_ip: sip_trunk.inbound_source_ip.to_s
+            source_ip: "89.0.142.86"
           }
         )
       ).to have_valid_field(:to)
@@ -54,7 +72,7 @@ module Services
         validate_request_schema(
           input_params: {
             to: "85516701721", # unknown number
-            source_ip: sip_trunk.inbound_source_ip.to_s
+            source_ip: "89.0.142.86"
           }
         )
       ).not_to have_valid_schema(error_message: "Phone number 85516701721 does not exist")
@@ -63,7 +81,7 @@ module Services
         validate_request_schema(
           input_params: {
             to: unconfigured_incoming_phone_number.number.to_s,
-            source_ip: sip_trunk.inbound_source_ip.to_s
+            source_ip: "89.0.142.86"
           }
         )
       ).not_to have_valid_schema(
@@ -74,14 +92,14 @@ module Services
     it "validates carrier is in good standing" do
       carrier = create_restricted_carrier
       account = create(:account, carrier:)
-      sip_trunk = create(:sip_trunk, carrier:)
+      _sip_trunk = create(:sip_trunk, carrier:, inbound_source_ips: "89.0.142.86")
       incoming_phone_number = create(:incoming_phone_number, :fully_configured, account:)
 
       expect(
         validate_request_schema(
           input_params: {
             to: incoming_phone_number.number.to_s,
-            source_ip: sip_trunk.inbound_source_ip.to_s
+            source_ip: "89.0.142.86"
           }
         )
       ).not_to have_valid_schema(
@@ -91,16 +109,17 @@ module Services
 
     it "validates from" do
       carrier = create(:carrier)
-      sip_trunk = create(:sip_trunk, carrier:)
-      sip_trunk_with_inbound_country = create(
-        :sip_trunk, carrier:, inbound_country_code: "MX"
+      create(:sip_trunk, carrier:, inbound_source_ips: "89.0.142.86")
+      create(
+        :sip_trunk, carrier:, inbound_country_code: "MX", inbound_source_ips: "89.0.142.87"
       )
 
       expect(
         validate_request_schema(
           input_params: {
             from: "abc",
-            source_ip: sip_trunk.inbound_source_ip.to_s
+            source_ip: "89.0.142.86",
+            to: "85568308531"
           }
         )
       ).not_to have_valid_field(:from)
@@ -109,7 +128,8 @@ module Services
         validate_request_schema(
           input_params: {
             from: "8188888888",
-            source_ip: sip_trunk.inbound_source_ip.to_s
+            source_ip: "89.0.142.86",
+            to: "85568308531"
           }
         )
       ).not_to have_valid_field(:from)
@@ -118,7 +138,8 @@ module Services
         validate_request_schema(
           input_params: {
             from: "018188888888",
-            source_ip: sip_trunk_with_inbound_country.inbound_source_ip.to_s
+            source_ip: "89.0.142.87",
+            to: "85568308531"
           }
         )
       ).to have_valid_field(:from)
@@ -177,7 +198,7 @@ module Services
       _sip_trunk = create(
         :sip_trunk,
         carrier:,
-        inbound_source_ip: "175.100.7.240",
+        inbound_source_ips: "175.100.7.240",
         inbound_country_code: "KH"
       )
       _incoming_phone_number = create(
@@ -205,7 +226,7 @@ module Services
       _sip_trunk = create(
         :sip_trunk,
         carrier:,
-        inbound_source_ip: "175.100.7.240",
+        inbound_source_ips: "175.100.7.240",
         inbound_country_code: "LA"
       )
       _incoming_phone_number = create(
@@ -229,7 +250,7 @@ module Services
     it "normalizes the twiml for routing to a sip domain" do
       carrier = create(:carrier)
       account = create(:account, carrier:)
-      sip_trunk = create(:sip_trunk, carrier:)
+      create(:sip_trunk, carrier:, inbound_source_ips: "89.0.142.86")
       incoming_phone_number = create(
         :incoming_phone_number,
         account:,
@@ -239,7 +260,7 @@ module Services
       )
       schema = validate_request_schema(
         input_params: {
-          source_ip: sip_trunk.inbound_source_ip.to_s,
+          source_ip: "89.0.142.86",
           to: incoming_phone_number.number.to_s,
           from: "855716100230",
           external_id: "external-id",

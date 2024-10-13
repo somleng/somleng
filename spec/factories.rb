@@ -126,7 +126,7 @@ FactoryBot.define do
 
   factory :sip_trunk_inbound_source_ip_address do
     association :sip_trunk
-    association :inbound_source_ip_address
+    ip { generate_ip_address }
   end
 
   factory :sms_gateway do

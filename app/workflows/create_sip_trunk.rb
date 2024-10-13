@@ -1,7 +1,7 @@
 class CreateSIPTrunk < ApplicationWorkflow
   attr_reader :sip_trunk, :call_service_client
 
-  delegate :inbound_source_ip, :region, :username, :password, to: :sip_trunk
+  delegate :inbound_source_ips, :region, :username, :password, to: :sip_trunk
 
   def initialize(sip_trunk, **options)
     @sip_trunk = sip_trunk
@@ -9,7 +9,7 @@ class CreateSIPTrunk < ApplicationWorkflow
   end
 
   def call
-    authorize_inbound_source_ip if inbound_source_ip.present?
+    authorize_inbound_source_ip if inbound_source_ips.present?
     create_subscriber if username.present?
   end
 

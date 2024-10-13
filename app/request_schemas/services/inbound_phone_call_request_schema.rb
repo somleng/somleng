@@ -4,6 +4,7 @@ module Services
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
            default: -> { PhoneNumberConfigurationRules.new }
+    option :sip_trunk_resolver, default: -> { SIPTrunkResolver.new }
 
     params do
       required(:to).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -15,13 +16,13 @@ module Services
       optional(:variables).maybe(:hash)
     end
 
-    rule(:client_identifier, :source_ip) do |context:|
+    rule(:client_identifier, :source_ip, :to) do |context:|
       if values[:client_identifier].present?
         source_identity = values.fetch(:client_identifier)
         context[:sip_trunk] = SIPTrunk.find_by(username: source_identity)
       else
         source_identity = values.fetch(:source_ip)
-        context[:sip_trunk] = SIPTrunk.find_by(inbound_source_ip: source_identity)
+        context[:sip_trunk] = sip_trunk_resolver.find_sip_trunk_by(source_ip: source_identity, destination_number: values[:to])
       end
 
       if context[:sip_trunk].blank?
@@ -33,7 +34,7 @@ module Services
     rule(:to) do |context:|
       next if context[:sip_trunk].blank?
 
-      context[:to] = normalize_number(value, context[:sip_trunk])
+      context[:to] = context.fetch(:sip_trunk).normalize_number(value)
       incoming_phone_numbers = context[:sip_trunk].carrier.incoming_phone_numbers.active
       context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: context[:to])
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number]) do
@@ -48,7 +49,7 @@ module Services
     rule(:from) do |context:|
       next if context[:sip_trunk].blank?
 
-      context[:from] = normalize_number(value, context[:sip_trunk])
+      context[:from] = context.fetch(:sip_trunk).normalize_number(value)
       unless phone_number_validator.valid?(context[:from])
         key.failure(
           "is invalid. It must be an E.164 formatted phone number and must include the country code"
@@ -100,13 +101,6 @@ module Services
     end
 
     private
-
-    def normalize_number(number, sip_trunk)
-      country = sip_trunk.inbound_country
-      return number if country.blank?
-
-      number.sub(/\A(?:#{country.national_prefix})/, country.country_code)
-    end
 
     def route_to_sip_domain(incoming_phone_number)
       response = Twilio::TwiML::VoiceResponse.new

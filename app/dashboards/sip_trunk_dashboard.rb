@@ -9,7 +9,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     region: Field::String,
     max_channels: Field::String,
     inbound_country_code: Field::String,
-    inbound_source_ip: Field::String.with_options(searchable: false),
+    inbound_source_ips: Field::String,
     outbound_host: Field::String,
     outbound_route_prefixes: Field::String,
     outbound_dial_string_prefix: Field::String,
@@ -22,7 +22,6 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     name
     region
-    inbound_source_ip
     outbound_host
   ].freeze
 
@@ -32,7 +31,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     name
     region
     max_channels
-    inbound_source_ip
+    inbound_source_ips
     inbound_country_code
     outbound_host
     outbound_route_prefixes

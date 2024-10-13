@@ -571,10 +571,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
   create_table "sip_trunk_inbound_source_ip_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "sip_trunk_id", null: false
     t.uuid "inbound_source_ip_address_id", null: false
+    t.uuid "carrier_id", null: false
     t.inet "ip", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_sip_trunk_inbound_source_ip_addresses_on_carrier_id"
     t.index ["ip"], name: "index_sip_trunk_inbound_source_ip_addresses_on_ip"
     t.index ["sequence_number"], name: "index_sip_trunk_inbound_source_ip_addresses_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id", "inbound_source_ip_address_id"], name: "idx_on_sip_trunk_id_inbound_source_ip_address_id_0d96412c08", unique: true
@@ -873,6 +875,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
+  add_foreign_key "sip_trunk_inbound_source_ip_addresses", "carriers", on_delete: :cascade
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "inbound_source_ip_addresses", on_delete: :cascade
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "sip_trunks", on_delete: :cascade
   add_foreign_key "sip_trunks", "carriers"

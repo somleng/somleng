@@ -63,9 +63,10 @@
         <div class="row">
           <div class="col-sm-6" data-sip-trunks-target="ipAddressAuthenticationSection">
             <%= f.input(
-                :source_ip,
-                placeholder: "175.100.7.240",
-                hint: "The source IP address for inbound calls"
+                :source_ip_addresses,
+                as: :text,
+                placeholder: "175.100.7.240, 175.100.7.241",
+                hint: "A comma separated list of source IP addresses."
               )
             %>
           </div>
@@ -107,7 +108,7 @@
               :route_prefixes,
               as: :text,
               placeholder: "#{resource.carrier.country.country_code}15, #{resource.carrier.country.country_code}16",
-              hint: "An optional comma seperated list of route prefixes. Must include the country code."
+              hint: "An optional comma separated list of route prefixes. Must include the country code."
             ) %>
           </div>
 

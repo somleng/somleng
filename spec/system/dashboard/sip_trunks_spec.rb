@@ -39,7 +39,7 @@ RSpec.describe "SIP Trunks" do
 
     fill_in("Name", with: "Main SIP Trunk")
     choose("IP address")
-    fill_in("Source IP", with: "175.100.7.240")
+    fill_in("Source IP addresses", with: "175.100.7.240, 175.100.7.241")
     select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
@@ -54,7 +54,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("South East Asia (Singapore)")
     expect(page).to have_content("13.250.230.15")
     expect(page).to have_content("IP address")
-    expect(page).to have_content("175.100.7.240")
+    expect(page).to have_content("175.100.7.240, 175.100.7.241")
     expect(page).to have_content("Mexico (52)")
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_content("Unlimited")

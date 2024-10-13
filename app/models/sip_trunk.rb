@@ -49,6 +49,12 @@ class SIPTrunk < ApplicationRecord
     end
   end
 
+  def normalize_number(number)
+    return number if inbound_country.blank?
+
+    number.sub(/\A(?:#{inbound_country.national_prefix})/, inbound_country.country_code)
+  end
+
   private
 
   def generate_client_credentials
