@@ -12,7 +12,7 @@ class SMSGatewayChannelGroupForm
   attribute :channel_group, default: -> { SMSGatewayChannelGroup.new }
   attribute :sms_gateway_id
   attribute :name
-  attribute :route_prefixes, RoutePrefixesType.new
+  attribute :route_prefixes, RoutePrefixesType.new, default: []
   attribute :channels, IntegerArrayType.new, default: []
 
   validates :name, presence: true
@@ -41,7 +41,7 @@ class SMSGatewayChannelGroupForm
 
     channel_group.name = name
     channel_group.sms_gateway ||= find_sms_gateway
-    channel_group.route_prefixes = RoutePrefixesType.new.deserialize(route_prefixes)
+    channel_group.route_prefixes = route_prefixes
 
     SMSGatewayChannelGroup.transaction do
       channel_group.save!

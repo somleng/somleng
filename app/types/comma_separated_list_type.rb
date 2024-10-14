@@ -1,9 +1,7 @@
 class CommaSeparatedListType < ActiveRecord::Type::String
   def cast(value)
-    value.to_s.split(/,\s*/).reject(&:blank?).uniq
-  end
+    return value if value.is_a?(Array)
 
-  def deserialize(value)
-    Array(value).join(", ")
+    value.to_s.split(/,\s*/).reject(&:blank?).uniq
   end
 end

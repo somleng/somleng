@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe SIPTrunk do
   it "handles ACL" do
-    create(:inbound_source_ip_address, ip: "2.2.2.2")
-    sip_trunk = build(:sip_trunk, inbound_source_ips: [ "96.9.66.256", "1.1.1.1", "1.1.1.1", "2.2.2.2", "3.3.3.3" ])
+    create(:inbound_source_ip_address, ip: "2.2.2.2", region: "helium")
+    sip_trunk = build(:sip_trunk, region: "hydrogen", inbound_source_ips: [ "96.9.66.256", "1.1.1.1", "1.1.1.1", "2.2.2.2", "3.3.3.3" ])
     expect(sip_trunk.inbound_source_ips).to eq([ "1.1.1.1", "2.2.2.2", "3.3.3.3" ])
 
     sip_trunk.save!
@@ -14,11 +14,10 @@ RSpec.describe SIPTrunk do
     sip_trunk.save!
 
     expect(SIPTrunk.find(sip_trunk.id).inbound_source_ips).to eq([ "1.1.1.1" ])
-    expect(InboundSourceIPAddress.pluck(:ip)).to contain_exactly(
-      IPAddr.new("1.1.1.1"),
-      IPAddr.new("2.2.2.2"),
-      IPAddr.new("3.3.3.3")
-    )
+    expect(InboundSourceIPAddress.count).to eq(3)
+    expect(InboundSourceIPAddress.find_by(ip: "1.1.1.1").region).to eq("hydrogen")
+    expect(InboundSourceIPAddress.find_by(ip: "2.2.2.2").region).to eq("helium")
+    expect(InboundSourceIPAddress.find_by(ip: "3.3.3.3").region).to eq("hydrogen")
   end
 
   describe "#configured_for_outbound_dialing?" do

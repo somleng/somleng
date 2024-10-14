@@ -9,31 +9,24 @@
 <% end %>
 
 <div class="card-body">
-  <%= show_for(@resource) do |f| %>
+  <% channel_group = @resource.decorated %>
+  <%= show_for(channel_group) do |f| %>
     <%= f.attribute :name %>
     <%= f.attribute :sms_gateway do %>
-      <%= external_link_to(@resource.sms_gateway.name, dashboard_sms_gateway_path(@resource.sms_gateway)) %>
+      <%= external_link_to(channel_group.sms_gateway.name, dashboard_sms_gateway_path(channel_group.sms_gateway)) %>
     <% end %>
 
-    <% if @resource.configured_channel_slots.any? %>
+    <% if channel_group.configured_channel_slots.any? %>
       <%= f.attribute :configured_channels do %>
-        <%= "#{@resource.configured_channel_slots.size} of #{@resource.sms_gateway.max_channels || 'Unlimited'}" %>
+        <%= "#{channel_group.configured_channel_slots.size} of #{channel_group.sms_gateway.max_channels || 'Unlimited'}" %>
       <% end %>
     <% else %>
       <%= f.attribute :configured_channels, value: nil %>
     <% end %>
 
-    <%= f.attribute :channels, value: @resource.configured_channel_slots.join(", ")  %>
-
-    <% if @resource.route_prefixes.present? %>
-      <%= f.attribute :route_prefixes do %>
-        <%= RoutePrefixesType.new.cast(@resource.route_prefixes) %>
-      <% end %>
-    <% else %>
-      <%= f.attribute :route_prefixes %>
-    <% end %>
-
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+    <%= f.attribute :channels, value: channel_group.configured_channel_slots_formatted  %>
+    <%= f.attribute :route_prefixes, value: channel_group.route_prefixes_formatted %>
+    <%= f.attribute :created_at, value: local_time(channel_group.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(channel_group.updated_at) %>
   <% end %>
 </div>

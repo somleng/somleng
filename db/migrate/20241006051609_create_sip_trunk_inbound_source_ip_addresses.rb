@@ -5,6 +5,7 @@ class CreateSIPTrunkInboundSourceIPAddresses < ActiveRecord::Migration[7.2]
       t.references :inbound_source_ip_address, type: :uuid, null: false, foreign_key: { on_delete: :cascade }, index: false
       t.references :carrier, type: :uuid, null: false, foreign_key: { on_delete: :cascade }
       t.inet :ip, null: false, index: true
+      t.string :region, null: false
 
       t.bigserial :sequence_number, null: false, index: { unique: true, order: :desc }
 

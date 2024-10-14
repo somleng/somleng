@@ -103,7 +103,7 @@ RSpec.describe "SIP Trunks" do
       :sip_trunk,
       carrier:,
       name: "My Trunk",
-      inbound_source_ip: "175.100.7.111",
+      inbound_source_ips: "175.100.7.111",
       outbound_host: "sip.example.com:5061",
       outbound_dial_string_prefix: "1234",
       outbound_national_dialing: true,
@@ -120,7 +120,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_select("Region", selected: "North America (N. Virginia, USA)")
     fill_in("Name", with: "Main Trunk")
     select("South East Asia (Singapore)", from: "Region")
-    fill_in("Source IP", with: "96.9.66.131")
+    fill_in("Source IP addresses", with: "96.9.66.131, 96.9.66.132")
     select("Cambodia", from: "Default country code")
     fill_in("Host", with: "96.9.66.132")
     fill_in("Dial string prefix", with: "")
@@ -133,7 +133,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("SIP trunk was successfully updated")
     expect(page).to have_content("Main Trunk")
     expect(page).to have_content("South East Asia (Singapore)")
-    expect(page).to have_content("96.9.66.131")
+    expect(page).to have_content("96.9.66.131, 96.9.66.132")
     expect(page).to have_content("Cambodia")
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.132")
     expect(page).not_to have_content("123456")

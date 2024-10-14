@@ -195,6 +195,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
 
   create_table "inbound_source_ip_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.inet "ip", null: false
+    t.string "region", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -573,6 +574,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
     t.uuid "inbound_source_ip_address_id", null: false
     t.uuid "carrier_id", null: false
     t.inet "ip", null: false
+    t.string "region", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

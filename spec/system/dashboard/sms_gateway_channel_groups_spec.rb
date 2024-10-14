@@ -32,14 +32,14 @@ RSpec.describe "SMS Gateway Channel Groups" do
     carrier_sign_in(user)
 
     visit(dashboard_sms_gateway_channel_groups_path)
-    click_link("New")
+    click_on("New")
 
     fill_in("Name", with: "Smart")
     choices_select("My SMS Gateway", from: "SMS gateway")
     fill_in("Route prefixes", with: "85515, 85516")
     choices_select("1", from: "Channels")
     choices_select("2", from: "Channels")
-    click_button "Create Channel group"
+    click_on "Create Channel group"
 
     expect(page).to have_content("Channel group was successfully created")
     expect(page).to have_content("Smart")
@@ -53,7 +53,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
 
     carrier_sign_in(user)
     visit new_dashboard_sms_gateway_channel_group_path
-    click_button "Create Channel group"
+    click_on "Create Channel group"
 
     expect(page).to have_content("can't be blank")
   end
@@ -72,12 +72,12 @@ RSpec.describe "SMS Gateway Channel Groups" do
     carrier_sign_in(user)
     visit dashboard_sms_gateway_channel_group_path(channel_group)
 
-    click_link("Edit")
+    click_on("Edit")
     fill_in("Name", with: "Smart")
     fill_in("Route prefixes", with: "85515")
     select("2", from: "Channels")
 
-    click_button "Update Channel group"
+    click_on "Update Channel group"
 
     expect(page).to have_content("Channel group was successfully updated")
     expect(page).to have_content("Smart")

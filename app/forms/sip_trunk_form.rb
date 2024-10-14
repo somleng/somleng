@@ -14,7 +14,7 @@ class SIPTrunkForm
   attribute :name
   attribute :max_channels
   attribute :authentication_mode
-  attribute :route_prefixes, RoutePrefixesType.new
+  attribute :route_prefixes, RoutePrefixesType.new, default: []
   attribute :region, RegionType.new
   attribute :default_sender, PhoneNumberType.new
 
@@ -50,6 +50,7 @@ class SIPTrunkForm
       name: sip_trunk.name,
       max_channels: sip_trunk.max_channels,
       country: sip_trunk.inbound_country_code,
+      region: sip_trunk.region,
       source_ip_addresses: sip_trunk.inbound_source_ips,
       host: sip_trunk.outbound_host,
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
@@ -57,7 +58,6 @@ class SIPTrunkForm
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
       default_sender: sip_trunk.default_sender,
-      region: sip_trunk.region
     )
   end
 
@@ -65,7 +65,7 @@ class SIPTrunkForm
     return false if invalid?
 
     if authentication_mode.client_credentials?
-      self.source_ip = nil
+      self.source_ip_addresses = nil
       self.host = nil
     end
 
@@ -92,6 +92,10 @@ class SIPTrunkForm
     SomlengRegion::Region.all.map do |region|
       [ region.human_name, region.alias, { data: { ip_address: region.nat_ip } } ]
     end
+  end
+
+  def source_ip_addresses_formatted
+    sip_trunk.decorated.inbound_source_ips
   end
 
   private

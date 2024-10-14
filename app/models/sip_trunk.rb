@@ -14,10 +14,12 @@ class SIPTrunk < ApplicationRecord
   attribute :username_generator, default: UsernameGenerator.new
   attribute :region, RegionType.new
   attribute :default_sender, PhoneNumberType.new
+  attribute :inbound_source_ips, IPAddressArrayType.new
 
+  before_validation :find_or_initialize_inbound_source_ip_addresses
   before_save :generate_client_credentials
 
-  delegate :inbound_source_ips, :inbound_source_ips=, to: :acl
+  validates :region, presence: true
 
   def inbound_country
     ISO3166::Country.new(inbound_country_code) if inbound_country_code.present?
@@ -39,14 +41,7 @@ class SIPTrunk < ApplicationRecord
   end
 
   def inbound_source_ips
-    @inbound_source_ips ||= sip_trunk_inbound_source_ip_addresses.pluck(:ip)
-  end
-
-  def inbound_source_ips=(ips)
-    @inbound_source_ips = Array(ips).select { |ip| ip.is_a?(IPAddr) || Resolv::IPv4::Regex.match?(ip) }.uniq
-    self.sip_trunk_inbound_source_ip_addresses = @inbound_source_ips.each_with_object([]) do |ip, result|
-      result << sip_trunk_inbound_source_ip_addresses.find_or_initialize_by(ip:)
-    end
+    super || sip_trunk_inbound_source_ip_addresses.pluck(:ip)
   end
 
   def normalize_number(number)
@@ -76,5 +71,13 @@ class SIPTrunk < ApplicationRecord
     end
 
     raise "Unable to generate unique username"
+  end
+
+  def find_or_initialize_inbound_source_ip_addresses
+    self.sip_trunk_inbound_source_ip_addresses = inbound_source_ips.map do |ip|
+      sip_trunk_inbound_source_ip_addresses.find_or_initialize_by(ip:) do |inbound_source_ip|
+        inbound_source_ip.region ||= region
+      end
+    end
   end
 end

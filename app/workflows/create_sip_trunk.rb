@@ -9,15 +9,10 @@ class CreateSIPTrunk < ApplicationWorkflow
   end
 
   def call
-    authorize_inbound_source_ip if inbound_source_ips.present?
     create_subscriber if username.present?
   end
 
   private
-
-  def authorize_inbound_source_ip
-    call_service_client.add_permission(inbound_source_ip, group_id: region.group_id)
-  end
 
   def create_subscriber
     call_service_client.create_subscriber(username:, password:)

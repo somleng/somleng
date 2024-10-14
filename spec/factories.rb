@@ -122,11 +122,14 @@ FactoryBot.define do
 
   factory :inbound_source_ip_address do
     ip { generate(:ip_address) }
+    region { "hydrogen" }
   end
 
   factory :sip_trunk_inbound_source_ip_address do
     association :sip_trunk
-    ip { generate_ip_address }
+    association :inbound_source_ip_address
+    region { inbound_source_ip_address.region }
+    ip { inbound_source_ip_address.ip }
   end
 
   factory :sms_gateway do
