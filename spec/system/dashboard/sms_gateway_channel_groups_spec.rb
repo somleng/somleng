@@ -34,6 +34,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
     visit(dashboard_sms_gateway_channel_groups_path)
     click_on("New")
 
+    expect(page).to have_field("Route prefixes", with: "")
     fill_in("Name", with: "Smart")
     choices_select("My SMS Gateway", from: "SMS gateway")
     fill_in("Route prefixes", with: "85515, 85516")

@@ -1,14 +1,10 @@
-class SMSGatewayChannelGroupDecorator < SimpleDelegator
+class SMSGatewayChannelGroupFormDecorator < SimpleDelegator
   class << self
-    delegate :model_name, :human_attribute_name, to: :SMSGatewayChannelGroup
+    delegate :model_name, :human_attribute_name, to: :SMSGatewayChannelGroupForm
   end
 
   def route_prefixes_formatted
     comma_separated_list_formatter.format(object.route_prefixes)
-  end
-
-  def configured_channel_slots_formatted
-    comma_separated_list_formatter.format(object.configured_channel_slots)
   end
 
   private

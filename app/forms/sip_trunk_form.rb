@@ -94,10 +94,6 @@ class SIPTrunkForm
     end
   end
 
-  def source_ip_addresses_formatted
-    sip_trunk.decorated.inbound_source_ips
-  end
-
   private
 
   def validate_source_ip_addresses
