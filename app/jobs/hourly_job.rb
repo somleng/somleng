@@ -4,5 +4,6 @@ class HourlyJob < ApplicationJob
   def perform
     ExecuteWorkflowJob.perform_later(ExpireInProgressPhoneCalls.to_s)
     ExecuteWorkflowJob.perform_later(ExpireInitiatingPhoneCalls.to_s)
+    ExecuteWorkflowJob.perform_later(RevokeSIPTrunkPermissions.to_s)
   end
 end

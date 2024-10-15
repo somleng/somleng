@@ -14,12 +14,12 @@ class SIPTrunkForm
   attribute :name
   attribute :max_channels
   attribute :authentication_mode
-  attribute :route_prefixes, RoutePrefixesType.new
+  attribute :route_prefixes, RoutePrefixesType.new, default: []
   attribute :region, RegionType.new
   attribute :default_sender, PhoneNumberType.new
 
   attribute :country
-  attribute :source_ip
+  attribute :source_ip_addresses, CommaSeparatedListType.new, default: []
 
   attribute :host
   attribute :dial_string_prefix
@@ -32,9 +32,9 @@ class SIPTrunkForm
   validates :max_channels, numericality: { greater_than: 0 }, allow_blank: true
   validates :authentication_mode, presence: true
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
-  validates :source_ip, format: Resolv::IPv4::Regex, allow_blank: true
-  validate :validate_source_ip
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
+
+  validate :validate_source_ip_addresses
 
   delegate :new_record?, :persisted?, :id, to: :sip_trunk
 
@@ -50,14 +50,14 @@ class SIPTrunkForm
       name: sip_trunk.name,
       max_channels: sip_trunk.max_channels,
       country: sip_trunk.inbound_country_code,
-      source_ip: sip_trunk.inbound_source_ip.presence,
+      region: sip_trunk.region,
+      source_ip_addresses: sip_trunk.inbound_source_ips,
       host: sip_trunk.outbound_host,
       dial_string_prefix: sip_trunk.outbound_dial_string_prefix,
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
       default_sender: sip_trunk.default_sender,
-      region: sip_trunk.region
     )
   end
 
@@ -65,7 +65,7 @@ class SIPTrunkForm
     return false if invalid?
 
     if authentication_mode.client_credentials?
-      self.source_ip = nil
+      self.source_ip_addresses = nil
       self.host = nil
     end
 
@@ -75,13 +75,13 @@ class SIPTrunkForm
       name:,
       max_channels:,
       region:,
-      inbound_source_ip: source_ip,
+      inbound_source_ips: source_ip_addresses,
       inbound_country_code: country.presence,
       outbound_host: host.to_s.strip.presence,
       outbound_dial_string_prefix: dial_string_prefix.presence,
       outbound_national_dialing: national_dialing,
       outbound_plus_prefix: plus_prefix,
-      outbound_route_prefixes: RoutePrefixesType.new.deserialize(route_prefixes),
+      outbound_route_prefixes: route_prefixes,
       default_sender:
     }
 
@@ -96,12 +96,9 @@ class SIPTrunkForm
 
   private
 
-  def validate_source_ip
-    return if source_ip.blank?
-    return if errors[:source_ip].any?
-    return if sip_trunk.inbound_source_ip == source_ip
-    return unless SIPTrunk.exists?(inbound_source_ip: source_ip)
-
-    errors.add(:source_ip, :taken)
+  def validate_source_ip_addresses
+    Array(source_ip_addresses).each do |ip|
+      return errors.add(:source_ip_addresses, :invalid) unless Resolv::IPv4::Regex.match?(ip)
+    end
   end
 end

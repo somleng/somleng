@@ -4,6 +4,8 @@ class SIPTrunk < ApplicationRecord
   extend Enumerize
 
   has_many :phone_calls
+  has_many :sip_trunk_inbound_source_ip_addresses, autosave: true, dependent: :delete_all
+  has_many :inbound_source_ip_addresses, through: :sip_trunk_inbound_source_ip_addresses
   belongs_to :carrier
   encrypts :password
 
@@ -12,8 +14,12 @@ class SIPTrunk < ApplicationRecord
   attribute :username_generator, default: UsernameGenerator.new
   attribute :region, RegionType.new
   attribute :default_sender, PhoneNumberType.new
+  attribute :inbound_source_ips, IPAddressArrayType.new
 
+  before_validation :find_or_initialize_inbound_source_ip_addresses
   before_save :generate_client_credentials
+
+  validates :region, presence: true
 
   def inbound_country
     ISO3166::Country.new(inbound_country_code) if inbound_country_code.present?
@@ -32,6 +38,16 @@ class SIPTrunk < ApplicationRecord
 
   def configured_for_outbound_dialing?
     authentication_mode.client_credentials? || outbound_host.present?
+  end
+
+  def inbound_source_ips
+    super || sip_trunk_inbound_source_ip_addresses.pluck(:ip)
+  end
+
+  def normalize_number(number)
+    return number if inbound_country.blank?
+
+    number.sub(/\A(?:#{inbound_country.national_prefix})/, inbound_country.country_code)
   end
 
   private
@@ -55,5 +71,13 @@ class SIPTrunk < ApplicationRecord
     end
 
     raise "Unable to generate unique username"
+  end
+
+  def find_or_initialize_inbound_source_ip_addresses
+    self.sip_trunk_inbound_source_ip_addresses = inbound_source_ips.map do |ip|
+      sip_trunk_inbound_source_ip_addresses.find_or_initialize_by(ip:) do |inbound_source_ip|
+        inbound_source_ip.region ||= region
+      end
+    end
   end
 end

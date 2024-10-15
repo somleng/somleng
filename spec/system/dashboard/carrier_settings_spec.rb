@@ -10,7 +10,7 @@ RSpec.describe "Carrier Settings" do
 
     click_on("Edit")
     fill_in("Name", with: "T-Mobile")
-    choices_select("Zambia", from: "Country")
+    select("Zambia", from: "Country")
     choices_select("Zambian Kwacha", from: "Billing currency")
     fill_in("Website", with: "https://t-mobile.example.com")
     fill_in("Webhook URL", with: "https://example.com/webhook_endpoint")
@@ -18,6 +18,7 @@ RSpec.describe "Carrier Settings" do
     fill_in("API host", with: "api.t-mobile.example.com")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
     attach_file("Favicon", file_fixture("favicon-32x32.png"))
+
     click_on("Update Carrier Settings")
 
     expect(page).to have_content("Carrier settings were successfully updated")

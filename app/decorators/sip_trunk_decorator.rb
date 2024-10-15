@@ -7,10 +7,22 @@ class SIPTrunkDecorator < SimpleDelegator
     phone_number_formatter.format(object.default_sender, format: :international)
   end
 
+  def inbound_source_ips_formatted
+    comma_separated_list_formatter.format(object.inbound_source_ips)
+  end
+
+  def outbound_route_prefixes_formatted
+    comma_separated_list_formatter.format(object.outbound_route_prefixes)
+  end
+
   private
 
   def phone_number_formatter
     @phone_number_formatter ||= PhoneNumberFormatter.new
+  end
+
+  def comma_separated_list_formatter
+    @comma_separated_list_formatter ||= CommaSeparatedListFormatter.new
   end
 
   def object

@@ -14,7 +14,7 @@ RSpec.describe "Services", :services do
         status_callback_url: "https://example.com/status_callback",
         status_callback_method: "POST"
       )
-      create(:sip_trunk, carrier:, inbound_source_ip: "175.100.7.240")
+      create(:sip_trunk, carrier:, inbound_source_ips: "175.100.7.240")
 
       post(
         api_services_inbound_phone_calls_path,
@@ -77,7 +77,7 @@ RSpec.describe "Services", :services do
       create(
         :sip_trunk,
         carrier:,
-        inbound_source_ip: "175.100.7.240",
+        inbound_source_ips: "175.100.7.240",
         inbound_country_code: "KH"
       )
 
