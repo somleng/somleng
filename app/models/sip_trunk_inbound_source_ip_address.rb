@@ -5,7 +5,7 @@ class SIPTrunkInboundSourceIPAddress < ApplicationRecord
 
   attribute :region, RegionType.new
 
-  validates :region, presence: true
+  validates :ip, :region, presence: true
 
   before_validation :set_carrier, :find_or_initialize_inbound_source_ip_address
 
