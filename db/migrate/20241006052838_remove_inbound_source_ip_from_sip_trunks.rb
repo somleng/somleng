@@ -7,6 +7,8 @@ class RemoveInboundSourceIPFromSIPTrunks < ActiveRecord::Migration[7.2]
           sip_trunk.save!
         end
 
+        raise unless InboundSourceIPAddress.count == SIPTrunk.pluck(:inbound_source_ip).count
+
         remove_column(:sip_trunks, :inbound_source_ip, :inet)
       end
 
