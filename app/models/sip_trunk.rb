@@ -5,6 +5,7 @@ class SIPTrunk < ApplicationRecord
 
   has_many :phone_calls
   has_many :sip_trunk_inbound_source_ip_addresses, autosave: true, dependent: :delete_all
+  has_many :inbound_source_ip_addresses, through: :sip_trunk_inbound_source_ip_addresses
   belongs_to :carrier
   encrypts :password
 

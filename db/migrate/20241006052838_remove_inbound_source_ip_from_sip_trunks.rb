@@ -5,6 +5,14 @@ class RemoveInboundSourceIPFromSIPTrunks < ActiveRecord::Migration[7.2]
         SIPTrunk.where.not(inbound_source_ip: nil).find_each do |sip_trunk|
           sip_trunk.inbound_source_ips = sip_trunk.inbound_source_ip
           sip_trunk.save!
+          sip_trunk.sip_trunk_inbound_source_ip_addresses.update_all(
+            created_at: sip_trunk.updated_at,
+            updated_at: sip_trunk.updated_at
+          )
+          sip_trunk.inbound_source_ip_addresses.update_all(
+            created_at: sip_trunk.updated_at,
+            updated_at: sip_trunk.updated_at
+          )
         end
 
         raise unless InboundSourceIPAddress.count == SIPTrunk.pluck(:inbound_source_ip).count
