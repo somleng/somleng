@@ -420,7 +420,7 @@ GEM
       google-protobuf (>= 3.22.3)
     pghero (3.6.1)
       activerecord (>= 6.1)
-    phony (2.20.14)
+    phony (2.20.15)
     premailer (1.27.0)
       addressable
       css_parser (>= 1.19.0)
