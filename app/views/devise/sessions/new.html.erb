@@ -21,6 +21,8 @@
 
   <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
 
+  <%= render("shared/captcha", action: :sign_in) %>
+
   <div class="row">
     <div class="col-6">
       <%= f.button :submit, "Login", class: "px-4" %>

@@ -74,7 +74,13 @@ Rails.application.routes.draw do
   end
 
   constraints(AppSubdomainConstraint.new) do
-    devise_for :users, skip: %i[registrations invitations]
+    devise_for(
+      :users,
+      skip: %i[registrations invitations],
+      controllers: {
+        sessions: "users/sessions"
+      }
+    )
 
     devise_scope :user do
       resource(

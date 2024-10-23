@@ -9,9 +9,24 @@ RSpec.describe "Authentication" do
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: user.current_otp)
-    click_button("Login")
+    click_on("Login")
 
     expect(page).to have_content("Signed in successfully")
+  end
+
+  it "Handles captcha", :js, :allow_net_connect, :captcha do
+    stub_app_settings(recaptcha_minimum_score: 1)
+    carrier = create_carrier
+    user = create(:user, :carrier, carrier:, password: "Super Secret")
+
+    visit(new_user_session_path)
+    fill_in("Email", with: user.email)
+    fill_in("Password", with: "Super Secret")
+    fill_in("OTP Code", with: user.current_otp)
+    click_on("Login")
+
+    expect(page).to have_field("Email", with: user.email)
+    expect(page).to have_xpath("//iframe[@title='reCAPTCHA']")
   end
 
   it "Requires a valid OTP" do
@@ -22,7 +37,7 @@ RSpec.describe "Authentication" do
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: "wrong-otp")
-    click_button("Login")
+    click_on("Login")
 
     expect(page).to have_content("Invalid Email or password")
   end
@@ -34,12 +49,12 @@ RSpec.describe "Authentication" do
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
-    click_button("Login")
+    click_on("Login")
 
     expect(page).to have_content("Setup Two Factor Authentication")
 
     fill_in("OTP Code", with: user.current_otp)
-    click_button("Enable")
+    click_on("Enable")
 
     expect(page).to have_content("2FA was successfully enabled")
   end
@@ -60,7 +75,7 @@ RSpec.describe "Authentication" do
 
     fill_in("Password", with: "password123")
     fill_in("Password confirmation", with: "password123")
-    click_button("Set my password")
+    click_on("Set my password")
 
     expect(page).to have_content("Setup Two Factor Authentication")
   end
@@ -81,7 +96,7 @@ RSpec.describe "Authentication" do
     visit_full_link_in_email("Accept invitation")
     fill_in("Password", with: "password123")
     fill_in("Password confirmation", with: "password123")
-    click_button("Set my password")
+    click_on("Set my password")
 
     expect(page).to have_content("Setup Two Factor Authentication")
   end
@@ -91,17 +106,17 @@ RSpec.describe "Authentication" do
     user = create(:user, :carrier, carrier:, email: "user@example.com")
 
     visit(new_user_session_path)
-    click_link("Forgot your password?")
+    click_on("Forgot your password?")
     fill_in("Email", with: user.email)
     perform_enqueued_jobs do
-      click_button("Send me reset password instructions")
+      click_on("Send me reset password instructions")
     end
 
     open_email("user@example.com")
     visit_full_link_in_email("Change my password")
     fill_in("New password", with: "Super Secret")
     fill_in("Confirm your new password", with: "Super Secret")
-    click_button("Change my password")
+    click_on("Change my password")
 
     expect(page).to have_content("Your password has been changed successfully. You are now signed in")
   end
@@ -137,7 +152,7 @@ RSpec.describe "Authentication" do
     visit(new_user_session_path)
     fill_in("Email", with: user.email)
     fill_in("Password", with: "password123")
-    click_button("Login")
+    click_on("Login")
 
     expect(page).to have_content("Invalid Email or password")
   end

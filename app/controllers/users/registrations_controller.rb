@@ -1,5 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   include UserAuthorization
+  include CaptchaHelper
 
   skip_before_action :select_account_membership!, only: %i[new create]
   skip_before_action :authorize_user!, only: %i[new create]
@@ -13,13 +14,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   self.raise_on_open_redirects = false
 
   def create
-    if verify_recaptcha(action: "sign_up", minimum_score: 0.5)
+    verify_captcha(action: :sign_up, on_failure: -> { on_captcha_failure }) do
       super do |form|
         self.resource = form.user if form.persisted?
       end
-    else
-      build_resource
-      render :new
     end
   end
 
@@ -59,5 +57,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def resolve_layout
     user_signed_in? ? "dashboard" : "devise"
+  end
+
+  def on_captcha_failure
+    build_resource(sign_up_params)
+    render(:new)
   end
 end
