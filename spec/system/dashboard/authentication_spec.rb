@@ -14,6 +14,21 @@ RSpec.describe "Authentication" do
     expect(page).to have_content("Signed in successfully")
   end
 
+  it "Handles captcha", :js, :allow_net_connect, :captcha do
+    stub_app_settings(recaptcha_minimum_score: 1)
+    carrier = create_carrier
+    user = create(:user, :carrier, carrier:, password: "Super Secret")
+
+    visit(new_user_session_path)
+    fill_in("Email", with: user.email)
+    fill_in("Password", with: "Super Secret")
+    fill_in("OTP Code", with: user.current_otp)
+    click_on("Login")
+
+    expect(page).to have_field("Email", with: user.email)
+    expect(page).to have_xpath("//iframe[@title='reCAPTCHA']")
+  end
+
   it "Requires a valid OTP" do
     carrier = create_carrier
     user = create(:user, carrier:, password: "Super Secret")

@@ -15,8 +15,9 @@ default: &default
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
   uploads_bucket: <%= ENV.fetch("UPLOADS_BUCKET", "upload-bucket") %>
   raw_recordings_bucket: <%= ENV.fetch("RAW_RECORDINGS_BUCKET", "raw-recordings-bucket") %>
-  recaptcha_site_key: <%= ENV.fetch("RECAPTCHA_SITE_KEY", "recaptcha_site_key") %>
-  recaptcha_secret_key: <%= ENV.fetch("RECAPTCHA_SECRET_KEY", "recaptcha_secret_key") %>
+  recaptcha_minimum_score: <%= ENV.fetch("RECAPTCHA_MINIMUM_SCORE", 0.9) %>
+  recaptcha_site_key: <%= ENV.fetch("RECAPTCHA_SITE_KEY", "6Ld43mkqAAAAAN81bwur1zpsqIoC1kdD3Wsc4oXz") %>
+  recaptcha_secret_key: <%= ENV.fetch("RECAPTCHA_SECRET_KEY", "6Ld43mkqAAAAAA8969tEGiE3m-UUMhnBy0va_Cu1") %>
   recaptcha_fallback_site_key: <%= ENV.fetch("RECAPTCHA_FALLBACK_SITE_KEY", "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI") %>
   recaptcha_fallback_secret_key: <%= ENV.fetch("RECAPTCHA_FALLBACK_SECRET_KEY", "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe") %>
   datawrapper_api_key: <%= ENV["DATAWRAPPER_API_KEY"] %>
