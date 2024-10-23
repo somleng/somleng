@@ -1,8 +1,6 @@
 <h1>Sign up</h1>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), wrapper: :input_group, html: { data: { controller: "sign-up", turbo: false } }) do |f| %>
-  <%= recaptcha_v3(action: "sign_up") %>
-
   <%= f.input :name, autofocus: true, prepend: "<i class='fa-solid fa-user-edit'></i>".html_safe %>
   <%= f.input :work_email, prepend: "<i class='fa-solid fa-at'></i>".html_safe %>
 
@@ -59,6 +57,7 @@
     )
   %>
 
+  <%= render("shared/captcha", action: :sign_up) %>
   <%= f.button :submit, "Sign up" %>
   <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
 <% end %>
