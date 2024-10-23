@@ -1,5 +1,3 @@
-<% logger.warn("-----Rendering captcha @show_checkbox_captcha: #{@show_checkbox_captcha}") %>
-
 <% if @show_checkbox_captcha %>
   <%= recaptcha_tags(site_key: Rails.configuration.app_settings.fetch(:recaptcha_fallback_site_key)) %>
 <% else %>
