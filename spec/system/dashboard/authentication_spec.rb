@@ -118,7 +118,14 @@ RSpec.describe "Authentication" do
     fill_in("Confirm your new password", with: "Super Secret")
     click_on("Change my password")
 
-    expect(page).to have_content("Your password has been changed successfully. You are now signed in")
+    expect(page).to have_content("Your password has been changed successfully.")
+
+    fill_in("Email", with: user.email)
+    fill_in("Password", with: "Super Secret")
+    fill_in("OTP Code", with: user.current_otp)
+    click_on("Login")
+
+    expect(page).to have_content("Signed in successfully.")
   end
 
   it "Handles users with with no account memberships" do
@@ -155,6 +162,47 @@ RSpec.describe "Authentication" do
     click_on("Login")
 
     expect(page).to have_content("Invalid Email or password")
+  end
+
+  it "Handles locking and unlocking a user" do
+    carrier = create_carrier
+    user = create(:user, :carrier, carrier:, email: "user@example.com", password: "password123")
+
+    visit(new_user_session_path)
+
+    fill_in("Email", with: "user@example.com")
+
+    5.times do
+      fill_in("Password", with: "password123")
+      fill_in("OTP Code", with: "123456")
+      perform_enqueued_jobs do
+        click_on("Login")
+      end
+    end
+
+    expect(page).to have_content("Your account is locked.")
+    expect(last_email_sent).to deliver_to("user@example.com")
+    expect(last_email_sent).to have_subject("Unlock instructions")
+
+    click_on("Didn't receive unlock instructions?")
+    fill_in("Email", with: "user@example.com")
+    perform_enqueued_jobs do
+      click_on("Resend unlock instructions")
+    end
+
+    expect(page).to have_content("You will receive an email with instructions for how to unlock your account in a few minutes.")
+
+    open_last_email_for("user@example.com")
+    visit_full_link_in_email("Unlock my account")
+
+    expect(page).to have_content("Your account has been unlocked successfully. Please sign in to continue.")
+
+    fill_in("Email", with: "user@example.com")
+    fill_in("Password", with: "password123")
+    fill_in("OTP Code", with: user.current_otp)
+    click_on("Login")
+
+    expect(page).to have_content("Signed in successfully.")
   end
 
   def create_carrier(*args)

@@ -32,10 +32,10 @@ class SIPTrunkResolver
     end
 
     def phone_number
-      PhoneNumber.find_by(
+      PhoneNumber.where(
         carrier: carriers.pluck(:carrier_id),
         number: normalized_destination_numbers
-      )
+      ).first
     end
 
     def normalized_destination_numbers
