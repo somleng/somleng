@@ -67,7 +67,7 @@ class InitiateOutboundCall < ApplicationWorkflow
   end
 
   def channels_available?
-    sip_trunk.max_channels > sip_trunk.phone_calls.in_progress_or_initiating.count
+    sip_trunk.max_channels > in_progress_calls.count
   end
 
   def sip_trunk
@@ -88,5 +88,9 @@ class InitiateOutboundCall < ApplicationWorkflow
 
   def decorated_phone_call
     @decorated_phone_call ||= PhoneCallDecorator.new(phone_call)
+  end
+
+  def in_progress_calls
+    sip_trunk.phone_calls.in_progress_or_initiating.where(created_at: 1.hour.ago..)
   end
 end
