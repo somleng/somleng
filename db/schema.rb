@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_24_051250) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -718,7 +718,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
     t.uuid "current_account_membership_id"
     t.text "otp_secret"
     t.string "subscribed_notification_topics", default: [], null: false, array: true
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "unlock_token"
+    t.datetime "locked_at"
     t.index ["carrier_id"], name: "index_users_on_carrier_id"
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["current_account_membership_id"], name: "index_users_on_current_account_membership_id"
     t.index ["email", "carrier_id"], name: "index_users_on_email_and_carrier_id", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -726,6 +730,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_10_140008) do
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sequence_number"], name: "index_users_on_sequence_number", unique: true, order: :desc
+    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
   create_table "verification_attempts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -13,4 +13,9 @@ class DeviseMailerPreview < ActionMailer::Preview
     user = User.last
     DeviseMailer.reset_password_instructions(user, "faketoken")
   end
+
+  def unlock_instructions
+    user = User.last
+    DeviseMailer.unlock_instructions(user, "faketoken")
+  end
 end

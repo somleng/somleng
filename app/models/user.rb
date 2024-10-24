@@ -24,7 +24,7 @@ class User < ApplicationRecord
 
   devise :invitable, :registerable, :confirmable,
          :recoverable, :trackable, :rememberable,
-         :two_factor_authenticatable,
+         :two_factor_authenticatable, :lockable,
          reconfirmable: true
 
   validates :email,
