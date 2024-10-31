@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe AccountForm do
   describe "validations" do
-    it "validates the owner's email does not belong to a carrier user" do
+    it "validates the owner does not have a carrier role" do
       user = create(:user, :carrier, email: "johndoe@example.com")
       form = AccountForm.new(
         carrier: user.carrier,
@@ -12,6 +12,19 @@ RSpec.describe AccountForm do
 
       expect(form).not_to be_valid
       expect(form.errors[:owner_email]).to be_present
+    end
+
+    it "allows a user to own multiple accounts" do
+      user = create(:user, :with_account_membership, email: "johndoe@example.com")
+      form = AccountForm.new(
+        carrier: user.carrier,
+        owner_name: "John Doe",
+        owner_email: "johndoe@example.com"
+      )
+
+      form.valid?
+
+      expect(form.errors[:owner_email]).to be_blank
     end
 
     it "validates the owner's email format" do

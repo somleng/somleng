@@ -86,7 +86,7 @@ class AccountForm
     return errors.add(:owner_name, :blank) if owner_email.present? && owner_name.blank?
     return errors.add(:owners_email, :invalid) if customer_managed?
 
-    errors.add(:owner_email, :taken) if User.exists?(carrier:, email: owner_email)
+    errors.add(:owner_email, :taken) if User.carrier.exists?(email: owner_email)
   end
 
   def invite_owner!
