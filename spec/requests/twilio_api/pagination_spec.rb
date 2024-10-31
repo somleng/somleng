@@ -11,7 +11,7 @@ RSpec.resource "Pagination", document: :twilio_api do
   )
 
   get "https://api.somleng.org/2010-04-01/Accounts/:AccountSid/Calls" do
-    example "1. List Resources" do
+    example "01. List Resources" do
       explanation <<~HEREDOC
         Some resources are lists of other resources.
         For example, the Calls list resource returns a list of calls. There are several important things to know about using and manipulating these lists.

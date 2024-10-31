@@ -52,7 +52,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/call-resource#create-a-call-resource
-    example "1. Create a call" do
+    example "01. Create a call" do
       explanation <<~HEREDOC
         Calls can be made via the REST API to phone numbers. To place a new outbound call, make an `HTTP POST` request to your account's Call resource.
       HEREDOC
@@ -108,7 +108,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/call-resource#fetch-a-call-resource
-    example "2. Fetch a call" do
+    example "02. Fetch a call" do
       explanation <<~HEREDOC
         This API call returns the Call resource of an individual call, identified by its `Sid`.
       HEREDOC
@@ -131,7 +131,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/call-resource#read-multiple-call-resources
-    example "3. List phone calls" do
+    example "03. List phone calls" do
       explanation <<~HEREDOC
         Return a list of phone calls made to and from an account, identified by its `AccountSid`.
       HEREDOC
@@ -191,7 +191,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-in-progress-with-twiml
-    example "4. Update a Call in progress with TwiML" do
+    example "04. Update a Call in progress with TwiML" do
       explanation <<~HEREDOC
         Updating a Call resource allows you to modify an active call.
 
@@ -221,7 +221,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
 
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a--call-in-progress-with-url
-    example "5. Update a Call in progress with URL" do
+    example "05. Update a Call in progress with URL" do
       explanation <<~HEREDOC
         This example interrupts an in-progress call and begins processing TwiML from a new URL.
       HEREDOC
@@ -245,7 +245,7 @@ RSpec.resource "Phone Calls", document: :twilio_api do
     end
 
     # https://www.twilio.com/docs/voice/api/call-resource?code-sample=code-update-a-call-resource-to-end-the-call&code-language=curl&code-sdk-version=json#update-a-call-resource-to-end-the-call
-    example "6. End a call" do
+    example "06. End a call" do
       explanation <<~HEREDOC
         This example interrupts an in-progress call and terminates it.
       HEREDOC
