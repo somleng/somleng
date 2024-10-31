@@ -17,7 +17,7 @@ RSpec.resource "Verification Services", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/service#create-a-verification-service
-    example "1. Create a Verification Service" do
+    example "01. Create a Verification Service" do
       explanation <<~HEREDOC
         A Verification Service is the set of common configurations used to create and check verifications. You can create a service with the API or in the Console.
       HEREDOC
@@ -42,7 +42,7 @@ RSpec.resource "Verification Services", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/service#fetch-a-service
-    example "2. Fetch a Service" do
+    example "02. Fetch a Service" do
       account = create(:account)
       verification_service = create(:verification_service, account:)
 
@@ -57,7 +57,7 @@ RSpec.resource "Verification Services", document: :twilio_api do
 
   get "https://verify.somleng.org/v2/Services" do
     # https://www.twilio.com/docs/verify/api/service#list-all-services
-    example "3. List all Services" do
+    example "03. List all Services" do
       account = create(:account)
       verification_service = create(:verification_service, account:)
 
@@ -93,7 +93,7 @@ RSpec.resource "Verification Services", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/service#update-a-service
-    example "4. Update a Service" do
+    example "04. Update a Service" do
       explanation <<~HEREDOC
         This example updates the `FriendlyName` and `CodeLength` of a Verification Service.
       HEREDOC
@@ -124,7 +124,7 @@ RSpec.resource "Verification Services", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/service#delete-a-service
-    example "5. Delete a Service" do
+    example "05. Delete a Service" do
       account = create(:account)
       verification_service = create(:verification_service, account:)
 

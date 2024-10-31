@@ -55,7 +55,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#create-an-incomingphonenumber-resource
-    example "1. Provision a Phone Number" do
+    example "01. Provision a Phone Number" do
       explanation <<~HEREDOC
         You can `POST` to this API to provision a new phone number. To find a new number to provision use the [Available Phone Numbers API](#available-phone-numbers).
 
@@ -78,7 +78,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
       )
     end
 
-    example "2. Provision a Phone Number with a Voice URL" do
+    example "02. Provision a Phone Number with a Voice URL" do
       explanation <<~HEREDOC
         You will receive a HTTP request to this URL when a call comes in to your phone number.
       HEREDOC
@@ -101,7 +101,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
       )
     end
 
-    example "3. Provision a Phone Number with an SMS URL" do
+    example "03. Provision a Phone Number with an SMS URL" do
       explanation <<~HEREDOC
         You will receive a HTTP request to this URL when an SMS is sent to your phone number.
       HEREDOC
@@ -149,7 +149,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#fetch-an-incomingphonenumber-resource
-    example "4. Fetch an IncomingPhoneNumber resource" do
+    example "04. Fetch an IncomingPhoneNumber resource" do
       explanation <<~HEREDOC
         Fetch an IncomingPhoneNumber
       HEREDOC
@@ -176,7 +176,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#read-multiple-incomingphonenumber-resources
-    example "5. Read a list of Incoming Phone Numbers" do
+    example "05. Read a list of Incoming Phone Numbers" do
       explanation <<~HEREDOC
         List all IncomingPhoneNumber resources for your account.
       HEREDOC
@@ -254,7 +254,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#update-an-incomingphonenumber-resource
-    example "6. Update IncomingPhoneNumber to use a new Voice URL" do
+    example "06. Update IncomingPhoneNumber to use a new Voice URL" do
       explanation <<~HEREDOC
         You will receive a HTTP request to this URL when a call comes in to your phone number.
       HEREDOC
@@ -288,7 +288,7 @@ RSpec.resource "Incoming Phone Numbers", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#delete-an-incomingphonenumber-resource
-    example "7. Delete an IncomingPhoneNumber" do
+    example "07. Delete an IncomingPhoneNumber" do
       explanation <<~HEREDOC
         Release this phone number from your account.
         We will no longer answer calls to this number, and you will stop being billed the monthly phone number fee.

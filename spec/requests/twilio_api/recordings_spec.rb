@@ -12,7 +12,7 @@ RSpec.resource "Recordings", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/recording#wav
-    example "1. Fetch a Recording's media file" do
+    example "01. Fetch a Recording's media file" do
       explanation <<~HEREDOC
         You can fetch a Recording's media file by appending `.wav` or `.mp3` to the Recording Resource's URI.
 
@@ -62,7 +62,7 @@ RSpec.resource "Recordings", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/recording#mp3
-    example "2. Fetch a Recording as mp3" do
+    example "02. Fetch a Recording as mp3" do
       explanation <<~HEREDOC
         You can fetch a Recording's media file as `mp3` by appending `.mp3` to the Recording Resource's URI.
       HEREDOC
@@ -98,7 +98,7 @@ RSpec.resource "Recordings", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/recording#fetch-recording-resources-metadata
-    example "3. Fetch a Recording's metadata" do
+    example "03. Fetch a Recording's metadata" do
       explanation <<~HEREDOC
         A Recording's metadata can be returned in JSON format. Append .json to the Recording Resource's URI.
       HEREDOC
@@ -123,7 +123,7 @@ RSpec.resource "Recordings", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/recording#read-multiple-recording-resources
-    example "4. Get all recordings for a given call" do
+    example "04. Get all recordings for a given call" do
       phone_call = create(:phone_call)
       recording = create(:recording, :completed, phone_call:)
       _other_recording = create(:recording)
@@ -145,7 +145,7 @@ RSpec.resource "Recordings", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/voice/api/recording#read-multiple-recording-resources
-    example "5. List recordings by account" do
+    example "05. List recordings by account" do
       account = create(:account)
       recordings = create_list(:recording, 2, account:)
       _other_recording = create(:recording)

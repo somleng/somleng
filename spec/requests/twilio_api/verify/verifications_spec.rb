@@ -28,7 +28,7 @@ RSpec.resource "Verifications", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/verification#start-a-verification-with-sms
-    example "1. Start a Verification with SMS" do
+    example "01. Start a Verification with SMS" do
       explanation <<~HEREDOC
         To verify a user's phone number, start by requesting to send a verification code to their device.
         Phone numbers must be in E.164 format.
@@ -51,7 +51,7 @@ RSpec.resource "Verifications", document: :twilio_api do
     end
 
     # https://www.twilio.com/docs/verify/api/verification#start-a-verification-with-voice
-    example "2. Start a Verification with Voice" do
+    example "02. Start a Verification with Voice" do
       verification_service = create_verification_service
       set_twilio_api_authorization_header(verification_service.account)
 
@@ -157,7 +157,7 @@ RSpec.resource "Verifications", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/verification-check#check-a-verification
-    example "3. Check a Verification with a Phone Number" do
+    example "03. Check a Verification with a Phone Number" do
       explanation <<~HEREDOC
         This API will check whether the user-provided verification code is correct.
 
@@ -193,7 +193,7 @@ RSpec.resource "Verifications", document: :twilio_api do
       expect(json_response.fetch("status")).to eq("approved")
     end
 
-    example "4. Check a Verification with a SID" do
+    example "04. Check a Verification with a SID" do
       account = create(:account)
       verification_service = create(:verification_service, account:, code_length: 4)
       verification = create(
@@ -278,7 +278,7 @@ RSpec.resource "Verifications", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/verification#fetch-a-verification
-    example "5. Fetch a Verification" do
+    example "05. Fetch a Verification" do
       account = create(:account)
       verification_service = create(:verification_service, account:)
       verification = create(:verification, verification_service:)
@@ -318,7 +318,7 @@ RSpec.resource "Verifications", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/verify/api/verification#update-a-verification-status
-    example "6. Update a Verification Status" do
+    example "06. Update a Verification Status" do
       explanation <<~HEREDOC
         Manually mark the verification as `approved` after your application had validated the verification code or
         mark the verification as `canceled` to start a new verification session with a different code

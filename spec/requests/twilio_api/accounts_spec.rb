@@ -8,7 +8,7 @@ RSpec.resource "Accounts", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/iam/api/account#fetch-an-account
-    example "1. Fetch an account" do
+    example "01. Fetch an account" do
       explanation <<~HEREDOC
         Returns a representation of an account, including the properties above.
       HEREDOC

@@ -67,7 +67,7 @@ resource "Phone Numbers", document: :carrier_api do
       )
     end
 
-    example "1. Create a phone number" do
+    example "01. Create a phone number" do
       carrier = create(:carrier, country_code: "KH")
 
       set_carrier_api_authorization_header(carrier)
@@ -174,7 +174,7 @@ resource "Phone Numbers", document: :carrier_api do
       )
     end
 
-    example "2. Update a phone number" do
+    example "02. Update a phone number" do
       carrier = create(:carrier, billing_currency: "CAD")
       phone_number = create(
         :phone_number,
@@ -231,7 +231,7 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   get "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
-    example "3. Retrieve a phone number" do
+    example "03. Retrieve a phone number" do
       carrier = create(:carrier)
       phone_number = create(:phone_number, carrier:)
 
@@ -244,7 +244,7 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   get "https://api.somleng.org/carrier/v1/phone_numbers" do
-    example "4. List all phone numbers" do
+    example "04. List all phone numbers" do
       carrier = create(:carrier)
       phone_numbers = create_list(:phone_number, 2, carrier:)
       _other_phone_number = create(:phone_number)
@@ -259,7 +259,7 @@ resource "Phone Numbers", document: :carrier_api do
   end
 
   delete "https://api.somleng.org/carrier/v1/phone_numbers/:id" do
-    example "5. Delete a phone number" do
+    example "05. Delete a phone number" do
       carrier = create(:carrier)
       phone_number = create(:phone_number, carrier:)
       create(:phone_call, :inbound, phone_number:, carrier:)
@@ -310,7 +310,7 @@ resource "Phone Numbers", document: :carrier_api do
       )
     end
 
-    example "6. Get number of available phone numbers per locality having a count less than 2" do
+    example "06. Get number of available phone numbers per locality having a count less than 2" do
       carrier = create(:carrier)
       create(:phone_number, carrier:, type: :local, number: "12513095500", iso_country_code: "US", iso_region_code: "AR", locality: "Little Rock")
       create(:phone_number, carrier:, type: :local, number: "12513095501", iso_country_code: "US", iso_region_code: "AR", locality: "Little Rock")
