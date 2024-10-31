@@ -14,7 +14,7 @@
     "sass": "^1.52.2",
     "simplebar": "^5.3.8",
     "url-slug": "^3.0.4",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.22"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
