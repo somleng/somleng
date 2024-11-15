@@ -293,12 +293,12 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
-    faraday (2.12.0)
-      faraday-net_http (>= 2.0, < 3.4)
+    faraday (2.12.1)
+      faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.3.0)
-      net-http
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     ffi (1.17.0)
     ffi-compiler (1.3.2)
       ffi (>= 1.15.5)
@@ -341,7 +341,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.7.4)
+    json (2.8.2)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (2.9.3)
@@ -397,7 +397,7 @@ GEM
       railties (>= 3.0)
     msgpack (1.7.2)
     mustache (1.1.1)
-    net-http (0.4.1)
+    net-http (0.5.0)
       uri
     net-imap (0.5.0)
       date
@@ -631,7 +631,7 @@ GEM
       tzinfo (>= 1.0.0)
     unaccent (0.4.0)
     unicode-display_width (2.6.0)
-    uri (0.13.1)
+    uri (1.0.2)
     useragent (0.16.10)
     warden (1.2.9)
       rack (>= 2.0.9)
