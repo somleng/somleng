@@ -428,7 +428,7 @@ GEM
       addressable
       css_parser (>= 1.19.0)
       htmlentities (>= 4.0.0)
-    pry (0.14.2)
+    pry (0.15.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
     psych (5.2.0)
