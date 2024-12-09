@@ -222,7 +222,7 @@ GEM
     diff-lcs (1.5.1)
     docile (1.4.1)
     domain_name (0.6.20240107)
-    doorkeeper (5.8.0)
+    doorkeeper (5.8.1)
       railties (>= 5)
     drb (2.2.1)
     dry-configurable (1.2.0)
@@ -386,7 +386,7 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.16.8)
+    nokogiri (1.17.0)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     okcomputer (1.18.5)
