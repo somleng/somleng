@@ -29,7 +29,7 @@
           </div>
 
           <div class="col-sm-6">
-            <%= f.input :voice_method, collection: IncomingPhoneNumber.voice_method.values, include_blank: true %>
+            <%= f.input :voice_method, collection: IncomingPhoneNumber.voice_method.values, include_blank: false %>
           </div>
         </div>
 
@@ -39,7 +39,7 @@
           </div>
 
           <div class="col-sm-6">
-            <%= f.input :status_callback_method, collection: IncomingPhoneNumber.status_callback_method.values, include_blank: true %>
+            <%= f.input :status_callback_method, collection: IncomingPhoneNumber.status_callback_method.values, include_blank: false %>
           </div>
         </div>
 
@@ -73,7 +73,7 @@
           </div>
 
           <div class="col-sm-6">
-            <%= f.input :sms_method, collection: IncomingPhoneNumber.sms_method.values, include_blank: true %>
+            <%= f.input :sms_method, collection: IncomingPhoneNumber.sms_method.values, include_blank: false %>
           </div>
         </div>
       </div>

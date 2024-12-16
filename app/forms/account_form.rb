@@ -1,5 +1,4 @@
 class AccountForm
-  extend Enumerize
   include ActiveModel::Model
   include ActiveModel::Attributes
 

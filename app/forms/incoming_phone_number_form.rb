@@ -1,6 +1,7 @@
 class IncomingPhoneNumberForm
   include ActiveModel::Model
   include ActiveModel::Attributes
+  extend Enumerize
 
   attribute :friendly_name
   attribute :voice_url
@@ -15,19 +16,13 @@ class IncomingPhoneNumberForm
 
   validates :voice_url, :sms_url, url_format: { allow_http: true }, allow_blank: true
   validates :status_callback_url, url_format: { allow_http: true }, allow_blank: true
-  validates :voice_method,
-            inclusion: { in: IncomingPhoneNumber.voice_method.values },
-            allow_blank: true
-  validates :status_callback_method,
-            inclusion: { in: IncomingPhoneNumber.status_callback_method.values },
-            allow_blank: true
-  validates :sms_method,
-            inclusion: { in: IncomingPhoneNumber.sms_method.values },
-            allow_blank: true
-
   delegate :persisted?, :new_record?, :id, to: :incoming_phone_number
 
   validates :friendly_name, presence: true, length: { maximum: 64 }
+
+  enumerize :voice_method, in: %w[POST GET], default: "POST"
+  enumerize :sms_method, in: %w[POST GET], default: "POST"
+  enumerize :status_callback_method, in: %w[POST GET], default: "POST"
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "IncomingPhoneNumber")
