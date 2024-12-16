@@ -125,7 +125,8 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options[:protocol] = "https"
 
-  config.action_mailer.delivery_method = :ses
+  config.action_mailer.delivery_method = :ses_v2
+  config.action_mailer.ses_v2_settings = { region: Rails.configuration.app_settings.fetch(:aws_ses_region) }
   config.action_mailer.deliver_later_queue_name = config.active_job.default_queue_name
 
   config.skylight.probes << "active_job"
