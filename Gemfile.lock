@@ -396,7 +396,7 @@ GEM
     nokogiri (1.17.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    okcomputer (1.18.5)
+    okcomputer (1.18.6)
     orm_adapter (0.5.0)
     parallel (1.26.3)
     parser (3.3.6.0)
