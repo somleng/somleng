@@ -5,7 +5,7 @@ module TwilioAPI
     end
 
     def show
-      country = scope.find_by(iso_country_code: params[:id])
+      country = scope.find_by!(iso_country_code: params[:id])
       respond_with_resource(country, serializer_options)
     end
 
