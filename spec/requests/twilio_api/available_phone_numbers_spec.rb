@@ -352,5 +352,14 @@ RSpec.resource "Available Phone Numbers", document: :twilio_api do
         "country" => "Canada"
       )
     end
+
+    example "Returns 404 if no numbers are available", document: false do
+      account = create(:account)
+
+      set_twilio_api_authorization_header(account)
+      do_request(AccountSid: account.id, CountryCode: "XX")
+
+      expect(response_status).to eq(404)
+    end
   end
 end
