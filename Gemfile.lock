@@ -576,7 +576,7 @@ GEM
     sentry-rails (5.22.2)
       railties (>= 5.0)
       sentry-ruby (~> 5.22.2)
-    sentry-ruby (5.22.2)
+    sentry-ruby (5.22.3)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
     shoryuken (6.2.1)
