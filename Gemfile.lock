@@ -211,7 +211,7 @@ GEM
       addressable
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
-    csv (3.3.2)
+    csv (3.3.3)
     cursor_paginator (0.2.1)
       activesupport (>= 3)
     date (3.4.1)
