@@ -19,6 +19,7 @@ module APIResponseSchema
       required(:date_created).filled(:str?)
       required(:date_updated).filled(:str?)
       required(:uri).filled(:str?, format?: /Recordings/)
+      required(:media_url).filled(:str?, format?: /\Ahttp/)
     end
   end
 end

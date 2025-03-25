@@ -15,7 +15,8 @@ module TwilioAPI
         error_code: nil,
         encryption_details: nil,
         track: nil,
-        uri: nil
+        uri: nil,
+        media_url: nil
       )
     end
 
@@ -42,7 +43,21 @@ module TwilioAPI
     def encryption_details; end
 
     def uri
-      url_helpers.api_twilio_account_phone_call_recording_path(object.account, object.phone_call, object, format: :json)
+      url_helpers.api_twilio_account_phone_call_recording_path(
+        object.account,
+        object.phone_call,
+        object,
+        format: :json
+      )
+    end
+
+    def media_url
+      url_helpers.api_twilio_account_phone_call_recording_url(
+        object.account,
+        object.phone_call,
+        object,
+        subdomain: AppSettings.config_for(:api_subdomain)
+      )
     end
   end
 end
