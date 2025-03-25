@@ -31,7 +31,7 @@ RUN [[ "$(arch)" = "aarch64" ]] && arch="arm64" || arch="$(arch)" && \
   mv grpc-health-probe /usr/local/bin
 
 # Throw-away build stage to reduce size of final image
-FROM base as build
+FROM base AS build
 
 # Install packages needed to build gems
 RUN apk update --no-cache && \
