@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket  = "infrastructure.somleng.org"
-    key     = "twilreapi.tfstate"
+    key     = "somleng.tfstate"
     encrypt = true
     region  = "ap-southeast-1"
   }
