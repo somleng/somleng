@@ -1,14 +1,14 @@
 terraform {
   backend "s3" {
     bucket  = "infrastructure.somleng.org"
-    key     = "twilreapi_core.tfstate"
+    key     = "somleng_core.tfstate"
     encrypt = true
     region  = "ap-southeast-1"
   }
 }
 
 provider "aws" {
-  region = var.region.aws_region
+  region = var.aws_region
 }
 
 provider "aws" {
@@ -22,6 +22,6 @@ data "terraform_remote_state" "core_infrastructure" {
   config = {
     bucket = "infrastructure.somleng.org"
     key    = "core.tfstate"
-    region = var.region.aws_region
+    region = var.aws_region
   }
 }
