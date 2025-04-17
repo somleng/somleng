@@ -381,6 +381,8 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.8)
     minitest (5.25.5)
+    mock_redis (0.49.0)
+      redis (~> 5)
     monetize (1.13.0)
       money (~> 6.12)
     money (6.19.0)
@@ -679,6 +681,7 @@ DEPENDENCIES
   bootsnap
   bootstrap-email (= 1.5.1)
   capybara
+  connection_pool
   country_select
   cssbundling-rails
   csv
@@ -701,6 +704,7 @@ DEPENDENCIES
   jwt
   kaminari
   lograge
+  mock_redis
   money-rails
   okcomputer
   pg

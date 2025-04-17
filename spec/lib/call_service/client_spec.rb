@@ -157,7 +157,7 @@ module CallService
       hash_including(
         operation_name: :send_message,
         params: hash_including(
-          queue_url: AppSettings.config_for(:call_service_queue_url),
+          queue_url: AppSettings.fetch(:call_service_queue_url),
           message_body: {
             job_class:,
             job_args: args

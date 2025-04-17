@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   scope(
     as: :api,
     constraints: {
-      subdomain: [ AppSettings.config_for(:api_subdomain) ]
+      subdomain: [ AppSettings.fetch(:api_subdomain) ]
     },
     defaults: { format: "json" }
   ) do
@@ -59,7 +59,7 @@ Rails.application.routes.draw do
   end
 
   scope(
-    module: "twilio_api/verify", as: :api_twilio_verify, constraints: { subdomain: AppSettings.config_for(:verify_subdomain) },
+    module: "twilio_api/verify", as: :api_twilio_verify, constraints: { subdomain: AppSettings.fetch(:verify_subdomain) },
     defaults: { format: "json" }
   ) do
     scope :v2 do
@@ -145,7 +145,7 @@ Rails.application.routes.draw do
     end
   end
 
-  constraints(subdomain: AppSettings.config_for(:app_subdomain)) do
+  constraints(subdomain: AppSettings.fetch(:app_subdomain)) do
     devise_scope :user do
       resource(
         :registration,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_24_051250) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_17_155628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -116,6 +116,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_24_051250) do
     t.citext "custom_api_host"
     t.text "custom_theme_css"
     t.string "billing_currency", null: false
+    t.integer "calls_per_second", default: 0, null: false
     t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true

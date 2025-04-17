@@ -7,7 +7,7 @@ class AppRequest
 
   def carrier_subdomain_request?
     _subdomain, *namespace = request.subdomains
-    namespace == [ AppSettings.config_for(:app_subdomain) ]
+    namespace == [ AppSettings.fetch(:app_subdomain) ]
   end
 
   def find_carrier

@@ -13,7 +13,7 @@ module Services
         object.account,
         object.phone_call,
         object,
-        subdomain: AppSettings.config_for(:api_subdomain)
+        subdomain: AppSettings.fetch(:api_subdomain)
       )
     end
   end

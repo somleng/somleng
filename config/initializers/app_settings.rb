@@ -1,11 +1,35 @@
 class AppSettings
   class << self
+    attr_writer :redis_client
+
     def app_uri
-      Addressable::URI.parse(config_for(:app_url_host))
+      Addressable::URI.parse(fetch(:app_url_host))
     end
 
-    def config_for(key)
-      Rails.configuration.app_settings.fetch(key)
+    def fetch(...)
+      config.fetch(...)
+    end
+
+    def dig(...)
+      config.dig(...)
+    end
+
+    def [](...)
+      config.[](...)
+    end
+
+    def redis
+      @redis ||= ConnectionPool.new(size: fetch(:redis_pool_size)) { redis_client.call }
+    end
+
+    def redis_client
+      @redis_client ||= -> { Redis.new(url: fetch(:redis_url)) }
+    end
+
+    private
+
+    def config
+      Rails.configuration.app_settings
     end
   end
 end

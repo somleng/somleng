@@ -3,8 +3,8 @@ require "csv"
 class PublishInteractionData < ApplicationWorkflow
   attr_reader :api_key, :chart_id
 
-  def initialize(api_key: AppSettings.config_for(:datawrapper_api_key),
-                 chart_id: AppSettings.config_for(:datawrapper_chart_id))
+  def initialize(api_key: AppSettings.fetch(:datawrapper_api_key),
+                 chart_id: AppSettings.fetch(:datawrapper_chart_id))
     @api_key = api_key
     @chart_id = chart_id
   end
