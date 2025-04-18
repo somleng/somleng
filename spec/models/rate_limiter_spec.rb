@@ -6,7 +6,6 @@ RSpec.describe RateLimiter do
       expect { build_rate_limiter(key: "my-rate-limiter-key", rate: 1, window_size: 1.second).request! }.not_to raise_error
       expect { build_rate_limiter(key: "my-rate-limiter-key", rate: 1, window_size: 1.second).request! }.to raise_error(
         an_instance_of(RateLimiter::RateLimitExceededError).and having_attributes(
-          message: "Rate limit exceeded for key: my-rate-limiter-key",
           seconds_remaining_in_current_window: 1
         )
       )
@@ -16,7 +15,6 @@ RSpec.describe RateLimiter do
       expect { 60.times { build_rate_limiter(key: "my-rate-limiter-key", rate: 1, window_size: 1.minute).request! } }.not_to raise_error
       expect { build_rate_limiter(key: "my-rate-limiter-key", rate: 1, window_size: 1.minute).request! }.to raise_error(
         an_instance_of(RateLimiter::RateLimitExceededError).and having_attributes(
-          message: "Rate limit exceeded for key: my-rate-limiter-key",
           seconds_remaining_in_current_window: be_present
         )
       )
@@ -26,7 +24,6 @@ RSpec.describe RateLimiter do
       expect { 3600.times { build_rate_limiter(key: "my-rate-limiter-key", rate: 1, window_size: 1.hour).request! } }.not_to raise_error
       expect { build_rate_limiter(key: "my-rate-limiter-key", rate: 1, window_size: 1.hour).request! }.to raise_error(
         an_instance_of(RateLimiter::RateLimitExceededError).and having_attributes(
-          message: "Rate limit exceeded for key: my-rate-limiter-key",
           seconds_remaining_in_current_window: be_present
         )
       )

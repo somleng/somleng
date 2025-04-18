@@ -3,8 +3,9 @@ class InitiateOutboundCall < ApplicationWorkflow
 
   attr_reader :phone_call, :call_service_client
 
-  def initialize(phone_call, options = {})
-    @phone_call = phone_call
+  def initialize(**options)
+    super()
+    @phone_call = options.fetch(:phone_call) { PhoneCall.find(options.fetch(:phone_call_id)) }
     @call_service_client = options.fetch(:call_service_client) { CallService::Client.new }
   end
 
@@ -25,8 +26,8 @@ class InitiateOutboundCall < ApplicationWorkflow
 
   def reschedule
     ScheduledJob.perform_later(
-      OutboundCallJob.to_s,
-      phone_call,
+      InitiateOutboundCall.to_s,
+      phone_call:,
       wait_until: 10.seconds.from_now
     )
   end

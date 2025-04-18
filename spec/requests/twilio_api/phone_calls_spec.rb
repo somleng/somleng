@@ -59,16 +59,18 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
       account = create(:account)
       create(:incoming_phone_number, number: "12513095500", account:)
-      create(:sip_trunk, carrier: account.carrier)
+      create(:sip_trunk, carrier: account.carrier, region: :hydrogen)
+      stub_switch_request(region: :hydrogen)
 
       set_twilio_api_authorization_header(account)
-
-      do_request(
-        AccountSid: account.id,
-        "To" => "+299221234",
-        "From" => "+12513095500",
-        "Url" => "https://demo.twilio.com/docs/voice.xml"
-      )
+      perform_enqueued_jobs do
+        do_request(
+          AccountSid: account.id,
+          "To" => "+299221234",
+          "From" => "+12513095500",
+          "Url" => "https://demo.twilio.com/docs/voice.xml"
+        )
+      end
 
       expect(response_status).to eq(201)
       expect(response_body).to match_api_response_schema("twilio_api/call")
@@ -301,5 +303,11 @@ RSpec.resource "Phone Calls", document: :twilio_api do
 
   def stub_call_update(phone_call)
     stub_request(:any, "http://#{phone_call.call_service_host}/calls/#{phone_call.external_id}")
+  end
+
+  def stub_switch_request(region: :hydrogen, external_call_id: SecureRandom.uuid, **response_params)
+    response_params[:host] ||= "10.10.1.13"
+    responses = Array(external_call_id).map { |id| { body: { id:, **response_params }.to_json } }
+    stub_request(:post, "https://switch.#{region}.somleng.org/calls").to_return(responses)
   end
 end

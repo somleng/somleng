@@ -71,9 +71,7 @@ RSpec.describe CreateVerification do
         sip_trunk:,
       )
     )
-    expect(ScheduledJob).to have_been_enqueued.with(
-      OutboundCallJob.to_s, any_args
-    )
+    expect(OutboundCallJob).to have_been_enqueued
   end
 
   it "hnadles Thai SMS verifications" do
