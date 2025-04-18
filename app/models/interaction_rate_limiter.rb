@@ -24,10 +24,6 @@ class InteractionRateLimiter
 
   private
 
-  def limit
-    @limit.respond_to?(:call) ? @limit.call(account) : @limit
-  end
-
   def build_rate_limiters(identifier:, rate:)
     [ account, account.carrier ].each_with_object([]) do |owner, rate_limiters|
       owner_rate = rate.respond_to?(:call) ? rate.call(owner) : rate

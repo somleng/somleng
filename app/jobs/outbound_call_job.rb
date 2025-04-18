@@ -10,7 +10,6 @@ class OutboundCallJob < ApplicationJob
 
     def perform
       rate_limiter.request!
-
       ExecuteWorkflowJob.perform_later(InitiateOutboundCall.to_s, phone_call_id: queue.dequeue)
     rescue InteractionRateLimiter::RateLimitExceededError => e
       OutboundCallJob.perform_later(
@@ -24,7 +23,7 @@ class OutboundCallJob < ApplicationJob
     def build_rate_limiter
       InteractionRateLimiter.new(
         account,
-        interaction_type: :phone_calls,
+        interaction_type: :outbound_calls,
         identifier: ->(resource) { resource.id },
         limit: ->(resource) { resource.calls_per_second }
       )

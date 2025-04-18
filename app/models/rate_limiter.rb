@@ -13,6 +13,7 @@ class RateLimiter
 
     def initialize(duration)
       @duration = duration
+      @current_time = current_time_method
     end
 
     def current
@@ -34,15 +35,19 @@ class RateLimiter
     private
 
     def current_time
+      @current_time.call
+    end
+
+    def current_time_method
       case unit
       when :seconds
-        Time.current.sec
+        -> { Time.current.sec }
       when :minutes
-        Time.current.min
+        -> { Time.current.min }
       when :hours
-        Time.current.hour
+        -> { Time.current.hour }
       when :days
-        Time.current.day
+        -> { Time.current.day }
       else
         raise ArgumentError, "Invalid duration unit: #{unit}"
       end
