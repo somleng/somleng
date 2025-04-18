@@ -2,15 +2,42 @@ require "rails_helper"
 
 RSpec.describe SimpleQueue do
   it "handles simple queues" do
-    queue = SimpleQueue.new
+    queue = build_queue
 
-    queue.enqueue("my-key", "my-item")
-    queue.enqueue("my-key", "my-item-2")
+    queue.enqueue("my-item")
+    queue.enqueue("my-item-2")
 
-    expect(queue.peek("my-key")).to eq("my-item")
-    expect(queue.dequeue("my-key")).to eq("my-item")
-    expect(queue.dequeue("my-key")).to eq("my-item-2")
-    expect(queue.peek("my-key")).to be_nil
-    expect(queue.dequeue("my-key")).to be_nil
+    expect(queue.peek).to eq("my-item")
+    queue.dequeue do |item|
+      expect(item).to eq("my-item")
+    end
+
+    expect(queue.empty?).to be(false)
+
+    queue.dequeue do |item|
+      expect(item).to eq("my-item-2")
+    end
+
+    expect(queue.empty?).to be(true)
+
+    items = []
+
+    queue.dequeue { |item| items << item }
+    expect(items.empty?).to be(true)
+
+    queue.enqueue("my-item-3")
+
+    expect { queue.dequeue { |item| raise(ArgumentError, "Some Error processing #{item}") } }.to raise_error(ArgumentError)
+    expect(queue.peek).to eq("my-item-3")
+  end
+
+  def build_queue(**options)
+    options = {
+      queue_key: "queue:my-queue",
+      tmp_queue_key: "tmp_queue:my-queue",
+      **options
+    }
+
+    SimpleQueue.new(**options)
   end
 end

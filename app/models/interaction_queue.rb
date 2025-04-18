@@ -1,27 +1,30 @@
-class InteractionQueue < SimpleQueue
-  attr_reader :account, :interaction_type
+class InteractionQueue
+  attr_reader :account, :queue
 
-  def initialize(account, interaction_type:, **)
-    super(**)
+  def initialize(account, **options)
     @account = account
-    @interaction_type = interaction_type
+    @queue = options.fetch(:queue) do
+      SimpleQueue.new(
+        queue_key: options.fetch(:queue_key) { "queue:#{account.id}:#{options.fetch(:interaction_type)}" },
+        tmp_queue_key: options.fetch(:queue_key) { "tmp_queue:#{account.id}:#{options.fetch(:interaction_type)}" },
+        **options
+      )
+    end
   end
 
-  def enqueue(interaction_id)
-    super(key, interaction_id)
+  def enqueue(...)
+    queue.enqueue(...)
   end
 
-  def dequeue
-    super(key)
+  def dequeue(...)
+    queue.dequeue(...)
+  end
+
+  def empty?
+    queue.empty?
   end
 
   def peek
-    super(key)
-  end
-
-  private
-
-  def key
-    "#{account.id}:#{interaction_type}"
+    queue.peek
   end
 end
