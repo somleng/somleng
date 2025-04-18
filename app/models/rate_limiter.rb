@@ -27,6 +27,10 @@ class RateLimiter
       duration.parts.keys.first
     end
 
+    def to_s
+      "#{duration}_seconds"
+    end
+
     private
 
     def current_time
@@ -58,7 +62,7 @@ class RateLimiter
     window_key = calculate_window_key
     request_count = increment(window_key)
 
-    raise(RateLimitExceededError.new("Rate limit exceeded for key: #{key}", seconds_remaining_in_current_window: time_window.seconds_remaining)) if request_count > limit
+    raise(RateLimitExceededError.new("Rate limit exceeded for key: #{window_key}", seconds_remaining_in_current_window: time_window.seconds_remaining)) if request_count > limit
   end
 
   private
@@ -81,6 +85,6 @@ class RateLimiter
   end
 
   def calculate_window_key
-    "#{key}:#{time_window.current}:#{time_window.duration}:#{time_window.unit}"
+    "#{key}:#{time_window.current}:#{time_window}"
   end
 end
