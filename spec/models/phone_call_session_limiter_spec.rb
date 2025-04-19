@@ -34,10 +34,14 @@ RSpec.describe PhoneCallSessionLimiter do
     expect(session_limiter.session_counter_for(:hydrogen).count).to eq(2)
   end
 
-  it "has default limits" do
+  it "has limits which change with capacity" do
+    other_session_limiter = PhoneCallSessionLimiter.new
+    other_session_limiter.set_capacity_for(:hydrogen, capacity: 2)
+    other_session_limiter.set_capacity_for(:helium, capacity: 1)
+
     session_limiter = PhoneCallSessionLimiter.new
 
-    expect(session_limiter.session_counter_for(:hydrogen).limit).to eq(100)
+    expect(session_limiter.session_counter_for(:hydrogen).limit).to eq(200)
     expect(session_limiter.session_counter_for(:helium).limit).to eq(100)
   end
 end
