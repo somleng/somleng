@@ -46,7 +46,6 @@ module Services
     def output
       {
         parent_call: context.fetch(:parent_call),
-        region: context.fetch(:parent_call).region,
         from: context.fetch(:from),
         incoming_phone_number: context.fetch(:incoming_phone_number),
         destinations: context.fetch(:destinations)

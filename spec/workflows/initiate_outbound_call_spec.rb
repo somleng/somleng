@@ -18,6 +18,7 @@ RSpec.describe InitiateOutboundCall do
       :routable,
       carrier:,
       sip_trunk:,
+      region: sip_trunk.region,
       to: "85516701721",
       from: "1294",
       caller_id: "1294",

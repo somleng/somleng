@@ -90,7 +90,6 @@ module Services
         :inbound,
         from: "855715100210",
         sip_trunk:,
-        region: "hydrogen",
         account:,
         carrier:
       )
@@ -110,7 +109,6 @@ module Services
         parent_call:,
         from: have_attributes(value: "855715100210"),
         incoming_phone_number: nil,
-        region: parent_call.region,
         destinations: eq(
           [
             {
