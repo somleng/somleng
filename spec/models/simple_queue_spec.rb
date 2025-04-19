@@ -33,8 +33,7 @@ RSpec.describe SimpleQueue do
 
   def build_queue(**options)
     options = {
-      queue_key: "queue:my-queue",
-      tmp_queue_key: "tmp_queue:my-queue",
+      key: "my-queue",
       **options
     }
 

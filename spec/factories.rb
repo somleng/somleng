@@ -383,6 +383,7 @@ FactoryBot.define do
     voice_url { "https://rapidpro.ngrok.com/handle/33/" }
     voice_method { "POST" }
     outbound
+    region { "hydrogen" }
     external_id { SecureRandom.uuid }
 
     trait :routable do

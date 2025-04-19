@@ -1,12 +1,15 @@
 class ProcessCDR < ApplicationWorkflow
-  attr_accessor :cdr
+  attr_accessor :cdr, :session_limiter
 
-  def initialize(payload)
+  def initialize(payload, **options)
+    super()
     @cdr = JSON.parse(decompress(payload))
+    @session_limiter = options.fetch(:session_limiter) { PhoneCallSessionLimiter.new }
   end
 
   def call
     call_data_record = create_call_data_record
+    session_limiter.remove_session_from(call_data_record.phone_call.region.alias)
     update_phone_call_status(call_data_record.phone_call)
     notify_status_callback_url(call_data_record.phone_call)
     create_event(call_data_record.phone_call)

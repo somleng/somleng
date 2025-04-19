@@ -7,6 +7,7 @@ class PhoneCall < ApplicationRecord
   attribute :beneficiary_fingerprint, SHA256Type.new
   attribute :to, PhoneNumberType.new
   attribute :from, PhoneNumberType.new
+  attribute :region, RegionType.new
 
   enumerize :voice_method, in: %w[POST GET]
   enumerize :status_callback_method, in: %w[POST GET]

@@ -77,6 +77,7 @@ module TwilioAPI
         account:,
         carrier: account.carrier,
         sip_trunk: context.fetch(:sip_trunk),
+        region: context.fetch(:sip_trunk).region,
         to: params.fetch(:To),
         from: params.fetch(:From),
         incoming_phone_number: context[:incoming_phone_number],

@@ -1,21 +1,21 @@
 class SimpleQueue
-  attr_reader :backend, :queue_key, :tmp_queue_key
+  attr_reader :key, :backend
 
-  def initialize(**options)
-    @queue_key = options.fetch(:queue_key)
-    @tmp_queue_key = options.fetch(:tmp_queue_key)
+  def initialize(key:, **options)
+    @key = key
     @backend = options.fetch(:backend) { AppSettings.redis }
   end
 
   def enqueue(item)
     backend.with do
-      _1.lpush(queue_key, item)
+      _1.lpush(key, item)
     end
   end
 
   def dequeue(&)
+    tmp_queue_key = "tmp:#{key}"
     item = backend.with do
-      _1.rpoplpush(queue_key, tmp_queue_key)
+      _1.rpoplpush(key, tmp_queue_key)
     end
 
     return if item.blank?
@@ -26,7 +26,7 @@ class SimpleQueue
     end
   rescue Exception => e
     backend.with do
-      _1.rpoplpush(tmp_queue_key, queue_key)
+      _1.rpoplpush(tmp_queue_key, key)
     end
 
     raise(e)
@@ -34,7 +34,7 @@ class SimpleQueue
 
   def peek
     backend.with do
-      _1.lrange(queue_key, -1, -1).first
+      _1.lrange(key, -1, -1).first
     end
   end
 

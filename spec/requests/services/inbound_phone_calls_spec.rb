@@ -24,6 +24,7 @@ RSpec.describe "Services", :services do
           "from" => "16189124650",
           "external_id" => SecureRandom.uuid,
           "host" => "10.10.1.13",
+          "region" => "hydrogen",
           "variables" => {
             "sip_from_host" => "1.1.1.1"
           }
@@ -51,6 +52,7 @@ RSpec.describe "Services", :services do
           "source_ip" => "175.100.7.240",
           "to" => "855716200876",
           "from" => "85512234567",
+          "region" => "hydrogen",
           "external_id" => SecureRandom.uuid,
           "variables" => {
             "sip_from_host" => "1.1.1.1"
@@ -87,6 +89,7 @@ RSpec.describe "Services", :services do
           "source_ip" => "175.100.7.240",
           "to" => "068308532",
           "from" => "012234567",
+          "region" => "hydrogen",
           "external_id" => SecureRandom.uuid,
           "variables" => {
             "sip_from_host" => "1.1.1.1"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_17_155628) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_18_131238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -466,6 +466,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_17_155628) do
     t.datetime "user_terminated_at"
     t.datetime "user_updated_at"
     t.uuid "parent_call_id"
+    t.string "region"
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"

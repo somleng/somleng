@@ -167,6 +167,7 @@ module Services
           from: "855716100230",
           external_id: "external-id",
           host: "10.10.1.13",
+          region: "hydrogen",
           variables: {
             "sip_from_host" => "103.9.189.2"
           }
@@ -186,6 +187,7 @@ module Services
         status_callback_url: "https://example.com/status-callback",
         status_callback_method: "POST",
         call_service_host: "10.10.1.13",
+        region: "hydrogen",
         variables: {
           "sip_from_host" => "103.9.189.2"
         }
@@ -213,7 +215,8 @@ module Services
           to: "1294",
           from: "068308531",
           external_id: "external-id",
-          host: "10.10.1.13"
+          host: "10.10.1.13",
+          region: "hydrogen"
         }
       )
 
@@ -240,7 +243,8 @@ module Services
           to: "02092960310",
           from: "02092960314",
           external_id: "external-id",
-          host: "10.10.1.13"
+          host: "10.10.1.13",
+          region: "hydrogen"
         }
       )
 
@@ -264,7 +268,8 @@ module Services
           to: incoming_phone_number.number.to_s,
           from: "855716100230",
           external_id: "external-id",
-          host: "10.10.1.13"
+          host: "10.10.1.13",
+          region: "hydrogen"
         }
       )
 

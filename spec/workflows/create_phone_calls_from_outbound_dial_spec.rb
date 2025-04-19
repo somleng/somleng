@@ -4,7 +4,8 @@ RSpec.describe CreatePhoneCallsFromOutboundDial do
   it "creates outbound phone calls" do
     sip_trunk = create(:sip_trunk)
     account = create(:account, carrier: sip_trunk.carrier)
-    parent_call = create(:phone_call, :outbound, :answered, account:, sip_trunk:, to: "855715100210")
+    parent_call = create(:phone_call, :outbound, :answered, account:, sip_trunk:, to: "855715100210", region: "hydrogen")
+    session_limiter = PhoneCallSessionLimiter.new
 
     new_phone_calls = CreatePhoneCallsFromOutboundDial.call(
       parent_call:,
@@ -13,7 +14,8 @@ RSpec.describe CreatePhoneCallsFromOutboundDial do
       destinations: [
         { destination: "855715100230", sip_trunk: },
         { destination: "855715100231", sip_trunk: }
-      ]
+      ],
+      session_limiter:
     )
 
     expect(new_phone_calls.count).to eq(2)
@@ -25,5 +27,6 @@ RSpec.describe CreatePhoneCallsFromOutboundDial do
       direction: "outbound_dial",
       status: "initiated"
     )
+    expect(session_limiter.session_counter_for(:hydrogen)).to have_attributes(count: 2)
   end
 end

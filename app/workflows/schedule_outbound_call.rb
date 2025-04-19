@@ -4,7 +4,7 @@ class ScheduleOutboundCall < ApplicationWorkflow
   def initialize(phone_call, **options)
     super()
     @phone_call = phone_call
-    @queue = options.fetch(:queue) { InteractionQueue.new(account, interaction_type: :outbound_calls) }
+    @queue = options.fetch(:queue) { OutboundCallsQueue.new(account) }
   end
 
   def call

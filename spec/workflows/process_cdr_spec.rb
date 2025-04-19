@@ -15,10 +15,13 @@ RSpec.describe ProcessCDR do
 
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
-      id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
+      id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid"),
+      region: "helium"
     )
+    session_limiter = PhoneCallSessionLimiter.new
+    2.times { session_limiter.add_session_to!("helium") }
 
-    ProcessCDR.call(compress(cdr))
+    ProcessCDR.call(compress(cdr), session_limiter:)
 
     expect(phone_call.reload.status).to eq("not_answered")
     expect(phone_call.call_data_record).to have_attributes(
@@ -38,6 +41,9 @@ RSpec.describe ProcessCDR do
       url: phone_call.status_callback_url,
       http_method: phone_call.status_callback_method,
       params: hash_including("CallStatus" => "no-answer")
+    )
+    expect(session_limiter.session_counter_for(:helium)).to have_attributes(
+      count: 1
     )
   end
 
