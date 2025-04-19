@@ -1,12 +1,12 @@
 class CreatePhoneCallsFromOutboundDial < ApplicationWorkflow
   attr_reader :parent_call, :from, :incoming_phone_number, :destinations, :session_limiter
 
-  def initialize(**options)
+  def initialize(params, **options)
     super()
-    @parent_call = options.fetch(:parent_call)
-    @from = options.fetch(:from)
-    @incoming_phone_number = options.fetch(:incoming_phone_number)
-    @destinations = options.fetch(:destinations)
+    @parent_call = params.fetch(:parent_call)
+    @from = params.fetch(:from)
+    @incoming_phone_number = params.fetch(:incoming_phone_number)
+    @destinations = params.fetch(:destinations)
     @session_limiter = options.fetch(:session_limiter) { PhoneCallSessionLimiter.new }
   end
 

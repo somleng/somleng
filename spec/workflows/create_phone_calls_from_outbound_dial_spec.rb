@@ -8,13 +8,15 @@ RSpec.describe CreatePhoneCallsFromOutboundDial do
     session_limiter = PhoneCallSessionLimiter.new
 
     new_phone_calls = CreatePhoneCallsFromOutboundDial.call(
-      parent_call:,
-      from: "855715100210",
-      incoming_phone_number: nil,
-      destinations: [
-        { destination: "855715100230", sip_trunk: },
-        { destination: "855715100231", sip_trunk: }
-      ],
+      {
+        parent_call:,
+        from: "855715100210",
+        incoming_phone_number: nil,
+        destinations: [
+          { destination: "855715100230", sip_trunk: },
+          { destination: "855715100231", sip_trunk: }
+        ]
+      },
       session_limiter:
     )
 
