@@ -2,15 +2,22 @@ require "rails_helper"
 
 RSpec.describe PhoneCallSessionLimiter do
   it "adds a session" do
-    session_limiter = PhoneCallSessionLimiter.new
+    session_limiter = PhoneCallSessionLimiter.new(expiry: 1.second)
 
     session_limiter.add_session_to("hydrogen")
-
     expect(session_limiter.session_counter_for(:hydrogen).count).to eq(1)
+
+    session_limiter.add_session_to("helium")
+    expect(session_limiter.session_counter_for(:helium).count).to eq(1)
+
+    sleep 1
+
+    expect(session_limiter.session_counter_for(:hydrogen).count).to eq(0)
+    expect(session_limiter.session_counter_for(:helium).count).to eq(0)
   end
 
   it "removes a session" do
-    session_limiter = PhoneCallSessionLimiter.new
+    session_limiter = PhoneCallSessionLimiter.new(expiry: 1.second)
 
     session_limiter.add_session_to("hydrogen")
     session_limiter.add_session_to("helium")
@@ -18,6 +25,10 @@ RSpec.describe PhoneCallSessionLimiter do
 
     expect(session_limiter.session_counter_for(:hydrogen).count).to eq(0)
     expect(session_limiter.session_counter_for(:helium).count).to eq(1)
+
+    sleep 1
+
+    expect(session_limiter.session_counter_for(:helium).count).to eq(0)
   end
 
   it "handles limits" do

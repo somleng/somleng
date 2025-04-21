@@ -8,6 +8,7 @@ class PhoneCallSessionLimiter
       SomlengRegion::Region.all.each_with_object({}) do |region, result|
         result[region.alias.to_sym] = SimpleCounter.new(
           key: "phone_call_sessions:#{region.alias}",
+          expiry: options.fetch(:expiry) { 5.minutes },
           limit: options.fetch(:limit) { AppSettings.fetch(:phone_call_sessions_limit) * current_capacity_for(region.alias) },
           backend:
         )
