@@ -52,7 +52,7 @@ RSpec.describe PhoneCallSessionLimiter do
 
     session_limiter = PhoneCallSessionLimiter.new
 
-    expect(session_limiter.session_counter_for(:hydrogen).limit).to eq(200)
-    expect(session_limiter.session_counter_for(:helium).limit).to eq(100)
+    expect(session_limiter.session_counter_for(:hydrogen).limit).to eq(AppSettings.fetch(:phone_call_sessions_limit) * 2)
+    expect(session_limiter.session_counter_for(:helium).limit).to eq(AppSettings.fetch(:phone_call_sessions_limit))
   end
 end
