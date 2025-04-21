@@ -3,10 +3,10 @@ class SimpleCounter
 
   attr_reader :key, :limit, :expiry, :backend
 
-  def initialize(key:, limit: nil, expiry: nil, **options)
+  def initialize(key:, **options)
     @key = key
-    @limit = limit
-    @expiry = expiry
+    @limit = options.fetch(:limit, nil)
+    @expiry = options.fetch(:expiry, nil)
     @backend = options.fetch(:backend) { AppSettings.redis }
   end
 
