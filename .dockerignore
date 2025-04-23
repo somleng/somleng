@@ -1,6 +1,12 @@
 .git
+.gitignore
 .github
 .bundle
+.dockerignore
+.rspec
+.rubocop.yml
+.yarn
+.tool-versions
 config/credentials/**/*.key
 coverage
 doc

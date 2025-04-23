@@ -226,8 +226,8 @@ jobs:
           push: true
           context: .
           platforms: linux/${{ matrix.platform.arch }}
-          cache-from: type=gha,scope=${{ matrix.identifier }}-${{ matrix.platform.arch }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.identifier }}-${{ matrix.platform.arch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           provenance: false
           tags: |
             ${{ secrets.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}-${{ matrix.platform.arch }}
@@ -239,8 +239,8 @@ jobs:
           push: true
           context: docker/nginx
           platforms: linux/${{ matrix.platform.arch }}
-          cache-from: type=gha,scope=${{ matrix.identifier }}-nginx-${{ matrix.platform.arch }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.identifier }}-nginx-${{ matrix.platform.arch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           provenance: false
           tags: |
             ${{ secrets.ECR_REGISTRY }}/${{ env.WEBSERVER_REPOSITORY_NAME }}:${{ matrix.image_tag }}-${{ matrix.platform.arch }}
