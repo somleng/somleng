@@ -39,6 +39,7 @@ default: &default
   pghero_db_instance_identifier: "<%= ENV["PGHERO_DB_INSTANCE_IDENTIFIER"] %>"
   global_call_sessions_limit: <%= ENV.fetch("GLOBAL_CALL_SESSIONS_LIMIT", 120) %>
   global_call_sessions_count_log_key: <%= ENV.fetch("GLOBAL_CALL_SESSIONS_COUNT_LOG_KEY", "global_call_sessions_count") %>
+  switch_capacity_log_key: <%= ENV.fetch("SWITCH_CAPACITY_LOG_KEY", "switch_capacity") %>
   account_call_sessions_limit: <%= ENV.fetch("ACCOUNT_CALL_SESSIONS_LIMIT", 80) %>
   active_record_encryption:
     primary_key: 5Owbop0UTpEsYwX0wK56VM1eg4xl7LXX

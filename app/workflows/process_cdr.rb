@@ -2,9 +2,9 @@ class ProcessCDR < ApplicationWorkflow
   attr_accessor :cdr, :session_limiters
 
   def initialize(payload, **options)
-    super()
+    super(**options)
     @cdr = JSON.parse(decompress(payload))
-    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new ] }
+    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new(logger:) ] }
   end
 
   def call
@@ -55,7 +55,7 @@ class ProcessCDR < ApplicationWorkflow
     return if phone_call.status_callback_url.blank?
 
     ExecuteWorkflowJob.perform_later(
-      "TwilioAPI::NotifyWebhook",
+      TwilioAPI::NotifyWebhook.to_s,
       account: phone_call.account,
       url: phone_call.status_callback_url,
       http_method: phone_call.status_callback_method,

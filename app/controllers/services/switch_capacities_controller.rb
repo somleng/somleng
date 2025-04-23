@@ -5,7 +5,7 @@ module Services
         with: SwitchCapacityRequestSchema,
         location: nil,
       ) do |permitted_params|
-        UpdateSwitchCapacity.call(permitted_params)
+        UpdateSwitchCapacity.call(permitted_params, logger:)
       end
     end
 

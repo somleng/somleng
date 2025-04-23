@@ -6,7 +6,7 @@ module Services
           request.request_parameters.to_json
         )
       )
-      ExecuteWorkflowJob.perform_later(ProcessCDR.to_s, payload)
+      ExecuteWorkflowJob.perform_later(ProcessCDR.to_s, payload, with_logger: true)
       head(:no_content)
     end
   end
