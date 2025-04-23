@@ -59,18 +59,9 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.formatter = Lograge::Formatters::Json.new
   config.lograge.base_controller_class = [ "ActionController::API", "ActionController::Base" ]
-  config.lograge.ignore_actions = [ "OkComputer::OkComputerController#show" ]
-  config.lograge.custom_options = lambda do |event|
-    exceptions = %w[controller action format id]
-    {
-      params: event.payload.fetch(:params, {}).except(*exceptions)
-    }
-  end
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
-    .tap  { |logger| logger.formatter = Logger::Formatter.new }
-    .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
