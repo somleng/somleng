@@ -334,7 +334,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: nginx
-          image: ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.image_tag }}
+          image: ${{ env.ECR_REGISTRY }}/${{ env.WEBSERVER_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Inject new app image into webserver task definition
         id: render-appserver-task-def
@@ -342,7 +342,7 @@ jobs:
         with:
           task-definition: ${{ steps.render-nginx-task-def.outputs.task-definition }}
           container-name: app
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ env.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Get current worker task definition
         run: |
@@ -354,7 +354,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: worker
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ env.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Get current anycable task definition
         run: |
@@ -366,7 +366,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: anycable
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ env.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Get current websockets task definition
         id: get-ws-task-def
@@ -393,7 +393,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: worker
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ env.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Register Fargate task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
