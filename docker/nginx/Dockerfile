@@ -2,7 +2,7 @@ FROM public.ecr.aws/nginx/nginx:alpine
 
 RUN apk update
 
-ENV APP_ROOT /var/www/app
+ENV APP_ROOT=/var/www/app
 WORKDIR $APP_ROOT
 
 RUN mkdir log
