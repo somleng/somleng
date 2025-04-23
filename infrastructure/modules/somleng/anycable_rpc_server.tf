@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "anycable" {
         logConfiguration = {
           logDriver = "awslogs",
           options = {
-            awslogs-group         = aws_cloudwatch_log_group.app.name,
+            awslogs-group         = aws_cloudwatch_log_group.anycable.name,
             awslogs-region        = var.region.aws_region,
             awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/anycable"
           }
