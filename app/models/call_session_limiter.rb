@@ -1,6 +1,6 @@
 class CallSessionLimiter
   class SessionLimitExceededError < StandardError; end
-  attr_reader :session_counters
+  attr_reader :session_counters, :logger
 
   def initialize(**options)
     @session_counters = options.fetch(:session_counters) do
@@ -12,6 +12,7 @@ class CallSessionLimiter
         )
       end
     end
+    @logger = options.fetch(:logger) { Rails.logger }
   end
 
   def add_session_to!(region, scope:)

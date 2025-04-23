@@ -12,9 +12,10 @@ class SimpleCounter
 
   def increment(scope: nil)
     key = build_key(scope)
-    with_expire(key) do |transaction|
+    result, = with_expire(key) do |transaction|
       transaction.incr(key)
     end
+    result
   end
 
   def increment!(scope: nil)
@@ -25,9 +26,10 @@ class SimpleCounter
 
   def decrement(scope: nil)
     key = build_key(scope)
-    with_expire(key) do |transaction|
+    result, = with_expire(key) do |transaction|
       transaction.decr(key)
     end
+    result
   end
 
   def count(scope: nil)

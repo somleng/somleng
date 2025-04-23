@@ -1,24 +1,34 @@
 class GlobalCallSessionLimiter < CallSessionLimiter
-  attr_reader :scope
+  attr_reader :scope, :sessions_count_log_key
 
   def initialize(**options)
     super(limit_per_capacity_unit: AppSettings.fetch(:global_call_sessions_limit), **options)
     @scope = options.fetch(:scope, :global)
+    @sessions_count_log_key = options.fetch(:sessions_count_log_key) { AppSettings.fetch(:global_call_sessions_count_log_key) }
   end
 
   def add_session_to!(*, **)
-    super(*, scope:)
+    result = super(*, scope:)
+    log_sessions_count(result)
   end
 
   def add_session_to(*, **)
-    super(*, scope:)
+    result = super(*, scope:)
+    log_sessions_count(result)
   end
 
   def remove_session_from(*, **)
-    super(*, scope:)
+    result = super(*, scope:)
+    log_sessions_count(result)
   end
 
   def session_count_for(*, **)
     super(*, scope:)
+  end
+
+  private
+
+  def log_sessions_count(count)
+    logger.info(JSON.generate(sessions_count_log_key => count))
   end
 end

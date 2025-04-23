@@ -1,12 +1,13 @@
 class OutboundCallJob < ApplicationJob
   class Handler
-    attr_reader :account, :queue, :rate_limiters, :session_limiters
+    attr_reader :account, :queue, :rate_limiters, :session_limiters, :logger
 
     def initialize(account, **options)
       @account = account
+      @logger = options.fetch(:logger) { Rails.logger }
       @queue = options.fetch(:queue) { OutboundCallsQueue.new(account) }
       @rate_limiters = options.fetch(:rate_limiters) { build_rate_limiters }
-      @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new ] }
+      @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new(logger:), GlobalCallSessionLimiter.new(logger:) ] }
     end
 
     def perform
@@ -51,7 +52,7 @@ class OutboundCallJob < ApplicationJob
     end
   end
 
-  def perform(...)
-    Handler.new(...).perform
+  def perform(*, **options)
+    Handler.new(*, logger:, **options).perform
   end
 end
