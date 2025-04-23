@@ -1,7 +1,6 @@
 module "somleng" {
   source = "../modules/somleng"
 
-  cluster_name       = "somleng-staging"
   app_identifier     = "somleng-staging"
   app_environment    = "staging"
   app_subdomain      = "app-staging"

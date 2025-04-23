@@ -23,18 +23,6 @@ resource "aws_security_group_rule" "appserver_egress" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-# Cloudwatch
-
-resource "aws_cloudwatch_log_group" "nginx" {
-  name              = "${var.app_identifier}-nginx"
-  retention_in_days = 7
-}
-
-resource "aws_cloudwatch_log_group" "appserver" {
-  name              = "${var.app_identifier}-appserver"
-  retention_in_days = 7
-}
-
 # ECS
 
 resource "aws_ecs_task_definition" "appserver" {
@@ -48,9 +36,9 @@ resource "aws_ecs_task_definition" "appserver" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.nginx.name,
+          awslogs-group         = aws_cloudwatch_log_group.app.name,
           awslogs-region        = var.region.aws_region,
-          awslogs-stream-prefix = var.app_environment
+          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/nginx"
         }
       },
       essential = true,
@@ -72,9 +60,9 @@ resource "aws_ecs_task_definition" "appserver" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.appserver.name,
+          awslogs-group         = aws_cloudwatch_log_group.app.name,
           awslogs-region        = var.region.aws_region,
-          awslogs-stream-prefix = var.app_environment
+          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/webserver"
         }
       },
       startTimeout = 120,
