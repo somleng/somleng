@@ -289,7 +289,7 @@ jobs:
       - name: Build Manifest
         run: |
           declare -a platforms=("amd64" "arm64")
-          declare -a repositories=("somleng" "somleng-nginx")
+          declare -a repositories=("${{ ENV.APP_REPOSITORY_NAME }}" "${{ ENV.WEBSERVER_REPOSITORY_NAME }}")
 
           for repository in "${repositories[@]}"
           do
