@@ -3,43 +3,49 @@ class SimpleCounter
 
   attr_reader :key, :limit, :expiry, :backend
 
-  def initialize(key:, **options)
-    @key = key
+  def initialize(**options)
+    @key = options.fetch(:key, nil)
     @limit = options.fetch(:limit, nil)
     @expiry = options.fetch(:expiry, nil)
     @backend = options.fetch(:backend) { AppSettings.redis }
   end
 
-  def increment
-    with_expire do |transaction|
+  def increment(scope: nil)
+    key = build_key(scope)
+    with_expire(key) do |transaction|
       transaction.incr(key)
     end
   end
 
-  def increment!
-    raise(LimitExceededError) if limit.present? && count >= limit
+  def increment!(scope: nil)
+    raise(LimitExceededError) if limit.present? && count(scope:) >= limit
 
-    increment
+    increment(scope:)
   end
 
-  def decrement
-    with_expire do |transaction|
+  def decrement(scope: nil)
+    key = build_key(scope)
+    with_expire(key) do |transaction|
       transaction.decr(key)
     end
   end
 
-  def count
-    backend.with { _1.get(key).to_i }
+  def count(scope: nil)
+    backend.with { _1.get(build_key(scope)).to_i }
   end
 
   private
 
-  def with_expire(&)
+  def with_expire(key, &)
     backend.with do |connection|
       connection.multi do |transaction|
         yield(transaction)
         transaction.expire(key, expiry) if expiry.present?
       end
     end
+  end
+
+  def build_key(scope)
+    [ scope, key ].compact.join(":")
   end
 end

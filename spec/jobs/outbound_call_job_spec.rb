@@ -6,15 +6,16 @@ RSpec.describe OutboundCallJob do
     phone_call = create(:phone_call, account:, region: "helium")
     other_phone_call = create(:phone_call, account:)
     account_queue = build_queue(account)
-    session_limiter = PhoneCallSessionLimiter.new
+    account_session_limiter, global_session_limiter = build_session_limiters(account:)
     account_queue.enqueue(phone_call.id)
     account_queue.enqueue(other_phone_call.id)
 
-    OutboundCallJob.perform_now(account, queue: account_queue, session_limiter:)
+    OutboundCallJob.perform_now(account, queue: account_queue, session_limiters: [ account_session_limiter, global_session_limiter ])
 
     expect(ExecuteWorkflowJob).to have_been_enqueued.exactly(1).times.with(InitiateOutboundCall.to_s, phone_call:)
     expect(account_queue.peek).to eq(other_phone_call.id)
-    expect(session_limiter.session_counter_for(:helium)).to have_attributes(count: 1)
+    expect(account_session_limiter.session_count_for(:helium, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:helium)).to eq(1)
   end
 
   it "applies rate limits" do
@@ -50,11 +51,10 @@ RSpec.describe OutboundCallJob do
     phone_call = create(:phone_call, account:, region: "hydrogen")
     account_queue = build_queue(account)
     account_queue.enqueue(phone_call.id)
-    session_limiter = PhoneCallSessionLimiter.new(limit: 1)
-    session_limiter.add_session_to("hydrogen")
+    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { hydrogen: 1 }, limit: 1)
 
     travel_to(Time.current) do
-      OutboundCallJob.perform_now(account, queue: account_queue, session_limiter:)
+      OutboundCallJob.perform_now(account, queue: account_queue, session_limiters: [ account_session_limiter, global_session_limiter ])
 
       expect(OutboundCallJob).to have_been_enqueued.with(
         account,
@@ -63,7 +63,8 @@ RSpec.describe OutboundCallJob do
     end
 
     expect(account_queue.peek).to eq(phone_call.id)
-    expect(session_limiter.session_counter_for(:hydrogen)).to have_attributes(count: 1)
+    expect(account_session_limiter.session_count_for(:hydrogen, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(1)
   end
 
   def build_queue(account, **options)
@@ -78,5 +79,17 @@ RSpec.describe OutboundCallJob do
     }
 
     RateLimiter.new(key: "#{key}:outbound_calls", **options)
+  end
+
+  def build_session_limiters(account:, sessions: {}, **)
+    session_limiters = [ AccountCallSessionLimiter.new(**), GlobalCallSessionLimiter.new(**) ]
+
+    sessions.each do |region, count|
+      session_limiters.each do |session_limiter|
+        count.times { session_limiter.add_session_to(region, scope: account.id) }
+      end
+    end
+
+    session_limiters
   end
 end

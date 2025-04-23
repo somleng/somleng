@@ -1,10 +1,10 @@
 class CreateInboundPhoneCall < ApplicationWorkflow
-  attr_reader :params, :session_limiter
+  attr_reader :params, :session_limiters
 
   def initialize(params, **options)
     super()
     @params = params
-    @session_limiter = options.fetch(:session_limiter) { PhoneCallSessionLimiter.new }
+    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new ] }
   end
 
   def call
@@ -16,8 +16,14 @@ class CreateInboundPhoneCall < ApplicationWorkflow
       phone_call
     end
 
-    session_limiter.add_session_to(phone_call.region.alias)
+    session_limit(phone_call)
 
     phone_call
+  end
+
+  private
+
+  def session_limit(phone_call)
+    session_limiters.each { _1.add_session_to(phone_call.region.alias, scope: phone_call.account_id) }
   end
 end

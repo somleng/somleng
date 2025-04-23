@@ -11,14 +11,20 @@ RSpec.describe CreateInboundPhoneCall do
     )
   end
 
-  it "adds a session" do
-    session_limiter = PhoneCallSessionLimiter.new
+  it "adds sessions" do
+    account = create(:account)
+    params = build_params(account:, region: "helium")
+    account_session_limiter = AccountCallSessionLimiter.new
+    global_session_limiter = GlobalCallSessionLimiter.new
 
-    CreateInboundPhoneCall.call(build_params(region: "helium"), session_limiter:)
-
-    expect(session_limiter.session_counter_for(:helium)).to have_attributes(
-      count: 1
+    CreateInboundPhoneCall.call(
+      params,
+      session_limiters: [ account_session_limiter, global_session_limiter ],
+      global_session_limiter:
     )
+
+    expect(account_session_limiter.session_count_for(:helium, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:helium)).to eq(1)
   end
 
   def build_params(**options)

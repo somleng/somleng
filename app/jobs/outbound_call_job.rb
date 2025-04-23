@@ -1,12 +1,12 @@
 class OutboundCallJob < ApplicationJob
   class Handler
-    attr_reader :account, :queue, :rate_limiters, :session_limiter
+    attr_reader :account, :queue, :rate_limiters, :session_limiters
 
     def initialize(account, **options)
       @account = account
       @queue = options.fetch(:queue) { OutboundCallsQueue.new(account) }
       @rate_limiters = options.fetch(:rate_limiters) { build_rate_limiters }
-      @session_limiter = options.fetch(:session_limiter) { PhoneCallSessionLimiter.new }
+      @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new ] }
     end
 
     def perform
@@ -16,7 +16,7 @@ class OutboundCallJob < ApplicationJob
         phone_call = account.phone_calls.find(phone_call_id)
 
         rate_limit!
-        session_limit!(phone_call.region.alias)
+        session_limit!(phone_call)
 
         ExecuteWorkflowJob.perform_later(InitiateOutboundCall.to_s, phone_call:)
       end
@@ -25,7 +25,7 @@ class OutboundCallJob < ApplicationJob
         account,
         wait_until: e.seconds_remaining_in_current_window.seconds.from_now
       )
-    rescue PhoneCallSessionLimiter::SessionLimitExceededError
+    rescue CallSessionLimiter::SessionLimitExceededError
       OutboundCallJob.perform_later(
         account,
         wait_until: 10.seconds.from_now
@@ -38,8 +38,8 @@ class OutboundCallJob < ApplicationJob
       rate_limiters.each(&:request!)
     end
 
-    def session_limit!(region)
-      session_limiter.add_session_to!(region)
+    def session_limit!(phone_call)
+      session_limiters.each { _1.add_session_to!(phone_call.region.alias, scope: phone_call.account_id) }
     end
 
     def build_rate_limiters

@@ -1,14 +1,14 @@
 class UpdateSwitchCapacity < ApplicationWorkflow
-  attr_reader :region, :capacity, :session_limiter
+  attr_reader :region, :capacity, :switch_capacity
 
   def initialize(params, **options)
     super()
     @region = params.fetch(:region)
     @capacity = params.fetch(:capacity)
-    @session_limiter = options.fetch(:session_limiter) { PhoneCallSessionLimiter.new }
+    @switch_capacity = options.fetch(:switch_capacity) { SwitchCapacity }
   end
 
   def call
-    session_limiter.set_capacity_for(region, capacity:)
+    switch_capacity.set_for(region, capacity:)
   end
 end
