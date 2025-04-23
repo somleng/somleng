@@ -1,7 +1,5 @@
 .git
 .github
-.circleci
-.ebextensions
 .bundle
 config/credentials/**/*.key
 coverage
@@ -15,3 +13,8 @@ spec
 storage
 tmp
 vendor/bundle
+Procfile.dev
+Dockerfile
+README.md
+LICENSE.txt
+rspec_examples.txt

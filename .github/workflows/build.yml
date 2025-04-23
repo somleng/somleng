@@ -224,6 +224,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
+          context: .
           platforms: linux/${{ matrix.platform.arch }}
           cache-from: type=gha,scope=${{ matrix.identifier }}-${{ matrix.platform.arch }}
           cache-to: type=gha,mode=max,scope=${{ matrix.identifier }}-${{ matrix.platform.arch }}
