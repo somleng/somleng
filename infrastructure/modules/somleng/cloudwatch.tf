@@ -3,16 +3,6 @@ resource "aws_cloudwatch_log_group" "app" {
   retention_in_days = 7
 }
 
-resource "aws_cloudwatch_log_group" "anycable" {
-  name              = "${var.app_identifier}-anycable"
-  retention_in_days = 7
-}
-
-resource "aws_cloudwatch_log_group" "ws" {
-  name              = "${var.app_identifier}-ws"
-  retention_in_days = 7
-}
-
 resource "aws_cloudwatch_log_metric_filter" "call_sessions_count" {
   name           = "${var.app_identifier}-CallSessionsCount"
   pattern        = "{ $.${var.global_call_sessions_count_log_key} = * }"
