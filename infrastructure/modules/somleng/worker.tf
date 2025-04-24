@@ -8,7 +8,7 @@ locals {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.app.name,
           awslogs-region        = var.region.aws_region,
-          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/worker"
+          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}"
         }
       },
       command      = ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],

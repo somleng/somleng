@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "anycable" {
           options = {
             awslogs-group         = aws_cloudwatch_log_group.anycable.name,
             awslogs-region        = var.region.aws_region,
-            awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/anycable"
+            awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}"
           }
         },
         command      = ["bundle", "exec", "anycable"],

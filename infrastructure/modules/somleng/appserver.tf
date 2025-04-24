@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "appserver" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.app.name,
           awslogs-region        = var.region.aws_region,
-          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/nginx"
+          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}"
         }
       },
       essential = true,
@@ -62,7 +62,7 @@ resource "aws_ecs_task_definition" "appserver" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.app.name,
           awslogs-region        = var.region.aws_region,
-          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/webserver"
+          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}"
         }
       },
       startTimeout = 120,

@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "ws" {
           options = {
             awslogs-group         = aws_cloudwatch_log_group.ws.name,
             awslogs-region        = var.region.aws_region,
-            awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}/ws"
+            awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}"
           }
         },
         startTimeout = 120,
