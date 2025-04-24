@@ -9,8 +9,8 @@ class HomeDashboard < Administrate::CustomDashboard
     per_region { GlobalCallSessionLimiter.new.session_count_for(_1) }
   end
 
-  def switch_capacity
-    per_region { SwitchCapacity.current_for(_1) }
+  def call_service_capacity
+    per_region { CallServiceCapacity.current_for(_1) }
   end
 
   def global_call_sessions_limit

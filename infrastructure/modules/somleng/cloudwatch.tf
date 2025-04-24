@@ -31,15 +31,15 @@ resource "aws_cloudwatch_log_metric_filter" "call_sessions_count" {
   depends_on = [null_resource.log_transformer]
 }
 
-resource "aws_cloudwatch_log_metric_filter" "switch_capacity" {
-  name           = "${var.app_identifier}-SwitchCapacity"
-  pattern        = "{ $.${var.switch_capacity_log_key} = * }"
+resource "aws_cloudwatch_log_metric_filter" "call_service_capacity" {
+  name           = "${var.app_identifier}-CallServiceCapacity"
+  pattern        = "{ $.${var.call_service_capacity_log_key} = * }"
   log_group_name = aws_cloudwatch_log_group.app.name
 
   metric_transformation {
-    name      = "${var.app_identifier}-SwitchCapacity"
+    name      = "${var.app_identifier}-CallServiceCapacity"
     namespace = "Somleng"
-    value     = "$.${var.switch_capacity_log_key}"
+    value     = "$.${var.call_service_capacity_log_key}"
     dimensions = {
       Cluster = "$.log-group-stream[0]"
     }

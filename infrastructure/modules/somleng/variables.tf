@@ -105,6 +105,6 @@ variable "global_call_sessions_count_log_key" {
   default = "global_call_sessions_count"
 }
 
-variable "switch_capacity_log_key" {
-  default = "switch_capacity"
+variable "call_service_capacity_log_key" {
+  default = "call_service_capacity"
 }

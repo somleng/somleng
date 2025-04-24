@@ -18,118 +18,86 @@ resource "aws_iam_role" "ecs_task_role" {
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume_role_policy.json
 }
 
+data "aws_iam_policy_document" "ecs_task_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.uploads.arn, data.aws_s3_bucket.raw_recordings.arn]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:PutObject", "s3:DeleteObject", "s3:GetObject"]
+    resources = ["${aws_s3_bucket.uploads.arn}/*"]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:GetObject"]
+    resources = ["${data.aws_s3_bucket.raw_recordings.arn}/*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:ChangeMessageVisibility",
+      "sqs:ChangeMessageVisibilityBatch",
+      "sqs:DeleteMessage",
+      "sqs:DeleteMessageBatch",
+      "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl",
+      "sqs:ReceiveMessage",
+      "sqs:SendMessage",
+      "sqs:SendMessageBatch"
+    ]
+    resources = [
+      aws_sqs_queue.high_priority.arn,
+      aws_sqs_queue.default.arn,
+      aws_sqs_queue.low_priority.arn,
+      aws_sqs_queue.long_running.arn,
+      aws_sqs_queue.scheduler.arn
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:SendMessage"
+    ]
+    resources = [
+      data.aws_sqs_queue.call_service.arn
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:ListQueues"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ses:SendRawEmail"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "polly:DescribeVoices"
+    ]
+    resources = ["*"]
+  }
+}
+
 resource "aws_iam_policy" "ecs_task_policy" {
   name = "${var.app_identifier}-ecsTaskPolicy"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "${aws_s3_bucket.uploads.arn}",
-        "${data.aws_s3_bucket.raw_recordings.arn}"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:PutObject",
-        "s3:DeleteObject",
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "${aws_s3_bucket.uploads.arn}/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "${data.aws_s3_bucket.raw_recordings.arn}/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sqs:ChangeMessageVisibility",
-        "sqs:ChangeMessageVisibilityBatch",
-        "sqs:DeleteMessage",
-        "sqs:DeleteMessageBatch",
-        "sqs:GetQueueAttributes",
-        "sqs:GetQueueUrl",
-        "sqs:ReceiveMessage",
-        "sqs:SendMessage",
-        "sqs:SendMessageBatch"
-      ],
-      "Resource": [
-        "${aws_sqs_queue.high_priority.arn}",
-        "${aws_sqs_queue.default.arn}",
-        "${aws_sqs_queue.low_priority.arn}",
-        "${aws_sqs_queue.long_running.arn}",
-        "${aws_sqs_queue.scheduler.arn}"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sqs:SendMessage"
-      ],
-      "Resource": [
-        "${data.aws_sqs_queue.call_service.arn}"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sqs:ListQueues"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "ses:SendRawEmail",
-      "Resource":"*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "polly:DescribeVoices"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-# https://aws.amazon.com/blogs/containers/new-using-amazon-ecs-exec-access-your-containers-fargate-ec2/
-resource "aws_iam_policy" "ecs_exec_policy" {
-  name = "${var.app_identifier}-ecs-exec-policy"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ssmmessages:CreateControlChannel",
-        "ssmmessages:CreateDataChannel",
-        "ssmmessages:OpenControlChannel",
-        "ssmmessages:OpenDataChannel"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+  policy = data.aws_iam_policy_document.ecs_task_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_policy" {
@@ -137,53 +105,42 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy" {
   policy_arn = aws_iam_policy.ecs_task_policy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_exec_policy" {
-  role       = aws_iam_role.ecs_task_role.id
-  policy_arn = aws_iam_policy.ecs_exec_policy.arn
+data "aws_iam_policy_document" "assume_ecs_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
 }
 
 resource "aws_iam_role" "task_execution_role" {
-  name = "${var.app_identifier}-ecsTaskExecutionRole"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": ["ecs-tasks.amazonaws.com"]
-      },
-      "Effect": "Allow"
-    }
-  ]
+  name               = "${var.app_identifier}-ecsTaskExecutionRole"
+  assume_role_policy = data.aws_iam_policy_document.assume_ecs_role.json
 }
-EOF
+
+data "aws_iam_policy_document" "task_execution_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["ssm:GetParameters"]
+    resources = [
+      aws_ssm_parameter.rails_master_key.arn,
+      aws_ssm_parameter.services_password.arn,
+      aws_ssm_parameter.anycable_secret.arn,
+      var.db_password_parameter_arn,
+      data.aws_ssm_parameter.region_data.arn
+    ]
+  }
 }
 
 resource "aws_iam_policy" "task_execution_custom_policy" {
   name = "${var.app_identifier}-task-execution-custom-policy"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ssm:GetParameters"
-      ],
-      "Resource": [
-        "${aws_ssm_parameter.rails_master_key.arn}",
-        "${aws_ssm_parameter.services_password.arn}",
-        "${aws_ssm_parameter.anycable_secret.arn}",
-        "${var.db_password_parameter_arn}",
-        "${data.aws_ssm_parameter.region_data.arn}"
-      ]
-    }
-  ]
-}
-EOF
+  policy = data.aws_iam_policy_document.task_execution_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "task_execution_role_policy" {

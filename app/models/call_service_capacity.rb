@@ -1,4 +1,4 @@
-class SwitchCapacity
+class CallServiceCapacity
   class Instance
     attr_reader :backend
 
@@ -21,7 +21,7 @@ class SwitchCapacity
     private
 
     def capacity_key(region)
-      "switch_capacity:#{region}"
+      "call_service_capacity:#{region}"
     end
   end
 

@@ -15,6 +15,10 @@ locals {
     {
       name      = "REGION_DATA"
       valueFrom = data.aws_ssm_parameter.region_data.arn
+    },
+    {
+      name      = "CALL_SERVICE_PASSWORD"
+      valueFrom = data.aws_ssm_parameter.call_service_password.arn
     }
   ]
 
@@ -119,8 +123,8 @@ locals {
       value = var.global_call_sessions_count_log_key
     },
     {
-      name  = "SWITCH_CAPACITY_LOG_KEY",
-      value = var.switch_capacity_log_key
+      name  = "CALL_SERVICE_CAPACITY_LOG_KEY",
+      value = var.call_service_capacity_log_key
     }
   ]
 }

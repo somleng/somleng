@@ -8,7 +8,7 @@ class CallSessionLimiter
         result[region.alias.to_sym] = SimpleCounter.new(
           key: options.fetch(:key) { "#{options.fetch(:namespace, :phone_call_sessions)}:#{region.alias}" },
           expiry: options.fetch(:expiry) { 5.minutes },
-          limit: options.fetch(:limit) { options.fetch(:limit_per_capacity_unit) * options.fetch(:switch_capacity) { SwitchCapacity.current_for(region.alias) } }
+          limit: options.fetch(:limit) { options.fetch(:limit_per_capacity_unit) * options.fetch(:call_service_capacity) { CallServiceCapacity.current_for(region.alias) } }
         )
       end
     end

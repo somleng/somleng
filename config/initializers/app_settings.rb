@@ -6,8 +6,10 @@ class AppSettings
       Addressable::URI.parse(fetch(:app_url_host))
     end
 
-    def fetch(...)
-      config.fetch(...)
+    def fetch(key)
+      value = config.fetch(key)
+      raise "Missing configuration for: #{key}" if value.blank?
+      value
     end
 
     def dig(...)

@@ -1,11 +1,11 @@
 module Services
-  class SwitchCapacitiesController < ServicesController
+  class CallServiceCapacitiesController < ServicesController
     def create
       validate_request_schema(
-        with: SwitchCapacityRequestSchema,
+        with: CallServiceCapacityRequestSchema,
         location: nil,
       ) do |permitted_params|
-        UpdateSwitchCapacity.call(permitted_params, logger:)
+        UpdateCallServiceCapacity.call(permitted_params, logger:)
       end
     end
 

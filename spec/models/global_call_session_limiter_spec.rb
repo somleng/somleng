@@ -42,8 +42,8 @@ RSpec.describe GlobalCallSessionLimiter do
   end
 
   it "has limits which change with capacity" do
-    SwitchCapacity.set_for(:hydrogen, capacity: 2)
-    SwitchCapacity.set_for(:helium, capacity: 1)
+    CallServiceCapacity.set_for(:hydrogen, capacity: 2)
+    CallServiceCapacity.set_for(:helium, capacity: 1)
 
     session_limiter = GlobalCallSessionLimiter.new
 
