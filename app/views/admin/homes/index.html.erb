@@ -1,0 +1,14 @@
+<% content_for(:title) do %>
+  Home
+<% end %>
+
+<section class="main-content__body main-content__body--flush">
+  <p>
+    <dl>
+      <dt class="attribute-label">Current call sessions:</dt>
+      <dd class="attribute-data attribute-data--string">
+        <pre style="background-color: #f5f5f5"><%= JSON.pretty_generate(@dashboard.current_call_sessions) %></pre>
+      </dd>
+    </dl>
+  </p>
+</div>

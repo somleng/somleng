@@ -168,6 +168,7 @@ Rails.application.routes.draw do
     namespace :admin do
       mount(PgHero::Engine, at: "pghero")
 
+      resources :homes, only: %i[index]
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]
       resources :phone_numbers, only: %i[show index]

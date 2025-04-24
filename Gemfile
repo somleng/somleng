@@ -7,7 +7,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem "rails", "~> 7.2.2"
 
 # For Administrate
-gem "administrate"
+gem "administrate", github: "thoughtbot/administrate"
 gem "administrate-field-active_storage"
 gem "image_processing"
 
