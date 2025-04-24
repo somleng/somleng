@@ -1,14 +1,12 @@
 require "administrate/custom_dashboard"
 
 class HomeDashboard < Administrate::CustomDashboard
-  CALL_SESSION_LIMITER = GlobalCallSessionLimiter.new
-
   def self.resource_name(_opts)
     "Home"
   end
 
   def current_call_sessions
-    per_region { CALL_SESSION_LIMITER.session_count_for(_1) }
+    per_region { GlobalCallSessionLimiter.new.session_count_for(_1) }
   end
 
   def switch_capacity

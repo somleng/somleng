@@ -1,8 +1,6 @@
 require "administrate/base_dashboard"
 
 class AccountDashboard < Administrate::BaseDashboard
-  CALL_SESSION_LIMITER = AccountCallSessionLimiter.new
-
   ATTRIBUTE_TYPES = {
     carrier: Field::BelongsTo,
     sip_trunk: Field::BelongsTo,
@@ -17,7 +15,7 @@ class AccountDashboard < Administrate::BaseDashboard
     current_call_sessions: Field::JSON.with_options(
       getter: ->(field) {
         SomlengRegion::Region.all.each_with_object({}) do |region, result|
-          result[region.alias] = CALL_SESSION_LIMITER.session_count_for(region.alias, scope: field.resource.id)
+          result[region.alias] = AccountCallSessionLimiter.new.session_count_for(region.alias, scope: field.resource.id)
         end
       }
     ),
