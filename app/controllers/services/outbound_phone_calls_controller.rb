@@ -6,7 +6,7 @@ module Services
         serializer_class: OutboundPhoneCallSerializer,
         location: nil
       ) do |permitted_params|
-        CreatePhoneCallsFromOutboundDial.call(permitted_params)
+        CreatePhoneCallsFromOutboundDial.call(permitted_params, logger:)
       end
     end
   end

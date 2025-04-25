@@ -28,7 +28,8 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     external_id: Field::String,
     variables: Field::JSON.with_options(searchable: false, export: false),
     direction: Field::String,
-    twiml: Field::Text.with_options(export: false)
+    twiml: Field::Text.with_options(export: false),
+    region: Field::Text
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -56,6 +57,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     status_callback_url
     status_callback_method
     call_service_host
+    region
     user_terminated_at
     user_updated_at
     created_at

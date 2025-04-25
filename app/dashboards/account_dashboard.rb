@@ -11,7 +11,19 @@ class AccountDashboard < Administrate::BaseDashboard
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime,
     status: Field::String,
-    calls_per_second: Field::String,
+    calls_per_second: Field::Number,
+    enqueued_calls: Field::Number.with_options(
+      getter: ->(field) {
+        OutboundCallsQueue.new(field.resource).size
+      }
+    ),
+    current_call_sessions: Field::JSON.with_options(
+      getter: ->(field) {
+        SomlengRegion::Region.all.each_with_object({}) do |region, result|
+          result[region.alias] = AccountCallSessionLimiter.new.session_count_for(region.alias, scope: field.resource.id)
+        end
+      }
+    ),
     allowed_calling_codes: Field::String,
     metadata: Field::JSON.with_options(searchable: false)
   }.freeze
@@ -31,6 +43,8 @@ class AccountDashboard < Administrate::BaseDashboard
     type
     status
     calls_per_second
+    enqueued_calls
+    current_call_sessions
     default_tts_voice
     sip_trunk
     created_at

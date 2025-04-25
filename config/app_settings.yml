@@ -3,8 +3,6 @@ default: &default
   api_subdomain: "api"
   verify_subdomain: "verify"
   client_gateway_domain: "sip.somleng.org"
-  call_service_queue_url: <%= ENV.fetch("CALL_SERVICE_QUEUE_URL", "https://amazonaws.com/12345/call_service_queue") %>
-  app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
   mailer_sender: <%= ENV.fetch("MAILER_SENDER", "no-reply@somleng.org") %>
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
   aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>
@@ -22,19 +20,21 @@ default: &default
   recaptcha_fallback_secret_key: <%= ENV.fetch("RECAPTCHA_FALLBACK_SECRET_KEY", "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe") %>
   datawrapper_api_key: <%= ENV["DATAWRAPPER_API_KEY"] %>
   datawrapper_chart_id: <%= ENV["DATAWRAPPER_CHART_ID"] %>
-  services_user: "services"
-  services_password: "password"
-  switch_default_host: <%= ENV.fetch("SWITCH_DEFAULT_HOST", "http://localhost:8080") %>
-  switch_default_region: <%= ENV.fetch("SWITCH_DEFAULT_REGION", "hydrogen") %>
-  switch_username: "adhearsion"
-  switch_password: "password"
-  admin_username: "admin"
-  admin_password: "password"
+  call_service_username: <%= ENV.fetch("CALL_SERVICE_USERNAME", "adhearsion") %>
+  admin_username: <%= ENV.fetch("ADMIN_USERNAME", "admin") %>
+  services_username: <%= ENV.fetch("SERVICES_USERNAME", "services") %>
+  call_service_default_region: <%= ENV.fetch("CALL_SERVICE_DEFAULT_REGION", "hydrogen") %>
   region_data: <%= ENV.fetch("REGION_DATA", "{}") %>
   stub_regions: <%= ENV.fetch("STUB_REGIONS", true).to_s == "true" %>
   sip_port: 5060
+  redis_url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  redis_pool_size: <%= ENV.fetch('DB_POOL') { 250 } %>
   pghero_other_databases: "<%= ENV["PGHERO_OTHER_DATABASES"] %>"
   pghero_db_instance_identifier: "<%= ENV["PGHERO_DB_INSTANCE_IDENTIFIER"] %>"
+  global_call_sessions_limit: <%= ENV.fetch("GLOBAL_CALL_SESSIONS_LIMIT", 120) %>
+  global_call_sessions_count_log_key: <%= ENV.fetch("GLOBAL_CALL_SESSIONS_COUNT_LOG_KEY", "global_call_sessions_count") %>
+  call_service_capacity_log_key: <%= ENV.fetch("CALL_SERVICE_CAPACITY_LOG_KEY", "call_service_capacity") %>
+  account_call_sessions_limit: <%= ENV.fetch("ACCOUNT_CALL_SESSIONS_LIMIT", 80) %>
   active_record_encryption:
     primary_key: 5Owbop0UTpEsYwX0wK56VM1eg4xl7LXX
     deterministic_key: 5J0sxNi4YDp5cZnfV9BhXpujwgoOvhgV
@@ -44,16 +44,16 @@ production: &production
   <<: *default
   app_url_host: "<%= ENV.fetch("APP_URL_HOST", "https://app.somleng.org") %>"
   asset_url_host: "<%= ENV.fetch("ASSET_URL_HOST", "https://cdn.somleng.org") %>"
-  switch_default_host: "<%= ENV.fetch("SWITCH_DEFAULT_HOST", "https://switch.hydrogen.somleng.org") %>"
-  switch_default_region: "<%= ENV.fetch("SWITCH_DEFAULT_REGION", "hydrogen") %>"
+  call_service_default_host: "<%= ENV.fetch("CALL_SERVICE_DEFAULT_HOST", "https://switch.hydrogen.somleng.org") %>"
+  call_service_password: "<%= ENV.fetch('CALL_SERVICE_PASSWORD', nil) %>"
+  call_service_queue_url: "<%= ENV.fetch('CALL_SERVICE_QUEUE_URL', nil) %>"
   sentry_dsn: "<%= ENV.fetch("SENTRY_DSN") { Rails.application.credentials.sentry_dsn } %>"
-  services_password: "<%= ENV.fetch("SERVICES_PASSWORD") { Rails.application.credentials.services_password } %>"
+  services_password: '<%= ENV.fetch("SERVICES_PASSWORD", nil) %>'
   recaptcha_site_key: "<%= ENV.fetch("RECAPTCHA_SITE_KEY") { Rails.application.credentials.recaptcha_site_key } %>"
   recaptcha_secret_key: "<%= ENV.fetch("RECAPTCHA_SECRET_KEY") { Rails.application.credentials.recaptcha_secret_key } %>"
   recaptcha_fallback_site_key: "<%= ENV.fetch("RECAPTCHA_FALLBACK_SITE_KEY") { Rails.application.credentials.recaptcha_fallback_site_key } %>"
   recaptcha_fallback_secret_key: "<%= ENV.fetch("RECAPTCHA_FALLBACK_SECRET_KEY") { Rails.application.credentials.recaptcha_fallback_secret_key } %>"
   admin_password: "<%= ENV.fetch("ADMIN_PASSWORD") { Rails.application.credentials.admin_password } %>"
-  switch_password: "<%= ENV.fetch("SWITCH_PASSWORD") { Rails.application.credentials.switch_password } %>"
   skylight_authentication_token: "<%= ENV.fetch("SKYLIGHT_AUTHENTICATION_TOKEN") { Rails.application.credentials.skylight_authentication_token } %>"
   datawrapper_api_key: <%= ENV.fetch("DATAWRAPPER_API_KEY") { Rails.application.credentials.datawrapper_api_key } %>
   datawrapper_chart_id: <%= ENV.fetch("DATAWRAPPER_CHART_ID") { Rails.application.credentials.datawrapper_chart_id } %>
@@ -70,15 +70,20 @@ staging:
   verify_subdomain: "verify-staging"
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "https://app-staging.somleng.org") %>
   asset_url_host: <%= ENV.fetch("ASSET_URL_HOST", "https://cdn-staging.somleng.org") %>
-  switch_default_host: <%= ENV.fetch("SWITCH_DEFAULT_HOST", "https://switch-staging.hydrogen.somleng.org") %>
+  call_service_default_host: <%= ENV.fetch("CALL_SERVICE_DEFAULT_HOST", "https://switch-staging.hydrogen.somleng.org") %>
   sip_port: 6060
   client_gateway_domain: "Connect Via Public IP"
 
 development: &development
   <<: *default
+  app_url_host: <%= ENV.fetch("APP_URL_HOST", "http://app-foobar.lvh.me:3000") %>
+  call_service_default_host: <%= ENV.fetch('CALL_SERVICE_DEFAULT_HOST', 'http://localhost:8080') %>
+  call_service_password: "<%= ENV.fetch('CALL_SERVICE_PASSWORD', 'password') %>"
+  call_service_queue_url: "<%= ENV.fetch('CALL_SERVICE_QUEUE_URL', 'https://amazonaws.com/12345/call_service_queue') %>"
+  admin_password: "<%= ENV.fetch('ADMIN_PASSWORD', 'password') %>"
+  services_password: "<%= ENV.fetch('SERVICES_PASSWORD', 'password') %>"
 
 test:
   <<: *development
-  switch_default_host: "https://switch.hydrogen.somleng.org"
-  switch_default_region: "hydrogen"
+  call_service_default_host: "https://switch.hydrogen.somleng.org"
   app_url_host: "http://app.lvh.me"

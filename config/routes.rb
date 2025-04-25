@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   scope(
     as: :api,
     constraints: {
-      subdomain: [ AppSettings.config_for(:api_subdomain) ]
+      subdomain: [ AppSettings.fetch(:api_subdomain) ]
     },
     defaults: { format: "json" }
   ) do
@@ -55,11 +55,12 @@ Rails.application.routes.draw do
       resources :recordings, only: %i[create update]
       resources :media_streams, only: :create
       resources :media_stream_events, only: :create
+      resources :call_service_capacities, only: :create
     end
   end
 
   scope(
-    module: "twilio_api/verify", as: :api_twilio_verify, constraints: { subdomain: AppSettings.config_for(:verify_subdomain) },
+    module: "twilio_api/verify", as: :api_twilio_verify, constraints: { subdomain: AppSettings.fetch(:verify_subdomain) },
     defaults: { format: "json" }
   ) do
     scope :v2 do
@@ -145,7 +146,7 @@ Rails.application.routes.draw do
     end
   end
 
-  constraints(subdomain: AppSettings.config_for(:app_subdomain)) do
+  constraints(subdomain: AppSettings.fetch(:app_subdomain)) do
     devise_scope :user do
       resource(
         :registration,
@@ -167,6 +168,7 @@ Rails.application.routes.draw do
     namespace :admin do
       mount(PgHero::Engine, at: "pghero")
 
+      resources :homes, only: %i[index]
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]
       resources :phone_numbers, only: %i[show index]

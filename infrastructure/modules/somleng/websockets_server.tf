@@ -23,13 +23,6 @@ resource "aws_security_group_rule" "ws_egress" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-# Cloudwatch
-
-resource "aws_cloudwatch_log_group" "ws" {
-  name              = "${var.app_identifier}-ws"
-  retention_in_days = 7
-}
-
 # ECS
 
 resource "aws_ecs_task_definition" "ws" {
@@ -44,9 +37,9 @@ resource "aws_ecs_task_definition" "ws" {
         logConfiguration = {
           logDriver = "awslogs",
           options = {
-            awslogs-group         = aws_cloudwatch_log_group.ws.name,
+            awslogs-group         = aws_cloudwatch_log_group.app.name,
             awslogs-region        = var.region.aws_region,
-            awslogs-stream-prefix = var.app_environment
+            awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}"
           }
         },
         startTimeout = 120,

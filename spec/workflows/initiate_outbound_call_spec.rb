@@ -18,6 +18,7 @@ RSpec.describe InitiateOutboundCall do
       :routable,
       carrier:,
       sip_trunk:,
+      region: sip_trunk.region,
       to: "85516701721",
       from: "1294",
       caller_id: "1294",
@@ -26,7 +27,7 @@ RSpec.describe InitiateOutboundCall do
     )
     stub_switch_request(region: :helium, external_call_id: "123456789", host: "10.10.1.13")
 
-    InitiateOutboundCall.call(phone_call)
+    InitiateOutboundCall.call(phone_call:)
 
     expect(phone_call).to have_attributes(
       external_id: "123456789",
@@ -73,7 +74,7 @@ RSpec.describe InitiateOutboundCall do
     )
     phone_call = create(:phone_call, :outbound, :routable,  :canceled, sip_trunk:, carrier:, external_id: nil)
 
-    InitiateOutboundCall.call(phone_call)
+    InitiateOutboundCall.call(phone_call:)
 
     expect(WebMock).not_to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
   end
@@ -85,9 +86,9 @@ RSpec.describe InitiateOutboundCall do
     phone_call = create(:phone_call, :outbound, :queued, sip_trunk:, carrier:, account:)
     sip_trunk.destroy!
 
-    InitiateOutboundCall.call(phone_call.reload)
+    InitiateOutboundCall.call(phone_call: phone_call.reload)
 
-    expect(phone_call.canceled?).to eq(true)
+    expect(phone_call.canceled?).to be(true)
   end
 
   it "handles failed outbound calls" do
@@ -95,12 +96,12 @@ RSpec.describe InitiateOutboundCall do
     stub_request(:post, "https://switch.hydrogen.somleng.org/calls").to_return(status: 500)
 
     expect do
-      InitiateOutboundCall.call(phone_call)
+      InitiateOutboundCall.call(phone_call:)
     end.to raise_error(InitiateOutboundCall::Error)
 
     expect(phone_call.status).to eq("initiating")
-    expect(phone_call.initiating_at.present?).to eq(true)
-    expect(phone_call.initiated_at).to eq(nil)
+    expect(phone_call.initiating_at.present?).to be(true)
+    expect(phone_call.initiated_at).to be_nil
     expect(WebMock).to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
   end
 
@@ -109,12 +110,12 @@ RSpec.describe InitiateOutboundCall do
     phone_call = create(:phone_call, :outbound, :queued, :routable, sip_trunk:)
 
     travel_to(Time.current) do
-      InitiateOutboundCall.call(phone_call)
+      InitiateOutboundCall.call(phone_call:)
 
       expect(phone_call.status).to eq("queued")
       expect(ScheduledJob).to have_been_enqueued.with(
-        OutboundCallJob.to_s,
-        phone_call,
+        InitiateOutboundCall.to_s,
+        phone_call:,
         wait_until: 10.seconds.from_now
       )
     end
@@ -128,7 +129,7 @@ RSpec.describe InitiateOutboundCall do
 
     threads = phone_calls.each_with_object([]) do |phone_call, result|
       result << Thread.new do
-        InitiateOutboundCall.call(phone_call)
+        InitiateOutboundCall.call(phone_call:)
       end
     end
 

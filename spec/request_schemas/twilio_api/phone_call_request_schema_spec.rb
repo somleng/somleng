@@ -152,7 +152,8 @@ module TwilioAPI
       sip_trunk = create(
         :sip_trunk,
         carrier: account.carrier,
-        outbound_host: "sip.example.com"
+        outbound_host: "sip.example.com",
+        region: "hydrogen"
       )
       incoming_phone_number = create(:incoming_phone_number, account:, number: "85568308530")
       schema = validate_request_schema(
@@ -179,6 +180,7 @@ module TwilioAPI
         account:,
         carrier: account.carrier,
         sip_trunk:,
+        region: "hydrogen",
         voice_url: "https://www.example.com/voice_url.xml",
         voice_method: "GET",
         status_callback_url: "https://example.com/status-callback",

@@ -1,8 +1,12 @@
 .git
+.gitignore
 .github
-.circleci
-.ebextensions
 .bundle
+.dockerignore
+.rspec
+.rubocop.yml
+.yarn
+.tool-versions
 config/credentials/**/*.key
 coverage
 doc
@@ -15,3 +19,8 @@ spec
 storage
 tmp
 vendor/bundle
+Procfile.dev
+Dockerfile
+README.md
+LICENSE.txt
+rspec_examples.txt

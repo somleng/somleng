@@ -15,6 +15,10 @@ locals {
     {
       name      = "REGION_DATA"
       valueFrom = data.aws_ssm_parameter.region_data.arn
+    },
+    {
+      name      = "CALL_SERVICE_PASSWORD"
+      valueFrom = data.aws_ssm_parameter.call_service_password.arn
     }
   ]
 
@@ -113,12 +117,20 @@ locals {
     {
       name  = "ANYCABLE_BROADCAST_ADAPTER",
       value = "redisx"
+    },
+    {
+      name  = "GLOBAL_CALL_SESSIONS_COUNT_LOG_KEY",
+      value = var.global_call_sessions_count_log_key
+    },
+    {
+      name  = "CALL_SERVICE_CAPACITY_LOG_KEY",
+      value = var.call_service_capacity_log_key
     }
   ]
 }
 
 resource "aws_ecs_cluster" "cluster" {
-  name = var.cluster_name
+  name = var.app_identifier
 
   setting {
     name  = "containerInsights"
@@ -145,7 +157,7 @@ resource "aws_ecs_capacity_provider" "this" {
 }
 
 resource "aws_ecs_cluster_capacity_providers" "this" {
-  cluster_name = var.cluster_name
+  cluster_name = aws_ecs_cluster.cluster.name
 
   capacity_providers = [
     aws_ecs_capacity_provider.this.name,

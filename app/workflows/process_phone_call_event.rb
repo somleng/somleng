@@ -2,6 +2,7 @@ class ProcessPhoneCallEvent < ApplicationWorkflow
   attr_reader :params
 
   def initialize(params)
+    super()
     @params = params
   end
 

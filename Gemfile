@@ -7,7 +7,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem "rails", "~> 7.2.2"
 
 # For Administrate
-gem "administrate"
+gem "administrate", github: "thoughtbot/administrate"
 gem "administrate-field-active_storage"
 gem "image_processing"
 
@@ -25,6 +25,7 @@ gem "aws-sdk-s3"
 gem "aws-sdk-sesv2"
 gem "aws-sdk-sqs"
 gem "bootstrap-email", "1.5.1"
+gem "connection_pool"
 gem "country_select"
 gem "cssbundling-rails"
 gem "cursor_paginator"
@@ -91,6 +92,7 @@ group :test do
   gem "capybara"
   gem "email_spec"
   gem "factory_bot_rails"
+  gem "mock_redis"
   gem "selenium-webdriver"
   gem "shoulda-matchers"
   gem "simplecov", require: false

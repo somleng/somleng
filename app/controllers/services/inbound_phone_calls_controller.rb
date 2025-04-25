@@ -8,13 +8,7 @@ module Services
         schema_options: { error_log_messages: },
         on_error: ->(schema) { handle_errors(schema) }
       ) do |permitted_params|
-        ApplicationRecord.transaction do
-          phone_call = PhoneCall.create!(permitted_params)
-          phone_call.initiating_at = Time.current
-          phone_call.initiated_at = phone_call.initiating_at
-          phone_call.mark_as_initiated!
-          phone_call
-        end
+        CreateInboundPhoneCall.call(permitted_params, logger:)
       end
     end
 

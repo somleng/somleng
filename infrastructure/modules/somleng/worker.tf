@@ -6,9 +6,9 @@ locals {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.worker.name,
+          awslogs-group         = aws_cloudwatch_log_group.app.name,
           awslogs-region        = var.region.aws_region,
-          awslogs-stream-prefix = var.app_environment
+          awslogs-stream-prefix = "${var.app_identifier}/${var.app_environment}"
         }
       },
       command      = ["bundle", "exec", "shoryuken", "-R", "-C", "config/shoryuken.yml"],
@@ -35,13 +35,6 @@ resource "aws_security_group_rule" "worker_egress" {
   from_port         = 0
   security_group_id = aws_security_group.worker.id
   cidr_blocks       = ["0.0.0.0/0"]
-}
-
-# Cloudwatch
-
-resource "aws_cloudwatch_log_group" "worker" {
-  name              = "${var.app_identifier}-worker"
-  retention_in_days = 7
 }
 
 # ECS

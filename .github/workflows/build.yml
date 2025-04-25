@@ -2,8 +2,8 @@ on: push
 name: Build Somleng
 
 env:
-  ECR_REGISTRY: 324279636507.dkr.ecr.ap-southeast-1.amazonaws.com
-  GHCR_REGISTRY: ghcr.io/somleng
+  APP_REPOSITORY_NAME: somleng
+  WEBSERVER_REPOSITORY_NAME: somleng-nginx
 
 jobs:
   build:
@@ -66,7 +66,7 @@ jobs:
           matrix=$(echo $matrixSource | jq --arg branchName "$branchName" 'map(. | select((.branch==$branchName)) )')
           echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
           echo "matrixLength=$(echo $matrix | jq length)" >> $GITHUB_OUTPUT
-          echo "packageMatrix={\"platform\":[\"amd64\",\"arm64\"],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+          echo "packageMatrix={\"platform\":[{\"arch\":\"amd64\",\"runner\":\"ubuntu-latest\"},{\"arch\":\"arm64\",\"runner\":\"ubuntu-24.04-arm\"}],\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -174,99 +174,24 @@ jobs:
 
   build-packages:
     name: Build Packages
-    runs-on: ubuntu-latest
     if: needs.build.outputs.matrixLength > 0
-
     strategy:
       matrix: ${{fromJSON(needs.build.outputs.packageMatrix)}}
-      fail-fast: false
-
+    runs-on: ${{ matrix.platform.runner }}
     needs:
       - build
       - build_documentation
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-skip-session-tagging: true
-          role-duration-seconds: 3600
-          aws-region: ap-southeast-1
-
-      - name: Build image
-        uses: aws-actions/aws-codebuild-run-build@v1
-        with:
-          project-name: somleng-${{ matrix.platform }}
-          buildspec-override:   |
-            version: 0.2
-            phases:
-              build:
-                steps:
-                  - name: Download Documentation
-                    run: |
-                      aws s3 sync --acl public-read s3://www.somleng.org/${{ matrix.docs_path }}/twilio_api public/docs
-                      mv public/docs/index.html public/docs/twilio_api/
-
-                  - name: Build
-                    run: |
-                      aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
-                      export DOCKER_BUILDKIT=1
-                      docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --push .
-                      docker build --cache-from ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --tag ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.friendly_image_tag }}-${{ matrix.platform }} --push docker/nginx
-
-  build-manifest:
-    name: Build Manifest
-    runs-on: ubuntu-latest
-
-    needs:
-      - build
-      - build-packages
-
-    strategy:
-      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
-
-    steps:
-        - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-            role-skip-session-tagging: true
-            role-duration-seconds: 3600
-            aws-region: ap-southeast-1
-
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
-
-        - name: Build Manifest
-          run: |
-            aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
-            declare -a platforms=("amd64" "arm64")
-            declare -a components=("somleng" "somleng-nginx")
-            for component in "${components[@]}"
-            do
-              source_images=$(printf "${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-%s " "${platforms[@]}")
-              docker buildx imagetools create -t ${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }} -t ${{ env.ECR_REGISTRY }}/$component:${{ matrix.image_tag }} $source_images
-            done
-
-  # Do this step in Github Actions because pushing to Github from AWS CodeBuild is slow
-  publish_images:
-    name: Publish Images
-    runs-on: ubuntu-latest
-
-    needs:
-      - build
-      - build-packages
-
-    strategy:
-      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
-
-    steps:
-      - name: Configure AWS credentials
+        id: aws-login
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -289,27 +214,92 @@ jobs:
       - name: Login to ECR
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.ECR_REGISTRY }}
+          registry: ${{ secrets.ECR_REGISTRY }}
 
-      - name: Publish Images
+      - name: Download Documentation
+        run: |
+          aws s3 sync --acl public-read s3://www.somleng.org/${{ matrix.docs_path }}/twilio_api public/docs
+          mv public/docs/index.html public/docs/twilio_api/
+
+      - name: Build and push application image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          platforms: linux/${{ matrix.platform.arch }}
+          cache-from: type=gha,scope=${{ env.APP_REPOSITORY_NAME }}-${{ matrix.platform.arch }}
+          cache-to: type=gha,mode=max,scope=${{ env.APP_REPOSITORY_NAME }}-${{ matrix.platform.arch }}
+          provenance: false
+          tags: |
+            ${{ secrets.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}-${{ matrix.platform.arch }}
+            ${{ secrets.GHCR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.friendly_image_tag }}-${{ matrix.platform.arch }}
+
+      - name: Build and push webserver image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: docker/nginx
+          platforms: linux/${{ matrix.platform.arch }}
+          cache-from: type=gha,scope=${{ env.WEBSERVER_REPOSITORY_NAME }}-${{ matrix.platform.arch }}
+          cache-to: type=gha,mode=max,scope=${{ env.WEBSERVER_REPOSITORY_NAME }}-${{ matrix.platform.arch }}
+          provenance: false
+          tags: |
+            ${{ secrets.ECR_REGISTRY }}/${{ env.WEBSERVER_REPOSITORY_NAME }}:${{ matrix.image_tag }}-${{ matrix.platform.arch }}
+            ${{ secrets.GHCR_REGISTRY }}/${{ env.WEBSERVER_REPOSITORY_NAME }}:${{ matrix.friendly_image_tag }}-${{ matrix.platform.arch }}
+
+  build-manifest:
+    name: Build Manifest
+    runs-on: ubuntu-latest
+
+    needs:
+      - build
+      - build-packages
+
+    strategy:
+      matrix: ${{fromJSON(needs.build.outputs.matrix)}}
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+          aws-region: ap-southeast-1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to ECR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ECR_REGISTRY }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Manifest
         run: |
           declare -a platforms=("amd64" "arm64")
-          declare -a components=("somleng" "somleng-nginx")
+          declare -a repositories=("${{ env.APP_REPOSITORY_NAME }}" "${{ env.WEBSERVER_REPOSITORY_NAME }}")
 
-          for platform in "${platforms[@]}"
+          for repository in "${repositories[@]}"
           do
-            for component in "${components[@]}"
-            do
-              docker image pull ${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform
-              docker tag ${{ env.ECR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform
-              docker push ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-$platform
-            done
-          done
+            source_images=$(printf "${{ secrets.ECR_REGISTRY }}/$repository:${{ matrix.image_tag }}-%s " "${platforms[@]}")
+            docker buildx imagetools create -t ${{ secrets.ECR_REGISTRY }}/$repository:${{ matrix.friendly_image_tag }} -t ${{ secrets.ECR_REGISTRY }}/$repository:${{ matrix.image_tag }} $source_images
 
-          for component in "${components[@]}"
-          do
-            source_images=$(printf "${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }}-%s " "${platforms[@]}")
-            docker buildx imagetools create -t ${{ env.GHCR_REGISTRY }}/$component:${{ matrix.friendly_image_tag }} $source_images
+            source_images=$(printf "${{ secrets.GHCR_REGISTRY }}/$repository:${{ matrix.friendly_image_tag }}-%s " "${platforms[@]}")
+            docker buildx imagetools create -t ${{ secrets.GHCR_REGISTRY }}/$repository:${{ matrix.friendly_image_tag }} $source_images
           done
 
   deploy:
@@ -346,7 +336,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: nginx
-          image: ${{ env.ECR_REGISTRY }}/somleng-nginx:${{ matrix.image_tag }}
+          image: ${{ secrets.ECR_REGISTRY }}/${{ env.WEBSERVER_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Inject new app image into webserver task definition
         id: render-appserver-task-def
@@ -354,7 +344,7 @@ jobs:
         with:
           task-definition: ${{ steps.render-nginx-task-def.outputs.task-definition }}
           container-name: app
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ secrets.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Get current worker task definition
         run: |
@@ -366,7 +356,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: worker
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ secrets.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Get current anycable task definition
         run: |
@@ -378,7 +368,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: anycable
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ secrets.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Get current websockets task definition
         id: get-ws-task-def
@@ -405,7 +395,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: worker
-          image: ${{ env.ECR_REGISTRY }}/somleng:${{ matrix.image_tag }}
+          image: ${{ secrets.ECR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.image_tag }}
 
       - name: Register Fargate task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2

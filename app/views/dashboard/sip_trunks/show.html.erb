@@ -40,7 +40,7 @@
           <% end %>
           <%= f.attribute :domain do %>
             <code>
-              <%= AppSettings.config_for(:client_gateway_domain) %>
+              <%= AppSettings.fetch(:client_gateway_domain) %>
             </code>
           <% end %>
         </div>

@@ -14,6 +14,7 @@ class CarrierDashboard < Administrate::BaseDashboard
     favicon: Field::ActiveStorage.with_options(show_display_preview: false, export: false),
     id: Field::String,
     name: Field::String,
+    calls_per_second: Field::Number,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime,
     country_code: Field::String,

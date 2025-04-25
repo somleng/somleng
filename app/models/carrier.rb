@@ -44,7 +44,7 @@ class Carrier < ApplicationRecord
   end
 
   def subdomain_host
-    uri = Addressable::URI.parse(url_helpers.root_url(subdomain: "#{subdomain}.#{AppSettings.config_for(:app_subdomain)}"))
+    uri = Addressable::URI.parse(url_helpers.root_url(subdomain: "#{subdomain}.#{AppSettings.fetch(:app_subdomain)}"))
     uri.port.present? ? "#{uri.host}:#{uri.port}" : uri.host
   end
 

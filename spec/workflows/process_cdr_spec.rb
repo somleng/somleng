@@ -13,12 +13,15 @@ RSpec.describe ProcessCDR do
       }
     )
 
+    account = create(:account)
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
-      id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
+      id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid"),
+      region: "helium", account:
     )
+    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { helium: 2 })
 
-    ProcessCDR.call(compress(cdr))
+    ProcessCDR.call(compress(cdr), session_limiters: [ account_session_limiter, global_session_limiter ])
 
     expect(phone_call.reload.status).to eq("not_answered")
     expect(phone_call.call_data_record).to have_attributes(
@@ -39,6 +42,8 @@ RSpec.describe ProcessCDR do
       http_method: phone_call.status_callback_method,
       params: hash_including("CallStatus" => "no-answer")
     )
+    expect(account_session_limiter.session_count_for(:helium, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:helium)).to eq(1)
   end
 
   it "handles duplicates" do
@@ -109,5 +114,17 @@ RSpec.describe ProcessCDR do
 
   def compress(cdr)
     Base64.encode64(ActiveSupport::Gzip.compress(cdr.to_json))
+  end
+
+  def build_session_limiters(account:, sessions: {}, **)
+    session_limiters = [ AccountCallSessionLimiter.new(**), GlobalCallSessionLimiter.new(**) ]
+
+    sessions.each do |region, count|
+      session_limiters.each do |session_limiter|
+        count.times { session_limiter.add_session_to(region, scope: account.id) }
+      end
+    end
+
+    session_limiters
   end
 end

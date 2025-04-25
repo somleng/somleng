@@ -9,7 +9,8 @@ RSpec.describe "Admin/Phone Calls" do
       sip_trunk:,
       carrier: sip_trunk.carrier,
       status_callback_url: "https://example.com/call-status-callback",
-      to: "855718224112"
+      to: "855718224112",
+      region: "hydrogen"
     )
     recording = create(
       :recording,
@@ -33,6 +34,8 @@ RSpec.describe "Admin/Phone Calls" do
     expect(page).to have_content("https://example.com/call-status-callback")
     expect(page).to have_content("Recordings")
     expect(page).to have_content(media_stream.id)
+    expect(page).to have_content("hydrogen")
+
 
     click_on(recording.id)
     expect(page).to have_content("https://example.com/recording-status-callback")

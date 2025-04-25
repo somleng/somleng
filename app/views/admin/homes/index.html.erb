@@ -1,0 +1,26 @@
+<% content_for(:title) do %>
+  Home
+<% end %>
+
+<section class="main-content__body main-content__body--flush">
+  <p>
+    <dl>
+      <dt class="attribute-label">Current call sessions:</dt>
+      <dd class="attribute-data attribute-data--string">
+        <pre style="background-color: #f5f5f5"><%= JSON.pretty_generate(@dashboard.current_call_sessions) %></pre>
+      </dd>
+      <dt class="attribute-label">Switch capacity:</dt>
+      <dd class="attribute-data attribute-data--string">
+        <pre style="background-color: #f5f5f5"><%= JSON.pretty_generate(@dashboard.call_service_capacity) %></pre>
+      </dd>
+      <dt class="attribute-label">Call sessions limit:</dt>
+      <dd class="attribute-data attribute-data--string">
+        <%= number_to_human(@dashboard.global_call_sessions_limit) %>
+      </dd>
+      <dt class="attribute-label">Per account call sessions limit:</dt>
+      <dd class="attribute-data attribute-data--string">
+        <%= number_to_human(@dashboard.account_call_sessions_limit) %>
+      </dd>
+    </dl>
+  </p>
+</div>
