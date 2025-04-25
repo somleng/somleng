@@ -21,24 +21,6 @@ resource "aws_cloudwatch_log_metric_filter" "call_sessions_count" {
   depends_on = [null_resource.log_transformer]
 }
 
-resource "aws_cloudwatch_log_metric_filter" "call_service_capacity" {
-  name           = "${var.app_identifier}-CallServiceCapacity"
-  pattern        = "{ $.${var.call_service_capacity_log_key} = * }"
-  log_group_name = aws_cloudwatch_log_group.app.name
-
-  metric_transformation {
-    name      = "${var.app_identifier}-CallServiceCapacity"
-    namespace = "Somleng"
-    value     = "$.${var.call_service_capacity_log_key}"
-    dimensions = {
-      Cluster = "$.log-group-stream[0]"
-    }
-    unit = "Count"
-  }
-
-  depends_on = [null_resource.log_transformer]
-}
-
 # https://github.com/hashicorp/terraform-provider-aws/issues/40780
 # Note that we need to also manually set the value
 # Enable metric filter on transformed logs = true
