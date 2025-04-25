@@ -11,8 +11,6 @@ class OutboundCallJob < ApplicationJob
     end
 
     def perform
-      return if queue.empty?
-
       queue.dequeue do |phone_call_id|
         phone_call = account.phone_calls.find(phone_call_id)
 
