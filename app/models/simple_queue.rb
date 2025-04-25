@@ -33,12 +33,14 @@ class SimpleQueue
   end
 
   def peek
-    backend.with do
-      _1.lrange(key, -1, -1).first
-    end
+    backend.with { _1.lrange(key, -1, -1).first }
   end
 
   def empty?
-    peek.blank?
+    size.zero?
+  end
+
+  def size
+    backend.with { _1.llen(key) }
   end
 end

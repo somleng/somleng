@@ -29,6 +29,7 @@ RSpec.describe SimpleQueue do
 
     expect { queue.dequeue { |item| raise(ArgumentError, "Some Error processing #{item}") } }.to raise_error(ArgumentError)
     expect(queue.peek).to eq("my-item-3")
+    expect(queue.size).to eq(1)
   end
 
   def build_queue(**options)

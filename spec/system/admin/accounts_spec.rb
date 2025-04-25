@@ -12,5 +12,6 @@ RSpec.describe "Admin/Accounts" do
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("carrier_managed")
     expect(page).to have_content("Current call sessions")
+    expect(page).to have_content("Enqueued calls")
   end
 end
