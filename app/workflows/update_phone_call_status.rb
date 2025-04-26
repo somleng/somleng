@@ -27,6 +27,8 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
   private
 
   def handle_complete_event
+    return if phone_call.status.in?([ "completed", "not_answered", "busy", "canceled", "failed" ])
+
     if answer_epoch.to_i.positive?
       phone_call.complete!
       create_interaction
