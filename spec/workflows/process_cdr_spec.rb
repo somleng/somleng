@@ -123,6 +123,6 @@ RSpec.describe ProcessCDR do
   end
 
   def encode(cdr)
-    Base64.encode64(ActiveSupport::Gzip.compress(Base64.encode64(cdr)))
+    Base64.encode64(ActiveSupport::Gzip.compress(URI.encode_www_form(cdr: Base64.encode64(cdr))))
   end
 end

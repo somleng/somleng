@@ -88,8 +88,10 @@ class ProcessCDR < ApplicationWorkflow
     cdr.fetch("variables")
   end
 
+  # https://github.com/signalwire/freeswitch/blob/6a13dee6f816c0b801676c084ab91942dd338cc5/src/mod/event_handlers/mod_json_cdr/mod_json_cdr.c#L316
   def decode_payload
     payload = ActiveSupport::Gzip.decompress(Base64.decode64(raw_payload))
+    payload = URI.decode_www_form(payload).to_h.fetch("cdr")
     payload = Base64.decode64(payload)
     payload = payload.gsub(/:(nan)/, ":null")
     JSON.parse(payload)
