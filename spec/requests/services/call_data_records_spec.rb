@@ -22,7 +22,7 @@ RSpec.describe "Services", :services do
       perform_enqueued_jobs do
         post(
           api_services_call_data_records_path,
-          params: JSON.parse(freeswitch_cdr),
+          params: Base64.encode64(freeswitch_cdr),
           headers: build_authorization_headers("services", "password")
         )
       end
@@ -36,5 +36,24 @@ RSpec.describe "Services", :services do
         :post, webhook_endpoint.url
       )
     end
+  end
+
+  it "handles invalid json" do
+    freeswitch_cdr = file_fixture("freeswitch_cdr_with_invalid_json.json").read
+    phone_call = create(:phone_call, :initiated, id: "0f8fdc31-8508-4c91-be9c-2a46cf730343")
+
+    perform_enqueued_jobs do
+      post(
+        api_services_call_data_records_path,
+        params: Base64.encode64(freeswitch_cdr),
+        headers: build_authorization_headers("services", "password")
+      )
+    end
+
+    expect(response.code).to eq("204")
+    expect(phone_call.call_data_record).to have_attributes(
+      bill_sec: be_present,
+      duration_sec: be_present
+    )
   end
 end
