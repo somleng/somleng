@@ -98,7 +98,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def uncompleted?
-    status.in?([ "queued", "initiating", "initiated", "ringing", "answered" ])
+    status.in?([ "queued", "initiating", "initiated", "ringing", "answered", "session_timeout" ])
   end
 
   def user_terminated?

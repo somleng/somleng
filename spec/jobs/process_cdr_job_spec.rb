@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ProcessCDR do
+RSpec.describe ProcessCDRJob do
   it "creates a call data record" do
     cdr = build_cdr(
       variables: {
@@ -20,7 +20,7 @@ RSpec.describe ProcessCDR do
       account:
     )
 
-    ProcessCDR.call(encode(cdr.to_json))
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
 
     expect(phone_call.reload.status).to eq("not_answered")
     expect(phone_call.call_data_record).to have_attributes(
@@ -50,10 +50,24 @@ RSpec.describe ProcessCDR do
       id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
 
-    2.times { ProcessCDR.call(encode(cdr.to_json)) }
+    2.times { ProcessCDRJob.perform_now(encode(cdr.to_json)) }
 
     expect(CallDataRecord.count).to eq(1)
     expect(phone_call.call_data_record).to be_present
+  end
+
+  it "retries on missing calls" do
+    cdr = build_cdr(
+      variables: {
+        "uuid" => SecureRandom.uuid,
+        "sip_rh_X-Somleng-CallSid" => nil,
+        "sip_h_X-Somleng-CallSid" => nil
+      }
+    )
+
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
+
+    expect(ProcessCDRJob).to have_been_enqueued
   end
 
   it "creates a call data record for a failed inbound call" do
@@ -69,7 +83,7 @@ RSpec.describe ProcessCDR do
       :phone_call, :initiated, external_id: cdr.dig("variables", "uuid")
     )
 
-    ProcessCDR.call(encode(cdr.to_json))
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
 
     expect(phone_call.call_data_record).to be_present
   end
@@ -82,7 +96,7 @@ RSpec.describe ProcessCDR do
       id: cdr.dig("variables", "sip_h_X-Somleng-CallSid")
     )
 
-    ProcessCDR.call(encode(cdr.to_json))
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
 
     expect(phone_call.call_data_record).to be_present
   end
@@ -95,7 +109,7 @@ RSpec.describe ProcessCDR do
       id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
 
-    ProcessCDR.call(encode(cdr.to_json))
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
 
     expect(phone_call.events.first).to have_attributes(
       type: "phone_call.completed",
@@ -108,7 +122,7 @@ RSpec.describe ProcessCDR do
 
     phone_call = create(:phone_call, :initiated, id: "0f8fdc31-8508-4c91-be9c-2a46cf730343")
 
-    ProcessCDR.call(encode(cdr))
+    ProcessCDRJob.perform_now(encode(cdr))
 
     expect(JSON.parse(phone_call.call_data_record.file.download).dig("callStats", "audio", "inbound")).to include(
       "quality_percentage" => nil,
