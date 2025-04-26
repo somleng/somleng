@@ -1,7 +1,7 @@
 class ProcessCDR < ApplicationWorkflow
   attr_accessor  :raw_payload, :cdr
 
-  def initialize(raw_payload)
+  def initialize(raw_payload, **)
     super()
     @raw_payload = raw_payload
     @cdr = decode_payload
