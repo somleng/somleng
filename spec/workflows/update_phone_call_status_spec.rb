@@ -120,6 +120,36 @@ RSpec.describe UpdatePhoneCallStatus do
     expect(phone_call.status).to eq("busy")
   end
 
+  it "handles invalid state transitions" do
+    phone_call = create(:phone_call, status: :session_timeout)
+
+    expect {
+      UpdatePhoneCallStatus.call(
+        phone_call,
+        {
+          event_type: "completed",
+          answer_epoch: "1585814727",
+          sip_term_status: "200"
+        }
+      )
+    }.to raise_error(UpdatePhoneCallStatus::InvalidStateTransitionError)
+  end
+
+  it "handles repeated events" do
+    phone_call = create(:phone_call, :initiated, :failed)
+
+    UpdatePhoneCallStatus.call(
+      phone_call,
+      {
+        event_type: "completed",
+        answer_epoch: "0",
+        sip_term_status: "404"
+      }
+    )
+
+    expect(phone_call.status).to eq("failed")
+  end
+
   def build_session_limiters(account:, sessions: {}, **)
     session_limiters = [ AccountCallSessionLimiter.new(**), GlobalCallSessionLimiter.new(**) ]
 

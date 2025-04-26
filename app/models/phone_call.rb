@@ -67,19 +67,19 @@ class PhoneCall < ApplicationRecord
     end
 
     event :complete do
-      transitions from: %i[initiated ringing answered completed], to: :completed
+      transitions from: %i[initiated ringing answered], to: :completed
     end
 
     event :mark_as_not_answered do
-      transitions from: %i[initiated ringing not_answered], to: :not_answered
+      transitions from: %i[initiated ringing], to: :not_answered
     end
 
     event :mark_as_busy do
-      transitions from: %i[initiated ringing busy], to: :busy
+      transitions from: %i[initiated ringing], to: :busy
     end
 
     event :fail do
-      transitions from: %i[initiated ringing failed], to: :failed
+      transitions from: %i[initiated ringing], to: :failed
     end
   end
 
@@ -98,7 +98,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def uncompleted?
-    status.in?([ "queued", "initiating", "initiated", "ringing", "answered", "session_timeout" ])
+    status.in?([ "queued", "initiating", "initiated", "ringing", "answered" ])
   end
 
   def user_terminated?
