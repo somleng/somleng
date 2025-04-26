@@ -101,7 +101,11 @@ class ProcessCDRJob < ApplicationJob
     end
   end
 
-  retry_on(Handler::UnknownPhoneCallError, wait: :polynomially_longer)
+  retry_on(
+    Handler::UnknownPhoneCallError,
+    UpdatePhoneCallStatus::InvalidStateTransitionError,
+    wait: :polynomially_longer
+  )
 
   def perform(...)
     Handler.new(...).perform
