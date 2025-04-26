@@ -1,20 +1,17 @@
 class UpdatePhoneCallStatus < ApplicationWorkflow
-  NOT_ANSWERED_SIP_TERM_STATUSES = %w[
-    480 487 603
-  ].freeze
+  NOT_ANSWERED_SIP_TERM_STATUSES = %w[ 480 487 603].freeze
+  BUSY_SIP_TERM_STATUSES = [ "486" ].freeze
 
-  BUSY_SIP_TERM_STATUSES = [
-    "486"
-  ].freeze
+  attr_reader :phone_call, :event_type, :answer_epoch, :sip_term_status, :sip_invite_failure_status, :session_limiters
 
-  attr_reader :phone_call, :event_type, :answer_epoch, :sip_term_status, :sip_invite_failure_status
-
-  def initialize(phone_call, event_details)
+  def initialize(phone_call, event_details, **options)
+    super(**options)
     @phone_call = phone_call
     @event_type = event_details.fetch(:event_type).to_sym
     @answer_epoch = event_details.fetch(:answer_epoch)
     @sip_term_status = event_details.fetch(:sip_term_status)
     @sip_invite_failure_status = event_details[:sip_invite_failure_status]
+    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new(logger:) ] }
   end
 
   def call
@@ -40,6 +37,8 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
     else
       phone_call.fail!
     end
+
+    session_limit
   end
 
   def create_interaction
@@ -52,5 +51,9 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
         beneficiary_fingerprint: phone_call.beneficiary_fingerprint
       }
     end
+  end
+
+  def session_limit
+    session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
   end
 end

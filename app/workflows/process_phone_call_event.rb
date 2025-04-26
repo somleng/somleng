@@ -22,9 +22,11 @@ class ProcessPhoneCallEvent < ApplicationWorkflow
       event = PhoneCallEvent.create!(params)
       UpdatePhoneCallStatus.call(
         event.phone_call,
-        event_type: event.type,
-        answer_epoch: event.params["answer_epoch"],
-        sip_term_status: event.params["sip_term_status"]
+        {
+          event_type: event.type,
+          answer_epoch: event.params["answer_epoch"],
+          sip_term_status: event.params["sip_term_status"]
+        }
       )
       event
     end

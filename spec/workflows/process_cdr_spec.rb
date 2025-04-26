@@ -17,11 +17,10 @@ RSpec.describe ProcessCDR do
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
       id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid"),
-      region: "helium", account:
+      account:
     )
-    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { helium: 2 })
 
-    ProcessCDR.call(compress(cdr), session_limiters: [ account_session_limiter, global_session_limiter ])
+    ProcessCDR.call(encode(cdr.to_json))
 
     expect(phone_call.reload.status).to eq("not_answered")
     expect(phone_call.call_data_record).to have_attributes(
@@ -42,8 +41,6 @@ RSpec.describe ProcessCDR do
       http_method: phone_call.status_callback_method,
       params: hash_including("CallStatus" => "no-answer")
     )
-    expect(account_session_limiter.session_count_for(:helium, scope: account.id)).to eq(1)
-    expect(global_session_limiter.session_count_for(:helium)).to eq(1)
   end
 
   it "handles duplicates" do
@@ -53,7 +50,7 @@ RSpec.describe ProcessCDR do
       id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
 
-    2.times { ProcessCDR.call(compress(cdr)) }
+    2.times { ProcessCDR.call(encode(cdr.to_json)) }
 
     expect(CallDataRecord.count).to eq(1)
     expect(phone_call.call_data_record).to be_present
@@ -72,7 +69,7 @@ RSpec.describe ProcessCDR do
       :phone_call, :initiated, external_id: cdr.dig("variables", "uuid")
     )
 
-    ProcessCDR.call(compress(cdr))
+    ProcessCDR.call(encode(cdr.to_json))
 
     expect(phone_call.call_data_record).to be_present
   end
@@ -85,7 +82,7 @@ RSpec.describe ProcessCDR do
       id: cdr.dig("variables", "sip_h_X-Somleng-CallSid")
     )
 
-    ProcessCDR.call(compress(cdr))
+    ProcessCDR.call(encode(cdr.to_json))
 
     expect(phone_call.call_data_record).to be_present
   end
@@ -98,11 +95,24 @@ RSpec.describe ProcessCDR do
       id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
 
-    ProcessCDR.call(compress(cdr))
+    ProcessCDR.call(encode(cdr.to_json))
 
     expect(phone_call.events.first).to have_attributes(
       type: "phone_call.completed",
       carrier: phone_call.carrier
+    )
+  end
+
+  it "handles invalid JSON" do
+    cdr = file_fixture("freeswitch_cdr_with_invalid_json.json").read
+
+    phone_call = create(:phone_call, :initiated, id: "0f8fdc31-8508-4c91-be9c-2a46cf730343")
+
+    ProcessCDR.call(encode(cdr))
+
+    expect(JSON.parse(phone_call.call_data_record.file.download).dig("callStats", "audio", "inbound")).to include(
+      "quality_percentage" => nil,
+      "mos" => nil
     )
   end
 
@@ -112,19 +122,7 @@ RSpec.describe ProcessCDR do
     cdr
   end
 
-  def compress(cdr)
-    Base64.encode64(ActiveSupport::Gzip.compress(cdr.to_json))
-  end
-
-  def build_session_limiters(account:, sessions: {}, **)
-    session_limiters = [ AccountCallSessionLimiter.new(**), GlobalCallSessionLimiter.new(**) ]
-
-    sessions.each do |region, count|
-      session_limiters.each do |session_limiter|
-        count.times { session_limiter.add_session_to(region, scope: account.id) }
-      end
-    end
-
-    session_limiters
+  def encode(cdr)
+    Base64.encode64(ActiveSupport::Gzip.compress(URI.encode_www_form(cdr: Base64.encode64(cdr))))
   end
 end

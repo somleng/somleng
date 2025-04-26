@@ -1,15 +1,14 @@
 class ProcessCDR < ApplicationWorkflow
-  attr_accessor :cdr, :session_limiters
+  attr_accessor  :raw_payload, :cdr
 
-  def initialize(payload, **options)
-    super(**options)
-    @cdr = JSON.parse(decompress(payload))
-    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new(logger:) ] }
+  def initialize(raw_payload)
+    super()
+    @raw_payload = raw_payload
+    @cdr = decode_payload
   end
 
   def call
     call_data_record = create_call_data_record
-    session_limit(call_data_record.phone_call)
     update_phone_call_status(call_data_record.phone_call)
     notify_status_callback_url(call_data_record.phone_call)
     create_event(call_data_record.phone_call)
@@ -44,10 +43,12 @@ class ProcessCDR < ApplicationWorkflow
   def update_phone_call_status(phone_call)
     UpdatePhoneCallStatus.call(
       phone_call,
-      event_type: :completed,
-      answer_epoch: phone_call.call_data_record.answer_time.to_i,
-      sip_term_status: phone_call.call_data_record.sip_term_status,
-      sip_invite_failure_status: phone_call.call_data_record.sip_invite_failure_status
+      {
+        event_type: :completed,
+        answer_epoch: phone_call.call_data_record.answer_time.to_i,
+        sip_term_status: phone_call.call_data_record.sip_term_status,
+        sip_invite_failure_status: phone_call.call_data_record.sip_invite_failure_status
+      }
     )
   end
 
@@ -87,11 +88,12 @@ class ProcessCDR < ApplicationWorkflow
     cdr.fetch("variables")
   end
 
-  def decompress(payload)
-    ActiveSupport::Gzip.decompress(Base64.decode64(payload))
-  end
-
-  def session_limit(phone_call)
-    session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
+  # https://github.com/signalwire/freeswitch/blob/6a13dee6f816c0b801676c084ab91942dd338cc5/src/mod/event_handlers/mod_json_cdr/mod_json_cdr.c#L316
+  def decode_payload
+    payload = ActiveSupport::Gzip.decompress(Base64.decode64(raw_payload))
+    payload = URI.decode_www_form(payload).to_h.fetch("cdr")
+    payload = Base64.decode64(payload)
+    payload = payload.gsub(/:(nan)/, ":null")
+    JSON.parse(payload)
   end
 end
