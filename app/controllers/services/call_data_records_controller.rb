@@ -6,7 +6,7 @@ module Services
           request.raw_post
         )
       )
-      ExecuteWorkflowJob.perform_later(ProcessCDR.to_s, payload)
+      ProcessCDR.perform_later(payload)
       head(:no_content)
     end
   end
