@@ -54,6 +54,8 @@ class UpdatePhoneCallStatus < ApplicationWorkflow
   end
 
   def session_limit
+    return if phone_call.region.blank?
+
     session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
   end
 end
