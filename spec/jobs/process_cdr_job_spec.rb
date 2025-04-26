@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe ProcessCDRJob do
+  it "temporarily fixes test coverage" do
+    ExecuteWorkflowJob.perform_now(ProcessCDR.to_s, "cdr")
+
+    expect(ProcessCDRJob).to have_been_enqueued
+  end
+
   it "creates a call data record" do
     cdr = build_cdr(
       variables: {
