@@ -6,7 +6,7 @@ module Services
           request.raw_post
         )
       )
-      ProcessCDR.perform_later(payload)
+      ProcessCDRJob.perform_later(payload)
       head(:no_content)
     end
   end
