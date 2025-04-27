@@ -2,17 +2,24 @@ class ProcessCDRJob < ApplicationJob
   class Handler
     class PhoneCallNotFoundError < StandardError; end
     class UnknownPhoneCallError < StandardError; end
+    class InvalidStateTransitionError < StandardError; end
+    class CDRAlreadyExistsError < StandardError; end
 
-    attr_accessor :raw_payload, :cdr
+    NOT_ANSWERED_SIP_TERM_STATUSES = %w[ 480 487 603].freeze
+    BUSY_SIP_TERM_STATUSES = [ "486" ].freeze
 
-    def initialize(raw_payload)
+    attr_accessor :raw_payload, :cdr, :session_limiters
+
+    def initialize(raw_payload, **options)
       @raw_payload = raw_payload
       @cdr = decode_payload
+      @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new ] }
     end
 
     def perform
       call_data_record = create_call_data_record
-      update_phone_call_status(call_data_record.phone_call)
+      update_phone_call_status(call_data_record)
+      session_limit(call_data_record.phone_call)
       notify_status_callback_url(call_data_record.phone_call)
       create_event(call_data_record.phone_call)
     end
@@ -20,39 +27,62 @@ class ProcessCDRJob < ApplicationJob
     private
 
     def create_call_data_record
-      phone_call = find_phone_call
-
-      CallDataRecord.create_or_find_by!(phone_call:) do |call_data_record|
-        call_data_record.hangup_cause = cdr_variables.fetch("hangup_cause")
-        call_data_record.direction = cdr_variables.fetch("direction")
-        call_data_record.duration_sec = cdr_variables.fetch("duration")
-        call_data_record.bill_sec = cdr_variables.fetch("billsec")
-        call_data_record.start_time = parse_epoch(cdr_variables.fetch("start_epoch"))
-        call_data_record.end_time = parse_epoch(cdr_variables.fetch("end_epoch"))
-        call_data_record.answer_time = parse_epoch(cdr_variables.fetch("answer_epoch"))
-        call_data_record.sip_term_status = cdr_variables["sip_term_status"]
-        call_data_record.sip_invite_failure_status = cdr_variables["sip_invite_failure_status"]
-        call_data_record.sip_invite_failure_phrase = URI.decode_www_form_component(
+      CallDataRecord.create!(
+        phone_call: find_phone_call,
+        hangup_cause: cdr_variables.fetch("hangup_cause"),
+        direction: cdr_variables.fetch("direction"),
+        duration_sec: cdr_variables.fetch("duration"),
+        bill_sec: cdr_variables.fetch("billsec"),
+        start_time: parse_epoch(cdr_variables.fetch("start_epoch")),
+        end_time: parse_epoch(cdr_variables.fetch("end_epoch")),
+        answer_time: parse_epoch(cdr_variables.fetch("answer_epoch")),
+        sip_term_status: cdr_variables["sip_term_status"],
+        sip_invite_failure_status: cdr_variables["sip_invite_failure_status"],
+        sip_invite_failure_phrase: URI.decode_www_form_component(
           cdr_variables.fetch("sip_invite_failure_phrase", "")
-        ).presence
-        call_data_record.file = {
+        ).presence,
+        file: {
           io: StringIO.new(cdr.to_json),
           filename: "#{cdr_variables.fetch('uuid')}.json",
           content_type: "application/json"
         }
+      )
+    rescue ActiveRecord::RecordNotUnique => e
+      raise CDRAlreadyExistsError, e.message
+    end
+
+    def update_phone_call_status(call_data_record)
+      phone_call = call_data_record.phone_call
+      if call_data_record.answer_time.to_i.positive?
+        phone_call.complete!
+        create_interaction(phone_call)
+      elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(call_data_record.sip_term_status)
+        phone_call.mark_as_not_answered!
+      elsif BUSY_SIP_TERM_STATUSES.include?(call_data_record.sip_term_status)
+        phone_call.mark_as_busy!
+      elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(call_data_record.sip_invite_failure_status)
+        phone_call.cancel!
+      else
+        phone_call.fail!
+      end
+    rescue AASM::InvalidTransition => e
+      raise InvalidStateTransitionError, e.message
+    end
+
+    def create_interaction(phone_call)
+      Interaction.create_or_find_by!(phone_call:) do |interaction|
+        interaction.attributes = {
+          interactable_type: "PhoneCall",
+          carrier: phone_call.carrier,
+          account: phone_call.account,
+          beneficiary_country_code: phone_call.beneficiary_country_code,
+          beneficiary_fingerprint: phone_call.beneficiary_fingerprint
+        }
       end
     end
 
-    def update_phone_call_status(phone_call)
-      UpdatePhoneCallStatus.call(
-        phone_call,
-        {
-          event_type: :completed,
-          answer_epoch: phone_call.call_data_record.answer_time.to_i,
-          sip_term_status: phone_call.call_data_record.sip_term_status,
-          sip_invite_failure_status: phone_call.call_data_record.sip_invite_failure_status
-        }
-      )
+    def session_limit(phone_call)
+      session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
     end
 
     def notify_status_callback_url(phone_call)
@@ -103,9 +133,11 @@ class ProcessCDRJob < ApplicationJob
 
   retry_on(
     Handler::UnknownPhoneCallError,
-    UpdatePhoneCallStatus::InvalidStateTransitionError,
+    Handler::InvalidStateTransitionError,
     wait: :polynomially_longer
   )
+
+  discard_on(Handler::CDRAlreadyExistsError)
 
   def perform(...)
     Handler.new(...).perform

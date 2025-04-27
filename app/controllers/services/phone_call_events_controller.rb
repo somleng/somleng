@@ -5,10 +5,7 @@ module Services
         with: PhoneCallEventRequestSchema,
         location: nil
       ) do |permitted_params|
-        ExecuteWorkflowJob.perform_later(
-          "ProcessPhoneCallEvent",
-          permitted_params
-        )
+        CreatePhoneCallEventJob.perform_later(**permitted_params)
       end
     end
 

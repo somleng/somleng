@@ -12,13 +12,13 @@ RSpec.describe ProcessCDRJob do
         sip_invite_failure_phrase: "Temporary%20Unavailable"
       }
     )
-
     account = create(:account)
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
       id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid"),
       account:
     )
+    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { hydrogen: 2 })
 
     ProcessCDRJob.perform_now(encode(cdr.to_json))
 
@@ -41,19 +41,25 @@ RSpec.describe ProcessCDRJob do
       http_method: phone_call.status_callback_method,
       params: hash_including("CallStatus" => "no-answer")
     )
+    expect(account_session_limiter.session_count_for(:hydrogen, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(1)
   end
 
   it "handles duplicates" do
     cdr = build_cdr
+    account = create(:account)
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
-      id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
+      account:, id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
+    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { hydrogen: 2 })
 
     2.times { ProcessCDRJob.perform_now(encode(cdr.to_json)) }
 
     expect(CallDataRecord.count).to eq(1)
     expect(phone_call.call_data_record).to be_present
+    expect(account_session_limiter.session_count_for(:hydrogen, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(1)
   end
 
   it "retries on missing calls" do
@@ -70,7 +76,7 @@ RSpec.describe ProcessCDRJob do
     expect(ProcessCDRJob).to have_been_enqueued
   end
 
-  it "creates a call data record for a failed inbound call" do
+  it "handles failed inbound calls" do
     cdr = build_cdr(
       variables: {
         "uuid" => SecureRandom.uuid,
@@ -88,7 +94,7 @@ RSpec.describe ProcessCDRJob do
     expect(phone_call.call_data_record).to be_present
   end
 
-  it "creates a call data record for an outbound call" do
+  it "handles outbound calls" do
     cdr = build_cdr(from: "freeswitch_cdr_outbound.json")
 
     phone_call = create(
@@ -99,6 +105,107 @@ RSpec.describe ProcessCDRJob do
     ProcessCDRJob.perform_now(encode(cdr.to_json))
 
     expect(phone_call.call_data_record).to be_present
+  end
+
+  it "handles not answered calls" do
+    phone_call = create(:phone_call, :initiated)
+    cdr = build_cdr(
+      from: "freeswitch_cdr_outbound.json",
+      variables: {
+        sip_term_status: "480",
+        "sip_h_X-Somleng-CallSid" => phone_call.id
+      }
+    )
+
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
+
+    expect(phone_call.reload).to have_attributes(
+      status: "not_answered",
+      call_data_record: have_attributes(
+        sip_term_status: "480"
+      )
+    )
+  end
+
+  it "handles busy calls" do
+    phone_call = create(:phone_call, :initiated)
+    cdr = build_cdr(
+      from: "freeswitch_cdr_outbound.json",
+      variables: {
+        sip_term_status: "486",
+        "sip_h_X-Somleng-CallSid" => phone_call.id
+      }
+    )
+
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
+
+    expect(phone_call.reload).to have_attributes(
+      status: "busy",
+      call_data_record: have_attributes(
+        sip_term_status: "486"
+      )
+    )
+  end
+
+  it "handles failed calls" do
+    phone_call = create(:phone_call, :initiated)
+    cdr = build_cdr(
+      from: "freeswitch_cdr_outbound.json",
+      variables: {
+        sip_invite_failure_status: "404",
+        sip_term_status: nil,
+        "sip_h_X-Somleng-CallSid" => phone_call.id
+      }
+    )
+
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
+
+    expect(phone_call.reload).to have_attributes(
+      status: "failed",
+      call_data_record: have_attributes(
+        sip_invite_failure_status: "404"
+      )
+    )
+  end
+
+  it "handles canceled calls" do
+    phone_call = create(:phone_call, :initiated)
+    cdr = build_cdr(
+      from: "freeswitch_cdr_outbound.json",
+      variables: {
+        sip_term_status: nil,
+        sip_invite_failure_status: "487",
+        "sip_h_X-Somleng-CallSid" => phone_call.id
+      }
+    )
+
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
+
+    expect(phone_call.reload).to have_attributes(
+      status: "canceled",
+      call_data_record: have_attributes(
+        sip_invite_failure_status: "487"
+      )
+    )
+  end
+
+  it "handles state transition errors" do
+    phone_call = create(:phone_call, :initiated, status: :session_timeout)
+
+    cdr = build_cdr(
+      from: "freeswitch_cdr_outbound.json",
+      variables: {
+        sip_term_status: nil,
+        sip_invite_failure_status: "487",
+        "sip_h_X-Somleng-CallSid" => phone_call.id
+      }
+    )
+
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
+
+    expect(phone_call.reload).to have_attributes(
+      status: "session_timeout"
+    )
   end
 
   it "creates an event" do
@@ -138,5 +245,17 @@ RSpec.describe ProcessCDRJob do
 
   def encode(cdr)
     Base64.encode64(ActiveSupport::Gzip.compress(URI.encode_www_form(cdr: Base64.encode64(cdr))))
+  end
+
+  def build_session_limiters(account:, sessions: {}, **)
+    session_limiters = [ AccountCallSessionLimiter.new(**), GlobalCallSessionLimiter.new(**) ]
+
+    sessions.each do |region, count|
+      session_limiters.each do |session_limiter|
+        count.times { session_limiter.add_session_to(region, scope: account.id) }
+      end
+    end
+
+    session_limiters
   end
 end

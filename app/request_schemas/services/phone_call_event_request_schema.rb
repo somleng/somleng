@@ -10,7 +10,7 @@ module Services
       params = super
       result = {}
       result[:type] = params.fetch(:type)
-      result[:phone_call] = params.fetch(:phone_call)
+      result[:phone_call_external_id] = params.fetch(:phone_call)
       result[:params] = params.fetch(:variables) if params.key?(:variables)
       result
     end
