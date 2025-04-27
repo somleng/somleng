@@ -2,6 +2,7 @@ class CreateEvent < ApplicationWorkflow
   attr_reader :eventable, :type, :event
 
   def initialize(eventable:, type:)
+    super()
     @eventable = eventable
     @type = type
   end

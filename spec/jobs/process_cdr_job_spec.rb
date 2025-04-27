@@ -12,13 +12,13 @@ RSpec.describe ProcessCDRJob do
         sip_invite_failure_phrase: "Temporary%20Unavailable"
       }
     )
-
     account = create(:account)
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
       id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid"),
       account:
     )
+    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { hydrogen: 2 })
 
     ProcessCDRJob.perform_now(encode(cdr.to_json))
 
@@ -41,19 +41,25 @@ RSpec.describe ProcessCDRJob do
       http_method: phone_call.status_callback_method,
       params: hash_including("CallStatus" => "no-answer")
     )
+    expect(account_session_limiter.session_count_for(:hydrogen, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(1)
   end
 
   it "handles duplicates" do
     cdr = build_cdr
+    account = create(:account)
     phone_call = create(
       :phone_call, :initiated, :with_status_callback_url,
-      id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
+      account:, id: cdr.dig("variables", "sip_rh_X-Somleng-CallSid")
     )
+    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { hydrogen: 2 })
 
     2.times { ProcessCDRJob.perform_now(encode(cdr.to_json)) }
 
     expect(CallDataRecord.count).to eq(1)
     expect(phone_call.call_data_record).to be_present
+    expect(account_session_limiter.session_count_for(:hydrogen, scope: account.id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(1)
   end
 
   it "retries on missing calls" do
@@ -138,5 +144,17 @@ RSpec.describe ProcessCDRJob do
 
   def encode(cdr)
     Base64.encode64(ActiveSupport::Gzip.compress(URI.encode_www_form(cdr: Base64.encode64(cdr))))
+  end
+
+  def build_session_limiters(account:, sessions: {}, **)
+    session_limiters = [ AccountCallSessionLimiter.new(**), GlobalCallSessionLimiter.new(**) ]
+
+    sessions.each do |region, count|
+      session_limiters.each do |session_limiter|
+        count.times { session_limiter.add_session_to(region, scope: account.id) }
+      end
+    end
+
+    session_limiters
   end
 end

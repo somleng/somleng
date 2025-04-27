@@ -14,18 +14,16 @@ RSpec.describe "Services", :services do
           api_services_phone_call_events_path,
           params: {
             phone_call: phone_call.external_id,
-            type: "completed",
-            variables: {
-              "sip_term_status" => "200",
-              "answer_epoch" => "1585814727"
-            }
+            type: "answered"
           },
           headers: build_authorization_headers("services", "password")
         )
       end
 
       expect(response.code).to eq("201")
-      expect(phone_call.reload.status).to eq("completed")
+      expect(phone_call.reload).to have_attributes(
+        status: "answered",
+      )
     end
 
     it "handles invalid requests" do

@@ -2,6 +2,7 @@ class UpdatePhoneCall < ApplicationWorkflow
   attr_reader :phone_call, :client, :params
 
   def initialize(phone_call, client: UpdateLiveCallJob, **params)
+    super()
     @phone_call = phone_call
     @client = client
     @params = params
