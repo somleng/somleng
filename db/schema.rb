@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_18_131238) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_01_063512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "account_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
@@ -101,6 +101,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_18_131238) do
     t.bigserial "sequence_number", null: false
     t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id", unique: true
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
+    t.index ["sip_invite_failure_status"], name: "index_call_data_records_on_sip_invite_failure_status"
+    t.index ["sip_term_status"], name: "index_call_data_records_on_sip_term_status"
   end
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
