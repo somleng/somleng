@@ -411,7 +411,6 @@ GEM
       racc (~> 1.4)
     okcomputer (1.19.0)
     orm_adapter (0.5.0)
-    ostruct (0.6.1)
     parallel (1.27.0)
     parser (3.3.8.0)
       ast (~> 2.4.1)
@@ -627,12 +626,10 @@ GEM
     turbo-rails (2.0.13)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
-    twilio-ruby (7.5.2)
-      benchmark
+    twilio-ruby (7.6.0)
       faraday (>= 0.9, < 3.0)
       jwt (>= 1.5, < 3.0)
       nokogiri (>= 1.6, < 2.0)
-      ostruct
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2025.2)
