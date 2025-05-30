@@ -139,6 +139,19 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("phone_numbers.csv")
   end
 
+  it "Fail to import phone numbers" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_phone_numbers_path
+    click_on("Import")
+    attach_file("File", file_fixture("recording.mp3"))
+    click_on("Upload")
+
+    expect(page).to have_content("Failed to create import: File has an invalid content type (authorized content type is CSV)")
+  end
+
   it "Show a phone number" do
     carrier = create(:carrier)
     phone_number = create(

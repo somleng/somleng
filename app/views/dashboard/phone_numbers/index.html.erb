@@ -73,7 +73,7 @@
   <%= render("shared/export_action", export_params: { resource_type: "PhoneNumber" }) %>
 
   <% if policy(:import).new? %>
-    <%= render("shared/import_action", import_params: { resource_type: "PhoneNumber" }, title: "Import Phone Numbers" ) %>
+    <%= render("shared/import_action", resource_type: PhoneNumber) %>
   <% end %>
   <% if policy(:phone_number).new? %>
     <%= render("shared/new_resource_page_action", path: new_dashboard_phone_number_path) %>

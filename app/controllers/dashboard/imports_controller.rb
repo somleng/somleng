@@ -5,16 +5,15 @@ module Dashboard
     end
 
     def create
-      @resource = build_import
-      @resource.save!
-      ExecuteWorkflowJob.perform_later(ImportCSV.to_s, @resource)
+      @import = build_import
+      if @import.save
+        ExecuteWorkflowJob.perform_later(ImportCSV.to_s, @import)
+        flash[:notice] = "Your import is being processed. You can view its status from the #{helpers.link_to('Imports', dashboard_imports_path)} page."
+      else
+        flash[:alert] = "Failed to create import: #{@import.errors.full_messages.to_sentence}"
+      end
 
-      redirect_back(
-        fallback_location: dashboard_imports_path,
-        flash: {
-          notice: "Your import is being processed. You can view its status from the #{helpers.link_to('Imports', dashboard_imports_path)} page."
-        }
-      )
+      redirect_back_or_to(dashboard_imports_path)
     end
 
     private
