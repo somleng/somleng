@@ -113,11 +113,10 @@ RSpec.describe InitiateOutboundCall do
       InitiateOutboundCall.call(phone_call:)
 
       expect(phone_call.status).to eq("queued")
-      expect(ScheduledJob).to have_been_enqueued.with(
+      expect(ExecuteWorkflowJob).to have_been_enqueued.with(
         InitiateOutboundCall.to_s,
         phone_call:,
-        wait_until: 10.seconds.from_now
-      )
+      ).at(10.seconds.from_now)
     end
   end
 

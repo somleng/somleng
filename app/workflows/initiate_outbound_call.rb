@@ -25,10 +25,11 @@ class InitiateOutboundCall < ApplicationWorkflow
   private
 
   def reschedule
-    ScheduledJob.perform_later(
-      InitiateOutboundCall.to_s,
-      phone_call:,
+    ExecuteWorkflowJob.set(
       wait_until: 10.seconds.from_now
+    ).perform_later(
+      InitiateOutboundCall.to_s,
+      phone_call:
     )
   end
 
