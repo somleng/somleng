@@ -3,7 +3,7 @@ class CarrierSettingsForm
   include ActiveModel::Attributes
 
   COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
-  CURRENCIES = ISO3166::Country.all.map { |country| Money::Currency.new(country.currency_code) }.uniq.freeze
+  CURRENCIES = ISO3166::Country.all.map { |country| Money::Currency.new(country.currency_code) if Money::Currency.find(country.currency_code) }.reject(&:blank?).uniq.freeze
 
   class HostnameValidator < ActiveModel::EachValidator
     RESTRICTED_DOMAINS = [
