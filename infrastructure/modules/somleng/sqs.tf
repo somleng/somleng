@@ -8,6 +8,18 @@ resource "aws_sqs_queue" "high_priority" {
   visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
 }
 
+resource "aws_sqs_queue" "medium_priority" {
+  name                       = "${var.app_identifier}-medium-priority"
+  redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.dead_letter.arn}\",\"maxReceiveCount\":${local.sqs_max_receive_count}}"
+  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
+}
+
+resource "aws_sqs_queue" "outbound_calls" {
+  name                       = "${var.app_identifier}-outbound-calls"
+  redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.dead_letter.arn}\",\"maxReceiveCount\":${local.sqs_max_receive_count}}"
+  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
+}
+
 resource "aws_sqs_queue" "default" {
   name                       = "${var.app_identifier}-default"
   redrive_policy             = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.dead_letter.arn}\",\"maxReceiveCount\":${local.sqs_max_receive_count}}"

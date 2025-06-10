@@ -4,6 +4,16 @@ groups:
     delay: 5
     queues:
       - <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
+  medium_priority:
+    concurrency: 30
+    delay: 10
+    queues:
+      - <%= ENV.fetch("AWS_SQS_MEDIUM_PRIORITY_QUEUE_NAME", "medium-priority") %>
+  outbound_calls:
+    concurrency: 30
+    delay: 20
+    queues:
+      - <%= ENV.fetch("AWS_SQS_OUTBOUND_CALLS_QUEUE_NAME", "outbound-calls") %>
   default_priority:
     concurrency: 25
     delay: 30

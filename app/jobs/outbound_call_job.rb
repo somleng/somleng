@@ -1,4 +1,6 @@
 class OutboundCallJob < ApplicationJob
+  queue_as AppSettings.fetch(:aws_sqs_outbound_calls_queue_name)
+
   class Handler
     attr_reader :account, :queue, :rate_limiters, :session_limiters, :logger
 

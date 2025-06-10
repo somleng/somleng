@@ -43,6 +43,10 @@ locals {
       value = aws_sqs_queue.high_priority.name
     },
     {
+      name  = "AWS_SQS_MEDIUM_PRIORITY_QUEUE_NAME",
+      value = aws_sqs_queue.medium_priority.name
+    },
+    {
       name  = "AWS_SQS_DEFAULT_QUEUE_NAME",
       value = aws_sqs_queue.default.name
     },
@@ -53,6 +57,10 @@ locals {
     {
       name  = "AWS_SQS_LONG_RUNNING_QUEUE_NAME",
       value = aws_sqs_queue.long_running.name
+    },
+    {
+      name  = "AWS_SQS_OUTBOUND_CALLS_QUEUE_NAME",
+      value = aws_sqs_queue.outbound_calls.name
     },
     {
       name  = "AWS_SQS_SCHEDULER_QUEUE_NAME",
