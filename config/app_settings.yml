@@ -5,9 +5,11 @@ default: &default
   client_gateway_domain: "sip.somleng.org"
   mailer_sender: <%= ENV.fetch("MAILER_SENDER", "no-reply@somleng.org") %>
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
+  aws_sqs_medium_priority_queue_name: <%= ENV.fetch("AWS_SQS_MEDIUM_PRIORITY_QUEUE_NAME", "medium-priority") %>
   aws_sqs_default_queue_name: <%= ENV.fetch("AWS_SQS_DEFAULT_QUEUE_NAME", "default-priority") %>
   aws_sqs_low_priority_queue_name: <%= ENV.fetch("AWS_SQS_LOW_PRIORITY_QUEUE_NAME", "low-priority") %>
   aws_sqs_long_running_queue_name: <%= ENV.fetch("AWS_SQS_LONG_RUNNING_QUEUE_NAME", "long-running") %>
+  aws_sqs_outbound_calls_queue_name: <%= ENV.fetch("AWS_SQS_OUTBOUND_CALLS_QUEUE_NAME", "outbound-calls") %>
   aws_sqs_scheduler_queue_name: <%= ENV.fetch("AWS_SQS_SCHEDULER_QUEUE_NAME", "scheduler") %>
   aws_ses_region: <%= ENV.fetch("AWS_SES_REGION", "ap-southeast-1") %>
   aws_region: <%= ENV.fetch("AWS_DEFAULT_REGION", "ap-southeast-1") %>
