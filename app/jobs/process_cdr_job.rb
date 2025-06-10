@@ -1,4 +1,6 @@
 class ProcessCDRJob < ApplicationJob
+  queue_as AppSettings.fetch(:aws_sqs_high_priority_queue_name)
+
   class Handler
     class PhoneCallNotFoundError < StandardError; end
     class UnknownPhoneCallError < StandardError; end
