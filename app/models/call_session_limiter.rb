@@ -1,5 +1,4 @@
 class CallSessionLimiter
-  class SessionLimitExceededError < StandardError; end
   attr_reader :session_counters, :logger
 
   def initialize(**options)
@@ -15,12 +14,6 @@ class CallSessionLimiter
     @logger = options.fetch(:logger) { Rails.logger }
   end
 
-  def add_session_to!(region, scope:)
-    session_counter_for(region).increment!(scope:)
-  rescue SimpleCounter::LimitExceededError => e
-    raise(SessionLimitExceededError, e.message)
-  end
-
   def add_session_to(region, scope:)
     session_counter_for(region).increment(scope:)
   end
@@ -31,6 +24,10 @@ class CallSessionLimiter
 
   def session_count_for(region, scope:)
     session_counter_for(region).count(scope:)
+  end
+
+  def exceeds_limit?(region, scope:)
+    session_counter_for(region).exceeds_limit?(scope:)
   end
 
   private

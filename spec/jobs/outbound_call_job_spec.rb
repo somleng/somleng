@@ -6,16 +6,13 @@ RSpec.describe OutboundCallJob do
     phone_call = create(:phone_call, account:, region: "helium")
     other_phone_call = create(:phone_call, account:)
     account_queue = build_queue(account)
-    account_session_limiter, global_session_limiter = build_session_limiters(account:)
     account_queue.enqueue(phone_call.id)
     account_queue.enqueue(other_phone_call.id)
 
-    OutboundCallJob.perform_now(account, queue: account_queue, session_limiters: [ account_session_limiter, global_session_limiter ])
+    OutboundCallJob.perform_now(account, queue: account_queue)
 
     expect(ExecuteWorkflowJob).to have_been_enqueued.exactly(1).times.with(InitiateOutboundCall.to_s, phone_call:)
     expect(account_queue.peek).to eq(other_phone_call.id)
-    expect(account_session_limiter.session_count_for(:helium, scope: account.id)).to eq(1)
-    expect(global_session_limiter.session_count_for(:helium)).to eq(1)
   end
 
   it "applies rate limits" do

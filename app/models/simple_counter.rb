@@ -1,5 +1,16 @@
 class SimpleCounter
-  class LimitExceededError < StandardError; end
+  DECREMENT_SCRIPT = <<~LUA
+    local val = redis.call('GET', KEYS[1])
+    if not val then
+      return 0
+    end
+    val = tonumber(val)
+    if val > 0 then
+      return redis.call('DECR', KEYS[1])
+    else
+      return val
+    end
+  LUA
 
   attr_reader :key, :limit, :expiry, :backend
 
@@ -18,22 +29,20 @@ class SimpleCounter
     result
   end
 
-  def increment!(scope: nil)
-    raise(LimitExceededError) if limit.present? && count(scope:) >= limit
-
-    increment(scope:)
-  end
-
   def decrement(scope: nil)
     key = build_key(scope)
     result, = with_expire(key) do |transaction|
-      transaction.decr(key)
+      transaction.eval(DECREMENT_SCRIPT, keys: [ key ])
     end
     result
   end
 
   def count(scope: nil)
     backend.with { _1.get(build_key(scope)).to_i }
+  end
+
+  def exceeds_limit?(scope: nil)
+    limit.present? && count(scope:) >= limit
   end
 
   private

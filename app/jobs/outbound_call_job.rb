@@ -1,4 +1,6 @@
 class OutboundCallJob < ApplicationJob
+  class SessionLimitExceededError < StandardError; end
+
   queue_as AppSettings.fetch(:aws_sqs_outbound_calls_queue_name)
 
   class Handler
@@ -22,15 +24,11 @@ class OutboundCallJob < ApplicationJob
         ExecuteWorkflowJob.perform_later(InitiateOutboundCall.to_s, phone_call:)
       end
     rescue RateLimiter::RateLimitExceededError => e
-      OutboundCallJob.perform_later(
-        account,
-        wait_until: e.seconds_remaining_in_current_window.seconds.from_now
-      )
-    rescue CallSessionLimiter::SessionLimitExceededError
-      OutboundCallJob.perform_later(
-        account,
-        wait_until: 10.seconds.from_now
-      )
+      logger.warn("Rate limit exceeded for account: #{account.id}. Rescheduling in #{e.seconds_remaining_in_current_window} seconds.")
+      reschedule(wait_until: e.seconds_remaining_in_current_window.seconds.from_now)
+    rescue SessionLimitExceededError => e
+      logger.warn(e.message)
+      reschedule(wait_until: 10.seconds.from_now)
     end
 
     private
@@ -40,7 +38,15 @@ class OutboundCallJob < ApplicationJob
     end
 
     def session_limit!(phone_call)
-      session_limiters.each { _1.add_session_to!(phone_call.region.alias, scope: phone_call.account_id) }
+      session_limiters.each do |limiter|
+        next unless limiter.exceeds_limit?(phone_call.region.alias, scope: phone_call.account_id)
+
+        raise SessionLimitExceededError, "Session limit exceeded for limiter: #{limiter.class} (Account ID: #{phone_call.account_id})"
+      end
+    end
+
+    def reschedule(wait_until:)
+      OutboundCallJob.perform_later(account, wait_until:)
     end
 
     def build_rate_limiters

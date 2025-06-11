@@ -7,11 +7,6 @@ class GlobalCallSessionLimiter < CallSessionLimiter
     @log_key = options.fetch(:log_key) { AppSettings.fetch(:global_call_sessions_count_log_key) }
   end
 
-  def add_session_to!(*, **)
-    result = super(*, scope:)
-    log_sessions_count(result)
-  end
-
   def add_session_to(*, **)
     result = super(*, scope:)
     log_sessions_count(result)
@@ -23,6 +18,10 @@ class GlobalCallSessionLimiter < CallSessionLimiter
   end
 
   def session_count_for(*, **)
+    super(*, scope:)
+  end
+
+  def exceeds_limit?(*, **)
     super(*, scope:)
   end
 

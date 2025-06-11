@@ -10,7 +10,7 @@ RSpec.describe ProcessOutboundCallsQueue do
     ProcessOutboundCallsQueue.call
 
     accounts.each do |account|
-      expect(OutboundCallJob).to have_been_enqueued.with(account).exactly(2).times
+      expect(OutboundCallJob).to have_been_enqueued.with(account).exactly(1).times
     end
   end
 end
