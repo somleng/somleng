@@ -26,9 +26,9 @@ RSpec.describe InitiateOutboundCall do
       voice_method: "POST",
     )
     stub_switch_request(region: :helium, external_call_id: "123456789", host: "10.10.1.13")
-    account_session_limiter, global_session_limiter = build_session_limiters(account: phone_call.account, sessions: { hydrogen: 1 })
+    account_session_limiter, global_session_limiter = build_session_limiters(account: phone_call.account)
 
-    InitiateOutboundCall.call(phone_call:, session_limiters: [ account_session_limiter, global_session_limiter])
+    InitiateOutboundCall.call(phone_call:, session_limiters: [ account_session_limiter, global_session_limiter ])
 
     expect(phone_call).to have_attributes(
       external_id: "123456789",
@@ -63,8 +63,8 @@ RSpec.describe InitiateOutboundCall do
         }
       }
     )
-    expect(account_session_limiter.session_count_for(:hydrogen, scope: phone_call.account_id)).to eq(1)
-    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(1)
+    expect(account_session_limiter.session_count_for(:helium, scope: phone_call.account_id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:helium)).to eq(1)
   end
 
   it "handles already canceled calls" do
@@ -75,13 +75,10 @@ RSpec.describe InitiateOutboundCall do
       carrier:
     )
     phone_call = create(:phone_call, :outbound, :routable,  :canceled, sip_trunk:, carrier:, external_id: nil, region: sip_trunk.region)
-    account_session_limiter, global_session_limiter = build_session_limiters(account: phone_call.account, sessions: { hydrogen: 1 })
 
-    InitiateOutboundCall.call(phone_call:, session_limiters: [ account_session_limiter, global_session_limiter ])
+    InitiateOutboundCall.call(phone_call:)
 
     expect(WebMock).not_to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
-    expect(account_session_limiter.session_count_for(:hydrogen, scope: phone_call.account_id)).to eq(0)
-    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(0)
   end
 
   it "handles deleted SIP trunks" do
@@ -108,8 +105,8 @@ RSpec.describe InitiateOutboundCall do
     expect(phone_call.status).to eq("initiating")
     expect(phone_call.initiating_at.present?).to be(true)
     expect(phone_call.initiated_at).to be_nil
-    expect(account_session_limiter.session_count_for(:hydrogen, scope: phone_call.account_id)).to eq(0)
-    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(0)
+    expect(account_session_limiter.session_count_for(:hydrogen, scope: phone_call.account_id)).to eq(1)
+    expect(global_session_limiter.session_count_for(:hydrogen)).to eq(1)
     expect(WebMock).to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
   end
 

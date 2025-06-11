@@ -11,7 +11,6 @@ class InitiateOutboundCall < ApplicationWorkflow
   end
 
   def call
-    decrement_session_limits
     return unless phone_call.status.in?(%w[queued initiating])
     return phone_call.cancel! if phone_call.sip_trunk.blank?
     return reschedule unless initiate!
@@ -25,14 +24,6 @@ class InitiateOutboundCall < ApplicationWorkflow
   end
 
   private
-
-  def increment_session_limits
-    session_limiters.each { _1.add_session_to(phone_call.region.alias, scope: phone_call.account_id) }
-  end
-
-  def decrement_session_limits
-    session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
-  end
 
   def reschedule
     ExecuteWorkflowJob.set(
@@ -48,11 +39,6 @@ class InitiateOutboundCall < ApplicationWorkflow
 
     SIPTrunkChannelManager.allocate_sip_trunk_channel(sip_trunk) do
       mark_as_initiating! if channels_available?
-    end
-
-    if phone_call.initiating?
-      increment_session_limits
-      true
     end
   end
 
@@ -77,8 +63,13 @@ class InitiateOutboundCall < ApplicationWorkflow
     )
 
     raise Error, "Response body: #{response.body}" unless response.success?
+    increment_session_limits
 
     response
+  end
+
+  def increment_session_limits
+    session_limiters.each { _1.add_session_to(phone_call.region.alias, scope: phone_call.account_id) }
   end
 
   def channels_available?

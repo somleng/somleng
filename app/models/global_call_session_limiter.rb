@@ -26,6 +26,10 @@ class GlobalCallSessionLimiter < CallSessionLimiter
     super(*, scope:)
   end
 
+  def exceeds_limit?(*, **)
+    super(*, scope:)
+  end
+
   private
 
   def log_sessions_count(count)

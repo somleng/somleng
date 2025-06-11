@@ -41,6 +41,10 @@ class CallSessionLimiter
     session_counter_for(region).count(scope:)
   end
 
+  def exceeds_limit?(region, scope:)
+    session_counter_for(region).exceeds_limit?(scope:)
+  end
+
   private
 
   def session_counter_for(region)

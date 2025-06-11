@@ -19,6 +19,10 @@ class AccountCallSessionLimiter < CallSessionLimiter
     super(*, scope: scope_key(scope))
   end
 
+  def exceeds_limit?(*, scope:)
+    super(*, scope: scope_key(scope))
+  end
+
   private
 
   def scope_key(scope)
