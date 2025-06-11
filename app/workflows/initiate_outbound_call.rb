@@ -1,15 +1,17 @@
 class InitiateOutboundCall < ApplicationWorkflow
   class Error < StandardError; end
 
-  attr_reader :phone_call, :call_service_client
+  attr_reader :phone_call, :call_service_client, :session_limiters
 
   def initialize(**options)
     super()
     @phone_call = options.fetch(:phone_call) { PhoneCall.find(options.fetch(:phone_call_id)) }
     @call_service_client = options.fetch(:call_service_client) { CallService::Client.new }
+    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new(logger:), GlobalCallSessionLimiter.new(logger:) ] }
   end
 
   def call
+    decrement_session_limits
     return unless phone_call.status.in?(%w[queued initiating])
     return phone_call.cancel! if phone_call.sip_trunk.blank?
     return reschedule unless initiate!
@@ -23,6 +25,14 @@ class InitiateOutboundCall < ApplicationWorkflow
   end
 
   private
+
+  def increment_session_limits
+    session_limiters.each { _1.add_session_to(phone_call.region.alias, scope: phone_call.account_id) }
+  end
+
+  def decrement_session_limits
+    session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
+  end
 
   def reschedule
     ExecuteWorkflowJob.set(
@@ -40,7 +50,10 @@ class InitiateOutboundCall < ApplicationWorkflow
       mark_as_initiating! if channels_available?
     end
 
-    phone_call.initiating?
+    if phone_call.initiating?
+      increment_session_limits
+      true
+    end
   end
 
   def create_remote_call
