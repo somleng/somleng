@@ -52,7 +52,9 @@ data "aws_iam_policy_document" "ecs_task_policy" {
     ]
     resources = [
       aws_sqs_queue.high_priority.arn,
+      aws_sqs_queue.medium_priority.arn,
       aws_sqs_queue.default.arn,
+      aws_sqs_queue.outbound_calls.arn,
       aws_sqs_queue.low_priority.arn,
       aws_sqs_queue.long_running.arn,
       aws_sqs_queue.scheduler.arn
