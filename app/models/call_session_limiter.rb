@@ -1,5 +1,13 @@
 class CallSessionLimiter
-  class SessionLimitExceededError < StandardError; end
+  class SessionLimitExceededError < StandardError
+    attr_reader :scope
+
+    def initialize(message, scope:)
+      super(message)
+      @scope = scope
+    end
+  end
+
   attr_reader :session_counters, :logger
 
   def initialize(**options)
@@ -18,7 +26,7 @@ class CallSessionLimiter
   def add_session_to!(region, scope:)
     session_counter_for(region).increment!(scope:)
   rescue SimpleCounter::LimitExceededError => e
-    raise(SessionLimitExceededError, e.message)
+    raise(SessionLimitExceededError.new(e.message, scope:))
   end
 
   def add_session_to(region, scope:)

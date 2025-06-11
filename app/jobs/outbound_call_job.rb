@@ -22,11 +22,13 @@ class OutboundCallJob < ApplicationJob
         ExecuteWorkflowJob.perform_later(InitiateOutboundCall.to_s, phone_call:)
       end
     rescue RateLimiter::RateLimitExceededError => e
+      logger.warn("Rate limit exceeded for account: #{account.id}. Rescheduling in #{e.seconds_remaining_in_current_window} seconds.")
       OutboundCallJob.perform_later(
         account,
         wait_until: e.seconds_remaining_in_current_window.seconds.from_now
       )
-    rescue CallSessionLimiter::SessionLimitExceededError
+    rescue CallSessionLimiter::SessionLimitExceededError => e
+      logger.warn("Session limit exceeded for scope: #{e.scope}. Rescheduling in 10 seconds.")
       OutboundCallJob.perform_later(
         account,
         wait_until: 10.seconds.from_now
