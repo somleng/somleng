@@ -1,5 +1,4 @@
 class SimpleCounter
-  class LimitExceededError < StandardError; end
   DECREMENT_SCRIPT = <<~LUA
     local val = redis.call('GET', KEYS[1])
     if not val then
@@ -28,12 +27,6 @@ class SimpleCounter
       transaction.incr(key)
     end
     result
-  end
-
-  def increment!(scope: nil)
-    raise(LimitExceededError) if exceeds_limit?(scope:)
-
-    increment(scope:)
   end
 
   def decrement(scope: nil)

@@ -3,10 +3,6 @@ class AccountCallSessionLimiter < CallSessionLimiter
     super(limit_per_capacity_unit: AppSettings.fetch(:account_call_sessions_limit), **)
   end
 
-  def add_session_to!(*, scope:)
-    super(*, scope: scope_key(scope))
-  end
-
   def add_session_to(*, scope:)
     super(*, scope: scope_key(scope))
   end
