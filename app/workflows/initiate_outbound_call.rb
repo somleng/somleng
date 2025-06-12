@@ -1,13 +1,14 @@
 class InitiateOutboundCall < ApplicationWorkflow
   class Error < StandardError; end
 
-  attr_reader :phone_call, :call_service_client, :session_limiters
+  attr_reader :phone_call, :call_service_client, :session_limiters, :logger
 
   def initialize(**options)
     super()
     @phone_call = options.fetch(:phone_call) { PhoneCall.find(options.fetch(:phone_call_id)) }
     @call_service_client = options.fetch(:call_service_client) { CallService::Client.new }
     @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new(logger:), GlobalCallSessionLimiter.new(logger:) ] }
+    @logger = options.fetch(:logger) { Rails.logger }
   end
 
   def call
@@ -27,6 +28,7 @@ class InitiateOutboundCall < ApplicationWorkflow
 
   def reschedule
     ExecuteWorkflowJob.set(
+      queue: AppSettings.fetch(:aws_sqs_high_priority_queue_name),
       wait_until: 10.seconds.from_now
     ).perform_later(
       InitiateOutboundCall.to_s,
@@ -34,7 +36,17 @@ class InitiateOutboundCall < ApplicationWorkflow
     )
   end
 
+  def session_limits_exceeded?
+    session_limiters.any? do |limiter|
+      if limiter.exceeds_limit?(phone_call.region.alias, scope: phone_call.account_id)
+        logger.warn("Session limit exceeded for limiter: #{limiter.class} (Account ID: #{phone_call.account_id})")
+        true
+      end
+    end
+  end
+
   def initiate!
+    return false if session_limits_exceeded?
     return mark_as_initiating! if phone_call.sip_trunk.max_channels.blank?
 
     SIPTrunkChannelManager.allocate_sip_trunk_channel(sip_trunk) do

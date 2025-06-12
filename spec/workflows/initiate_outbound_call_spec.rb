@@ -110,6 +110,22 @@ RSpec.describe InitiateOutboundCall do
     expect(WebMock).to have_requested(:post, "https://switch.hydrogen.somleng.org/calls")
   end
 
+  it "handles session limits" do
+    account = create(:account)
+    phone_call = create(:phone_call, :queued, account:, region: "hydrogen")
+    account_session_limiter, global_session_limiter = build_session_limiters(account:, sessions: { hydrogen: 1 }, limit: 1)
+
+    travel_to(Time.current) do
+      InitiateOutboundCall.call(phone_call:, session_limiters: [ account_session_limiter, global_session_limiter ])
+
+      expect(phone_call.status).to eq("queued")
+      expect(ExecuteWorkflowJob).to have_been_enqueued.with(
+        InitiateOutboundCall.to_s,
+        phone_call:,
+      ).at(10.seconds.from_now).on_queue(AppSettings.fetch(:aws_sqs_high_priority_queue_name))
+    end
+  end
+
   it "handles max number of channels" do
     sip_trunk = create(:sip_trunk, :busy)
     phone_call = create(:phone_call, :outbound, :queued, :routable, sip_trunk:)
@@ -121,7 +137,7 @@ RSpec.describe InitiateOutboundCall do
       expect(ExecuteWorkflowJob).to have_been_enqueued.with(
         InitiateOutboundCall.to_s,
         phone_call:,
-      ).at(10.seconds.from_now)
+      ).at(10.seconds.from_now).on_queue(AppSettings.fetch(:aws_sqs_high_priority_queue_name))
     end
   end
 
