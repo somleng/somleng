@@ -83,6 +83,7 @@ class CompletePhoneCallJob < ApplicationJob
 
   retry_on(
     Handler::InvalidStateTransitionError,
-    wait: :polynomially_longer
+    wait: :polynomially_longer,
+    attempts: 3
   )
 end
