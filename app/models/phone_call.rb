@@ -90,7 +90,7 @@ class PhoneCall < ApplicationRecord
   end
 
   def self.in_progress_or_initiating
-    in_progress.or(initiating)
+    where(status: %w[initiating initiated ringing answered])
   end
 
   def was_initiated?

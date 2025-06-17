@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_01_063512) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_17_070334) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -471,6 +471,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_01_063512) do
     t.string "region"
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
+    t.index ["account_id", "internal", "sequence_number"], name: "idx_on_account_id_internal_sequence_number_918b5ff8f4", order: { sequence_number: :desc }
     t.index ["account_id", "status"], name: "index_phone_calls_on_account_id_and_status"
     t.index ["account_id"], name: "index_phone_calls_on_account_id"
     t.index ["beneficiary_country_code"], name: "index_phone_calls_on_beneficiary_country_code"
@@ -487,6 +488,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_01_063512) do
     t.index ["parent_call_id"], name: "index_phone_calls_on_parent_call_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
+    t.index ["sip_trunk_id", "status", "created_at"], name: "index_phone_calls_on_sip_trunk_id_and_status_and_created_at"
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
     t.index ["sip_trunk_id"], name: "index_phone_calls_on_sip_trunk_id"
     t.index ["status", "created_at"], name: "index_phone_calls_on_status_and_created_at"
