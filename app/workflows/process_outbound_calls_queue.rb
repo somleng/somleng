@@ -3,7 +3,7 @@ class ProcessOutboundCallsQueue < ApplicationWorkflow
     OutboundCallsQueue.each_queue do |queue|
       next if queue.size.zero?
 
-      OutboundCallJob.perform_later(queue.account)
+      [ queue.size, 60 ].min.times { OutboundCallJob.perform_later(queue.account) }
     end
   end
 end
