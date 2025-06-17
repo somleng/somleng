@@ -90,6 +90,15 @@ RSpec.describe CompletePhoneCallJob do
     ).on_queue(AppSettings.fetch(:aws_sqs_high_priority_queue_name))
   end
 
+  it "retries on invalid state transitions" do
+    phone_call = create(:phone_call, :outbound, :initiated)
+    create(:call_data_record, phone_call:, answer_time: nil, sip_term_status: "200")
+
+    2.times.map { Thread.new { CompletePhoneCallJob.perform_now(phone_call) } }.each(&:join)
+
+    expect(CompletePhoneCallJob).to have_been_enqueued
+  end
+
   it "creates an event" do
     phone_call = create(:phone_call, :outbound, :initiated)
     create(:call_data_record, phone_call:, answer_time: nil, sip_term_status: "200")
