@@ -80,6 +80,11 @@ class ProcessCDRJob < ApplicationJob
   end
 
   discard_on(Handler::CDRAlreadyExistsError)
+  retry_on(
+    Handler::UnknownPhoneCallError,
+    wait: :polynomially_longer,
+    attempts: 3
+  )
 
   def perform(...)
     Handler.new(...).perform
