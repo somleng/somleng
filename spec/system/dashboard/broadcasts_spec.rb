@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Broadcasts" do
-  it "List broadcasts", :js, :selenium_chrome do
+  it "List broadcasts" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:, id: "d28bb460-1324-4aa5-860a-8ef48fb5ca7f")
 
