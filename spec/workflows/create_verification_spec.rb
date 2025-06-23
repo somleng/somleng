@@ -74,7 +74,7 @@ RSpec.describe CreateVerification do
     expect(OutboundCallJob).to have_been_enqueued
   end
 
-  it "hnadles Thai SMS verifications" do
+  it "handles Thai SMS verifications" do
     verification_service, sms_gateway, = create_verification_service(
       name: "Rocket Rides"
     )

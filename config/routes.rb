@@ -141,6 +141,7 @@ Rails.application.routes.draw do
       resources :webhook_request_logs, only: %i[index show]
       resources :tts_events, only: %i[index show]
       resource :notification_preferences, only: %i[edit update]
+      resources :broadcasts, only: [ :index, :show, :update ]
 
       root to: "home#show"
     end

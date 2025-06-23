@@ -1,0 +1,45 @@
+<%= page_title(title: @broadcast.headline) do %>
+  <% if @broadcast.status.pending? %>
+    <%= button_to(dashboard_broadcast_path(@broadcast.id), method: :patch, params: { desired_status: :in_progress }, class: "btn btn-outline-success", title: "Start") do %>
+      <i class="fa-solid fa-play"></i> Start
+    <% end %>
+  <% elsif @broadcast.status.in_progress? %>
+    <%= button_to(dashboard_broadcast_path(@broadcast.id), method: :patch, params: { desired_status: :completed }, class: "btn btn-outline-success", title: "Start") do %>
+      <i class="fa-solid fa-check-circle"></i> Finish
+    <% end %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@broadcast) do |f| %>
+    <%= f.attribute :id do %>
+      <code>
+        <%= @broadcast.id %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :broadcaster %>
+
+    <%= f.attribute :channel do %>
+      <span class="badge <%= broadcast_badge(@broadcast.channel).color %>">
+        <i class="icon fa-solid fa-<%= broadcast_badge(@broadcast.channel).icon %>"></i>
+        <%= @broadcast.channel.humanize %>
+      </span>
+    <% end %>
+
+    <%= f.attribute :message do %>
+      <strong><%= @broadcast.headline %></strong><br/>
+      <%= @broadcast.message %>
+    <% end %>
+
+    <%= f.attribute :status do %>
+      <span class="badge <%= broadcast_badge(@broadcast.status).color %>">
+        <i class="icon fa-solid fa-<%= broadcast_badge(@broadcast.status).icon %>"></i>
+        <%= @broadcast.status.text %>
+      </span>
+    <% end %>
+
+    <%= f.attribute :assigned_to %>
+    <%= f.attribute :created_at, value: local_time(@broadcast.created_at) %>
+  <% end %>
+</div>
