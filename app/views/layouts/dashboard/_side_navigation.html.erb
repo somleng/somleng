@@ -5,6 +5,10 @@
     <% end %>
   </div>
   <ul class="sidebar-nav" data-simplebar>
+    <% if policy(:broadcast).index? %>
+      <%= sidebar_nav("Broadcasts", dashboard_broadcasts_path, icon_class: "fa-solid fa-bullhorn") %>
+    <% end %>
+
     <% if policy(:account_settings).show? %>
       <%= sidebar_nav("Account Settings", dashboard_account_settings_path, icon_class: "fa-solid fa-gear") %>
     <% end %>
@@ -15,10 +19,6 @@
 
     <% if policy(:account).index? %>
       <%= sidebar_nav("Accounts", dashboard_accounts_path, icon_class: "fa-solid fa-cloud") %>
-    <% end %>
-
-    <% if policy(:broadcast).index? %>
-      <%= sidebar_nav("Broadcasts", dashboard_broadcasts_path, icon_class: "fa-solid fa-bullhorn") %>
     <% end %>
 
     <li class="nav-group" data-coreui="navigation">

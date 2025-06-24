@@ -17,10 +17,13 @@
         Status
       </th>
       <th>
-        Assigned to
+        Received at
       </th>
       <th>
-        Created At
+        Started at
+      </th>
+      <th>
+        Completed at
       </th>
     </tr>
   </thead>
@@ -56,11 +59,23 @@
         </td>
 
         <td>
-          <%= broadcast.assigned_to %>
+          <%= local_time(broadcast.received_at) %>
         </td>
 
         <td>
-          <%= local_time(broadcast.created_at) %>
+          <%= local_time(broadcast.started_at) %>
+          <% if broadcast.started_at.present? %>
+            by
+            <strong><%= broadcast.started_by %></strong>
+          <% end %>
+        </td>
+
+        <td>
+          <%= local_time(broadcast.completed_at) %>
+          <% if broadcast.completed_at.present? %>
+            by
+            <strong><%= broadcast.completed_by %></strong>
+          <% end %>
         </td>
       </tr>
     <% end %>

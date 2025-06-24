@@ -39,7 +39,19 @@
       </span>
     <% end %>
 
-    <%= f.attribute :assigned_to %>
-    <%= f.attribute :created_at, value: local_time(@broadcast.created_at) %>
+    <%= f.attribute :received_at, value: local_time(@broadcast.received_at) %>
+    <%= f.attribute :started_at do %>
+      <% if @broadcast.started_at.present? %>
+        <%= local_time(@broadcast.started_at) %> by
+        <strong><%= @broadcast.started_by %></strong>
+      <% end %>
+    <% end %>
+    <%= f.attribute :completed_at do %>
+      <% if @broadcast.completed_at.present? %>
+        <%= local_time(@broadcast.completed_at) %> by
+        <strong><%= @broadcast.completed_by %></strong>
+      <% end %>
+    <% end %>
+    <%= f.attribute :canceled_at, value: local_time(@broadcast.canceled_at) %>
   <% end %>
 </div>
