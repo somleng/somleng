@@ -29,6 +29,8 @@ module Dashboard
         Badge.new(color: "bg-primary", icon: "hourglass-start")
       when "completed"
         Badge.new(color: "bg-success", icon: "circle-check")
+      when "canceled"
+        Badge.new(color: "bg-danger", icon: "triangle-exclamation")
       end
     end
   end
