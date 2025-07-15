@@ -148,7 +148,7 @@ GEM
       base64
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-ec2 (1.537.0)
+    aws-sdk-ec2 (1.538.0)
       aws-sdk-core (~> 3, >= 3.225.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-kms (1.106.0)
