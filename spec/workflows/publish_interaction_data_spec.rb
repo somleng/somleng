@@ -31,16 +31,20 @@ RSpec.describe PublishInteractionData do
         "https://api.datawrapper.de/v3/charts/chart-id/data"
       ).with do |request|
         csv = CSV.parse(request.body, headers: true)
-        csv.to_a == [
+        expect(csv.to_a).to eq([
           %w[Date Beneficiaries Interactions],
           %w[2023-01-01 1 2],
           [ Date.current.to_s, "2", "4" ]
-        ]
+        ])
+        expect(request.headers["Content-Type"]).to eq("text/csv")
       end
     )
 
-    expect(WebMock).to have_requested(:post, "https://api.datawrapper.de/v3/charts/chart-id/publish").with(
-      headers: { "Authorization" => "Bearer api-key" }
+    expect(WebMock).to(
+      have_requested(:post, "https://api.datawrapper.de/v3/charts/chart-id/publish").with do |request|
+        expect(request.headers["Authorization"]).to eq("Bearer api-key")
+        expect(request.headers).not_to include("Content-Type")
+      end
     )
   end
 

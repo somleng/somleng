@@ -17,7 +17,7 @@ class PublishInteractionData < ApplicationWorkflow
     return if csv.any? { |r| Date.parse(r["Date"]) == Date.current }
 
     csv << build_data_point
-    make_request(:put, "/data", csv.to_s)
+    make_request(:put, "/data", csv.to_s, headers: { "Content-Type" => "text/csv" })
     make_request(:post, "/publish")
   end
 
@@ -31,8 +31,8 @@ class PublishInteractionData < ApplicationWorkflow
     ]
   end
 
-  def make_request(http_method, path, data = nil)
-    response = client.run_request(http_method, "/v3/charts/#{chart_id}#{path}", data, {})
+  def make_request(http_method, path, data = nil, headers: {})
+    response = client.run_request(http_method, "/v3/charts/#{chart_id}#{path}", data, headers)
     raise "HTTP Error #{response.status}: #{response.body}" unless response.success?
 
     response
@@ -40,8 +40,6 @@ class PublishInteractionData < ApplicationWorkflow
 
   def client
     @client ||= Faraday.new(url: "https://api.datawrapper.de") do |conn|
-      conn.headers["Content-Type"] = "text/csv"
-
       conn.adapter Faraday.default_adapter
 
       conn.request(:authorization, "Bearer", api_key)
