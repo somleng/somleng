@@ -7,5 +7,6 @@ RSpec.describe HourlyJob do
     expect(ExecuteWorkflowJob).to have_been_enqueued.with(ExpireInProgressPhoneCalls.to_s)
     expect(ExecuteWorkflowJob).to have_been_enqueued.with(ExpireInitiatingPhoneCalls.to_s)
     expect(ExecuteWorkflowJob).to have_been_enqueued.with(RevokeSIPTrunkPermissions.to_s)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with(RescheduleOutboundCalls.to_s)
   end
 end
