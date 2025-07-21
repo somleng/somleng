@@ -5,5 +5,6 @@ class HourlyJob < ApplicationJob
     ExecuteWorkflowJob.perform_later(ExpireInProgressPhoneCalls.to_s)
     ExecuteWorkflowJob.perform_later(ExpireInitiatingPhoneCalls.to_s)
     ExecuteWorkflowJob.perform_later(RevokeSIPTrunkPermissions.to_s)
+    ExecuteWorkflowJob.perform_later(RescheduleOutboundCalls.to_s)
   end
 end
