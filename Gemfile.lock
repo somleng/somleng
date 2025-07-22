@@ -483,7 +483,7 @@ GEM
     rdoc (6.14.1)
       erb
       psych (>= 4.0.0)
-    recaptcha (5.19.0)
+    recaptcha (5.20.1)
     redis (5.4.1)
       redis-client (>= 0.22.0)
     redis-client (0.25.1)
