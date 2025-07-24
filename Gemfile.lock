@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: https://github.com/zipmark/rspec_api_documentation.git
-  revision: d32bf17932a379052e8bb7540fc29ce7e72712ae
+  revision: 0c9692ade21bdb780a7b4f242c94c6692c0aae9b
   specs:
     rspec_api_documentation (6.1.0)
       activesupport (>= 3.0.0)
@@ -502,11 +502,11 @@ GEM
       chunky_png (~> 1.0)
       rqrcode_core (~> 2.0)
     rqrcode_core (2.0.0)
-    rspec (3.13.0)
+    rspec (3.13.1)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.4)
+    rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
