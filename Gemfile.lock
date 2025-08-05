@@ -168,7 +168,7 @@ GEM
     aws-sdk-ses (1.82.0)
       aws-sdk-core (~> 3, >= 3.216.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-sesv2 (1.81.0)
+    aws-sdk-sesv2 (1.82.0)
       aws-sdk-core (~> 3, >= 3.228.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-sqs (1.100.0)
