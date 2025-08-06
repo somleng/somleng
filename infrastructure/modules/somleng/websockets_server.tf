@@ -157,6 +157,12 @@ resource "aws_ecs_service" "ws" {
     container_port   = var.ws_port
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ws_internal.arn
+    container_name   = "ws"
+    container_port   = var.ws_port
+  }
+
   network_configuration {
     subnets = var.region.vpc.private_subnets
     security_groups = [
@@ -193,6 +199,22 @@ resource "aws_lb_target_group" "ws" {
   }
 }
 
+resource "aws_lb_target_group" "ws_internal" {
+  name                 = "${var.app_identifier}-ws-internal"
+  port                 = var.ws_port
+  protocol             = "HTTP"
+  vpc_id               = var.region.vpc.vpc_id
+  target_type          = "ip"
+  deregistration_delay = 60
+
+  health_check {
+    protocol          = "HTTP"
+    path              = var.ws_healthcheck_path
+    healthy_threshold = 3
+    interval          = 10
+  }
+}
+
 # Load Balancer Rule
 
 resource "aws_lb_listener_rule" "ws" {
@@ -203,6 +225,33 @@ resource "aws_lb_listener_rule" "ws" {
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ws.id
+  }
+
+  condition {
+    host_header {
+      values = [
+        aws_route53_record.app.fqdn
+      ]
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = [
+        var.ws_path
+      ]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "ws-internal" {
+  priority = var.app_environment == "production" ? 12 : 112
+
+  listener_arn = var.region.internal_load_balancer.https_listener.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ws_internal.id
   }
 
   condition {
