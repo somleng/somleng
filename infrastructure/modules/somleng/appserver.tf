@@ -207,6 +207,18 @@ resource "aws_route53_record" "internal_api" {
   }
 }
 
+resource "aws_route53_record" "internal_app" {
+  zone_id = var.internal_route53_zone.zone_id
+  name    = var.app_subdomain
+  type    = "A"
+
+  alias {
+    name                   = var.region.internal_load_balancer.this.dns_name
+    zone_id                = var.region.internal_load_balancer.this.zone_id
+    evaluate_target_health = true
+  }
+}
+
 # Target groups
 
 resource "aws_lb_target_group" "webserver" {
