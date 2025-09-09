@@ -5,7 +5,7 @@ RSpec.describe InitiateOutboundCall do
     carrier = create(:carrier)
     sip_trunk = create(
       :sip_trunk,
-      outbound_symmetric_latching_supported: false,
+      sip_profile: "test",
       outbound_host: "sip.example.com",
       region: :helium,
       carrier:
@@ -59,7 +59,7 @@ RSpec.describe InitiateOutboundCall do
           national_dialing: false,
           host: "sip.example.com",
           username: nil,
-          symmetric_latching: false
+          sip_profile: "test"
         }
       }
     )

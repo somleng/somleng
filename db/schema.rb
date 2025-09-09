@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_17_070334) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -598,7 +598,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_17_070334) do
     t.string "outbound_dial_string_prefix"
     t.boolean "outbound_national_dialing", default: false, null: false
     t.boolean "outbound_plus_prefix", default: false, null: false
-    t.boolean "outbound_symmetric_latching_supported", default: true, null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -609,10 +608,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_17_070334) do
     t.integer "max_channels"
     t.string "region", null: false
     t.string "default_sender"
+    t.string "sip_profile", null: false
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
     t.index ["default_sender"], name: "index_sip_trunks_on_default_sender"
     t.index ["region"], name: "index_sip_trunks_on_region"
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
+    t.index ["sip_profile"], name: "index_sip_trunks_on_sip_profile"
     t.index ["username"], name: "index_sip_trunks_on_username", unique: true
   end
 

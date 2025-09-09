@@ -15,7 +15,7 @@ module APIResponseSchema
               required(:national_dialing).filled(:bool?)
               required(:host).filled(:str?)
               required(:username).maybe(:str?)
-              required(:symmetric_latching).filled(:bool?)
+              required(:sip_profile).filled(:str?)
             end
           end
         end

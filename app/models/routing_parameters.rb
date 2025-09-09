@@ -14,7 +14,7 @@ class RoutingParameters
       national_dialing: sip_trunk.outbound_national_dialing?,
       host: sip_trunk.outbound_host,
       username: sip_trunk.username,
-      symmetric_latching: sip_trunk.outbound_symmetric_latching_supported?
+      sip_profile: sip_trunk.sip_profile
     }
   end
 end
