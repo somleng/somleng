@@ -16,13 +16,6 @@ RSpec.configure do |config|
       end
     end
 
-    # if redis.call("SADD", KEYS[2], ARGV[1]) == 1 then
-    #   redis.call("RPUSH", KEYS[1], ARGV[1])
-    #   return 1
-    # else
-    #   return 0
-    # end
-
     allow_any_instance_of(MockRedis::TransactionWrapper).to receive(:eval).and_wrap_original(&foobar)
     allow_any_instance_of(MockRedis::PipelinedWrapper).to receive(:eval).and_wrap_original(&foobar)
 

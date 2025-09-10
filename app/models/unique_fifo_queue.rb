@@ -1,7 +1,7 @@
 class UniqueFIFOQueue
   ENQUEUE_SCRIPT = <<~LUA
     if redis.call("SADD", KEYS[2], ARGV[1]) == 1 then
-      redis.call("RPUSH", KEYS[1], ARGV[1])
+      redis.call("LPUSH", KEYS[1], ARGV[1])
       return 1
     else
       return 0
