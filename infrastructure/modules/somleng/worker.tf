@@ -100,24 +100,6 @@ resource "aws_ecs_service" "worker" {
 
 # Autoscaling
 
-resource "aws_appautoscaling_policy" "worker_memory_utilization" {
-  name               = var.app_identifier
-  service_namespace  = aws_appautoscaling_target.worker_scale_target.service_namespace
-  resource_id        = aws_appautoscaling_target.worker_scale_target.resource_id
-  scalable_dimension = aws_appautoscaling_target.worker_scale_target.scalable_dimension
-  policy_type        = "TargetTrackingScaling"
-
-  target_tracking_scaling_policy_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
-    }
-
-    target_value       = 75
-    scale_in_cooldown  = 300
-    scale_out_cooldown = 60
-  }
-}
-
 resource "aws_appautoscaling_policy" "worker_queue_size" {
   name               = "${var.app_identifier}-queue-size"
   service_namespace  = aws_appautoscaling_target.worker_scale_target.service_namespace
@@ -263,7 +245,7 @@ resource "aws_appautoscaling_policy" "worker_queue_size" {
       }
     }
 
-    target_value       = 300
+    target_value       = 500
     scale_in_cooldown  = 300
     scale_out_cooldown = 60
   }

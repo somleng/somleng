@@ -65,7 +65,7 @@ RSpec.describe OutboundCallJob do
   end
 
   def build_queue(account, **options)
-    SimpleQueue.new(key: "queue:#{account.id}:outbound_calls", **options)
+    UniqueFIFOQueue.new(key: "queue:#{account.id}:outbound_calls", **options)
   end
 
   def build_rate_limiter(key:, **options)

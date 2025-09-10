@@ -1,9 +1,10 @@
 require "rails_helper"
 
-RSpec.describe SimpleQueue do
+RSpec.describe UniqueFIFOQueue do
   it "handles simple queues" do
     queue = build_queue
 
+    queue.enqueue("my-item")
     queue.enqueue("my-item")
     queue.enqueue("my-item-2")
 
@@ -38,6 +39,6 @@ RSpec.describe SimpleQueue do
       **options
     }
 
-    SimpleQueue.new(**options)
+    UniqueFIFOQueue.new(**options)
   end
 end
