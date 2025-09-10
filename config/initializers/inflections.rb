@@ -34,4 +34,5 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym "TwiML"
   inflect.acronym "TTS"
   inflect.acronym "LATA"
+  inflect.acronym "FIFO"
 end

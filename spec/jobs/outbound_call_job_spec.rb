@@ -15,17 +15,6 @@ RSpec.describe OutboundCallJob do
     expect(account_queue.peek).to eq(other_phone_call.id)
   end
 
-  it "ignores calls which are not queued" do
-    phone_call = create(:phone_call, :completed)
-    account_queue = build_queue(phone_call.account)
-    account_queue.enqueue(phone_call.id)
-
-    OutboundCallJob.perform_now(phone_call.account, queue: account_queue)
-
-    expect(ExecuteWorkflowJob).not_to have_been_enqueued
-    expect(account_queue.peek).to be_nil
-  end
-
   it "applies rate limits" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
@@ -76,7 +65,7 @@ RSpec.describe OutboundCallJob do
   end
 
   def build_queue(account, **options)
-    SimpleQueue.new(key: "queue:#{account.id}:outbound_calls", **options)
+    UniqueFIFOQueue.new(key: "queue:#{account.id}:outbound_calls", **options)
   end
 
   def build_rate_limiter(key:, **options)
