@@ -18,8 +18,6 @@ class OutboundCallJob < ApplicationJob
       queue.dequeue do |phone_call_id|
         phone_call = account.phone_calls.find(phone_call_id)
 
-        next unless phone_call.queued?
-
         rate_limit!
         session_limit!(phone_call)
 

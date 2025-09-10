@@ -1,4 +1,4 @@
-class OutboundCallsQueue < SimpleQueue
+class OutboundCallsQueue < UniqueFIFOQueue
   attr_reader :account
 
   def initialize(account, **)
