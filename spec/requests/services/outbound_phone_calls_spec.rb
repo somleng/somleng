@@ -7,7 +7,7 @@ RSpec.describe "Services", :services do
       sip_trunk = create(
         :sip_trunk,
         carrier:,
-        outbound_symmetric_latching_supported: true,
+        sip_profile: "nat_gateway",
         outbound_host: "27.109.112.141",
         outbound_route_prefixes: [ "85516" ],
         outbound_national_dialing: true
@@ -15,7 +15,7 @@ RSpec.describe "Services", :services do
       create(
         :sip_trunk,
         carrier:,
-        outbound_symmetric_latching_supported: false,
+        sip_profile: "test",
         outbound_host: "175.100.7.240",
         outbound_route_prefixes: [ "85571" ],
         outbound_national_dialing: false
@@ -40,7 +40,7 @@ RSpec.describe "Services", :services do
         "parent_call_sid" => parent_phone_call.id,
         "from" => "2442",
         "routing_parameters" => include(
-          "symmetric_latching" => true,
+          "sip_profile" => "nat_gateway",
           "host" => "27.109.112.141",
           "national_dialing" => true
         )
@@ -49,7 +49,7 @@ RSpec.describe "Services", :services do
         "parent_call_sid" => parent_phone_call.id,
         "from" => "2442",
         "routing_parameters" => include(
-          "symmetric_latching" => false,
+          "sip_profile" => "test",
           "host" => "175.100.7.240",
           "national_dialing" => false
         )
