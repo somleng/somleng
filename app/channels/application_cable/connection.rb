@@ -5,6 +5,16 @@ module ApplicationCable
     def connect
       self.current_sms_gateway = SMSGateway.find_by(device_token: request.headers["X-Device-Key"])
       reject_unauthorized_connection if current_sms_gateway.blank?
+
+      if current_sms_gateway.device_type == "app"
+        ApplicationPushDevice.create_or_find_by!(
+          token: request.headers["X-Device-Token"],
+        ) do |device|
+          device.owner = current_sms_gateway
+          device.name = request.headers["X-Device-Name"]
+          device.platform = "google"
+        end
+      end
     end
 
     def disconnect

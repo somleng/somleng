@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_16_094206) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -50,6 +50,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
     t.index ["type"], name: "index_accounts_on_type"
+  end
+
+  create_table "action_push_native_devices", force: :cascade do |t|
+    t.string "name"
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -651,6 +662,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
     t.datetime "updated_at", null: false
     t.datetime "last_connected_at"
     t.string "default_sender"
+    t.string "device_type", null: false
     t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
     t.index ["default_sender"], name: "index_sms_gateways_on_default_sender"
     t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true

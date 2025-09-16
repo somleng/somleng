@@ -7,6 +7,7 @@ class SMSGatewayDashboard < Administrate::BaseDashboard
     default_sender: Field::String,
     channel_groups: Field::HasMany,
     name: Field::String,
+    device_type: Field::String,
     max_channels: Field::String,
     last_connected_at: Field::LocalTime,
     created_at: Field::LocalTime,
@@ -17,6 +18,7 @@ class SMSGatewayDashboard < Administrate::BaseDashboard
     id
     carrier
     name
+    device_type
     max_channels
     last_connected_at
     default_sender
@@ -27,6 +29,7 @@ class SMSGatewayDashboard < Administrate::BaseDashboard
 
   COLLECTION_ATTRIBUTES = %i[
     name
+    device_type
     last_connected_at
     created_at
   ].freeze

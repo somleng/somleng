@@ -29,3 +29,9 @@
 
 en:
   hello: "Hello world"
+
+  enumerize:
+    defaults:
+      device_type:
+        gateway: "Gateway"
+        app: "Android App"
