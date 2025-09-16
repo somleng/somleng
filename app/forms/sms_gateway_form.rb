@@ -1,4 +1,6 @@
 class SMSGatewayForm
+  extend Enumerize
+
   include ActiveModel::Model
   include ActiveModel::Attributes
 
@@ -7,6 +9,7 @@ class SMSGatewayForm
   attribute :max_channels
   attribute :name
   attribute :default_sender, PhoneNumberType.new
+  enumerize :device_type, in: SMSGateway.device_type.values, default: :gateway
 
   validates :name, presence: true
   validates :max_channels,
@@ -29,7 +32,8 @@ class SMSGatewayForm
       carrier: sms_gateway.carrier,
       name: sms_gateway.name,
       max_channels: sms_gateway.max_channels,
-      default_sender: sms_gateway.default_sender
+      default_sender: sms_gateway.default_sender,
+      device_type: sms_gateway.device_type
     )
   end
 
@@ -40,7 +44,8 @@ class SMSGatewayForm
       name:,
       max_channels:,
       carrier:,
-      default_sender:
+      default_sender:,
+      device_type:
     }
 
     sms_gateway.save!

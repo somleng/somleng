@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_16_083506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -651,6 +651,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
     t.datetime "updated_at", null: false
     t.datetime "last_connected_at"
     t.string "default_sender"
+    t.string "device_type", null: false
     t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
     t.index ["default_sender"], name: "index_sms_gateways_on_default_sender"
     t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true

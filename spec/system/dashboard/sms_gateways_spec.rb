@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "SMS Gateways" do
-  it "List and filter SMS Gateways" do
+  it "List and filter SMS Gateways"  do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
     create(
@@ -32,12 +32,14 @@ RSpec.describe "SMS Gateways" do
     click_on("New")
     fill_in("Name", with: "Main SMS Gateway")
     fill_in("Default sender", with: "+1 (234) 234-5678")
+    choose("Android App")
 
     click_on "Create SMS gateway"
 
     expect(page).to have_content("SMS gateway was successfully created")
     expect(page).to have_content("Main SMS Gateway")
     expect(page).to have_content("+1 (234) 234-5678")
+    expect(page).to have_content("Android App")
   end
 
   it "Handles validations" do

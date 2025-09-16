@@ -1,4 +1,8 @@
 class SMSGateway < ApplicationRecord
+  extend Enumerize
+
+  enumerize :device_type, in: %w[gateway app], default: "gateway"
+
   belongs_to :carrier
   has_many :messages
   has_many :channel_groups, class_name: "SMSGatewayChannelGroup"
