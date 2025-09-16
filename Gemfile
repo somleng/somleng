@@ -99,3 +99,5 @@ group :test do
   gem "simplecov-lcov", require: false
   gem "webmock"
 end
+
+gem "action_push_native", "~> 0.1.0"
