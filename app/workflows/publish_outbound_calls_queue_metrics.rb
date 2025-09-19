@@ -1,13 +1,35 @@
 class PublishOutboundCallsQueueMetrics < ApplicationWorkflow
-  attr_reader :logger
+  attr_reader :logger, :call_service_capacity, :outbound_calls_queue_metrics_log_key, :call_service_capacity_log_key, :regions
 
   def initialize(**options)
     super()
     @logger = options.fetch(:logger) { Rails.logger }
+    @call_service_capacity = options.fetch(:call_service_capacity) { CallServiceCapacity }
+    @outbound_calls_queue_metrics_log_key = options.fetch(:outbound_calls_queue_metrics_log_key) { AppSettings.fetch(:outbound_calls_queue_metrics_log_key) }
+    @call_service_capacity_log_key = options.fetch(:log_key) { AppSettings.fetch(:call_service_capacity_log_key) }
+    @regions = options.fetch(:regions) { SomlengRegion::Region.all }
   end
 
   def call
-    result = PhoneCall.where(status: :queued).group(:region).count
-    logger.info(JSON.generate(outbound_calls_queue_metrics: result))
+    log_queued_calls_per_region
+    log_call_service_capacity
+  end
+
+  private
+
+  def log_queued_calls_per_region
+    PhoneCall.where(status: :queued).group(:region).count.each do |region, queue_size|
+      log_json(outbound_calls_queue_metrics_log_key => { "queue" => region, "count" => queue_size })
+    end
+  end
+
+  def log_call_service_capacity
+    regions.each do |region|
+      log_json(call_service_capacity_log_key => { "region" => region.alias, "capacity" => call_service_capacity.current_for(region.alias) })
+    end
+  end
+
+  def log_json(data)
+    logger.info(JSON.generate(data))
   end
 end

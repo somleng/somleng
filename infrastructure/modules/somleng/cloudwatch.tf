@@ -4,9 +4,10 @@ resource "aws_cloudwatch_log_group" "app" {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "call_sessions_count" {
-  name           = "${var.app_identifier}-CallSessionsCount"
-  pattern        = "{ $.${var.global_call_sessions_count_log_key} = * }"
-  log_group_name = aws_cloudwatch_log_group.app.name
+  name                      = "${var.app_identifier}-CallSessionsCount"
+  pattern                   = "{ $.${var.global_call_sessions_count_log_key} = * }"
+  log_group_name            = aws_cloudwatch_log_group.app.name
+  apply_on_transformed_logs = true
 
   metric_transformation {
     name      = "${var.app_identifier}-CallSessionsCount"
@@ -22,18 +23,19 @@ resource "aws_cloudwatch_log_metric_filter" "call_sessions_count" {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "outbound_calls_queue" {
-  name           = "${var.app_identifier}-OutboundCallsQueueCount"
-  pattern        = "{ $.${var.global_call_sessions_count_log_key} = * }"
-  log_group_name = aws_cloudwatch_log_group.app.name
+  name                      = "${var.app_identifier}-OutboundCallsQueue"
+  log_group_name            = aws_cloudwatch_log_group.app.name
+  pattern                   = "{ $.outbound_calls_queue_metrics.count = * }"
+  apply_on_transformed_logs = true
 
   metric_transformation {
     name      = "${var.app_identifier}-OutboundCallsQueueCount"
     namespace = "Somleng"
-    value     = "$.${var.global_call_sessions_count_log_key}"
+    value     = "$.outbound_calls_queue_metrics.count"
+    unit      = "Count"
     dimensions = {
-      Cluster = "$.log-group-stream[0]"
+      Queue = "$.outbound_calls_queue_metrics.queue"
     }
-    unit = "Count"
   }
 
   depends_on = [null_resource.log_transformer]
