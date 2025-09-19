@@ -18,8 +18,9 @@ class PublishOutboundCallsQueueMetrics < ApplicationWorkflow
   private
 
   def log_queued_calls_per_region
-    PhoneCall.where(status: :queued).group(:region).count.each do |region, queue_size|
-      log_json(outbound_calls_queue_metrics_log_key => { "queue" => region, "count" => queue_size })
+    calls_per_region = PhoneCall.where(status: :queued).group(:region).count
+    regions.each do |region|
+      log_json(outbound_calls_queue_metrics_log_key => { "queue" => region, "count" => calls_per_region.fetch(region, 0) })
     end
   end
 
