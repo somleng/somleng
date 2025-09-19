@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_19_034532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -494,6 +494,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_09_091420) do
     t.index ["status", "created_at"], name: "index_phone_calls_on_status_and_created_at"
     t.index ["status", "initiated_at"], name: "index_phone_calls_on_status_and_initiated_at"
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
+    t.index ["status", "region"], name: "index_phone_calls_on_status_and_region"
     t.index ["status"], name: "index_phone_calls_on_status"
     t.index ["to"], name: "index_phone_calls_on_to"
     t.index ["user_terminated_at"], name: "index_phone_calls_on_user_terminated_at"
