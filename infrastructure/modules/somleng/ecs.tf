@@ -125,14 +125,6 @@ locals {
     {
       name  = "ANYCABLE_BROADCAST_ADAPTER",
       value = "redisx"
-    },
-    {
-      name  = "GLOBAL_CALL_SESSIONS_COUNT_LOG_KEY",
-      value = var.global_call_sessions_count_log_key
-    },
-    {
-      name  = "CALL_SERVICE_CAPACITY_LOG_KEY",
-      value = var.call_service_capacity_log_key
     }
   ]
 }

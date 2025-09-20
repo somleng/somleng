@@ -3,25 +3,6 @@ resource "aws_cloudwatch_log_group" "app" {
   retention_in_days = 7
 }
 
-resource "aws_cloudwatch_log_metric_filter" "call_sessions_count" {
-  name                      = "${var.app_identifier}-CallSessionsCount"
-  pattern                   = "{ $.${var.global_call_sessions_count_log_key} = * }"
-  log_group_name            = aws_cloudwatch_log_group.app.name
-  apply_on_transformed_logs = true
-
-  metric_transformation {
-    name      = "${var.app_identifier}-CallSessionsCount"
-    namespace = "Somleng"
-    value     = "$.${var.global_call_sessions_count_log_key}"
-    dimensions = {
-      Cluster = "$.log-group-stream[0]"
-    }
-    unit = "Count"
-  }
-
-  depends_on = [null_resource.log_transformer]
-}
-
 resource "aws_cloudwatch_log_metric_filter" "outbound_calls_queue" {
   name                      = "${var.app_identifier}-OutboundCallsQueue"
   log_group_name            = aws_cloudwatch_log_group.app.name
@@ -61,9 +42,6 @@ resource "aws_cloudwatch_log_metric_filter" "call_service_capacity" {
 }
 
 # https://github.com/hashicorp/terraform-provider-aws/issues/40780
-# Note that we need to also manually set the value
-# Enable metric filter on transformed logs = true
-# using the AWS console
 
 resource "null_resource" "log_transformer" {
   triggers = {
