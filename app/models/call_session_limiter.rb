@@ -1,5 +1,5 @@
 class CallSessionLimiter
-  attr_reader :session_counters, :logger
+  attr_reader :session_counters
 
   def initialize(**options)
     @session_counters = options.fetch(:session_counters) do
@@ -11,7 +11,6 @@ class CallSessionLimiter
         )
       end
     end
-    @logger = options.fetch(:logger) { Rails.logger }
   end
 
   def add_session_to(region, scope:)
