@@ -8,7 +8,8 @@ class ScheduleOutboundCall < ApplicationWorkflow
   end
 
   def call
-    queue.enqueue(phone_call.id)
+    return unless queue.enqueue(phone_call.id)
+
     OutboundCallJob.perform_later(account)
   end
 
