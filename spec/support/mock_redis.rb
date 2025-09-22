@@ -4,8 +4,6 @@ RSpec.configure do |config|
   config.before do
     stubbed_implementations = lambda do |original_method, *args, &block|
       case args.first
-      when SimpleCounter::DECREMENT_SCRIPT
-        original_method.receiver.decr(args.last.fetch(:keys).first)
       when UniqueFIFOQueue::ENQUEUE_SCRIPT
         key, tmp_key = args.last.fetch(:keys)
         score, item = args.last.fetch(:argv)

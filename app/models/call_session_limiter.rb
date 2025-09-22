@@ -6,7 +6,7 @@ class CallSessionLimiter
       SomlengRegion::Region.all.each_with_object({}) do |region, result|
         result[region.alias.to_sym] = SimpleCounter.new(
           key: options.fetch(:key) { "#{options.fetch(:namespace, :phone_call_sessions)}:#{region.alias}" },
-          expiry: options.fetch(:expiry) { 5.minutes },
+          expiry: options.fetch(:expiry) { 30.minutes },
           limit: options.fetch(:limit) { options.fetch(:limit_per_capacity_unit) * options.fetch(:call_service_capacity) { CallServiceCapacity.current_for(region.alias) } }
         )
       end
