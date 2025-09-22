@@ -22,6 +22,8 @@ class OutboundCallJob < ApplicationJob
         session_limit!(phone_call)
 
         ExecuteWorkflowJob.perform_later(InitiateOutboundCall.to_s, phone_call:)
+
+        phone_call.touch(:initiation_queued_at)
       end
     rescue RateLimiter::RateLimitExceededError => e
       logger.warn("Rate limit exceeded for account: #{account.id}. Rescheduling in #{e.seconds_remaining_in_current_window} seconds.")
