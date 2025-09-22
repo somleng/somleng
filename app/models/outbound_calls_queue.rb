@@ -8,9 +8,13 @@ class OutboundCallsQueue < UniqueFIFOQueue
 
   class << self
     def each_queue(&)
-      AppSettings.redis.with do
-        _1.scan_each(match: "account:*:outbound_calls") do |key|
-          queue = new(Account.find(key.split(":")[1]))
+      AppSettings.redis.with do |connection|
+        queues = connection.scan_each(match: "*account:*:outbound_calls").each_with_object({}) do |key, result|
+          account_id = key.match(/account:([^:]+):outbound_calls/)[1]
+          result[account_id] ||= new(Account.find(account_id))
+        end
+
+        queues.each_value do |queue|
           yield(queue)
         end
       end

@@ -4,7 +4,6 @@ RSpec.describe ProcessOutboundCallsQueue do
   it "recovers the queues" do
     account = create(:account)
     queue = build_test_queue(OutboundCallsQueue.new(account))
-    queue.enqueue(SecureRandom.uuid)
     older_item = SecureRandom.uuid
     processing_item = SecureRandom.uuid
 
@@ -13,7 +12,7 @@ RSpec.describe ProcessOutboundCallsQueue do
 
     ProcessOutboundCallsQueue.call
 
-    expect(queue.size).to eq(2)
+    expect(queue.size).to eq(1)
     expect(queue.peek).to eq(older_item)
   end
 
