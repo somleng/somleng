@@ -11,6 +11,10 @@ RSpec.describe SimpleCounter do
     counter.decrement
 
     expect(counter.count).to eq(1)
+
+    2.times { counter.decrement }
+
+    expect(counter.count).to eq(0)
   end
 
   it "handles expiry" do
