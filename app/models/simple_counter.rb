@@ -16,7 +16,7 @@ class SimpleCounter
 
   def decrement(scope: nil)
     backend.with do |connection|
-      connection.zpopmin(build_key(scope))
+      connection.zpopmax(build_key(scope))
     end
   end
 
