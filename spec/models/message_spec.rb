@@ -39,15 +39,6 @@ RSpec.describe Message do
     expect(message.reload.queued_at).to be_present
   end
 
-  it "handles state transitions" do
-    message = create(:message, :queued)
-
-    # race condition
-    message.mark_as_sent!
-
-    expect(message.status).to eq("sent")
-  end
-
   describe "#validity_period_expired?" do
     it "returns if the validity period is expired" do
       expired_message = create(:message, :queued, queued_at: 5.seconds.ago, validity_period: 5)

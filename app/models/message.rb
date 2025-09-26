@@ -45,7 +45,7 @@ class Message < ApplicationRecord
     end
 
     event :mark_as_sent do
-      transitions from: [ :queued, :sending ], to: :sent
+      transitions from: :sending, to: :sent
     end
 
     event :mark_as_delivered do
