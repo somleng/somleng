@@ -56,6 +56,18 @@ RSpec.describe SendOutboundMessage do
     )
   end
 
+  it "keeps updates the state even if the broadcast fails" do
+    message = create_message(:queued)
+    channel = class_double(SMSMessageChannel)
+    allow(channel).to receive(:broadcast_to).and_raise(StandardError.new)
+
+    expect { SendOutboundMessage.call(message, channel:) }.to raise_error(StandardError)
+
+    expect(message).to have_attributes(
+      status: "sending"
+    )
+  end
+
   def create_message(*args)
     options = args.extract_options!
     sms_gateway = create(:sms_gateway, :connected)

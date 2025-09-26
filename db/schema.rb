@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_22_064822) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -338,6 +338,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_22_064822) do
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
     t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
+    t.index ["status", "sending_at"], name: "index_messages_on_status_and_sending_at", where: "((status)::text = 'sending'::text)"
   end
 
   create_table "messaging_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
