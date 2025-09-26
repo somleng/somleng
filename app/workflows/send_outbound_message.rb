@@ -1,9 +1,10 @@
 class SendOutboundMessage < ApplicationWorkflow
-  attr_reader :message
+  attr_reader :message, :channel
 
-  def initialize(message)
+  def initialize(message, **options)
     super()
     @message = message
+    @channel = options.fetch(:channel) { SMSMessageChannel }
   end
 
   def call
@@ -11,10 +12,9 @@ class SendOutboundMessage < ApplicationWorkflow
     return mark_as_failed(:validity_period_expired) if message.validity_period_expired?
     return mark_as_failed(:sms_gateway_disconnected) unless message.sms_gateway.connected?
 
-    # avoids race conditions
     UpdateMessageStatus.new(message).call { message.mark_as_sending! }
 
-    SMSMessageChannel.broadcast_to(
+    channel.broadcast_to(
       message.sms_gateway,
       {
         id: message.id,
