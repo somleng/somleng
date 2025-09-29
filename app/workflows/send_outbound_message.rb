@@ -60,7 +60,11 @@ class SendOutboundMessage < ApplicationWorkflow
     SendPushNotification.call(
       devices: sms_gateway.app_devices,
       title: "New outbound message",
-      body:  message.body
+      body:  message.body,
+      data: {
+        message_id: message.id,
+        timestamp: message.created_at.to_i
+      }
     )
   end
 end
