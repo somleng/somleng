@@ -7,11 +7,16 @@
       </div>
 
       <div class="col-sm-6">
-        <%= f.input :max_channels, as: :integer,  hint: "The maximum number of channels your SMS gateway supports. Leave it blank for unlimited channels." %>
+        <%= f.input :device_type, as: :radio_buttons, item_wrapper_class: "form-check form-check-inline"  %>
       </div>
+
     </div>
 
     <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :max_channels, as: :integer,  hint: "The maximum number of channels your SMS gateway supports. Leave it blank for unlimited channels." %>
+      </div>
+
       <div class="col-sm-6">
         <%= f.input(
             :default_sender,

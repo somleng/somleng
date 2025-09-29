@@ -52,6 +52,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.index ["type"], name: "index_accounts_on_type"
   end
 
+  create_table "action_push_native_devices", force: :cascade do |t|
+    t.string "name"
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
+  end
+
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -655,6 +666,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.datetime "updated_at", null: false
     t.datetime "last_connected_at"
     t.string "default_sender"
+    t.string "device_type", null: false
     t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
     t.index ["default_sender"], name: "index_sms_gateways_on_default_sender"
     t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true
