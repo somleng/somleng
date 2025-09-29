@@ -41,7 +41,7 @@ module ApplicationCable
           )
         end
 
-        it "rejects connection" do
+        it "rejects connection if the device token is missing" do
           expect {
             sms_gateway = create(:sms_gateway, device_type: :app)
 
