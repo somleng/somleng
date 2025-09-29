@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_16_094206) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -349,6 +349,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_16_094206) do
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
     t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
+    t.index ["status", "sending_at"], name: "index_messages_on_status_and_sending_at", where: "((status)::text = 'sending'::text)"
   end
 
   create_table "messaging_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -480,6 +481,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_16_094206) do
     t.datetime "user_updated_at"
     t.uuid "parent_call_id"
     t.string "region"
+    t.datetime "initiation_queued_at"
     t.index ["account_id", "created_at"], name: "index_phone_calls_on_account_id_and_created_at"
     t.index ["account_id", "id"], name: "index_phone_calls_on_account_id_and_id"
     t.index ["account_id", "internal", "sequence_number"], name: "idx_on_account_id_internal_sequence_number_918b5ff8f4", order: { sequence_number: :desc }
@@ -502,9 +504,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_16_094206) do
     t.index ["sip_trunk_id", "status", "created_at"], name: "index_phone_calls_on_sip_trunk_id_and_status_and_created_at"
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
     t.index ["sip_trunk_id"], name: "index_phone_calls_on_sip_trunk_id"
+    t.index ["status", "created_at", "initiation_queued_at"], name: "idx_on_status_created_at_initiation_queued_at_5db44fb542", where: "((status)::text = 'queued'::text)"
     t.index ["status", "created_at"], name: "index_phone_calls_on_status_and_created_at"
     t.index ["status", "initiated_at"], name: "index_phone_calls_on_status_and_initiated_at"
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
+    t.index ["status", "region"], name: "index_phone_calls_on_status_and_region"
     t.index ["status"], name: "index_phone_calls_on_status"
     t.index ["to"], name: "index_phone_calls_on_to"
     t.index ["user_terminated_at"], name: "index_phone_calls_on_user_terminated_at"

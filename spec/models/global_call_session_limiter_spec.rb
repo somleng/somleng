@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe GlobalCallSessionLimiter do
   it "adds a session" do
-    session_limiter = GlobalCallSessionLimiter.new(expiry: 1.second)
+    session_limiter = GlobalCallSessionLimiter.new(expiry: 20.minutes)
 
     session_limiter.add_session_to("hydrogen")
     expect(session_limiter.session_count_for(:hydrogen)).to eq(1)
@@ -10,14 +10,14 @@ RSpec.describe GlobalCallSessionLimiter do
     session_limiter.add_session_to("helium")
     expect(session_limiter.session_count_for(:helium)).to eq(1)
 
-    sleep 1
-
-    expect(session_limiter.session_count_for(:hydrogen)).to eq(0)
-    expect(session_limiter.session_count_for(:helium)).to eq(0)
+    travel_to(21.minutes.from_now) do
+      expect(session_limiter.session_count_for(:hydrogen)).to eq(0)
+      expect(session_limiter.session_count_for(:helium)).to eq(0)
+    end
   end
 
   it "removes a session" do
-    session_limiter = GlobalCallSessionLimiter.new(expiry: 1.second)
+    session_limiter = GlobalCallSessionLimiter.new(expiry: 20.minutes)
 
     session_limiter.add_session_to("hydrogen")
     session_limiter.add_session_to("helium")
@@ -26,9 +26,9 @@ RSpec.describe GlobalCallSessionLimiter do
     expect(session_limiter.session_count_for(:hydrogen)).to eq(0)
     expect(session_limiter.session_count_for(:helium)).to eq(1)
 
-    sleep 1
-
-    expect(session_limiter.session_count_for(:helium)).to eq(0)
+    travel_to(21.minutes.from_now) do
+      expect(session_limiter.session_count_for(:helium)).to eq(0)
+    end
   end
 
   it "has limits which change with capacity" do

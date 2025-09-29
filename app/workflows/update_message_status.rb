@@ -4,6 +4,7 @@ class UpdateMessageStatus < ApplicationWorkflow
   attr_reader :message
 
   def initialize(message)
+    super()
     @message = message
   end
 

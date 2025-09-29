@@ -3,28 +3,45 @@ resource "aws_cloudwatch_log_group" "app" {
   retention_in_days = 7
 }
 
-resource "aws_cloudwatch_log_metric_filter" "call_sessions_count" {
-  name           = "${var.app_identifier}-CallSessionsCount"
-  pattern        = "{ $.${var.global_call_sessions_count_log_key} = * }"
-  log_group_name = aws_cloudwatch_log_group.app.name
+resource "aws_cloudwatch_log_metric_filter" "outbound_calls_queue" {
+  name                      = "${var.app_identifier}-OutboundCallsQueue"
+  log_group_name            = aws_cloudwatch_log_group.app.name
+  pattern                   = "{ $.outbound_calls_queue_metrics.count = * }"
+  apply_on_transformed_logs = true
 
   metric_transformation {
-    name      = "${var.app_identifier}-CallSessionsCount"
+    name      = "${var.app_identifier}-OutboundCallsQueueCount"
     namespace = "Somleng"
-    value     = "$.${var.global_call_sessions_count_log_key}"
+    value     = "$.outbound_calls_queue_metrics.count"
+    unit      = "Count"
     dimensions = {
-      Cluster = "$.log-group-stream[0]"
+      Region = "$.outbound_calls_queue_metrics.queue"
     }
-    unit = "Count"
+  }
+
+  depends_on = [null_resource.log_transformer]
+}
+
+resource "aws_cloudwatch_log_metric_filter" "call_service_capacity" {
+  name                      = "${var.app_identifier}-CallServiceCapacity"
+  log_group_name            = aws_cloudwatch_log_group.app.name
+  pattern                   = "{ $.call_service_capacity.capacity = * }"
+  apply_on_transformed_logs = true
+
+  metric_transformation {
+    name      = "${var.app_identifier}-CallServiceCapacity"
+    namespace = "Somleng"
+    value     = "$.call_service_capacity.capacity"
+    unit      = "Count"
+    dimensions = {
+      Region = "$.call_service_capacity.region"
+    }
   }
 
   depends_on = [null_resource.log_transformer]
 }
 
 # https://github.com/hashicorp/terraform-provider-aws/issues/40780
-# Note that we need to also manually set the value
-# Enable metric filter on transformed logs = true
-# using the AWS console
 
 resource "null_resource" "log_transformer" {
   triggers = {

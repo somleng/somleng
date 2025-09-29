@@ -100,11 +100,3 @@ variable "ws_healthcheck_path" {
 variable "anycable_rpc_port" {
   default = 50051
 }
-
-variable "global_call_sessions_count_log_key" {
-  default = "global_call_sessions_count"
-}
-
-variable "call_service_capacity_log_key" {
-  default = "call_service_capacity"
-}

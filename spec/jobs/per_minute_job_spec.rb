@@ -5,5 +5,7 @@ RSpec.describe PerMinuteJob do
     PerMinuteJob.perform_now
 
     expect(ExecuteWorkflowJob).to have_been_enqueued.with(ProcessOutboundCallsQueue.to_s)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with(PublishOutboundCallsQueueMetrics.to_s)
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with(FailSendingMessages.to_s)
   end
 end

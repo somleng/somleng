@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem "rails", "~> 8.0.2"
+gem "rails", "~> 8.0.3"
 
 # For Administrate
 gem "administrate", github: "thoughtbot/administrate"
@@ -24,7 +24,7 @@ gem "aws-sdk-rails"
 gem "aws-sdk-s3"
 gem "aws-sdk-sesv2"
 gem "aws-sdk-sqs"
-gem "bootstrap-email", "1.5.1"
+gem "bootstrap-email", "1.5.2"
 gem "connection_pool"
 gem "country_select"
 gem "cssbundling-rails"

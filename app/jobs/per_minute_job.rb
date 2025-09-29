@@ -3,5 +3,7 @@ class PerMinuteJob < ApplicationJob
 
   def perform
     ExecuteWorkflowJob.perform_later(ProcessOutboundCallsQueue.to_s)
+    ExecuteWorkflowJob.perform_later(PublishOutboundCallsQueueMetrics.to_s)
+    ExecuteWorkflowJob.perform_later(FailSendingMessages.to_s)
   end
 end
