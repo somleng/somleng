@@ -41,6 +41,8 @@ default: &default
     primary_key: 5Owbop0UTpEsYwX0wK56VM1eg4xl7LXX
     deterministic_key: 5J0sxNi4YDp5cZnfV9BhXpujwgoOvhgV
     key_derivation_salt: M8Ic6zpgGiXHYCjOH8nie0c9aMtFoPWV
+  firebase_service_account_json_file: <%= ENV.fetch("FIREBASE_SERVICE_ACCOUNT_JSON_FILE", "{}") %>
+  firebase_project_id: <%= ENV.fetch("FIREBASE_PROJECT_ID", "firebase-project-id") %>
 
 production: &production
   <<: *default
