@@ -10,12 +10,40 @@ class SendOutboundMessage < ApplicationWorkflow
   def call
     return unless message.queued?
     return mark_as_failed(:validity_period_expired) if message.validity_period_expired?
-    return mark_as_failed(:sms_gateway_disconnected) unless message.sms_gateway.connected?
+    return handle_gateway_disconnected unless sms_gateway.connected?
 
+    broadcast_via_websocket
+  end
+
+  private
+
+  def sms_gateway
+    message.sms_gateway
+  end
+
+  def handle_gateway_disconnected
+    if sms_gateway.app? && sms_gateway.app_devices.any?
+      send_push_notification
+    else
+      mark_as_failed(:sms_gateway_disconnected)
+    end
+  end
+
+  def mark_as_failed(error_code)
+    error = ApplicationError::Errors.fetch(error_code)
+
+    UpdateMessageStatus.new(message).call do
+      message.error_message = error.message
+      message.error_code = error.code
+      message.mark_as_failed!
+    end
+  end
+
+  def broadcast_via_websocket
     UpdateMessageStatus.new(message).call { message.mark_as_sending! }
 
     channel.broadcast_to(
-      message.sms_gateway,
+      sms_gateway,
       {
         id: message.id,
         body: message.body,
@@ -26,15 +54,13 @@ class SendOutboundMessage < ApplicationWorkflow
     )
   end
 
-  private
+  def send_push_notification
+    UpdateMessageStatus.new(message).call { message.mark_as_sending! }
 
-  def mark_as_failed(error_code)
-    error = ApplicationError::Errors.fetch(error_code)
-
-    UpdateMessageStatus.new(message).call do
-      message.error_message = error.message
-      message.error_code = error.code
-      message.mark_as_failed!
-    end
+    SendPushNotification.call(
+      devices: sms_gateway.app_devices,
+      title: "New outbound message",
+      body:  message.body
+    )
   end
 end
