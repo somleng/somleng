@@ -22,7 +22,7 @@ class SendOutboundMessage < ApplicationWorkflow
   end
 
   def handle_gateway_disconnected
-    if sms_gateway.app? && sms_gateway.app_devices.any?
+    if sms_gateway.app? && sms_gateway.app_devices.exists?
       send_push_notification
     else
       mark_as_failed(:sms_gateway_disconnected)
