@@ -57,7 +57,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.string "platform", null: false
     t.string "token", null: false
     t.string "owner_type"
-    t.bigint "owner_id"
+    t.uuid "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
