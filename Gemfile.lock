@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: d0d05602547516385b613e5a7ecd522fc77f4bc2
+  revision: d78b3e176ec104774bf250b4806afbfa26304091
   specs:
     administrate (1.0.0.beta3)
       actionpack (>= 6.0, < 9.0)
@@ -179,7 +179,7 @@ GEM
     base64 (0.3.0)
     bcrypt (3.1.20)
     benchmark (0.4.1)
-    bigdecimal (3.2.3)
+    bigdecimal (3.3.0)
     bootsnap (1.18.6)
       msgpack (~> 1.2)
     bootstrap-email (1.5.2)
@@ -647,7 +647,7 @@ GEM
     unicode-display_width (3.1.5)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
-    uri (1.0.3)
+    uri (1.0.4)
     useragent (0.16.11)
     warden (1.2.9)
       rack (>= 2.0.9)
