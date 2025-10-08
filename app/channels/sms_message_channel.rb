@@ -52,6 +52,23 @@ class SMSMessageChannel < ApplicationCable::Channel
     end
   end
 
+  def verify_sending(data)
+    message = current_sms_gateway.messages.sending.find(data.fetch("id"))
+    SentMessageSMSGateway.create!(message:, sms_gateway: current_sms_gateway)
+
+    transmit({
+      type: "confirmed_sending",
+      timestamp: message.created_at.to_i,
+      message: {
+        id: message.id,
+        body: message.body,
+        to: message.to.to_s,
+        from: message.from.to_s,
+        channel: message.channel
+      }
+    })
+  end
+
   private
 
   def handle_sent_event(message)

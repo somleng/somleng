@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -56,11 +56,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.string "name"
     t.string "platform", null: false
     t.string "token", null: false
-    t.string "owner_type"
-    t.uuid "owner_id"
+    t.string "owner_type", null: false
+    t.uuid "owner_id", null: false
+    t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
+    t.index ["sequence_number"], name: "index_action_push_native_devices_on_sequence_number", unique: true, order: :desc
+    t.index ["token"], name: "index_action_push_native_devices_on_token", unique: true
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -590,6 +593,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.index ["sequence_number"], name: "index_recordings_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "sent_message_sms_gateways", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_id", null: false
+    t.uuid "sms_gateway_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_sent_message_sms_gateways_on_message_id", unique: true
+    t.index ["sequence_number"], name: "index_sent_message_sms_gateways_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_sent_message_sms_gateways_on_sms_gateway_id"
+  end
+
   create_table "sip_trunk_inbound_source_ip_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "sip_trunk_id", null: false
     t.uuid "inbound_source_ip_address_id", null: false
@@ -905,6 +919,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
+  add_foreign_key "sent_message_sms_gateways", "messages"
+  add_foreign_key "sent_message_sms_gateways", "sms_gateways"
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "carriers", on_delete: :cascade
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "inbound_source_ip_addresses", on_delete: :cascade
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "sip_trunks", on_delete: :cascade

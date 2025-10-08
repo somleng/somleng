@@ -45,11 +45,9 @@ class SendOutboundMessage < ApplicationWorkflow
     channel.broadcast_to(
       sms_gateway,
       {
-        id: message.id,
-        body: message.body,
-        to: message.to.to_s,
-        from: message.from.to_s,
-        channel: message.channel
+        type: "sending",
+        timestamp: message.created_at.to_i,
+        message_id: message.id
       }
     )
   end
@@ -60,10 +58,11 @@ class SendOutboundMessage < ApplicationWorkflow
     SendPushNotification.call(
       devices: sms_gateway.app_devices,
       title: "New outbound message",
-      body:  message.body,
+      body:  "[Message: #{message.id}]",
       data: {
-        message_id: message.id,
-        timestamp: message.created_at.to_i
+        type: "sending",
+        timestamp: message.created_at.to_i,
+        message_id: message.id
       }
     )
   end
