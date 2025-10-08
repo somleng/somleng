@@ -11,11 +11,9 @@ RSpec.describe SendOutboundMessage do
     ).from_channel(
       SMSMessageChannel
     ).with(
-      id: message.id,
-      body: message.body,
-      to: message.to,
-      from: message.from,
-      channel: message.channel
+      type: "new_message",
+      timestamp: be_present,
+      message_id: message.id
     )
 
     expect(message.status).to eq("sending")
@@ -85,10 +83,10 @@ RSpec.describe SendOutboundMessage do
       expect(SendPushNotification).to have_received(:call).with(
         devices: sms_gateway.app_devices,
         title: "New outbound message",
-        body: message.body,
+        body: "[Message: #{message.id}]",
         data: {
           message_id: message.id,
-          timestamp: message.created_at.to_i
+          timestamp: be_present
         }
       )
     end

@@ -52,7 +52,7 @@ class SMSMessageChannel < ApplicationCable::Channel
     end
   end
 
-  def verify_sending(data)
+  def sending(data)
     message = current_sms_gateway.messages.sending.find(data.fetch("id"))
     SentMessageSMSGateway.create!(message:, sms_gateway: current_sms_gateway)
 

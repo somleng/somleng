@@ -45,7 +45,7 @@ class SendOutboundMessage < ApplicationWorkflow
     channel.broadcast_to(
       sms_gateway,
       {
-        type: "sending",
+        type: "new_message",
         timestamp: message.created_at.to_i,
         message_id: message.id
       }
@@ -60,7 +60,6 @@ class SendOutboundMessage < ApplicationWorkflow
       title: "New outbound message",
       body:  "[Message: #{message.id}]",
       data: {
-        type: "sending",
         timestamp: message.created_at.to_i,
         message_id: message.id
       }
