@@ -898,7 +898,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_040544) do
   add_foreign_key "media_stream_events", "phone_calls"
   add_foreign_key "media_streams", "accounts"
   add_foreign_key "media_streams", "phone_calls"
-  add_foreign_key "message_send_requests", "action_push_native_devices", column: "device_id", on_delete: :cascade
+  add_foreign_key "message_send_requests", "action_push_native_devices", column: "device_id", on_delete: :nullify
   add_foreign_key "message_send_requests", "messages", on_delete: :nullify
   add_foreign_key "message_send_requests", "sms_gateways", on_delete: :cascade
   add_foreign_key "messages", "accounts"
