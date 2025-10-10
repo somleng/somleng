@@ -54,11 +54,11 @@ class SMSMessageChannel < ApplicationCable::Channel
 
   def message_send_requested(data)
     message = current_sms_gateway.messages.sending.find(data.fetch("id"))
+    # create the message send request with the device token (if available) from the data
     MessageSendRequest.create!(message:, sms_gateway: current_sms_gateway)
 
     transmit({
       type: "message_send_requested",
-      timestamp: message.created_at.to_i,
       message: {
         id: message.id,
         body: message.body,

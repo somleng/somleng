@@ -305,13 +305,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_040544) do
 
   create_table "message_send_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "message_id"
-    t.uuid "device_id", null: false
+    t.uuid "device_id"
+    t.uuid "sms_gateway_id", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["device_id"], name: "index_message_send_requests_on_device_id"
     t.index ["message_id"], name: "index_message_send_requests_on_message_id", unique: true
     t.index ["sequence_number"], name: "index_message_send_requests_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_message_send_requests_on_sms_gateway_id"
   end
 
   create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -898,6 +900,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_10_040544) do
   add_foreign_key "media_streams", "phone_calls"
   add_foreign_key "message_send_requests", "action_push_native_devices", column: "device_id", on_delete: :cascade
   add_foreign_key "message_send_requests", "messages", on_delete: :nullify
+  add_foreign_key "message_send_requests", "sms_gateways", on_delete: :cascade
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
   add_foreign_key "messages", "incoming_phone_numbers"
