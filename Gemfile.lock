@@ -702,7 +702,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
-  action_push_native (~> 0.1.0)
+  action_push_native
   active_storage_validations
   addressable
   administrate!

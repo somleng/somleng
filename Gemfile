@@ -12,6 +12,7 @@ gem "administrate-field-active_storage"
 gem "image_processing"
 
 gem "aasm"
+gem "action_push_native"
 gem "active_storage_validations"
 gem "addressable"
 gem "anycable-rails"
@@ -99,5 +100,3 @@ group :test do
   gem "simplecov-lcov", require: false
   gem "webmock"
 end
-
-gem "action_push_native", "~> 0.1.0"

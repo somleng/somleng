@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_10_040544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -52,7 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
     t.index ["type"], name: "index_accounts_on_type"
   end
 
-  create_table "action_push_native_devices", force: :cascade do |t|
+  create_table "action_push_native_devices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "platform", null: false
     t.string "token", null: false
@@ -301,6 +301,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
     t.index ["account_id"], name: "index_media_streams_on_account_id"
     t.index ["phone_call_id"], name: "index_media_streams_on_phone_call_id"
     t.index ["sequence_number"], name: "index_media_streams_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "message_send_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_id"
+    t.uuid "device_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id"], name: "index_message_send_requests_on_device_id"
+    t.index ["message_id"], name: "index_message_send_requests_on_message_id", unique: true
+    t.index ["sequence_number"], name: "index_message_send_requests_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -593,17 +604,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
     t.index ["sequence_number"], name: "index_recordings_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "sent_message_sms_gateways", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "message_id", null: false
-    t.uuid "sms_gateway_id", null: false
-    t.bigserial "sequence_number", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["message_id"], name: "index_sent_message_sms_gateways_on_message_id", unique: true
-    t.index ["sequence_number"], name: "index_sent_message_sms_gateways_on_sequence_number", unique: true, order: :desc
-    t.index ["sms_gateway_id"], name: "index_sent_message_sms_gateways_on_sms_gateway_id"
-  end
-
   create_table "sip_trunk_inbound_source_ip_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "sip_trunk_id", null: false
     t.uuid "inbound_source_ip_address_id", null: false
@@ -869,6 +869,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
   add_foreign_key "account_memberships", "users", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
+  add_foreign_key "action_push_native_devices", "sms_gateways", column: "owner_id", on_delete: :cascade
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
@@ -895,6 +896,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
   add_foreign_key "media_stream_events", "phone_calls"
   add_foreign_key "media_streams", "accounts"
   add_foreign_key "media_streams", "phone_calls"
+  add_foreign_key "message_send_requests", "action_push_native_devices", column: "device_id", on_delete: :cascade
+  add_foreign_key "message_send_requests", "messages", on_delete: :nullify
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
   add_foreign_key "messages", "incoming_phone_numbers"
@@ -919,8 +922,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_154447) do
   add_foreign_key "phone_numbers", "carriers"
   add_foreign_key "recordings", "accounts"
   add_foreign_key "recordings", "phone_calls"
-  add_foreign_key "sent_message_sms_gateways", "messages"
-  add_foreign_key "sent_message_sms_gateways", "sms_gateways"
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "carriers", on_delete: :cascade
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "inbound_source_ip_addresses", on_delete: :cascade
   add_foreign_key "sip_trunk_inbound_source_ip_addresses", "sip_trunks", on_delete: :cascade
