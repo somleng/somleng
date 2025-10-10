@@ -1,6 +1,8 @@
 class CreateMessageSendRequests < ActiveRecord::Migration[8.0]
   def change
     create_table :message_send_requests, id: :uuid do |t|
+      # Todo: Delete this comment
+
       # messages can be deleted by the account owner
       # https://www.somleng.org/docs/twilio_api/#08-delete-a-message
       # but message_send_requests are tied to: SMS Gateway -> Carrier
