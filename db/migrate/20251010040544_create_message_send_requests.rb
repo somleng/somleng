@@ -10,7 +10,8 @@ class CreateMessageSendRequests < ActiveRecord::Migration[8.0]
       # but the message_end_request should still be linked to the SMS Gateway so we can do
       # sms_gateway.message_send_requests.count
       # if the SMS gateway is deleted then we can delete the send requests because this is managed
-      # by the carrier
+      # by the carrier.
+      # Note: we need to denormalize the sms gateway here because both message_id and device_id are nullable
 
       t.references :message, null: true, foreign_key: { on_delete: :nullify }, type: :uuid, index: { unique: true }
       t.references :device, null: true, foreign_key: { on_delete: :nullify, to_table: :action_push_native_devices }, type: :uuid
