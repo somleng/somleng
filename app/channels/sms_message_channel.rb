@@ -52,12 +52,12 @@ class SMSMessageChannel < ApplicationCable::Channel
     end
   end
 
-  def sending(data)
+  def message_send_requested(data)
     message = current_sms_gateway.messages.sending.find(data.fetch("id"))
-    SentMessageSMSGateway.create!(message:, sms_gateway: current_sms_gateway)
+    MessageSendRequest.create!(message:, sms_gateway: current_sms_gateway)
 
     transmit({
-      type: "confirmed_sending",
+      type: "message_send_requested",
       timestamp: message.created_at.to_i,
       message: {
         id: message.id,
