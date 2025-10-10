@@ -531,7 +531,7 @@ FactoryBot.define do
 
     trait :with_send_request do
       after(:build) do |message|
-        message.send_request = build(:message_send_request, message:)
+        message.send_request ||= build(:message_send_request, message:)
       end
     end
   end
