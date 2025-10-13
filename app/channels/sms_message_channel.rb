@@ -58,7 +58,7 @@ class SMSMessageChannel < ApplicationCable::Channel
     MessageSendRequest.create!(message:, sms_gateway: current_sms_gateway)
 
     transmit({
-      type: "message_send_requested",
+      type: "message_send_request_confirmed",
       message: {
         id: message.id,
         body: message.body,
@@ -67,6 +67,8 @@ class SMSMessageChannel < ApplicationCable::Channel
         channel: message.channel
       }
     })
+  rescue ActiveRecord::RecordNotUnique
+    # do nothing
   end
 
   private
