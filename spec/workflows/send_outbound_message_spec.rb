@@ -11,7 +11,7 @@ RSpec.describe SendOutboundMessage do
     ).from_channel(
       SMSMessageChannel
     ).with(
-      type: "new_outbound_message",
+      type: "message_send_request",
       message_id: message.id
     )
 
@@ -84,6 +84,7 @@ RSpec.describe SendOutboundMessage do
         title: "New outbound message",
         body: "[Message: #{message.id}]",
         data: {
+          type: "message_send_request",
           message_id: message.id,
         }
       )

@@ -45,7 +45,7 @@ class SendOutboundMessage < ApplicationWorkflow
     channel.broadcast_to(
       sms_gateway,
       {
-        type: "new_outbound_message",
+        type: "message_send_request",
         message_id: message.id
       }
     )
@@ -59,6 +59,7 @@ class SendOutboundMessage < ApplicationWorkflow
       title: "New outbound message",
       body:  "[Message: #{message.id}]",
       data: {
+        type: "message_send_request",
         message_id: message.id
       }
     )
