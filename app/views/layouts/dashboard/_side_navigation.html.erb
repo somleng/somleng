@@ -113,6 +113,20 @@
       </li>
     <% end %>
 
+    <% if %i[destination_group].any? { |r| policy(r).index? } %>
+      <li class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-money-check-dollar"></i> Tariffs
+        </a>
+
+        <ul class="nav-group-items">
+          <% if policy(:destination_group).index? %>
+            <%= sidebar_nav("Destination Groups", dashboard_destination_groups_path, icon_class: "fa-solid fa-1") %>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+
     <% if policy(:carrier_user).index? %>
       <%= sidebar_nav("Team", dashboard_carrier_users_path, icon_class: "fa-solid fa-people-group") %>
     <% end %>

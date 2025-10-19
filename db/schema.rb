@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -124,6 +124,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
+  end
+
+  create_table "destination_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.citext "name", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id", "name", "created_at"], name: "index_destination_groups_on_carrier_id_and_name_and_created_at"
+    t.index ["carrier_id"], name: "index_destination_groups_on_carrier_id"
+    t.index ["sequence_number"], name: "index_destination_groups_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "destination_prefixes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "destination_group_id", null: false
+    t.string "prefix", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["destination_group_id", "prefix"], name: "index_destination_prefixes_on_destination_group_id_and_prefix", unique: true
+    t.index ["destination_group_id"], name: "index_destination_prefixes_on_destination_group_id"
+    t.index ["sequence_number"], name: "index_destination_prefixes_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "error_log_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -846,6 +868,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "destination_groups", "carriers", on_delete: :cascade
+  add_foreign_key "destination_prefixes", "destination_groups", on_delete: :cascade
   add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "users", on_delete: :cascade
   add_foreign_key "error_logs", "accounts"

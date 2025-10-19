@@ -1,0 +1,42 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Prefixes
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |destination_group| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+      <% destination_group = DestinationGroupDecorator.new(destination_group) %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(destination_group.id, dashboard_destination_group_path(destination_group)) %>
+        </td>
+
+        <td>
+          <%= destination_group.name %>
+        </td>
+
+        <td>
+          <%= destination_group.prefixes %>
+        </td>
+
+        <td>
+          <%= local_time(destination_group.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

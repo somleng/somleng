@@ -528,6 +528,26 @@ FactoryBot.define do
     end
   end
 
+  factory :destination_group do
+    transient do
+      prefixes { [] }
+    end
+
+    carrier
+    name { "Cambodia" }
+
+    after(:build) do |destination_group, evaluator|
+      evaluator.prefixes.each do |prefix|
+        destination_group.prefixes << build(:destination_prefix, destination_group:, prefix:)
+      end
+    end
+  end
+
+  factory :destination_prefix do
+    destination_group
+    sequence(:prefix) { |n| "8551#{n}" }
+  end
+
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
     trait :expired do
       expires_in { 1 }
