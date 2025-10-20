@@ -25,7 +25,7 @@ shared:
   google:
     # Your Firebase project service account credentials
     # See https://firebase.google.com/docs/cloud-messaging/auth-server
-    encryption_key: <%= Rails.configuration.app_settings.fetch(:firebase_service_account_json_file) %>
+    encryption_key: <%= Rails.configuration.app_settings.fetch(:firebase_service_account_json_file).to_json.dump %>
 
     # Firebase project_id
     project_id: <%= Rails.configuration.app_settings.fetch(:firebase_project_id) %>
