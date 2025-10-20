@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_20_013604) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -103,6 +103,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
     t.index ["sip_invite_failure_status"], name: "index_call_data_records_on_sip_invite_failure_status"
     t.index ["sip_term_status"], name: "index_call_data_records_on_sip_term_status"
+  end
+
+  create_table "call_tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tariff_id", null: false
+    t.decimal "per_minute_rate_cents", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "connection_fee_cents", precision: 10, scale: 4, default: "0.0", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_call_tariffs_on_sequence_number", unique: true, order: :desc
+    t.index ["tariff_id"], name: "index_call_tariffs_on_tariff_id"
   end
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -309,6 +320,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
     t.index ["account_id"], name: "index_media_streams_on_account_id"
     t.index ["phone_call_id"], name: "index_media_streams_on_phone_call_id"
     t.index ["sequence_number"], name: "index_media_streams_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "message_tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tariff_id", null: false
+    t.decimal "rate_cents", precision: 10, scale: 4, default: "0.0", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_message_tariffs_on_sequence_number", unique: true, order: :desc
+    t.index ["tariff_id"], name: "index_message_tariffs_on_tariff_id"
   end
 
   create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -684,6 +705,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.citext "name", null: false
+    t.string "category", null: false
+    t.string "currency", null: false
+    t.text "description"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id", "category", "name", "created_at"], name: "idx_on_carrier_id_category_name_created_at_7810c37a12"
+    t.index ["carrier_id"], name: "index_tariffs_on_carrier_id"
+    t.index ["sequence_number"], name: "index_tariffs_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "trial_interactions_credit_vouchers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.integer "number_of_interactions", null: false
@@ -868,6 +903,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "call_tariffs", "tariffs", on_delete: :cascade
   add_foreign_key "destination_groups", "carriers", on_delete: :cascade
   add_foreign_key "destination_prefixes", "destination_groups", on_delete: :cascade
   add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
@@ -893,6 +929,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
   add_foreign_key "media_stream_events", "phone_calls"
   add_foreign_key "media_streams", "accounts"
   add_foreign_key "media_streams", "phone_calls"
+  add_foreign_key "message_tariffs", "tariffs", on_delete: :cascade
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
   add_foreign_key "messages", "incoming_phone_numbers"
@@ -925,6 +962,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_19_041459) do
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
+  add_foreign_key "tariffs", "carriers", on_delete: :cascade
   add_foreign_key "trial_interactions_credit_vouchers", "carriers", on_delete: :cascade
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"

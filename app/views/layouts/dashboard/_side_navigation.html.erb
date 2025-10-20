@@ -113,15 +113,19 @@
       </li>
     <% end %>
 
-    <% if %i[destination_group].any? { |r| policy(r).index? } %>
+    <% if %i[destination_group tariff].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
-          <i class="nav-icon fa-solid fa-money-check-dollar"></i> Tariffs
+          <i class="nav-icon fa-solid fa-money-check-dollar"></i> Billing
         </a>
 
         <ul class="nav-group-items">
           <% if policy(:destination_group).index? %>
             <%= sidebar_nav("Destination Groups", dashboard_destination_groups_path, icon_class: "fa-solid fa-1") %>
+          <% end %>
+
+          <% if policy(:tariff).index? %>
+            <%= sidebar_nav("Tariffs", dashboard_tariffs_path, icon_class: "fa-solid fa-tags") %>
           <% end %>
         </ul>
       </li>

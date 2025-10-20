@@ -6,9 +6,8 @@ class DestinationGroupFilter < ResourceFilter
 
     def apply
       return super if filter_params.blank?
-      name = filter_params.fetch(:name).squish
 
-      super.where(DestinationGroup.arel_table[:name].matches("%#{name}%", nil, true))
+      FuzzySearch.new(super, column: :name).apply(filter_params.fetch(:name))
     end
   end
 

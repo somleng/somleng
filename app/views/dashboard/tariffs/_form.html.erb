@@ -1,0 +1,103 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group, html: { data: { controller: "tariff-form" } }) do |f| %>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :category,
+                required: true,
+                prompt: true,
+                disabled: f.object.persisted?,
+                collection: Tariff.category.values.map { |t| [t.text, t] },
+                input_html: {
+                  data: {
+                    tariff_form_target: "categoryInput",
+                    action: "change->tariff-form#toggleCategory"
+                  }
+                }
+              ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :name,
+                placeholder: "Standard International Rates"
+              ) %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :description,
+                as: :text,
+                placeholder: "Standard rates for international destinations."
+              ) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3" data-tariff-form-target="ratesSection">
+      <div class="card-body">
+        <h5 class="card-title">Rates</h5>
+
+        <div class="row">
+          <div class="col-sm-6" data-tariff-form-target="messageRateInputWrapper">
+            <%=
+              f.input(
+                :message_rate,
+                as: :decimal,
+                hint: "The rate per message in #{f.object.currency.name}. Set to 0 for free messaging.",
+                prepend: f.object.currency.symbol,
+                append: f.object.currency.iso_code,
+                input_html: {
+                  data: { tariff_form_target: "messageRateInput" },
+                  step: 0.0001, min: 0
+                }
+              ) %>
+          </div>
+
+          <div class="col-sm-6" data-tariff-form-target="callPerMinuteRateInputWrapper">
+            <%=
+              f.input(
+                :call_per_minute_rate,
+                as: :decimal,
+                hint: "The rate per minute in #{f.object.currency.name}. Set to 0 for free calls.",
+                prepend: f.object.currency.symbol,
+                append: f.object.currency.iso_code,
+                input_html: {
+                  data: { tariff_form_target: "callPerMinuteRateInput" },
+                  step: 0.0001, min: 0
+                }
+              ) %>
+          </div>
+
+          <div class="col-sm-6" data-tariff-form-target="connectionFeeInputWrapper">
+            <%=
+              f.input(
+                :call_connection_fee,
+                as: :decimal,
+                hint: "The connection fee in #{f.object.currency.name}.",
+                prepend: f.object.currency.symbol,
+                append: f.object.currency.iso_code,
+                input_html: {
+                  data: { tariff_form_target: "connectionFeeInput" },
+                  step: 0.0001, min: 0
+                }
+              ) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

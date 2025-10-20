@@ -1,0 +1,49 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Category
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Rate
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |tariff| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+      <% tariff = TariffDecorator.new(tariff) %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(tariff.id, dashboard_tariff_path(tariff)) %>
+        </td>
+
+        <td>
+          <%= tariff.category.text %>
+        </td>
+
+        <td>
+          <%= tariff.name %>
+        </td>
+
+        <td>
+          <%= tariff.rate %>
+        </td>
+
+        <td>
+          <%= local_time(tariff.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

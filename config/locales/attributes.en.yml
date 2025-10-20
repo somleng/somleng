@@ -6,3 +6,5 @@ en:
     owner_name: "Owner's name"
     owner_email: "Owner's email"
     webhook_url: "Webhook URL"
+    call_per_minute_rate: "Per minute rate"
+    call_connection_fee: "Connection fee"

@@ -548,6 +548,37 @@ FactoryBot.define do
     sequence(:prefix) { |n| "8551#{n}" }
   end
 
+  factory :tariff do
+    carrier { association :carrier, billing_currency: "USD" }
+    name { "Default Tariff" }
+    currency { carrier.billing_currency }
+
+    trait :call do
+      category { "call" }
+      after(:build) do |tariff|
+        tariff.call_tariff ||= build(:call_tariff, tariff:)
+      end
+    end
+
+    trait :message do
+      category { "message" }
+      after(:build) do |tariff|
+        tariff.message_tariff ||= build(:message_tariff, tariff:)
+      end
+    end
+  end
+
+  factory :call_tariff do
+    tariff
+    per_minute_rate_cents { 10 }
+    connection_fee_cents { 0 }
+  end
+
+  factory :message_tariff do
+    tariff
+    rate_cents { 5 }
+  end
+
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
     trait :expired do
       expires_in { 1 }

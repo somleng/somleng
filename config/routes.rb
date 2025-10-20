@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       resources :sms_gateway_channel_groups
       resources :carrier_users
       resources :destination_groups
+      resources :tariffs
       resources :exports, only: %i[index create]
       resources :imports, only: %i[index create]
       resource :account_session, only: :create

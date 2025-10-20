@@ -34,5 +34,8 @@ application.register("sip-trunks", SipTrunksController)
 import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller"
 application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsController)
 
+import TariffFormController from "./tariff_form_controller"
+application.register("tariff-form", TariffFormController)
+
 import VerificationServicesController from "./verification_services_controller"
 application.register("verification-services", VerificationServicesController)
