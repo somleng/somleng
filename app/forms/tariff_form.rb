@@ -49,7 +49,7 @@ class TariffForm < ApplicationForm
     object.attributes = {
       carrier:,
       name:,
-      description:,
+      description: description.presence,
       category:,
       currency:
     }

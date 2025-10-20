@@ -127,6 +127,14 @@
           <% if policy(:tariff).index? %>
             <%= sidebar_nav("Tariffs", dashboard_tariffs_path, icon_class: "fa-solid fa-tags") %>
           <% end %>
+
+          <% if policy(:tariff_schedule).index? %>
+            <%= sidebar_nav("Tariff Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
+          <% end %>
+
+          <% if policy(:destination_tariff).index? %>
+            <%= sidebar_nav("Destination Tariffs", dashboard_destination_tariffs_path, icon_class: "fa-solid fa-shuffle") %>
+          <% end %>
         </ul>
       </li>
     <% end %>

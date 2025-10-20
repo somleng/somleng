@@ -16,7 +16,7 @@ RSpec.describe "Tariffs" do
     expect(page).to have_no_content(local_tariff.id)
   end
 
-  it "create a new message tariff", :js do
+  it "create a message tariff", :js do
     carrier = create(:carrier, billing_currency: "VND")
     user = create(:user, :carrier, carrier:)
 
@@ -66,6 +66,17 @@ RSpec.describe "Tariffs" do
     click_on("Create Tariff")
 
     expect(page).to have_content("can't be blank")
+  end
+
+  it "show a tariff" do
+    carrier = create(:carrier)
+    tariff = create(:tariff, carrier:)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_tariff_path(tariff)
+
+    expect(page).to have_link("Manage", href: dashboard_destination_tariffs_path(filter: { tariff_id: tariff.id }))
   end
 
   it "update a tariff", :js do

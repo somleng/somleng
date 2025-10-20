@@ -5,13 +5,7 @@
         SID
       </th>
       <th>
-        Category
-      </th>
-      <th>
         Name
-      </th>
-      <th>
-        Rate
       </th>
       <th>
         Created At
@@ -20,28 +14,20 @@
   </thead>
 
   <tbody>
-    <% resources.each do |tariff| %>
+    <% resources.each do |tariff_schedule| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
-      <% tariff = TariffDecorator.new(tariff) %>
+      <% tariff = TariffScheduleDecorator.new(tariff_schedule) %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(tariff.id, dashboard_tariff_path(tariff)) %>
+          <%= link_to(tariff.id, dashboard_tariff_schedule_path(tariff_schedule)) %>
         </td>
 
         <td>
-          <%= tariff.category %>
+          <%= tariff_schedule.name %>
         </td>
 
         <td>
-          <%= tariff.name %>
-        </td>
-
-        <td>
-          <%= tariff.rate %>
-        </td>
-
-        <td>
-          <%= local_time(tariff.created_at) %>
+          <%= local_time(tariff_schedule.created_at) %>
         </td>
       </tr>
     <% end %>

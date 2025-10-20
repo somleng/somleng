@@ -120,6 +120,8 @@ Rails.application.routes.draw do
       resources :carrier_users
       resources :destination_groups
       resources :tariffs
+      resources :tariff_schedules
+      resources :destination_tariffs, only: [ :index, :new, :create, :destroy, :show ]
       resources :exports, only: %i[index create]
       resources :imports, only: %i[index create]
       resource :account_session, only: :create

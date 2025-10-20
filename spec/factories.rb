@@ -552,31 +552,71 @@ FactoryBot.define do
     carrier { association :carrier, billing_currency: "USD" }
     name { "Default Tariff" }
     currency { carrier.billing_currency }
+    call
+
+    transient do
+      per_minute_rate { InfinitePrecisionMoney.new(10, currency) }
+      connection_fee { InfinitePrecisionMoney.new(1, currency) }
+      message_rate { InfinitePrecisionMoney.new(5, currency) }
+    end
 
     trait :call do
       category { "call" }
-      after(:build) do |tariff|
-        tariff.call_tariff ||= build(:call_tariff, tariff:)
+      after(:build) do |tariff, evaluator|
+        tariff.call_tariff ||= build(
+          :call_tariff,
+          tariff:,
+          per_minute_rate: evaluator.per_minute_rate,
+          connection_fee: evaluator.connection_fee
+        )
       end
     end
 
     trait :message do
       category { "message" }
-      after(:build) do |tariff|
-        tariff.message_tariff ||= build(:message_tariff, tariff:)
+      after(:build) do |tariff, evaluator|
+        tariff.message_tariff ||= build(
+          :message_tariff,
+          tariff:,
+          rate: evaluator.message_rate
+        )
       end
     end
   end
 
   factory :call_tariff do
+    transient do
+      per_minute_rate { InfinitePrecisionMoney.new(10, tariff.currency) }
+      connection_fee { InfinitePrecisionMoney.new(0, tariff.currency) }
+    end
+
     tariff
-    per_minute_rate_cents { 10 }
-    connection_fee_cents { 0 }
+    per_minute_rate_cents { per_minute_rate.cents }
+    connection_fee_cents { connection_fee.cents }
   end
 
   factory :message_tariff do
+    transient do
+      rate { InfinitePrecisionMoney.new(5, tariff.currency) }
+    end
+
     tariff
-    rate_cents { 5 }
+    rate_cents { rate.cents }
+  end
+
+  factory :tariff_schedule do
+    carrier
+    name { "Standard" }
+  end
+
+  factory :destination_tariff do
+    transient do
+      carrier { create(:carrier) }
+    end
+
+    tariff_schedule { association :tariff_schedule, carrier: }
+    tariff { association :tariff, carrier: tariff_schedule.carrier }
+    destination_group { association :destination_group, carrier: tariff_schedule.carrier }
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do

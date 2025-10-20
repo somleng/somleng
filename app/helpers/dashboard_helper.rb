@@ -9,11 +9,11 @@ module DashboardHelper
 
     content_tag(:div, class: "card-header d-flex justify-content-between align-items-center") do
       content = "".html_safe
-      content += content_tag(:span, title, class: "h2")
+      content += content_tag(:h2, title, class: "card-title")
 
       if subtitle.present?
         content += " "
-        content += content_tag(:small, subtitle)
+        content += content_tag(:h3, subtitle, class: "card-subtitle")
       end
 
       if block_given?

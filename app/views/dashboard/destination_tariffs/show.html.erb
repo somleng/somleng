@@ -1,0 +1,30 @@
+<%= page_title(title: "Destination Tariff") do %>
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_destination_tariff_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource.decorated) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= f.object.id %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :category %>
+    <%= f.attribute :tariff_schedule do %>
+      <%= external_link_to(f.object.tariff_schedule_name, dashboard_tariff_schedule_path(f.object.tariff_schedule_id)) %>
+    <% end %>
+
+    <%= f.attribute :tariff do %>
+      <%= external_link_to(f.object.tariff_display_name, dashboard_tariff_path(f.object.tariff_id)) %>
+    <% end %>
+
+    <%= f.attribute :destination_group do %>
+      <%= external_link_to(f.object.destination_group_name, dashboard_destination_group_path(f.object.destination_group_id)) %>
+    <% end %>
+
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+  <% end %>
+</div>

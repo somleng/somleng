@@ -1,0 +1,39 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group, html: { data: { controller: "destination-tariff-form" } }) do |f| %>
+    <div class="row">
+      <div class="col-sm-4">
+        <%= f.input(
+          :tariff_schedule_id,
+          collection: f.object.tariff_schedules_options_for_select,
+          prompt: true,
+          input_html: {
+            data: { behavior: "choices-input" }
+          }
+        ) %>
+      </div>
+
+      <div class="col-sm-4">
+        <%= f.input(
+          :tariff_id,
+          collection: f.object.tariff_options_for_select,
+          prompt: true,
+          input_html: {
+            data: { behavior: "choices-input" }
+          }
+        ) %>
+      </div>
+
+      <div class="col-sm-4">
+        <%= f.input(
+          :destination_group_id,
+          collection: f.object.destination_group_options_for_select,
+          prompt: true,
+          input_html: {
+            data: { behavior: "choices-input" }
+          }
+        ) %>
+      </div>
+    </div>
+    <%= f.button :submit %>
+  <% end %>
+</div>

@@ -1,10 +1,10 @@
-<%= page_title(title: "Destination Group") do %>
+<%= page_title(title: "Tariff Schedule") do %>
   <% if policy(@resource).edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_destination_group_path(@resource)) %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_schedule_path(@resource)) %>
   <% end %>
 
   <% if policy(@resource).destroy? %>
-    <%= render("shared/destroy_resource_page_action", path: dashboard_destination_group_path(@resource)) %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_schedule_path(@resource)) %>
   <% end %>
 <% end %>
 
@@ -17,9 +17,9 @@
     <% end %>
 
     <%= f.attribute :name %>
-    <%= f.attribute :prefixes %>
+    <%= f.attribute :description %>
     <%= f.attribute :destination_tariffs do %>
-      <%= external_link_to("Manage", dashboard_destination_tariffs_path(filter: { destination_group_id: f.object.id })) %>
+      <%= external_link_to("Manage", dashboard_destination_tariffs_path(filter: { tariff_schedule_id: f.object.id })) %>
     <% end %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>

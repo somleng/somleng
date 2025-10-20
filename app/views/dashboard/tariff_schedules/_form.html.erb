@@ -1,0 +1,31 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group, html: { data: { controller: "tariff-schedule-form" } }) do |f| %>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :name,
+                placeholder: "Standard"
+              ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%=
+              f.input(
+                :description,
+                as: :text,
+                placeholder: "Standard rates"
+              ) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

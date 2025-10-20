@@ -47,6 +47,17 @@ RSpec.describe "Destination Groups" do
     expect(page).to have_content("can't be blank")
   end
 
+  it "show a destination group" do
+    carrier = create(:carrier)
+    destination_group = create(:destination_group, carrier:)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_destination_group_path(destination_group)
+
+    expect(page).to have_link("Manage", href: dashboard_destination_tariffs_path(filter: { destination_group_id: destination_group.id }))
+  end
+
   it "update a destination group" do
     carrier = create(:carrier)
     destination_group = create(:destination_group, carrier:, name: "US Destinations", prefixes: [ "1" ])

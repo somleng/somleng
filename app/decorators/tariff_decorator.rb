@@ -3,6 +3,10 @@ class TariffDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :Tariff
   end
 
+  def category
+    object.category.text
+  end
+
   def message_rate
     return if message_tariff.blank?
 
@@ -30,6 +34,10 @@ class TariffDecorator < SimpleDelegator
     elsif call?
       per_minute_rate
     end
+  end
+
+  def display_name
+    "#{name} (#{rate})"
   end
 
   private
