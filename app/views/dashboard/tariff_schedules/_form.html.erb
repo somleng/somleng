@@ -1,28 +1,46 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource], wrapper: :input_group, html: { data: { controller: "tariff-schedule-form" } }) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input(
+          :category,
+          prompt: true,
+          disabled: f.object.persisted?,
+          input_html: {
+            data: {
+              tariff_schedule_form_target: "categoryInput",
+              action: "change->tariff-schedule-form#toggleCategory"
+            }
+          }
+        ) %>
+      </div>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+      <div class="col-sm-6">
+        <%= f.input(
+          :name,
+          placeholder: "Standard",
+          input_html: {
+            data: {
+              tariff_schedule_form_target: "nameInput",
+            }
+          }
+        ) %>
+      </div>
+    </div>
 
-        <div class="row">
-          <div class="col-sm-6">
-            <%=
-              f.input(
-                :name,
-                placeholder: "Standard"
-              ) %>
-          </div>
-
-          <div class="col-sm-6">
-            <%=
-              f.input(
-                :description,
-                as: :text,
-                placeholder: "Standard rates"
-              ) %>
-          </div>
-        </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <%=
+          f.input(
+            :description,
+            as: :text,
+            placeholder: "Standard",
+            input_html: {
+              data: {
+                tariff_schedule_form_target: "descriptionInput",
+              }
+            }
+        ) %>
       </div>
     </div>
 

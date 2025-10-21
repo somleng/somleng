@@ -3,15 +3,20 @@ require "rails_helper"
 RSpec.describe "Tariff Schedules" do
   it "filter tariff schedules" do
     carrier = create(:carrier)
-    standard_schedule = create(:tariff_schedule, carrier:, name: "Standard")
-    discounted_schedule = create(:tariff_schedule, carrier:, name: "Discounted")
+    tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard")
+    filtered_tariff_schedules = [
+      create(:tariff_schedule, :outbound_calls, carrier:, name: "Special"),
+      create(:tariff_schedule, :outbound_messages, carrier:, name: "Standard")
+    ]
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_tariff_schedules_path(filter: { name: "standard" })
+    visit dashboard_tariff_schedules_path(filter: { name: "standard", category: "outbound_calls" })
 
-    expect(page).to have_content(standard_schedule.id)
-    expect(page).to have_no_content(discounted_schedule.id)
+    expect(page).to have_content(tariff_schedule.id)
+    filtered_tariff_schedules.each do |tariff_schedule|
+      expect(page).to have_no_content(tariff_schedule.id)
+    end
   end
 
   it "create a tariff schedule" do
@@ -22,11 +27,13 @@ RSpec.describe "Tariff Schedules" do
     visit dashboard_tariff_schedules_path
     click_on("New")
 
-    fill_in("Name", with: "Standard")
+    select("Outbound calls", from: "Category")
+    fill_in("Name", with: "Standard outbound calls")
     fill_in("Description", with: "Standard rates")
     click_on("Create Tariff schedule")
 
     expect(page).to have_content("Tariff schedule was successfully created.")
+    expect(page).to have_content("Outbound calls")
     expect(page).to have_content("Standard")
     expect(page).to have_content("Standard rates")
   end
@@ -56,12 +63,15 @@ RSpec.describe "Tariff Schedules" do
 
   it "update a tariff schedule" do
     carrier = create(:carrier)
-    tariff_schedule = create(:tariff_schedule, carrier:, name: "Old Name", description: "Old Description")
+    tariff_schedule = create(:tariff_schedule, :inbound_calls, carrier:, name: "Old Name", description: "Old Description")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_tariff_schedule_path(tariff_schedule)
     click_on("Edit")
+
+    expect(page).to have_select("Category", selected: "Inbound calls", disabled: true)
+
     fill_in("Name", with: "New Name")
     fill_in("Description", with: "Standard rates")
     click_on("Update Tariff schedule")

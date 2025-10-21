@@ -606,7 +606,24 @@ FactoryBot.define do
 
   factory :tariff_schedule do
     carrier
+    outbound_calls
     name { "Standard" }
+
+    trait :inbound_calls do
+      category { "inbound_calls" }
+    end
+
+    trait :inbound_messages do
+      category { "inbound_messages" }
+    end
+
+    trait :outbound_calls do
+      category { "outbound_calls" }
+    end
+
+    trait :outbound_messages do
+      category { "outbound_messages" }
+    end
   end
 
   factory :destination_tariff do

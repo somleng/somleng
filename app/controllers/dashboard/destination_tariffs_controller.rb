@@ -8,7 +8,11 @@ module Dashboard
     end
 
     def new
-      @resource = DestinationTariffForm.new(carrier: current_carrier, **request.query_parameters.fetch(:filter, {}).slice(:tariff_schedule_id, :destination_group_id, :tariff_id))
+      @resource = DestinationTariffForm.new(
+        carrier: current_carrier,
+        tariff_schedule_id: current_carrier.tariff_schedules.find(request.query_parameters.dig(:filter, :tariff_schedule_id)).id,
+        **request.query_parameters.fetch(:filter, {}).slice(:destination_group_id, :tariff_id)
+      )
     end
 
     def create

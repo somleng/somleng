@@ -29,7 +29,7 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def tariff_schedules_options_for_select
-    options_for_select(tariff_schedules) { |item| [ item.name, item.id ] }
+    options_for_select(tariff_schedules.where(id: tariff_schedule_id)) { |item| [ item.name, item.id ] }
   end
 
   def tariff_options_for_select

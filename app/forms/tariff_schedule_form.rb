@@ -1,12 +1,18 @@
 class TariffScheduleForm < ApplicationForm
+  extend Enumerize
+
   attribute :carrier
+  attribute :category
   attribute :object, default: -> { TariffSchedule.new }
   attribute :name
   attribute :description
 
-  validates :name, presence: true
+  enumerize :category, in: TariffSchedule.category.values
+
+  validates :name, :category, presence: true
 
   delegate :persisted?, :new_record?, :id, to: :object
+
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "TariffSchedule")
@@ -17,7 +23,8 @@ class TariffScheduleForm < ApplicationForm
       object: tariff_schedule,
       carrier: tariff_schedule.carrier,
       name: tariff_schedule.name,
-      description: tariff_schedule.description
+      description: tariff_schedule.description,
+      category: tariff_schedule.category
     )
   end
 
@@ -26,6 +33,7 @@ class TariffScheduleForm < ApplicationForm
 
     object.attributes = {
       carrier:,
+      category:,
       name:,
       description: description.presence
     }

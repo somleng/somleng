@@ -721,12 +721,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_20_094708) do
 
   create_table "tariff_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
+    t.string "category", null: false
     t.citext "name", null: false
     t.text "description"
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["carrier_id", "name", "created_at"], name: "index_tariff_schedules_on_carrier_id_and_name_and_created_at"
+    t.index ["carrier_id", "category", "name", "created_at"], name: "idx_on_carrier_id_category_name_created_at_26dbecbf44"
     t.index ["carrier_id"], name: "index_tariff_schedules_on_carrier_id"
     t.index ["sequence_number"], name: "index_tariff_schedules_on_sequence_number", unique: true, order: :desc
   end

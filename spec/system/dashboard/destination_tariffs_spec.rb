@@ -46,15 +46,14 @@ RSpec.describe "Destination Tariffs" do
 
   it "create a destination tariff" do
     carrier = create(:carrier, billing_currency: "USD")
-    create(:tariff_schedule, carrier:, name: "Default")
+    tariff_schedule = create(:tariff_schedule, carrier:, name: "Default")
     create(:tariff, :call, carrier:, name: "Asia", per_minute_rate: Money.from_amount(0.01, "USD"))
     create(:destination_group, carrier:, name: "Cambodia")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_destination_tariffs_path
+    visit dashboard_destination_tariffs_path(filter: { tariff_schedule_id: tariff_schedule.id })
     click_on("New")
-    choices_select("Default", from: "Schedule")
     choices_select("Asia", from: "Tariff")
     choices_select("Cambodia", from: "Destination group")
     click_on("Create Destination tariff")
@@ -67,7 +66,7 @@ RSpec.describe "Destination Tariffs" do
 
   it "preselects the inputs" do
     carrier = create(:carrier, billing_currency: "USD")
-    tariff_schedule = create(:tariff_schedule, carrier:, name: "Default")
+    tariff_schedule = create(:tariff_schedule, carrier:, name: "Standard")
     tariff = create(:tariff, :call, carrier:, name: "Asia", per_minute_rate: Money.from_amount(0.01, "USD"))
     destination_group = create(:destination_group, carrier:, name: "Cambodia")
     user = create(:user, :carrier, carrier:)
@@ -82,7 +81,7 @@ RSpec.describe "Destination Tariffs" do
     )
     click_on("New")
 
-    expect(page).to have_choices_select("Schedule", selected: "Default")
+    expect(page).to have_choices_select("Schedule", selected: "Standard", disabled: true)
     expect(page).to have_choices_select("Tariff", selected: "Asia ($0.01 per minute)")
     expect(page).to have_choices_select("Destination group", selected: "Cambodia")
   end

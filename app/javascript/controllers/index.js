@@ -37,5 +37,8 @@ application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsContro
 import TariffFormController from "./tariff_form_controller"
 application.register("tariff-form", TariffFormController)
 
+import TariffScheduleFormController from "./tariff_schedule_form_controller"
+application.register("tariff-schedule-form", TariffScheduleFormController)
+
 import VerificationServicesController from "./verification_services_controller"
 application.register("verification-services", VerificationServicesController)

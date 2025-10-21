@@ -25,7 +25,7 @@ module Dashboard
 
     def update
       @resource = TariffScheduleForm.initialize_with(record)
-      @resource.attributes = permitted_params
+      @resource.attributes = permitted_params.except(:category)
       @resource.save
       respond_with(:dashboard, @resource)
     end
@@ -39,7 +39,7 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:tariff_schedule).permit(:name, :description)
+      params.require(:tariff_schedule).permit(:name, :category, :description)
     end
 
     def scope
