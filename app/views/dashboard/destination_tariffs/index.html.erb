@@ -32,7 +32,7 @@
   <% end %>
 
   <% if policy(:destination_tariff).new? %>
-    <%= render("shared/new_resource_page_action", path: new_dashboard_destination_tariff_path(request.query_parameters.fetch(:filter, {}).slice(:tariff_schedule_id, :tariff_id, :destination_group_id))) %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_destination_tariff_path(filter_params)) %>
   <% end %>
 <% end %>
 

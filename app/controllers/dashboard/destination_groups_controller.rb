@@ -12,7 +12,7 @@ module Dashboard
     def create
       @resource = DestinationGroupForm.new(carrier: current_carrier, **permitted_params)
       @resource.save
-      respond_with(:dashboard, @resource)
+      respond_with(:dashboard, @resource, location: dashboard_destination_groups_path)
     end
 
     def show

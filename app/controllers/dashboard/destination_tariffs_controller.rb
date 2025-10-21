@@ -1,18 +1,20 @@
 module Dashboard
   class DestinationTariffsController < DashboardController
+    helper_method :filter_params
+
     def index
       @resources = apply_filters(scope.includes(:destination_group, :tariff_schedule, tariff: [ :call_tariff, :message_tariff ]))
       @resources = paginate_resources(@resources)
     end
 
     def new
-      @resource = DestinationTariffForm.new(carrier: current_carrier, **request.query_parameters.slice(:tariff_schedule_id, :tariff_id, :destination_group_id))
+      @resource = DestinationTariffForm.new(carrier: current_carrier, **request.query_parameters.fetch(:filter, {}).slice(:tariff_schedule_id, :destination_group_id, :tariff_id))
     end
 
     def create
       @resource = DestinationTariffForm.new(carrier: current_carrier, **permitted_params)
       @resource.save
-      respond_with(:dashboard, @resource)
+      respond_with(:dashboard, @resource, location: dashboard_destination_tariffs_path(filter_params))
     end
 
     def show
@@ -37,6 +39,10 @@ module Dashboard
 
     def record
       @record ||= scope.find(params[:id])
+    end
+
+    def filter_params
+      request.query_parameters.slice(:filter)
     end
   end
 end

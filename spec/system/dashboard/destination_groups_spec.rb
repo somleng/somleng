@@ -12,9 +12,9 @@ RSpec.describe "Destination Groups" do
     visit dashboard_destination_groups_path(filter: { name: "Cambodia" })
 
     expect(page).to have_content("Smart Cambodia")
-    expect(page).to have_content("85510, 85515, 85516")
+    expect(page).to have_content("85510, 85515, and 85516")
     expect(page).to have_content("Metfone Cambodia")
-    expect(page).to have_content("85597, 85571")
+    expect(page).to have_content("85597 and 85571")
     expect(page).to have_no_content("Laos")
   end
 
@@ -32,7 +32,7 @@ RSpec.describe "Destination Groups" do
 
     expect(page).to have_content("Destination group was successfully created.")
     expect(page).to have_content("Smart Cambodia")
-    expect(page).to have_content("85510, 85515, 85516")
+    expect(page).to have_content("85510, 85515, and 85516")
   end
 
   it "handle validation errors when creating a destination group" do
@@ -73,7 +73,7 @@ RSpec.describe "Destination Groups" do
 
     expect(page).to have_content("Destination group was successfully updated.")
     expect(page).to have_content("Smart Cambodia")
-    expect(page).to have_content("85510, 85515, 85516")
+    expect(page).to have_content("85510, 85515, and 85516")
   end
 
   it "delete a destination group" do

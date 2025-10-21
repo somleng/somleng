@@ -4,10 +4,23 @@ class DestinationGroupDecorator < SimpleDelegator
   end
 
   def prefixes
-    object.prefixes.pluck(:prefix).join(", ")
+    summarize_list(object.prefixes.pluck(:prefix))
+  end
+
+  def prefixes_summary
+    summarize_list(object.prefixes.pluck(:prefix), max: 3)
   end
 
   private
+
+  def summarize_list(items, max: nil)
+    return items.to_sentence if max.blank? || items.size <= max
+
+    displayed = items.take(max)
+    remaining = items.size - max
+
+    [ *displayed, ApplicationController.helpers.pluralize(remaining, "other") ].to_sentence
+  end
 
   def object
     __getobj__

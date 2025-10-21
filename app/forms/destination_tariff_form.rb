@@ -6,6 +6,7 @@ class DestinationTariffForm < ApplicationForm
   attribute :destination_group_id
 
   validates :tariff_schedule_id, :tariff_id, :destination_group_id, presence: true
+  validate :validate_tariff
 
   delegate :persisted?, :new_record?, :id, to: :object
 
@@ -58,5 +59,15 @@ class DestinationTariffForm < ApplicationForm
       decorated_item = item.decorated
       yield(decorated_item)
     end
+  end
+
+  def validate_tariff
+    return unless carrier.destination_tariffs.exists?(
+      tariff_schedule_id: tariff_schedule_id,
+      destination_group_id: destination_group_id,
+      tariff_id: tariff_id
+    )
+
+    errors.add(:tariff_id, :taken)
   end
 end

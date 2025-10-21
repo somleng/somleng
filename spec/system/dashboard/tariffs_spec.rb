@@ -32,7 +32,6 @@ RSpec.describe "Tariffs" do
 
     expect(page).to have_content("Tariff was successfully created.")
     expect(page).to have_content("International Messages")
-    expect(page).to have_content("Tariff for international messages")
     expect(page).to have_content("1,317.18 ₫")
   end
 
@@ -53,7 +52,6 @@ RSpec.describe "Tariffs" do
     expect(page).to have_content("Tariff was successfully created.")
     expect(page).to have_content("International Calls")
     expect(page).to have_content("$0.014")
-    expect(page).to have_content("$0.02")
   end
 
   it "handle validation errors when creating a tariff" do
