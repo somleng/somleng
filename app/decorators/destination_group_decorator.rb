@@ -19,7 +19,7 @@ class DestinationGroupDecorator < SimpleDelegator
     displayed = items.take(max)
     remaining = items.size - max
 
-    [ *displayed, ApplicationController.helpers.pluralize(remaining, "other") ].to_sentence
+    [ *displayed, "#{remaining} more" ].to_sentence
   end
 
   def object
