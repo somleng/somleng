@@ -3,18 +3,16 @@ class DestinationTariffDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :DestinationTariff
   end
 
-  delegate :category, to: :decorated_tariff
-
   def tariff_schedule_name
     decorated_tariff_schedule.name
   end
 
-  def tariff_display_name
-    decorated_tariff.display_name
-  end
-
   def destination_group_name
     decorated_destination_group.name
+  end
+
+  def tariff_name
+    decorated_tariff.name
   end
 
   private

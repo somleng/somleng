@@ -7,6 +7,10 @@ class TariffScheduleDecorator < SimpleDelegator
     object.category.text
   end
 
+  def name
+    "#{category} (#{object.name})"
+  end
+
   private
 
   def object

@@ -44,22 +44,34 @@ RSpec.describe "Destination Tariffs" do
     end
   end
 
+  it "disables the new link when there is no tariff schedule selected" do
+    carrier = create(:carrier, billing_currency: "USD")
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_destination_tariffs_path
+
+    expect(page).to have_link("New")
+    expect(page.find_link("New")[:class]).to include("disabled")
+  end
+
   it "create a destination tariff" do
     carrier = create(:carrier, billing_currency: "USD")
-    tariff_schedule = create(:tariff_schedule, carrier:, name: "Default")
+    tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard")
     create(:tariff, :call, carrier:, name: "Asia", per_minute_rate: Money.from_amount(0.01, "USD"))
+    create(:tariff, :message, carrier:, name: "Standard Message")
     create(:destination_group, carrier:, name: "Cambodia")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_destination_tariffs_path(filter: { tariff_schedule_id: tariff_schedule.id })
     click_on("New")
-    choices_select("Asia", from: "Tariff")
+    choices_select("Asia ($0.01 per minute)", from: "Tariff")
     choices_select("Cambodia", from: "Destination group")
     click_on("Create Destination tariff")
 
     expect(page).to have_content("Destination tariff was successfully created.")
-    expect(page).to have_link("Default")
+    expect(page).to have_link("Standard")
     expect(page).to have_link("Asia ($0.01 per minute)")
     expect(page).to have_link("Cambodia")
   end
@@ -89,9 +101,10 @@ RSpec.describe "Destination Tariffs" do
   it "handles form validations" do
     carrier = create(:carrier, billing_currency: "USD")
     user = create(:user, :carrier, carrier:)
+    tariff_schedule = create(:tariff_schedule, carrier:)
 
     carrier_sign_in(user)
-    visit new_dashboard_destination_tariff_path
+    visit new_dashboard_destination_tariff_path(filter: { tariff_schedule_id: tariff_schedule.id })
     click_on("Create Destination tariff")
 
     expect(page).to have_content("can't be blank")

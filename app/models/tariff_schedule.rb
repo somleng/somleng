@@ -4,5 +4,14 @@ class TariffSchedule < ApplicationRecord
   belongs_to :carrier
   has_many :destination_tariffs
 
-  enumerize :category, in: [ :inbound_calls, :inbound_messages, :outbound_calls, :outbound_messages ]
+  attribute :category
+
+  enumerize :category,
+    in: [
+      :inbound_calls,
+      :inbound_messages,
+      :outbound_calls,
+      :outbound_messages
+    ],
+    value_class: TariffScheduleCategoryValue
 end

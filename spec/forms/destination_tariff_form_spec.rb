@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe DestinationTariffForm do
   it "validates the presence of the associations" do
-    form = DestinationTariffForm.new
+    form = build_form(tariff_schedule_id: nil, destination_group_id: nil, tariff_id: nil)
 
     form.valid?
 
@@ -25,6 +25,23 @@ RSpec.describe DestinationTariffForm do
     form.valid?
 
     expect(form.errors[:tariff_id]).to be_present
+  end
+
+  it "only provides valid tariff options" do
+    carrier = create(:carrier)
+    tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:)
+
+    tariff = create(:tariff, :call, carrier:)
+    create(:tariff, :message, carrier:)
+
+    form = DestinationTariffForm.new(
+      carrier:,
+      tariff_schedule_id: tariff_schedule.id,
+    )
+
+    tariff_options = form.tariff_options_for_select
+
+    expect(tariff_options).to contain_exactly([ be_present, tariff.id ])
   end
 
   describe "#save" do

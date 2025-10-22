@@ -19,7 +19,7 @@ class TariffDecorator < SimpleDelegator
     rate = display_rate(object.call_tariff.per_minute_rate)
     return rate if call_tariff.per_minute_rate.zero?
 
-    [ rate, "per minute" ].join(" ")
+    [ rate, "/ min" ].join(" ")
   end
 
   def connection_fee
@@ -36,8 +36,8 @@ class TariffDecorator < SimpleDelegator
     end
   end
 
-  def display_name
-    "#{name} (#{rate})"
+  def name
+    "#{rate} (#{object.name})"
   end
 
   private

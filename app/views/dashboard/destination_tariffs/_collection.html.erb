@@ -8,13 +8,7 @@
         Tariff Schedule
       </th>
       <th>
-        Category
-      </th>
-      <th>
-        Tariff
-      </th>
-      <th>
-        Destination Group
+        Diagram
       </th>
       <th>
         Created At
@@ -32,19 +26,11 @@
         </td>
 
         <td>
-          <%= link_to(destination_tariff.tariff_schedule.name, dashboard_tariff_schedule_path(destination_tariff.tariff_schedule_id, destination_tariff)) %>
+          <%= link_to(destination_tariff.tariff_schedule_name, dashboard_tariff_schedule_path(destination_tariff.tariff_schedule_id, destination_tariff)) %>
         </td>
 
         <td>
-          <%= destination_tariff.category %>
-        </td>
-
-        <td>
-          <%= link_to(destination_tariff.tariff_display_name, dashboard_tariff_path(destination_tariff.tariff_id)) %>
-        </td>
-
-        <td>
-          <%= link_to(destination_tariff.destination_group_name, dashboard_destination_group_path(destination_tariff.destination_group_id)) %>
+          <%= destination_tariff_diagram(destination_tariff) %>
         </td>
 
         <td>

@@ -11,13 +11,18 @@
             data: { behavior: "choices-input" }
           }
         ) %>
-      </div>
 
+        <%= f.input(:tariff_schedule_id, as: :hidden) %>
+      </div>
+    </div>
+
+    <div class="row">
       <div class="col-sm-4">
         <%= f.input(
           :destination_group_id,
           collection: f.object.destination_group_options_for_select,
           prompt: true,
+          hint: "#{@tariff_schedule.category.description}",
           input_html: {
             data: { behavior: "choices-input" }
           }
@@ -29,12 +34,14 @@
           :tariff_id,
           collection: f.object.tariff_options_for_select,
           prompt: true,
+          hint: "Cost",
           input_html: {
             data: { behavior: "choices-input" }
           }
         ) %>
       </div>
     </div>
+
     <%= f.button :submit %>
   <% end %>
 </div>

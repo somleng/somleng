@@ -1,13 +1,13 @@
 class DestinationTariffFilter < ResourceFilter
   class CategoryFilter < ApplicationFilter
     filter_params do
-      optional(:category).value(:string, included_in?: Tariff.category.values)
+      optional(:category).value(:string, included_in?: TariffSchedule.category.values)
     end
 
     def apply
       return super if filter_params.blank?
 
-      super.joins(:tariff).where(tariffs: { category: filter_params.fetch(:category) })
+      super.joins(:tariff_schedule).where(tariff_schedules: { category: filter_params.fetch(:category) })
     end
   end
 

@@ -6,7 +6,7 @@ class DestinationTariffForm < ApplicationForm
   attribute :destination_group_id
 
   validates :tariff_schedule_id, :tariff_id, :destination_group_id, presence: true
-  validate :validate_tariff
+  validate :validate_tariff_uniqueness
 
   delegate :persisted?, :new_record?, :id, to: :object
 
@@ -18,7 +18,7 @@ class DestinationTariffForm < ApplicationForm
     return false if invalid?
 
     object.attributes = {
-      tariff_schedule: tariff_schedules.find(tariff_schedule_id),
+      tariff_schedule:,
       tariff: tariffs.find(tariff_id),
       destination_group: destination_groups.find(destination_group_id)
     }
@@ -29,11 +29,11 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def tariff_schedules_options_for_select
-    options_for_select(tariff_schedules.where(id: tariff_schedule_id)) { |item| [ item.name, item.id ] }
+    options_for_select([ tariff_schedule ]) { |item| [ item.name, item.id ] }
   end
 
   def tariff_options_for_select
-    options_for_select(tariffs) { |item| [ item.display_name, item.id ] }
+    options_for_select(tariffs) { |item| [ item.name, item.id ] }
   end
 
   def destination_group_options_for_select
@@ -42,12 +42,12 @@ class DestinationTariffForm < ApplicationForm
 
   private
 
-  def tariff_schedules
-    @tariff_schedules ||= carrier.tariff_schedules
+  def tariff_schedule
+    @tariff_schedule ||= carrier.tariff_schedules.find(tariff_schedule_id)
   end
 
   def tariffs
-    @tariffs ||= carrier.tariffs
+    @tariffs ||= carrier.tariffs.where(category: tariff_schedule.category.tariff_category)
   end
 
   def destination_groups
@@ -61,7 +61,7 @@ class DestinationTariffForm < ApplicationForm
     end
   end
 
-  def validate_tariff
+  def validate_tariff_uniqueness
     return unless carrier.destination_tariffs.exists?(
       tariff_schedule_id: tariff_schedule_id,
       destination_group_id: destination_group_id,

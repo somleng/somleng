@@ -8,9 +8,10 @@ module Dashboard
     end
 
     def new
+      @tariff_schedule = current_carrier.tariff_schedules.find(request.query_parameters.dig(:filter, :tariff_schedule_id))
       @resource = DestinationTariffForm.new(
         carrier: current_carrier,
-        tariff_schedule_id: current_carrier.tariff_schedules.find(request.query_parameters.dig(:filter, :tariff_schedule_id)).id,
+        tariff_schedule_id: @tariff_schedule.id,
         **request.query_parameters.fetch(:filter, {}).slice(:destination_group_id, :tariff_id)
       )
     end

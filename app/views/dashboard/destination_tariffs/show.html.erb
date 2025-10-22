@@ -12,17 +12,12 @@
       </code>
     <% end %>
 
-    <%= f.attribute :category %>
     <%= f.attribute :tariff_schedule do %>
       <%= external_link_to(f.object.tariff_schedule_name, dashboard_tariff_schedule_path(f.object.tariff_schedule_id)) %>
     <% end %>
 
-    <%= f.attribute :tariff do %>
-      <%= external_link_to(f.object.tariff_display_name, dashboard_tariff_path(f.object.tariff_id)) %>
-    <% end %>
-
-    <%= f.attribute :destination_group do %>
-      <%= external_link_to(f.object.destination_group_name, dashboard_destination_group_path(f.object.destination_group_id)) %>
+    <%= f.attribute :diagram do %>
+      <%= destination_tariff_diagram(f.object) %>
     <% end %>
 
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>

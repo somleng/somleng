@@ -1,9 +1,12 @@
 <%= page_title(title: "Destination Tariffs") do %>
   <%= render("shared/filters") do |form| %>
-    <%= form.select :category, Tariff.category.values.map { |t| [t.text, t] }, { filter_value: params.dig(:filter, :category) } %>
+    <%= form.select :category, TariffSchedule.category.values.map { |t| [t.text, t] }, { filter_value: params.dig(:filter, :category) } %>
     <%= form.select(
         :tariff_schedule_id,
-        current_carrier.tariff_schedules.map { |tariff_schedule| [tariff_schedule.name, tariff_schedule.id] },
+        current_carrier.tariff_schedules.map do |tariff_schedule|
+          tariff_schedule = TariffScheduleDecorator.new(tariff_schedule)
+          [ tariff_schedule.name, tariff_schedule.id ]
+        end,
         { filter_value: params.dig(:filter, :tariff_schedule_id) },
         { data: { behavior: "choices-input" }}
       )
@@ -32,7 +35,12 @@
   <% end %>
 
   <% if policy(:destination_tariff).new? %>
-    <%= render("shared/new_resource_page_action", path: new_dashboard_destination_tariff_path(filter_params)) %>
+    <%= render(
+      "shared/new_resource_page_action",
+      path: new_dashboard_destination_tariff_path(filter_params),
+      disabled: params.dig(:filter, :tariff_schedule_id).blank?,
+      disabled_title: "Filter by a tariff schedule to create a new destination tariff"
+    ) %>
   <% end %>
 <% end %>
 

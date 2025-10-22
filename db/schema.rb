@@ -107,8 +107,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_20_094708) do
 
   create_table "call_tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "tariff_id", null: false
-    t.decimal "per_minute_rate_cents", precision: 10, scale: 4, default: "0.0", null: false
-    t.decimal "connection_fee_cents", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "per_minute_rate_cents", precision: 12, scale: 4, default: "0.0", null: false
+    t.decimal "connection_fee_cents", precision: 9, scale: 4, default: "0.0", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

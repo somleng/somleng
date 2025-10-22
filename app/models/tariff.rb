@@ -8,4 +8,12 @@ class Tariff < ApplicationRecord
   attribute :currency, CurrencyType.new
 
   enumerize :category, in: [ :message, :call ], predicates: true
+
+  def rate
+    if message?
+      message_tariff.rate
+    elsif call?
+      call_tariff.per_minute_rate
+    end
+  end
 end
