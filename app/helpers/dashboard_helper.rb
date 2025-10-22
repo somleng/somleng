@@ -152,7 +152,7 @@ module DashboardHelper
   end
 
   def destination_tariff_description(destination_tariff)
-    template = "On the \"%<tariff_schedule>s\" tariff schedule, %<description>s %<destination_group>s are priced at %<tariff_cost>s"
+    template = "On the \"%<tariff_schedule>s\" tariff schedule, %<description>s %<destination_group>s are priced at %<tariff_cost>s."
     tariff_schedule = destination_tariff.tariff_schedule
 
     format(
