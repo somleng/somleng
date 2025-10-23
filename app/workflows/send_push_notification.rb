@@ -9,11 +9,10 @@ class SendPushNotification < ApplicationWorkflow
   end
 
   def call
-    notification = ApplicationPushNotification.with_data(data).new(
-      title:,
-      body:
-    )
+    notification = ApplicationPushNotification
+      .with_google(data)
+      .new(title:, body:)
 
-    notification.deliver_to(devices[0])
+    notification.deliver_later_to(devices)
   end
 end
