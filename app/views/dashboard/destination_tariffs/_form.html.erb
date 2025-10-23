@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for(@resource, url: dashboard_destination_tariffs_path(filter_params), wrapper: :input_group, html: { novalidate: true, data: { controller: "destination-tariff-form" } }) do |f| %>
+  <%= simple_form_for(@resource, url: dashboard_destination_tariffs_path(filter_params), wrapper: :input_group, html: { novalidate: true}) do |f| %>
     <div class="row">
       <div class="col-sm-4">
         <%= f.input(
@@ -22,7 +22,7 @@
           :destination_group_id,
           collection: f.object.destination_group_options_for_select,
           prompt: true,
-          hint: "#{f.object.tariff_schedule.category.description}",
+          hint: "#{f.object.tariff_schedule.category.description.humanize}",
           input_html: {
             data: { behavior: "choices-input" }
           }

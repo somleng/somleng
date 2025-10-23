@@ -2,15 +2,15 @@
   <%= render("shared/filters") do |form| %>
     <%= form.select :category, TariffSchedule.category.values.map { |t| [t.text, t] }, { filter_value: params.dig(:filter, :category) } %>
     <%= form.select(
-        :tariff_schedule_id,
-        current_carrier.tariff_schedules.map do |tariff_schedule|
-          tariff_schedule = TariffScheduleDecorator.new(tariff_schedule)
-          [ tariff_schedule.name, tariff_schedule.id ]
-        end,
-        { filter_value: params.dig(:filter, :tariff_schedule_id) },
-        { data: { behavior: "choices-input" }}
-      )
-    %>
+      :tariff_schedule_id,
+      current_carrier.tariff_schedules.map do |tariff_schedule|
+        tariff_schedule = TariffScheduleDecorator.new(tariff_schedule)
+        [ tariff_schedule.name, tariff_schedule.id ]
+      end,
+      { filter_value: params.dig(:filter, :tariff_schedule_id) },
+      { data: { behavior: "choices-input" }}
+    ) %>
+
     <%= form.select(
       :tariff_id,
       current_carrier.tariffs.includes(:message_tariff, :call_tariff).map do |tariff|

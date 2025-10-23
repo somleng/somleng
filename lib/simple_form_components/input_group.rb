@@ -2,7 +2,7 @@
 module SimpleFormComponents
   module InputGroup
     def prepend(_wrapper_options = nil)
-      template.content_tag(:span, options[:prepend], class: "input-group-text")
+      template.content_tag(:span, options[:prepend], class: "input-group-text", data: input_html_options.dig(:data, :prepend_data))
     end
 
     def append(_wrapper_options = nil)

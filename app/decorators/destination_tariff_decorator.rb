@@ -28,8 +28,4 @@ class DestinationTariffDecorator < SimpleDelegator
   def decorated_destination_group
     @decorated_destination_group ||= DestinationGroupDecorator.new(destination_group)
   end
-
-  def object
-    __getobj__
-  end
 end

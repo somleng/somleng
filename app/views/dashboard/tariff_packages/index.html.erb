@@ -1,0 +1,22 @@
+<%= page_title(title: "Tariff Packages") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.select(
+      :category,
+      TariffPackage.category.values.map { |category| [ category.text, category ] },
+      { filter_value: params.dig(:filter, :category) }
+    ) %>
+
+    <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+    <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if policy(:tariff_package).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_package_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

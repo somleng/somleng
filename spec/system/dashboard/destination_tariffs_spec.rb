@@ -45,7 +45,7 @@ RSpec.describe "Destination Tariffs" do
   end
 
   it "disables the new link when there is no tariff schedule selected" do
-    carrier = create(:carrier, billing_currency: "USD")
+    carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)

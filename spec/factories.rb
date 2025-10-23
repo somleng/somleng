@@ -14,6 +14,22 @@ FactoryBot.define do
     status_callback_method { "GET" }
   end
 
+  trait :inbound_calls do
+    category { "inbound_calls" }
+  end
+
+  trait :inbound_messages do
+    category { "inbound_messages" }
+  end
+
+  trait :outbound_calls do
+    category { "outbound_calls" }
+  end
+
+  trait :outbound_messages do
+    category { "outbound_messages" }
+  end
+
   factory :call_data_record do
     association :file, factory: :active_storage_attachment, filename: "freeswitch_cdr.json"
 
@@ -608,27 +624,27 @@ FactoryBot.define do
     carrier
     outbound_calls
     name { "Standard" }
+  end
 
-    trait :inbound_calls do
-      category { "inbound_calls" }
+  factory :tariff_package do
+    carrier
+    outbound_calls
+    name { "Standard" }
+  end
+
+  factory :tariff_plan do
+    transient do
+      carrier { build(:carrier) }
+      category { :outbound_calls }
     end
 
-    trait :inbound_messages do
-      category { "inbound_messages" }
-    end
-
-    trait :outbound_calls do
-      category { "outbound_calls" }
-    end
-
-    trait :outbound_messages do
-      category { "outbound_messages" }
-    end
+    tariff_package { association :tariff_package, carrier:, category: }
+    tariff_schedule { association :tariff_schedule, carrier: tariff_package.carrier, category: tariff_package.category }
   end
 
   factory :destination_tariff do
     transient do
-      carrier { create(:carrier) }
+      carrier { build(:carrier) }
     end
 
     tariff_schedule { association :tariff_schedule, carrier: }
