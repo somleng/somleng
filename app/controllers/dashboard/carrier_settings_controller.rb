@@ -1,6 +1,6 @@
 module Dashboard
   class CarrierSettingsController < DashboardController
-    self.raise_on_open_redirects = false
+    self.action_on_open_redirect = :log
 
     def show
       @resource = current_carrier
