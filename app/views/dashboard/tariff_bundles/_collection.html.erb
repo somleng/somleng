@@ -14,19 +14,18 @@
   </thead>
 
   <tbody>
-    <% resources.each do |tariff_package| %>
-      <% tariff_package = TariffPackageDecorator.new(tariff_package) %>
+    <% resources.each do |tariff_bundle| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(tariff_package.id, dashboard_tariff_package_path(tariff_package)) %>
+          <%= link_to(tariff_bundle.id, dashboard_tariff_bundle_path(tariff_bundle)) %>
         </td>
 
         <td>
-          <%= tariff_package.name %>
+          <%= tariff_bundle.name %>
         </td>
 
         <td>
-          <%= local_time(tariff_package.created_at) %>
+          <%= local_time(tariff_bundle.created_at) %>
         </td>
       </tr>
     <% end %>

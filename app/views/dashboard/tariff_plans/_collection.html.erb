@@ -18,7 +18,6 @@
 
   <tbody>
     <% resources.each do |tariff_plan| %>
-      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
       <% tariff_plan = TariffPlanDecorator.new(tariff_plan) %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>

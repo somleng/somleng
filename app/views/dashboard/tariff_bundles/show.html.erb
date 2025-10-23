@@ -1,0 +1,24 @@
+<%= page_title(title: "Tariff Bundle") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_bundle_path(@resource)) %>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_bundle_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource.decorated) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= f.object.id %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :name %>
+    <%= f.attribute :description %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

@@ -1,0 +1,18 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group, html: { data: { controller: "tariff-bundle-form" } }) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input(
+          :name,
+          placeholder: "Standard"
+        ) %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input(:description, as: :text) %>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

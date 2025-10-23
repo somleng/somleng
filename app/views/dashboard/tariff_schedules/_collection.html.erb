@@ -15,7 +15,6 @@
 
   <tbody>
     <% resources.each do |tariff_schedule| %>
-      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
       <% tariff_schedule = TariffScheduleDecorator.new(tariff_schedule) %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>

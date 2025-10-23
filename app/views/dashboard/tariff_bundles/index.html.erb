@@ -1,0 +1,16 @@
+<%= page_title(title: "Tariff Bundles") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+    <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if policy(:tariff_bundle).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_bundle_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

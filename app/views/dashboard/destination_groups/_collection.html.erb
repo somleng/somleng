@@ -18,7 +18,6 @@
 
   <tbody>
     <% resources.each do |destination_group| %>
-      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
       <% destination_group = DestinationGroupDecorator.new(destination_group) %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
