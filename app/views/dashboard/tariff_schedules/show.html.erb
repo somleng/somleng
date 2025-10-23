@@ -19,6 +19,9 @@
     <%= f.attribute :name %>
     <%= f.attribute :category %>
     <%= f.attribute :description %>
+    <%= f.attribute :tariff_plans do %>
+      <%= external_link_to("Manage", dashboard_tariff_plans_path(filter: { tariff_schedule_id: f.object.id })) %>
+    <% end %>
     <%= f.attribute :destination_tariffs do %>
       <%= external_link_to("Manage", dashboard_destination_tariffs_path(filter: { tariff_schedule_id: f.object.id })) %>
     <% end %>

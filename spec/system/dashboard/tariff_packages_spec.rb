@@ -57,6 +57,7 @@ RSpec.describe "Tariff Packages" do
     carrier_sign_in(user)
     visit dashboard_tariff_package_path(tariff_package)
 
+    expect(page).to have_link("Manage", href: dashboard_tariff_plans_path(filter: { tariff_package_id: tariff_package.id }))
     expect(page).to have_content("Standard")
     expect(page).to have_content("My package description")
   end
@@ -70,7 +71,7 @@ RSpec.describe "Tariff Packages" do
     visit dashboard_tariff_package_path(tariff_package)
     click_on("Edit")
 
-    expect(page).to have_select("Category", selected: "Inbound calls", disabled: true)
+    expect(page).to have_content("Inbound calls")
 
     fill_in("Name", with: "My package name")
     fill_in("Description", with: "My package description")

@@ -19,6 +19,9 @@
     <%= f.attribute :name %>
     <%= f.attribute :category %>
     <%= f.attribute :description %>
+    <%= f.attribute :tariff_plans do %>
+      <%= external_link_to("Manage", dashboard_tariff_plans_path(filter: { tariff_package_id: f.object.id })) %>
+    <% end %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
   <% end %>

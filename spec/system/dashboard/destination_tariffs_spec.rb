@@ -125,7 +125,7 @@ RSpec.describe "Destination Tariffs" do
     visit dashboard_destination_tariff_path(destination_tariff)
 
     expect(page).to have_content("Call")
-    expect(page).to have_link("Outbound calls (Standard", href: dashboard_tariff_schedule_path(destination_tariff.tariff_schedule_id))
+    expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_schedule_path(destination_tariff.tariff_schedule_id))
     expect(page).to have_link("$0.01 / min", href: dashboard_tariff_path(destination_tariff.tariff_id))
     expect(page).to have_link("Cambodia", href: dashboard_destination_group_path(destination_tariff.destination_group_id))
   end

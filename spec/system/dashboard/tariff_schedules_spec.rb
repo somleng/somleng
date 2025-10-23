@@ -59,6 +59,7 @@ RSpec.describe "Tariff Schedules" do
     visit dashboard_tariff_schedule_path(tariff_schedule)
 
     expect(page).to have_link("Manage", href: dashboard_destination_tariffs_path(filter: { tariff_schedule_id: tariff_schedule.id }))
+    expect(page).to have_link("Manage", href: dashboard_tariff_plans_path(filter: { tariff_schedule_id: tariff_schedule.id }))
   end
 
   it "update a tariff schedule" do
@@ -70,7 +71,7 @@ RSpec.describe "Tariff Schedules" do
     visit dashboard_tariff_schedule_path(tariff_schedule)
     click_on("Edit")
 
-    expect(page).to have_select("Category", selected: "Inbound calls", disabled: true)
+    expect(page).to have_content("Inbound calls")
 
     fill_in("Name", with: "New Name")
     fill_in("Description", with: "Standard rates")

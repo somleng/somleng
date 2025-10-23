@@ -9,3 +9,4 @@ en:
     call_per_minute_rate: "Per minute rate"
     call_connection_fee: "Connection fee"
     tariff_schedule_id: "Schedule"
+    tariff_package_id: "Package"
