@@ -22,7 +22,7 @@
           :destination_group_id,
           collection: f.object.destination_group_options_for_select,
           prompt: true,
-          hint: "#{@tariff_schedule.category.description}",
+          hint: "#{f.object.tariff_schedule.category.description}",
           input_html: {
             data: { behavior: "choices-input" }
           }

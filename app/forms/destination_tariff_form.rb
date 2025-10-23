@@ -28,6 +28,10 @@ class DestinationTariffForm < ApplicationForm
     true
   end
 
+  def tariff_schedule
+    @tariff_schedule ||= carrier.tariff_schedules.find(tariff_schedule_id)
+  end
+
   def tariff_schedules_options_for_select
     options_for_select([ tariff_schedule ]) { |item| [ item.name, item.id ] }
   end
@@ -41,10 +45,6 @@ class DestinationTariffForm < ApplicationForm
   end
 
   private
-
-  def tariff_schedule
-    @tariff_schedule ||= carrier.tariff_schedules.find(tariff_schedule_id)
-  end
 
   def tariffs
     @tariffs ||= carrier.tariffs.where(category: tariff_schedule.category.tariff_category)
