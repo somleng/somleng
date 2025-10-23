@@ -12,6 +12,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   layout :resolve_layout
 
   self.raise_on_open_redirects = false
+  self.action_on_open_redirect = :log
 
   def create
     verify_captcha(action: :sign_up, on_failure: -> { on_captcha_failure }) do
