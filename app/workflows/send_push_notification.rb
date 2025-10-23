@@ -2,7 +2,6 @@ class SendPushNotification < ApplicationWorkflow
   attr_reader :devices, :title, :body, :data
 
   def initialize(devices:, title:, body:, data: {})
-    super()
     @devices = devices
     @title = title
     @body = body
