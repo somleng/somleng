@@ -4,13 +4,16 @@ RSpec.describe "Tariff Bundles" do
   it "filter tariff bundles" do
     carrier = create(:carrier)
     tariff_bundle = create(:tariff_bundle, carrier:, name: "Standard")
+    tariff_package = create(:tariff_package, carrier:)
+    create(:tariff_bundle_line_item, tariff_bundle:, tariff_package:)
     filtered_tariff_bundles = [
-      create(:tariff_bundle, carrier:, name: "Special")
+      create(:tariff_bundle, carrier:, name: "Special"),
+      create(:tariff_bundle, carrier:, name: "Standard")
     ]
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_tariff_bundles_path(filter: { name: "standard" })
+    visit dashboard_tariff_bundles_path(filter: { name: "standard", tariff_package_id: tariff_package.id })
 
     expect(page).to have_content(tariff_bundle.id)
     filtered_tariff_bundles.each do |tariff_bundle|

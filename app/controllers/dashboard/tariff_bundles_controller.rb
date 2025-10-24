@@ -1,7 +1,7 @@
 module Dashboard
   class TariffBundlesController < DashboardController
     def index
-      @resources = apply_filters(scope)
+      @resources = apply_filters(scope.includes(:tariff_packages))
       @resources = paginate_resources(@resources)
     end
 

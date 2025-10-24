@@ -54,12 +54,6 @@ class TariffBundleForm < ApplicationForm
     end
   end
 
-  def line_items_by_category_type
-    line_items.each_with_object(Hash.new { |h, k| h[k] = [] }) do |line_item, result|
-      result[line_item.category.type] << line_item
-    end
-  end
-
   private
 
   def filled_line_items

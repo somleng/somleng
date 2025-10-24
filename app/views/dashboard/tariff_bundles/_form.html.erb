@@ -22,7 +22,7 @@
     </div>
 
     <% line_item_index = 0 %>
-    <% f.object.line_items_by_category_type.each do |(category_type, line_items)| %>
+    <% group_collection_by(f.object.line_items) { _1.category.type }.each do |(category_type, line_items)| %>
       <div class="card mb-3">
         <div class="card-body">
           <h5 class="card-title">

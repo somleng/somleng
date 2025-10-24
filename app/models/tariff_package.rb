@@ -8,5 +8,5 @@ class TariffPackage < ApplicationRecord
   has_many :account_billing_profiles, through: :tariff_bundles
   has_many :accounts, through: :billing_profiles
 
-  enumerize :category, in: TariffSchedule.category.values
+  enumerize :category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
 end

@@ -648,7 +648,11 @@ FactoryBot.define do
   end
 
   factory :tariff_bundle_line_item do
-    tariff_bundle
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    tariff_bundle { association(:tariff_bundle, carrier:) }
     tariff_package { association(:tariff_package, carrier: tariff_bundle.carrier) }
     category { tariff_package.category }
   end

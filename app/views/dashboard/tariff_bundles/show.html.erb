@@ -20,15 +20,7 @@
     <%= f.attribute :description %>
     <%= f.attribute :packages do %>
       <% if f.object.line_items.present? %>
-        <ul class="list-unstyled">
-          <% f.object.line_items.includes(:tariff_package).each do |line_item| %>
-            <% tariff_package = line_item.tariff_package.decorated %>
-
-            <li>
-              <%= external_link_to(tariff_package.name, dashboard_tariff_package_path(tariff_package)) %>
-            </li>
-          <%- end %>
-        </ul>
+        <%= tariff_bundle_packages(f.object) %>
       <% end %>
     <% end %>
 
