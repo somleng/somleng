@@ -137,6 +137,8 @@ FactoryBot.define do
     max_channels { 4 }
     carrier
 
+    traits_for_enum :device_type, SMSGateway.device_type.values
+
     trait :connected do
       after(:create, &:receive_ping)
     end
@@ -504,14 +506,39 @@ FactoryBot.define do
     end
 
     trait :sent do
+      sending
+      with_send_request
       status { :sent }
       sent_at { Time.current }
+    end
+
+    trait :failed do
+      sent
+      status { :failed }
+      failed_at { Time.current }
+    end
+
+    trait :delivered do
+      sent
+      status { :delivered }
+      delivered_at { Time.current }
     end
 
     trait :with_messaging_service do
       messaging_service
       account { messaging_service.account }
     end
+
+    trait :with_send_request do
+      after(:build) do |message|
+        message.send_request ||= build(:message_send_request, message:)
+      end
+    end
+  end
+
+  factory :message_send_request do
+    message
+    sms_gateway { message.sms_gateway }
   end
 
   factory :messaging_service do
@@ -727,5 +754,12 @@ FactoryBot.define do
       status { :canceled }
       canceled_at { Time.current }
     end
+  end
+
+  factory :application_push_device do
+    owner { association :sms_gateway, :app }
+    token { SecureRandom.uuid }
+    name { "Oppo A57" }
+    platform { "google" }
   end
 end

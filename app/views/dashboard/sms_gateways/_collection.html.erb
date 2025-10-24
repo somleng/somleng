@@ -5,6 +5,9 @@
         Name
       </th>
       <th>
+        Device type
+      </th>
+      <th>
         Channel groups
       </th>
       <th>
@@ -22,6 +25,10 @@
 
         <td>
           <%= link_to(sms_gateway.name, polymorphic_path([:dashboard, sms_gateway])) %>
+        </td>
+
+        <td>
+          <%= sms_gateway.device_type.text %>
         </td>
 
         <td>

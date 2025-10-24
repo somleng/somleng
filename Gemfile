@@ -11,7 +11,11 @@ gem "administrate", github: "thoughtbot/administrate"
 gem "administrate-field-active_storage"
 gem "image_processing"
 
+# https://github.com/ruby/openssl/issues/949
+gem "openssl"
+
 gem "aasm"
+gem "action_push_native"
 gem "active_storage_validations"
 gem "addressable"
 gem "anycable-rails"
