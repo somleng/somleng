@@ -28,7 +28,7 @@ class TariffBundleLineItemForm < ApplicationForm
   def save
     return false if invalid?
 
-    self.object = tariff_bundle.line_items.find(id) if id.present?
+    self.object = tariff_bundle.line_items.where(category:).find(id) if id.present?
 
     return object.destroy! if object.persisted? && tariff_package_id.blank?
 
