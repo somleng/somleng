@@ -29,8 +29,10 @@ RSpec.describe SendPushNotification do
           title: "New outbound message",
           body:  "[Message: #1]",
           google_data: {
-            type: "message_send_request",
-            message_id: 1
+            data: {
+              type: "message_send_request",
+              message_id: 1
+            }
           }
         ),
         device

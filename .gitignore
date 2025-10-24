@@ -70,3 +70,11 @@ dump.rdb
 # 1password
 
 .op
+
+# Ignore key files for decrypting credentials and more.
+/config/credentials/*.key
+
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+

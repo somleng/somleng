@@ -39,7 +39,7 @@ default: &default
     primary_key: 5Owbop0UTpEsYwX0wK56VM1eg4xl7LXX
     deterministic_key: 5J0sxNi4YDp5cZnfV9BhXpujwgoOvhgV
     key_derivation_salt: M8Ic6zpgGiXHYCjOH8nie0c9aMtFoPWV
-  firebase_service_account_json_file: <%= ENV.fetch("FIREBASE_SERVICE_ACCOUNT_JSON_FILE", "{}") %>
+  firebase_service_account_json_file: "<%= ENV.fetch("FIREBASE_SERVICE_ACCOUNT_JSON_FILE", "{}") %>"
   firebase_project_id: <%= ENV.fetch("FIREBASE_PROJECT_ID", "firebase-project-id") %>
 
 production: &production
@@ -64,6 +64,8 @@ production: &production
     primary_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY") { Rails.application.credentials.dig(:active_record_encryption, :primary_key) } %>"
     deterministic_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY") { Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) } %>"
     key_derivation_salt: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT") { Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) } %>"
+  firebase_service_account_json_file: <%= Rails.application.credentials.firebase_service_account_json_file %>
+  firebase_project_id: <%= Rails.application.credentials.firebase_project_id %>
 
 staging:
   <<: *production
