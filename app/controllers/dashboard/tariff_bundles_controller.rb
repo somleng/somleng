@@ -39,7 +39,10 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:tariff_bundle).permit(:name, :description)
+      params.require(:tariff_bundle).permit(
+        :name, :description,
+        line_items: [ :id, :tariff_package_id, :category ]
+      )
     end
 
     def scope

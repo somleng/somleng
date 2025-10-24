@@ -22,7 +22,6 @@
           :destination_group_id,
           collection: f.object.destination_group_options_for_select,
           prompt: true,
-          hint: "#{f.object.tariff_schedule.category.description.humanize}",
           input_html: {
             data: { behavior: "choices-input" }
           }
@@ -34,7 +33,6 @@
           :tariff_id,
           collection: f.object.tariff_options_for_select,
           prompt: true,
-          hint: "Cost",
           input_html: {
             data: { behavior: "choices-input" }
           }

@@ -1,17 +1,89 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource], wrapper: :input_group, html: { data: { controller: "tariff-bundle-form" } }) do |f| %>
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input(
-          :name,
-          placeholder: "Standard"
-        ) %>
-      </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          General
+        </h5>
 
-      <div class="col-sm-6">
-        <%= f.input(:description, as: :text) %>
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(
+              :name,
+              placeholder: "Standard"
+            ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(:description, as: :text) %>
+          </div>
+        </div>
       </div>
     </div>
+
+    <% line_item_index = 0 %>
+    <% f.object.line_items_by_category_type.each do |(category_type, line_items)| %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            <% if category_type.messages? %>
+              <i class="fa-solid fa-comment-dots"></i>
+            <% elsif category_type.calls? %>
+              <i class="fa-solid fa-phone"></i>
+            <% end %>
+            <%= category_type.to_s.humanize %>
+          </h5>
+          <div class="row">
+            <% line_items.each do |line_item| %>
+              <div class="col mb-3">
+                <%= f.simple_fields_for(:line_items, line_item, index: line_item_index) do |line_item_form| %>
+                  <div class="card mb-3 <%= "#{line_item.category.value.dasherize}-line-item" %>">
+                    <div class="card-body">
+                      <h6 class="card-title">
+                        <% if line_item.category.direction.inbound? %>
+                          <i class="fa-solid fa-arrow-left"></i>
+                        <% elsif line_item.category.direction.outbound? %>
+                          <i class="fa-solid fa-arrow-right"></i>
+                        <% end %>
+                        <%= line_item.category.direction.to_s.humanize %>
+                      </h6>
+
+                      <% tariff_packages = line_item.tariff_packages_options_for_select %>
+                      <% if tariff_packages.any? %>
+                        <% prompt = true %>
+                      <% else %>
+                        <% prompt = "".html_safe + "No packages available for #{line_item.category.value.humanize}. " + link_to("Create one.", new_dashboard_tariff_package_path(filter: { category: line_item.category }), target: "_blank").html_safe %>
+                      <% end%>
+
+                      <%= line_item_form.input(
+                        :tariff_package_id,
+                        collection: tariff_packages,
+                        prompt:,
+                        required: false,
+                        include_blank: true,
+                        hint: "Select an #{line_item.category.value.humanize} package.",
+                        input_html: {
+                          data: {
+                            behavior: "choices-input",
+                            choices_options: {
+                              removeItemButton: true
+                            }
+                          }
+                        }
+                      ) %>
+
+                      <%= line_item_form.input(:category, as: :hidden) %>
+                      <%= line_item_form.input(:id, as: :hidden) %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+              <% line_item_index +=1 %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
 
     <%= f.button :submit %>
   <% end %>

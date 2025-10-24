@@ -1,6 +1,4 @@
 class TariffScheduleForm < ApplicationForm
-  extend Enumerize
-
   attribute :carrier
   attribute :category
   attribute :object, default: -> { TariffSchedule.new }

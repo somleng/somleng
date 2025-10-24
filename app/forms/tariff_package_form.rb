@@ -1,6 +1,4 @@
 class TariffPackageForm < ApplicationForm
-  extend Enumerize
-
   attribute :carrier
   attribute :category
   attribute :object, default: -> { TariffPackage.new }

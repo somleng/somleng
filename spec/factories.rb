@@ -647,6 +647,12 @@ FactoryBot.define do
     name { "Standard" }
   end
 
+  factory :tariff_bundle_line_item do
+    tariff_bundle
+    tariff_package { association(:tariff_package, carrier: tariff_bundle.carrier) }
+    category { tariff_package.category }
+  end
+
   factory :destination_tariff do
     transient do
       carrier { build(:carrier) }

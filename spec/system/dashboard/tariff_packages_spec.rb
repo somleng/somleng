@@ -27,7 +27,7 @@ RSpec.describe "Tariff Packages" do
     visit dashboard_tariff_packages_path
     click_on("New")
 
-    select("Outbound calls", from: "Category")
+    choices_select("Outbound calls", from: "Category")
     fill_in("Name", with: "Standard")
     fill_in("Description", with: "My package description")
     click_on("Create Tariff package")
@@ -35,6 +35,16 @@ RSpec.describe "Tariff Packages" do
     expect(page).to have_content("Tariff package was successfully created.")
     expect(page).to have_content("Outbound calls")
     expect(page).to have_content("My package description")
+  end
+
+  it "preselects the inputs" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit new_dashboard_tariff_package_path(filter: { category: "inbound_messages" })
+
+    expect(page).to have_choices_select("Category", selected: "Inbound messages")
   end
 
   it "handle validation errors" do

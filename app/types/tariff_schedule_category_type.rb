@@ -1,5 +1,5 @@
 class TariffScheduleCategoryType < ActiveRecord::Type::String
-  TariffScheduleCategory = Data.define(:value, :tariff_category, :description, :direction, :diagram_direction_symbol, :diagram_category) do
+  TariffScheduleCategory = Data.define(:value, :tariff_category, :type, :description, :direction, :diagram_direction_symbol, :diagram_category) do
     delegate :to_s, :to_sym, to: :value
   end
 
@@ -9,24 +9,28 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
     case value.to_sym
     when :inbound_calls
       direction = :inbound
+      type = :calls
       tariff_category = :call
       description = "inbound calls from"
       diagram_category = "CALL"
       diagram_direction_symbol = "<-"
     when :inbound_messages
       direction = :inbound
+      type = :messages
       tariff_category = :message
       description = "inbound messages from"
       diagram_category = "MSG"
       diagram_direction_symbol = "<-"
     when :outbound_calls
       direction = :outbound
+      type = :calls
       tariff_category = :call
       description = "outbound calls to"
       diagram_category = "CALL"
       diagram_direction_symbol = "->"
     when :outbound_messages
       direction = :outbound
+      type = :messages
       tariff_category = :message
       description = "outbound messages to"
       diagram_category = "MSG"
@@ -36,6 +40,7 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
     TariffScheduleCategory.new(
       value:,
       tariff_category:,
+      type: ActiveSupport::StringInquirer.new(type.to_s),
       description:,
       direction: ActiveSupport::StringInquirer.new(direction.to_s),
       diagram_category:,
