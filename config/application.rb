@@ -27,7 +27,6 @@ module Somleng
     config.autoload_lib(ignore: %w[assets tasks templates])
 
     config.active_support.escape_html_entities_in_json = false
-    config.active_support.to_time_preserves_timezone = :zone
 
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
