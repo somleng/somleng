@@ -1,0 +1,28 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%=
+          f.input(
+            :name,
+            required: true,
+            placeholder: "US Destinations",
+            hint: "Enter a name for the destination group."
+          ) %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input(
+          :prefixes,
+          as: :text,
+          placeholder: "1",
+          hint: "A comma separated list of prefixes. Must include the country code.",
+          input_html: { value: f.object.prefixes_formatted }
+        ) %>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+  <% end %>
+</div>

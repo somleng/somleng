@@ -14,6 +14,22 @@ FactoryBot.define do
     status_callback_method { "GET" }
   end
 
+  trait :inbound_calls do
+    category { "inbound_calls" }
+  end
+
+  trait :inbound_messages do
+    category { "inbound_messages" }
+  end
+
+  trait :outbound_calls do
+    category { "outbound_calls" }
+  end
+
+  trait :outbound_messages do
+    category { "outbound_messages" }
+  end
+
   factory :call_data_record do
     association :file, factory: :active_storage_attachment, filename: "freeswitch_cdr.json"
 
@@ -526,6 +542,129 @@ FactoryBot.define do
       inbound_request_url { "https://www.example.com/incoming_request.xml" }
       inbound_request_method { "POST" }
     end
+  end
+
+  factory :destination_group do
+    transient do
+      prefixes { [] }
+    end
+
+    carrier
+    name { "Cambodia" }
+
+    after(:build) do |destination_group, evaluator|
+      evaluator.prefixes.each do |prefix|
+        destination_group.prefixes << build(:destination_prefix, destination_group:, prefix:)
+      end
+    end
+  end
+
+  factory :destination_prefix do
+    destination_group
+    sequence(:prefix) { |n| "8551#{n}" }
+  end
+
+  factory :tariff do
+    carrier { association :carrier, billing_currency: "USD" }
+    name { "Default Tariff" }
+    currency { carrier.billing_currency }
+    call
+
+    transient do
+      per_minute_rate { InfinitePrecisionMoney.new(10, currency) }
+      connection_fee { InfinitePrecisionMoney.new(1, currency) }
+      message_rate { InfinitePrecisionMoney.new(5, currency) }
+    end
+
+    trait :call do
+      category { "call" }
+      after(:build) do |tariff, evaluator|
+        tariff.call_tariff ||= build(
+          :call_tariff,
+          tariff:,
+          per_minute_rate: evaluator.per_minute_rate,
+          connection_fee: evaluator.connection_fee
+        )
+      end
+    end
+
+    trait :message do
+      category { "message" }
+      after(:build) do |tariff, evaluator|
+        tariff.message_tariff ||= build(
+          :message_tariff,
+          tariff:,
+          rate: evaluator.message_rate
+        )
+      end
+    end
+  end
+
+  factory :call_tariff do
+    transient do
+      per_minute_rate { InfinitePrecisionMoney.new(10, tariff.currency) }
+      connection_fee { InfinitePrecisionMoney.new(0, tariff.currency) }
+    end
+
+    tariff
+    per_minute_rate_cents { per_minute_rate.cents }
+    connection_fee_cents { connection_fee.cents }
+  end
+
+  factory :message_tariff do
+    transient do
+      rate { InfinitePrecisionMoney.new(5, tariff.currency) }
+    end
+
+    tariff
+    rate_cents { rate.cents }
+  end
+
+  factory :tariff_schedule do
+    carrier
+    outbound_calls
+    name { "Standard" }
+  end
+
+  factory :tariff_package do
+    carrier
+    outbound_calls
+    name { "Standard" }
+  end
+
+  factory :tariff_plan do
+    transient do
+      carrier { build(:carrier) }
+      category { :outbound_calls }
+    end
+
+    tariff_package { association :tariff_package, carrier:, category: }
+    tariff_schedule { association :tariff_schedule, carrier: tariff_package.carrier, category: tariff_package.category }
+  end
+
+  factory :tariff_bundle do
+    carrier
+    name { "Standard" }
+  end
+
+  factory :tariff_bundle_line_item do
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    tariff_bundle { association(:tariff_bundle, carrier:) }
+    tariff_package { association(:tariff_package, carrier: tariff_bundle.carrier) }
+    category { tariff_package.category }
+  end
+
+  factory :destination_tariff do
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    tariff_schedule { association :tariff_schedule, carrier: }
+    tariff { association :tariff, carrier: tariff_schedule.carrier }
+    destination_group { association :destination_group, carrier: tariff_schedule.carrier }
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do

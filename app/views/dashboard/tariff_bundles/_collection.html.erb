@@ -1,0 +1,40 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Packages
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |tariff_bundle| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(tariff_bundle.id, dashboard_tariff_bundle_path(tariff_bundle)) %>
+        </td>
+
+        <td>
+          <%= tariff_bundle.name %>
+        </td>
+
+        <td>
+          <%= tariff_bundle_packages(tariff_bundle) %>
+        </td>
+
+        <td>
+          <%= local_time(tariff_bundle.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
