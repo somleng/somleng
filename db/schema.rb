@@ -17,17 +17,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_23_050747) do
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
 
-  create_table "account_billing_profile_tariff_bundle_line_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "account_billing_profile_tariff_package_line_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_billing_profile_id", null: false
     t.string "category", null: false
     t.datetime "created_at", null: false
     t.bigserial "sequence_number", null: false
-    t.uuid "tariff_bundle_line_item_id", null: false
+    t.uuid "tariff_package_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_billing_profile_id", "category"], name: "idx_on_account_billing_profile_id_category_02a4089661", unique: true
-    t.index ["account_billing_profile_id"], name: "idx_on_account_billing_profile_id_5ce9c18291"
-    t.index ["sequence_number"], name: "idx_on_sequence_number_0e9e5174e3", unique: true, order: :desc
-    t.index ["tariff_bundle_line_item_id"], name: "idx_on_tariff_bundle_line_item_id_d9cfab1dbb"
+    t.index ["account_billing_profile_id", "category"], name: "idx_on_account_billing_profile_id_category_9d5b6e92f8", unique: true
+    t.index ["account_billing_profile_id"], name: "idx_on_account_billing_profile_id_71fde5ac46"
+    t.index ["sequence_number"], name: "idx_on_sequence_number_5544ec671a", unique: true, order: :desc
+    t.index ["tariff_package_id"], name: "idx_on_tariff_package_id_e7029f3b4e"
   end
 
   create_table "account_billing_profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -994,8 +994,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_23_050747) do
     t.index ["webhook_endpoint_id"], name: "index_webhook_request_logs_on_webhook_endpoint_id"
   end
 
-  add_foreign_key "account_billing_profile_tariff_bundle_line_items", "account_billing_profiles", on_delete: :cascade
-  add_foreign_key "account_billing_profile_tariff_bundle_line_items", "tariff_bundle_line_items", on_delete: :cascade
+  add_foreign_key "account_billing_profile_tariff_package_line_items", "account_billing_profiles", on_delete: :cascade
+  add_foreign_key "account_billing_profile_tariff_package_line_items", "tariff_packages", on_delete: :cascade
   add_foreign_key "account_billing_profiles", "accounts", on_delete: :cascade
   add_foreign_key "account_billing_profiles", "tariff_bundles", on_delete: :nullify
   add_foreign_key "account_memberships", "accounts", on_delete: :cascade
