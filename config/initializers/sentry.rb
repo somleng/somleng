@@ -5,6 +5,7 @@ Sentry.init do |config|
     "ProcessCDRJob::Handler::InvalidStateTransitionError",
     "ProcessCDRJob::Handler::CDRAlreadyExistsError",
     "CreatePhoneCallEventJob::Handler::PhoneCallNotFoundError",
-    "CreatePhoneCallEventJob::Handler::InvalidStateTransitionError"
+    "CreatePhoneCallEventJob::Handler::InvalidStateTransitionError",
+    "ActiveRecord::ConnectionNotEstablished"
   ]
 end
