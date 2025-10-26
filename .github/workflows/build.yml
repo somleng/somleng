@@ -108,7 +108,7 @@ jobs:
 
       - name: Upload Documentation Source
         if: steps.set-deployment-matrix.outputs.matrixLength > 0
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: documentation_source
           path: doc/
@@ -137,7 +137,7 @@ jobs:
           ruby-version: "3.3"
 
       - name: Download Documentation Source
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: documentation_source
           path: api_docs
