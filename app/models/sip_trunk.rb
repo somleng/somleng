@@ -9,7 +9,7 @@ class SIPTrunk < ApplicationRecord
   encrypts :password
 
   enumerize :authentication_mode, in: %i[ip_address client_credentials]
-  enumerize :sip_profile, in: %i[nat_gateway nat_instance test], default: :nat_gateway
+  enumerize :sip_profile, in: %i[nat_gateway uac_nat_instance test], default: :nat_gateway
 
   attribute :username_generator, default: UsernameGenerator.new
   attribute :region, RegionType.new
