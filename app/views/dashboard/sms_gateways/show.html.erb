@@ -13,6 +13,7 @@
     <% sms_gateway = @resource.decorated %>
 
     <%= f.attribute :name %>
+    <%= f.attribute :device_type, value: @resource.device_type.text %>
     <%= f.attribute :device_token do %>
       <%= mask_content(@resource.device_token) %>
     <% end %>

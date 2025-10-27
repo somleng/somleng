@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_10_040544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -50,6 +50,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
     t.index ["type"], name: "index_accounts_on_type"
+  end
+
+  create_table "action_push_native_devices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "platform", null: false
+    t.string "token", null: false
+    t.string "owner_type", null: false
+    t.uuid "owner_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
+    t.index ["sequence_number"], name: "index_action_push_native_devices_on_sequence_number", unique: true, order: :desc
+    t.index ["token"], name: "index_action_push_native_devices_on_token", unique: true
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -287,6 +301,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.index ["account_id"], name: "index_media_streams_on_account_id"
     t.index ["phone_call_id"], name: "index_media_streams_on_phone_call_id"
     t.index ["sequence_number"], name: "index_media_streams_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "message_send_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "message_id"
+    t.uuid "device_id"
+    t.uuid "sms_gateway_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id"], name: "index_message_send_requests_on_device_id"
+    t.index ["message_id"], name: "index_message_send_requests_on_message_id", unique: true
+    t.index ["sequence_number"], name: "index_message_send_requests_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_message_send_requests_on_sms_gateway_id"
   end
 
   create_table "messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -655,6 +682,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
     t.datetime "updated_at", null: false
     t.datetime "last_connected_at"
     t.string "default_sender"
+    t.string "device_type", null: false
     t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
     t.index ["default_sender"], name: "index_sms_gateways_on_default_sender"
     t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true
@@ -843,6 +871,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
   add_foreign_key "account_memberships", "users", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
+  add_foreign_key "action_push_native_devices", "sms_gateways", column: "owner_id", on_delete: :cascade
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
@@ -869,6 +898,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_092109) do
   add_foreign_key "media_stream_events", "phone_calls"
   add_foreign_key "media_streams", "accounts"
   add_foreign_key "media_streams", "phone_calls"
+  add_foreign_key "message_send_requests", "action_push_native_devices", column: "device_id", on_delete: :nullify
+  add_foreign_key "message_send_requests", "messages", on_delete: :nullify
+  add_foreign_key "message_send_requests", "sms_gateways", on_delete: :cascade
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
   add_foreign_key "messages", "incoming_phone_numbers"

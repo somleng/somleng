@@ -1,8 +1,15 @@
 class SMSGateway < ApplicationRecord
+  extend Enumerize
+
   belongs_to :carrier
   has_many :messages
   has_many :channel_groups, class_name: "SMSGatewayChannelGroup"
   has_many :channels, class_name: "SMSGatewayChannel"
+  has_many :app_devices, class_name: "SMSGatewayDevice", as: :owner, dependent: :destroy
+
+
+  enumerize :device_type, in: %i[gateway app], default: :gateway,
+    predicates: true, scope: :shallow
 
   encrypts :device_token, deterministic: true, downcase: true
 

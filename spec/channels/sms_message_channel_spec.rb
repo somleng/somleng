@@ -142,6 +142,43 @@ RSpec.describe SMSMessageChannel, type: :channel do
     end
   end
 
+  describe "#message_send_requested" do
+    it "handles a message send request" do
+      sms_gateway = stub_current_sms_gateway
+      message = create(:message, :sending, sms_gateway:)
+
+      subscribe
+      perform(:message_send_requested, id: message.id)
+
+      expect(message.send_request).to be_present
+      expect(message.send_request).to have_attributes(
+        sms_gateway:,
+        message:
+      )
+      expect(transmissions.last).to match(
+        "type" => "message_send_request_confirmed",
+        "message" => {
+          "id" => message.id,
+          "body" => message.body,
+          "to" => message.to.to_s,
+          "from" => message.from.to_s,
+          "channel" => message.channel
+        }
+      )
+    end
+
+    it "handles a message send request that already has a send request" do
+      sms_gateway = stub_current_sms_gateway
+      message = create(:message, :sending, sms_gateway:)
+      create(:message_send_request, message:, sms_gateway:)
+
+      subscribe
+      perform(:message_send_requested, id: message.id)
+
+      expect(transmissions).to be_empty
+    end
+  end
+
   def stub_current_sms_gateway(attributes = {})
     sms_gateway = create(:sms_gateway, attributes)
     stub_connection(current_sms_gateway: sms_gateway)
