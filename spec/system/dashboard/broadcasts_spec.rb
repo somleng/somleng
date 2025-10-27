@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Broadcasts" do
-  it "List broadcasts" do
-    carrier = create(:carrier)
+  it "List broadcasts for Pakistan" do
+    carrier = create(:carrier, country_code: "PK")
     user = create(:user, :carrier, carrier:, id: "d28bb460-1324-4aa5-860a-8ef48fb5ca7f")
 
     carrier_sign_in(user)
@@ -16,5 +16,17 @@ RSpec.describe "Broadcasts" do
     click_on "Start"
 
     expect(page).to have_content("Broadcast was successfully updated.")
+  end
+
+  it "List broadcasts for Nepal" do
+    carrier = create(:carrier, country_code: "NP")
+    user = create(:user, :carrier, carrier:, id: "48ff488f-f75a-4dd5-b0c7-bfb135b289f1")
+
+    carrier_sign_in(user)
+    visit dashboard_root_path
+
+    click_on "Broadcasts"
+
+    expect(page).to have_content("Flood Warning for Sunsari District")
   end
 end
