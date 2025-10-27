@@ -68,8 +68,8 @@ RSpec.describe AccountForm do
 
       result = form.save
 
-      expect(result).to eq(true)
-      expect(form.account).to have_attributes(
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
         access_token: be_present,
         name: "Rocket Rides",
         enabled?: true,
@@ -93,8 +93,8 @@ RSpec.describe AccountForm do
 
       result = form.save
 
-      expect(result).to eq(true)
-      expect(form.account).to have_attributes(
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
         owner: have_attributes(name: "John Doe", email: "johndoe@example.com")
       )
       expect(ActionMailer::MailDeliveryJob).to have_been_enqueued
@@ -116,13 +116,13 @@ RSpec.describe AccountForm do
         name: "Car Rides",
         default_tts_voice: "Basic.Slt",
         carrier:,
-        account:
+        object: account
       )
 
       result = form.save
 
-      expect(result).to eq(true)
-      expect(form.account).to have_attributes(
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
         name: "Car Rides",
         default_tts_voice: have_attributes(
           identifier: "Basic.Slt"
@@ -144,15 +144,15 @@ RSpec.describe AccountForm do
 
       form = AccountForm.new(
         carrier:,
-        account:,
+        object: account,
         sip_trunk_id: nil,
         calls_per_second: 10
       )
 
       result = form.save
 
-      expect(result).to eq(true)
-      expect(form.account).to have_attributes(
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
         sip_trunk: nil,
         calls_per_second: 10,
         type: "customer_managed"

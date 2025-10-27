@@ -39,10 +39,10 @@ RSpec.describe "Accounts" do
 
     expect(page).to have_content("Filter 3")
     expect(page).to have_content("Rocket Rides")
-    expect(page).not_to have_content("Garry Gas")
-    expect(page).not_to have_content("Alice Apples")
-    expect(page).not_to have_content("Disabled Account")
-    expect(page).not_to have_content("Carrier Account")
+    expect(page).to have_no_content("Garry Gas")
+    expect(page).to have_no_content("Alice Apples")
+    expect(page).to have_no_content("Disabled Account")
+    expect(page).to have_no_content("Carrier Account")
   end
 
   it "Create an account" do
@@ -173,7 +173,7 @@ RSpec.describe "Accounts" do
     click_on("Update Account")
 
     expect(page).to have_content("Account was successfully updated")
-    expect(page).not_to have_link(
+    expect(page).to have_no_link(
       "Main SIP Trunk"
     )
   end

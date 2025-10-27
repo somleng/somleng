@@ -5,15 +5,18 @@ class AccountForm
   attribute :carrier
   attribute :name
   attribute :enabled, :boolean, default: true
-  attribute :account, default: -> { Account.new(type: :carrier_managed, access_token: Doorkeeper::AccessToken.new) }
+  attribute :object, default: -> { Account.new(type: :carrier_managed, access_token: Doorkeeper::AccessToken.new) }
   attribute :sip_trunk_id
   attribute :owner_name
   attribute :owner_email
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
   attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
+  attribute :tariff_package_line_items,
+            FormCollectionType.new(form: AccountTariffPackageForm),
+            default: []
 
-  delegate :new_record?, :persisted?, :id, :customer_managed?, to: :account
+  delegate :new_record?, :persisted?, :id, :customer_managed?, :carrier_managed?, to: :object
 
   validates :default_tts_voice, presence: true
   validates :name, presence: true, unless: :customer_managed?
@@ -27,36 +30,58 @@ class AccountForm
             }
 
   validate :validate_owner
+  validate :validate_tariff_package_line_items
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Account")
   end
 
-  def self.initialize_with(account)
+  def self.initialize_with(object)
     new(
-      account:,
-      carrier: account.carrier,
-      name: account.name,
-      sip_trunk_id: account.sip_trunk_id,
-      enabled: account.enabled?,
-      calls_per_second: account.calls_per_second,
-      owner_name: account.owner&.name,
-      owner_email: account.owner&.email,
-      default_tts_voice: account.default_tts_voice
+      object:,
+      carrier: object.carrier,
+      name: object.name,
+      sip_trunk_id: object.sip_trunk_id,
+      enabled: object.enabled?,
+      calls_per_second: object.calls_per_second,
+      owner_name: object.owner&.name,
+      owner_email: object.owner&.email,
+      default_tts_voice: object.default_tts_voice,
+      tariff_package_line_items: object.tariff_package_line_items
     )
+  end
+
+  def initialize(**)
+    super(**)
+    self.object.carrier = carrier
+    self.tariff_package_line_items = build_tariff_package_line_items
+  end
+
+  def tariff_package_line_items=(value)
+    super
+    tariff_package_line_items.each { _1.account = object }
   end
 
   def save
     return false if invalid?
 
     Account.transaction do
-      account.carrier = carrier
-      account.status = enabled ? "enabled" : "disabled"
-      account.calls_per_second = calls_per_second
-      account.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
-      update_carrier_managed_attributes
+      object.carrier = carrier
+      object.status = enabled ? "enabled" : "disabled"
+      object.calls_per_second = calls_per_second
+      object.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
+      if carrier_managed?
+        object.name = name
+        object.default_tts_voice = default_tts_voice
 
-      account.save!
+        if owner_email.present?
+          object.type = :customer_managed
+          invite_owner!
+        end
+      end
+
+      object.save!
+      filled_tariff_package_line_items.all? { _1.save }
     end
   end
 
@@ -67,32 +92,39 @@ class AccountForm
 
   private
 
-  def update_carrier_managed_attributes
-    return if customer_managed?
-
-    account.name = name
-    account.default_tts_voice = default_tts_voice
-
-    if owner_email.present?
-      account.type = :customer_managed
-      invite_owner!
-    end
-  end
-
   def validate_owner
     return if owner_email.blank? && owner_name.blank?
     return errors.add(:owner_email, :blank) if owner_name.present? && owner_email.blank?
     return errors.add(:owner_name, :blank) if owner_email.present? && owner_name.blank?
-    return errors.add(:owners_email, :invalid) if customer_managed?
 
     errors.add(:owner_email, :taken) if User.carrier.exists?(email: owner_email)
   end
 
   def invite_owner!
     AccountMembership.create!(
-      account:,
+      account: object,
       user: User.invite!({ carrier:, email: owner_email, name: owner_name }, current_user),
       role: :owner
     )
+  end
+
+  def filled_tariff_package_line_items
+    tariff_package_line_items.select(&:filled?)
+  end
+
+  def build_tariff_package_line_items
+    default_line_items = TariffSchedule.category.values.map { |category| AccountTariffPackageForm.new(category:) }
+    collection = default_line_items.each_with_object([]) do |default_line_item, result|
+      existing_line_item = tariff_package_line_items.find { _1.category == default_line_item.category }
+      result << (existing_line_item || default_line_item)
+    end
+
+    FormCollection.new(collection, form: AccountTariffPackageForm)
+  end
+
+  def validate_tariff_package_line_items
+    return if filled_tariff_package_line_items.none?(&:invalid?)
+
+    errors.add(:tariff_package_line_items, :invalid)
   end
 end

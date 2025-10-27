@@ -46,8 +46,6 @@ class TariffBundleForm < ApplicationForm
       description: description.presence
     }
 
-    filled_line_items.each { _1.tariff_bundle ||= object }
-
     ApplicationRecord.transaction do
       object.save!
       filled_line_items.all? { _1.save }

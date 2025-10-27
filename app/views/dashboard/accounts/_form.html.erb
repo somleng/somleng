@@ -34,19 +34,20 @@
 
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :sip_trunk_id,
-                          collection: resource.sip_trunk_options_for_select,
-                          hint: "Optionally specify a SIP trunk which will be used by this account for outbound calls. If left blank outbound calls from this account will be routed automatically.",
-                          include_blank: true,
-                          input_html: {
-                            data: {
-                              behavior: "choices-input",
-                              choices_options: {
-                                removeItemButton: true
-                              }
-                            }
-                          }
-              %>
+            <%= f.input(
+              :sip_trunk_id,
+              collection: resource.sip_trunk_options_for_select,
+              hint: "Optionally specify a SIP trunk which will be used by this account for outbound calls. If left blank outbound calls from this account will be routed automatically.",
+              include_blank: true,
+              input_html: {
+                data: {
+                  behavior: "choices-input",
+                  choices_options: {
+                    removeItemButton: true
+                  }
+                }
+              }
+            ) %>
 
           </div>
 
@@ -65,7 +66,21 @@
       )
     %>
 
-    <div class="card card border-danger mb-3">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Tariffs</h5>
+
+        <%= render(
+          "shared/tariff_package_line_items_form",
+          form: f,
+          collection: f.object.tariff_package_line_items,
+          collection_method: :tariff_package_line_items
+        ) %>
+
+      </div>
+    </div>
+
+    <div class="card border-danger mb-3">
       <div class="card-body">
         <h5 class="card-title">Danger Zone</h5>
 
