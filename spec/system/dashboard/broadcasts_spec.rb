@@ -20,7 +20,7 @@ RSpec.describe "Broadcasts" do
 
   it "List broadcasts for Nepal" do
     carrier = create(:carrier, country_code: "NP")
-    user = create(:user, :carrier, carrier:, id: "48ff488f-f75a-4dd5-b0c7-bfb135b289f1")
+    user = create(:user, :carrier, carrier:, id: "d28bb460-1324-4aa5-860a-8ef48fb5ca7f")
 
     carrier_sign_in(user)
     visit dashboard_root_path
