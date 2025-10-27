@@ -94,6 +94,21 @@ FactoryBot.define do
         )
       end
     end
+
+    trait :with_account_default_tariff_bundle do
+      transient do
+        tariff_bundle_name { "Basic" }
+      end
+
+      after(:build) do |carrier, evaluator|
+        carrier.account_default_tariff_bundle ||= build(
+          :tariff_bundle,
+          :with_all_packages,
+          carrier:,
+          name: evaluator.tariff_bundle_name
+        )
+      end
+    end
   end
 
   factory :interaction do
@@ -645,6 +660,20 @@ FactoryBot.define do
   factory :tariff_bundle do
     carrier
     name { "Standard" }
+
+    trait :with_all_packages do
+      after(:build) do |tariff_bundle|
+        line_items = TariffSchedule.category.values.map do |category|
+          build(
+            :tariff_bundle_line_item,
+            tariff_bundle:,
+            tariff_package: build(:tariff_package, carrier: tariff_bundle.carrier, category:)
+          )
+        end
+
+        tariff_bundle.line_items = line_items
+      end
+    end
   end
 
   factory :tariff_bundle_line_item do

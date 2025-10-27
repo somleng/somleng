@@ -46,7 +46,8 @@ RSpec.describe "Accounts" do
   end
 
   it "Create an account" do
-    user = create(:user, :carrier)
+    carrier = create(:carrier, :with_account_default_tariff_bundle)
+    user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_accounts_path
@@ -54,7 +55,6 @@ RSpec.describe "Accounts" do
 
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
-
     choices_select("Basic.Slt", from: "Default TTS voice")
     click_on("Create Account")
 
@@ -69,6 +69,7 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Auth Token")
     expect(page).to have_content("Carrier managed")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
+    expect(page).to have_content("ASSERT Tariff packages here")
   end
 
   it "Handle validation errors" do
