@@ -105,4 +105,26 @@ RSpec.describe "Tariff Packages" do
     expect(page).to have_content("Tariff package was successfully destroyed.")
     expect(page).to have_no_content("Standard")
   end
+
+  it "calculate a tariff" do
+    carrier = create(:carrier, billing_currency: "USD")
+    tariff_schedule = create(:tariff_schedule, carrier:)
+    tariff_package = create(:tariff_package, carrier:, tariff_schedules: [ tariff_schedule ])
+    user = create(:user, :carrier, carrier:)
+
+    create(
+      :destination_tariff,
+      destination_group: create(:destination_group, carrier:, name: "Cambodia Smart", prefixes: [ "85510" ]),
+      tariff: create(:tariff, :call, carrier:, name: "Cambodia Mobile", per_minute_rate: Money.from_amount(0.05, "USD")),
+      tariff_schedule:
+    )
+
+    carrier_sign_in(user)
+    visit dashboard_tariff_package_path(tariff_package)
+
+    fill_in("Destination", with: "85510233444")
+    click_on("Calculate Tariff")
+
+    expect(page).to have_content("$0.05 / min")
+  end
 end

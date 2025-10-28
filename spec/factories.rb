@@ -588,6 +588,10 @@ FactoryBot.define do
       prefixes { [] }
     end
 
+    trait :catch_all do
+      prefixes { (0..9).to_a }
+    end
+
     carrier
     name { "Cambodia" }
 

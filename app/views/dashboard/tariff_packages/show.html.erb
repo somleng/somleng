@@ -10,22 +10,50 @@
 
 <div class="card-body">
   <%= show_for(@resource.decorated) do |f| %>
-    <%= f.attribute :id, label: "SID" do %>
-      <code>
-        <%= f.object.id %>
-      </code>
-    <% end %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Tariff Calculator</h5>
 
-    <%= f.attribute :name %>
-    <%= f.attribute :category %>
-    <%= f.attribute :description %>
-    <%= f.attribute :bundles do %>
-      <%= external_link_to("Manage", dashboard_tariff_bundles_path(filter: { tariff_package_id: f.object.id })) %>
-    <% end %>
-    <%= f.attribute :plans do %>
-      <%= external_link_to("Manage", dashboard_tariff_plans_path(filter: { tariff_package_id: f.object.id })) %>
-    <% end %>
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+        <%= form_with url: url_for(action: :show), scope: :tariff_calculation, method: :get, local: true do |form| %>
+          <div class="row">
+            <div class="col-sm-4"">
+              <%= form.label :destination, class: "form-label" %>
+              <div class="input-group mb-3">
+                <%= form.telephone_field :destination, value: @tariff_calculation.destination, class: "form-control", autocomplete: "off", required: true, pattern: "[0-9]*" %>
+                <% if @tariff_calculation.result.present? %>
+                  <span class="input-group-text"><%= @tariff_calculation.result.format %></span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <%= form.submit "Calculate Tariff", name: nil, class: "btn btn-primary float-right" %>
+          <%= link_to "Clear", url_for(action: :show), class: "btn btn-secondary float-left" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= f.object.id %>
+          </code>
+        <% end %>
+
+        <%= f.attribute :name %>
+        <%= f.attribute :category %>
+        <%= f.attribute :description %>
+        <%= f.attribute :bundles do %>
+          <%= external_link_to("Manage", dashboard_tariff_bundles_path(filter: { tariff_package_id: f.object.id })) %>
+        <% end %>
+        <%= f.attribute :plans do %>
+          <%= external_link_to("Manage", dashboard_tariff_plans_path(filter: { tariff_package_id: f.object.id })) %>
+        <% end %>
+        <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+        <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+      </div>
+    </div>
   <% end %>
 </div>
