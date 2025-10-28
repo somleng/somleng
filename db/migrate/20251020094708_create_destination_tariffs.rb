@@ -11,5 +11,6 @@ class CreateDestinationTariffs < ActiveRecord::Migration[8.0]
     end
 
     add_index(:destination_tariffs, [ :tariff_schedule_id, :destination_group_id, :tariff_id ], unique: true)
+    add_index(:destination_tariffs, [ :tariff_schedule_id, :destination_group_id ], unique: true)
   end
 end

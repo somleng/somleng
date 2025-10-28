@@ -185,6 +185,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_042728) do
     t.index ["sequence_number"], name: "index_destination_tariffs_on_sequence_number", unique: true, order: :desc
     t.index ["tariff_id"], name: "index_destination_tariffs_on_tariff_id"
     t.index ["tariff_schedule_id", "destination_group_id", "tariff_id"], name: "idx_on_tariff_schedule_id_destination_group_id_tari_a5c51a4dfa", unique: true
+    t.index ["tariff_schedule_id", "destination_group_id"], name: "idx_on_tariff_schedule_id_destination_group_id_42b7112e47", unique: true
     t.index ["tariff_schedule_id"], name: "index_destination_tariffs_on_tariff_schedule_id"
   end
 
