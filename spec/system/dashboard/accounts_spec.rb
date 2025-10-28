@@ -46,7 +46,16 @@ RSpec.describe "Accounts" do
   end
 
   it "Create an account" do
-    carrier = create(:carrier, :with_account_default_tariff_bundle)
+    carrier = create(
+      :carrier,
+      :with_account_default_tariff_bundle,
+      tariff_package_details: {
+        outbound_calls: "Discount",
+        inbound_calls: "Standard",
+        outbound_messages: "Standard",
+        inbound_messages: "Standard"
+      }
+    )
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -69,7 +78,10 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Auth Token")
     expect(page).to have_content("Carrier managed")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
-    expect(page).to have_content("ASSERT Tariff packages here")
+    expect(page).to have_link("Outbound calls (Discount)")
+    expect(page).to have_link("Inbound calls (Standard)")
+    expect(page).to have_link("Outbound messages (Standard)")
+    expect(page).to have_link("Inbound messages (Standard)")
   end
 
   it "Handle validation errors" do
@@ -82,7 +94,7 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("can't be blank")
   end
 
-  it "Shows an account" do
+  it "Show an account" do
     carrier = create(:carrier, billing_currency: "USD")
     account = create(:account, carrier:)
     user = create(:user, :carrier, carrier: account.carrier)
@@ -123,15 +135,19 @@ RSpec.describe "Accounts" do
   end
 
   it "Update an account" do
-    user = create(:user, :carrier)
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+    tariff_package = create(:tariff_package, :outbound_calls, name: "Standard", carrier:)
+    discount_tariff_package = create(:tariff_package, :outbound_messages, name: "Discount", carrier:)
     account = create(
       :account,
       :carrier_managed,
       :enabled,
       carrier: user.carrier,
       default_tts_voice: "Basic.Kal",
+      tariff_packages: [ tariff_package ]
     )
-    sip_trunk = create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
+    sip_trunk = create(:sip_trunk, carrier:, name: "Main SIP Trunk")
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
@@ -140,6 +156,9 @@ RSpec.describe "Accounts" do
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
     choices_select("Basic.Slt", from: "Default TTS voice")
+    within(".outbound-messages-line-item") do
+      choices_select("Outbound messages (Discount)", from: "Package")
+    end
     uncheck("Enabled")
 
     perform_enqueued_jobs do
@@ -155,6 +174,14 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("John Doe")
     expect(page).to have_content("johndoe@example.com")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
+    expect(page).to have_link(
+      "Outbound calls (Standard)",
+      href: dashboard_tariff_package_path(tariff_package)
+    )
+    expect(page).to have_link(
+      "Outbound messages (Discount)",
+      href: dashboard_tariff_package_path(discount_tariff_package)
+    )
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
@@ -226,11 +253,13 @@ RSpec.describe "Accounts" do
   end
 
   it "Delete an account" do
-    user = create(:user, :carrier)
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
     account = create(
       :account,
       name: "Rocket Rides",
-      carrier: user.carrier
+      carrier:,
+      tariff_packages: [ create(:tariff_package, carrier:) ]
     )
 
     carrier_sign_in(user)
@@ -238,6 +267,6 @@ RSpec.describe "Accounts" do
 
     click_on "Delete"
 
-    expect(page).not_to have_content("Rocket Rides")
+    expect(page).to have_no_content("Rocket Rides")
   end
 end

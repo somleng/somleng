@@ -4,5 +4,5 @@ class AccountTariffPackage < ApplicationRecord
   belongs_to :account
   belongs_to :tariff_package
 
-  enumerize :category, in: TariffSchedule.category.values
+  enumerize :category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
 end

@@ -29,22 +29,22 @@ module TariffHelper
     )
   end
 
-  def tariff_bundle_packages(tariff_bundle)
+  def tariff_packages(tariff_package_assignments)
     tag.span(class: "d-flex gap-3") do
       content = "".html_safe
-      group_collection_by(tariff_bundle.line_items) { _1.category.type }.each do |category_type, line_items|
+      group_collection_by(tariff_package_assignments) { _1.category.type }.each do |category_type, assignments|
         group_content = "".html_safe
         content += tag.span(class: "d-inline-flex align-items-center gap-1") do
-          next if line_items.blank?
+          next if assignments.blank?
 
-          group_content += link_to_tariff_category_direction(line_items.find { _1.category.direction.outbound? }&.tariff_package)
+          group_content += link_to_tariff_category_direction(assignments.find { _1.category.direction.outbound? }&.tariff_package)
           icon = if category_type.messages?
             "fa-comment-dots"
           elsif category_type.calls?
             "fa-phone"
           end
           group_content += tag.i(class: "fa-solid #{icon}").html_safe
-          group_content += link_to_tariff_category_direction(line_items.find { _1.category.direction.inbound? }&.tariff_package)
+          group_content += link_to_tariff_category_direction(assignments.find { _1.category.direction.inbound? }&.tariff_package)
         end
       end
 
@@ -56,7 +56,8 @@ module TariffHelper
     return "" if linkable.blank?
 
     tag.span(class: "d-inline-flex align-items-center gap-0") do
-      link_to([ :dashboard, linkable ], title: linkable.decorated.name, data: { "bs-toggle" => "tooltip" }, target: "_blank") do
+      title = linkable.decorated.name
+      link_to([ :dashboard, linkable ], title:, data: { test_id: title, "bs-toggle" => "tooltip" }, target: "_blank") do
         tariff_category_direction_icon(linkable.category)
       end
     end

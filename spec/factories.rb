@@ -97,14 +97,22 @@ FactoryBot.define do
 
     trait :with_account_default_tariff_bundle do
       transient do
-        tariff_bundle_name { "Basic" }
+        tariff_bundle_name { "Standard" }
+        tariff_package_details {
+          {
+            outbound_calls: "Standard",
+            inbound_calls: "Standard",
+            outbound_messages: "Standard",
+            inbound_messages: "Standard"
+          }
+        }
       end
 
       after(:build) do |carrier, evaluator|
         carrier.account_default_tariff_bundle ||= build(
           :tariff_bundle,
-          :with_all_packages,
           carrier:,
+          package_details: evaluator.tariff_package_details,
           name: evaluator.tariff_bundle_name
         )
       end
@@ -212,6 +220,10 @@ FactoryBot.define do
     traits_for_enum :status, %w[enabled disabled]
     carrier_managed
 
+    transient do
+      tariff_packages { [] }
+    end
+
     trait :customer_managed do
       type { :customer_managed }
 
@@ -229,6 +241,18 @@ FactoryBot.define do
 
     trait :with_sip_trunk do
       sip_trunk { build(:sip_trunk, carrier:) }
+    end
+
+    after(:build) do |account, evaluator|
+      account_tariff_packages = evaluator.tariff_packages.map do |tariff_package|
+        build(
+          :account_tariff_package,
+          carrier: account.carrier,
+          tariff_package:,
+          account:
+        )
+      end
+      account.tariff_package_line_items = account_tariff_packages if account.tariff_package_line_items.blank?
     end
   end
 
@@ -661,18 +685,20 @@ FactoryBot.define do
     carrier
     name { "Standard" }
 
-    trait :with_all_packages do
-      after(:build) do |tariff_bundle|
-        line_items = TariffSchedule.category.values.map do |category|
-          build(
-            :tariff_bundle_line_item,
-            tariff_bundle:,
-            tariff_package: build(:tariff_package, carrier: tariff_bundle.carrier, category:)
-          )
-        end
+    transient do
+      package_details { {} }
+    end
 
-        tariff_bundle.line_items = line_items
+    after(:build) do |tariff_bundle, evaluator|
+      line_items = evaluator.package_details.map do |category, name|
+        build(
+          :tariff_bundle_line_item,
+          tariff_bundle:,
+          tariff_package: build(:tariff_package, carrier: tariff_bundle.carrier, name:, category:)
+        )
       end
+
+      tariff_bundle.line_items = line_items if tariff_bundle.line_items.blank?
     end
   end
 
@@ -683,6 +709,16 @@ FactoryBot.define do
 
     tariff_bundle { association(:tariff_bundle, carrier:) }
     tariff_package { association(:tariff_package, carrier: tariff_bundle.carrier) }
+    category { tariff_package.category }
+  end
+
+  factory :account_tariff_package do
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    account { association(:account, carrier:) }
+    tariff_package { association(:tariff_package, carrier: account.carrier) }
     category { tariff_package.category }
   end
 

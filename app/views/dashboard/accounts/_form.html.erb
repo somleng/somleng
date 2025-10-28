@@ -66,12 +66,30 @@
       )
     %>
 
-    <div class="card mb-3">
+    <div class="card mb-3" data-controller="tariff-bundle-selection">
       <div class="card-body">
         <h5 class="card-title">Tariffs</h5>
 
+        <div class="row">
+          <div class="col-sm-6">
+            <% if f.object.new_record? %>
+              <%= f.input(
+                :tariff_bundle_id,
+                collection: f.object.tariff_bundles_options_for_select,
+                include_blank: "Configure manually",
+                input_html: {
+                  data: {
+                    tariff_bundle_selection_target: "tariffBundleInput",
+                    action: "change->tariff-bundle-selection#changeTariffBundle"
+                  }
+                }
+              ) %>
+            <% end %>
+          </div>
+        </div>
+
         <%= render(
-          "shared/tariff_package_line_items_form",
+          "shared/tariff_package_assignment_form",
           form: f,
           collection: f.object.tariff_package_line_items,
           collection_method: :tariff_package_line_items

@@ -54,6 +54,12 @@ export default class extends Controller {
           wrapper.classList.add("is-invalid");
         }
 
+        element.addEventListener("external:set-value", (e) => {
+          if (e.detail.value) {
+            instance.setChoiceByValue(e.detail.value);
+          }
+        });
+
         return instance;
       });
   }

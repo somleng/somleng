@@ -20,7 +20,7 @@
     <%= f.attribute :description %>
     <%= f.attribute :packages do %>
       <% if f.object.line_items.present? %>
-        <%= tariff_bundle_packages(f.object) %>
+        <%= tariff_packages(f.object.line_items) %>
       <% end %>
     <% end %>
 

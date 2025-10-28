@@ -3,11 +3,6 @@
   <div class="card mb-3">
     <div class="card-body">
       <h5 class="card-title">
-        <% if category_type.messages? %>
-          <i class="fa-solid fa-comment-dots"></i>
-        <% elsif category_type.calls? %>
-          <i class="fa-solid fa-phone"></i>
-        <% end %>
         <%= category_type.to_s.humanize %>
       </h5>
       <div class="row">
@@ -44,7 +39,10 @@
                         behavior: "choices-input",
                         choices_options: {
                           removeItemButton: true
-                        }
+                        },
+                        tariff_bundle_selection_target: "tariffPackageInput",
+                        action: "change->tariff-bundle-selection#changeTariffPackage",
+                        category: line_item.category
                       }
                     }
                   ) %>

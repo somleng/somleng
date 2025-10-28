@@ -12,6 +12,7 @@ class AccountForm
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
   attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
+  attribute :tariff_bundle_id
   attribute :tariff_package_line_items,
             FormCollectionType.new(form: AccountTariffPackageForm),
             default: []
@@ -54,6 +55,7 @@ class AccountForm
   def initialize(**)
     super(**)
     self.object.carrier = carrier
+    self.tariff_bundle_id = carrier.account_default_tariff_bundle_id
     self.tariff_package_line_items = build_tariff_package_line_items
   end
 
@@ -90,6 +92,22 @@ class AccountForm
     sip_trunks.map { |item| [ item.name, item.id ] }
   end
 
+  def tariff_bundles_options_for_select
+    carrier.tariff_bundles.includes(:tariff_packages).map do |tariff_bundle|
+      [
+        tariff_bundle.name,
+        tariff_bundle.id,
+        {
+          data: {
+            tariff_packages: tariff_bundle.tariff_packages.each_with_object({}) do |tariff_package, result|
+              result[tariff_package.category] = tariff_package.id
+            end
+          }
+        }
+      ]
+    end
+  end
+
   private
 
   def validate_owner
@@ -113,7 +131,14 @@ class AccountForm
   end
 
   def build_tariff_package_line_items
-    default_line_items = TariffSchedule.category.values.map { |category| AccountTariffPackageForm.new(category:) }
+    default_tariff_bundle = carrier.account_default_tariff_bundle
+    default_packages = Array(new_record? ? default_tariff_bundle&.tariff_packages : [])
+    default_line_items = TariffSchedule.category.values.map do |category|
+      AccountTariffPackageForm.new(
+        category:,
+        tariff_package_id: default_packages.find { _1.category == category }&.id
+      )
+    end
     collection = default_line_items.each_with_object([]) do |default_line_item, result|
       existing_line_item = tariff_package_line_items.find { _1.category == default_line_item.category }
       result << (existing_line_item || default_line_item)
