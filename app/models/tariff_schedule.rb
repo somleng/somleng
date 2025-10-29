@@ -4,6 +4,7 @@ class TariffSchedule < ApplicationRecord
   belongs_to :carrier
   has_many :destination_tariffs
   has_many :tariff_plans
+  has_many :tariff_packages, through: :tariff_plans
 
   enumerize :category,
     in: [

@@ -6,6 +6,16 @@
       { filter_value: params.dig(:filter, :category) }
     ) %>
 
+    <%= form.select(
+      :tariff_package_id,
+      current_carrier.tariff_packages.map do |tariff_package|
+        tariff_package = TariffPackageDecorator.new(tariff_package)
+        [tariff_package.name, tariff_package.id]
+      end,
+      { filter_value: params.dig(:filter, :tariff_package_id) },
+      { data: { behavior: "choices-input" }}
+    ) %>
+
     <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
     <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

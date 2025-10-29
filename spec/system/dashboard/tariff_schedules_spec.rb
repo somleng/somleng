@@ -3,15 +3,25 @@ require "rails_helper"
 RSpec.describe "Tariff Schedules" do
   it "filter tariff schedules" do
     carrier = create(:carrier)
-    tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard")
+    tariff_package = create(:tariff_package, carrier:)
+    tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard", tariff_packages: [ tariff_package ])
     filtered_tariff_schedules = [
-      create(:tariff_schedule, :outbound_calls, carrier:, name: "Special"),
-      create(:tariff_schedule, :outbound_messages, carrier:, name: "Standard")
+      create(:tariff_schedule, :outbound_calls, carrier:, name: "Promo", tariff_packages: [ tariff_package ]),
+      create(:tariff_schedule, :outbound_messages, carrier:, name: "Standard", tariff_packages: [ tariff_package ]),
+      create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard")
     ]
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_tariff_schedules_path(filter: { name: "standard", category: "outbound_calls" })
+    visit(
+      dashboard_tariff_schedules_path(
+        filter: {
+          name: "standard",
+          category: "outbound_calls",
+          tariff_package_id: tariff_package.id
+        }
+      )
+    )
 
     expect(page).to have_content(tariff_schedule.id)
     filtered_tariff_schedules.each do |tariff_schedule|

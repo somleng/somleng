@@ -57,11 +57,14 @@
         <%= f.attribute :name %>
         <%= f.attribute :category %>
         <%= f.attribute :description %>
-        <%= f.attribute :bundles do %>
+        <%= f.attribute :tariff_bundles do %>
           <%= external_link_to("Manage", dashboard_tariff_bundles_path(filter: { tariff_package_id: f.object.id })) %>
         <% end %>
-        <%= f.attribute :plans do %>
+        <%= f.attribute :tariff_plans do %>
           <%= external_link_to("Manage", dashboard_tariff_plans_path(filter: { tariff_package_id: f.object.id })) %>
+        <% end %>
+        <%= f.attribute :tariff_schedules do %>
+          <%= external_link_to("Manage", dashboard_tariff_schedules_path(filter: { tariff_package_id: f.object.id })) %>
         <% end %>
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>

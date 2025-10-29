@@ -18,7 +18,7 @@
 
     <%= f.attribute :name %>
     <%= f.attribute :description %>
-    <%= f.attribute :packages do %>
+    <%= f.attribute :tariff_packages do %>
       <% if f.object.line_items.present? %>
         <%= tariff_packages(f.object.line_items) %>
       <% end %>
