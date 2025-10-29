@@ -732,7 +732,7 @@ FactoryBot.define do
     end
 
     tariff_schedule { association :tariff_schedule, carrier: }
-    tariff { association :tariff, carrier: tariff_schedule.carrier }
+    tariff { association(:tariff, category: tariff_schedule.category.tariff_category, carrier: tariff_schedule.carrier) }
     destination_group { association :destination_group, carrier: tariff_schedule.carrier }
   end
 

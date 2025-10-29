@@ -9,10 +9,12 @@ class TariffCalculation
   def calculate
     return if destination.blank?
 
-    prefix = tariff_package.destination_prefixes.longest_match_for(destination)
-
-    return if prefix.blank?
-
-    @result = prefix.destination_group.tariffs.first.rate
+    DestinationTariff
+      .joins(tariff_schedule: { tariff_plans: :tariff_package })
+      .joins(destination_group: :prefixes)
+      .where(tariff_packages: { id: tariff_package.id })
+      .where("? LIKE destination_prefixes.prefix || '%'", destination)
+      .order("LENGTH(destination_prefixes.prefix) DESC, tariff_plans.weight ASC")
+      .first
   end
 end
