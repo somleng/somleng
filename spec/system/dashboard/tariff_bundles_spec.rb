@@ -36,16 +36,16 @@ RSpec.describe "Tariff Bundles" do
     fill_in("Name", with: "My Bundle")
     fill_in("Description", with: "My bundle description")
     within(".outbound-messages-line-item") do
-      choices_select("Outbound messages (Standard)", from: "Package")
+      choices_select("Outbound messages (Standard)", from: "Tariff package")
     end
     within(".inbound-messages-line-item") do
-      choices_select("Inbound messages (Standard)", from: "Package")
+      choices_select("Inbound messages (Standard)", from: "Tariff package")
     end
     within(".outbound-calls-line-item") do
-      choices_select("Outbound calls (Standard)", from: "Package")
+      choices_select("Outbound calls (Standard)", from: "Tariff package")
     end
     within(".inbound-calls-line-item") do
-      choices_select("Inbound calls (Standard)", from: "Package")
+      choices_select("Inbound calls (Standard)", from: "Tariff package")
     end
     click_on("Create Tariff bundle")
 
@@ -70,7 +70,7 @@ RSpec.describe "Tariff Bundles" do
 
     fill_in("Name", with: "My Bundle")
     within(".outbound-calls-line-item") do
-      choices_select("Outbound calls (Standard)", from: "Package")
+      choices_select("Outbound calls (Standard)", from: "Tariff package")
     end
     click_on("Create Tariff bundle")
 
@@ -120,10 +120,10 @@ RSpec.describe "Tariff Bundles" do
     fill_in("Name", with: "My bundle name")
     fill_in("Description", with: "My bundle description")
     within(".outbound-messages-line-item") do
-      choices_select("Outbound messages (Standard)", from: "Package")
+      choices_select("Outbound messages (Standard)", from: "Tariff package")
     end
     within(".inbound-calls-line-item") do
-      choices_select("", from: "Package")
+      choices_select("", from: "Tariff package")
     end
     click_on("Update Tariff bundle")
 

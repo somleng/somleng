@@ -157,7 +157,7 @@ RSpec.describe "Accounts" do
     fill_in("Owner's email", with: "johndoe@example.com")
     choices_select("Basic.Slt", from: "Default TTS voice")
     within(".outbound-messages-line-item") do
-      choices_select("Outbound messages (Discount)", from: "Package")
+      choices_select("Outbound messages (Discount)", from: "Tariff package")
     end
     uncheck("Enabled")
 

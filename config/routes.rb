@@ -120,7 +120,7 @@ Rails.application.routes.draw do
       resources :carrier_users
       resources :tariff_bundles
       resources :tariff_packages
-      resources :tariff_plans, only: [ :index, :new, :create, :destroy, :show ]
+      resources :tariff_plans
       resources :tariff_schedules
       resources :destination_tariffs, only: [ :index, :new, :create, :destroy, :show ]
       resources :destination_groups

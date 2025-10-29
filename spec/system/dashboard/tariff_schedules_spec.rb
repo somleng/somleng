@@ -38,6 +38,20 @@ RSpec.describe "Tariff Schedules" do
     expect(page).to have_content("Standard rates")
   end
 
+  it "preselects the inputs" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit new_dashboard_tariff_schedule_path(
+      filter: {
+        category: :outbound_messages
+      }
+    )
+
+    expect(page).to have_choices_select("Category", selected: "Outbound messages")
+  end
+
   it "handle validation errors" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)

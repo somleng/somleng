@@ -1,4 +1,8 @@
 <%= page_title(title: "Tariff Plan") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_plan_path(@resource)) %>
+  <% end %>
+
   <% if policy(@resource).destroy? %>
     <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_plan_path(@resource)) %>
   <% end %>
@@ -18,6 +22,10 @@
 
     <%= f.attribute :tariff_schedule do %>
       <%= external_link_to(f.object.tariff_schedule_name, dashboard_tariff_schedule_path(f.object.tariff_schedule_id)) %>
+    <% end %>
+
+    <%= f.attribute :weight do %>
+      <%= f.object.weight %>
     <% end %>
 
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>

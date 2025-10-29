@@ -54,19 +54,19 @@
 
         <ul class="nav-group-items">
           <% if policy(:tariff_bundle).index? %>
-            <%= sidebar_nav("Bundles", dashboard_tariff_bundles_path, icon_class: "fa-solid fa-cubes") %>
+            <%= sidebar_nav("Tariff Bundles", dashboard_tariff_bundles_path, icon_class: "fa-solid fa-cubes") %>
           <% end %>
 
           <% if policy(:tariff_package).index? %>
-            <%= sidebar_nav("Packages", dashboard_tariff_packages_path, icon_class: "fa-solid fa-boxes-packing") %>
+            <%= sidebar_nav("Tariff Packages", dashboard_tariff_packages_path, icon_class: "fa-solid fa-boxes-packing") %>
           <% end %>
 
           <% if policy(:tariff_plan).index? %>
-            <%= sidebar_nav("Plans", dashboard_tariff_plans_path, icon_class: "fa-solid fa-receipt") %>
+            <%= sidebar_nav("Tariff Plans", dashboard_tariff_plans_path, icon_class: "fa-solid fa-receipt") %>
           <% end %>
 
           <% if policy(:tariff_schedule).index? %>
-            <%= sidebar_nav("Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
+            <%= sidebar_nav("Tariff Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
           <% end %>
 
           <% if policy(:destination_tariff).index? %>

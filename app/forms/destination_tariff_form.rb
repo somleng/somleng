@@ -6,7 +6,7 @@ class DestinationTariffForm < ApplicationForm
   attribute :destination_group_id
 
   validates :tariff_schedule_id, :tariff_id, :destination_group_id, presence: true
-  validate :validate_tariff_uniqueness
+  validate :validate_destination_group_uniqueness
 
   delegate :persisted?, :new_record?, :id, to: :object
 
@@ -61,13 +61,12 @@ class DestinationTariffForm < ApplicationForm
     end
   end
 
-  def validate_tariff_uniqueness
+  def validate_destination_group_uniqueness
     return unless carrier.destination_tariffs.exists?(
       tariff_schedule_id: tariff_schedule_id,
       destination_group_id: destination_group_id,
-      tariff_id: tariff_id
     )
 
-    errors.add(:tariff_id, :taken)
+    errors.add(:destination_group_id, :taken)
   end
 end

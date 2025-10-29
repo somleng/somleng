@@ -92,7 +92,7 @@ RSpec.describe "Destination Tariffs" do
     )
     click_on("New")
 
-    expect(page).to have_choices_select("Schedule", selected: "Outbound calls (Standard)", disabled: true)
+    expect(page).to have_choices_select("Tariff schedule", selected: "Outbound calls (Standard)", disabled: true)
     expect(page).to have_choices_select("Tariff", selected: "$0.01 / min (Asia)")
     expect(page).to have_choices_select("Destination group", selected: "Cambodia")
   end

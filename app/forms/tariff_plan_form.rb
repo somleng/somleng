@@ -3,8 +3,11 @@ class TariffPlanForm < ApplicationForm
   attribute :object, default: -> { TariffPlan.new }
   attribute :tariff_package_id
   attribute :tariff_schedule_id
+  attribute :weight, :decimal, default: -> { TariffPlan::DEFAULT_WEIGHT }
 
   validates :tariff_schedule_id, presence: true
+  validates :weight, presence: true, numericality: { greater_than: 0, less_than: 10 ** 6 }
+
   validate :validate_tariff_schedule_uniqueness
 
   delegate :persisted?, :new_record?, :id, to: :object
@@ -13,11 +16,22 @@ class TariffPlanForm < ApplicationForm
     ActiveModel::Name.new(self, nil, "TariffPlan")
   end
 
+  def self.initialize_with(object)
+    new(
+      object:,
+      carrier: object.tariff_package.carrier,
+      tariff_package_id: object.tariff_package_id,
+      tariff_schedule_id: object.tariff_schedule_id,
+      weight: object.weight
+    )
+  end
+
   def save
     return false if invalid?
 
     object.attributes = {
       tariff_package:,
+      weight:,
       tariff_schedule: tariff_schedules.find(tariff_schedule_id)
     }
 
@@ -52,6 +66,7 @@ class TariffPlanForm < ApplicationForm
   end
 
   def validate_tariff_schedule_uniqueness
+    return if persisted?
     return unless carrier.tariff_plans.exists?(
       tariff_package_id: tariff_package_id,
       tariff_schedule_id: tariff_schedule_id

@@ -25,6 +25,17 @@ module Dashboard
       @resource = record
     end
 
+    def edit
+      @resource = TariffPlanForm.initialize_with(record)
+    end
+
+    def update
+      @resource = TariffPlanForm.initialize_with(record)
+      @resource.attributes = permitted_params.except(:tariff_package_id, :tariff_schedule_id)
+      @resource.save
+      respond_with(:dashboard, @resource)
+    end
+
     def destroy
       @resource = record
       @resource.destroy
@@ -34,7 +45,7 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:tariff_plan).permit(:tariff_package_id, :tariff_schedule_id)
+      params.require(:tariff_plan).permit(:tariff_package_id, :tariff_schedule_id, :weight)
     end
 
     def scope

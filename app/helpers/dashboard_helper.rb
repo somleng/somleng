@@ -133,4 +133,13 @@ module DashboardHelper
       status
     end
   end
+
+  def select_prompt_with_link_to(link_text = nil, *, prompt_text: nil, **, &)
+    prompt_text ||= "Please select or"
+    link_text ||= "Create a new one."
+
+    link = link_to(link_text, *, **, &)
+
+    [ prompt_text, link ].join(" ").html_safe
+  end
 end

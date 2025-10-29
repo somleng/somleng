@@ -6,7 +6,7 @@ module Dashboard
     end
 
     def new
-      @resource = TariffScheduleForm.new(carrier: current_carrier)
+      @resource = TariffScheduleForm.new(carrier: current_carrier, **request.query_parameters.fetch(:filter, {}).slice(:category))
     end
 
     def create

@@ -4,7 +4,7 @@ RSpec.describe AccountForm do
   describe "validations" do
     it "validates the owner does not have a carrier role" do
       user = create(:user, :carrier, email: "johndoe@example.com")
-      form = AccountForm.new(
+      form = build_form(
         carrier: user.carrier,
         owner_name: "John Doe",
         owner_email: "johndoe@example.com"
@@ -16,7 +16,7 @@ RSpec.describe AccountForm do
 
     it "allows a user to own multiple accounts" do
       user = create(:user, :with_account_membership, email: "johndoe@example.com")
-      form = AccountForm.new(
+      form = build_form(
         carrier: user.carrier,
         owner_name: "John Doe",
         owner_email: "johndoe@example.com"
@@ -28,21 +28,21 @@ RSpec.describe AccountForm do
     end
 
     it "validates the owner's email format" do
-      form = AccountForm.new(owner_email: "foobar")
+      form = build_form(owner_email: "foobar")
 
       expect(form).not_to be_valid
       expect(form.errors[:owner_email]).to be_present
     end
 
     it "validates the calls_per_second" do
-      form = AccountForm.new(calls_per_second: 0)
+      form = build_form(calls_per_second: 0)
 
       expect(form).not_to be_valid
       expect(form.errors[:calls_per_second]).to be_present
     end
 
     it "validates default_tts_voice" do
-      form = AccountForm.new(
+      form = build_form(
         default_tts_voice: "Voice.Invalid"
       )
 
@@ -52,13 +52,13 @@ RSpec.describe AccountForm do
   end
 
   it "has a default value for default_tts_voice" do
-    expect(AccountForm.new.default_tts_voice).to be_present
+    expect(build_form.default_tts_voice).to be_present
   end
 
   describe "#save" do
     it "creates an account without an owner" do
       carrier = create(:carrier)
-      form = AccountForm.new(
+      form = build_form(
         name: "Rocket Rides",
         enabled: true,
         calls_per_second: 2,
@@ -82,7 +82,7 @@ RSpec.describe AccountForm do
 
     it "creates an account with an owner" do
       carrier = create(:carrier)
-      form = AccountForm.new(
+      form = build_form(
         name: "Rocket Rides",
         enabled: true,
         owner_name: "John Doe",
@@ -112,7 +112,7 @@ RSpec.describe AccountForm do
         default_tts_voice: "Basic.Kal"
       )
 
-      form = AccountForm.new(
+      form = build_form(
         name: "Car Rides",
         default_tts_voice: "Basic.Slt",
         carrier:,
@@ -142,7 +142,7 @@ RSpec.describe AccountForm do
         calls_per_second: 1
       )
 
-      form = AccountForm.new(
+      form = build_form(
         carrier:,
         object: account,
         sip_trunk_id: nil,
@@ -158,5 +158,9 @@ RSpec.describe AccountForm do
         type: "customer_managed"
       )
     end
+  end
+
+  def build_form(**params)
+    AccountForm.new(carrier: build_stubbed(:carrier), **params)
   end
 end

@@ -21,11 +21,12 @@
                   </h6>
 
                   <% tariff_packages = line_item.tariff_packages_options_for_select %>
-                  <% if tariff_packages.any? %>
-                    <% prompt = true %>
-                  <% else %>
-                    <% prompt = "".html_safe + "No packages available for #{line_item.category.value.humanize}. " + link_to("Create one.", new_dashboard_tariff_package_path(filter: { category: line_item.category }), target: "_blank").html_safe %>
-                  <% end%>
+                  <% prompt = select_prompt_with_link_to(
+                    "Configure a new one.",
+                    new_dashboard_tariff_package_path(filter: { category: line_item.category }),
+                    target: "_blank",
+                    prompt_text: tariff_packages.present? ? "Please select or" : "No tariff packages configured for #{line_item.category.value.humanize}.",
+                  ) %>
 
                   <%= line_item_form.input(
                     :tariff_package_id,

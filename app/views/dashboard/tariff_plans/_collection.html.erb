@@ -11,6 +11,9 @@
         Schedule
       </th>
       <th>
+        Weight
+      </th>
+      <th>
         Created At
       </th>
     </tr>
@@ -30,6 +33,10 @@
 
         <td>
           <%= link_to(tariff_plan.tariff_schedule_name, dashboard_tariff_schedule_path(tariff_plan.tariff_schedule_id)) %>
+        </td>
+
+        <td>
+          <%= tariff_plan.weight %>
         </td>
 
         <td>

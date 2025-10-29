@@ -11,20 +11,19 @@ RSpec.describe DestinationTariffForm do
     expect(form.errors[:tariff_id]).to be_present
   end
 
-  it "validates the uniqueness of the tariff" do
+  it "validates the uniqueness of the destination group" do
     carrier = create(:carrier)
     destination_tariff = create(:destination_tariff, carrier:)
 
     form = build_form(
       carrier:,
       tariff_schedule_id: destination_tariff.tariff_schedule_id,
-      destination_group_id: destination_tariff.destination_group_id,
-      tariff_id: destination_tariff.tariff_id
+      destination_group_id: destination_tariff.destination_group_id
     )
 
     form.valid?
 
-    expect(form.errors[:tariff_id]).to be_present
+    expect(form.errors[:destination_group_id]).to be_present
   end
 
   it "only provides valid tariff options" do
