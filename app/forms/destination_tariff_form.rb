@@ -37,7 +37,7 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def tariff_options_for_select
-    DecoratedCollection.new([ tariffs ]).map { [ _1.name, _1.id ] }
+    DecoratedCollection.new(tariffs).map { [ _1.name, _1.id ] }
   end
 
   def destination_group_options_for_select
