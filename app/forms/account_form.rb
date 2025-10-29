@@ -55,7 +55,7 @@ class AccountForm
   def initialize(**)
     super(**)
     self.object.carrier = carrier
-    self.tariff_bundle_id = carrier.account_default_tariff_bundle_id
+    self.tariff_bundle_id = carrier.default_tariff_bundle_id
     self.tariff_package_line_items = build_tariff_package_line_items
   end
 
@@ -131,7 +131,7 @@ class AccountForm
   end
 
   def build_tariff_package_line_items
-    default_tariff_bundle = carrier.account_default_tariff_bundle
+    default_tariff_bundle = carrier.default_tariff_bundle
     default_packages = Array(new_record? ? default_tariff_bundle&.tariff_packages : [])
     default_line_items = TariffSchedule.category.values.map do |category|
       AccountTariffPackageForm.new(

@@ -95,7 +95,7 @@ FactoryBot.define do
       end
     end
 
-    trait :with_account_default_tariff_bundle do
+    trait :with_default_tariff_bundle do
       transient do
         tariff_bundle_name { "Standard" }
         tariff_package_details {
@@ -109,7 +109,7 @@ FactoryBot.define do
       end
 
       after(:build) do |carrier, evaluator|
-        carrier.account_default_tariff_bundle ||= build(
+        carrier.default_tariff_bundle ||= build(
           :tariff_bundle,
           carrier:,
           package_details: evaluator.tariff_package_details,

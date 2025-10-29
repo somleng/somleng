@@ -130,7 +130,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_042728) do
   end
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_default_tariff_bundle_id"
     t.string "billing_currency", null: false
     t.integer "calls_per_second", default: 0, null: false
     t.string "country_code", null: false
@@ -138,16 +137,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_042728) do
     t.citext "custom_api_host"
     t.citext "custom_app_host"
     t.text "custom_theme_css"
+    t.uuid "default_tariff_bundle_id"
     t.string "name", null: false
     t.boolean "restricted", default: false, null: false
     t.bigserial "sequence_number", null: false
     t.citext "subdomain", null: false
     t.datetime "updated_at", null: false
     t.string "website", null: false
-    t.index ["account_default_tariff_bundle_id"], name: "index_carriers_on_account_default_tariff_bundle_id"
     t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
+    t.index ["default_tariff_bundle_id"], name: "index_carriers_on_default_tariff_bundle_id"
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
   end
@@ -998,7 +998,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_042728) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "call_tariffs", "tariffs", on_delete: :cascade
-  add_foreign_key "carriers", "tariff_bundles", column: "account_default_tariff_bundle_id", on_delete: :nullify
+  add_foreign_key "carriers", "tariff_bundles", column: "default_tariff_bundle_id", on_delete: :nullify
   add_foreign_key "destination_groups", "carriers", on_delete: :cascade
   add_foreign_key "destination_prefixes", "destination_groups", on_delete: :cascade
   add_foreign_key "destination_tariffs", "destination_groups", on_delete: :cascade

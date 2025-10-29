@@ -1,8 +1,8 @@
-class AddAccountDefaultTariffBundleToCarriers < ActiveRecord::Migration[8.1]
+class AddDefaultTariffBundleToCarriers < ActiveRecord::Migration[8.1]
   def change
     add_reference(
       :carriers,
-      :account_default_tariff_bundle,
+      :default_tariff_bundle,
       null: true,
       type: :uuid,
       foreign_key: {

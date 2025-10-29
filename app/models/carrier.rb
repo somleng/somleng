@@ -32,7 +32,7 @@ class Carrier < ApplicationRecord
   has_many :destination_tariffs, through: :tariff_schedules
   has_many :tariffs
   has_many :destination_groups
-  belongs_to :account_default_tariff_bundle, class_name: "TariffBundle", optional: true
+  belongs_to :default_tariff_bundle, class_name: "TariffBundle", optional: true
 
   has_one_attached :logo
   has_one_attached :favicon

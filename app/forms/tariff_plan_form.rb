@@ -45,24 +45,17 @@ class TariffPlanForm < ApplicationForm
   end
 
   def tariff_packages_options_for_select
-    options_for_select([ tariff_package ]) { |item| [ item.name, item.id ] }
+    DecoratedCollection.new([ tariff_package ]).map { [ _1.name, _1.id ] }
   end
 
   def tariff_schedules_options_for_select
-    options_for_select(tariff_schedules) { |item| [ item.name, item.id ] }
+    DecoratedCollection.new(tariff_schedules).map { [ _1.name, _1.id ] }
   end
 
   private
 
   def tariff_schedules
     @tariff_schedules ||= carrier.tariff_schedules.where(category: tariff_package.category)
-  end
-
-  def options_for_select(collection)
-    collection.map do |item|
-      decorated_item = item.decorated
-      yield(decorated_item)
-    end
   end
 
   def validate_tariff_schedule_uniqueness

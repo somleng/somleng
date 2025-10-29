@@ -33,15 +33,15 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def tariff_schedules_options_for_select
-    options_for_select([ tariff_schedule ]) { |item| [ item.name, item.id ] }
+    DecoratedCollection.new([ tariff_schedule ]).map { [ _1.name, _1.id ] }
   end
 
   def tariff_options_for_select
-    options_for_select(tariffs) { |item| [ item.name, item.id ] }
+    DecoratedCollection.new([ tariffs ]).map { [ _1.name, _1.id ] }
   end
 
   def destination_group_options_for_select
-    options_for_select(destination_groups) { |item| [ item.name, item.id ] }
+    DecoratedCollection.new(destination_groups).map { [ _1.name, _1.id ] }
   end
 
   private
@@ -52,13 +52,6 @@ class DestinationTariffForm < ApplicationForm
 
   def destination_groups
     @destination_groups ||= carrier.destination_groups
-  end
-
-  def options_for_select(collection)
-    collection.map do |item|
-      decorated_item = item.decorated
-      yield(decorated_item)
-    end
   end
 
   def validate_destination_group_uniqueness
