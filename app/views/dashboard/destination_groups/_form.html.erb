@@ -7,7 +7,6 @@
           f.input(
             :name,
             required: true,
-            placeholder: "US Destinations",
             hint: "Enter a name for the destination group."
           ) %>
       </div>
@@ -16,7 +15,6 @@
         <%= f.input(
           :prefixes,
           as: :text,
-          placeholder: "1",
           hint: "A comma separated list of prefixes. Must include the country code.",
           input_html: { value: f.object.prefixes_formatted }
         ) %>

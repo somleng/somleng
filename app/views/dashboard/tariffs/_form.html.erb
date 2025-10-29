@@ -25,21 +25,13 @@
 
           <div class="col-sm-6">
             <%=
-              f.input(
-                :name,
-                placeholder: "Standard International Rates"
-              ) %>
+              f.input(:name) %>
           </div>
         </div>
 
         <div class="row">
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :description,
-                as: :text,
-                placeholder: "Standard rates for international destinations."
-              ) %>
+            <%= f.input(:description, as: :text) %>
           </div>
         </div>
       </div>
