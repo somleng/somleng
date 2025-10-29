@@ -23,7 +23,6 @@ RSpec.describe "Destination Tariffs" do
         tariff: create(:tariff, :message, carrier:),
       ),
       create(:destination_tariff, tariff_schedule:, tariff: destination_tariff.tariff),
-      create(:destination_tariff, tariff_schedule:, destination_group: destination_tariff.destination_group)
     ]
     user = create(:user, :carrier, carrier:)
 

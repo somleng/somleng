@@ -5,8 +5,6 @@ class TariffSchedule < ApplicationRecord
   has_many :destination_tariffs
   has_many :tariff_plans
 
-  attribute :category
-
   enumerize :category,
     in: [
       :outbound_messages,

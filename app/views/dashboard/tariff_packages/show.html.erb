@@ -15,13 +15,25 @@
         <h5 class="card-title">Tariff Calculator</h5>
 
         <%= form_with url: url_for(action: :show), scope: :tariff_calculation, method: :get, local: true do |form| %>
+          <% form_submitted = @tariff_calculation.destination.present? %>
+          <% result = DestinationTariffDecorator.new(@tariff_calculation.result) if @tariff_calculation.result.present? %>
+
           <div class="row">
-            <div class="col-sm-4"">
+            <div class="col-sm-6"">
               <%= form.label :destination, class: "form-label" %>
-              <div class="input-group mb-3">
-                <%= form.telephone_field :destination, value: @tariff_calculation.destination, class: "form-control", autocomplete: "off", required: true, pattern: "[0-9]*" %>
-                <% if @tariff_calculation.result.present? %>
-                  <span class="input-group-text"><%= @tariff_calculation.result.format %></span>
+              <div class="input-group mb-4">
+                <% field_classes = ["form-control"] %>
+                <% field_classes << "is-invalid" if form_submitted && result.blank? %>
+                <% field_classes << "is-valid" if form_submitted && result.present? %>
+                <%= form.telephone_field :destination, value: @tariff_calculation.destination, class: field_classes.join(" "), autocomplete: "off", required: true, pattern: "[0-9]*" %>
+                <% if form_submitted %>
+                  <% if result.present? %>
+                    <span class="input-group-text">
+                      <%= destination_tariff_diagram(result) %>
+                    </span>
+                  <% else %>
+                    <div class="invalid-feedback">No tariff found for <%= @tariff_calculation.destination %></div>
+                  <% end %>
                 <% end %>
               </div>
             </div>

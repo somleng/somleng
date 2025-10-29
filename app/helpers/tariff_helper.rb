@@ -1,10 +1,17 @@
 module TariffHelper
   def destination_tariff_diagram(destination_tariff)
     category = destination_tariff.tariff_schedule.category
-    destination_group = link_to(truncate(destination_tariff.destination_group_name, length: 10), dashboard_destination_group_path(destination_tariff.destination_group_id))
-    tariff = link_to(truncate(destination_tariff.tariff_name, length: 20), dashboard_tariff_path(destination_tariff.tariff_id))
-    diagram_category = category.diagram_category
-
+    destination_group = link_to(
+      truncate(destination_tariff.destination_group_name, length: 10),
+      dashboard_destination_group_path(destination_tariff.destination_group_id)
+    )
+    tariff = link_to(
+      truncate(destination_tariff.tariff_name, length: 20
+    ), dashboard_tariff_path(destination_tariff.tariff_id))
+    diagram_category = link_to(
+      category.diagram_category,
+      dashboard_tariff_schedule_path(destination_tariff.tariff_schedule_id)
+    )
     tag.span(title: destination_tariff_description(destination_tariff), data: { "bs-toggle" => "tooltip" }) do
       diagram_components = if category.direction.inbound?
         [ tariff, destination_group, diagram_category ]

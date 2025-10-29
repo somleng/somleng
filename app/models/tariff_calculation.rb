@@ -9,7 +9,7 @@ class TariffCalculation
   def calculate
     return if destination.blank?
 
-    DestinationTariff
+    @result = DestinationTariff
       .joins(tariff_schedule: { tariff_plans: :tariff_package })
       .joins(destination_group: :prefixes)
       .where(tariff_packages: { id: tariff_package.id })

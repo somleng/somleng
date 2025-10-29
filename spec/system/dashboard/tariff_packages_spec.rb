@@ -112,10 +112,10 @@ RSpec.describe "Tariff Packages" do
     tariff_package = create(:tariff_package, carrier:, tariff_schedules: [ tariff_schedule ])
     user = create(:user, :carrier, carrier:)
 
-    create(
+    destination_tariff = create(
       :destination_tariff,
-      destination_group: create(:destination_group, carrier:, name: "Cambodia Smart", prefixes: [ "85510" ]),
-      tariff: create(:tariff, :call, carrier:, name: "Cambodia Mobile", per_minute_rate: Money.from_amount(0.05, "USD")),
+      destination_group: create(:destination_group, carrier:, name: "KH Smart", prefixes: [ "85510" ]),
+      tariff: create(:tariff, :call, carrier:, per_minute_rate: Money.from_amount(0.05, "USD")),
       tariff_schedule:
     )
 
@@ -125,6 +125,22 @@ RSpec.describe "Tariff Packages" do
     fill_in("Destination", with: "85510233444")
     click_on("Calculate Tariff")
 
-    expect(page).to have_content("$0.05 / min")
+    expect(page).to have_link("CALL", href: dashboard_tariff_schedule_path(tariff_schedule))
+    expect(page).to have_link("KH Smart", href: dashboard_destination_group_path(destination_tariff.destination_group))
+    expect(page).to have_link("$0.05 / min", href: dashboard_tariff_path(destination_tariff.tariff_id))
+  end
+
+  it "handles errors when calculating a tariff" do
+    carrier = create(:carrier, billing_currency: "USD")
+    tariff_package = create(:tariff_package, carrier:)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_tariff_package_path(tariff_package)
+
+    fill_in("Destination", with: "855")
+    click_on("Calculate Tariff")
+
+    expect(page).to have_content("No tariff found for 855")
   end
 end
