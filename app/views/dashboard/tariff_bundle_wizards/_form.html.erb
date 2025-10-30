@@ -1,0 +1,70 @@
+<div class="card-body">
+  <%= simple_form_for([ :dashboard, resource ], wrapper: :input_group, html: { data: { controller: "tariff-bundle-wizard form" } }) do |f| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          General
+        </h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(:name, placeholder: "Standard") %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(:description, as: :text) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          Tariffs
+        </h5>
+
+        <% group_collection_by(TariffSchedule.category.values) { _1.type }.each do |(category_type, categories)| %>
+          <div class="row">
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <%= category_type.humanize %>
+                </h5>
+
+                <div class="row">
+                  <% categories.each do |category| %>
+                    <div class="col">
+                      <div class="card <%= "#{category.value.dasherize}" %>">
+                        <div class="card-body">
+                          <h6 class="card-title">
+                            <% if category.direction.inbound? %>
+                              <i class="fa-solid fa-arrow-left"></i>
+                            <% elsif category.direction.outbound? %>
+                              <i class="fa-solid fa-arrow-right"></i>
+                            <% end %>
+                            <%= category.direction.to_s.humanize %>
+                          </h6>
+
+                          <% append = f.object.carrier.billing_currency.symbol %>
+                          <% append += " / min" if category.type.calls? %>
+
+                          <%= f.input(
+                            :"#{category.value}_tariff",
+                            label: "Rate",
+                            append:
+                          ) %>
+
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

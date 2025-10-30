@@ -14,6 +14,12 @@
   <% end %>
 
   <% if policy(:tariff_bundle).new? %>
+    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Wizard">
+      <%= link_to(new_dashboard_tariff_bundle_wizard_path, class: "btn btn-outline-success", title: "Wizard") do %>
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <% end %>
+    </span>
+
     <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_bundle_path) %>
   <% end %>
 <% end %>
