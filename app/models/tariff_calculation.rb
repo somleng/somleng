@@ -14,7 +14,7 @@ class TariffCalculation
       .joins(destination_group: :prefixes)
       .where(tariff_packages: { id: tariff_package.id })
       .where("? LIKE destination_prefixes.prefix || '%'", destination)
-      .order("LENGTH(destination_prefixes.prefix) DESC, tariff_plans.weight ASC")
+      .order("LENGTH(destination_prefixes.prefix) DESC, tariff_plans.weight DESC")
       .first
   end
 end

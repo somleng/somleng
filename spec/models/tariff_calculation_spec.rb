@@ -23,7 +23,7 @@ RSpec.describe TariffCalculation do
       :tariff_plan,
       tariff_package: promo_package,
       tariff_schedule: promo_schedule,
-      weight: 5
+      weight: 20
     )
     destination_group = create(:destination_group, carrier:, prefixes: [ "855" ])
 
