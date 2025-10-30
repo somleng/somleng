@@ -5,7 +5,7 @@ module Dashboard
     helper_method :broadcast_badge
 
     def index
-      @broadcasts = FakeResource::Broadcast.all
+      @broadcasts = FakeResource::Broadcast.where(country_code: current_carrier.country_code)
     end
 
     def show
@@ -21,6 +21,8 @@ module Dashboard
 
     def broadcast_badge(type)
       case type
+      when "voice"
+        Badge.new(color: "bg-success", icon: "phone")
       when "sms"
         Badge.new(color: "bg-success", icon: "message")
       when "pending"
