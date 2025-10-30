@@ -29,7 +29,7 @@ module DashboardHelper
   def sidebar_nav(text, path, icon_class:, link_options: {})
     content_tag(:li, class: "nav-item") do
       sidebar_nav_class = "nav-link"
-      sidebar_nav_class += " active" if request.path == path
+      sidebar_nav_class += " active" if request.path.start_with?(path)
       link_to(path, class: sidebar_nav_class, **link_options) do
         content = "".html_safe
         content += content_tag(:i, nil, class: "nav-icon #{icon_class}")
@@ -141,5 +141,9 @@ module DashboardHelper
     link = link_to(link_text, *, **, &)
 
     [ prompt_text, link ].join(" ").html_safe
+  end
+
+  def link_to_cancel(link_text = "Cancel", location = :back, **, &)
+    link_to(link_text, location, class: "btn btn-outline-danger", **, &)
   end
 end

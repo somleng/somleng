@@ -1,42 +1,41 @@
 <div class="card-body">
   <%= simple_form_for([ :dashboard, @resource ], url: (dashboard_tariff_plans_path(filter_params) if @resource.new_record?), wrapper: :input_group, html: { novalidate: true }) do |f| %>
-    <% if f.object.new_record? %>
-      <div class="row">
-        <div class="col-sm-4">
-          <%= f.input(
-            :tariff_package_id,
-            collection: f.object.tariff_packages_options_for_select,
-            disabled: true,
-            input_html: {
-              data: { behavior: "choices-input" }
-            }
-          ) %>
+    <div class="row">
+      <div class="col-sm-4">
+        <%= f.input(
+          :tariff_package_id,
+          collection: f.object.tariff_packages_options_for_select,
+          disabled: true,
+          input_html: {
+            data: { behavior: "choices-input" }
+          }
+        ) %>
 
-          <%= f.input(:tariff_package_id, as: :hidden) %>
-        </div>
+        <%= f.input(:tariff_package_id, as: :hidden) %>
       </div>
+    </div>
 
-      <div class="row">
-        <div class="col-sm-4">
-          <% tariff_schedules = f.object.tariff_schedules_options_for_select %>
-          <% prompt = select_prompt_with_link_to(
-            "Configure a new one.",
-            new_dashboard_tariff_schedule_path(filter: { category: f.object.tariff_package.category }),
-            target: "_blank",
-            prompt_text: tariff_schedules.present? ? "Please select or" : "No tariff schedules configured for #{f.object.tariff_package.category.value.humanize}.",
-          ) %>
+    <div class="row">
+      <div class="col-sm-4">
+        <% tariff_schedules = f.object.tariff_schedules_options_for_select %>
+        <% prompt = select_prompt_with_link_to(
+          "Configure a new one.",
+          new_dashboard_tariff_schedule_path(filter: { category: f.object.tariff_package.category }),
+          target: "_blank",
+          prompt_text: tariff_schedules.present? ? "Please select or" : "No tariff schedules configured for #{f.object.tariff_package.category.value.humanize}.",
+        ) %>
 
-          <%= f.input(
-            :tariff_schedule_id,
-            collection: tariff_schedules,
-            prompt:,
-            input_html: {
-              data: { behavior: "choices-input" }
-            }
-          ) %>
-        </div>
+        <%= f.input(
+          :tariff_schedule_id,
+          collection: tariff_schedules,
+          prompt:,
+          disabled: f.object.persisted?,
+          input_html: {
+            data: { behavior: "choices-input" }
+          }
+        ) %>
       </div>
-    <% end %>
+    </div>
 
     <div class="row">
       <div class="col-sm-4">
@@ -51,5 +50,6 @@
     </div>
 
     <%= f.button :submit %>
+    <%= link_to_cancel %>
   <% end %>
 </div>

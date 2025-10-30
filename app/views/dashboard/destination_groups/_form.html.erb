@@ -1,5 +1,32 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
+  <%= simple_form_for(
+    [ :dashboard, resource ],
+    wrapper: :input_group,
+    html: {
+      data: {
+        controller: "destination-group-form",
+        destination_group_form_catch_all_name_value: "Catch all",
+        destination_group_form_catch_all_prefixes_value: (0..9).to_a.join(", ")
+      }
+    }
+  ) do |f| %>
+
+    <% if f.object.new_record? %>
+      <div class="row">
+        <%= f.input(
+          :catch_all,
+          as: :boolean,
+          wrapper: :custom_boolean_switch,
+          hint: "Match all prefixes",
+          input_html: {
+            data: {
+              destination_group_form_target: "catchAllInput",
+              action: "destination-group-form#toggleCatchAll"
+            }
+          }
+        ) %>
+      </div>
+    <% end %>
 
     <div class="row">
       <div class="col-sm-6">
@@ -7,7 +34,12 @@
           f.input(
             :name,
             required: true,
-            hint: "Enter a name for the destination group."
+            hint: "Enter a name for the destination group.",
+            input_html: {
+              data: {
+                destination_group_form_target: "nameInput"
+              }
+            }
           ) %>
       </div>
 
@@ -16,11 +48,17 @@
           :prefixes,
           as: :text,
           hint: "A comma separated list of prefixes. Must include the country code.",
-          input_html: { value: f.object.prefixes_formatted }
+          input_html: {
+            value: f.object.prefixes_formatted,
+            data: {
+              destination_group_form_target: "prefixesInput"
+            }
+          }
         ) %>
       </div>
     </div>
 
     <%= f.button :submit %>
+    <%= link_to_cancel %>
   <% end %>
 </div>

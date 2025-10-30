@@ -35,6 +35,20 @@ RSpec.describe "Destination Groups" do
     expect(page).to have_content("85510, 85515, and 85516")
   end
 
+  it "create a catch all destination group", :js do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit new_dashboard_destination_group_path
+    check("Catch all")
+    click_on("Create Destination group")
+
+    expect(page).to have_content("Destination group was successfully created.")
+    expect(page).to have_content("Catch all")
+    expect(page).to have_content("0, 1, 2, and 7 more")
+  end
+
   it "handle validation errors when creating a destination group" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)

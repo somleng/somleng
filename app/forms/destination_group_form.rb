@@ -1,5 +1,6 @@
 class DestinationGroupForm < ApplicationForm
   attribute :carrier
+  attribute :catch_all
   attribute :object, default: -> { DestinationGroup.new }
   attribute :name
   attribute :prefixes, RoutePrefixesType.new, default: []

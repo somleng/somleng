@@ -1,7 +1,5 @@
 module Dashboard
   class DestinationTariffsController < DashboardController
-    helper_method :filter_params
-
     def index
       @resources = apply_filters(scope.includes(:destination_group, :tariff_schedule, tariff: [ :call_tariff, :message_tariff ]))
       @resources = paginate_resources(@resources)
@@ -43,10 +41,6 @@ module Dashboard
 
     def record
       @record ||= scope.find(params[:id])
-    end
-
-    def filter_params
-      request.query_parameters.slice(:filter)
     end
   end
 end

@@ -12,7 +12,7 @@ module Dashboard
     def create
       @resource = TariffScheduleForm.new(carrier: current_carrier, **permitted_params)
       @resource.save
-      respond_with(:dashboard, @resource)
+      respond_with(:dashboard, @resource, location: dashboard_tariff_schedules_path(filter_params))
     end
 
     def show

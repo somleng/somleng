@@ -7,6 +7,9 @@ import { application } from "./application"
 import DashboardController from "./dashboard_controller"
 application.register("dashboard", DashboardController)
 
+import DestinationGroupFormController from "./destination_group_form_controller"
+application.register("destination-group-form", DestinationGroupFormController)
+
 import Filters__DatePickerController from "./filters/date_picker_controller"
 application.register("filters--date-picker", Filters__DatePickerController)
 
