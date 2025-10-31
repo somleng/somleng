@@ -601,8 +601,8 @@ GEM
       aws-sdk-core (>= 2)
       concurrent-ruby
       thor
-    shoulda-matchers (6.5.0)
-      activesupport (>= 5.2.0)
+    shoulda-matchers (7.0.0)
+      activesupport (>= 7.1)
     show_for (0.9.0)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
@@ -650,7 +650,7 @@ GEM
     unicode-display_width (3.1.5)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
-    uri (1.0.4)
+    uri (1.1.0)
     useragent (0.16.11)
     warden (1.2.9)
       rack (>= 2.0.9)
