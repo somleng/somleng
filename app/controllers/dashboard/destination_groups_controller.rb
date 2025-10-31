@@ -25,7 +25,7 @@ module Dashboard
 
     def update
       @resource = DestinationGroupForm.initialize_with(record)
-      @resource.attributes = permitted_params
+      @resource.attributes = permitted_params.except(:catch_all)
       @resource.save
       respond_with(:dashboard, @resource)
     end
@@ -43,7 +43,7 @@ module Dashboard
     end
 
     def permitted_params
-      params.require(:destination_group).permit(:name, :prefixes)
+      params.require(:destination_group).permit(:name, :catch_all, :prefixes)
     end
 
     def scope

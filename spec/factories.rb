@@ -589,7 +589,7 @@ FactoryBot.define do
     end
 
     trait :catch_all do
-      prefixes { (0..9).to_a }
+      catch_all { true }
     end
 
     carrier

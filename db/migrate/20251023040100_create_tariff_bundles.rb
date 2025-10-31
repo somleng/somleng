@@ -8,5 +8,7 @@ class CreateTariffBundles < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
+
+    add_index(:tariff_bundles, [ :carrier_id, :name ], unique: true)
   end
 end

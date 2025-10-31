@@ -5,7 +5,7 @@
     html: {
       data: {
         controller: "destination-group-form",
-        destination_group_form_catch_all_name_value: "Catch all",
+        destination_group_form_catch_all_name_value: DestinationGroup::DEFAULT_CATCH_ALL_NAME,
         destination_group_form_catch_all_prefixes_value: (0..9).to_a.join(", ")
       }
     }
@@ -47,6 +47,7 @@
         <%= f.input(
           :prefixes,
           as: :text,
+          required: true,
           hint: "A comma separated list of prefixes. Must include the country code.",
           input_html: {
             value: f.object.prefixes_formatted,

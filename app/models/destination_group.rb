@@ -1,20 +1,19 @@
 class DestinationGroup < ApplicationRecord
+  DEFAULT_CATCH_ALL_NAME = "Catch all"
+
   belongs_to :carrier
   has_many :prefixes, class_name: "DestinationPrefix", dependent: :destroy, autosave: true, inverse_of: :destination_group
   has_many :destination_tariffs
   has_many :tariffs, through: :destination_tariffs
 
-  def self.catch_all
-    prefixes = (0..9).to_a
+  before_create :add_catch_all_prefixes
 
-    where(
-      id: where.not(
-        id: DestinationPrefix.where.not(
-          prefix: prefixes
-        ).select(:destination_group_id)
-      ).joins(:prefixes).group(:id).having(
-        "COUNT(DISTINCT destination_prefixes.prefix) = ?", prefixes.size
-      ).select(:id)
-    )
+  private
+
+  def add_catch_all_prefixes
+    return unless catch_all?
+
+    self.name = DEFAULT_CATCH_ALL_NAME
+    self.prefixes = (0..9).map { prefixes.build(prefix: _1) }
   end
 end

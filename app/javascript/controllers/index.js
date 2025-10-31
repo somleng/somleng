@@ -40,6 +40,9 @@ application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsContro
 import TariffBundleSelectionController from "./tariff_bundle_selection_controller"
 application.register("tariff-bundle-selection", TariffBundleSelectionController)
 
+import TariffBundleWizardController from "./tariff_bundle_wizard_controller"
+application.register("tariff-bundle-wizard", TariffBundleWizardController)
+
 import TariffFormController from "./tariff_form_controller"
 application.register("tariff-form", TariffFormController)
 

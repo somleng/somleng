@@ -10,28 +10,28 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
     when :inbound_calls
       direction = :inbound
       type = :calls
-      tariff_category = :call
+      tariff_category = "call"
       description = "inbound calls from"
       diagram_category = "CALL"
       diagram_direction_symbol = "<-"
     when :inbound_messages
       direction = :inbound
       type = :messages
-      tariff_category = :message
+      tariff_category = "message"
       description = "inbound messages from"
       diagram_category = "MSG"
       diagram_direction_symbol = "<-"
     when :outbound_calls
       direction = :outbound
       type = :calls
-      tariff_category = :call
+      tariff_category = "call"
       description = "outbound calls to"
       diagram_category = "CALL"
       diagram_direction_symbol = "->"
     when :outbound_messages
       direction = :outbound
       type = :messages
-      tariff_category = :message
+      tariff_category = "message"
       description = "outbound messages to"
       diagram_category = "MSG"
       diagram_direction_symbol = "->"
@@ -39,7 +39,7 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
 
     TariffScheduleCategory.new(
       value:,
-      tariff_category:,
+      tariff_category: ActiveSupport::StringInquirer.new(tariff_category.to_s),
       type: ActiveSupport::StringInquirer.new(type.to_s),
       description:,
       direction: ActiveSupport::StringInquirer.new(direction.to_s),

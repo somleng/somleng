@@ -9,7 +9,6 @@ export default class extends Controller {
   };
 
   connect() {
-    console.log("Connected");
     this.toggleCatchAll();
   }
 
@@ -24,6 +23,7 @@ export default class extends Controller {
       this.prefixesInputTarget.value = "";
     }
 
-    this.prefixesInputTarget.toggleAttribute("readonly", isChecked);
+    this.prefixesInputTarget.toggleAttribute("disabled", isChecked);
+    this.nameInputTarget.toggleAttribute("disabled", isChecked);
   }
 }

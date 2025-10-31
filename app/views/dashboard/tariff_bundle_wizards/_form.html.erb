@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([ :dashboard, resource ], wrapper: :input_group, html: { data: { controller: "tariff-bundle-wizard form" } }) do |f| %>
+  <%= simple_form_for(resource, url: dashboard_tariff_bundle_wizard_path, wrapper: :input_group) do |f| %>
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">
@@ -24,7 +24,8 @@
           Tariffs
         </h5>
 
-        <% group_collection_by(TariffSchedule.category.values) { _1.type }.each do |(category_type, categories)| %>
+        <% line_item_index = 0 %>
+        <% group_collection_by(f.object.tariffs) { _1.category.type }.each do |(category_type, line_items)| %>
           <div class="row">
             <div class="card mb-3">
               <div class="card-body">
@@ -33,31 +34,59 @@
                 </h5>
 
                 <div class="row">
-                  <% categories.each do |category| %>
-                    <div class="col">
-                      <div class="card <%= "#{category.value.dasherize}" %>">
-                        <div class="card-body">
-                          <h6 class="card-title">
-                            <% if category.direction.inbound? %>
-                              <i class="fa-solid fa-arrow-left"></i>
-                            <% elsif category.direction.outbound? %>
-                              <i class="fa-solid fa-arrow-right"></i>
-                            <% end %>
-                            <%= category.direction.to_s.humanize %>
-                          </h6>
+                  <% line_items.each do |line_item| %>
+                    <%= f.simple_fields_for(:tariffs, line_item, index: line_item_index) do |tariff_form| %>
+                      <div class="col">
+                        <div class="card mb-2 <%= "#{line_item.category.dasherize}" %>" data-controller="tariff-bundle-wizard">
+                          <div class="card-body">
+                            <h6 class="card-title">
+                              <% if line_item.category.direction.inbound? %>
+                                <i class="fa-solid fa-arrow-left"></i>
+                              <% elsif line_item.category.direction.outbound? %>
+                                <i class="fa-solid fa-arrow-right"></i>
+                              <% end %>
+                              <%= line_item.category.direction.to_s.humanize %>
+                            </h6>
 
-                          <% append = f.object.carrier.billing_currency.symbol %>
-                          <% append += " / min" if category.type.calls? %>
+                            <div class="row">
+                              <div class="col-sm-3">
+                                <%= tariff_form.input(
+                                  :enabled,
+                                  as: :boolean,
+                                  wrapper: :custom_boolean_switch,
+                                  input_html: {
+                                    data: {
+                                      tariff_bundle_wizard_target: "enabledInput",
+                                      action: "tariff-bundle-wizard#toggleEnabled"
+                                    }
+                                  }
+                                ) %>
+                              </div>
 
-                          <%= f.input(
-                            :"#{category.value}_tariff",
-                            label: "Rate",
-                            append:
-                          ) %>
+                              <div class="col-sm-9">
+                                <%= tariff_form.input(
+                                  :rate,
+                                  label: "Rate (#{tariff_form.object.billing_currency.iso_code})",
+                                  as: :numeric,
+                                  required: true,
+                                  append: tariff_form.object.rate_unit,
+                                  hint: tariff_form.object.hint,
+                                  input_html: {
+                                    min: 0, step: 0.0001,
+                                    data: {
+                                      tariff_bundle_wizard_target: "rateInput"
+                                    }
+                                  }
+                                ) %>
 
+                                <%= tariff_form.input(:category, as: :hidden) %>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    <% end %>
+                    <% line_item_index += 1 %>
                   <% end %>
                 </div>
               </div>
@@ -66,5 +95,8 @@
         <% end %>
       </div>
     </div>
+
+    <%= f.button :submit %>
+    <%= link_to_cancel %>
   <% end %>
 </div>

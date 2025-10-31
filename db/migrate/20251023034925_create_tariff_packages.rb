@@ -10,6 +10,6 @@ class CreateTariffPackages < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index(:tariff_packages, [ :carrier_id, :category, :name, :created_at ])
+    add_index(:tariff_packages, [ :carrier_id, :category, :name ], unique: true)
   end
 end
