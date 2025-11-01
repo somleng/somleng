@@ -43,7 +43,7 @@ class TariffBundleWizardForm < ApplicationForm
 
   def build_tariffs
     defaults = TariffSchedule.category.values.map do |category|
-      TariffBundleWizardLineItemForm.new(category:, enabled: true, tariff_bundle: object)
+      TariffBundleWizardLineItemForm.new(category:, enabled: false, tariff_bundle: object)
     end
     FormCollection.new(defaults, form: TariffBundleWizardLineItemForm)
   end

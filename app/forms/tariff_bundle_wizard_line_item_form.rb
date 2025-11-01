@@ -3,6 +3,7 @@ class TariffBundleWizardLineItemForm < ApplicationForm
   attribute :rate, :decimal
   attribute :enabled, :boolean
   attribute :category
+  attribute :object, default: -> { TariffBundleLineItem.new }
 
   delegate :carrier, :name, to: :tariff_bundle
   delegate :billing_currency, to: :carrier
@@ -12,7 +13,7 @@ class TariffBundleWizardLineItemForm < ApplicationForm
   validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0, allow_blank: true }, if: ->(form) { form.enabled }
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, "TariffWizardBundleLineItem")
+    ActiveModel::Name.new(self, nil, "TariffBundleLineItem")
   end
 
   def save
@@ -37,12 +38,16 @@ class TariffBundleWizardLineItemForm < ApplicationForm
   def create_tariff_bundle_line_item
     ApplicationRecord.transaction do
       tariff_package = carrier.tariff_packages.find_or_create_by!(name:, category:)
+      object.category = category
+      object.tariff_bundle = tariff_bundle
+      object.tariff_package = tariff_package
+      object.save!
       tariff_schedule = carrier.tariff_schedules.find_or_create_by!(name:, category:)
       tariff_package.tariff_plans.find_or_create_by!(tariff_schedule:)
       destination_group = carrier.destination_groups.find_or_create_by!(catch_all: true)
-      destination_tariff = tariff_schedule.destination_tariffs.find_by(destination_group:)
+      destination_tariff = tariff_schedule.destination_tariffs.find_or_initialize_by(destination_group:)
 
-      return if destination_tariff.present?
+      return if destination_tariff.persisted?
 
       tariff = carrier.tariffs.create!(name:, category: category.tariff_category, currency: billing_currency)
       rate_cents = InfinitePrecisionMoney.from_amount(rate, tariff.currency).cents
@@ -51,6 +56,9 @@ class TariffBundleWizardLineItemForm < ApplicationForm
       elsif category.tariff_category.message?
         tariff.create_message_tariff!(rate_cents:)
       end
+
+      destination_tariff.tariff = tariff
+      destination_tariff.save!
     end
   end
 end
