@@ -43,10 +43,24 @@ export default class extends Controller {
     [].slice
       .call(document.querySelectorAll("[data-behavior~=choices-input]"))
       .map(function (element) {
-        return new Choices(
+        const instance = new Choices(
           element,
           JSON.parse(element.dataset.choicesOptions || "{}")
         );
+
+        const wrapper = element.closest(".choices");
+
+        if (element.classList.contains("is-invalid")) {
+          wrapper.classList.add("is-invalid");
+        }
+
+        element.addEventListener("external:set-value", (e) => {
+          if (e.detail.value) {
+            instance.setChoiceByValue(e.detail.value);
+          }
+        });
+
+        return instance;
       });
   }
 }

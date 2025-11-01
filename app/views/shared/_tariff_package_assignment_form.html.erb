@@ -1,0 +1,61 @@
+<% line_item_index = 0 %>
+<% group_collection_by(collection) { _1.category.type }.each do |(category_type, line_items)| %>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">
+        <%= category_type.to_s.humanize %>
+      </h5>
+      <div class="row">
+        <% line_items.each do |line_item| %>
+          <div class="col mb-3">
+            <%= form.simple_fields_for(collection_method, line_item, index: line_item_index) do |line_item_form| %>
+              <div class="card mb-3 <%= "#{line_item.category.value.dasherize}-line-item" %>">
+                <div class="card-body">
+                  <h6 class="card-title">
+                    <% if line_item.category.direction.inbound? %>
+                      <i class="fa-solid fa-arrow-left"></i>
+                    <% elsif line_item.category.direction.outbound? %>
+                      <i class="fa-solid fa-arrow-right"></i>
+                    <% end %>
+                    <%= line_item.category.direction.to_s.humanize %>
+                  </h6>
+
+                  <% tariff_packages = line_item.tariff_packages_options_for_select %>
+                  <% prompt = select_prompt_with_link_to(
+                    "Configure a new one.",
+                    new_dashboard_tariff_package_path(filter: { category: line_item.category }),
+                    target: "_blank",
+                    prompt_text: tariff_packages.present? ? "Please select or" : "No tariff packages configured for #{line_item.category.value.humanize}.",
+                  ) %>
+
+                  <%= line_item_form.input(
+                    :tariff_package_id,
+                    collection: tariff_packages,
+                    prompt:,
+                    required: false,
+                    include_blank: true,
+                    input_html: {
+                      data: {
+                        behavior: "choices-input",
+                        choices_options: {
+                          removeItemButton: true
+                        },
+                        tariff_bundle_selection_target: "tariffPackageInput",
+                        action: "change->tariff-bundle-selection#changeTariffPackage",
+                        category: line_item.category
+                      }
+                    }
+                  ) %>
+
+                  <%= line_item_form.input(:category, as: :hidden) %>
+                  <%= line_item_form.input(:id, as: :hidden) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <% line_item_index +=1 %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

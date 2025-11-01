@@ -46,7 +46,7 @@ RSpec.describe "SIP Trunks" do
     fill_in("Default sender", with: "+1 (234) 234-5678")
     check("National dialing")
     check("Plus prefix")
-    fill_in("Route prefixes", with: "85510")
+    fill_in("Route prefixes", with: "85510, 85515, 85516, 85516")
 
     click_on("Create SIP trunk")
 
@@ -59,6 +59,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_content("Unlimited")
     expect(page).to have_content("+1 (234) 234-5678")
+    expect(page).to have_content("85510, 85515, 85516")
   end
 
   it "Creates a SIP trunk with client credentials", :js do

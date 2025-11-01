@@ -7,6 +7,9 @@ import { application } from "./application"
 import DashboardController from "./dashboard_controller"
 application.register("dashboard", DashboardController)
 
+import DestinationGroupFormController from "./destination_group_form_controller"
+application.register("destination-group-form", DestinationGroupFormController)
+
 import Filters__DatePickerController from "./filters/date_picker_controller"
 application.register("filters--date-picker", Filters__DatePickerController)
 
@@ -33,6 +36,18 @@ application.register("sip-trunks", SipTrunksController)
 
 import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller"
 application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsController)
+
+import TariffBundleSelectionController from "./tariff_bundle_selection_controller"
+application.register("tariff-bundle-selection", TariffBundleSelectionController)
+
+import TariffBundleWizardController from "./tariff_bundle_wizard_controller"
+application.register("tariff-bundle-wizard", TariffBundleWizardController)
+
+import TariffFormController from "./tariff_form_controller"
+application.register("tariff-form", TariffFormController)
+
+import TariffScheduleFormController from "./tariff_schedule_form_controller"
+application.register("tariff-schedule-form", TariffScheduleFormController)
 
 import VerificationServicesController from "./verification_services_controller"
 application.register("verification-services", VerificationServicesController)

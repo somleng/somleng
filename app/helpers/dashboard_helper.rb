@@ -9,11 +9,11 @@ module DashboardHelper
 
     content_tag(:div, class: "card-header d-flex justify-content-between align-items-center") do
       content = "".html_safe
-      content += content_tag(:span, title, class: "h2")
+      content += content_tag(:h2, title, class: "card-title")
 
       if subtitle.present?
         content += " "
-        content += content_tag(:small, subtitle)
+        content += content_tag(:h3, subtitle, class: "card-subtitle")
       end
 
       if block_given?
@@ -29,7 +29,7 @@ module DashboardHelper
   def sidebar_nav(text, path, icon_class:, link_options: {})
     content_tag(:li, class: "nav-item") do
       sidebar_nav_class = "nav-link"
-      sidebar_nav_class += " active" if request.path == path
+      sidebar_nav_class += " active" if request.path.start_with?(path)
       link_to(path, class: sidebar_nav_class, **link_options) do
         content = "".html_safe
         content += content_tag(:i, nil, class: "nav-icon #{icon_class}")
@@ -132,5 +132,18 @@ module DashboardHelper
     tag.span(class: "badge text-bg-#{color} text-white") do
       status
     end
+  end
+
+  def select_prompt_with_link_to(link_text = nil, *, prompt_text: nil, **, &)
+    prompt_text ||= "Please select or"
+    link_text ||= "Create a new one."
+
+    link = link_to(link_text, *, **, &)
+
+    [ prompt_text, link ].join(" ").html_safe
+  end
+
+  def link_to_cancel(link_text = "Cancel", location = :back, **, &)
+    link_to(link_text, location, class: "btn btn-outline-danger", **, &)
   end
 end

@@ -1,0 +1,63 @@
+<div class="card-body">
+  <%= simple_form_for(
+    [ :dashboard, resource ],
+    wrapper: :input_group,
+    html: {
+      data: {
+        controller: "destination-group-form",
+        destination_group_form_catch_all_name_value: DestinationGroup::DEFAULT_CATCH_ALL_NAME,
+        destination_group_form_catch_all_prefixes_value: DestinationGroup::CATCH_ALL_PREFIXES.join(", ")
+      }
+    }
+  ) do |f| %>
+
+    <div class="row">
+      <%= f.input(
+        :catch_all,
+        as: :boolean,
+        wrapper: :custom_boolean_switch,
+        hint: "Match all prefixes",
+        input_html: {
+          data: {
+            destination_group_form_target: "catchAllInput",
+            action: "destination-group-form#toggleCatchAll"
+          }
+        }
+      ) %>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%=
+          f.input(
+            :name,
+            required: true,
+            hint: "Enter a name for the destination group.",
+            input_html: {
+              data: {
+                destination_group_form_target: "nameInput"
+              }
+            }
+          ) %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input(
+          :prefixes,
+          as: :text,
+          required: true,
+          hint: "A comma separated list of prefixes. Must include the country code.",
+          input_html: {
+            value: f.object.prefixes_formatted,
+            data: {
+              destination_group_form_target: "prefixesInput"
+            }
+          }
+        ) %>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+    <%= link_to_cancel %>
+  <% end %>
+</div>

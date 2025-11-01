@@ -12,8 +12,8 @@ module SystemSpecHelpers
     Capybara.current_driver == :rack_test ? yield : super
   end
 
-  def choices_select(value, from:)
-    return select(value, from:) if Capybara.current_driver == :rack_test
+  def choices_select(value, from:, **)
+    return select(value, from:, **) if Capybara.current_driver == :rack_test
 
     choices_wrapper = find_field(from, visible: false).find(:xpath, "../..")
     choices_wrapper.click

@@ -22,3 +22,5 @@ en:
         update: "Save"
       phone_number_plan:
         create: "Buy Number"
+      tariff_calculation:
+        create: "Calculate Tariff"
