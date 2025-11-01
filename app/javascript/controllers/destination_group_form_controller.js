@@ -9,6 +9,9 @@ export default class extends Controller {
   };
 
   connect() {
+    this.originalName = this.nameInputTarget.value;
+    this.originalPrefixes = this.prefixesInputTarget.value;
+
     this.toggleCatchAll();
   }
 
@@ -19,8 +22,8 @@ export default class extends Controller {
       this.nameInputTarget.value = this.catchAllNameValue;
       this.prefixesInputTarget.value = this.catchAllPrefixesValue;
     } else {
-      this.nameInputTarget.value = "";
-      this.prefixesInputTarget.value = "";
+      this.nameInputTarget.value = this.originalName;
+      this.prefixesInputTarget.value = this.originalPrefixes;
     }
 
     this.prefixesInputTarget.toggleAttribute("disabled", isChecked);

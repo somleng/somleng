@@ -25,7 +25,7 @@ module Dashboard
 
     def update
       @resource = DestinationGroupForm.initialize_with(record)
-      @resource.attributes = permitted_params.except(:catch_all)
+      @resource.attributes = permitted_params
       @resource.save
       respond_with(:dashboard, @resource)
     end

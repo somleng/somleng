@@ -11,22 +11,20 @@
     }
   ) do |f| %>
 
-    <% if f.object.new_record? %>
-      <div class="row">
-        <%= f.input(
-          :catch_all,
-          as: :boolean,
-          wrapper: :custom_boolean_switch,
-          hint: "Match all prefixes",
-          input_html: {
-            data: {
-              destination_group_form_target: "catchAllInput",
-              action: "destination-group-form#toggleCatchAll"
-            }
+    <div class="row">
+      <%= f.input(
+        :catch_all,
+        as: :boolean,
+        wrapper: :custom_boolean_switch,
+        hint: "Match all prefixes",
+        input_html: {
+          data: {
+            destination_group_form_target: "catchAllInput",
+            action: "destination-group-form#toggleCatchAll"
           }
-        ) %>
-      </div>
-    <% end %>
+        }
+      ) %>
+    </div>
 
     <div class="row">
       <div class="col-sm-6">
