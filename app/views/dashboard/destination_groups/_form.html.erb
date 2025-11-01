@@ -6,7 +6,7 @@
       data: {
         controller: "destination-group-form",
         destination_group_form_catch_all_name_value: DestinationGroup::DEFAULT_CATCH_ALL_NAME,
-        destination_group_form_catch_all_prefixes_value: (0..9).to_a.join(", ")
+        destination_group_form_catch_all_prefixes_value: DestinationGroup::CATCH_ALL_PREFIXES.join(", ")
       }
     }
   ) do |f| %>

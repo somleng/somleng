@@ -10,6 +10,8 @@ class DestinationGroupForm < ApplicationForm
 
   delegate :persisted?, :new_record?, :id, to: :object
 
+  before_validation :set_catch_all
+
   def self.model_name
     ActiveModel::Name.new(self, nil, "DestinationGroup")
   end
@@ -27,16 +29,23 @@ class DestinationGroupForm < ApplicationForm
   def save
     return false if invalid?
 
-    object.attributes = {
-      name:,
-      carrier:,
-      catch_all:,
-      prefixes: (prefixes.map { |prefix| object.prefixes.find_or_initialize_by(prefix:) } unless catch_all)
-    }
+    object.carrier = carrier
+    object.catch_all = catch_all
+    object.name = name
+    if catch_all?
+      object.name = DestinationGroup::DEFAULT_CATCH_ALL_NAME
+      object.prefixes = []
+    else
+      object.prefixes = prefixes.map { |prefix| object.prefixes.find_or_initialize_by(prefix:) }
+    end
 
     object.save!
 
     true
+  end
+
+  def catch_all?
+    !!catch_all
   end
 
   def prefixes_formatted
@@ -46,8 +55,13 @@ class DestinationGroupForm < ApplicationForm
   private
 
   def validate_catch_all
+    return unless catch_all?
     return unless carrier.destination_groups.exists?(catch_all: true)
 
     errors.add(:name, :taken)
+  end
+
+  def set_catch_all
+    self.catch_all = true if prefixes.sort == DestinationGroup::CATCH_ALL_PREFIXES
   end
 end
