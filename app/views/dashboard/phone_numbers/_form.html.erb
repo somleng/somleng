@@ -147,7 +147,7 @@
               <%= f.input :account_id,
                 collection: resource.account_options_for_select,
                 hint: "Optionally assign the phone number to one of your managed accounts.",
-                input_html: { data: { behavior: "choices-input" } }
+                input_html: { data: { controller: "choices" } }
               %>
             </div>
           </div>

@@ -1,0 +1,43 @@
+<div class="card mb-3" data-controller="remove-nested-form" data-remove-nested-form-target="element">
+  <div class= "card-header">
+    <div class="card-header-actions d-flex justify-content-end">
+      <a class="btn btn-outline-danger" href="#" role="button" data-action="click->remove-nested-form#remove">
+        <i class="fas fa-trash-alt"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <%= form.input :_destroy, as: :hidden, input_html: { data: { "remove-nested-form-target": "destroyElement" } } %>
+
+    <div class="row">
+      <div class="col-md-6">
+        <%= form.input(
+          :destination_group_id,
+          collection: form.object.destination_groups_options_for_select,
+          prompt: true,
+          input_html: {
+            data: { controller: "choices" }
+          }
+        ) %>
+      </div>
+
+      <div class="col-md-6">
+        <%= form.input(
+          :rate,
+          label: "Rate (#{form.object.billing_currency.iso_code})",
+          as: :numeric,
+          required: true,
+          append: form.object.rate_unit,
+          hint: form.object.hint,
+          input_html: {
+            min: 0, step: 0.0001,
+            data: {
+              tariff_bundle_wizard_target: "rateInput"
+            }
+          }
+        ) %>
+      </div>
+    </div>
+  </div>
+</div>

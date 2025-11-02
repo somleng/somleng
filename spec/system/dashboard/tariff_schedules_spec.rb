@@ -30,7 +30,8 @@ RSpec.describe "Tariff Schedules" do
   end
 
   it "create a tariff schedule" do
-    carrier = create(:carrier)
+    carrier = create(:carrier, billing_currency: "USD")
+    create(:destination_group, carrier:, name: "Cambodia")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -40,6 +41,9 @@ RSpec.describe "Tariff Schedules" do
     select("Outbound calls", from: "Category")
     fill_in("Name", with: "Standard outbound calls")
     fill_in("Description", with: "Standard rates")
+    choices_select("Cambodia", from: "Destination group")
+    fill_in("Rate", with: "0.005")
+
     click_on("Create Tariff schedule")
 
     expect(page).to have_content("Tariff schedule was successfully created.")

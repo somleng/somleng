@@ -17,7 +17,7 @@
             disabled: resource.persisted?,
             input_html: {
               data: {
-                behavior: "choices-input",
+                controller: "choices",
                 sms_gateway_channel_groups_target: "smsGatewayInput",
                 action: "addItem->sms-gateway-channel-groups#changeSMSGateway",
               }

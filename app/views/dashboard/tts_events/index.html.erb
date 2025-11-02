@@ -4,7 +4,7 @@
         :account_id,
         current_carrier.accounts.map { |account| [account.name, account.id] },
         { filter_value: params.dig(:filter, :account_id) },
-        { data: { behavior: "choices-input" }}
+        { data: { controller: "choices" }}
       )
     %>
 

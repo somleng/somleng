@@ -1,0 +1,5 @@
+<%= turbo_stream.append "destination_tariffs" do %>
+  <%= simple_fields_for @resource do |form| %>
+    <%= render "fields", form: %>
+  <% end %>
+<% end %>

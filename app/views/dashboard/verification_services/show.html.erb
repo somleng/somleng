@@ -31,7 +31,7 @@
             data: {
               verification_services_target: "localePreviewInput",
               action: "change->verification-services#updateLocalePreview",
-              behavior: "choices-input",
+              controller: "choices",
               message_previews: VerificationLocales.available_locales.each_with_object({}) do |locale, result|
                 result[locale.iso_code] = @resource.decorated.sample_message(locale: locale.iso_code)
               end.to_json

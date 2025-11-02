@@ -8,7 +8,7 @@
         [tariff_package.name, tariff_package.id]
       end,
       { filter_value: params.dig(:filter, :tariff_package_id) },
-      { data: { behavior: "choices-input" }}
+      { data: { controller: "choices" }}
     ) %>
     <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>

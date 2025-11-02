@@ -4,7 +4,7 @@
         :verification_service_id,
         parent_scope.verification_services.map { |verification_service| [verification_service.name, verification_service.id] },
         { filter_value: params.dig(:filter, :verification_service_id), title: "Service" },
-        { data: { behavior: "choices-input" }}
+        { data: { controller: "choices" }}
       )
     %>
 
@@ -15,7 +15,7 @@
           :account_id,
           current_carrier.accounts.map { |account| [account.name, account.id] },
           { filter_value: params.dig(:filter, :account_id) },
-          { data: { behavior: "choices-input" }}
+          { data: { controller: "choices" }}
         )
       %>
     <% end %>

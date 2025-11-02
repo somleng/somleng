@@ -2,7 +2,7 @@
   <%= render("shared/filters") do |form| %>
     <%= form.text_field_tag(:phone_call_id, params.dig(:filter, :phone_call_id)) %>
     <%= form.text_field_tag(:message_id, params.dig(:filter, :message_id)) %>
-    <%= form.select :type, Event.type.values, { filter_value: params.dig(:filter, :type) }, { data: { behavior: "choices-input" }} %>
+    <%= form.select :type, Event.type.values, { filter_value: params.dig(:filter, :type) }, { data: { controller: "choices" }} %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
 <% end %>

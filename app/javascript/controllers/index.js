@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import ChoicesController from "./choices_controller"
+application.register("choices", ChoicesController)
+
 import DashboardController from "./dashboard_controller"
 application.register("dashboard", DashboardController)
 

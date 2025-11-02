@@ -8,7 +8,7 @@
         [ tariff_schedule.name, tariff_schedule.id ]
       end,
       { filter_value: params.dig(:filter, :tariff_schedule_id) },
-      { data: { behavior: "choices-input" }}
+      { data: { controller: "choices" }}
     ) %>
 
     <%= form.select(
@@ -18,7 +18,7 @@
         [tariff.name, tariff.id]
       end,
       { filter_value: params.dig(:filter, :tariff_id) },
-      { data: { behavior: "choices-input" }}
+      { data: { controller: "choices" }}
     ) %>
 
     <%= form.select(
@@ -28,7 +28,7 @@
         [destination_group.name, destination_group.id]
       end,
       { filter_value: params.dig(:filter, :destination_group_id) },
-      { data: { behavior: "choices-input" }}
+      { data: { controller: "choices" }}
     ) %>
 
     <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>

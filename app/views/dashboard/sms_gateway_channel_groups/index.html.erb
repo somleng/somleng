@@ -5,7 +5,7 @@
           :sms_gateway_id,
           current_carrier.sms_gateways.map { |sms_gateway| [sms_gateway.name, sms_gateway.id] },
           { filter_value: params.dig(:filter, :sms_gateway_id) },
-          { data: { behavior: "choices-input" }}
+          { data: { controller: "choices" }}
         )
       %>
     <% end %>

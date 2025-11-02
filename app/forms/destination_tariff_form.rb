@@ -1,13 +1,14 @@
 class DestinationTariffForm < ApplicationForm
-  attribute :carrier
   attribute :object, default: -> { DestinationTariff.new }
-  attribute :tariff_schedule_id
-  attribute :tariff_id
+  attribute :tariff_schedule
   attribute :destination_group_id
+  attribute :rate
+  attribute :_destroy
 
-  validates :tariff_schedule_id, :tariff_id, :destination_group_id, presence: true
   validate :validate_destination_group_uniqueness
 
+  delegate :carrier, :category, to: :tariff_schedule
+  delegate :billing_currency, to: :carrier
   delegate :persisted?, :new_record?, :id, to: :object
 
   def self.model_name
@@ -28,27 +29,23 @@ class DestinationTariffForm < ApplicationForm
     true
   end
 
-  def tariff_schedule
-    @tariff_schedule ||= carrier.tariff_schedules.find(tariff_schedule_id)
-  end
-
-  def tariff_schedules_options_for_select
-    DecoratedCollection.new([ tariff_schedule ]).map { [ _1.name, _1.id ] }
-  end
-
-  def tariff_options_for_select
-    DecoratedCollection.new(tariffs).map { [ _1.name, _1.id ] }
-  end
-
-  def destination_group_options_for_select
+  def destination_groups_options_for_select
     DecoratedCollection.new(destination_groups).map { [ _1.name, _1.id ] }
   end
 
-  private
+  def rate_unit
+    result = billing_currency.symbol
+    return result if category.blank?
 
-  def tariffs
-    @tariffs ||= carrier.tariffs.where(category: tariff_schedule.category.tariff_category)
+    result += " / min" if category.type.calls?
+    result
   end
+
+  def hint
+    "Enter the rate in #{billing_currency.name}."
+  end
+
+  private
 
   def destination_groups
     @destination_groups ||= carrier.destination_groups
