@@ -17,6 +17,7 @@ class Message < ApplicationRecord
   belongs_to :messaging_service, optional: true
   has_one :interaction
   has_many :events
+  has_one :send_request, class_name: "MessageSendRequest"
 
   enumerize :direction, in: %i[inbound outbound outbound_api outbound_call outbound_reply],
                         predicates: true, scope: :shallow

@@ -11,11 +11,8 @@ RSpec.describe SendOutboundMessage do
     ).from_channel(
       SMSMessageChannel
     ).with(
-      id: message.id,
-      body: message.body,
-      to: message.to,
-      from: message.from,
-      channel: message.channel
+      type: "message_send_request",
+      message_id: message.id
     )
 
     expect(message.status).to eq("sending")

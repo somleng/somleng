@@ -508,9 +508,27 @@ FactoryBot.define do
       sent_at { Time.current }
     end
 
+    trait :failed do
+      sent
+      status { :failed }
+      failed_at { Time.current }
+    end
+
+    trait :delivered do
+      sent
+      status { :delivered }
+      delivered_at { Time.current }
+    end
+
     trait :with_messaging_service do
       messaging_service
       account { messaging_service.account }
+    end
+
+    trait :with_send_request do
+      after(:build) do |message|
+        message.send_request ||= build(:message_send_request, message:)
+      end
     end
   end
 
@@ -727,5 +745,10 @@ FactoryBot.define do
       status { :canceled }
       canceled_at { Time.current }
     end
+  end
+
+  factory :message_send_request do
+    message
+    sms_gateway { message.sms_gateway }
   end
 end

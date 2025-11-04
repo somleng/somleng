@@ -17,11 +17,8 @@ class SendOutboundMessage < ApplicationWorkflow
     channel.broadcast_to(
       message.sms_gateway,
       {
-        id: message.id,
-        body: message.body,
-        to: message.to.to_s,
-        from: message.from.to_s,
-        channel: message.channel
+        type: "message_send_request",
+        message_id: message.id
       }
     )
   end
