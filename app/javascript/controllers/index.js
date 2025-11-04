@@ -28,6 +28,9 @@ application.register("masked-content", MaskedContentController)
 import MessagingServiceIntegrationController from "./messaging_service_integration_controller"
 application.register("messaging-service-integration", MessagingServiceIntegrationController)
 
+import RemoveNestedFormController from "./remove_nested_form_controller"
+application.register("remove-nested-form", RemoveNestedFormController)
+
 import SidebarController from "./sidebar_controller"
 application.register("sidebar", SidebarController)
 
