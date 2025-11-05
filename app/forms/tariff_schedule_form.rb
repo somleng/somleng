@@ -14,6 +14,7 @@ class TariffScheduleForm < ApplicationForm
   validates :name, :category, presence: true
 
   delegate :persisted?, :new_record?, :id, to: :object
+  delegate :billing_currency, to: :carrier
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "TariffSchedule")

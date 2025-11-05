@@ -1,5 +1,5 @@
 class TariffScheduleCategoryType < ActiveRecord::Type::String
-  TariffScheduleCategory = Data.define(:value, :tariff_category, :type, :description, :direction, :diagram_direction_symbol, :diagram_category) do
+  TariffScheduleCategory = Data.define(:value, :tariff_category, :rate_unit, :type, :description, :direction, :diagram_direction_symbol, :diagram_category) do
     delegate :to_s, :to_sym, to: :value
   end
 
@@ -10,7 +10,8 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
     when :inbound_calls
       direction = :inbound
       type = :calls
-      tariff_category = "call"
+      tariff_category = "call",
+      rate_unit = "/ min"
       description = "inbound calls from"
       diagram_category = "CALL"
       diagram_direction_symbol = "<-"
@@ -18,6 +19,7 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
       direction = :inbound
       type = :messages
       tariff_category = "message"
+      rate_unit = "/ msg"
       description = "inbound messages from"
       diagram_category = "MSG"
       diagram_direction_symbol = "<-"
@@ -25,6 +27,7 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
       direction = :outbound
       type = :calls
       tariff_category = "call"
+      rate_unit = "/ min"
       description = "outbound calls to"
       diagram_category = "CALL"
       diagram_direction_symbol = "->"
@@ -32,6 +35,7 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
       direction = :outbound
       type = :messages
       tariff_category = "message"
+      rate_unit = "/ msg"
       description = "outbound messages to"
       diagram_category = "MSG"
       diagram_direction_symbol = "->"
@@ -41,6 +45,7 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
       value:,
       tariff_category: ActiveSupport::StringInquirer.new(tariff_category.to_s),
       type: ActiveSupport::StringInquirer.new(type.to_s),
+      rate_unit:,
       description:,
       direction: ActiveSupport::StringInquirer.new(direction.to_s),
       diagram_category:,

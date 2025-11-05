@@ -1,5 +1,15 @@
 <div class="card-body">
-  <%= simple_form_for([ :dashboard, resource ], url: (dashboard_tariff_schedules_path(filter_params) if @resource.new_record?), wrapper: :input_group, html: { data: { controller: "tariff-schedule-form" } }) do |f| %>
+  <%= simple_form_for(
+    [ :dashboard, resource ],
+    url: (dashboard_tariff_schedules_path(filter_params) if @resource.new_record?),
+    wrapper: :input_group,
+    html: {
+      data: {
+        controller: "tariff-schedule-form",
+        tariff_schedule_form_target: "form"
+      }
+    }
+  ) do |f| %>
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">
@@ -50,7 +60,7 @@
         <% f.object.destination_tariffs.each_with_index do |destination_tariff, index| %>
           <div id="destination_tariffs">
             <%= f.simple_fields_for(:destination_tariffs, destination_tariff, index:) do |destination_tariffs_form| %>
-              <%= render "dashboard/destination_tariffs/fields", form: destination_tariffs_form %>
+              <%= render("dashboard/destination_tariffs/fields", form: destination_tariffs_form) %>
             <% end %>
           </div>
         <% end %>

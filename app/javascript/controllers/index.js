@@ -13,6 +13,9 @@ application.register("dashboard", DashboardController)
 import DestinationGroupFormController from "./destination_group_form_controller"
 application.register("destination-group-form", DestinationGroupFormController)
 
+import DestinationTariffFormController from "./destination_tariff_form_controller"
+application.register("destination-tariff-form", DestinationTariffFormController)
+
 import Filters__DatePickerController from "./filters/date_picker_controller"
 application.register("filters--date-picker", Filters__DatePickerController)
 

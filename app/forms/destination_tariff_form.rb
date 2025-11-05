@@ -37,15 +37,24 @@ class DestinationTariffForm < ApplicationForm
     result = billing_currency.symbol
     return result if category.blank?
 
-    result += " / min" if category.type.calls?
-    result
+    format_rate_unit(category)
   end
 
   def hint
     "Enter the rate in #{billing_currency.name}."
   end
 
+  def rate_unit_by_category
+    TariffSchedule.category.values.each_with_object({}) do |category, result|
+      result[category] = format_rate_unit(category)
+    end
+  end
+
   private
+
+  def format_rate_unit(category)
+    [ billing_currency.symbol, category.rate_unit ].join(" ")
+  end
 
   def destination_groups
     @destination_groups ||= carrier.destination_groups

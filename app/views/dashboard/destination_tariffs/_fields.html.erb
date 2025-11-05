@@ -1,5 +1,12 @@
-<div class="card mb-3" data-controller="remove-nested-form" data-remove-nested-form-target="element">
-  <div class= "card-header">
+<div class="card mb-3" data-controller="destination-tariff-form remove-nested-form" data-remove-nested-form-target="element" data-destination-tariff-form-rate-unit-by-category-value="<%= form.object.rate_unit_by_category.to_json %>">
+  <div class= "card-header d-flex justify-content-between align-items-center">
+    <h6>
+      <% if form.object.new_record? %>
+        New Tariff
+      <% else %>
+        Edit Tariff
+      <% end %>
+    </h6>
     <div class="card-header-actions d-flex justify-content-end">
       <button type="button" class="btn btn-outline-danger" data-action="click->remove-nested-form#remove">
         <i class="fas fa-trash-alt"></i>
@@ -33,7 +40,9 @@
           input_html: {
             min: 0, step: 0.0001,
             data: {
-              tariff_bundle_wizard_target: "rateInput"
+              append_data: {
+                destination_tariff_form_target: "rateUnit"
+              }
             }
           }
         ) %>
