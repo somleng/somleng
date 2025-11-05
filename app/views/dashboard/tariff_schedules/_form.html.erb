@@ -58,11 +58,11 @@
         </h5>
 
         <% f.object.destination_tariffs.each_with_index do |destination_tariff, index| %>
-          <div id="destination_tariffs">
+          <%= turbo_frame_tag("destination_tariffs") do %>
             <%= f.simple_fields_for(:destination_tariffs, destination_tariff, index:) do |destination_tariffs_form| %>
               <%= render("dashboard/destination_tariffs/fields", form: destination_tariffs_form) %>
             <% end %>
-          </div>
+            <% end %>
         <% end %>
 
         <div class="text-center">

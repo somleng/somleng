@@ -1,4 +1,4 @@
-<div class="card mb-3" data-controller="destination-tariff-form remove-nested-form" data-remove-nested-form-target="element" data-destination-tariff-form-rate-unit-by-category-value="<%= form.object.rate_unit_by_category.to_json %>">
+<div class="card mb-3" data-controller="destination-tariff-form remove-nested-form" data-remove-nested-form-target="element" data-destination-tariff-form-rate-unit-by-category-value="<%= form.object.rate_unit_by_category.to_json %>" data-test-id="destination-tariff-form">
   <div class= "card-header d-flex justify-content-between align-items-center">
     <h6>
       <% if form.object.new_record? %>
@@ -23,8 +23,15 @@
           :destination_group_id,
           collection: form.object.destination_groups_options_for_select,
           prompt: true,
+          required: true,
           input_html: {
-            data: { controller: "choices" }
+            novalidate: true,
+            data: {
+              controller: "choices",
+              choices_options: {
+                removeItemButton: true
+              }
+            }
           }
         ) %>
       </div>

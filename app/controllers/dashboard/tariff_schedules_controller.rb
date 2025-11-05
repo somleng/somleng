@@ -39,7 +39,14 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:tariff_schedule).permit(:name, :category, :description)
+      params.require(:tariff_schedule).permit(
+        :name,
+        :category,
+        :description,
+        destination_tariffs: [
+          :destination_group_id, :rate, :_destroy
+        ]
+      )
     end
 
     def scope

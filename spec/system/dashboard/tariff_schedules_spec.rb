@@ -29,9 +29,10 @@ RSpec.describe "Tariff Schedules" do
     end
   end
 
-  it "create a tariff schedule" do
+  it "create a tariff schedule", :js do
     carrier = create(:carrier, billing_currency: "USD")
     create(:destination_group, carrier:, name: "Cambodia")
+    create(:destination_group, carrier:, name: "Cambodia Smart")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -41,8 +42,17 @@ RSpec.describe "Tariff Schedules" do
     select("Outbound calls", from: "Category")
     fill_in("Name", with: "Standard outbound calls")
     fill_in("Description", with: "Standard rates")
-    choices_select("Cambodia", from: "Destination group")
+    choices_select("Cambodia", from: "Destination group", exact: true)
     fill_in("Rate", with: "0.005")
+
+    click_on("Add Tariff")
+
+    expect(page).to have_css('[data-test-id="destination-tariff-form"]', count: 2)
+
+    within(all('[data-test-id="destination-tariff-form"]').last) do
+      fill_in("Rate", with: "0.003")
+      choices_select("Cambodia Smart", from: "Destination group", exact: true)
+    end
 
     click_on("Create Tariff schedule")
 
@@ -72,7 +82,6 @@ RSpec.describe "Tariff Schedules" do
 
     carrier_sign_in(user)
     visit new_dashboard_tariff_schedule_path
-
     click_on("Create Tariff schedule")
 
     expect(page).to have_content("can't be blank")

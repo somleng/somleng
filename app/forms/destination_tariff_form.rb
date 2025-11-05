@@ -5,6 +5,9 @@ class DestinationTariffForm < ApplicationForm
   attribute :rate
   attribute :_destroy
 
+  validates :destination_group_id, presence: true
+  validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
   validate :validate_destination_group_uniqueness
 
   delegate :carrier, :category, to: :tariff_schedule
@@ -20,13 +23,22 @@ class DestinationTariffForm < ApplicationForm
 
     object.attributes = {
       tariff_schedule:,
-      tariff: tariffs.find(tariff_id),
       destination_group: destination_groups.find(destination_group_id)
     }
+    tariff = object.build_tariff(carrier:, currency: billing_currency, category: category.tariff_category)
+    if category.tariff_category.message?
+      tariff.build_message_tariff(rate_cents: rate_to_cents(rate))
+    elsif category.tariff_category.call?
+      tariff.build_call_tariff(per_minute_rate_cents: rate_to_cents(rate))
+    end
 
     object.save!
 
     true
+  end
+
+  def filled?
+    destination_group_id.present? || rate.present?
   end
 
   def destination_groups_options_for_select
@@ -62,10 +74,14 @@ class DestinationTariffForm < ApplicationForm
 
   def validate_destination_group_uniqueness
     return unless carrier.destination_tariffs.exists?(
-      tariff_schedule_id: tariff_schedule_id,
+      tariff_schedule:,
       destination_group_id: destination_group_id,
     )
 
     errors.add(:destination_group_id, :taken)
+  end
+
+  def rate_to_cents(rate)
+    InfinitePrecisionMoney.from_amount(rate.presence.to_d, billing_currency).cents
   end
 end

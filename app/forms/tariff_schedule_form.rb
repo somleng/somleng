@@ -12,6 +12,8 @@ class TariffScheduleForm < ApplicationForm
   enumerize :category, in: TariffSchedule.category.values
 
   validates :name, :category, presence: true
+  validate :validate_destination_tariffs
+  validate :validate_name
 
   delegate :persisted?, :new_record?, :id, to: :object
   delegate :billing_currency, to: :carrier
@@ -34,7 +36,7 @@ class TariffScheduleForm < ApplicationForm
   def initialize(**)
     super(**)
     object.carrier = carrier
-    self.destination_tariffs = build_destination_tariffs
+    self.destination_tariffs = build_destination_tariffs if destination_tariffs.blank?
   end
 
   def destination_tariffs=(value)
@@ -54,12 +56,30 @@ class TariffScheduleForm < ApplicationForm
 
     object.save!
 
-    true
+    filled_destination_tariffs.all?(&:save)
   end
 
   private
 
+  def filled_destination_tariffs
+    destination_tariffs.select(&:filled?)
+  end
+
   def build_destination_tariffs
     FormCollection.new([ DestinationTariffForm.new ], form: DestinationTariffForm)
+  end
+
+  def validate_destination_tariffs
+    filled_destination_tariffs.each(&:valid?)
+
+    return if filled_destination_tariffs.all? { _1.errors.empty? }
+
+    errors.add(:destination_tariffs, :invalid)
+  end
+
+  def validate_name
+    return unless carrier.tariff_schedules.exists?(name:, category:)
+
+    errors.add(:name, :taken)
   end
 end
