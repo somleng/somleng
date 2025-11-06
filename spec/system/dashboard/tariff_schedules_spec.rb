@@ -5,10 +5,10 @@ RSpec.describe "Tariff Schedules" do
     carrier = create(:carrier)
     tariff_package = create(:tariff_package, carrier:)
     tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard", tariff_packages: [ tariff_package ])
-    filtered_tariff_schedules = [
+    excluded_tariff_schedules = [
       create(:tariff_schedule, :outbound_calls, carrier:, name: "Promo", tariff_packages: [ tariff_package ]),
       create(:tariff_schedule, :outbound_messages, carrier:, name: "Standard", tariff_packages: [ tariff_package ]),
-      create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard")
+      create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard 2")
     ]
     user = create(:user, :carrier, carrier:)
 
@@ -24,7 +24,7 @@ RSpec.describe "Tariff Schedules" do
     )
 
     expect(page).to have_content(tariff_schedule.id)
-    filtered_tariff_schedules.each do |tariff_schedule|
+    excluded_tariff_schedules.each do |tariff_schedule|
       expect(page).to have_no_content(tariff_schedule.id)
     end
   end
@@ -47,9 +47,11 @@ RSpec.describe "Tariff Schedules" do
 
     click_on("Add Tariff")
 
+    expect(page).to have_destination_tariff_forms(count: 2)
+
     expect(page).to have_css('[data-test-id="destination-tariff-form"]', count: 2)
 
-    within(all('[data-test-id="destination-tariff-form"]').last) do
+    within(destination_tariff_forms.last) do
       fill_in("Rate", with: "0.003")
       enhanced_select("Cambodia Smart", from: "Destination group", exact: true)
     end
@@ -100,13 +102,16 @@ RSpec.describe "Tariff Schedules" do
     carrier_sign_in(user)
     visit dashboard_tariff_schedule_path(tariff_schedule)
 
-    expect(page).to have_link("Manage", href: dashboard_destination_tariffs_path(filter: { tariff_schedule_id: tariff_schedule.id }))
+    expect(page).to have_link("Manage", href: dashboard_tariff_schedule_destination_tariffs_path(tariff_schedule))
     expect(page).to have_link("Manage", href: dashboard_tariff_plans_path(filter: { tariff_schedule_id: tariff_schedule.id }))
   end
 
-  it "update a tariff schedule" do
-    carrier = create(:carrier)
+  it "update a tariff schedule", :js, :selenium_chrome do
+    carrier = create(:carrier, billing_currency: "USD")
     tariff_schedule = create(:tariff_schedule, :inbound_calls, carrier:, name: "Old Name", description: "Old Description")
+    create(:destination_tariff, tariff_schedule:, destination_group: create(:destination_group, name: "Cambodia", carrier:))
+    create(:destination_tariff, tariff_schedule:, destination_group: create(:destination_group, name: "Cambodia Smart", carrier:))
+    create(:destination_group, name: "Cambodia Metfone", carrier:)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -116,12 +121,28 @@ RSpec.describe "Tariff Schedules" do
     expect(page).to have_content("Inbound calls")
 
     fill_in("Name", with: "New Name")
-    fill_in("Description", with: "Standard rates")
+    fill_in("Description", with: "New Description")
+
+    within(destination_tariff_forms.first) do
+      click_on("Delete")
+    end
+
+    expect(page).to have_destination_tariff_forms(count: 1)
+
+    click_on("Add Tariff")
+
+    expect(page).to have_destination_tariff_forms(count: 2)
+
+    within(destination_tariff_forms.last) do
+      enhanced_select("Cambodia Metfone", from: "Destination group")
+      fill_in("Rate", with: "0.005")
+    end
+
     click_on("Update Tariff schedule")
 
     expect(page).to have_content("Tariff schedule was successfully updated.")
     expect(page).to have_content("New Name")
-    expect(page).to have_content("Standard rates")
+    expect(page).to have_content("New Description")
   end
 
   it "delete a tariff schedule" do
@@ -135,5 +156,13 @@ RSpec.describe "Tariff Schedules" do
 
     expect(page).to have_content("Tariff schedule was successfully destroyed.")
     expect(page).to have_no_content("Standard")
+  end
+
+  def destination_tariff_forms
+    page.all('[data-test-id="destination-tariff-form"]')
+  end
+
+  def have_destination_tariff_forms(count:)
+    have_css('[data-test-id="destination-tariff-form"]', count:)
   end
 end

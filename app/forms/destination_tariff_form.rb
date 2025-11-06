@@ -1,9 +1,11 @@
 class DestinationTariffForm < ApplicationForm
+  attribute :id
+  attribute :parent_form
   attribute :object, default: -> { DestinationTariff.new }
   attribute :tariff_schedule
   attribute :destination_group_id
   attribute :rate
-  attribute :_destroy
+  attribute :_destroy, :boolean, default: false
 
   validates :destination_group_id, presence: true
   validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -12,7 +14,9 @@ class DestinationTariffForm < ApplicationForm
 
   delegate :carrier, :category, to: :tariff_schedule
   delegate :billing_currency, to: :carrier
-  delegate :persisted?, :new_record?, :id, to: :object
+  delegate :persisted?, :new_record?, to: :object
+
+  before_validation :set_object
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "DestinationTariff")
@@ -21,6 +25,7 @@ class DestinationTariffForm < ApplicationForm
   def self.initialize_with(object)
     new(
       object:,
+      id: object.id,
       tariff_schedule: object.tariff_schedule,
       destination_group_id: object.destination_group_id,
       rate: object.tariff.rate
@@ -29,6 +34,8 @@ class DestinationTariffForm < ApplicationForm
 
   def save
     return false if invalid?
+
+    return object.destroy! unless retain?
 
     object.attributes = {
       tariff_schedule:,
@@ -49,8 +56,8 @@ class DestinationTariffForm < ApplicationForm
     true
   end
 
-  def filled?
-    destination_group_id.present? || rate.present?
+  def retain?
+    !_destroy
   end
 
   def tariff_schedules_options_for_select
@@ -89,15 +96,21 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def validate_destination_group_uniqueness
-    return unless carrier.destination_tariffs.where.not(id: object.id).exists?(
-      tariff_schedule:,
-      destination_group_id: destination_group_id,
-    )
+    return if parent_form.present?
+    return unless retain?
+    return unless tariff_schedule.destination_tariffs.where.not(id:).exists?(destination_group_id:)
 
     errors.add(:destination_group_id, :taken)
   end
 
   def rate_to_cents(rate)
     InfinitePrecisionMoney.from_amount(rate.presence.to_d, billing_currency).cents
+  end
+
+  def set_object
+    return if id.blank?
+    return if tariff_schedule.blank?
+
+    self.object = tariff_schedule.destination_tariffs.find(id)
   end
 end

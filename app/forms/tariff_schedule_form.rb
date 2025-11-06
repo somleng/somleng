@@ -41,7 +41,7 @@ class TariffScheduleForm < ApplicationForm
 
   def destination_tariffs=(value)
     super(value)
-    destination_tariffs.each { _1.tariff_schedule = object }
+    destination_tariffs.each { _1.attributes = { tariff_schedule: object, parent_form: self } }
   end
 
   def save
@@ -57,24 +57,34 @@ class TariffScheduleForm < ApplicationForm
 
       object.save!
 
-      filled_destination_tariffs.all?(&:save)
+      destination_tariffs.all?(&:save)
     end
   end
 
-  private
-
-  def filled_destination_tariffs
-    destination_tariffs.select(&:filled?)
+  def retained_destination_tariffs
+    destination_tariffs.select(&:retain?)
   end
+
+  private
 
   def build_destination_tariffs
     FormCollection.new([ DestinationTariffForm.new ], form: DestinationTariffForm)
   end
 
   def validate_destination_tariffs
-    filled_destination_tariffs.each(&:valid?)
+    retained_destination_tariffs.each(&:valid?)
 
-    return if filled_destination_tariffs.all? { _1.errors.empty? }
+    destination_group_ids = retained_destination_tariffs.select { _1.destination_group_id.present? }.group_by(&:destination_group_id)
+
+    destination_group_ids.each_value do |forms|
+      next if forms.size <= 1
+
+      forms.drop(1).each do |duplicate|
+        duplicate.errors.add(:destination_group_id, :taken)
+      end
+    end
+
+    return if retained_destination_tariffs.all? { _1.errors.empty? }
 
     errors.add(:destination_tariffs, :invalid)
   end

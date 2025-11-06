@@ -8,7 +8,7 @@
       <% end %>
     </h6>
     <div class="card-header-actions d-flex justify-content-end">
-      <button type="button" class="btn btn-outline-danger" data-action="click->remove-nested-form#remove">
+      <button type="button" class="btn btn-outline-danger" data-action="click->remove-nested-form#remove" title="Delete">
         <i class="fas fa-trash-alt"></i>
       </a>
     </div>
@@ -16,6 +16,7 @@
 
   <div class="card-body">
     <%= form.input :_destroy, as: :hidden, input_html: { data: { "remove-nested-form-target": "destroyElement" } } %>
+    <%= form.input :id, as: :hidden %>
 
     <div class="row">
       <div class="col-md-6">
@@ -26,10 +27,7 @@
           required: true,
           input_html: {
             data: {
-              controller: "enhanced-select",
-              enhanced_select_options: {
-                removeItemButton: true
-              }
+              controller: "enhanced-select"
             }
           }
         ) %>

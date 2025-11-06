@@ -146,4 +146,16 @@ module DashboardHelper
   def link_to_cancel(link_text = "Cancel", location = :back, **, &)
     link_to(link_text, location, class: "btn btn-outline-danger", **, &)
   end
+
+  def summarize_list(items, max: nil, link_to_remaining: nil)
+    return items.to_sentence if max.blank? || items.size <= max
+
+    displayed = items.take(max)
+    remaining = items.size - max
+
+    remaining_text = "#{remaining} more"
+    remaining_text = link_to(remaining_text, link_to_remaining) if link_to_remaining.present?
+
+    [ *displayed, remaining_text.html_safe ].to_sentence
+  end
 end

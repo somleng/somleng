@@ -1,7 +1,7 @@
 module Dashboard
   class TariffSchedulesController < DashboardController
     def index
-      @resources = apply_filters(scope)
+      @resources = apply_filters(scope.includes(destination_tariffs: [ :destination_group, { tariff: [ :message_tariff, :call_tariff ] } ]))
       @resources = paginate_resources(@resources)
     end
 
@@ -12,7 +12,7 @@ module Dashboard
     def create
       @resource = TariffScheduleForm.new(carrier: current_carrier, **permitted_params)
       @resource.save
-      respond_with(:dashboard, @resource)
+      respond_with(:dashboard, @resource, location: dashboard_tariff_schedules_path(filter_params))
     end
 
     def show
@@ -44,7 +44,7 @@ module Dashboard
         :category,
         :description,
         destination_tariffs: [
-          :destination_group_id, :rate, :_destroy
+          :id, :destination_group_id, :rate, :_destroy
         ]
       )
     end

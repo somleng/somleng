@@ -7,6 +7,10 @@ class TariffScheduleDecorator < SimpleDelegator
     object.category.text
   end
 
+  def destination_tariffs
+    DecoratedCollection.new(object.destination_tariffs)
+  end
+
   def name
     "#{category} (#{object.name})"
   end

@@ -1,4 +1,8 @@
-<%= page_title(title: "Destination Tariffs") do %>
+<%= page_title(title: "Destination Tariffs for #{@tariff_schedule.decorated.name}") do %>
+  <% if policy(@tariff_schedule).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_schedule_path(@tariff_schedule)) %>
+  <% end %>
+
   <%= render("shared/filters") do |form| %>
     <%= form.select(
       :destination_group_id,

@@ -21,7 +21,7 @@
   <% end %>
 
   <% if policy(:tariff_schedule).new? %>
-    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_schedule_path) %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_schedule_path(filter_params)) %>
   <% end %>
 <% end %>
 

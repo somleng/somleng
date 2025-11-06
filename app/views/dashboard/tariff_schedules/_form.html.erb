@@ -2,6 +2,7 @@
   <%= simple_form_for(
     [ :dashboard, resource ],
     wrapper: :input_group,
+    url: (dashboard_tariff_schedules_path(filter_params) if resource.new_record?),
     html: {
       data: {
         controller: "tariff-schedule-form",
@@ -16,20 +17,19 @@
         </h5>
 
         <div class="row">
-          <% if f.object.new_record? %>
-            <div class="col-sm-6">
-              <%= f.input(
-                :category,
-                prompt: true,
-                input_html: {
-                  data: {
-                    tariff_schedule_form_target: "categoryInput",
-                    action: "change->tariff-schedule-form#toggleCategory"
-                  }
+          <div class="col-sm-6">
+            <%= f.input(
+              :category,
+              prompt: true,
+              disabled: f.object.persisted?,
+              input_html: {
+                data: {
+                  tariff_schedule_form_target: "categoryInput",
+                  action: "change->tariff-schedule-form#toggleCategory"
                 }
-              ) %>
-            </div>
-          <% end %>
+              }
+            ) %>
+          </div>
 
           <div class="col-sm-6">
             <%= f.input(
@@ -56,8 +56,8 @@
           Tariffs
         </h5>
 
-        <% f.object.destination_tariffs.each_with_index do |destination_tariff, index| %>
-          <%= turbo_frame_tag("destination_tariffs") do %>
+        <%= turbo_frame_tag("destination_tariffs") do %>
+          <% f.object.retained_destination_tariffs.each_with_index do |destination_tariff, index| %>
             <%= f.simple_fields_for(:destination_tariffs, destination_tariff, index:) do |destination_tariffs_form| %>
               <%= render("dashboard/destination_tariffs/fields", form: destination_tariffs_form) %>
             <% end %>

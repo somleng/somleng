@@ -60,6 +60,18 @@ RSpec.describe DestinationTariffForm do
       )
     end
 
+    it "destroy a tariff" do
+      carrier = create(:carrier)
+      destination_tariff = create(:destination_tariff, carrier:)
+
+      form = DestinationTariffForm.initialize_with(destination_tariff)
+      form._destroy = true
+
+      form.save
+
+      expect(destination_tariff).not_to be_persisted
+    end
+
     it "update a tariff" do
       carrier = create(:carrier, billing_currency: "USD")
       tariff_schedule = create(:tariff_schedule, :outbound_messages, carrier:)

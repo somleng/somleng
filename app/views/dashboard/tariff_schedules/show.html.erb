@@ -23,7 +23,11 @@
       <%= external_link_to("Manage", dashboard_tariff_plans_path(filter: { tariff_schedule_id: f.object.id })) %>
     <% end %>
     <%= f.attribute :destination_tariffs do %>
-      <%= external_link_to("Manage", dashboard_tariff_schedule_destination_tariffs_path(f.object), title: "Manage Destination tariffs") %>
+      <%= summarize_list(
+        f.object.decorated.destination_tariffs.map { destination_tariff_diagram(_1) },
+        max: 1,
+        link_to_remaining: dashboard_tariff_schedule_destination_tariffs_path(f.object)
+      ).html_safe %>
     <% end %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>

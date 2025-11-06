@@ -10,7 +10,7 @@ class TariffScheduleCategoryType < ActiveRecord::Type::String
     when :inbound_calls
       direction = :inbound
       type = :calls
-      tariff_category = "call",
+      tariff_category = "call"
       rate_unit = "/ min"
       description = "inbound calls from"
       diagram_category = "CALL"
