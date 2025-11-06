@@ -11,7 +11,6 @@ export default class extends Controller {
   initializeAll() {
     this.initializeBootstrap();
     this.initializeCoreUI();
-    this.initializeTime();
   }
 
   initializeBootstrap() {
