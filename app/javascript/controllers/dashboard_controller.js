@@ -31,15 +31,4 @@ export default class extends Controller {
       .call(document.querySelectorAll(".sidebar"))
       .map((el) => coreui.Sidebar.getOrCreateInstance(el));
   }
-
-  initializeTime() {
-    [].slice
-      .call(document.querySelectorAll("time[data-behavior~=local-time]"))
-      .map((el) => {
-        el.textContent = new Intl.DateTimeFormat(navigator.language, {
-          dateStyle: "medium",
-          timeStyle: "long",
-        }).format(new Date(el.textContent));
-      });
-  }
 }
