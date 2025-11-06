@@ -13,7 +13,7 @@
         [tariff_package.name, tariff_package.id]
       end,
       { filter_value: params.dig(:filter, :tariff_package_id) },
-      { data: { controller: "choices" }}
+      { data: { controller: "enhanced-select" }}
     ) %>
 
     <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>

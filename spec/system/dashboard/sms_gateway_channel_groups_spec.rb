@@ -36,10 +36,10 @@ RSpec.describe "SMS Gateway Channel Groups" do
 
     expect(page).to have_field("Route prefixes", with: "")
     fill_in("Name", with: "Smart")
-    choices_select("My SMS Gateway", from: "SMS gateway")
+    enhanced_select("My SMS Gateway", from: "SMS gateway")
     fill_in("Route prefixes", with: "85515, 85516")
-    choices_select("1", from: "Channels")
-    choices_select("2", from: "Channels")
+    enhanced_select("1", from: "Channels")
+    enhanced_select("2", from: "Channels")
     click_on "Create Channel group"
 
     expect(page).to have_content("Channel group was successfully created")

@@ -609,7 +609,6 @@ FactoryBot.define do
 
   factory :tariff do
     carrier { association :carrier, billing_currency: "USD" }
-    name { "Default Tariff" }
     currency { carrier.billing_currency }
     call
 
@@ -744,7 +743,7 @@ FactoryBot.define do
     end
 
     tariff_schedule { association :tariff_schedule, carrier: }
-    tariff { association(:tariff, category: tariff_schedule.category.tariff_category, carrier: tariff_schedule.carrier) }
+    tariff { association(:tariff, tariff_schedule.category.tariff_category.to_sym, carrier: tariff_schedule.carrier) }
     destination_group { association :destination_group, carrier: tariff_schedule.carrier }
   end
 

@@ -7,7 +7,7 @@
           collection: f.object.tariff_packages_options_for_select,
           disabled: true,
           input_html: {
-            data: { controller: "choices" }
+            data: { controller: "enhanced-select" }
           }
         ) %>
 
@@ -31,7 +31,7 @@
           prompt:,
           disabled: f.object.persisted?,
           input_html: {
-            data: { controller: "choices-" }
+            data: { controller: "enhanced-select" }
           }
         ) %>
       </div>

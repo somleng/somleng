@@ -133,7 +133,7 @@ RSpec.describe "Incoming Phone Numbers" do
     select("POST", from: "Status callback method")
     fill_in("SMS URL", with: "https://www.example.com/sms.xml")
     select("POST", from: "SMS method")
-    choices_select("My Messaging Service", from: "Messaging service")
+    enhanced_select("My Messaging Service", from: "Messaging service")
 
     click_on("Save")
 

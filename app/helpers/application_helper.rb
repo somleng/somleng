@@ -18,6 +18,6 @@ module ApplicationHelper
   def local_time(time)
     return if time.blank?
 
-    tag.time(time.utc.iso8601, data: { behavior: "local-time" })
+    tag.time(time.utc.iso8601, data: { controller: "local-time" })
   end
 end

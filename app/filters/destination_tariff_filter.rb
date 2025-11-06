@@ -1,40 +1,4 @@
 class DestinationTariffFilter < ResourceFilter
-  class CategoryFilter < ApplicationFilter
-    filter_params do
-      optional(:category).value(:string, included_in?: TariffSchedule.category.values)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.joins(:tariff_schedule).where(tariff_schedules: { category: filter_params.fetch(:category) })
-    end
-  end
-
-  class TariffScheduleIDFilter < ApplicationFilter
-    filter_params do
-      optional(:tariff_schedule_id).value(:string)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(tariff_schedule_id: filter_params.fetch(:tariff_schedule_id))
-    end
-  end
-
-  class TariffIDFilter < ApplicationFilter
-    filter_params do
-      optional(:tariff_id).value(:string)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      super.where(tariff_id: filter_params.fetch(:tariff_id))
-    end
-  end
-
   class DestinationGroupIDFilter < ApplicationFilter
     filter_params do
       optional(:destination_group_id).value(:string)
@@ -48,9 +12,6 @@ class DestinationTariffFilter < ResourceFilter
   end
 
   filter_with(
-    CategoryFilter,
-    TariffScheduleIDFilter,
-    TariffIDFilter,
     DestinationGroupIDFilter,
     :date_filter
   )

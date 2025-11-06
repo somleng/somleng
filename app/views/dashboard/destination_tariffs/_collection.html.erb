@@ -21,7 +21,7 @@
       <% destination_tariff = DestinationTariffDecorator.new(destination_tariff) %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(destination_tariff.id, dashboard_destination_tariff_path(destination_tariff)) %>
+          <%= link_to(destination_tariff.id, dashboard_tariff_schedule_destination_tariff_path(destination_tariff.tariff_schedule, destination_tariff)) %>
         </td>
 
         <td>

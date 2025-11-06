@@ -256,7 +256,7 @@ RSpec.describe "Phone Numbers" do
     fill_in("Rate center", with: "NEWTORONTO")
     fill_in("Latitude", with: "43.6008")
     fill_in("Longitude", with: "-79.5053")
-    choices_select("My Carrier Account", from: "Account")
+    enhanced_select("My Carrier Account", from: "Account")
 
     click_on("Update Phone number")
 

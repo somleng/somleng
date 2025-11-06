@@ -36,10 +36,6 @@ class TariffDecorator < SimpleDelegator
     end
   end
 
-  def name
-    "#{rate} (#{object.name})"
-  end
-
   private
 
   def display_rate(rate)

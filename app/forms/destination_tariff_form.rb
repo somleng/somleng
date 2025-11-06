@@ -18,6 +18,15 @@ class DestinationTariffForm < ApplicationForm
     ActiveModel::Name.new(self, nil, "DestinationTariff")
   end
 
+  def self.initialize_with(object)
+    new(
+      object:,
+      tariff_schedule: object.tariff_schedule,
+      destination_group_id: object.destination_group_id,
+      rate: object.tariff.rate
+    )
+  end
+
   def save
     return false if invalid?
 
@@ -25,11 +34,14 @@ class DestinationTariffForm < ApplicationForm
       tariff_schedule:,
       destination_group: destination_groups.find(destination_group_id)
     }
-    tariff = object.build_tariff(carrier:, currency: billing_currency, category: category.tariff_category)
+
+    tariff = object.tariff || object.build_tariff(carrier:, currency: billing_currency, category: category.tariff_category)
     if category.tariff_category.message?
-      tariff.build_message_tariff(rate_cents: rate_to_cents(rate))
+      message_tariff = tariff.message_tariff || tariff.build_message_tariff
+      message_tariff.rate_cents = rate_to_cents(rate)
     elsif category.tariff_category.call?
-      tariff.build_call_tariff(per_minute_rate_cents: rate_to_cents(rate))
+      call_tariff = tariff.call_tariff || tariff.build_call_tariff
+      call_tariff.per_minute_rate_cents = rate_to_cents(rate)
     end
 
     object.save!
@@ -39,6 +51,10 @@ class DestinationTariffForm < ApplicationForm
 
   def filled?
     destination_group_id.present? || rate.present?
+  end
+
+  def tariff_schedules_options_for_select
+    DecoratedCollection.new([ tariff_schedule ]).map { [ _1.name, _1.id ] }
   end
 
   def destination_groups_options_for_select
@@ -73,7 +89,7 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def validate_destination_group_uniqueness
-    return unless carrier.destination_tariffs.exists?(
+    return unless carrier.destination_tariffs.where.not(id: object.id).exists?(
       tariff_schedule:,
       destination_group_id: destination_group_id,
     )

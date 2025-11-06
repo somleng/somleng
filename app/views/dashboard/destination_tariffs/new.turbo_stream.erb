@@ -1,6 +1,6 @@
 <%= turbo_stream.append "destination_tariffs" do %>
   <%= simple_fields_for(:tariff_schedule) do |parent_form| %>
-    <%= parent_form.simple_fields_for(:destination_tariffs, @resource, index: SecureRandom.uuid, wrapper: :input_group) do |form| %>
+    <%= parent_form.simple_fields_for(:destination_tariffs, @resource, index: (Time.current.to_f * 1000).to_i, wrapper: :input_group) do |form| %>
       <%= render "fields", form: %>
     <% end %>
   <% end %>

@@ -31,7 +31,7 @@ RSpec.describe "Verification Services" do
       href: dashboard_verifications_path(filter: { verification_service_id: verification_service.id })
     )
 
-    choices_select("German", from: "locale_preview")
+    enhanced_select("German", from: "locale_preview")
 
     expect(page).to have_content(/Dein Rocket Rides Sicherheitscode lautet: \d{6}./)
   end
@@ -46,7 +46,7 @@ RSpec.describe "Verification Services" do
     click_on("New")
     fill_in("Friendly name", with: "Ride Service")
     select("4 digits", from: "Code length")
-    choices_select("Rocket Rides", from: "Account")
+    enhanced_select("Rocket Rides", from: "Account")
     click_on("Create Verification service")
 
     expect(page).to have_content("Verification service was successfully created")

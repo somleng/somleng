@@ -40,9 +40,9 @@ RSpec.describe "Tariff Schedules" do
     click_on("New")
 
     select("Outbound calls", from: "Category")
-    fill_in("Name", with: "Standard outbound calls")
+    fill_in("Name", with: "Standard")
     fill_in("Description", with: "Standard rates")
-    choices_select("Cambodia", from: "Destination group", exact: true)
+    enhanced_select("Cambodia", from: "Destination group", exact: true)
     fill_in("Rate", with: "0.005")
 
     click_on("Add Tariff")
@@ -51,7 +51,7 @@ RSpec.describe "Tariff Schedules" do
 
     within(all('[data-test-id="destination-tariff-form"]').last) do
       fill_in("Rate", with: "0.003")
-      choices_select("Cambodia Smart", from: "Destination group", exact: true)
+      enhanced_select("Cambodia Smart", from: "Destination group", exact: true)
     end
 
     click_on("Create Tariff schedule")
@@ -60,6 +60,11 @@ RSpec.describe "Tariff Schedules" do
     expect(page).to have_content("Outbound calls")
     expect(page).to have_content("Standard")
     expect(page).to have_content("Standard rates")
+
+    click_on("Manage Destination tariffs")
+
+    expect(page).to have_content("$0.003 / min")
+    expect(page).to have_content("$0.005 / min")
   end
 
   it "preselects the inputs" do
@@ -73,7 +78,7 @@ RSpec.describe "Tariff Schedules" do
       }
     )
 
-    expect(page).to have_choices_select("Category", selected: "Outbound messages")
+    expect(page).to have_enhanced_select("Category", selected: "Outbound messages")
   end
 
   it "handle validation errors" do

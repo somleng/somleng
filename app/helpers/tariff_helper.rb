@@ -5,9 +5,7 @@ module TariffHelper
       truncate(destination_tariff.destination_group_name, length: 10),
       dashboard_destination_group_path(destination_tariff.destination_group_id)
     )
-    tariff = link_to(
-      truncate(destination_tariff.tariff_name, length: 20
-    ), dashboard_tariff_path(destination_tariff.tariff_id))
+    tariff = destination_tariff.tariff_rate
     diagram_category = link_to(
       category.diagram_category,
       dashboard_tariff_schedule_path(destination_tariff.tariff_schedule_id)
@@ -32,7 +30,7 @@ module TariffHelper
       tariff_schedule: tariff_schedule.name,
       description: tariff_schedule.category.description,
       destination_group: destination_tariff.destination_group.name,
-      tariff_cost: destination_tariff.tariff_name
+      tariff_cost: destination_tariff.tariff_rate
     )
   end
 

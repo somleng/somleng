@@ -17,7 +17,7 @@
             disabled: resource.persisted?,
             input_html: {
               data: {
-                controller: "choices",
+                controller: "enhanced-select",
                 sms_gateway_channel_groups_target: "smsGatewayInput",
                 action: "addItem->sms-gateway-channel-groups#changeSMSGateway",
               }
@@ -49,7 +49,7 @@
           input_html: {
             multiple: true,
             data: {
-              choices_options: {
+              enhanced_select_options: {
                 removeItemButton: true
               },
               sms_gateway_channel_groups_target: "channelsInput"

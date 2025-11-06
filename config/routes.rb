@@ -122,8 +122,9 @@ Rails.application.routes.draw do
       resource :tariff_bundle_wizard, only: [ :new, :create ]
       resources :tariff_packages
       resources :tariff_plans
-      resources :tariff_schedules
-      resources :destination_tariffs, only: [ :index, :new, :create, :destroy, :show ]
+      resources :tariff_schedules do
+        resources :destination_tariffs, except: [ :create ]
+      end
       resources :destination_groups
       resources :tariffs
       resources :exports, only: %i[index create]

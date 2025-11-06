@@ -4,9 +4,6 @@
 
 import { application } from "./application"
 
-import ChoicesController from "./choices_controller"
-application.register("choices", ChoicesController)
-
 import DashboardController from "./dashboard_controller"
 application.register("dashboard", DashboardController)
 
@@ -16,6 +13,9 @@ application.register("destination-group-form", DestinationGroupFormController)
 import DestinationTariffFormController from "./destination_tariff_form_controller"
 application.register("destination-tariff-form", DestinationTariffFormController)
 
+import EnhancedSelectController from "./enhanced_select_controller"
+application.register("enhanced-select", EnhancedSelectController)
+
 import Filters__DatePickerController from "./filters/date_picker_controller"
 application.register("filters--date-picker", Filters__DatePickerController)
 
@@ -24,6 +24,9 @@ application.register("filters--field", Filters__FieldController)
 
 import FiltersController from "./filters_controller"
 application.register("filters", FiltersController)
+
+import LocalTimeController from "./local_time_controller"
+application.register("local-time", LocalTimeController)
 
 import MaskedContentController from "./masked_content_controller"
 application.register("masked-content", MaskedContentController)

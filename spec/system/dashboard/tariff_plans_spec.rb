@@ -54,7 +54,7 @@ RSpec.describe "Tariff Plans" do
     carrier_sign_in(user)
     visit dashboard_tariff_plans_path(filter: { tariff_package_id: tariff_package.id })
     click_on("New")
-    choices_select("Standard", from: "Tariff schedule")
+    enhanced_select("Standard", from: "Tariff schedule")
     fill_in("Weight", with: "99.99")
     click_on("Create Tariff plan")
 
@@ -79,8 +79,8 @@ RSpec.describe "Tariff Plans" do
     )
     click_on("New")
 
-    expect(page).to have_choices_select("Tariff package", selected: "Outbound calls (Discount)", disabled: true)
-    expect(page).to have_choices_select("Tariff schedule", selected: "Outbound calls (Standard)")
+    expect(page).to have_enhanced_select("Tariff package", selected: "Outbound calls (Discount)", disabled: true)
+    expect(page).to have_enhanced_select("Tariff schedule", selected: "Outbound calls (Standard)")
   end
 
   it "handles form validations" do

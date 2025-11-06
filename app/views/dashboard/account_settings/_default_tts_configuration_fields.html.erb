@@ -12,7 +12,7 @@
           selected: f.object.default_tts_voice.identifier,
           include_blank: false,
           disabled: local_assigns.fetch(:disabled, false),
-          input_html: { data: { controller: "choices" } }
+          input_html: { data: { controller: "enhanced-select" } }
         ) %>
       </div>
     </div>

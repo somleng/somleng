@@ -46,7 +46,7 @@
       </ul>
     </li>
 
-    <% if %i[tariff_bundle tariff_package tariff_plan tariff_schedule destination_tariff destination_group tariff].any? { |r| policy(r).index? } %>
+    <% if %i[tariff_bundle tariff_package tariff_plan tariff_schedule destination_group tariff].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-money-check-dollar"></i> Billing
@@ -67,10 +67,6 @@
 
           <% if policy(:tariff_schedule).index? %>
             <%= sidebar_nav("Tariff Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
-          <% end %>
-
-          <% if policy(:destination_tariff).index? %>
-            <%= sidebar_nav("Destination Tariffs", dashboard_destination_tariffs_path, icon_class: "fa-solid fa-shuffle") %>
           <% end %>
 
           <% if policy(:destination_group).index? %>

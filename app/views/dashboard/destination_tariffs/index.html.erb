@@ -1,26 +1,5 @@
 <%= page_title(title: "Destination Tariffs") do %>
   <%= render("shared/filters") do |form| %>
-    <%= form.select :category, TariffSchedule.category.values.map { |t| [t.text, t] }, { filter_value: params.dig(:filter, :category) } %>
-    <%= form.select(
-      :tariff_schedule_id,
-      current_carrier.tariff_schedules.map do |tariff_schedule|
-        tariff_schedule = TariffScheduleDecorator.new(tariff_schedule)
-        [ tariff_schedule.name, tariff_schedule.id ]
-      end,
-      { filter_value: params.dig(:filter, :tariff_schedule_id) },
-      { data: { controller: "choices" }}
-    ) %>
-
-    <%= form.select(
-      :tariff_id,
-      current_carrier.tariffs.includes(:message_tariff, :call_tariff).map do |tariff|
-        tariff = TariffDecorator.new(tariff)
-        [tariff.name, tariff.id]
-      end,
-      { filter_value: params.dig(:filter, :tariff_id) },
-      { data: { controller: "choices" }}
-    ) %>
-
     <%= form.select(
       :destination_group_id,
       current_carrier.destination_groups.map do |destination_group|
@@ -28,19 +7,10 @@
         [destination_group.name, destination_group.id]
       end,
       { filter_value: params.dig(:filter, :destination_group_id) },
-      { data: { controller: "choices" }}
+      { data: { controller: "enhanced-select" }}
     ) %>
 
     <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
-  <% end %>
-
-  <% if policy(:destination_tariff).new? %>
-    <%= render(
-      "shared/new_resource_page_action",
-      path: new_dashboard_destination_tariff_path(filter_params),
-      disabled: params.dig(:filter, :tariff_schedule_id).blank?,
-      disabled_title: "Filter by a tariff schedule to create a new destination tariff"
-    ) %>
   <% end %>
 <% end %>
 

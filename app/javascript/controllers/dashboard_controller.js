@@ -1,7 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import * as bootstrap from "bootstrap";
 import * as coreui from "@coreui/coreui";
-import Choices from "choices.js";
 
 // Connects to data-controller="dashboard"
 export default class extends Controller {

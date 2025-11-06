@@ -11,10 +11,6 @@ class DestinationTariffDecorator < SimpleDelegator
     decorated_destination_group.name
   end
 
-  def tariff_name
-    decorated_tariff.name
-  end
-
   def tariff_rate
     decorated_tariff.rate
   end

@@ -47,16 +47,18 @@ class TariffScheduleForm < ApplicationForm
   def save
     return false if invalid?
 
-    object.attributes = {
-      carrier:,
-      category:,
-      name:,
-      description: description.presence
-    }
+    ApplicationRecord.transaction do
+      object.attributes = {
+        carrier:,
+        category:,
+        name:,
+        description: description.presence
+      }
 
-    object.save!
+      object.save!
 
-    filled_destination_tariffs.all?(&:save)
+      filled_destination_tariffs.all?(&:save)
+    end
   end
 
   private

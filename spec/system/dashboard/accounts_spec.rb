@@ -64,7 +64,7 @@ RSpec.describe "Accounts" do
 
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
-    choices_select("Basic.Slt", from: "Default TTS voice")
+    enhanced_select("Basic.Slt", from: "Default TTS voice")
     click_on("Create Account")
 
     expect(page).to have_content("Account was successfully created")
@@ -152,12 +152,12 @@ RSpec.describe "Accounts" do
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_on("Edit")
-    choices_select("Main SIP Trunk", from: "SIP trunk")
+    enhanced_select("Main SIP Trunk", from: "SIP trunk")
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
-    choices_select("Basic.Slt", from: "Default TTS voice")
+    enhanced_select("Basic.Slt", from: "Default TTS voice")
     within(".outbound-messages-line-item") do
-      choices_select("Outbound messages (Discount)", from: "Tariff package")
+      enhanced_select("Outbound messages (Discount)", from: "Tariff package")
     end
     uncheck("Enabled")
 
@@ -197,7 +197,7 @@ RSpec.describe "Accounts" do
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
-    choices_select("", from: "SIP trunk")
+    enhanced_select("", from: "SIP trunk")
     click_on("Update Account")
 
     expect(page).to have_content("Account was successfully updated")
@@ -221,9 +221,9 @@ RSpec.describe "Accounts" do
     visit edit_dashboard_account_path(account)
 
     expect(page).to have_field("Name", disabled: true)
-    expect(page).to have_choices_select("Default TTS voice", disabled: true)
+    expect(page).to have_enhanced_select("Default TTS voice", disabled: true)
 
-    choices_select("Main SIP Trunk", from: "SIP trunk")
+    enhanced_select("Main SIP Trunk", from: "SIP trunk")
 
     click_on("Update Account")
 
