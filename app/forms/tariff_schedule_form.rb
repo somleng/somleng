@@ -90,7 +90,7 @@ class TariffScheduleForm < ApplicationForm
   end
 
   def validate_name
-    return unless carrier.tariff_schedules.exists?(name:, category:)
+    return unless carrier.tariff_schedules.where.not(id: object.id).exists?(name:, category:)
 
     errors.add(:name, :taken)
   end

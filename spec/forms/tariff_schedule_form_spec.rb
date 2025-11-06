@@ -15,6 +15,13 @@ RSpec.describe TariffScheduleForm do
     expect(form).to be_invalid
     expect(form.errors[:name]).to be_present
 
+    form = TariffScheduleForm.initialize_with(tariff_schedule)
+    form.name = tariff_schedule.name
+
+    form.valid?
+
+    expect(form.errors[:name]).to be_blank
+
     form = build_form(carrier:, name: tariff_schedule.name, category: "inbound_calls")
 
     form.valid?
