@@ -17,7 +17,27 @@ module Services
 
     it "validates to" do
       carrier = create(:carrier)
+      account = create(:account, carrier:)
       sms_gateway = create(:sms_gateway, carrier:)
+      create(
+        :incoming_phone_number,
+        account:,
+        type: :short_code,
+        number: "1294",
+        sms_url: "https://www.example.com/message.xml",
+        sms_method: "GET"
+      )
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            to: "1294",
+            from: "855716100230",
+            body: "Hello world"
+          },
+          options: { sms_gateway: }
+        )
+      ).to have_valid_schema
 
       expect(
         validate_request_schema(

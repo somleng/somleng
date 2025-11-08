@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_26_042728) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -352,6 +352,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_042728) do
     t.index ["account_id"], name: "index_media_streams_on_account_id"
     t.index ["phone_call_id"], name: "index_media_streams_on_phone_call_id"
     t.index ["sequence_number"], name: "index_media_streams_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "message_send_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "message_id"
+    t.bigserial "sequence_number", null: false
+    t.uuid "sms_gateway_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_send_requests_on_message_id", unique: true
+    t.index ["sequence_number"], name: "index_message_send_requests_on_sequence_number", unique: true, order: :desc
+    t.index ["sms_gateway_id"], name: "index_message_send_requests_on_sms_gateway_id"
   end
 
   create_table "message_tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1027,6 +1038,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_042728) do
   add_foreign_key "media_stream_events", "phone_calls"
   add_foreign_key "media_streams", "accounts"
   add_foreign_key "media_streams", "phone_calls"
+  add_foreign_key "message_send_requests", "messages", on_delete: :nullify
+  add_foreign_key "message_send_requests", "sms_gateways", on_delete: :cascade
   add_foreign_key "message_tariffs", "tariffs", on_delete: :cascade
   add_foreign_key "messages", "accounts"
   add_foreign_key "messages", "carriers"
