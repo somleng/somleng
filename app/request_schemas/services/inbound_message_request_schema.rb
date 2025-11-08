@@ -18,7 +18,6 @@ module Services
 
     rule(:to) do |context:|
       next unless key?
-      next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
       context[:incoming_phone_number] = sms_gateway.carrier.incoming_phone_numbers.active.find_by(number: value)
 

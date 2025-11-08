@@ -52,6 +52,24 @@ class SMSMessageChannel < ApplicationCable::Channel
     end
   end
 
+  def message_send_requested(data)
+    message = current_sms_gateway.messages.sending.find(data.fetch("id"))
+    MessageSendRequest.create!(message:, sms_gateway: current_sms_gateway)
+
+    transmit({
+      type: "message_send_request_confirmed",
+      message: {
+        id: message.id,
+        body: message.body,
+        to: message.to.to_s,
+        from: message.from.to_s,
+        channel: message.channel
+      }
+    })
+  rescue ActiveRecord::RecordNotUnique
+    # do nothing
+  end
+
   private
 
   def handle_sent_event(message)

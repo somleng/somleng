@@ -74,6 +74,9 @@ gem "with_advisory_lock"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# https://github.com/ruby/openssl/issues/949
+gem "openssl"
+
 group :development, :test do
   gem "pry"
   gem "rspec_api_documentation", github: "zipmark/rspec_api_documentation"
