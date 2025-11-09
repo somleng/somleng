@@ -31,8 +31,7 @@
         <td>
           <%= summarize_list(
             tariff_schedule.destination_tariffs.map { destination_tariff_diagram(_1) },
-            max: 1,
-            link_to_remaining: dashboard_tariff_schedule_destination_tariffs_path(tariff_schedule)
+            max: 1
           ).html_safe %>
         </td>
 

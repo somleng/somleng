@@ -41,15 +41,13 @@ RSpec.describe "Tariff Schedules" do
 
     select("Outbound calls", from: "Category")
     fill_in("Name", with: "Standard")
-    fill_in("Description", with: "Standard rates")
+    fill_in("Description", with: "My description")
     enhanced_select("Cambodia", from: "Destination group", exact: true)
     fill_in("Rate", with: "0.005")
 
     click_on("Add Tariff")
 
     expect(page).to have_destination_tariff_forms(count: 2)
-
-    expect(page).to have_css('[data-test-id="destination-tariff-form"]', count: 2)
 
     within(destination_tariff_forms.last) do
       fill_in("Rate", with: "0.003")
@@ -61,12 +59,29 @@ RSpec.describe "Tariff Schedules" do
     expect(page).to have_content("Tariff schedule was successfully created.")
     expect(page).to have_content("Outbound calls")
     expect(page).to have_content("Standard")
-    expect(page).to have_content("Standard rates")
+    expect(page).to have_content("CALL -> Cambodia -> $0.005 / min and 1 more")
 
-    click_on("Manage Destination tariffs")
-
-    expect(page).to have_content("$0.003 / min")
-    expect(page).to have_content("$0.005 / min")
+    expect(carrier.tariff_schedules.last).to have_attributes(
+      description: "My description",
+      destination_tariffs: contain_exactly(
+        have_attributes(
+          destination_group: have_attributes(
+            name: "Cambodia"
+          ),
+          tariff: have_attributes(
+            rate: InfinitePrecisionMoney.from_amount(0.005, "USD")
+          )
+        ),
+        have_attributes(
+          destination_group: have_attributes(
+            name: "Cambodia Smart"
+          ),
+          tariff: have_attributes(
+            rate: InfinitePrecisionMoney.from_amount(0.003, "USD")
+          )
+        )
+      )
+    )
   end
 
   it "preselects the inputs" do

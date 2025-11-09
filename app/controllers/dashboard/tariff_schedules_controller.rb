@@ -1,7 +1,7 @@
 module Dashboard
   class TariffSchedulesController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(destination_tariffs: [ :destination_group, { tariff: [ :message_tariff, :call_tariff ] } ]))
+      @resources = apply_filters(scope.includes(destination_tariffs: [ :destination_group, :tariff ]))
       @resources = paginate_resources(@resources)
     end
 

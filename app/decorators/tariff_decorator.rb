@@ -7,32 +7,11 @@ class TariffDecorator < SimpleDelegator
     object.category.text
   end
 
-  def message_rate
-    return if message_tariff.blank?
-
-    display_rate(object.message_tariff.rate)
-  end
-
-  def per_minute_rate
-    return if call_tariff.blank?
-
-    rate = display_rate(object.call_tariff.per_minute_rate)
-    return rate if call_tariff.per_minute_rate.zero?
-
-    [ rate, "/ min" ].join(" ")
-  end
-
-  def connection_fee
-    return if call_tariff.blank?
-
-    display_rate(object.call_tariff.connection_fee)
-  end
-
   def rate
     if message?
-      message_rate
+      display_rate(object.rate)
     elsif call?
-      per_minute_rate
+      [ display_rate(object.rate), "/ min" ].join(" ")
     end
   end
 
