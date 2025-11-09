@@ -1,15 +1,17 @@
-class TariffPlanForm < ApplicationForm
-  attribute :carrier
-  attribute :object, default: -> { TariffPlan.new }
-  attribute :tariff_package_id
+class TariffPlanTierForm < ApplicationForm
+  attribute :object, default: -> { TariffPlanTier.new }
+  attribute :id
+  attribute :_destroy, :boolean, default: false
+  attribute :tariff_package
   attribute :tariff_schedule_id
-  attribute :weight, :decimal, default: -> { TariffPlan::DEFAULT_WEIGHT }
+  attribute :weight, :decimal, default: -> { TariffPlanTier::DEFAULT_WEIGHT }
 
   validates :tariff_schedule_id, presence: true
   validates :weight, presence: true, numericality: { greater_than: 0, less_than: 10 ** 6 }
 
   validate :validate_tariff_schedule_uniqueness
 
+  delegate :carrier, to: :tariff_package
   delegate :persisted?, :new_record?, :id, to: :object
 
   def self.model_name
@@ -19,6 +21,7 @@ class TariffPlanForm < ApplicationForm
   def self.initialize_with(object)
     new(
       object:,
+      id: object.id,
       carrier: object.tariff_package.carrier,
       tariff_package_id: object.tariff_package_id,
       tariff_schedule_id: object.tariff_schedule_id,
@@ -40,16 +43,10 @@ class TariffPlanForm < ApplicationForm
     true
   end
 
-  def tariff_package
-    @tariff_package ||= carrier.tariff_packages.find(tariff_package_id)
-  end
-
-  def tariff_packages_options_for_select
-    DecoratedCollection.new([ tariff_package ]).map { [ _1.name, _1.id ] }
-  end
-
-  def tariff_schedules_options_for_select
-    DecoratedCollection.new(tariff_schedules).map { [ _1.name, _1.id ] }
+  def tariff_schedules_by_category
+    TariffSchedule.category.values.each_with_object({}) do |category, result|
+      result[category] = DecoratedCollection.new(carrier.tariff_schedules.where(category:)).map { [ _1.name, _1.id ] }
+    end
   end
 
   private

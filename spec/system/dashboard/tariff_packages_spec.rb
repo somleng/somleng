@@ -4,7 +4,7 @@ RSpec.describe "Tariff Packages" do
   it "filter tariff packages" do
     carrier = create(:carrier)
     tariff_package = create(:tariff_package, :outbound_calls, carrier:, name: "Discount")
-    filtered_tariff_packages = [
+    excluded_tariff_packages = [
       create(:tariff_package, :outbound_calls, carrier:, name: "Special"),
       create(:tariff_package, :outbound_messages, carrier:, name: "Discount")
     ]
@@ -14,22 +14,40 @@ RSpec.describe "Tariff Packages" do
     visit dashboard_tariff_packages_path(filter: { name: "discount", category: "outbound_calls" })
 
     expect(page).to have_content(tariff_package.id)
-    filtered_tariff_packages.each do |tariff_package|
+    excluded_tariff_packages.each do |tariff_package|
       expect(page).to have_no_content(tariff_package.id)
     end
   end
 
-  it "create a tariff package" do
+  it "create a tariff package", :js do
     carrier = create(:carrier)
+    tariff_schedules = [
+      create(:tariff_schedule, carrier:, name: "Standard"),
+      create(:tariff_schedule, carrier:, name: "Discount")
+    ]
+
     user = create(:user, :carrier, carrier:)
+
 
     carrier_sign_in(user)
     visit dashboard_tariff_packages_path
     click_on("New")
 
-    enhanced_select("Outbound calls", from: "Category")
     fill_in("Name", with: "Standard")
     fill_in("Description", with: "My package description")
+    enhanced_select("Outbound calls", from: "Category")
+    enhanced_select("Standard", from: "Tariff schedule")
+    fill_in("Weight", with: "5")
+
+    click_on("Add Tariff schedule")
+
+    expect(page).to have_tariff_schedule_forms(count: 2)
+
+    within(tariff_schedule_forms.last) do
+      enhanced_select("Discount", from: "Tariff schedule")
+      fill_in("Weight", with: "20")
+    end
+
     click_on("Create Tariff package")
 
     expect(page).to have_content("Tariff package was successfully created.")

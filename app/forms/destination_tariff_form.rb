@@ -60,10 +60,6 @@ class DestinationTariffForm < ApplicationForm
     !_destroy
   end
 
-  def tariff_schedules_options_for_select
-    DecoratedCollection.new([ tariff_schedule ]).map { [ _1.name, _1.id ] }
-  end
-
   def destination_groups_options_for_select
     DecoratedCollection.new(destination_groups).map { [ _1.name, _1.id ] }
   end

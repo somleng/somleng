@@ -5,6 +5,10 @@ class TariffPackageForm < ApplicationForm
   attribute :name
   attribute :description
 
+  attribute :tiers,
+            FormCollectionType.new(form: TariffPlanTierForm),
+            default: []
+
   enumerize :category, in: TariffPackage.category.values
 
   validates :name, :category, presence: true

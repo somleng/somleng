@@ -1,4 +1,4 @@
-class TariffPlan < ApplicationRecord
+class TariffPlanTier < ApplicationRecord
   DEFAULT_WEIGHT = 10.0
 
   belongs_to :tariff_package

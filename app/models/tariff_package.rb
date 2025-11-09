@@ -2,8 +2,8 @@ class TariffPackage < ApplicationRecord
   extend Enumerize
 
   belongs_to :carrier
-  has_many :tariff_plans
-  has_many :tariff_schedules, through: :tariff_plans
+  has_many :tiers
+  has_many :tariff_schedules, through: :tiers
   has_many :destination_tariffs, through: :tariff_schedules
   has_many :destination_groups, through: :destination_tariffs
   has_many :destination_prefixes, through: :destination_groups, source: :prefixes

@@ -636,21 +636,9 @@ FactoryBot.define do
   end
 
   factory :tariff_schedule do
-    transient do
-      tariff_packages { [] }
-    end
-
     carrier
     outbound_calls
     sequence(:name) { |n| "Standard#{n}" }
-
-    after(:build) do |tariff_schedule, evaluator|
-      tariff_plans = evaluator.tariff_packages.map do |tariff_package|
-        build(:tariff_plan, tariff_package:, tariff_schedule:)
-      end
-
-      tariff_schedule.tariff_plans = tariff_plans if tariff_schedule.tariff_plans.blank?
-    end
   end
 
   factory :tariff_package do
@@ -659,7 +647,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Standard#{n}" }
   end
 
-  factory :tariff_plan do
+  factory :tariff_plan_tier do
     transient do
       carrier { build(:carrier) }
       category { :outbound_calls }

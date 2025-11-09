@@ -765,16 +765,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.index ["sequence_number"], name: "index_tariff_packages_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "tariff_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "tariff_plan_tiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "tariff_package_id", null: false
     t.uuid "tariff_schedule_id", null: false
     t.datetime "updated_at", null: false
     t.decimal "weight", precision: 8, scale: 2, null: false
-    t.index ["sequence_number"], name: "index_tariff_plans_on_sequence_number", unique: true, order: :desc
-    t.index ["tariff_package_id", "tariff_schedule_id", "weight"], name: "idx_on_tariff_package_id_tariff_schedule_id_weight_0b834ba4b7"
-    t.index ["tariff_package_id", "tariff_schedule_id"], name: "index_tariff_plans_on_tariff_package_id_and_tariff_schedule_id", unique: true
+    t.index ["sequence_number"], name: "index_tariff_plan_tiers_on_sequence_number", unique: true, order: :desc
+    t.index ["tariff_package_id", "tariff_schedule_id", "weight"], name: "idx_on_tariff_package_id_tariff_schedule_id_weight_5f804993ef"
+    t.index ["tariff_package_id", "tariff_schedule_id"], name: "idx_on_tariff_package_id_tariff_schedule_id_e8e590654c", unique: true
   end
 
   create_table "tariff_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1055,8 +1055,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   add_foreign_key "tariff_bundle_line_items", "tariff_packages", on_delete: :cascade
   add_foreign_key "tariff_bundles", "carriers", on_delete: :cascade
   add_foreign_key "tariff_packages", "carriers", on_delete: :cascade
-  add_foreign_key "tariff_plans", "tariff_packages", on_delete: :cascade
-  add_foreign_key "tariff_plans", "tariff_schedules", on_delete: :cascade
+  add_foreign_key "tariff_plan_tiers", "tariff_packages", on_delete: :cascade
+  add_foreign_key "tariff_plan_tiers", "tariff_schedules", on_delete: :cascade
   add_foreign_key "tariff_schedules", "carriers", on_delete: :cascade
   add_foreign_key "tariffs", "carriers", on_delete: :cascade
   add_foreign_key "trial_interactions_credit_vouchers", "carriers", on_delete: :cascade

@@ -1,36 +1,71 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource], url: (dashboard_tariff_packages_path(filter_params) if @resource.new_record?), wrapper: :input_group, html: { data: { controller: "tariff-schedule-form" } }) do |f| %>
-    <div class="row">
-      <% if f.object.new_record? %>
-        <div class="col-sm-6">
-          <%= f.input(
-            :category,
-            prompt: true,
-            input_html: {
-              data: {
-                tariff_schedule_form_target: "categoryInput",
-                action: "change->tariff-schedule-form#toggleCategory"
-              }
-            }
-          ) %>
-        </div>
-      <% end %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          General
+        </h5>
 
-      <div class="col-sm-6">
-        <%= f.input(
-          :name,
-          placeholder: "Standard",
-          prepend: f.object.category&.text,
-          input_html: {
-            data: { prepend_data: { tariff_schedule_form_target: "nameInputGroupText" } }
-          }
-        ) %>
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(
+              :category,
+              prompt: true,
+              disabled: f.object.persisted?,
+              input_html: {
+                data: {
+                  tariff_schedule_form_target: "categoryInput",
+                  action: "change->tariff-schedule-form#toggleCategory"
+                }
+              }
+            ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(
+              :name,
+              placeholder: "Standard",
+              prepend: f.object.category&.text,
+              input_html: {
+                data: { prepend_data: { tariff_schedule_form_target: "nameInputGroupText" } }
+              }
+            ) %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(:description, as: :text) %>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input(:description, as: :text) %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          Tiers
+        </h5>
+
+        <%= turbo_frame_tag("tiers") do %>
+          <% f.object.tiers.each_with_index do |plan_tier, index| %>
+            <%= f.simple_fields_for(:tiers, plan_tier, index:) do |plain_tier_form| %>
+              <%= render("dashboard/plan_tiers/fields", form: plain_tier_form) %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <div class="text-center">
+          <%= link_to(
+            new_dashboard_tariff_plan_tier_path,
+            class: "btn btn-outline-success",
+            title: "Add Tier",
+            data: { turbo_stream: true }) do %>
+              <i class="fa-solid fa-plus"></i>
+              Add Tier
+          <% end %>
+        </div>
+
       </div>
     </div>
 
