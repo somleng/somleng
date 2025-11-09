@@ -23,11 +23,7 @@ RSpec.describe DestinationTariffForm do
 
     expect(form.errors[:destination_group_id]).to be_present
 
-    form = build_form(
-      object: destination_tariff,
-      tariff_schedule:,
-      destination_group_id: destination_tariff.destination_group_id
-    )
+    form = DestinationTariffForm.initialize_with(destination_tariff)
 
     form.valid?
 
@@ -53,9 +49,7 @@ RSpec.describe DestinationTariffForm do
         tariff_schedule:,
         destination_group:,
         tariff: have_attributes(
-          call_tariff: have_attributes(
-            per_minute_rate: InfinitePrecisionMoney.from_amount(0.005, "USD")
-          )
+          rate: InfinitePrecisionMoney.from_amount(0.005, "USD")
         )
       )
     end
@@ -69,7 +63,7 @@ RSpec.describe DestinationTariffForm do
 
       form.save
 
-      expect(destination_tariff).not_to be_persisted
+      expect(form.object).not_to be_persisted
     end
 
     it "update a tariff" do
@@ -90,9 +84,7 @@ RSpec.describe DestinationTariffForm do
         tariff_schedule:,
         destination_group: destination_tariff.destination_group,
         tariff: have_attributes(
-          message_tariff: have_attributes(
-            rate: InfinitePrecisionMoney.from_amount(0.001, "USD")
-          )
+          rate: InfinitePrecisionMoney.from_amount(0.001, "USD")
         )
       )
 

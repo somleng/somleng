@@ -42,14 +42,13 @@ class DestinationTariffForm < ApplicationForm
       destination_group: destination_groups.find(destination_group_id)
     }
 
-    tariff = object.tariff || object.build_tariff(carrier:, currency: billing_currency, category: category.tariff_category)
-    if category.tariff_category.message?
-      message_tariff = tariff.message_tariff || tariff.build_message_tariff
-      message_tariff.rate_cents = rate_to_cents(rate)
-    elsif category.tariff_category.call?
-      call_tariff = tariff.call_tariff || tariff.build_call_tariff
-      call_tariff.per_minute_rate_cents = rate_to_cents(rate)
-    end
+    tariff = object.tariff ||= object.build_tariff
+    tariff.attributes = {
+      carrier:,
+      currency: billing_currency,
+      category: category.tariff_category,
+      rate_cents: rate_to_cents(rate)
+    }
 
     object.save!
 

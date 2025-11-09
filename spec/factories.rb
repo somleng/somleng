@@ -630,54 +630,9 @@ FactoryBot.define do
     currency { carrier.billing_currency }
     call
 
-    transient do
-      per_minute_rate { InfinitePrecisionMoney.new(10, currency) }
-      connection_fee { InfinitePrecisionMoney.new(1, currency) }
-      message_rate { InfinitePrecisionMoney.new(5, currency) }
-    end
+    rate_cents { InfinitePrecisionMoney.new(10, currency).cents }
 
-    trait :call do
-      category { "call" }
-      after(:build) do |tariff, evaluator|
-        tariff.call_tariff ||= build(
-          :call_tariff,
-          tariff:,
-          per_minute_rate: evaluator.per_minute_rate,
-          connection_fee: evaluator.connection_fee
-        )
-      end
-    end
-
-    trait :message do
-      category { "message" }
-      after(:build) do |tariff, evaluator|
-        tariff.message_tariff ||= build(
-          :message_tariff,
-          tariff:,
-          rate: evaluator.message_rate
-        )
-      end
-    end
-  end
-
-  factory :call_tariff do
-    transient do
-      per_minute_rate { InfinitePrecisionMoney.new(10, tariff.currency) }
-      connection_fee { InfinitePrecisionMoney.new(0, tariff.currency) }
-    end
-
-    tariff
-    per_minute_rate_cents { per_minute_rate.cents }
-    connection_fee_cents { connection_fee.cents }
-  end
-
-  factory :message_tariff do
-    transient do
-      rate { InfinitePrecisionMoney.new(5, tariff.currency) }
-    end
-
-    tariff
-    rate_cents { rate.cents }
+    traits_for_enum :category, %w[call message]
   end
 
   factory :tariff_schedule do
@@ -687,7 +642,7 @@ FactoryBot.define do
 
     carrier
     outbound_calls
-    name { "Standard" }
+    sequence(:name) { |n| "Standard#{n}" }
 
     after(:build) do |tariff_schedule, evaluator|
       tariff_plans = evaluator.tariff_packages.map do |tariff_package|
@@ -701,7 +656,7 @@ FactoryBot.define do
   factory :tariff_package do
     carrier
     outbound_calls
-    name { "Standard" }
+    sequence(:name) { |n| "Standard#{n}" }
   end
 
   factory :tariff_plan do
@@ -716,7 +671,7 @@ FactoryBot.define do
 
   factory :tariff_bundle do
     carrier
-    name { "Standard" }
+    sequence(:name) { |n| "Standard#{n}" }
 
     transient do
       package_details { {} }
@@ -761,7 +716,7 @@ FactoryBot.define do
     end
 
     tariff_schedule { association :tariff_schedule, carrier: }
-    tariff { association(:tariff, tariff_schedule.category.tariff_category.to_sym, carrier: tariff_schedule.carrier) }
+    tariff { association(:tariff, category: tariff_schedule.category.tariff_category, carrier: tariff_schedule.carrier) }
     destination_group { association :destination_group, carrier: tariff_schedule.carrier }
   end
 
