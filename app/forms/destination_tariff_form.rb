@@ -5,6 +5,7 @@ class DestinationTariffForm < ApplicationForm
   attribute :tariff_schedule
   attribute :destination_group_id
   attribute :rate
+  attribute :currency
   attribute :_destroy, :boolean, default: false
 
   validates :destination_group_id, presence: true
@@ -13,7 +14,6 @@ class DestinationTariffForm < ApplicationForm
   validate :validate_destination_group_uniqueness
 
   delegate :carrier, :category, to: :tariff_schedule
-  delegate :billing_currency, to: :carrier
   delegate :persisted?, :new_record?, to: :object
 
   before_validation :set_object
@@ -28,7 +28,8 @@ class DestinationTariffForm < ApplicationForm
       id: object.id,
       tariff_schedule: object.tariff_schedule,
       destination_group_id: object.destination_group_id,
-      rate: object.tariff.rate
+      rate: object.tariff.rate,
+      currency: object.tariff.currency
     )
   end
 
@@ -45,7 +46,7 @@ class DestinationTariffForm < ApplicationForm
     tariff = object.tariff ||= object.build_tariff
     tariff.attributes = {
       carrier:,
-      currency: billing_currency,
+      currency:,
       category: category.tariff_category,
       rate_cents: rate_to_cents(rate)
     }
@@ -68,14 +69,14 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def rate_unit
-    result = billing_currency.symbol
+    result = currency.symbol
     return result if category.blank?
 
     format_rate_unit(category)
   end
 
   def hint
-    "Enter the rate in #{billing_currency.name}."
+    "Enter the rate in #{currency.name}."
   end
 
   def rate_unit_by_category
@@ -84,10 +85,14 @@ class DestinationTariffForm < ApplicationForm
     end
   end
 
+  def currency
+    super || carrier.billing_currency
+  end
+
   private
 
   def format_rate_unit(category)
-    [ billing_currency.symbol, category.rate_unit ].join(" ")
+    [ currency.symbol, category.rate_unit ].join(" ")
   end
 
   def destination_groups
@@ -103,7 +108,7 @@ class DestinationTariffForm < ApplicationForm
   end
 
   def rate_to_cents(rate)
-    InfinitePrecisionMoney.from_amount(rate.presence.to_d, billing_currency).cents
+    InfinitePrecisionMoney.from_amount(rate.presence.to_d, currency).cents
   end
 
   def set_object

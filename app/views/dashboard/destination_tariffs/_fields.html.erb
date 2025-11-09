@@ -36,7 +36,7 @@
       <div class="col-md-6">
         <%= form.input(
           :rate,
-          label: "Rate (#{form.object.billing_currency.iso_code})",
+          label: "Rate (#{form.object.currency.iso_code})",
           as: :numeric,
           required: true,
           append: form.object.rate_unit,

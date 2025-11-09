@@ -110,18 +110,25 @@ RSpec.describe "Tariff Schedules" do
   end
 
   it "show a tariff schedule" do
-    carrier = create(:carrier)
-    tariff_schedule = create(:tariff_schedule, carrier:)
+    carrier = create(:carrier, billing_currency: "USD")
+    tariff_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
+    create(
+      :destination_tariff,
+      tariff_schedule:,
+      destination_group: create(:destination_group, carrier:, name: "Cambodia"),
+      tariff: create(:tariff, carrier:, rate_cents: 0.5)
+    )
+
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_tariff_schedule_path(tariff_schedule)
 
-    expect(page).to have_link("Manage", href: dashboard_tariff_schedule_destination_tariffs_path(tariff_schedule))
+    expect(page).to have_content("MSG -> Cambodia -> $0.005")
     expect(page).to have_link("Manage", href: dashboard_tariff_plans_path(filter: { tariff_schedule_id: tariff_schedule.id }))
   end
 
-  it "update a tariff schedule", :js, :selenium_chrome do
+  it "update a tariff schedule", :js do
     carrier = create(:carrier, billing_currency: "USD")
     tariff_schedule = create(:tariff_schedule, :inbound_calls, carrier:, name: "Old Name", description: "Old Description")
     create(:destination_tariff, tariff_schedule:, destination_group: create(:destination_group, name: "Cambodia", carrier:))
