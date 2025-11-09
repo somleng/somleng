@@ -26,7 +26,6 @@
       <%= summarize_list(
         f.object.decorated.destination_tariffs.map { destination_tariff_diagram(_1) },
         max: 1,
-        link_to_remaining: dashboard_tariff_schedule_destination_tariffs_path(f.object)
       ).html_safe %>
     <% end %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
