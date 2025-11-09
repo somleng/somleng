@@ -1,6 +1,5 @@
 class DestinationTariffForm < ApplicationForm
   attribute :id
-  attribute :parent_form
   attribute :object, default: -> { DestinationTariff.new }
   attribute :tariff_schedule
   attribute :destination_group_id
@@ -10,8 +9,6 @@ class DestinationTariffForm < ApplicationForm
 
   validates :destination_group_id, presence: true
   validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0 }
-
-  validate :validate_destination_group_uniqueness
 
   delegate :carrier, :category, to: :tariff_schedule
   delegate :persisted?, :new_record?, to: :object
@@ -93,14 +90,6 @@ class DestinationTariffForm < ApplicationForm
 
   def destination_groups
     @destination_groups ||= carrier.destination_groups
-  end
-
-  def validate_destination_group_uniqueness
-    return if parent_form.present?
-    return unless retain?
-    return unless tariff_schedule.destination_tariffs.where.not(id:).exists?(destination_group_id:)
-
-    errors.add(:destination_group_id, :taken)
   end
 
   def rate_to_cents(rate)
