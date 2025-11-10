@@ -388,7 +388,7 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.26.0)
-    mock_redis (0.52.0)
+    mock_redis (0.53.0)
       redis (~> 5)
     monetize (1.13.0)
       money (~> 6.12)
@@ -497,7 +497,7 @@ GEM
     recaptcha (5.21.1)
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.25.2)
+    redis-client (0.26.1)
       connection_pool
     regexp_parser (2.11.2)
     reline (0.6.2)
