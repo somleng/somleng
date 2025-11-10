@@ -1,7 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="tariff-schedule-form"
-
+// Connects to data-controller="tariff-category-form"
 export default class extends Controller {
   static targets = ["categoryInput", "nameInputGroupText", "form"];
 
@@ -16,7 +15,7 @@ export default class extends Controller {
       this.formTarget.dataset.selectedCategory = categoryValue;
 
       this.formTarget.dispatchEvent(
-        new CustomEvent("tariff-schedule-category-changed", {
+        new CustomEvent("tariff-category-changed", {
           bubbles: true, // allow nested forms to catch it
           detail: { category: categoryValue },
         })

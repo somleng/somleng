@@ -13,7 +13,7 @@ export default class extends Controller {
 
     this.#updateRateUnit(form.dataset.selectedCategory);
 
-    form.addEventListener("tariff-schedule-category-changed", (event) => {
+    form.addEventListener("tariff-category-changed", (event) => {
       this.#updateRateUnit(event.detail.category);
     });
   }

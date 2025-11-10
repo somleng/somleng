@@ -5,8 +5,8 @@
     url: (dashboard_tariff_schedules_path(filter_params) if resource.new_record?),
     html: {
       data: {
-        controller: "tariff-schedule-form",
-        tariff_schedule_form_target: "form"
+        controller: "tariff-category-form",
+        tariff_category_form_target: "form"
       }
     }
   ) do |f| %>
@@ -24,8 +24,8 @@
               disabled: f.object.persisted?,
               input_html: {
                 data: {
-                  tariff_schedule_form_target: "categoryInput",
-                  action: "change->tariff-schedule-form#toggleCategory"
+                  tariff_category_form_target: "categoryInput",
+                  action: "change->tariff-category-form#toggleCategory"
                 }
               }
             ) %>
@@ -36,7 +36,7 @@
               :name,
               prepend: f.object.category&.text,
               input_html: {
-                data: { prepend_data: { tariff_schedule_form_target: "nameInputGroupText" } }
+                data: { prepend_data: { tariff_category_form_target: "nameInputGroupText" } }
               }
             ) %>
           </div>

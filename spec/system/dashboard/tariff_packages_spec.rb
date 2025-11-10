@@ -28,24 +28,23 @@ RSpec.describe "Tariff Packages" do
 
     user = create(:user, :carrier, carrier:)
 
-
     carrier_sign_in(user)
     visit dashboard_tariff_packages_path
     click_on("New")
 
-    fill_in("Name", with: "Standard")
+    fill_in("Name", with: "Discount")
     fill_in("Description", with: "My package description")
     enhanced_select("Outbound calls", from: "Category")
-    enhanced_select("Standard", from: "Tariff schedule")
-    fill_in("Weight", with: "5")
+    enhanced_select("Discount", from: "Tariff schedule")
+    fill_in("Weight", with: "15")
 
-    click_on("Add Tariff schedule")
+    click_on("Add Tier")
 
-    expect(page).to have_tariff_schedule_forms(count: 2)
+    expect(page).to have_plan_tier_forms(count: 2)
 
-    within(tariff_schedule_forms.last) do
-      enhanced_select("Discount", from: "Tariff schedule")
-      fill_in("Weight", with: "20")
+    within(plan_tier_forms.last) do
+      enhanced_select("Standard", from: "Tariff schedule")
+      fill_in("Weight", with: "10")
     end
 
     click_on("Create Tariff package")

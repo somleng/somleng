@@ -67,8 +67,8 @@ application.register(
 import TariffBundleWizardController from "./tariff_bundle_wizard_controller";
 application.register("tariff-bundle-wizard", TariffBundleWizardController);
 
-import TariffScheduleFormController from "./tariff_schedule_form_controller";
-application.register("tariff-schedule-form", TariffScheduleFormController);
+import TariffCategoryFormController from "./tariff_category_form_controller";
+application.register("tariff-category-form", TariffCategoryFormController);
 
 import VerificationServicesController from "./verification_services_controller";
 application.register("verification-services", VerificationServicesController);

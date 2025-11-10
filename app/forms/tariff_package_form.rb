@@ -4,6 +4,7 @@ class TariffPackageForm < ApplicationForm
   attribute :object, default: -> { TariffPackage.new }
   attribute :name
   attribute :description
+  attribute :tiers
 
   attribute :tiers,
             FormCollectionType.new(form: TariffPlanTierForm),
@@ -29,6 +30,18 @@ class TariffPackageForm < ApplicationForm
     )
   end
 
+  def initialize(**)
+    super(**)
+    object.carrier = carrier
+    self.tiers = build_tiers if tiers.blank?
+  end
+
+  def tiers=(value)
+    super(value)
+    tiers.each { _1.attributes = { tariff_package: object } }
+  end
+
+
   def save
     return false if invalid?
 
@@ -42,5 +55,11 @@ class TariffPackageForm < ApplicationForm
     object.save!
 
     true
+  end
+
+  private
+
+  def build_tiers
+    FormCollection.new([ TariffPlanTierForm.new ], form: TariffPlanTierForm)
   end
 end
