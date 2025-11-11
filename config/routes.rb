@@ -120,7 +120,7 @@ Rails.application.routes.draw do
       resources :carrier_users
       resources :tariff_bundles
       resource :tariff_bundle_wizard, only: [ :new, :create ]
-      resources :tariff_packages
+      resources :tariff_plans
       resources :tariff_plan_tiers, only: [ :new ]
       resources :tariff_schedules
       resources :destination_tariffs, only: [ :new ]

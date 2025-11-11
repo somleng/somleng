@@ -4,8 +4,8 @@ RSpec.describe "Tariff Bundles" do
   it "filter tariff bundles" do
     carrier = create(:carrier)
     tariff_bundle = create(:tariff_bundle, carrier:, name: "Standard")
-    tariff_package = create(:tariff_package, carrier:)
-    create(:tariff_bundle_line_item, tariff_bundle:, tariff_package:)
+    tariff_plan = create(:tariff_plan, carrier:)
+    create(:tariff_bundle_line_item, tariff_bundle:, tariff_plan:)
     filtered_tariff_bundles = [
       create(:tariff_bundle, carrier:, name: "Special"),
       create(:tariff_bundle, carrier:, name: "Standard")
@@ -13,7 +13,7 @@ RSpec.describe "Tariff Bundles" do
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_tariff_bundles_path(filter: { name: "standard", tariff_package_id: tariff_package.id })
+    visit dashboard_tariff_bundles_path(filter: { name: "standard", tariff_plan_id: tariff_plan.id })
 
     expect(page).to have_content(tariff_bundle.id)
     filtered_tariff_bundles.each do |tariff_bundle|
@@ -21,13 +21,13 @@ RSpec.describe "Tariff Bundles" do
     end
   end
 
-  it "create a tariff bundle with all packages selected" do
+  it "create a tariff bundle with all plans selected" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
-    outbound_messages_package = create(:tariff_package, :outbound_messages, carrier:, name: "Standard")
-    inbound_messages_package = create(:tariff_package, :inbound_messages, carrier:, name: "Standard")
-    outbound_calls_package = create(:tariff_package, :outbound_calls, carrier:, name: "Standard")
-    inbound_calls_package = create(:tariff_package, :inbound_calls, carrier:, name: "Standard")
+    outbound_messages_plan = create(:tariff_plan, :outbound_messages, carrier:, name: "Standard")
+    inbound_messages_plan = create(:tariff_plan, :inbound_messages, carrier:, name: "Standard")
+    outbound_calls_plan = create(:tariff_plan, :outbound_calls, carrier:, name: "Standard")
+    inbound_calls_plan = create(:tariff_plan, :inbound_calls, carrier:, name: "Standard")
 
     carrier_sign_in(user)
     visit dashboard_tariff_bundles_path
@@ -36,33 +36,33 @@ RSpec.describe "Tariff Bundles" do
     fill_in("Name", with: "My Bundle")
     fill_in("Description", with: "My bundle description")
     within(".outbound-messages-line-item") do
-      enhanced_select("Outbound messages (Standard)", from: "Tariff package")
+      enhanced_select("Outbound messages (Standard)", from: "Tariff plan")
     end
     within(".inbound-messages-line-item") do
-      enhanced_select("Inbound messages (Standard)", from: "Tariff package")
+      enhanced_select("Inbound messages (Standard)", from: "Tariff plan")
     end
     within(".outbound-calls-line-item") do
-      enhanced_select("Outbound calls (Standard)", from: "Tariff package")
+      enhanced_select("Outbound calls (Standard)", from: "Tariff plan")
     end
     within(".inbound-calls-line-item") do
-      enhanced_select("Inbound calls (Standard)", from: "Tariff package")
+      enhanced_select("Inbound calls (Standard)", from: "Tariff plan")
     end
     click_on("Create Tariff bundle")
 
     expect(page).to have_content("Tariff bundle was successfully created.")
-    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_package_path(outbound_messages_package))
-    expect(page).to have_link("Inbound messages (Standard)", href: dashboard_tariff_package_path(inbound_messages_package))
-    expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_package_path(outbound_calls_package))
-    expect(page).to have_link("Inbound calls (Standard)", href: dashboard_tariff_package_path(inbound_calls_package))
+    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(outbound_messages_plan))
+    expect(page).to have_link("Inbound messages (Standard)", href: dashboard_tariff_plan_path(inbound_messages_plan))
+    expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_plan_path(outbound_calls_plan))
+    expect(page).to have_link("Inbound calls (Standard)", href: dashboard_tariff_plan_path(inbound_calls_plan))
 
     expect(page).to have_content("My Bundle")
     expect(page).to have_content("My bundle description")
   end
 
-  it "create a tariff bundle with only some packages selected" do
+  it "create a tariff bundle with only some plans selected" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
-    create(:tariff_package, :outbound_calls, carrier:, name: "Standard")
+    create(:tariff_plan, :outbound_calls, carrier:, name: "Standard")
 
     carrier_sign_in(user)
     visit dashboard_tariff_bundles_path
@@ -70,7 +70,7 @@ RSpec.describe "Tariff Bundles" do
 
     fill_in("Name", with: "My Bundle")
     within(".outbound-calls-line-item") do
-      enhanced_select("Outbound calls (Standard)", from: "Tariff package")
+      enhanced_select("Outbound calls (Standard)", from: "Tariff plan")
     end
     click_on("Create Tariff bundle")
 
@@ -105,11 +105,11 @@ RSpec.describe "Tariff Bundles" do
   it "update a tariff bundle" do
     carrier = create(:carrier)
     tariff_bundle = create(:tariff_bundle, carrier:, name: "Old Name", description: "Old Description")
-    outbound_messages_package = create(:tariff_package, :outbound_messages, carrier:, name: "Standard")
-    outbound_calls_package = create(:tariff_package, :outbound_calls, carrier:, name: "Standard")
-    inbound_calls_package = create(:tariff_package, :inbound_calls, carrier:)
-    create(:tariff_bundle_line_item, tariff_bundle:, tariff_package: outbound_calls_package)
-    create(:tariff_bundle_line_item, tariff_bundle:, tariff_package: inbound_calls_package)
+    outbound_messages_plan = create(:tariff_plan, :outbound_messages, carrier:, name: "Standard")
+    outbound_calls_plan = create(:tariff_plan, :outbound_calls, carrier:, name: "Standard")
+    inbound_calls_plan = create(:tariff_plan, :inbound_calls, carrier:)
+    create(:tariff_bundle_line_item, tariff_bundle:, tariff_plan: outbound_calls_plan)
+    create(:tariff_bundle_line_item, tariff_bundle:, tariff_plan: inbound_calls_plan)
 
     user = create(:user, :carrier, carrier:)
 
@@ -120,18 +120,18 @@ RSpec.describe "Tariff Bundles" do
     fill_in("Name", with: "My bundle name")
     fill_in("Description", with: "My bundle description")
     within(".outbound-messages-line-item") do
-      enhanced_select("Outbound messages (Standard)", from: "Tariff package")
+      enhanced_select("Outbound messages (Standard)", from: "Tariff plan")
     end
     within(".inbound-calls-line-item") do
-      enhanced_select("", from: "Tariff package")
+      enhanced_select("", from: "Tariff plan")
     end
     click_on("Update Tariff bundle")
 
     expect(page).to have_content("Tariff bundle was successfully updated.")
     expect(page).to have_content("My bundle name")
     expect(page).to have_content("My bundle description")
-    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_package_path(outbound_messages_package))
-    expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_package_path(outbound_calls_package))
+    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(outbound_messages_plan))
+    expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_plan_path(outbound_calls_plan))
     expect(page).to have_no_link("Inbound calls (Standard)")
   end
 
@@ -150,7 +150,7 @@ RSpec.describe "Tariff Bundles" do
     expect(page).to have_content("can't be blank")
   end
 
-  it "delete a tariff package" do
+  it "delete a tariff plan" do
     carrier = create(:carrier)
     tariff_bundle = create(:tariff_bundle, carrier:)
     user = create(:user, :carrier, carrier:)

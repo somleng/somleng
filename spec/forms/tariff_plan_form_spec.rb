@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe TariffPackageForm do
+RSpec.describe TariffPlanForm do
   it "validates the name" do
-    tariff_package = create(:tariff_package)
+    tariff_plan = create(:tariff_plan)
 
     form = build_form(name: nil)
 
@@ -10,9 +10,9 @@ RSpec.describe TariffPackageForm do
     expect(form.errors[:name]).to be_present
 
     form = build_form(
-      name: tariff_package.name,
-      category: tariff_package.category,
-      carrier: tariff_package.carrier
+      name: tariff_plan.name,
+      category: tariff_plan.category,
+      carrier: tariff_plan.carrier
     )
 
     expect(form).to be_invalid
@@ -45,15 +45,15 @@ RSpec.describe TariffPackageForm do
   end
 
   describe "#save" do
-    it "creates a package" do
+    it "creates a plan" do
       carrier = create(:carrier)
       tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:)
 
       form = build_form(
         carrier:,
-        name: "My Package",
+        name: "My Plan",
         category: "outbound_calls",
-        description: "My Package Description",
+        description: "My Plan Description",
         tiers: [ build_tier(tariff_schedule_id: tariff_schedule.id, weight: 10) ]
       )
 
@@ -61,8 +61,8 @@ RSpec.describe TariffPackageForm do
 
       expect(form.object).to have_attributes(
         persisted?: true,
-        name: "My Package",
-        description:  "My Package Description",
+        name: "My Plan",
+        description:  "My Plan Description",
         tiers: contain_exactly(
           have_attributes(
             schedule: tariff_schedule,
@@ -72,22 +72,22 @@ RSpec.describe TariffPackageForm do
       )
     end
 
-    it "updates the package" do
+    it "updates the plan" do
       carrier = create(:carrier)
-      tariff_package = create(:tariff_package, carrier:)
-      tariff_schedule = create(:tariff_schedule, carrier:, category: tariff_package.category)
-      other_tariff_schedule = create(:tariff_schedule, carrier:, category: tariff_package.category)
+      tariff_plan = create(:tariff_plan, carrier:)
+      tariff_schedule = create(:tariff_schedule, carrier:, category: tariff_plan.category)
+      other_tariff_schedule = create(:tariff_schedule, carrier:, category: tariff_plan.category)
       tariff_plan_tier = create(
         :tariff_plan_tier,
-        package: tariff_package,
+        plan: tariff_plan,
         schedule: tariff_schedule,
         weight: 10
       )
 
-      form = TariffPackageForm.initialize_with(tariff_package)
+      form = TariffPlanForm.initialize_with(tariff_plan)
 
       form.attributes = {
-        name: "My Updated Package",
+        name: "My Updated Plan",
         description: "My Updated Description",
         tiers: [
           build_tier(id: tariff_plan_tier.id, tariff_schedule_id: tariff_schedule.id, weight: 20),
@@ -97,7 +97,7 @@ RSpec.describe TariffPackageForm do
 
       expect(form.save).to be_truthy
       expect(form.object.reload).to have_attributes(
-        name: "My Updated Package",
+        name: "My Updated Plan",
         description: "My Updated Description",
         tiers: contain_exactly(
           have_attributes(
@@ -115,7 +115,7 @@ RSpec.describe TariffPackageForm do
   end
 
   def build_form(**)
-    TariffPackageForm.new(
+    TariffPlanForm.new(
       carrier: build_stubbed(:carrier),
       name: "Standard",
       category: "outbound_calls",

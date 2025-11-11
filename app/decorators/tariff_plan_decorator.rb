@@ -3,21 +3,21 @@ class TariffPlanDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :TariffPlan
   end
 
-  def tariff_package_name
-    decorated_tariff_package.name
+  def category
+    object.category.text
   end
 
-  def tariff_schedule_name
-    decorated_tariff_schedule.name
+  def name
+    "#{category} (#{object.name})"
+  end
+
+  def schedules
+    object.schedules.order(tariff_plan_tiers: { weight: :desc })
   end
 
   private
 
-  def decorated_tariff_package
-    @decorated_tariff_package = TariffPackageDecorator.new(tariff_package)
-  end
-
-  def decorated_tariff_schedule
-    @decorated_tariff_schedule = TariffScheduleDecorator.new(tariff_schedule)
+  def object
+    __getobj__
   end
 end

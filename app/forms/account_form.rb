@@ -13,8 +13,8 @@ class AccountForm
   attribute :calls_per_second, :integer, default: 1
   attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
   attribute :tariff_bundle_id
-  attribute :tariff_package_line_items,
-            FormCollectionType.new(form: AccountTariffPackageForm),
+  attribute :tariff_plan_line_items,
+            FormCollectionType.new(form: AccountTariffPlanForm),
             default: []
 
   delegate :new_record?, :persisted?, :id, :customer_managed?, :carrier_managed?, to: :object
@@ -31,7 +31,7 @@ class AccountForm
             }
 
   validate :validate_owner
-  validate :validate_tariff_package_line_items
+  validate :validate_tariff_plan_line_items
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Account")
@@ -48,7 +48,7 @@ class AccountForm
       owner_name: object.owner&.name,
       owner_email: object.owner&.email,
       default_tts_voice: object.default_tts_voice,
-      tariff_package_line_items: object.tariff_package_line_items
+      tariff_plan_line_items: object.tariff_plan_line_items
     )
   end
 
@@ -56,12 +56,12 @@ class AccountForm
     super(**)
     self.object.carrier = carrier
     self.tariff_bundle_id = carrier.default_tariff_bundle_id
-    self.tariff_package_line_items = build_tariff_package_line_items
+    self.tariff_plan_line_items = build_tariff_plan_line_items
   end
 
-  def tariff_package_line_items=(value)
+  def tariff_plan_line_items=(value)
     super
-    tariff_package_line_items.each { _1.account = object }
+    tariff_plan_line_items.each { _1.account = object }
   end
 
   def save
@@ -83,7 +83,7 @@ class AccountForm
       end
 
       object.save!
-      filled_tariff_package_line_items.all? { _1.save }
+      filled_tariff_plan_line_items.all? { _1.save }
     end
   end
 
@@ -93,14 +93,14 @@ class AccountForm
   end
 
   def tariff_bundles_options_for_select
-    carrier.tariff_bundles.includes(:tariff_packages).map do |tariff_bundle|
+    carrier.tariff_bundles.includes(:tariff_plans).map do |tariff_bundle|
       [
         tariff_bundle.name,
         tariff_bundle.id,
         {
           data: {
-            tariff_packages: tariff_bundle.tariff_packages.each_with_object({}) do |tariff_package, result|
-              result[tariff_package.category] = tariff_package.id
+            tariff_plans: tariff_bundle.tariff_plans.each_with_object({}) do |tariff_plan, result|
+              result[tariff_plan.category] = tariff_plan.id
             end
           }
         }
@@ -126,30 +126,30 @@ class AccountForm
     )
   end
 
-  def filled_tariff_package_line_items
-    tariff_package_line_items.select(&:filled?)
+  def filled_tariff_plan_line_items
+    tariff_plan_line_items.select(&:filled?)
   end
 
-  def build_tariff_package_line_items
+  def build_tariff_plan_line_items
     default_tariff_bundle = carrier.default_tariff_bundle
-    default_packages = Array(new_record? ? default_tariff_bundle&.tariff_packages : [])
+    default_plans = Array(new_record? ? default_tariff_bundle&.tariff_plans : [])
     default_line_items = TariffSchedule.category.values.map do |category|
-      AccountTariffPackageForm.new(
+      AccountTariffPlanForm.new(
         category:,
-        tariff_package_id: default_packages.find { _1.category == category }&.id
+        tariff_plan_id: default_plans.find { _1.category == category }&.id
       )
     end
     collection = default_line_items.each_with_object([]) do |default_line_item, result|
-      existing_line_item = tariff_package_line_items.find { _1.category == default_line_item.category }
+      existing_line_item = tariff_plan_line_items.find { _1.category == default_line_item.category }
       result << (existing_line_item || default_line_item)
     end
 
-    FormCollection.new(collection, form: AccountTariffPackageForm)
+    FormCollection.new(collection, form: AccountTariffPlanForm)
   end
 
-  def validate_tariff_package_line_items
-    return if filled_tariff_package_line_items.none?(&:invalid?)
+  def validate_tariff_plan_line_items
+    return if filled_tariff_plan_line_items.none?(&:invalid?)
 
-    errors.add(:tariff_package_line_items, :invalid)
+    errors.add(:tariff_plan_line_items, :invalid)
   end
 end

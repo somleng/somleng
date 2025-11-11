@@ -19,13 +19,13 @@
     <%= f.attribute :name %>
     <%= f.attribute :category %>
     <%= f.attribute :description %>
-    <%= f.attribute :tariff_packages do %>
+    <%= f.attribute :tariff_plans do %>
       <%= summarize_list(
         DecoratedCollection.new(
-          f.object.packages,
-        ).map { link_to(_1.name, dashboard_tariff_package_path(_1)) },
+          f.object.plans,
+        ).map { link_to(_1.name, dashboard_tariff_plan_path(_1)) },
         max: 1,
-        link_to_remaining: dashboard_tariff_packages_path(filter: { tariff_schedule_id: f.object.id })
+        link_to_remaining: dashboard_tariff_plans_path(filter: { tariff_schedule_id: f.object.id })
       ) %>
     <% end %>
     <%= f.attribute :destination_tariffs do %>

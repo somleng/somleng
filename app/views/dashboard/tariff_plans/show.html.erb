@@ -1,10 +1,10 @@
-<%= page_title(title: "Tariff Package") do %>
+<%= page_title(title: "Tariff Plan") do %>
   <% if policy(@resource).edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_package_path(@resource)) %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_plan_path(@resource)) %>
   <% end %>
 
   <% if policy(@resource).destroy? %>
-    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_package_path(@resource)) %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_plan_path(@resource)) %>
   <% end %>
 <% end %>
 
@@ -58,7 +58,7 @@
         <%= f.attribute :category %>
         <%= f.attribute :description %>
         <%= f.attribute :tariff_bundles do %>
-          <%= external_link_to("Manage", dashboard_tariff_bundles_path(filter: { tariff_package_id: f.object.id })) %>
+          <%= external_link_to("Manage", dashboard_tariff_bundles_path(filter: { tariff_plan_id: f.object.id })) %>
         <% end %>
         <%= f.attribute :tariff_schedules do %>
           <%= summarize_list(
@@ -66,7 +66,7 @@
               f.object.schedules,
             ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
             max: 1,
-            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_package_id: f.object.id })
+            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_plan_id: f.object.id })
           ) %>
         <% end %>
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>

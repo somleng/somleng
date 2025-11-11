@@ -7,12 +7,12 @@
     ) %>
 
     <%= form.select(
-      :tariff_package_id,
-      current_carrier.tariff_packages.map do |tariff_package|
-        tariff_package = TariffPackageDecorator.new(tariff_package)
-        [tariff_package.name, tariff_package.id]
+      :tariff_plan_id,
+      current_carrier.tariff_plans.map do |tariff_plan|
+        tariff_plan = TariffPlanDecorator.new(tariff_plan)
+        [tariff_plan.name, tariff_plan.id]
       end,
-      { filter_value: params.dig(:filter, :tariff_package_id) },
+      { filter_value: params.dig(:filter, :tariff_plan_id) },
       { data: { controller: "enhanced-select" }}
     ) %>
 

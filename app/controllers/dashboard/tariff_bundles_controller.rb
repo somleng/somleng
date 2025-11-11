@@ -1,7 +1,7 @@
 module Dashboard
   class TariffBundlesController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(:tariff_packages))
+      @resources = apply_filters(scope.includes(:tariff_plans))
       @resources = paginate_resources(@resources)
     end
 
@@ -41,7 +41,7 @@ module Dashboard
     def permitted_params
       params.require(:tariff_bundle).permit(
         :name, :description,
-        line_items: [ :id, :tariff_package_id, :category ]
+        line_items: [ :id, :tariff_plan_id, :category ]
       )
     end
 

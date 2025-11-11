@@ -37,13 +37,13 @@ class TariffBundleWizardLineItemForm < ApplicationForm
 
   def create_tariff_bundle_line_item
     ApplicationRecord.transaction do
-      tariff_package = carrier.tariff_packages.find_or_create_by!(name:, category:)
+      tariff_plan = carrier.tariff_plans.find_or_create_by!(name:, category:)
       object.category = category
       object.tariff_bundle = tariff_bundle
-      object.tariff_package = tariff_package
+      object.tariff_plan = tariff_plan
       object.save!
       tariff_schedule = carrier.tariff_schedules.find_or_create_by!(name:, category:)
-      tariff_package.tariff_plans.find_or_create_by!(tariff_schedule:)
+      tariff_plan.tariff_plans.find_or_create_by!(tariff_schedule:)
       destination_group = carrier.destination_groups.find_or_create_by!(catch_all: true)
       destination_tariff = tariff_schedule.destination_tariffs.find_or_initialize_by(destination_group:)
 

@@ -1,4 +1,4 @@
-class TariffPackage < ApplicationRecord
+class TariffPlan < ApplicationRecord
   extend Enumerize
 
   belongs_to :carrier

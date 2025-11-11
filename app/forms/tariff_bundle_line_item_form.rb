@@ -1,4 +1,4 @@
-class TariffBundleLineItemForm < TariffPackageLineItemForm
+class TariffBundleLineItemForm < TariffPlanLineItemForm
   attribute :tariff_bundle
   attribute :object, default: -> { TariffBundleLineItem.new }
 

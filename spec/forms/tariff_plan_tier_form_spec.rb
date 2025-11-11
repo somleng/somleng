@@ -3,15 +3,15 @@ require "rails_helper"
 RSpec.describe TariffPlanTierForm do
   describe "#save" do
     it "creates a tariff plan tier" do
-      tariff_package = create(:tariff_package)
-      tariff_schedule = create(:tariff_schedule, category: tariff_package.category, carrier: tariff_package.carrier)
+      tariff_plan = create(:tariff_plan)
+      tariff_schedule = create(:tariff_schedule, category: tariff_plan.category, carrier: tariff_plan.carrier)
 
-      form = build_form(tariff_package:, tariff_schedule_id: tariff_schedule.id, weight: 20)
+      form = build_form(tariff_plan:, tariff_schedule_id: tariff_schedule.id, weight: 20)
 
       expect(form.save).to be_truthy
       expect(form.object).to have_attributes(
         persisted?: true,
-        package: tariff_package,
+        plan: tariff_plan,
         schedule: tariff_schedule,
         weight: 20
       )
@@ -50,7 +50,7 @@ RSpec.describe TariffPlanTierForm do
 
   def build_form(**)
     TariffPlanTierForm.new(
-      tariff_package: build_stubbed(:tariff_package),
+      tariff_plan: build_stubbed(:tariff_plan),
       tariff_schedule_id: build_stubbed(:tariff_schedule).id,
       weight: 10,
       **

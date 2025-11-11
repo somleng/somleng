@@ -23,22 +23,22 @@ class TariffScheduleFilter < ResourceFilter
     end
   end
 
-  class TariffPackageIDFilter < ApplicationFilter
+  class TariffPlanIDFilter < ApplicationFilter
     filter_params do
-      optional(:tariff_package_id).value(:string)
+      optional(:tariff_plan_id).value(:string)
     end
 
     def apply
       return super if filter_params.blank?
 
-      super.joins(:packages).where(tariff_packages: { id: filter_params.fetch(:tariff_package_id) })
+      super.joins(:plans).where(tariff_plans: { id: filter_params.fetch(:tariff_plan_id) })
     end
   end
 
   filter_with(
     CategoryFilter,
     NameFilter,
-    TariffPackageIDFilter,
+    TariffPlanIDFilter,
     :date_filter
   )
 end

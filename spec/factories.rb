@@ -98,7 +98,7 @@ FactoryBot.define do
     trait :with_default_tariff_bundle do
       transient do
         tariff_bundle_name { "Standard" }
-        tariff_package_details {
+        tariff_plan_details {
           {
             outbound_calls: "Standard",
             inbound_calls: "Standard",
@@ -112,7 +112,7 @@ FactoryBot.define do
         carrier.default_tariff_bundle ||= build(
           :tariff_bundle,
           carrier:,
-          package_details: evaluator.tariff_package_details,
+          plan_details: evaluator.tariff_plan_details,
           name: evaluator.tariff_bundle_name
         )
       end
@@ -221,7 +221,7 @@ FactoryBot.define do
     carrier_managed
 
     transient do
-      tariff_packages { [] }
+      tariff_plans { [] }
     end
 
     trait :customer_managed do
@@ -244,15 +244,15 @@ FactoryBot.define do
     end
 
     after(:build) do |account, evaluator|
-      account_tariff_packages = evaluator.tariff_packages.map do |tariff_package|
+      account_tariff_plans = evaluator.tariff_plans.map do |tariff_plan|
         build(
-          :account_tariff_package,
+          :account_tariff_plan,
           carrier: account.carrier,
-          tariff_package:,
+          tariff_plan:,
           account:
         )
       end
-      account.tariff_package_line_items = account_tariff_packages if account.tariff_package_line_items.blank?
+      account.tariff_plan_line_items = account_tariff_plans if account.tariff_plan_line_items.blank?
     end
   end
 
@@ -641,7 +641,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Standard#{n}" }
   end
 
-  factory :tariff_package do
+  factory :tariff_plan do
     carrier
     outbound_calls
     sequence(:name) { |n| "Standard#{n}" }
@@ -653,8 +653,8 @@ FactoryBot.define do
       category { :outbound_calls }
     end
 
-    package { association :tariff_package, carrier:, category: }
-    schedule { association :tariff_schedule, carrier: package.carrier, category: package.category }
+    plan { association :tariff_plan, carrier:, category: }
+    schedule { association :tariff_schedule, carrier: plan.carrier, category: plan.category }
   end
 
   factory :tariff_bundle do
@@ -662,15 +662,15 @@ FactoryBot.define do
     sequence(:name) { |n| "Standard#{n}" }
 
     transient do
-      package_details { {} }
+      plan_details { {} }
     end
 
     after(:build) do |tariff_bundle, evaluator|
-      line_items = evaluator.package_details.map do |category, name|
+      line_items = evaluator.plan_details.map do |category, name|
         build(
           :tariff_bundle_line_item,
           tariff_bundle:,
-          tariff_package: build(:tariff_package, carrier: tariff_bundle.carrier, name:, category:)
+          tariff_plan: build(:tariff_plan, carrier: tariff_bundle.carrier, name:, category:)
         )
       end
 
@@ -684,18 +684,18 @@ FactoryBot.define do
     end
 
     tariff_bundle { association(:tariff_bundle, carrier:) }
-    tariff_package { association(:tariff_package, carrier: tariff_bundle.carrier) }
-    category { tariff_package.category }
+    tariff_plan { association(:tariff_plan, carrier: tariff_bundle.carrier) }
+    category { tariff_plan.category }
   end
 
-  factory :account_tariff_package do
+  factory :account_tariff_plan do
     transient do
       carrier { build(:carrier) }
     end
 
     account { association(:account, carrier:) }
-    tariff_package { association(:tariff_package, carrier: account.carrier) }
-    category { tariff_package.category }
+    tariff_plan { association(:tariff_plan, carrier: account.carrier) }
+    category { tariff_plan.category }
   end
 
   factory :destination_tariff do

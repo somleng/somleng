@@ -3,13 +3,13 @@ require "rails_helper"
 RSpec.describe "Tariff Schedules" do
   it "filter tariff schedules" do
     carrier = create(:carrier)
-    tariff_package = create(:tariff_package, carrier:)
-    tariff_schedule = create(:tariff_schedule, category: tariff_package.category, carrier:, name: "Standard")
-    create(:tariff_plan_tier, schedule: tariff_schedule, package: tariff_package)
+    tariff_plan = create(:tariff_plan, carrier:)
+    tariff_schedule = create(:tariff_schedule, category: tariff_plan.category, carrier:, name: "Standard")
+    create(:tariff_plan_tier, schedule: tariff_schedule, plan: tariff_plan)
     excluded_tariff_schedules = [
-      create(:tariff_schedule, tariff_package.category, carrier:, name: "Promo"),
+      create(:tariff_schedule, tariff_plan.category, carrier:, name: "Promo"),
       create(:tariff_schedule, :outbound_messages, carrier:, name: "Standard"),
-      create(:tariff_schedule, tariff_package.category, carrier:, name: "Standard 2")
+      create(:tariff_schedule, tariff_plan.category, carrier:, name: "Standard 2")
     ]
     user = create(:user, :carrier, carrier:)
 
@@ -19,7 +19,7 @@ RSpec.describe "Tariff Schedules" do
         filter: {
           name: "standard",
           category: "outbound_calls",
-          tariff_package_id: tariff_package.id
+          tariff_plan_id: tariff_plan.id
         }
       )
     )
@@ -113,7 +113,7 @@ RSpec.describe "Tariff Schedules" do
   it "show a tariff schedule" do
     carrier = create(:carrier, billing_currency: "USD")
     tariff_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
-    tariff_package = create(:tariff_package, category: tariff_schedule.category, carrier:, name: "Standard")
+    tariff_plan = create(:tariff_plan, category: tariff_schedule.category, carrier:, name: "Standard")
     create(
       :destination_tariff,
       tariff_schedule:,
@@ -123,12 +123,12 @@ RSpec.describe "Tariff Schedules" do
     create(
       :tariff_plan_tier,
       schedule: tariff_schedule,
-      package: tariff_package
+      plan: tariff_plan
     )
     create(
       :tariff_plan_tier,
       schedule: tariff_schedule,
-      package: create(:tariff_package, category: tariff_schedule.category, carrier:)
+      plan: create(:tariff_plan, category: tariff_schedule.category, carrier:)
     )
 
     user = create(:user, :carrier, carrier:)
@@ -137,8 +137,8 @@ RSpec.describe "Tariff Schedules" do
     visit dashboard_tariff_schedule_path(tariff_schedule)
 
     expect(page).to have_content("MSG -> Cambodia -> $0.005")
-    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_package_path(tariff_package))
-    expect(page).to have_link("1 more", href: dashboard_tariff_packages_path(filter: { tariff_schedule_id: tariff_schedule.id }))
+    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(tariff_plan))
+    expect(page).to have_link("1 more", href: dashboard_tariff_plans_path(filter: { tariff_schedule_id: tariff_schedule.id }))
   end
 
   it "update a tariff schedule", :js do

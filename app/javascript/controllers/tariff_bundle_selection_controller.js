@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="tariff-bundle-selection"
 export default class extends Controller {
-  static targets = ["tariffBundleInput", "tariffPackageInput"];
+  static targets = ["tariffBundleInput", "tariffPlanInput"];
 
   connect() {
     this.changeTariffBundle();
@@ -12,28 +12,28 @@ export default class extends Controller {
     const selectedBundle = this.tariffBundleInputTarget.selectedOptions[0];
     if (!selectedBundle) return;
 
-    const tariffPackageData = selectedBundle.dataset.tariffPackages;
-    if (!tariffPackageData) return;
+    const tariffPlanData = selectedBundle.dataset.tariffPlans;
+    if (!tariffPlanData) return;
 
-    const tariffPackages = JSON.parse(tariffPackageData);
+    const tariffPlans = JSON.parse(tariffPlanData);
 
-    this.tariffPackageInputTargets.forEach((select) => {
+    this.tariffPlanInputTargets.forEach((select) => {
       const category = select.dataset.category;
       if (!category) return;
 
-      const packageId = tariffPackages[category] || "";
-      select.value = packageId;
+      const planId = tariffPlans[category] || "";
+      select.value = planId;
 
       select.dispatchEvent(
         new CustomEvent("external:set-value", {
           bubbles: true,
-          detail: { value: packageId },
+          detail: { value: planId },
         })
       );
     });
   }
 
-  changeTariffPackage() {
+  changeTariffPlan() {
     this.tariffBundleInputTarget.value = "";
   }
 }

@@ -31,8 +31,8 @@ class Account < ApplicationRecord
   has_many :error_logs
   has_many :interactions
   has_many :tts_events
-  has_many :tariff_package_line_items, class_name: "AccountTariffPackage"
-  has_many :tariff_packages, through: :tariff_package_line_items
+  has_many :tariff_plan_line_items, class_name: "AccountTariffPlan"
+  has_many :tariff_plans, through: :tariff_plan_line_items
 
   before_create :set_defaults
 

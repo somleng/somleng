@@ -1,7 +1,7 @@
-class TariffPackageForm < ApplicationForm
+class TariffPlanForm < ApplicationForm
   attribute :carrier
   attribute :category
-  attribute :object, default: -> { TariffPackage.new }
+  attribute :object, default: -> { TariffPlan.new }
   attribute :name
   attribute :description
   attribute :tiers
@@ -10,7 +10,7 @@ class TariffPackageForm < ApplicationForm
             FormCollectionType.new(form: TariffPlanTierForm),
             default: []
 
-  enumerize :category, in: TariffPackage.category.values
+  enumerize :category, in: TariffPlan.category.values
 
   validates :name, :category, presence: true
   validate :validate_name
@@ -19,17 +19,17 @@ class TariffPackageForm < ApplicationForm
   delegate :persisted?, :new_record?, :id, to: :object
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, "TariffPackage")
+    ActiveModel::Name.new(self, nil, "TariffPlan")
   end
 
-  def self.initialize_with(tariff_package)
+  def self.initialize_with(tariff_plan)
     new(
-      object: tariff_package,
-      carrier: tariff_package.carrier,
-      name: tariff_package.name,
-      description: tariff_package.description,
-      category: tariff_package.category,
-      tiers: tariff_package.tiers.order(weight: :desc)
+      object: tariff_plan,
+      carrier: tariff_plan.carrier,
+      name: tariff_plan.name,
+      description: tariff_plan.description,
+      category: tariff_plan.category,
+      tiers: tariff_plan.tiers.order(weight: :desc)
     )
   end
 
@@ -41,7 +41,7 @@ class TariffPackageForm < ApplicationForm
 
   def tiers=(value)
     super(value)
-    tiers.each { _1.attributes = { tariff_package: object } }
+    tiers.each { _1.attributes = { tariff_plan: object } }
   end
 
 
@@ -82,7 +82,7 @@ class TariffPackageForm < ApplicationForm
   end
 
   def validate_name
-    return unless carrier.tariff_packages.where.not(id: object.id).exists?(name:, category:)
+    return unless carrier.tariff_plans.where.not(id: object.id).exists?(name:, category:)
 
     errors.add(:name, :taken)
   end

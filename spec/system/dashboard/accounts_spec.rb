@@ -49,7 +49,7 @@ RSpec.describe "Accounts" do
     carrier = create(
       :carrier,
       :with_default_tariff_bundle,
-      tariff_package_details: {
+      tariff_plan_details: {
         outbound_calls: "Discount",
         inbound_calls: "Standard",
         outbound_messages: "Standard",
@@ -137,15 +137,15 @@ RSpec.describe "Accounts" do
   it "Update an account" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
-    tariff_package = create(:tariff_package, :outbound_calls, name: "Standard", carrier:)
-    discount_tariff_package = create(:tariff_package, :outbound_messages, name: "Discount", carrier:)
+    tariff_plan = create(:tariff_plan, :outbound_calls, name: "Standard", carrier:)
+    discount_tariff_plan = create(:tariff_plan, :outbound_messages, name: "Discount", carrier:)
     account = create(
       :account,
       :carrier_managed,
       :enabled,
       carrier: user.carrier,
       default_tts_voice: "Basic.Kal",
-      tariff_packages: [ tariff_package ]
+      tariff_plans: [ tariff_plan ]
     )
     sip_trunk = create(:sip_trunk, carrier:, name: "Main SIP Trunk")
 
@@ -157,7 +157,7 @@ RSpec.describe "Accounts" do
     fill_in("Owner's email", with: "johndoe@example.com")
     enhanced_select("Basic.Slt", from: "Default TTS voice")
     within(".outbound-messages-line-item") do
-      enhanced_select("Outbound messages (Discount)", from: "Tariff package")
+      enhanced_select("Outbound messages (Discount)", from: "Tariff plan")
     end
     uncheck("Enabled")
 
@@ -176,11 +176,11 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Basic.Slt (Female, en-US)")
     expect(page).to have_link(
       "Outbound calls (Standard)",
-      href: dashboard_tariff_package_path(tariff_package)
+      href: dashboard_tariff_plan_path(tariff_plan)
     )
     expect(page).to have_link(
       "Outbound messages (Discount)",
-      href: dashboard_tariff_package_path(discount_tariff_package)
+      href: dashboard_tariff_plan_path(discount_tariff_plan)
     )
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
@@ -259,7 +259,7 @@ RSpec.describe "Accounts" do
       :account,
       name: "Rocket Rides",
       carrier:,
-      tariff_packages: [ create(:tariff_package, carrier:) ]
+      tariff_plans: [ create(:tariff_plan, carrier:) ]
     )
 
     carrier_sign_in(user)

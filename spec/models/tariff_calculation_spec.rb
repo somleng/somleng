@@ -3,25 +3,25 @@ require "rails_helper"
 RSpec.describe TariffCalculation do
   it "returns the correct destination tariff" do
     carrier = create(:carrier)
-    standard_package = create(:tariff_package, :outbound_messages, carrier:)
-    promo_package = create(:tariff_package, :outbound_messages, carrier:)
+    standard_plan = create(:tariff_plan, :outbound_messages, carrier:)
+    promo_plan = create(:tariff_plan, :outbound_messages, carrier:)
     standard_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
     promo_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
     create(
       :tariff_plan,
-      tariff_package: standard_package,
+      tariff_plan: standard_plan,
       tariff_schedule: standard_schedule,
       weight: 10
     )
     create(
       :tariff_plan,
-      tariff_package: promo_package,
+      tariff_plan: promo_plan,
       tariff_schedule: standard_schedule,
       weight: 10
     )
     create(
       :tariff_plan,
-      tariff_package: promo_package,
+      tariff_plan: promo_plan,
       tariff_schedule: promo_schedule,
       weight: 20
     )
@@ -50,42 +50,42 @@ RSpec.describe TariffCalculation do
 
     expect(
       TariffCalculation.new(
-        tariff_package: standard_package,
+        tariff_plan: standard_plan,
         destination: "855975100888"
       ).calculate
     ).to eq(exception_tariff)
 
     expect(
       TariffCalculation.new(
-        tariff_package: promo_package,
+        tariff_plan: promo_plan,
         destination: "855975100888"
       ).calculate
     ).to eq(exception_tariff)
 
     expect(
       TariffCalculation.new(
-        tariff_package: standard_package,
+        tariff_plan: standard_plan,
         destination: "85510510888"
       ).calculate
     ).to eq(standard_tariff)
 
     expect(
       TariffCalculation.new(
-        tariff_package: promo_package,
+        tariff_plan: promo_plan,
         destination: "85510510888"
       ).calculate
     ).to eq(promo_tariff)
 
     expect(
       TariffCalculation.new(
-        tariff_package: standard_package,
+        tariff_plan: standard_plan,
         destination: "856975100888"
       ).calculate
     ).to eq(catch_all_tariff)
 
     expect(
       TariffCalculation.new(
-        tariff_package: promo_package,
+        tariff_plan: promo_plan,
         destination: "856975100888"
       ).calculate
     ).to eq(catch_all_tariff)

@@ -17,29 +17,29 @@
   </thead>
 
   <tbody>
-    <% resources.each do |tariff_package| %>
-      <% tariff_package = TariffPackageDecorator.new(tariff_package) %>
+    <% resources.each do |tariff_plan| %>
+      <% tariff_plan = TariffPlanDecorator.new(tariff_plan) %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(tariff_package.id, dashboard_tariff_package_path(tariff_package)) %>
+          <%= link_to(tariff_plan.id, dashboard_tariff_plan_path(tariff_plan)) %>
         </td>
 
         <td>
-          <%= tariff_package.name %>
+          <%= tariff_plan.name %>
         </td>
 
         <td>
           <%= summarize_list(
             DecoratedCollection.new(
-              tariff_package.schedules,
+              tariff_plan.schedules,
             ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
             max: 1,
-            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_package_id: tariff_package.id })
+            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_plan_id: tariff_plan.id })
           ) %>
         </td>
 
         <td>
-          <%= local_time(tariff_package.created_at) %>
+          <%= local_time(tariff_plan.created_at) %>
         </td>
       </tr>
     <% end %>

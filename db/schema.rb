@@ -30,17 +30,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.index ["user_id"], name: "index_account_memberships_on_user_id"
   end
 
-  create_table "account_tariff_packages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "account_tariff_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.string "category", null: false
     t.datetime "created_at", null: false
     t.bigserial "sequence_number", null: false
-    t.uuid "tariff_package_id", null: false
+    t.uuid "tariff_plan_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id", "category"], name: "index_account_tariff_packages_on_account_id_and_category", unique: true
-    t.index ["account_id"], name: "index_account_tariff_packages_on_account_id"
-    t.index ["sequence_number"], name: "index_account_tariff_packages_on_sequence_number", unique: true, order: :desc
-    t.index ["tariff_package_id"], name: "index_account_tariff_packages_on_tariff_package_id"
+    t.index ["account_id", "category"], name: "index_account_tariff_plans_on_account_id_and_category", unique: true
+    t.index ["account_id"], name: "index_account_tariff_plans_on_account_id"
+    t.index ["sequence_number"], name: "index_account_tariff_plans_on_sequence_number", unique: true, order: :desc
+    t.index ["tariff_plan_id"], name: "index_account_tariff_plans_on_tariff_plan_id"
   end
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -732,12 +732,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.datetime "created_at", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "tariff_bundle_id", null: false
-    t.uuid "tariff_package_id", null: false
+    t.uuid "tariff_plan_id", null: false
     t.datetime "updated_at", null: false
     t.index ["sequence_number"], name: "index_tariff_bundle_line_items_on_sequence_number", unique: true, order: :desc
     t.index ["tariff_bundle_id", "category"], name: "idx_on_tariff_bundle_id_category_1522bdcbb7", unique: true
     t.index ["tariff_bundle_id"], name: "index_tariff_bundle_line_items_on_tariff_bundle_id"
-    t.index ["tariff_package_id"], name: "index_tariff_bundle_line_items_on_tariff_package_id"
+    t.index ["tariff_plan_id"], name: "index_tariff_bundle_line_items_on_tariff_plan_id"
   end
 
   create_table "tariff_bundles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -752,7 +752,19 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.index ["sequence_number"], name: "index_tariff_bundles_on_sequence_number", unique: true, order: :desc
   end
 
-  create_table "tariff_packages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "tariff_plan_tiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigserial "sequence_number", null: false
+    t.uuid "tariff_plan_id", null: false
+    t.uuid "tariff_schedule_id", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "weight", precision: 8, scale: 2, null: false
+    t.index ["sequence_number"], name: "index_tariff_plan_tiers_on_sequence_number", unique: true, order: :desc
+    t.index ["tariff_plan_id", "tariff_schedule_id"], name: "idx_on_tariff_plan_id_tariff_schedule_id_aca8d49ee8", unique: true
+    t.index ["tariff_plan_id", "weight"], name: "index_tariff_plan_tiers_on_tariff_plan_id_and_weight", unique: true
+  end
+
+  create_table "tariff_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.string "category", null: false
     t.datetime "created_at", null: false
@@ -760,21 +772,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.citext "name", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "updated_at", null: false
-    t.index ["carrier_id", "category", "name"], name: "index_tariff_packages_on_carrier_id_and_category_and_name", unique: true
-    t.index ["carrier_id"], name: "index_tariff_packages_on_carrier_id"
-    t.index ["sequence_number"], name: "index_tariff_packages_on_sequence_number", unique: true, order: :desc
-  end
-
-  create_table "tariff_plan_tiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigserial "sequence_number", null: false
-    t.uuid "tariff_package_id", null: false
-    t.uuid "tariff_schedule_id", null: false
-    t.datetime "updated_at", null: false
-    t.decimal "weight", precision: 8, scale: 2, null: false
-    t.index ["sequence_number"], name: "index_tariff_plan_tiers_on_sequence_number", unique: true, order: :desc
-    t.index ["tariff_package_id", "tariff_schedule_id"], name: "idx_on_tariff_package_id_tariff_schedule_id_e8e590654c", unique: true
-    t.index ["tariff_package_id", "weight"], name: "index_tariff_plan_tiers_on_tariff_package_id_and_weight", unique: true
+    t.index ["carrier_id", "category", "name"], name: "index_tariff_plans_on_carrier_id_and_category_and_name", unique: true
+    t.index ["carrier_id"], name: "index_tariff_plans_on_carrier_id"
+    t.index ["sequence_number"], name: "index_tariff_plans_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "tariff_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -981,8 +981,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
 
   add_foreign_key "account_memberships", "accounts", on_delete: :cascade
   add_foreign_key "account_memberships", "users", on_delete: :cascade
-  add_foreign_key "account_tariff_packages", "accounts", on_delete: :cascade
-  add_foreign_key "account_tariff_packages", "tariff_packages", on_delete: :cascade
+  add_foreign_key "account_tariff_plans", "accounts", on_delete: :cascade
+  add_foreign_key "account_tariff_plans", "tariff_plans", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -1052,11 +1052,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
   add_foreign_key "tariff_bundle_line_items", "tariff_bundles", on_delete: :cascade
-  add_foreign_key "tariff_bundle_line_items", "tariff_packages", on_delete: :cascade
+  add_foreign_key "tariff_bundle_line_items", "tariff_plans", on_delete: :cascade
   add_foreign_key "tariff_bundles", "carriers", on_delete: :cascade
-  add_foreign_key "tariff_packages", "carriers", on_delete: :cascade
-  add_foreign_key "tariff_plan_tiers", "tariff_packages", on_delete: :cascade
+  add_foreign_key "tariff_plan_tiers", "tariff_plans", on_delete: :cascade
   add_foreign_key "tariff_plan_tiers", "tariff_schedules", on_delete: :cascade
+  add_foreign_key "tariff_plans", "carriers", on_delete: :cascade
   add_foreign_key "tariff_schedules", "carriers", on_delete: :cascade
   add_foreign_key "tariffs", "carriers", on_delete: :cascade
   add_foreign_key "trial_interactions_credit_vouchers", "carriers", on_delete: :cascade

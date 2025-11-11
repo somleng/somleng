@@ -1,4 +1,4 @@
-class TariffPackageFilter < ResourceFilter
+class TariffPlanFilter < ResourceFilter
   class CategoryFilter < ApplicationFilter
     filter_params do
       optional(:category).value(:string, included_in?: TariffSchedule.category.values)
