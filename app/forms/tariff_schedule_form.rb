@@ -73,16 +73,10 @@ class TariffScheduleForm < ApplicationForm
 
   def validate_destination_tariffs
     retained_destination_tariffs.each(&:valid?)
-
-    destination_group_ids = retained_destination_tariffs.select { _1.destination_group_id.present? }.group_by(&:destination_group_id)
-
-    destination_group_ids.each_value do |forms|
-      next if forms.size <= 1
-
-      forms.drop(1).each do |duplicate|
-        duplicate.errors.add(:destination_group_id, :taken)
-      end
-    end
+    validate_uniqueness_of(
+      :destination_group_id,
+      within: retained_destination_tariffs.select { _1.destination_group_id.present? }.group_by(&:destination_group_id)
+    )
 
     return if retained_destination_tariffs.all? { _1.errors.empty? }
 
@@ -93,5 +87,15 @@ class TariffScheduleForm < ApplicationForm
     return unless carrier.tariff_schedules.where.not(id: object.id).exists?(name:, category:)
 
     errors.add(:name, :taken)
+  end
+
+  def validate_uniqueness_of(attribute, within:)
+    within.each_value do |forms|
+      next if forms.size <= 1
+
+      forms.drop(1).each do |duplicate|
+        duplicate.errors.add(attribute, :taken)
+      end
+    end
   end
 end
