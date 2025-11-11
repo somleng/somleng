@@ -12,7 +12,7 @@ RSpec.describe TTSVoiceType do
     expect(klass.new(tts_voice: "Basic.Kal").tts_voice).to have_attributes(
       identifier: "Basic.Kal"
     )
-    expect(klass.new(tts_voice: nil).tts_voice).to eq(nil)
-    expect(klass.new(tts_voice: "Invalid.Voice").tts_voice).to eq(nil)
+    expect(klass.new(tts_voice: nil).tts_voice).to be_nil
+    expect(klass.new(tts_voice: "Invalid.Voice").tts_voice).to be_nil
   end
 end
