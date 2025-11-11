@@ -20,7 +20,13 @@
     <%= f.attribute :category %>
     <%= f.attribute :description %>
     <%= f.attribute :tariff_packages do %>
-      <%= external_link_to("Manage", dashboard_tariff_packages_path(filter: { tariff_schedule_id: f.object.id })) %>
+      <%= summarize_list(
+        DecoratedCollection.new(
+          f.object.packages,
+        ).map { link_to(_1.name, dashboard_tariff_package_path(_1)) },
+        max: 1,
+        link_to_remaining: dashboard_tariff_packages_path(filter: { tariff_schedule_id: f.object.id })
+      ) %>
     <% end %>
     <%= f.attribute :destination_tariffs do %>
       <%= summarize_list(
