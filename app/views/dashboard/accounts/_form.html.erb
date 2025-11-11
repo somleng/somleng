@@ -66,7 +66,7 @@
       )
     %>
 
-    <div class="card mb-3" data-controller="tariff-bundle-selection">
+    <div class="card mb-3" data-controller="tariff-package-selection">
       <div class="card-body">
         <h5 class="card-title">Tariffs</h5>
 
@@ -74,13 +74,13 @@
           <div class="col-sm-6">
             <% if f.object.new_record? %>
               <%= f.input(
-                :tariff_bundle_id,
-                collection: f.object.tariff_bundles_options_for_select,
+                :tariff_package_id,
+                collection: f.object.tariff_packages_options_for_select,
                 include_blank: "Configure manually",
                 input_html: {
                   data: {
-                    tariff_bundle_selection_target: "tariffBundleInput",
-                    action: "change->tariff-bundle-selection#changeTariffBundle"
+                    tariff_package_selection_target: "tariffPackageInput",
+                    action: "change->tariff-package-selection#changeTariffPackage"
                   }
                 }
               ) %>

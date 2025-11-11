@@ -36,7 +36,7 @@ class CarrierSettingsForm
   attribute :favicon
   attribute :webhook_url
   attribute :enable_webhooks, :boolean, default: true
-  attribute :default_tariff_bundle_id
+  attribute :default_tariff_package_id
 
   delegate :persisted?, :id, to: :carrier
 
@@ -72,7 +72,7 @@ class CarrierSettingsForm
       enable_webhooks: carrier.webhooks_enabled?,
       custom_app_host: carrier.custom_app_host,
       custom_api_host: carrier.custom_api_host,
-      default_tariff_bundle_id: carrier.default_tariff_bundle_id
+      default_tariff_package_id: carrier.default_tariff_package_id
     )
   end
 
@@ -87,7 +87,7 @@ class CarrierSettingsForm
       custom_api_host:,
       billing_currency:,
       country_code: country,
-      default_tariff_bundle: (carrier.tariff_bundles.find(default_tariff_bundle_id) if default_tariff_bundle_id.present?)
+      default_tariff_package: (carrier.tariff_packages.find(default_tariff_package_id) if default_tariff_package_id.present?)
     }
 
     webhook_endpoint.enabled = enable_webhooks
@@ -116,8 +116,8 @@ class CarrierSettingsForm
     CURRENCIES.sort_by(&:priority)
   end
 
-  def tariff_bundles_options_for_select
-    DecoratedCollection.new(carrier.tariff_bundles).map { [ _1.name, _1.id ] }
+  def tariff_packages_options_for_select
+    DecoratedCollection.new(carrier.tariff_packages).map { [ _1.name, _1.id ] }
   end
 
   private

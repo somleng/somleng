@@ -17,22 +17,22 @@
   </thead>
 
   <tbody>
-    <% resources.each do |tariff_bundle| %>
+    <% resources.each do |tariff_package| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
-          <%= link_to(tariff_bundle.id, dashboard_tariff_bundle_path(tariff_bundle)) %>
+          <%= link_to(tariff_package.id, dashboard_tariff_package_path(tariff_package)) %>
         </td>
 
         <td>
-          <%= tariff_bundle.name %>
+          <%= tariff_package.name %>
         </td>
 
         <td>
-          <%= tariff_plans(tariff_bundle.line_items) %>
+          <%= tariff_plans(tariff_package.line_items) %>
         </td>
 
         <td>
-          <%= local_time(tariff_bundle.created_at) %>
+          <%= local_time(tariff_package.created_at) %>
         </td>
       </tr>
     <% end %>

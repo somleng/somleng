@@ -1,11 +1,11 @@
-class TariffBundleWizardLineItemForm < ApplicationForm
-  attribute :tariff_bundle
+class TariffPackageWizardLineItemForm < ApplicationForm
+  attribute :tariff_package
   attribute :rate, :decimal
   attribute :enabled, :boolean
   attribute :category
-  attribute :object, default: -> { TariffBundleLineItem.new }
+  attribute :object, default: -> { TariffPackageLineItem.new }
 
-  delegate :carrier, :name, to: :tariff_bundle
+  delegate :carrier, :name, to: :tariff_package
   delegate :billing_currency, to: :carrier
 
   enumerize :category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
@@ -13,14 +13,14 @@ class TariffBundleWizardLineItemForm < ApplicationForm
   validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0, allow_blank: true }, if: ->(form) { form.enabled }
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, "TariffBundleLineItem")
+    ActiveModel::Name.new(self, nil, "TariffPackageLineItem")
   end
 
   def save
     return false if invalid?
     return true unless enabled
 
-    create_tariff_bundle_line_item
+    create_tariff_package_line_item
   end
 
   def rate_unit
@@ -35,11 +35,11 @@ class TariffBundleWizardLineItemForm < ApplicationForm
 
   private
 
-  def create_tariff_bundle_line_item
+  def create_tariff_package_line_item
     ApplicationRecord.transaction do
       tariff_plan = carrier.tariff_plans.find_or_create_by!(name:, category:)
       object.category = category
-      object.tariff_bundle = tariff_bundle
+      object.tariff_package = tariff_package
       object.tariff_plan = tariff_plan
       object.save!
       tariff_schedule = carrier.tariff_schedules.find_or_create_by!(name:, category:)

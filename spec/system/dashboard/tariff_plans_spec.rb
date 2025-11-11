@@ -108,7 +108,7 @@ RSpec.describe "Tariff Plans" do
     carrier_sign_in(user)
     visit dashboard_tariff_plan_path(tariff_plan)
 
-    expect(page).to have_link("Manage", href: dashboard_tariff_bundles_path(filter: { tariff_plan_id: tariff_plan.id }))
+    expect(page).to have_link("Manage", href: dashboard_tariff_packages_path(filter: { tariff_plan_id: tariff_plan.id }))
     expect(page).to have_link("Standard", href: dashboard_tariff_schedule_path(tariff_schedule))
     expect(page).to have_content("My description")
   end

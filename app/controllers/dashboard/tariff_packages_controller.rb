@@ -1,18 +1,18 @@
 module Dashboard
-  class TariffBundlesController < DashboardController
+  class TariffPackagesController < DashboardController
     def index
       @resources = apply_filters(scope.includes(:tariff_plans))
       @resources = paginate_resources(@resources)
     end
 
     def new
-      @resource = TariffBundleForm.new(carrier: current_carrier)
+      @resource = TariffPackageForm.new(carrier: current_carrier)
     end
 
     def create
-      @resource = TariffBundleForm.new(carrier: current_carrier, **permitted_params)
+      @resource = TariffPackageForm.new(carrier: current_carrier, **permitted_params)
       @resource.save
-      respond_with(:dashboard, @resource, location: dashboard_tariff_bundles_path(filter_params))
+      respond_with(:dashboard, @resource, location: dashboard_tariff_packages_path(filter_params))
     end
 
     def show
@@ -20,11 +20,11 @@ module Dashboard
     end
 
     def edit
-      @resource = TariffBundleForm.initialize_with(record)
+      @resource = TariffPackageForm.initialize_with(record)
     end
 
     def update
-      @resource = TariffBundleForm.initialize_with(record)
+      @resource = TariffPackageForm.initialize_with(record)
       @resource.attributes = permitted_params
       @resource.save
       respond_with(:dashboard, @resource)
@@ -39,14 +39,14 @@ module Dashboard
     private
 
     def permitted_params
-      params.require(:tariff_bundle).permit(
+      params.require(:tariff_package).permit(
         :name, :description,
         line_items: [ :id, :tariff_plan_id, :category ]
       )
     end
 
     def scope
-      current_carrier.tariff_bundles
+      current_carrier.tariff_packages
     end
 
     def record

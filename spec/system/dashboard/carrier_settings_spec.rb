@@ -4,7 +4,7 @@ RSpec.describe "Carrier Settings" do
   it "Update carrier settings" do
     carrier = create(:carrier, name: "My Carrier")
     user = create(:user, :carrier, :owner, carrier:)
-    create(:tariff_bundle, carrier:, name: "Standard Bundle")
+    create(:tariff_package, carrier:, name: "Standard Package")
 
     carrier_sign_in(user)
     visit dashboard_carrier_settings_path
@@ -19,7 +19,7 @@ RSpec.describe "Carrier Settings" do
     fill_in("API host", with: "api.t-mobile.example.com")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
     attach_file("Favicon", file_fixture("favicon-32x32.png"))
-    enhanced_select("Standard Bundle", from: "Default tariff bundle")
+    enhanced_select("Standard Package", from: "Default tariff package")
 
     click_on("Update Carrier Settings")
 
@@ -33,7 +33,7 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_content("api.t-mobile.example.com")
     expect(page).to have_xpath("//img[@title='Logo']")
     expect(page).to have_xpath("//img[@title='Favicon']")
-    expect(page).to have_content("Standard Bundle")
+    expect(page).to have_content("Standard Package")
   end
 
   it "Update carrier subdomain" do

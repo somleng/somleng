@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="tariff-bundle-wizard"
+// Connects to data-controller="tariff-package-wizard"
 export default class extends Controller {
   static targets = ["enabledInput", "rateInput"];
 

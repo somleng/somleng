@@ -1,10 +1,10 @@
-<%= page_title(title: "Tariff Bundle") do %>
+<%= page_title(title: "Tariff Package") do %>
   <% if policy(@resource).edit? %>
-    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_bundle_path(@resource)) %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_package_path(@resource)) %>
   <% end %>
 
   <% if policy(@resource).destroy? %>
-    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_bundle_path(@resource)) %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_package_path(@resource)) %>
   <% end %>
 <% end %>
 

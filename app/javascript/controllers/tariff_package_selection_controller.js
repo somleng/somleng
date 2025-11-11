@@ -1,18 +1,18 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="tariff-bundle-selection"
+// Connects to data-controller="tariff-package-selection"
 export default class extends Controller {
-  static targets = ["tariffBundleInput", "tariffPlanInput"];
+  static targets = ["tariffPackageInput", "tariffPlanInput"];
 
   connect() {
-    this.changeTariffBundle();
+    this.changeTariffPackage();
   }
 
-  changeTariffBundle() {
-    const selectedBundle = this.tariffBundleInputTarget.selectedOptions[0];
-    if (!selectedBundle) return;
+  changeTariffPackage() {
+    const selectedPackage = this.tariffPackageInputTarget.selectedOptions[0];
+    if (!selectedPackage) return;
 
-    const tariffPlanData = selectedBundle.dataset.tariffPlans;
+    const tariffPlanData = selectedPackage.dataset.tariffPlans;
     if (!tariffPlanData) return;
 
     const tariffPlans = JSON.parse(tariffPlanData);
@@ -34,6 +34,6 @@ export default class extends Controller {
   }
 
   changeTariffPlan() {
-    this.tariffBundleInputTarget.value = "";
+    this.tariffPackageInputTarget.value = "";
   }
 }

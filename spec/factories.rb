@@ -95,9 +95,9 @@ FactoryBot.define do
       end
     end
 
-    trait :with_default_tariff_bundle do
+    trait :with_default_tariff_package do
       transient do
-        tariff_bundle_name { "Standard" }
+        tariff_package_name { "Standard" }
         tariff_plan_details {
           {
             outbound_calls: "Standard",
@@ -109,11 +109,11 @@ FactoryBot.define do
       end
 
       after(:build) do |carrier, evaluator|
-        carrier.default_tariff_bundle ||= build(
-          :tariff_bundle,
+        carrier.default_tariff_package ||= build(
+          :tariff_package,
           carrier:,
           plan_details: evaluator.tariff_plan_details,
-          name: evaluator.tariff_bundle_name
+          name: evaluator.tariff_package_name
         )
       end
     end
@@ -657,7 +657,7 @@ FactoryBot.define do
     schedule { association :tariff_schedule, carrier: plan.carrier, category: plan.category }
   end
 
-  factory :tariff_bundle do
+  factory :tariff_package do
     carrier
     sequence(:name) { |n| "Standard#{n}" }
 
@@ -665,26 +665,26 @@ FactoryBot.define do
       plan_details { {} }
     end
 
-    after(:build) do |tariff_bundle, evaluator|
+    after(:build) do |tariff_package, evaluator|
       line_items = evaluator.plan_details.map do |category, name|
         build(
-          :tariff_bundle_line_item,
-          tariff_bundle:,
-          tariff_plan: build(:tariff_plan, carrier: tariff_bundle.carrier, name:, category:)
+          :tariff_package_line_item,
+          tariff_package:,
+          tariff_plan: build(:tariff_plan, carrier: tariff_package.carrier, name:, category:)
         )
       end
 
-      tariff_bundle.line_items = line_items if tariff_bundle.line_items.blank?
+      tariff_package.line_items = line_items if tariff_package.line_items.blank?
     end
   end
 
-  factory :tariff_bundle_line_item do
+  factory :tariff_package_line_item do
     transient do
       carrier { build(:carrier) }
     end
 
-    tariff_bundle { association(:tariff_bundle, carrier:) }
-    tariff_plan { association(:tariff_plan, carrier: tariff_bundle.carrier) }
+    tariff_package { association(:tariff_package, carrier:) }
+    tariff_plan { association(:tariff_plan, carrier: tariff_package.carrier) }
     category { tariff_plan.category }
   end
 

@@ -1,4 +1,4 @@
-<%= page_title(title: "Tariff Bundles") do %>
+<%= page_title(title: "Tariff Packages") do %>
   <%= render("shared/filters") do |form| %>
     <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
     <%= form.select(
@@ -13,14 +13,14 @@
     <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
 
-  <% if policy(:tariff_bundle).new? %>
+  <% if policy(:tariff_package).new? %>
     <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Wizard">
-      <%= link_to(new_dashboard_tariff_bundle_wizard_path, class: "btn btn-outline-success", title: "Wizard") do %>
+      <%= link_to(new_dashboard_tariff_package_wizard_path, class: "btn btn-outline-success", title: "Wizard") do %>
         <i class="fa-solid fa-wand-magic-sparkles"></i>
       <% end %>
     </span>
 
-    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_bundle_path) %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_package_path) %>
   <% end %>
 <% end %>
 

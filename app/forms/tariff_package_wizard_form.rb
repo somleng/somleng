@@ -1,9 +1,9 @@
-class TariffBundleWizardForm < ApplicationForm
-  attribute :object, default: -> { TariffBundle.new }
+class TariffPackageWizardForm < ApplicationForm
+  attribute :object, default: -> { TariffPackage.new }
   attribute :carrier
   attribute :name
   attribute :description
-  attribute :tariffs, FormCollectionType.new(form: TariffBundleWizardLineItemForm), default: []
+  attribute :tariffs, FormCollectionType.new(form: TariffPackageWizardLineItemForm), default: []
 
   validates :name, presence: true
 
@@ -11,7 +11,7 @@ class TariffBundleWizardForm < ApplicationForm
   validate :validate_tariffs
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, "TariffBundle")
+    ActiveModel::Name.new(self, nil, "TariffPackage")
   end
 
   def initialize(**)
@@ -22,7 +22,7 @@ class TariffBundleWizardForm < ApplicationForm
 
   def tariffs=(value)
     super
-    tariffs.each { _1.tariff_bundle = object }
+    tariffs.each { _1.tariff_package = object }
   end
 
   def save
@@ -43,13 +43,13 @@ class TariffBundleWizardForm < ApplicationForm
 
   def build_tariffs
     defaults = TariffSchedule.category.values.map do |category|
-      TariffBundleWizardLineItemForm.new(category:, enabled: false, tariff_bundle: object)
+      TariffPackageWizardLineItemForm.new(category:, enabled: false, tariff_package: object)
     end
-    FormCollection.new(defaults, form: TariffBundleWizardLineItemForm)
+    FormCollection.new(defaults, form: TariffPackageWizardLineItemForm)
   end
 
   def validate_name
-    return unless carrier.tariff_bundles.exists?(name:)
+    return unless carrier.tariff_packages.exists?(name:)
 
     errors.add(:name, :taken)
   end

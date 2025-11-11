@@ -118,8 +118,8 @@ Rails.application.routes.draw do
       resources :sms_gateways
       resources :sms_gateway_channel_groups
       resources :carrier_users
-      resources :tariff_bundles
-      resource :tariff_bundle_wizard, only: [ :new, :create ]
+      resources :tariff_packages
+      resource :tariff_package_wizard, only: [ :new, :create ]
       resources :tariff_plans
       resources :tariff_plan_tiers, only: [ :new ]
       resources :tariff_schedules

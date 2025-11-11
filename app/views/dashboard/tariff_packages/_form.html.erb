@@ -1,5 +1,5 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource], url: (dashboard_tariff_bundles_path(filter_params) if @resource.new_record?), wrapper: :input_group, html: { data: { controller: "tariff-bundle-form" } }) do |f| %>
+  <%= simple_form_for([:dashboard, resource], url: (dashboard_tariff_packages_path(filter_params) if @resource.new_record?), wrapper: :input_group, html: { data: { controller: "tariff-package-form" } }) do |f| %>
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">

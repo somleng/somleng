@@ -8,7 +8,7 @@ class TariffPlan < ApplicationRecord
   has_many :destination_groups, through: :destination_tariffs
   has_many :destination_prefixes, through: :destination_groups, source: :prefixes
 
-  has_many :tariff_bundles, through: :tariff_bundle_line_items
+  has_many :tariff_packages, through: :tariff_package_line_items
 
   enumerize :category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
 end

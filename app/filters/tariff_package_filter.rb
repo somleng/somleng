@@ -1,4 +1,4 @@
-class TariffBundleFilter < ResourceFilter
+class TariffPackageFilter < ResourceFilter
   class NameFilter < ApplicationFilter
     filter_params do
       optional(:name).value(:string)

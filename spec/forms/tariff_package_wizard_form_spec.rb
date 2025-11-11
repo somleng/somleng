@@ -1,15 +1,15 @@
 require "rails_helper"
 
-RSpec.describe TariffBundleWizardForm do
+RSpec.describe TariffPackageWizardForm do
   it "validates the name" do
-    tariff_bundle = create(:tariff_bundle)
+    tariff_package = create(:tariff_package)
     form = build_form(name: nil)
 
     form.valid?
 
     expect(form.errors[:name]).to be_present
 
-    form = build_form(name: tariff_bundle.name, object: tariff_bundle)
+    form = build_form(name: tariff_package.name, object: tariff_package)
 
     form.valid?
 
@@ -41,12 +41,12 @@ RSpec.describe TariffBundleWizardForm do
   end
 
   def build_form(**params)
-    object = params.fetch(:object) { build_stubbed(:tariff_bundle) }
-    TariffBundleWizardForm.new(
+    object = params.fetch(:object) { build_stubbed(:tariff_package) }
+    TariffPackageWizardForm.new(
       object:,
       carrier: object.carrier,
       name: "Standard",
-      tariffs: [ build_tariff_form(tariff_bundle: object) ],
+      tariffs: [ build_tariff_form(tariff_package: object) ],
       **params
     )
   end
@@ -55,7 +55,7 @@ RSpec.describe TariffBundleWizardForm do
     {
       enabled: true,
       category: "outbound_calls",
-      tariff_bundle: build_stubbed(:tariff_bundle),
+      tariff_package: build_stubbed(:tariff_package),
       **
     }
   end

@@ -52,17 +52,17 @@
 
         <div class="row">
           <div class="col-6">
-            <% tariff_bundles = f.object.tariff_bundles_options_for_select %>
+            <% tariff_packages = f.object.tariff_packages_options_for_select %>
             <% prompt = select_prompt_with_link_to(
               "Configure a new one.",
-              new_dashboard_tariff_bundle_path,
+              new_dashboard_tariff_package_path,
               target: "_blank",
-              prompt_text: tariff_bundles.present? ? "Please select or" : "No tariff bundles.",
+              prompt_text: tariff_packages.present? ? "Please select or" : "No tariff packages.",
             ) %>
 
             <%= f.input(
-              :default_tariff_bundle_id,
-              collection: tariff_bundles,
+              :default_tariff_package_id,
+              collection: tariff_packages,
               prompt:,
               input_html: {
                 data: {

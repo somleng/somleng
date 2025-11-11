@@ -12,7 +12,7 @@ class AccountForm
   attribute :current_user
   attribute :calls_per_second, :integer, default: 1
   attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
-  attribute :tariff_bundle_id
+  attribute :tariff_package_id
   attribute :tariff_plan_line_items,
             FormCollectionType.new(form: AccountTariffPlanForm),
             default: []
@@ -55,7 +55,7 @@ class AccountForm
   def initialize(**)
     super(**)
     self.object.carrier = carrier
-    self.tariff_bundle_id = carrier.default_tariff_bundle_id
+    self.tariff_package_id = carrier.default_tariff_package_id
     self.tariff_plan_line_items = build_tariff_plan_line_items
   end
 
@@ -92,14 +92,14 @@ class AccountForm
     sip_trunks.map { |item| [ item.name, item.id ] }
   end
 
-  def tariff_bundles_options_for_select
-    carrier.tariff_bundles.includes(:tariff_plans).map do |tariff_bundle|
+  def tariff_packages_options_for_select
+    carrier.tariff_packages.includes(:tariff_plans).map do |tariff_package|
       [
-        tariff_bundle.name,
-        tariff_bundle.id,
+        tariff_package.name,
+        tariff_package.id,
         {
           data: {
-            tariff_plans: tariff_bundle.tariff_plans.each_with_object({}) do |tariff_plan, result|
+            tariff_plans: tariff_package.tariff_plans.each_with_object({}) do |tariff_plan, result|
               result[tariff_plan.category] = tariff_plan.id
             end
           }
@@ -131,8 +131,8 @@ class AccountForm
   end
 
   def build_tariff_plan_line_items
-    default_tariff_bundle = carrier.default_tariff_bundle
-    default_plans = Array(new_record? ? default_tariff_bundle&.tariff_plans : [])
+    default_tariff_package = carrier.default_tariff_package
+    default_plans = Array(new_record? ? default_tariff_package&.tariff_plans : [])
     default_line_items = TariffSchedule.category.values.map do |category|
       AccountTariffPlanForm.new(
         category:,

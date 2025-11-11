@@ -46,15 +46,15 @@
       </ul>
     </li>
 
-    <% if %i[tariff_bundle tariff_plan tariff_schedule destination_group].any? { |r| policy(r).index? } %>
+    <% if %i[tariff_package tariff_plan tariff_schedule destination_group].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
           <i class="nav-icon fa-solid fa-money-check-dollar"></i> Billing
         </a>
 
         <ul class="nav-group-items">
-          <% if policy(:tariff_bundle).index? %>
-            <%= sidebar_nav("Tariff Bundles", dashboard_tariff_bundles_path, icon_class: "fa-solid fa-cubes") %>
+          <% if policy(:tariff_package).index? %>
+            <%= sidebar_nav("Packages", dashboard_tariff_packages_path, icon_class: "fa-solid fa-cubes") %>
           <% end %>
 
           <% if policy(:tariff_plan).index? %>

@@ -26,7 +26,7 @@
           <%= @resource.country.iso_short_name %>
         <% end %>
         <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
-        <%= f.attribute :default_tariff_bundle, value: @resource.default_tariff_bundle&.name %>
+        <%= f.attribute :default_tariff_package, value: @resource.default_tariff_package&.name %>
       <% end %>
     </div>
   </div>

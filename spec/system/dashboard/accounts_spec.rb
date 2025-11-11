@@ -48,7 +48,7 @@ RSpec.describe "Accounts" do
   it "Create an account" do
     carrier = create(
       :carrier,
-      :with_default_tariff_bundle,
+      :with_default_tariff_package,
       tariff_plan_details: {
         outbound_calls: "Discount",
         inbound_calls: "Standard",
