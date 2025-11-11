@@ -11,6 +11,10 @@ class TariffPackageDecorator < SimpleDelegator
     "#{category} (#{object.name})"
   end
 
+  def schedules
+    object.schedules.order(tariff_plan_tiers: { weight: :desc })
+  end
+
   private
 
   def object

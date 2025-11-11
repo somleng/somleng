@@ -22,8 +22,8 @@ RSpec.describe "Tariff Packages" do
   it "create a tariff package", :js do
     carrier = create(:carrier)
     tariff_schedules = [
-      create(:tariff_schedule, carrier:, name: "Standard"),
-      create(:tariff_schedule, carrier:, name: "Discount")
+      create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard"),
+      create(:tariff_schedule, :outbound_calls, carrier:, name: "Discount")
     ]
 
     user = create(:user, :carrier, carrier:)
@@ -33,25 +33,43 @@ RSpec.describe "Tariff Packages" do
     click_on("New")
 
     fill_in("Name", with: "Discount")
-    fill_in("Description", with: "My package description")
+    fill_in("Description", with: "My description")
     enhanced_select("Outbound calls", from: "Category")
-    enhanced_select("Discount", from: "Tariff schedule")
+    enhanced_select("Outbound calls (Discount)", from: "Tariff schedule")
     fill_in("Weight", with: "15")
 
     click_on("Add Tier")
 
-    expect(page).to have_plan_tier_forms(count: 2)
+    expect(page).to have_tariff_plan_tier_forms(count: 2)
 
-    within(plan_tier_forms.last) do
-      enhanced_select("Standard", from: "Tariff schedule")
+    within(tariff_plan_tier_forms.last) do
+      enhanced_select("Outbound calls (Standard)", from: "Tariff schedule")
       fill_in("Weight", with: "10")
     end
 
     click_on("Create Tariff package")
 
     expect(page).to have_content("Tariff package was successfully created.")
-    expect(page).to have_content("Outbound calls")
-    expect(page).to have_content("My package description")
+    expect(page).to have_link("Outbound calls (Discount)", href: dashboard_tariff_schedule_path(tariff_schedules[1]))
+    expect(page).to have_link("1 more", href: dashboard_tariff_schedules_path(filter: { tariff_package_id: carrier.tariff_packages.last.id }))
+    expect(carrier.tariff_packages.last).to have_attributes(
+      name: "Discount",
+      description: "My description",
+      tiers: contain_exactly(
+        have_attributes(
+          schedule: have_attributes(
+            name: "Discount"
+          ),
+          weight: 15
+        ),
+        have_attributes(
+          schedule: have_attributes(
+            name: "Standard"
+          ),
+          weight: 10
+        )
+      )
+    )
   end
 
   it "preselects the inputs" do
@@ -78,16 +96,21 @@ RSpec.describe "Tariff Packages" do
 
   it "show a tariff package" do
     carrier = create(:carrier)
-    tariff_package = create(:tariff_package, carrier:, name: "Standard", description: "My package description")
+    tariff_package = create(:tariff_package, :outbound_calls, carrier:, name: "Standard", description: "My description")
+    tariff_schedule = create(:tariff_schedule, :outbound_calls, name: "Standard", carrier:)
+    create(
+      :tariff_plan_tier,
+      package: tariff_package,
+      schedule: tariff_schedule
+    )
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_tariff_package_path(tariff_package)
 
     expect(page).to have_link("Manage", href: dashboard_tariff_bundles_path(filter: { tariff_package_id: tariff_package.id }))
-    expect(page).to have_link("Manage", href: dashboard_tariff_plans_path(filter: { tariff_package_id: tariff_package.id }))
-    expect(page).to have_content("Standard")
-    expect(page).to have_content("My package description")
+    expect(page).to have_link("Standard", href: dashboard_tariff_schedule_path(tariff_schedule))
+    expect(page).to have_content("My description")
   end
 
   it "update a tariff package" do
@@ -159,5 +182,13 @@ RSpec.describe "Tariff Packages" do
     click_on("Calculate Tariff")
 
     expect(page).to have_content("No tariff found for 855")
+  end
+
+  def tariff_plan_tier_forms
+    page.all('[data-test-id="tariff-plan-tier-form"]')
+  end
+
+  def have_tariff_plan_tier_forms(count:)
+    have_css('[data-test-id="tariff-plan-tier-form"]', count:)
   end
 end

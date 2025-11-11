@@ -8,6 +8,9 @@
         Name
       </th>
       <th>
+        Tariff Schedules
+      </th>
+      <th>
         Created At
       </th>
     </tr>
@@ -23,6 +26,16 @@
 
         <td>
           <%= tariff_package.name %>
+        </td>
+
+        <td>
+          <%= summarize_list(
+            DecoratedCollection.new(
+              tariff_package.schedules,
+            ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
+            max: 1,
+            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_package_id: tariff_package.id })
+          ) %>
         </td>
 
         <td>

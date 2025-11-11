@@ -653,8 +653,8 @@ FactoryBot.define do
       category { :outbound_calls }
     end
 
-    tariff_package { association :tariff_package, carrier:, category: }
-    tariff_schedule { association :tariff_schedule, carrier: tariff_package.carrier, category: tariff_package.category }
+    package { association :tariff_package, carrier:, category: }
+    schedule { association :tariff_schedule, carrier: tariff_package.carrier, category: tariff_package.category }
   end
 
   factory :tariff_bundle do

@@ -773,8 +773,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.datetime "updated_at", null: false
     t.decimal "weight", precision: 8, scale: 2, null: false
     t.index ["sequence_number"], name: "index_tariff_plan_tiers_on_sequence_number", unique: true, order: :desc
-    t.index ["tariff_package_id", "tariff_schedule_id", "weight"], name: "idx_on_tariff_package_id_tariff_schedule_id_weight_5f804993ef"
     t.index ["tariff_package_id", "tariff_schedule_id"], name: "idx_on_tariff_package_id_tariff_schedule_id_e8e590654c", unique: true
+    t.index ["tariff_package_id", "weight"], name: "index_tariff_plan_tiers_on_tariff_package_id_and_weight", unique: true
   end
 
   create_table "tariff_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -60,11 +60,14 @@
         <%= f.attribute :tariff_bundles do %>
           <%= external_link_to("Manage", dashboard_tariff_bundles_path(filter: { tariff_package_id: f.object.id })) %>
         <% end %>
-        <%= f.attribute :tariff_plans do %>
-          <%= external_link_to("Manage", dashboard_tariff_plans_path(filter: { tariff_package_id: f.object.id })) %>
-        <% end %>
         <%= f.attribute :tariff_schedules do %>
-          <%= external_link_to("Manage", dashboard_tariff_schedules_path(filter: { tariff_package_id: f.object.id })) %>
+          <%= summarize_list(
+            DecoratedCollection.new(
+              f.object.schedules,
+            ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
+            max: 1,
+            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_package_id: f.object.id })
+          ) %>
         <% end %>
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>

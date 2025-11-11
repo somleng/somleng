@@ -10,6 +10,6 @@ class CreateTariffPlanTiers < ActiveRecord::Migration[8.0]
     end
 
     add_index(:tariff_plan_tiers, [ :tariff_package_id, :tariff_schedule_id ], unique: true)
-    add_index(:tariff_plan_tiers, [ :tariff_package_id, :tariff_schedule_id, :weight ])
+    add_index(:tariff_plan_tiers, [ :tariff_package_id, :weight ], unique: true)
   end
 end

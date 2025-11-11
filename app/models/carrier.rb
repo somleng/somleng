@@ -27,10 +27,8 @@ class Carrier < ApplicationRecord
   has_many :trial_interactions_credit_vouchers
   has_many :tariff_bundles
   has_many :tariff_packages
-  has_many :tariff_plans, through: :tariff_packages
   has_many :tariff_schedules
   has_many :destination_tariffs, through: :tariff_schedules
-  has_many :tariffs
   has_many :destination_groups
   belongs_to :default_tariff_bundle, class_name: "TariffBundle", optional: true
 

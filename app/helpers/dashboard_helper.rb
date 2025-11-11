@@ -148,7 +148,7 @@ module DashboardHelper
   end
 
   def summarize_list(items, max: nil, link_to_remaining: nil)
-    return items.to_sentence if max.blank? || items.size <= max
+    return to_sentence(items) if max.blank? || items.size <= max
 
     displayed = items.take(max)
     remaining = items.size - max
@@ -156,6 +156,6 @@ module DashboardHelper
     remaining_text = "#{remaining} more"
     remaining_text = link_to(remaining_text, link_to_remaining) if link_to_remaining.present?
 
-    [ *displayed, remaining_text.html_safe ].to_sentence
+    to_sentence([ *displayed, remaining_text.html_safe ])
   end
 end

@@ -54,7 +54,11 @@ class TariffPackageForm < ApplicationForm
 
     object.save!
 
-    true
+    tiers.all?(&:save)
+  end
+
+  def retained_tiers
+    tiers.select(&:retain?)
   end
 
   private

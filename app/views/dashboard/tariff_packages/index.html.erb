@@ -7,6 +7,14 @@
     ) %>
 
     <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+
+    <%= form.select(
+      :tariff_schedule_id,
+      DecoratedCollection.new(current_carrier.tariff_schedules).map { [ _1.name, _1.id ] },
+      { filter_value: params.dig(:filter, :tariff_schedule_id) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
+
     <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
 

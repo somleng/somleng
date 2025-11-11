@@ -23,6 +23,17 @@ export default class extends Controller {
       plugins: plugins,
     });
 
+    this.element.addEventListener("options-changed", () => {
+      const ts = this.element.tomselect;
+      ts.clear();
+      ts.clearOptions();
+      Array.from(this.element.options).forEach((opt) =>
+        ts.addOption({ value: opt.value, text: opt.text })
+      );
+      ts.refreshOptions(false);
+      ts.setValue(""); // reset selection
+    });
+
     this._observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "disabled") {

@@ -23,6 +23,18 @@ class TariffPackageFilter < ResourceFilter
     end
   end
 
+  class TariffScheduleIDFilter < ApplicationFilter
+    filter_params do
+      optional(:tariff_schedule_id).value(:string)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.joins(:schedules).where(tariff_schedules: { id: filter_params.fetch(:tariff_schedule_id) })
+    end
+  end
+
   filter_with(
     CategoryFilter,
     NameFilter,
