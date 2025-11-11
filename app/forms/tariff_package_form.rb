@@ -73,15 +73,8 @@ class TariffPackageForm < ApplicationForm
   def validate_tiers
     retained_tiers.each(&:valid?)
 
-    # destination_group_ids = retained_destination_tariffs.select { _1.destination_group_id.present? }.group_by(&:destination_group_id)
-
-    # destination_group_ids.each_value do |forms|
-    #   next if forms.size <= 1
-
-    #   forms.drop(1).each do |duplicate|
-    #     duplicate.errors.add(:destination_group_id, :taken)
-    #   end
-    # end
+    validate_uniqueness_of(:tariff_schedule_id, within: retained_tiers.group_by(&:tariff_schedule_id))
+    validate_uniqueness_of(:weight, within: retained_tiers.group_by(&:weight))
 
     return if retained_tiers.all? { _1.errors.empty? }
 
@@ -92,5 +85,15 @@ class TariffPackageForm < ApplicationForm
     return unless carrier.tariff_packages.where.not(id: object.id).exists?(name:, category:)
 
     errors.add(:name, :taken)
+  end
+
+  def validate_uniqueness_of(attribute, within:)
+    within.each_value do |forms|
+      next if forms.size <= 1
+
+      forms.drop(1).each do |duplicate|
+        duplicate.errors.add(attribute, :taken)
+      end
+    end
   end
 end

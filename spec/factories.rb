@@ -654,7 +654,7 @@ FactoryBot.define do
     end
 
     package { association :tariff_package, carrier:, category: }
-    schedule { association :tariff_schedule, carrier: tariff_package.carrier, category: tariff_package.category }
+    schedule { association :tariff_schedule, carrier: package.carrier, category: package.category }
   end
 
   factory :tariff_bundle do
