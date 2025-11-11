@@ -58,11 +58,11 @@
           <% end %>
 
           <% if policy(:tariff_plan).index? %>
-            <%= sidebar_nav("Tariff Plans", dashboard_tariff_plans_path, icon_class: "fa-solid fa-boxes-packing") %>
+            <%= sidebar_nav("Plans", dashboard_tariff_plans_path, icon_class: "fa-solid fa-receipt") %>
           <% end %>
 
           <% if policy(:tariff_schedule).index? %>
-            <%= sidebar_nav("Tariff Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
+            <%= sidebar_nav("Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
           <% end %>
 
           <% if policy(:destination_group).index? %>
