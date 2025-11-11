@@ -32,7 +32,6 @@ class DestinationTariffForm < ApplicationForm
 
   def save
     return false if invalid?
-
     return object.destroy! unless retain?
 
     object.attributes = {

@@ -19,10 +19,17 @@ export default class extends Controller {
   }
 
   #updateTariffSchedulesOptionsForSelect(category) {
-    if (!this.hasTariffScheduleInputTarget) return;
+    if (
+      !this.hasTariffScheduleInputTarget ||
+      this.tariffScheduleInputTarget.disabled
+    ) {
+      return;
+    }
 
     const select = this.tariffScheduleInputTarget;
     const schedules = this.tariffSchedulesByCategoryValue[category] || [];
+
+    console.log(schedules);
 
     // Preserve prompt (usually the first option with empty value)
     const promptOption = select.querySelector('option[value=""]');
@@ -50,7 +57,7 @@ export default class extends Controller {
 
     select.dispatchEvent(
       new CustomEvent("options-changed", {
-        bubbles: true, // so it can bubble up if needed
+        bubbles: true,
       })
     );
   }

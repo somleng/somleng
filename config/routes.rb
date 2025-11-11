@@ -125,7 +125,6 @@ Rails.application.routes.draw do
       resources :tariff_schedules
       resources :destination_tariffs, only: [ :new ]
       resources :destination_groups
-      resources :tariffs
       resources :exports, only: %i[index create]
       resources :imports, only: %i[index create]
       resource :account_session, only: :create

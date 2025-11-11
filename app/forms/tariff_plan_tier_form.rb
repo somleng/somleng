@@ -9,8 +9,10 @@ class TariffPlanTierForm < ApplicationForm
   validates :tariff_schedule_id, presence: true
   validates :weight, presence: true, numericality: { greater_than: 0, less_than: 10 ** 6 }
 
-  delegate :carrier, to: :tariff_package
-  delegate :persisted?, :new_record?, :id, to: :object
+  delegate :carrier, :category, to: :tariff_package
+  delegate :persisted?, :new_record?, to: :object
+
+  before_validation :set_object
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "TariffPlan")
@@ -20,8 +22,7 @@ class TariffPlanTierForm < ApplicationForm
     new(
       object:,
       id: object.id,
-      carrier: object.tariff_package.carrier,
-      tariff_package_id: object.tariff_package_id,
+      tariff_package: object.package,
       tariff_schedule_id: object.tariff_schedule_id,
       weight: object.weight
     )
@@ -29,11 +30,12 @@ class TariffPlanTierForm < ApplicationForm
 
   def save
     return false if invalid?
+    return object.destroy! unless retain?
 
     object.attributes = {
       package: tariff_package,
       weight:,
-      schedule: tariff_schedules.find(tariff_schedule_id)
+      schedule: carrier.tariff_schedules.where(category:).find(tariff_schedule_id)
     }
 
     object.save!
@@ -47,13 +49,21 @@ class TariffPlanTierForm < ApplicationForm
     end
   end
 
+  def tariff_schedules_options_for_select
+    DecoratedCollection.new(carrier.tariff_schedules.where(id: tariff_schedule_id)).map { [ _1.name, _1.id ] }
+  end
+
   def retain?
     !_destroy
   end
 
   private
 
-  def tariff_schedules
-    @tariff_schedules ||= carrier.tariff_schedules.where(category: tariff_package.category)
+  def set_object
+    return if id.blank?
+    return if tariff_package.blank?
+
+    self.object = tariff_package.tiers.find(id)
+    self.tariff_schedule_id = object.tariff_schedule_id
   end
 end

@@ -13,6 +13,8 @@ class TariffPackageForm < ApplicationForm
   enumerize :category, in: TariffPackage.category.values
 
   validates :name, :category, presence: true
+  validate :validate_name
+  validate :validate_tiers
 
   delegate :persisted?, :new_record?, :id, to: :object
 
@@ -26,7 +28,8 @@ class TariffPackageForm < ApplicationForm
       carrier: tariff_package.carrier,
       name: tariff_package.name,
       description: tariff_package.description,
-      category: tariff_package.category
+      category: tariff_package.category,
+      tiers: tariff_package.tiers.order(weight: :desc)
     )
   end
 
@@ -65,5 +68,29 @@ class TariffPackageForm < ApplicationForm
 
   def build_tiers
     FormCollection.new([ TariffPlanTierForm.new ], form: TariffPlanTierForm)
+  end
+
+  def validate_tiers
+    retained_tiers.each(&:valid?)
+
+    # destination_group_ids = retained_destination_tariffs.select { _1.destination_group_id.present? }.group_by(&:destination_group_id)
+
+    # destination_group_ids.each_value do |forms|
+    #   next if forms.size <= 1
+
+    #   forms.drop(1).each do |duplicate|
+    #     duplicate.errors.add(:destination_group_id, :taken)
+    #   end
+    # end
+
+    return if retained_tiers.all? { _1.errors.empty? }
+
+    errors.add(:tiers, :invalid)
+  end
+
+  def validate_name
+    return unless carrier.tariff_packages.where.not(id: object.id).exists?(name:, category:)
+
+    errors.add(:name, :taken)
   end
 end

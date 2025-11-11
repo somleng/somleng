@@ -113,24 +113,76 @@ RSpec.describe "Tariff Packages" do
     expect(page).to have_content("My description")
   end
 
-  it "update a tariff package" do
+  it "update a tariff package", :js do
     carrier = create(:carrier)
-    tariff_package = create(:tariff_package, :inbound_calls, carrier:, name: "Old Name", description: "Old Description")
+    tariff_package = create(:tariff_package, :outbound_calls, carrier:, name: "Old Name", description: "Old Description")
+    create(:tariff_plan_tier, package: tariff_package, schedule: create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard"), weight: 10)
+    create(:tariff_plan_tier, package: tariff_package, schedule: create(:tariff_schedule, :outbound_calls, carrier:, name: "Discount"), weight: 15)
+    create(:tariff_plan_tier, package: tariff_package, schedule: create(:tariff_schedule, :outbound_calls, carrier:, name: "VIP"), weight: 20)
+    new_tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:, name: "New VIP")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_tariff_package_path(tariff_package)
     click_on("Edit")
 
-    expect(page).to have_content("Inbound calls")
+    expect(page).to have_content("Outbound calls")
 
-    fill_in("Name", with: "My package name")
-    fill_in("Description", with: "My package description")
+    fill_in("Name", with: "My VIP Package")
+    fill_in("Description", with: "New Description")
+
+    within(tariff_plan_tier_forms.first) do
+      expect(page).to have_content("Outbound calls (VIP)")
+      click_on("Delete")
+    end
+
+    expect(page).to have_tariff_plan_tier_forms(count: 2)
+
+    click_on("Add Tier")
+
+    expect(page).to have_tariff_plan_tier_forms(count: 3)
+
+    within(tariff_plan_tier_forms.last) do
+      enhanced_select("Outbound calls (New VIP)", from: "Tariff schedule")
+      fill_in("Weight", with: "21")
+    end
+
+    within(tariff_plan_tier_forms.first) do
+      expect(page).to have_content("Outbound calls (Discount)")
+      fill_in("Weight", with: "16")
+    end
+
     click_on("Update Tariff package")
 
     expect(page).to have_content("Tariff package was successfully updated.")
-    expect(page).to have_content("My package name")
-    expect(page).to have_content("My package description")
+    expect(page).to have_content("My VIP Package")
+    expect(page).to have_content("New Description")
+    expect(page).to have_link("Outbound calls (New VIP)", href: dashboard_tariff_schedule_path(new_tariff_schedule))
+    expect(page).to have_link("2 more", href: dashboard_tariff_schedules_path(filter: { tariff_package_id: tariff_package }))
+    expect(tariff_package.reload).to have_attributes(
+      name: "My VIP Package",
+      description: "New Description",
+      tiers: contain_exactly(
+        have_attributes(
+          schedule: have_attributes(
+            name: "New VIP"
+          ),
+          weight: 21
+        ),
+        have_attributes(
+          schedule: have_attributes(
+            name: "Discount"
+          ),
+          weight: 16
+        ),
+        have_attributes(
+          schedule: have_attributes(
+            name: "Standard"
+          ),
+          weight: 10
+        )
+      )
+    )
   end
 
   it "delete a tariff package" do
@@ -149,15 +201,15 @@ RSpec.describe "Tariff Packages" do
   it "calculate a tariff" do
     carrier = create(:carrier, billing_currency: "USD")
     tariff_schedule = create(:tariff_schedule, carrier:)
-    tariff_package = create(:tariff_package, carrier:, tariff_schedules: [ tariff_schedule ])
-    user = create(:user, :carrier, carrier:)
-
     destination_tariff = create(
       :destination_tariff,
       destination_group: create(:destination_group, carrier:, name: "KH Smart", prefixes: [ "85510" ]),
-      tariff: create(:tariff, :call, carrier:, per_minute_rate: Money.from_amount(0.05, "USD")),
+      tariff: create(:tariff, :call, carrier:, rate_cents: Money.from_amount(0.05, "USD").cents),
       tariff_schedule:
     )
+    tariff_package = create(:tariff_package, carrier:)
+    create(:tariff_plan_tier, package: tariff_package, schedule: tariff_schedule)
+    user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_tariff_package_path(tariff_package)
@@ -167,7 +219,7 @@ RSpec.describe "Tariff Packages" do
 
     expect(page).to have_link("CALL", href: dashboard_tariff_schedule_path(tariff_schedule))
     expect(page).to have_link("KH Smart", href: dashboard_destination_group_path(destination_tariff.destination_group))
-    expect(page).to have_link("$0.05 / min", href: dashboard_tariff_path(destination_tariff.tariff_id))
+    expect(page).to have_content("$0.05 / min")
   end
 
   it "handles errors when calculating a tariff" do

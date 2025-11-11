@@ -13,6 +13,9 @@ module Dashboard
     end
 
     def create
+      permitted_params = params.require(:tariff_package).permit(
+        :name, :category, :description, tiers: [ :tariff_schedule_id, :weight ]
+      )
       @resource = TariffPackageForm.new(carrier: current_carrier, **permitted_params)
       @resource.save
       respond_with(:dashboard, @resource, location: dashboard_tariff_packages_path(filter_params))
@@ -30,7 +33,10 @@ module Dashboard
 
     def update
       @resource = TariffPackageForm.initialize_with(record)
-      @resource.attributes = permitted_params.except(:category)
+      permitted_params = params.require(:tariff_package).permit(
+        :name, :description, tiers: [ :id, :tariff_schedule_id, :weight, :_destroy ]
+      )
+      @resource.attributes = permitted_params
       @resource.save
       respond_with(:dashboard, @resource)
     end
@@ -42,17 +48,6 @@ module Dashboard
     end
 
     private
-
-    def permitted_params
-      params.require(:tariff_package).permit(
-        :name,
-        :category,
-        :description,
-        tiers: [
-          :id, :tariff_schedule_id, :weight, :_destroy
-        ]
-      )
-    end
 
     def scope
       current_carrier.tariff_packages

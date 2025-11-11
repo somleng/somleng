@@ -22,9 +22,10 @@
       <div class="col-md-6">
         <%= form.input(
           :tariff_schedule_id,
-          collection: [],
+          collection: form.object.tariff_schedules_options_for_select,
           prompt: true,
           required: true,
+          disabled: form.object.persisted?,
           input_html: {
             data: {
               controller: "enhanced-select",
