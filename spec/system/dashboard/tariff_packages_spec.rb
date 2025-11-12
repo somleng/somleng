@@ -76,6 +76,54 @@ RSpec.describe "Tariff Packages" do
     expect(page).to have_content("My Package")
   end
 
+  it "create a package via the wizard" do
+    carrier = create(:carrier, billing_currency: "USD")
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit(dashboard_tariff_packages_path)
+    click_on("Wizard")
+
+    fill_in("Name", with: "Standard")
+    fill_in("Description", with: "My Description")
+    within(".outbound-calls") do
+      check("Enabled")
+      fill_in("Rate", with: "0.05")
+    end
+    within(".inbound-calls") do
+      check("Enabled")
+      fill_in("Rate", with: "0.01")
+    end
+    within(".outbound-messages") do
+      check("Enabled")
+      fill_in("Rate", with: "0.03")
+    end
+    within(".inbound-messages") do
+      check("Enabled")
+      fill_in("Rate", with: "0.005")
+    end
+
+    click_on("Create Tariff package")
+
+    expect(page).to have_content("Tariff package was successfully created.")
+    expect(page).to have_link("Outbound messages (Standard)")
+    expect(page).to have_link("Inbound messages (Standard)")
+    expect(page).to have_link("Outbound calls (Standard)")
+    expect(page).to have_link("Inbound calls (Standard)")
+  end
+
+  it "handles wizard form validations" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit(new_dashboard_tariff_package_wizard_path)
+
+    click_on("Create Tariff package")
+
+    expect(page).to have_content("can't be blank")
+  end
+
   it "handle validation errors when creating a package" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)

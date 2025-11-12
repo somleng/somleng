@@ -8,43 +8,43 @@ RSpec.describe TariffCalculation do
     standard_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
     promo_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
     create(
-      :tariff_plan,
-      tariff_plan: standard_plan,
-      tariff_schedule: standard_schedule,
+      :tariff_plan_tier,
+      plan: standard_plan,
+      schedule: standard_schedule,
       weight: 10
     )
     create(
-      :tariff_plan,
-      tariff_plan: promo_plan,
-      tariff_schedule: standard_schedule,
+      :tariff_plan_tier,
+      plan: promo_plan,
+      schedule: standard_schedule,
       weight: 10
     )
     create(
-      :tariff_plan,
-      tariff_plan: promo_plan,
-      tariff_schedule: promo_schedule,
+      :tariff_plan_tier,
+      plan: promo_plan,
+      schedule: promo_schedule,
       weight: 20
     )
     destination_group = create(:destination_group, carrier:, prefixes: [ "855" ])
 
     exception_tariff = create(
       :destination_tariff,
-      tariff_schedule: standard_schedule,
+      schedule: standard_schedule,
       destination_group: create(:destination_group, carrier:, prefixes: [ "85597" ])
     )
     promo_tariff = create(
       :destination_tariff,
-      tariff_schedule: promo_schedule,
+      schedule: promo_schedule,
       destination_group:
     )
     standard_tariff = create(
       :destination_tariff,
-      tariff_schedule: standard_schedule,
+      schedule: standard_schedule,
       destination_group:
     )
     catch_all_tariff = create(
       :destination_tariff,
-      tariff_schedule: standard_schedule,
+      schedule: standard_schedule,
       destination_group: create(:destination_group, :catch_all, carrier:)
     )
 

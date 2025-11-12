@@ -9,6 +9,7 @@ class TariffPackageForm < ApplicationForm
 
   validates :name, presence: true
   validate :validate_plans
+  validate :validate_name
 
   delegate :persisted?, :new_record?, :id, to: :object
 
@@ -72,5 +73,11 @@ class TariffPackageForm < ApplicationForm
     return if filled_plans.none?(&:invalid?)
 
     errors.add(:plans, :invalid)
+  end
+
+  def validate_name
+    return unless carrier.tariff_packages.where.not(id: object.id).exists?(name:)
+
+    errors.add(:name, :taken)
   end
 end

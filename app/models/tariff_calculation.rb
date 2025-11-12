@@ -10,9 +10,9 @@ class TariffCalculation
     return if destination.blank?
 
     @result = DestinationTariff
-      .joins(:tariff_plans)
+      .joins(:plans)
       .joins(destination_group: :prefixes)
-      .where(tariff_plans: { id: tariff_plan.id })
+      .where(plans: { id: tariff_plan.id })
       .where("? LIKE destination_prefixes.prefix || '%'", destination)
       .order("LENGTH(destination_prefixes.prefix) DESC, tariff_plan_tiers.weight DESC")
       .first

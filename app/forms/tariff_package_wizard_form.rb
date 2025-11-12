@@ -3,7 +3,7 @@ class TariffPackageWizardForm < ApplicationForm
   attribute :carrier
   attribute :name
   attribute :description
-  attribute :tariffs, FormCollectionType.new(form: TariffPackageWizardLineItemForm), default: []
+  attribute :tariffs, FormCollectionType.new(form: TariffPackageTariffForm), default: []
 
   validates :name, presence: true
 
@@ -22,7 +22,7 @@ class TariffPackageWizardForm < ApplicationForm
 
   def tariffs=(value)
     super
-    tariffs.each { _1.tariff_package = object }
+    tariffs.each { _1.attributes = { package: object, parent_form: self } }
   end
 
   def save
@@ -43,9 +43,9 @@ class TariffPackageWizardForm < ApplicationForm
 
   def build_tariffs
     defaults = TariffSchedule.category.values.map do |category|
-      TariffPackageWizardLineItemForm.new(category:, enabled: false, tariff_package: object)
+      TariffPackageTariffForm.new(category:, enabled: false, package: object)
     end
-    FormCollection.new(defaults, form: TariffPackageWizardLineItemForm)
+    FormCollection.new(defaults, form: TariffPackageTariffForm)
   end
 
   def validate_name
@@ -55,11 +55,16 @@ class TariffPackageWizardForm < ApplicationForm
   end
 
   def validate_tariffs
-    tariffs.each(&:valid?)
-    return if tariffs.any?(&:enabled) && tariffs.all? { _1.errors.empty? }
+    if enabled_tariffs.blank?
+      tariffs.first.errors.add(:rate, :blank)
+      return errors.add(:tariffs, :invalid)
+    end
 
-    errors.add(:tariffs, :invalid)
+    enabled_tariffs.each(&:valid?)
+    errors.add(:tariffs, :invalid) if enabled_tariffs.any? { _1.errors.present? }
+  end
 
-    tariffs.first.errors.add(:rate, :blank) if tariffs.none?(&:enabled)
+  def enabled_tariffs
+    tariffs.select(&:enabled)
   end
 end
