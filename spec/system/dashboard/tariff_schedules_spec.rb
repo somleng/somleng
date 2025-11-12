@@ -116,7 +116,7 @@ RSpec.describe "Tariff Schedules" do
     plan = create(:tariff_plan, category: schedule.category, carrier:, name: "Standard")
     create(
       :destination_tariff,
-      tariff_schedule: schedule,
+      schedule:,
       destination_group: create(:destination_group, carrier:, name: "Cambodia"),
       tariff: create(:tariff, carrier:, rate_cents: 0.5)
     )
@@ -144,8 +144,8 @@ RSpec.describe "Tariff Schedules" do
   it "update a schedule", :js do
     carrier = create(:carrier, billing_currency: "USD")
     schedule = create(:tariff_schedule, :inbound_calls, carrier:, name: "Old Name", description: "Old Description")
-    create(:destination_tariff, tariff_schedule: schedule, destination_group: create(:destination_group, name: "Cambodia", carrier:))
-    create(:destination_tariff, tariff_schedule: schedule, destination_group: create(:destination_group, name: "Cambodia Smart", carrier:))
+    create(:destination_tariff, schedule:, destination_group: create(:destination_group, name: "Cambodia", carrier:))
+    create(:destination_tariff, schedule:, destination_group: create(:destination_group, name: "Cambodia Smart", carrier:))
     create(:destination_group, name: "Cambodia Metfone", carrier:)
     user = create(:user, :carrier, carrier:)
 

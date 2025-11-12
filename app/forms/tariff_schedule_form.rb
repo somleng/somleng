@@ -41,7 +41,7 @@ class TariffScheduleForm < ApplicationForm
 
   def destination_tariffs=(value)
     super(value)
-    destination_tariffs.each { _1.attributes = { tariff_schedule: object } }
+    destination_tariffs.each { _1.attributes = { schedule: object } }
   end
 
   def save

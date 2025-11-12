@@ -155,16 +155,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   create_table "destination_tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.uuid "destination_group_id", null: false
+    t.uuid "schedule_id", null: false
     t.bigserial "sequence_number", null: false
     t.uuid "tariff_id", null: false
-    t.uuid "tariff_schedule_id", null: false
     t.datetime "updated_at", null: false
     t.index ["destination_group_id"], name: "index_destination_tariffs_on_destination_group_id"
+    t.index ["schedule_id", "destination_group_id"], name: "idx_on_schedule_id_destination_group_id_c184a69300", unique: true
+    t.index ["schedule_id", "tariff_id"], name: "index_destination_tariffs_on_schedule_id_and_tariff_id", unique: true
+    t.index ["schedule_id"], name: "index_destination_tariffs_on_schedule_id"
     t.index ["sequence_number"], name: "index_destination_tariffs_on_sequence_number", unique: true, order: :desc
     t.index ["tariff_id"], name: "index_destination_tariffs_on_tariff_id"
-    t.index ["tariff_schedule_id", "destination_group_id"], name: "idx_on_tariff_schedule_id_destination_group_id_42b7112e47", unique: true
-    t.index ["tariff_schedule_id", "tariff_id"], name: "index_destination_tariffs_on_tariff_schedule_id_and_tariff_id", unique: true
-    t.index ["tariff_schedule_id"], name: "index_destination_tariffs_on_tariff_schedule_id"
   end
 
   create_table "error_log_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -990,7 +990,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   add_foreign_key "destination_groups", "carriers", on_delete: :cascade
   add_foreign_key "destination_prefixes", "destination_groups", on_delete: :cascade
   add_foreign_key "destination_tariffs", "destination_groups", on_delete: :cascade
-  add_foreign_key "destination_tariffs", "tariff_schedules", on_delete: :cascade
+  add_foreign_key "destination_tariffs", "tariff_schedules", column: "schedule_id", on_delete: :cascade
   add_foreign_key "destination_tariffs", "tariffs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "users", on_delete: :cascade

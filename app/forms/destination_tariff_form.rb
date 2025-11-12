@@ -1,7 +1,7 @@
 class DestinationTariffForm < ApplicationForm
   attribute :id
   attribute :object, default: -> { DestinationTariff.new }
-  attribute :tariff_schedule
+  attribute :schedule
   attribute :destination_group_id
   attribute :rate
   attribute :currency
@@ -10,7 +10,7 @@ class DestinationTariffForm < ApplicationForm
   validates :destination_group_id, presence: true
   validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  delegate :carrier, :category, to: :tariff_schedule
+  delegate :carrier, :category, to: :schedule
   delegate :persisted?, :new_record?, to: :object
 
   before_validation :set_object
@@ -23,7 +23,7 @@ class DestinationTariffForm < ApplicationForm
     new(
       object:,
       id: object.id,
-      tariff_schedule: object.tariff_schedule,
+      schedule: object.schedule,
       destination_group_id: object.destination_group_id,
       rate: object.tariff.rate,
       currency: object.tariff.currency
@@ -35,7 +35,7 @@ class DestinationTariffForm < ApplicationForm
     return object.destroy! unless retain?
 
     object.attributes = {
-      tariff_schedule:,
+      schedule:,
       destination_group: destination_groups.find(destination_group_id)
     }
 
@@ -97,8 +97,8 @@ class DestinationTariffForm < ApplicationForm
 
   def set_object
     return if id.blank?
-    return if tariff_schedule.blank?
+    return if schedule.blank?
 
-    self.object = tariff_schedule.destination_tariffs.find(id)
+    self.object = schedule.destination_tariffs.find(id)
   end
 end

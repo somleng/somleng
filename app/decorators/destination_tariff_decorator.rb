@@ -3,8 +3,8 @@ class DestinationTariffDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :DestinationTariff
   end
 
-  def tariff_schedule_name
-    decorated_tariff_schedule.name
+  def schedule_name
+    decorated_schedule.name
   end
 
   def destination_group_name
@@ -17,8 +17,8 @@ class DestinationTariffDecorator < SimpleDelegator
 
   private
 
-  def decorated_tariff_schedule
-    @decorated_tariff_schedule = TariffScheduleDecorator.new(tariff_schedule)
+  def decorated_schedule
+    @decorated_schedule = TariffScheduleDecorator.new(schedule)
   end
 
   def decorated_tariff

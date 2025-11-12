@@ -687,9 +687,9 @@ FactoryBot.define do
       carrier { build(:carrier) }
     end
 
-    tariff_schedule { association :tariff_schedule, carrier: }
-    tariff { association(:tariff, category: tariff_schedule.category.tariff_category, carrier: tariff_schedule.carrier) }
-    destination_group { association :destination_group, carrier: tariff_schedule.carrier }
+    schedule { association :tariff_schedule, carrier: }
+    tariff { association(:tariff, category: schedule.category.tariff_category, carrier: schedule.carrier) }
+    destination_group { association :destination_group, carrier: schedule.carrier }
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
