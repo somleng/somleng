@@ -17,7 +17,13 @@ module SystemSpecHelpers
 
     control_wrapper = find_field(from, visible: false).find(:xpath, "..")
     control_wrapper.click
-    control_wrapper.find(:xpath, "..//*[text()='#{value}']").click
+    option = if options[:exact]
+      control_wrapper.find(:xpath, "..//*[text()='#{value}']")
+    else
+      control_wrapper.find(:xpath, "..//*[contains(text(), '#{value}')]")
+    end
+
+    option.click
   end
 
   def have_enhanced_select(locator = nil, **options)

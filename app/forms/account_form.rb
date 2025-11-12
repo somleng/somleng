@@ -93,19 +93,7 @@ class AccountForm
   end
 
   def tariff_packages_options_for_select
-    carrier.tariff_packages.includes(:tariff_plans).map do |tariff_package|
-      [
-        tariff_package.name,
-        tariff_package.id,
-        {
-          data: {
-            tariff_plans: tariff_package.tariff_plans.each_with_object({}) do |tariff_plan, result|
-              result[tariff_plan.category] = tariff_plan.id
-            end
-          }
-        }
-      ]
-    end
+    DecoratedCollection.new(carrier.tariff_packages).map { [ _1.name, _1.id ] }
   end
 
   private
@@ -132,11 +120,11 @@ class AccountForm
 
   def build_tariff_plan_subscriptions
     default_tariff_package = carrier.default_tariff_package
-    default_plans = Array(new_record? ? default_tariff_package&.tariff_plans : [])
+    default_plans = Array(new_record? ? default_tariff_package&.plans : [])
     default_subscriptions = TariffSchedule.category.values.map do |category|
       TariffPlanSubscriptionForm.new(
         category:,
-        tariff_plan_id: default_plans.find { _1.category == category }&.id
+        plan_id: default_plans.find { _1.category == category }&.id
       )
     end
     collection = default_subscriptions.each_with_object([]) do |default_plan, result|

@@ -743,13 +743,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.uuid "account_id", null: false
     t.string "category", null: false
     t.datetime "created_at", null: false
+    t.uuid "plan_id", null: false
     t.bigserial "sequence_number", null: false
-    t.uuid "tariff_plan_id", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "category"], name: "index_tariff_plan_subscriptions_on_account_id_and_category", unique: true
     t.index ["account_id"], name: "index_tariff_plan_subscriptions_on_account_id"
+    t.index ["plan_id"], name: "index_tariff_plan_subscriptions_on_plan_id"
     t.index ["sequence_number"], name: "index_tariff_plan_subscriptions_on_sequence_number", unique: true, order: :desc
-    t.index ["tariff_plan_id"], name: "index_tariff_plan_subscriptions_on_tariff_plan_id"
   end
 
   create_table "tariff_plan_tiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1053,7 +1053,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   add_foreign_key "tariff_package_plans", "tariff_plans", column: "plan_id", on_delete: :cascade
   add_foreign_key "tariff_packages", "carriers", on_delete: :cascade
   add_foreign_key "tariff_plan_subscriptions", "accounts", on_delete: :cascade
-  add_foreign_key "tariff_plan_subscriptions", "tariff_plans", on_delete: :cascade
+  add_foreign_key "tariff_plan_subscriptions", "tariff_plans", column: "plan_id", on_delete: :cascade
   add_foreign_key "tariff_plan_tiers", "tariff_plans", column: "plan_id", on_delete: :cascade
   add_foreign_key "tariff_plan_tiers", "tariff_schedules", column: "schedule_id", on_delete: :cascade
   add_foreign_key "tariff_plans", "carriers", on_delete: :cascade

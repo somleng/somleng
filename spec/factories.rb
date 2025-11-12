@@ -96,25 +96,8 @@ FactoryBot.define do
     end
 
     trait :with_default_tariff_package do
-      transient do
-        tariff_package_name { "Standard" }
-        tariff_plan_details {
-          {
-            outbound_calls: "Standard",
-            inbound_calls: "Standard",
-            outbound_messages: "Standard",
-            inbound_messages: "Standard"
-          }
-        }
-      end
-
-      after(:build) do |carrier, evaluator|
-        carrier.default_tariff_package ||= build(
-          :tariff_package,
-          carrier:,
-          plan_details: evaluator.tariff_plan_details,
-          name: evaluator.tariff_package_name
-        )
+      after(:build) do |carrier|
+        carrier.default_tariff_package ||= build(:tariff_package, carrier:)
       end
     end
   end
@@ -220,10 +203,6 @@ FactoryBot.define do
     traits_for_enum :status, %w[enabled disabled]
     carrier_managed
 
-    transient do
-      tariff_plans { [] }
-    end
-
     trait :customer_managed do
       type { :customer_managed }
 
@@ -231,7 +210,6 @@ FactoryBot.define do
         account.account_memberships << create(:account_membership, :owner, account:, carrier: account.carrier) if account.account_memberships.empty?
       end
     end
-
 
     trait :with_access_token do
       after(:build) do |account|
@@ -241,18 +219,6 @@ FactoryBot.define do
 
     trait :with_sip_trunk do
       sip_trunk { build(:sip_trunk, carrier:) }
-    end
-
-    after(:build) do |account, evaluator|
-      tariff_plan_subscriptions = evaluator.tariff_plans.map do |tariff_plan|
-        build(
-          :tariff_plan_subscription,
-          carrier: account.carrier,
-          tariff_plan:,
-          account:
-        )
-      end
-      account.tariff_plan_subscriptions = tariff_plan_subscriptions if account.tariff_plan_subscriptions.blank?
     end
   end
 
@@ -678,8 +644,8 @@ FactoryBot.define do
     end
 
     account { association(:account, carrier:) }
-    tariff_plan { association(:tariff_plan, carrier: account.carrier) }
-    category { tariff_plan.category }
+    plan { association(:tariff_plan, carrier: account.carrier) }
+    category { plan.category }
   end
 
   factory :destination_tariff do
