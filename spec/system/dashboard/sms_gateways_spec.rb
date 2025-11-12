@@ -21,7 +21,7 @@ RSpec.describe "SMS Gateways" do
     )
 
     expect(page).to have_content("Main SMS Gateway")
-    expect(page).not_to have_content("Old SMS Gateway")
+    expect(page).to have_no_content("Old SMS Gateway")
   end
 
   it "Create a SMS Gateway" do
@@ -88,7 +88,7 @@ RSpec.describe "SMS Gateways" do
 
     expect(page).to have_content("SMS gateway was successfully updated")
     expect(page).to have_content("Main SMS Gateway")
-    expect(page).not_to have_content("123456")
+    expect(page).to have_no_content("123456")
   end
 
   it "Delete a SMS Gateway" do
@@ -104,6 +104,6 @@ RSpec.describe "SMS Gateways" do
     click_on("Delete")
 
     expect(page).to have_content("SMS gateway was successfully destroyed")
-    expect(page).not_to have_content("My SMS Gateway")
+    expect(page).to have_no_content("My SMS Gateway")
   end
 end

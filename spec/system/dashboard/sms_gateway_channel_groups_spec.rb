@@ -22,7 +22,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
     )
 
     expect(page).to have_content("Metfone")
-    expect(page).not_to have_content("Smart")
+    expect(page).to have_no_content("Smart")
   end
 
   it "Create a new channel group", :js do
@@ -38,8 +38,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
     fill_in("Name", with: "Smart")
     enhanced_select("My SMS Gateway", from: "SMS gateway")
     fill_in("Route prefixes", with: "85515, 85516")
-    enhanced_select("1", from: "Channels")
-    enhanced_select("2", from: "Channels")
+    enhanced_select("1", "2", from: "Channels")
     click_on "Create Channel group"
 
     expect(page).to have_content("Channel group was successfully created")
@@ -76,7 +75,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
     click_on("Edit")
     fill_in("Name", with: "Smart")
     fill_in("Route prefixes", with: "85515")
-    select("2", from: "Channels")
+    enhanced_select("2", from: "Channels")
 
     click_on "Update Channel group"
 
@@ -100,6 +99,6 @@ RSpec.describe "SMS Gateway Channel Groups" do
     click_on("Delete")
 
     expect(page).to have_content("Channel group was successfully destroyed")
-    expect(page).not_to have_content("My Channel Group")
+    expect(page).to have_no_content("My Channel Group")
   end
 end

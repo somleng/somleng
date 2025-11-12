@@ -29,7 +29,7 @@ RSpec.describe "Incoming Phone Numbers" do
     visit dashboard_incoming_phone_numbers_path(filter: { status: :active })
 
     expect(page).to have_content("+1 (251) 309-5500")
-    expect(page).not_to have_content("+1 (251) 309-5501")
+    expect(page).to have_no_content("+1 (251) 309-5501")
   end
 
   it "List phone numbers as an account member" do
@@ -44,7 +44,7 @@ RSpec.describe "Incoming Phone Numbers" do
     visit dashboard_incoming_phone_numbers_path
 
     expect(page).to have_content("1 (251) 309-5500")
-    expect(page).not_to have_content("1 (251) 309-5501")
+    expect(page).to have_no_content("1 (251) 309-5501")
   end
 
   it "Show an incoming phone number" do

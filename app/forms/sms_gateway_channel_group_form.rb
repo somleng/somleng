@@ -51,21 +51,17 @@ class SMSGatewayChannelGroupForm
   end
 
   def sms_gateways_options_for_select
-    @sms_gateways_options_for_select ||= sms_gateways.map do |sms_gateway|
-      [
-        sms_gateway.name,
-        sms_gateway.id,
-        {
-          data: {
-            available_channels: channels_options_for_select(sms_gateway)
-          }
-        }
-      ]
-    end
+    DecoratedCollection.new(sms_gateways).map { [ _1.name, _1.id ] }
   end
 
   def channels_options_for_select(sms_gateway = channel_group.sms_gateway)
     (sms_gateway.available_channel_slots + channel_group.configured_channel_slots).sort
+  end
+
+  def sms_gateway_available_channels
+    sms_gateways.includes(:channels).each_with_object({}) do |sms_gateway, result|
+      result[sms_gateway.id] = channels_options_for_select(sms_gateway)
+    end
   end
 
   private

@@ -72,6 +72,6 @@ RSpec.describe "Carrier Settings" do
     click_on("Update Carrier Settings")
 
     expect(page).to have_content("Carrier settings were successfully updated")
-    expect(page).not_to have_content("https://www.example.com/webhooks")
+    expect(page).to have_no_content("https://www.example.com/webhooks")
   end
 end

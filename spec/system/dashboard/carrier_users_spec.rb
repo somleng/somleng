@@ -12,7 +12,7 @@ RSpec.describe "Carrier users" do
     visit dashboard_carrier_users_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
 
     expect(page).to have_content("John Doe")
-    expect(page).not_to have_content("Joe Bloggs")
+    expect(page).to have_no_content("Joe Bloggs")
   end
 
   it "Carrier owner invites another user" do
@@ -20,12 +20,12 @@ RSpec.describe "Carrier users" do
 
     carrier_sign_in(user)
     visit dashboard_carrier_users_path
-    click_link("New")
+    click_on("New")
     fill_in("Name", with: "John Doe")
     fill_in("Email", with: "johndoe@example.com")
     select("Admin", from: "Role")
     perform_enqueued_jobs do
-      click_button "Send an invitation"
+      click_on "Send an invitation"
     end
 
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
@@ -37,7 +37,7 @@ RSpec.describe "Carrier users" do
 
     carrier_sign_in(user)
     visit new_dashboard_carrier_user_path
-    click_button "Send an invitation"
+    click_on "Send an invitation"
 
     expect(page).to have_content("can't be blank")
   end
@@ -49,10 +49,10 @@ RSpec.describe "Carrier users" do
 
     carrier_sign_in(user)
     visit dashboard_carrier_user_path(managed_user)
-    click_link("Edit")
+    click_on("Edit")
 
     select("Member", from: "Role")
-    click_button "Update User"
+    click_on "Update User"
 
     expect(page).to have_content("User was successfully updated")
     expect(page).to have_content("Member")
@@ -120,6 +120,6 @@ RSpec.describe "Carrier users" do
 
     click_on "Delete"
 
-    expect(page).not_to have_content("Joe Bloggs")
+    expect(page).to have_no_content("Joe Bloggs")
   end
 end

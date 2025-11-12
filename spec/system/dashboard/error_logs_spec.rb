@@ -17,6 +17,6 @@ RSpec.describe "Error Logs" do
     visit(dashboard_error_logs_path(filter: { type: :inbound_message }))
 
     expect(page).to have_content("Phone number 1234 does not exist")
-    expect(page).not_to have_content("Phone number 5678 is unconfigured")
+    expect(page).to have_no_content("Phone number 5678 is unconfigured")
   end
 end

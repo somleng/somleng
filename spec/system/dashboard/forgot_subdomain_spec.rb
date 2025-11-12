@@ -9,7 +9,7 @@ RSpec.describe "Forgot subdomain" do
     fill_in("Email", with: user.email)
 
     perform_enqueued_jobs do
-      click_button("Send me login instructions")
+      click_on("Send me login instructions")
     end
 
     expect(page).to have_content("You will receive an email with login instructions in a few minutes")

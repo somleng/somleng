@@ -34,6 +34,16 @@ export default class extends Controller {
       ts.setValue(""); // reset selection
     });
 
+    this.element.addEventListener("value-set", (event) => {
+      const value = event.detail.value;
+      const ts = this.element.tomselect;
+      if (value) {
+        ts.setValue(value, true); // true = silent (don’t trigger change)
+      } else {
+        ts.clear(true);
+      }
+    });
+
     this._observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "disabled") {

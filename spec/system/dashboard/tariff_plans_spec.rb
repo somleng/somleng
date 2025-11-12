@@ -201,7 +201,7 @@ RSpec.describe "Tariff Plans" do
       :destination_tariff,
       destination_group: create(:destination_group, carrier:, name: "KH Smart", prefixes: [ "85510" ]),
       tariff: create(:tariff, :call, carrier:, rate_cents: Money.from_amount(0.05, "USD").cents),
-      tariff_schedule: schedule
+      schedule:
     )
     plan = create(:tariff_plan, carrier:)
     create(:tariff_plan_tier, plan:, schedule:)

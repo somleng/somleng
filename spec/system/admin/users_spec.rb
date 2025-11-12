@@ -13,14 +13,14 @@ RSpec.describe "Admin/Users" do
 
     page.driver.browser.authorize("admin", "password")
     visit admin_users_path
-    click_link("John Doe")
+    click_on("John Doe")
 
     expect(page).to have_content("John Doe")
     expect(page).to have_link("Joe Bloggs")
     expect(page).to have_link(import.id)
     expect(page).to have_link(export.id)
 
-    click_link(account_membership.id)
+    click_on(account_membership.id)
 
     expect(page).to have_link("John Doe")
     expect(page).to have_link("Rocket Rides")

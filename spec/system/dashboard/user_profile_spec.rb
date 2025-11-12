@@ -23,7 +23,7 @@ RSpec.describe "User profile" do
     fill_in("Current password", with: "current password")
 
     perform_enqueued_jobs do
-      click_button("Update")
+      click_on("Update")
     end
 
     expect(page).to have_content("You updated your account successfully, but we need to verify your new email address")

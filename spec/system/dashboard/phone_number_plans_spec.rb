@@ -26,7 +26,7 @@ RSpec.describe "Phone Number Plans" do
     expect(page).to have_content("$5.00")
     expect(page).to have_content("Active")
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
-    expect(page).not_to have_content("+1 (251) 309-5501")
+    expect(page).to have_no_content("+1 (251) 309-5501")
 
     perform_enqueued_jobs do
       click_on("Export")

@@ -31,7 +31,7 @@ RSpec.describe "Verification Services" do
       href: dashboard_verifications_path(filter: { verification_service_id: verification_service.id })
     )
 
-    enhanced_select("German", from: "locale_preview")
+    enhanced_select("German", from: "locale_preview", exact: true)
 
     expect(page).to have_content(/Dein Rocket Rides Sicherheitscode lautet: \d{6}./)
   end

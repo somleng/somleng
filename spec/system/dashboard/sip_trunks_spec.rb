@@ -25,7 +25,7 @@ RSpec.describe "SIP Trunks" do
 
     expect(page).to have_content("Main SIP Trunk")
     expect(page).to have_content("South East Asia (Singapore)")
-    expect(page).not_to have_content("Old SIP Trunk")
+    expect(page).to have_no_content("Old SIP Trunk")
   end
 
   it "Create a SIP Trunk", :js do
@@ -137,7 +137,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("96.9.66.131, 96.9.66.132")
     expect(page).to have_content("Cambodia")
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.132")
-    expect(page).not_to have_content("123456")
+    expect(page).to have_no_content("123456")
   end
 
   it "Delete a SIP Trunk" do
@@ -152,6 +152,6 @@ RSpec.describe "SIP Trunks" do
     click_on("Delete")
 
     expect(page).to have_content("SIP trunk was successfully destroyed")
-    expect(page).not_to have_content("My SIP Trunk")
+    expect(page).to have_no_content("My SIP Trunk")
   end
 end

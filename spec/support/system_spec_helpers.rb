@@ -12,18 +12,28 @@ module SystemSpecHelpers
     Capybara.current_driver == :rack_test ? yield : super
   end
 
-  def enhanced_select(value, from:, **options)
-    return select(value, from:, **options) if Capybara.current_driver == :rack_test
+  def enhanced_select(*values, from:, **options)
+    if Capybara.current_driver == :rack_test
+      values.each do |value|
+        select(value, from:, **options)
+      end
+
+      return
+    end
 
     control_wrapper = find_field(from, visible: false).find(:xpath, "..")
     control_wrapper.click
-    option = if options[:exact]
-      control_wrapper.find(:xpath, "..//*[text()='#{value}']")
-    else
-      control_wrapper.find(:xpath, "..//*[contains(text(), '#{value}')]")
-    end
 
-    option.click
+
+    values.each do |value|
+      option = if options[:exact]
+        control_wrapper.first(:xpath, "..//*[text()='#{value}']")
+      else
+        control_wrapper.first(:xpath, "..//*[contains(text(), '#{value}')]")
+      end
+
+      option.click
+    end
   end
 
   def have_enhanced_select(locator = nil, **options)

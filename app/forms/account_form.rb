@@ -96,6 +96,14 @@ class AccountForm
     DecoratedCollection.new(carrier.tariff_packages).map { [ _1.name, _1.id ] }
   end
 
+  def tariff_plans_by_category
+    carrier.tariff_packages.includes(:package_plans).each_with_object({}) do |package, result|
+      result[package.id] = package.package_plans.each_with_object({}) do |package_plan, category_result|
+        category_result[package_plan.category] = package_plan.plan_id
+      end
+    end
+  end
+
   private
 
   def validate_owner

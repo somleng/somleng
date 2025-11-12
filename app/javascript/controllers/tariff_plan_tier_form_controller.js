@@ -29,8 +29,6 @@ export default class extends Controller {
     const select = this.tariffScheduleInputTarget;
     const schedules = this.tariffSchedulesByCategoryValue[category] || [];
 
-    console.log(schedules);
-
     // Preserve prompt (usually the first option with empty value)
     const promptOption = select.querySelector('option[value=""]');
 
