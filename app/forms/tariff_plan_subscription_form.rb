@@ -1,4 +1,4 @@
-class TariffPlanSubscriptionForm < TariffPlanLineItemForm
+class TariffPlanSubscriptionForm < TariffPlanAssignmentForm
   attribute :account
   attribute :object, default: -> { TariffPlanSubscription.new }
 

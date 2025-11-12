@@ -60,8 +60,8 @@
         <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
         <%= f.attribute :phone_number_plans, value: external_link_to("View", dashboard_phone_number_plans_path(filter: {account_id: @resource.id}), title: "Manage") %>
         <%= f.attribute :tariff_plans do %>
-          <% if f.object.tariff_plan_line_items.present? %>
-            <%= tariff_plans(f.object.tariff_plan_line_items) %>
+          <% if f.object.tariff_plan_subscriptions.present? %>
+            <%= tariff_plans(f.object.tariff_plan_subscriptions) %>
           <% end %>
         <% end %>
       </div>

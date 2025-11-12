@@ -1,8 +1,8 @@
-class TariffPackagePlanForm < TariffPlanLineItemForm
-  attribute :tariff_package
+class TariffPackagePlanForm < TariffPlanAssignmentForm
+  attribute :package
   attribute :object, default: -> { TariffPackagePlan.new }
 
-  delegate :carrier, to: :tariff_package
+  delegate :carrier, to: :package
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "TariffPackagePlan")
@@ -10,13 +10,13 @@ class TariffPackagePlanForm < TariffPlanLineItemForm
 
   def self.initialize_with(object)
     form = super
-    form.tariff_package = object.tariff_package
+    form.package = object.package
     form
   end
 
   private
 
   def parent_attributes
-    { tariff_package: }
+    { package: }
   end
 end

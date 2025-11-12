@@ -1,10 +1,10 @@
-class TariffPlanLineItemForm < ApplicationForm
+class TariffPlanAssignmentForm < ApplicationForm
   attribute :id
   attribute :object
-  attribute :tariff_plan_id
+  attribute :plan_id
   attribute :category
 
-  validates :tariff_plan_id, presence: true, if: ->(form) { form.id.blank? }
+  validates :plan_id, presence: true, if: ->(form) { form.id.blank? }
 
   enumerize :category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
 
@@ -12,7 +12,7 @@ class TariffPlanLineItemForm < ApplicationForm
     new(
       object:,
       id: object.id,
-      tariff_plan_id: object.tariff_plan_id,
+      plan_id: object.plan_id,
       category: object.category
     )
   end
@@ -26,37 +26,30 @@ class TariffPlanLineItemForm < ApplicationForm
 
     object.attributes = {
       **parent_attributes,
-      tariff_plan: tariff_plans.find(tariff_plan_id),
+      plan: plans.find(plan_id),
       category:
     }
 
     object.save!
   end
 
-  def tariff_plans_options_for_select
-    decorated_collection(tariff_plans) do |item|
+  def plans_options_for_select
+    DecoratedCollection.new(plans).map do |item|
       [ item.name, item.id ]
     end
   end
 
   def filled?
-    id.present? || tariff_plan_id.present?
+    id.present? || plan_id.present?
   end
 
   private
 
   def destroy?
-    object.persisted? && tariff_plan_id.blank?
+    object.persisted? && plan_id.blank?
   end
 
-  def tariff_plans
-    @tariff_plans ||= carrier.tariff_plans.where(category:)
-  end
-
-  def decorated_collection(collection)
-    collection.map do |item|
-      decorated_item = item.decorated
-      yield(decorated_item)
-    end
+  def plans
+    @plans ||= carrier.tariff_plans.where(category:)
   end
 end

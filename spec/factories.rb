@@ -252,7 +252,7 @@ FactoryBot.define do
           account:
         )
       end
-      account.tariff_plan_line_items = tariff_plan_subscriptions if account.tariff_plan_line_items.blank?
+      account.tariff_plan_subscriptions = tariff_plan_subscriptions if account.tariff_plan_subscriptions.blank?
     end
   end
 
@@ -660,22 +660,6 @@ FactoryBot.define do
   factory :tariff_package do
     carrier
     sequence(:name) { |n| "Standard#{n}" }
-
-    transient do
-      plan_details { {} }
-    end
-
-    after(:build) do |tariff_package, evaluator|
-      line_items = evaluator.plan_details.map do |category, name|
-        build(
-          :tariff_package_plan,
-          tariff_package:,
-          tariff_plan: build(:tariff_plan, carrier: tariff_package.carrier, name:, category:)
-        )
-      end
-
-      tariff_package.line_items = line_items if tariff_package.line_items.blank?
-    end
   end
 
   factory :tariff_package_plan do
@@ -683,9 +667,9 @@ FactoryBot.define do
       carrier { build(:carrier) }
     end
 
-    tariff_package { association(:tariff_package, carrier:) }
-    tariff_plan { association(:tariff_plan, carrier: tariff_package.carrier) }
-    category { tariff_plan.category }
+    package { association(:tariff_package, carrier:) }
+    plan { association(:tariff_plan, carrier: package.carrier) }
+    category { plan.category }
   end
 
   factory :tariff_plan_subscription do

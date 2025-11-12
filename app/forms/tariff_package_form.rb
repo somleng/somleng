@@ -3,12 +3,12 @@ class TariffPackageForm < ApplicationForm
   attribute :object, default: -> { TariffPackage.new }
   attribute :name
   attribute :description
-  attribute :line_items,
+  attribute :plans,
             FormCollectionType.new(form: TariffPackagePlanForm),
             default: []
 
   validates :name, presence: true
-  validate :validate_line_items
+  validate :validate_plans
 
   delegate :persisted?, :new_record?, :id, to: :object
 
@@ -19,12 +19,12 @@ class TariffPackageForm < ApplicationForm
   def initialize(**)
     super(**)
     self.object.carrier = carrier
-    self.line_items = build_line_items
+    self.plans = build_plans
   end
 
-  def line_items=(value)
+  def plans=(value)
     super
-    line_items.each { _1.tariff_package = object }
+    plans.each { _1.package = object }
   end
 
   def self.initialize_with(tariff_package)
@@ -33,7 +33,7 @@ class TariffPackageForm < ApplicationForm
       carrier: tariff_package.carrier,
       name: tariff_package.name,
       description: tariff_package.description,
-      line_items: tariff_package.line_items
+      plans: tariff_package.package_plans
     )
   end
 
@@ -48,29 +48,29 @@ class TariffPackageForm < ApplicationForm
 
     ApplicationRecord.transaction do
       object.save!
-      filled_line_items.all? { _1.save }
+      filled_plans.all? { _1.save }
     end
   end
 
   private
 
-  def filled_line_items
-    line_items.select(&:filled?)
+  def filled_plans
+    plans.select(&:filled?)
   end
 
-  def build_line_items
-    default_line_items = TariffSchedule.category.values.map { |category| TariffPackagePlanForm.new(category:) }
-    collection = default_line_items.each_with_object([]) do |default_line_item, result|
-      existing_line_item = line_items.find { _1.category == default_line_item.category }
-      result << (existing_line_item || default_line_item)
+  def build_plans
+    default_plans = TariffSchedule.category.values.map { |category| TariffPackagePlanForm.new(category:) }
+    collection = default_plans.each_with_object([]) do |default_plan, result|
+      existing_plan = plans.find { _1.category == default_plan.category }
+      result << (existing_plan || default_plan)
     end
 
     FormCollection.new(collection, form: TariffPackagePlanForm)
   end
 
-  def validate_line_items
-    return if filled_line_items.none?(&:invalid?)
+  def validate_plans
+    return if filled_plans.none?(&:invalid?)
 
-    errors.add(:line_items, :invalid)
+    errors.add(:plans, :invalid)
   end
 end

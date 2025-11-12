@@ -52,18 +52,10 @@
 
         <div class="row">
           <div class="col-6">
-            <% tariff_packages = f.object.tariff_packages_options_for_select %>
-            <% prompt = select_prompt_with_link_to(
-              "Configure a new one.",
-              new_dashboard_tariff_package_path,
-              target: "_blank",
-              prompt_text: tariff_packages.present? ? "Please select or" : "No tariff packages.",
-            ) %>
-
             <%= f.input(
               :default_tariff_package_id,
-              collection: tariff_packages,
-              prompt:,
+              collection: f.object.tariff_packages_options_for_select,
+              prompt: true,
               input_html: {
                 data: {
                   controller: "enhanced-select",

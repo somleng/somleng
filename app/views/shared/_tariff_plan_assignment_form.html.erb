@@ -1,37 +1,29 @@
-<% line_item_index = 0 %>
-<% group_collection_by(collection) { _1.category.type }.each do |(category_type, line_items)| %>
+<% assignment_index = 0 %>
+<% group_collection_by(collection) { _1.category.type }.each do |(category_type, assignments)| %>
   <div class="card mb-3">
     <div class="card-body">
       <h5 class="card-title">
         <%= category_type.to_s.humanize %>
       </h5>
       <div class="row">
-        <% line_items.each do |line_item| %>
+        <% assignments.each do |assignment| %>
           <div class="col mb-3">
-            <%= form.simple_fields_for(collection_method, line_item, index: line_item_index) do |line_item_form| %>
-              <div class="card mb-3 <%= "#{line_item.category.value.dasherize}-line-item" %>">
+            <%= form.simple_fields_for(collection_method, assignment, index: assignment_index) do |assignment_form| %>
+              <div class="card mb-3 <%= "#{assignment.category.value.dasherize}-line-item" %>">
                 <div class="card-body">
                   <h6 class="card-title">
-                    <% if line_item.category.direction.inbound? %>
+                    <% if assignment.category.direction.inbound? %>
                       <i class="fa-solid fa-arrow-left"></i>
-                    <% elsif line_item.category.direction.outbound? %>
+                    <% elsif assignment.category.direction.outbound? %>
                       <i class="fa-solid fa-arrow-right"></i>
                     <% end %>
-                    <%= line_item.category.direction.to_s.humanize %>
+                    <%= assignment.category.direction.to_s.humanize %>
                   </h6>
 
-                  <% tariff_plans = line_item.tariff_plans_options_for_select %>
-                  <% prompt = select_prompt_with_link_to(
-                    "Configure a new one.",
-                    new_dashboard_tariff_plan_path(filter: { category: line_item.category }),
-                    target: "_blank",
-                    prompt_text: tariff_plans.present? ? "Please select or" : "No tariff plans configured for #{line_item.category.value.humanize}.",
-                  ) %>
-
-                  <%= line_item_form.input(
-                    :tariff_plan_id,
-                    collection: tariff_plans,
-                    prompt:,
+                  <%= assignment_form.input(
+                    :plan_id,
+                    collection: assignment.plans_options_for_select,
+                    prompt: true,
                     required: false,
                     include_blank: true,
                     input_html: {
@@ -42,18 +34,18 @@
                         },
                         tariff_package_selection_target: "tariffPlanInput",
                         action: "change->tariff-package-selection#changeTariffPlan",
-                        category: line_item.category
+                        category: assignment.category
                       }
                     }
                   ) %>
 
-                  <%= line_item_form.input(:category, as: :hidden) %>
-                  <%= line_item_form.input(:id, as: :hidden) %>
+                  <%= assignment_form.input(:category, as: :hidden) %>
+                  <%= assignment_form.input(:id, as: :hidden) %>
                 </div>
               </div>
             <% end %>
           </div>
-          <% line_item_index +=1 %>
+          <% assignment_index +=1 %>
         <% end %>
       </div>
     </div>

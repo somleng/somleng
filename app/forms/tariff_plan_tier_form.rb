@@ -23,7 +23,7 @@ class TariffPlanTierForm < ApplicationForm
       object:,
       id: object.id,
       tariff_plan: object.plan,
-      tariff_schedule_id: object.tariff_schedule_id,
+      tariff_schedule_id: object.schedule_id,
       weight: object.weight
     )
   end
@@ -64,6 +64,6 @@ class TariffPlanTierForm < ApplicationForm
     return if tariff_plan.blank?
 
     self.object = tariff_plan.tiers.find(id)
-    self.tariff_schedule_id = object.tariff_schedule_id
+    self.tariff_schedule_id = object.schedule_id
   end
 end

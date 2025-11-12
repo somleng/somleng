@@ -48,7 +48,7 @@ module Dashboard
         :sip_trunk_id,
         :calls_per_second,
         :enabled,
-        tariff_plan_line_items: [ :id, :tariff_plan_id, :category ]
+        tariff_plan_subscriptions: [ :id, :tariff_plan_id, :category ]
       )
     end
 

@@ -134,15 +134,6 @@ module DashboardHelper
     end
   end
 
-  def select_prompt_with_link_to(link_text = nil, *, prompt_text: nil, **, &)
-    prompt_text ||= "Please select or"
-    link_text ||= "Create a new one."
-
-    link = link_to(link_text, *, **, &)
-
-    [ prompt_text, link ].join(" ").html_safe
-  end
-
   def link_to_cancel(link_text = "Cancel", location = :back, **, &)
     link_to(link_text, location, class: "btn btn-outline-danger", **, &)
   end

@@ -19,7 +19,7 @@ class TariffPackageFilter < ResourceFilter
     def apply
       return super if filter_params.blank?
 
-      super.joins(:tariff_plans).where(tariff_plans: { id: filter_params.fetch(:tariff_plan_id) })
+      super.joins(:plans).where(plans: { id: filter_params.fetch(:tariff_plan_id) })
     end
   end
 

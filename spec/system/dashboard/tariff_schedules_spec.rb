@@ -1,15 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Tariff Schedules" do
-  it "filter tariff schedules" do
+  it "filter schedules" do
     carrier = create(:carrier)
-    tariff_plan = create(:tariff_plan, carrier:)
-    tariff_schedule = create(:tariff_schedule, category: tariff_plan.category, carrier:, name: "Standard")
-    create(:tariff_plan_tier, schedule: tariff_schedule, plan: tariff_plan)
-    excluded_tariff_schedules = [
-      create(:tariff_schedule, tariff_plan.category, carrier:, name: "Promo"),
+    plan = create(:tariff_plan, carrier:)
+    schedule = create(:tariff_schedule, category: plan.category, carrier:, name: "Standard")
+    create(:tariff_plan_tier, schedule:, plan:)
+    excluded_schedules = [
+      create(:tariff_schedule, plan.category, carrier:, name: "Promo"),
       create(:tariff_schedule, :outbound_messages, carrier:, name: "Standard"),
-      create(:tariff_schedule, tariff_plan.category, carrier:, name: "Standard 2")
+      create(:tariff_schedule, plan.category, carrier:, name: "Standard 2")
     ]
     user = create(:user, :carrier, carrier:)
 
@@ -19,18 +19,18 @@ RSpec.describe "Tariff Schedules" do
         filter: {
           name: "standard",
           category: "outbound_calls",
-          tariff_plan_id: tariff_plan.id
+          tariff_plan_id: plan.id
         }
       )
     )
 
-    expect(page).to have_content(tariff_schedule.id)
-    excluded_tariff_schedules.each do |tariff_schedule|
-      expect(page).to have_no_content(tariff_schedule.id)
+    expect(page).to have_content(schedule.id)
+    excluded_schedules.each do |schedule|
+      expect(page).to have_no_content(schedule.id)
     end
   end
 
-  it "create a tariff schedule", :js do
+  it "create a schedule", :js do
     carrier = create(:carrier, billing_currency: "USD")
     create(:destination_group, carrier:, name: "Cambodia")
     create(:destination_group, carrier:, name: "Cambodia Smart")
@@ -110,47 +110,47 @@ RSpec.describe "Tariff Schedules" do
     expect(page).to have_content("can't be blank")
   end
 
-  it "show a tariff schedule" do
+  it "show a schedule" do
     carrier = create(:carrier, billing_currency: "USD")
-    tariff_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
-    tariff_plan = create(:tariff_plan, category: tariff_schedule.category, carrier:, name: "Standard")
+    schedule = create(:tariff_schedule, :outbound_messages, carrier:)
+    plan = create(:tariff_plan, category: schedule.category, carrier:, name: "Standard")
     create(
       :destination_tariff,
-      tariff_schedule:,
+      tariff_schedule: schedule,
       destination_group: create(:destination_group, carrier:, name: "Cambodia"),
       tariff: create(:tariff, carrier:, rate_cents: 0.5)
     )
     create(
       :tariff_plan_tier,
-      schedule: tariff_schedule,
-      plan: tariff_plan
+      schedule:,
+      plan:
     )
     create(
       :tariff_plan_tier,
-      schedule: tariff_schedule,
-      plan: create(:tariff_plan, category: tariff_schedule.category, carrier:)
+      schedule:,
+      plan: create(:tariff_plan, category: schedule.category, carrier:)
     )
 
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_tariff_schedule_path(tariff_schedule)
+    visit dashboard_tariff_schedule_path(schedule)
 
     expect(page).to have_content("MSG -> Cambodia -> $0.005")
-    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(tariff_plan))
-    expect(page).to have_link("1 more", href: dashboard_tariff_plans_path(filter: { tariff_schedule_id: tariff_schedule.id }))
+    expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(plan))
+    expect(page).to have_link("1 more", href: dashboard_tariff_plans_path(filter: { tariff_schedule_id: schedule.id }))
   end
 
-  it "update a tariff schedule", :js do
+  it "update a schedule", :js do
     carrier = create(:carrier, billing_currency: "USD")
-    tariff_schedule = create(:tariff_schedule, :inbound_calls, carrier:, name: "Old Name", description: "Old Description")
-    create(:destination_tariff, tariff_schedule:, destination_group: create(:destination_group, name: "Cambodia", carrier:))
-    create(:destination_tariff, tariff_schedule:, destination_group: create(:destination_group, name: "Cambodia Smart", carrier:))
+    schedule = create(:tariff_schedule, :inbound_calls, carrier:, name: "Old Name", description: "Old Description")
+    create(:destination_tariff, tariff_schedule: schedule, destination_group: create(:destination_group, name: "Cambodia", carrier:))
+    create(:destination_tariff, tariff_schedule: schedule, destination_group: create(:destination_group, name: "Cambodia Smart", carrier:))
     create(:destination_group, name: "Cambodia Metfone", carrier:)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_tariff_schedule_path(tariff_schedule)
+    visit dashboard_tariff_schedule_path(schedule)
     click_on("Edit")
 
     expect(page).to have_content("Inbound calls")
@@ -180,13 +180,13 @@ RSpec.describe "Tariff Schedules" do
     expect(page).to have_content("New Description")
   end
 
-  it "delete a tariff schedule" do
+  it "delete a schedule" do
     carrier = create(:carrier)
-    tariff_schedule = create(:tariff_schedule, carrier:, name: "Standard")
+    schedule = create(:tariff_schedule, carrier:, name: "Standard")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit dashboard_tariff_schedule_path(tariff_schedule)
+    visit dashboard_tariff_schedule_path(schedule)
     click_on("Delete")
 
     expect(page).to have_content("Tariff schedule was successfully destroyed.")

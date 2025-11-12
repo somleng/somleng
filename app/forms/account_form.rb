@@ -13,7 +13,7 @@ class AccountForm
   attribute :calls_per_second, :integer, default: 1
   attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
   attribute :tariff_package_id
-  attribute :tariff_plan_line_items,
+  attribute :tariff_plan_subscriptions,
             FormCollectionType.new(form: TariffPlanSubscriptionForm),
             default: []
 
@@ -31,7 +31,7 @@ class AccountForm
             }
 
   validate :validate_owner
-  validate :validate_tariff_plan_line_items
+  validate :validate_tariff_plan_subscriptions
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Account")
@@ -48,7 +48,7 @@ class AccountForm
       owner_name: object.owner&.name,
       owner_email: object.owner&.email,
       default_tts_voice: object.default_tts_voice,
-      tariff_plan_line_items: object.tariff_plan_line_items
+      tariff_plan_subscriptions: object.tariff_plan_subscriptions
     )
   end
 
@@ -56,12 +56,12 @@ class AccountForm
     super(**)
     self.object.carrier = carrier
     self.tariff_package_id = carrier.default_tariff_package_id
-    self.tariff_plan_line_items = build_tariff_plan_line_items
+    self.tariff_plan_subscriptions = build_tariff_plan_subscriptions
   end
 
-  def tariff_plan_line_items=(value)
+  def tariff_plan_subscriptions=(value)
     super
-    tariff_plan_line_items.each { _1.account = object }
+    tariff_plan_subscriptions.each { _1.account = object }
   end
 
   def save
@@ -83,7 +83,7 @@ class AccountForm
       end
 
       object.save!
-      filled_tariff_plan_line_items.all? { _1.save }
+      filled_tariff_plan_subscriptions.all? { _1.save }
     end
   end
 
@@ -126,30 +126,30 @@ class AccountForm
     )
   end
 
-  def filled_tariff_plan_line_items
-    tariff_plan_line_items.select(&:filled?)
+  def filled_tariff_plan_subscriptions
+    tariff_plan_subscriptions.select(&:filled?)
   end
 
-  def build_tariff_plan_line_items
+  def build_tariff_plan_subscriptions
     default_tariff_package = carrier.default_tariff_package
     default_plans = Array(new_record? ? default_tariff_package&.tariff_plans : [])
-    default_line_items = TariffSchedule.category.values.map do |category|
+    default_subscriptions = TariffSchedule.category.values.map do |category|
       TariffPlanSubscriptionForm.new(
         category:,
         tariff_plan_id: default_plans.find { _1.category == category }&.id
       )
     end
-    collection = default_line_items.each_with_object([]) do |default_line_item, result|
-      existing_line_item = tariff_plan_line_items.find { _1.category == default_line_item.category }
-      result << (existing_line_item || default_line_item)
+    collection = default_subscriptions.each_with_object([]) do |default_plan, result|
+      existing_plan = tariff_plan_subscriptions.find { _1.category == default_plan.category }
+      result << (existing_plan || default_plan)
     end
 
     FormCollection.new(collection, form: TariffPlanSubscriptionForm)
   end
 
-  def validate_tariff_plan_line_items
-    return if filled_tariff_plan_line_items.none?(&:invalid?)
+  def validate_tariff_plan_subscriptions
+    return if filled_tariff_plan_subscriptions.none?(&:invalid?)
 
-    errors.add(:tariff_plan_line_items, :invalid)
+    errors.add(:tariff_plan_subscriptions, :invalid)
   end
 end

@@ -24,8 +24,8 @@
           Tariffs
         </h5>
 
-        <% line_item_index = 0 %>
-        <% group_collection_by(f.object.tariffs) { _1.category.type }.each do |(category_type, line_items)| %>
+        <% tariff_index = 0 %>
+        <% group_collection_by(f.object.tariffs) { _1.category.type }.each do |(category_type, tariffs)| %>
           <div class="row">
             <div class="card mb-3">
               <div class="card-body">
@@ -34,18 +34,18 @@
                 </h5>
 
                 <div class="row">
-                  <% line_items.each do |line_item| %>
-                    <%= f.simple_fields_for(:tariffs, line_item, index: line_item_index) do |tariff_form| %>
+                  <% tariffs.each do |tariff| %>
+                    <%= f.simple_fields_for(:tariffs, tariff, index: tariff_index) do |tariff_form| %>
                       <div class="col">
-                        <div class="card mb-2 <%= "#{line_item.category.dasherize}" %>" data-controller="tariff-package-wizard">
+                        <div class="card mb-2 <%= "#{tariff.category.dasherize}" %>" data-controller="tariff-package-wizard">
                           <div class="card-body">
                             <h6 class="card-title">
-                              <% if line_item.category.direction.inbound? %>
+                              <% if tariff.category.direction.inbound? %>
                                 <i class="fa-solid fa-arrow-left"></i>
-                              <% elsif line_item.category.direction.outbound? %>
+                              <% elsif tariff.category.direction.outbound? %>
                                 <i class="fa-solid fa-arrow-right"></i>
                               <% end %>
-                              <%= line_item.category.direction.to_s.humanize %>
+                              <%= tariff.category.direction.to_s.humanize %>
                             </h6>
 
                             <div class="row">
@@ -86,7 +86,7 @@
                         </div>
                       </div>
                     <% end %>
-                    <% line_item_index += 1 %>
+                    <% tariff_index += 1 %>
                   <% end %>
                 </div>
               </div>
