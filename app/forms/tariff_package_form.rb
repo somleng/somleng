@@ -4,7 +4,7 @@ class TariffPackageForm < ApplicationForm
   attribute :name
   attribute :description
   attribute :line_items,
-            FormCollectionType.new(form: TariffPackageLineItemForm),
+            FormCollectionType.new(form: TariffPackagePlanForm),
             default: []
 
   validates :name, presence: true
@@ -59,13 +59,13 @@ class TariffPackageForm < ApplicationForm
   end
 
   def build_line_items
-    default_line_items = TariffSchedule.category.values.map { |category| TariffPackageLineItemForm.new(category:) }
+    default_line_items = TariffSchedule.category.values.map { |category| TariffPackagePlanForm.new(category:) }
     collection = default_line_items.each_with_object([]) do |default_line_item, result|
       existing_line_item = line_items.find { _1.category == default_line_item.category }
       result << (existing_line_item || default_line_item)
     end
 
-    FormCollection.new(collection, form: TariffPackageLineItemForm)
+    FormCollection.new(collection, form: TariffPackagePlanForm)
   end
 
   def validate_line_items

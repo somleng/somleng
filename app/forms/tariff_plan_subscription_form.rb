@@ -1,11 +1,11 @@
-class AccountTariffPlanForm < TariffPlanLineItemForm
+class TariffPlanSubscriptionForm < TariffPlanLineItemForm
   attribute :account
-  attribute :object, default: -> { AccountTariffPlan.new }
+  attribute :object, default: -> { TariffPlanSubscription.new }
 
   delegate :carrier, to: :account
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, "AccountTariffPlan")
+    ActiveModel::Name.new(self, nil, "TariffPlanSubscription")
   end
 
   def self.initialize_with(object)

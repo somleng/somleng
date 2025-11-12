@@ -1,7 +1,7 @@
-class AccountTariffPlan < ApplicationRecord
+class TariffPackagePlan < ApplicationRecord
   extend Enumerize
 
-  belongs_to :account
+  belongs_to :tariff_package
   belongs_to :tariff_plan
 
   enumerize :category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue

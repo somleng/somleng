@@ -1,9 +1,9 @@
-class TariffPackageWizardLineItemForm < ApplicationForm
+class TariffPackageWizardPlanForm < ApplicationForm
   attribute :tariff_package
   attribute :rate, :decimal
   attribute :enabled, :boolean
   attribute :category
-  attribute :object, default: -> { TariffPackageLineItem.new }
+  attribute :object, default: -> { TariffPackagePlan.new }
 
   delegate :carrier, :name, to: :tariff_package
   delegate :billing_currency, to: :carrier
@@ -13,14 +13,14 @@ class TariffPackageWizardLineItemForm < ApplicationForm
   validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0, allow_blank: true }, if: ->(form) { form.enabled }
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, "TariffPackageLineItem")
+    ActiveModel::Name.new(self, nil, "TariffPackagePlan")
   end
 
   def save
     return false if invalid?
     return true unless enabled
 
-    create_tariff_package_line_item
+    create_tariff_package_plan
   end
 
   def rate_unit
@@ -35,7 +35,7 @@ class TariffPackageWizardLineItemForm < ApplicationForm
 
   private
 
-  def create_tariff_package_line_item
+  def create_tariff_package_plan
     ApplicationRecord.transaction do
       tariff_plan = carrier.tariff_plans.find_or_create_by!(name:, category:)
       object.category = category

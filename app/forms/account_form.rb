@@ -14,7 +14,7 @@ class AccountForm
   attribute :default_tts_voice, TTSVoiceType.new, default: -> { TTSVoices::Voice.default }
   attribute :tariff_package_id
   attribute :tariff_plan_line_items,
-            FormCollectionType.new(form: AccountTariffPlanForm),
+            FormCollectionType.new(form: TariffPlanSubscriptionForm),
             default: []
 
   delegate :new_record?, :persisted?, :id, :customer_managed?, :carrier_managed?, to: :object
@@ -134,7 +134,7 @@ class AccountForm
     default_tariff_package = carrier.default_tariff_package
     default_plans = Array(new_record? ? default_tariff_package&.tariff_plans : [])
     default_line_items = TariffSchedule.category.values.map do |category|
-      AccountTariffPlanForm.new(
+      TariffPlanSubscriptionForm.new(
         category:,
         tariff_plan_id: default_plans.find { _1.category == category }&.id
       )
@@ -144,7 +144,7 @@ class AccountForm
       result << (existing_line_item || default_line_item)
     end
 
-    FormCollection.new(collection, form: AccountTariffPlanForm)
+    FormCollection.new(collection, form: TariffPlanSubscriptionForm)
   end
 
   def validate_tariff_plan_line_items

@@ -5,7 +5,7 @@ RSpec.describe "Tariff Packages" do
     carrier = create(:carrier)
     tariff_package = create(:tariff_package, carrier:, name: "Standard")
     tariff_plan = create(:tariff_plan, carrier:)
-    create(:tariff_package_line_item, tariff_package:, tariff_plan:)
+    create(:tariff_package_plan, tariff_package:, tariff_plan:)
     filtered_tariff_packages = [
       create(:tariff_package, carrier:, name: "Special"),
       create(:tariff_package, carrier:, name: "Standard")
@@ -108,8 +108,8 @@ RSpec.describe "Tariff Packages" do
     outbound_messages_plan = create(:tariff_plan, :outbound_messages, carrier:, name: "Standard")
     outbound_calls_plan = create(:tariff_plan, :outbound_calls, carrier:, name: "Standard")
     inbound_calls_plan = create(:tariff_plan, :inbound_calls, carrier:)
-    create(:tariff_package_line_item, tariff_package:, tariff_plan: outbound_calls_plan)
-    create(:tariff_package_line_item, tariff_package:, tariff_plan: inbound_calls_plan)
+    create(:tariff_package_plan, tariff_package:, tariff_plan: outbound_calls_plan)
+    create(:tariff_package_plan, tariff_package:, tariff_plan: inbound_calls_plan)
 
     user = create(:user, :carrier, carrier:)
 
@@ -138,7 +138,7 @@ RSpec.describe "Tariff Packages" do
   it "handle validation errors when updating a tariff package" do
     carrier = create(:carrier)
     tariff_package = create(:tariff_package, carrier:)
-    create(:tariff_package_line_item, tariff_package:)
+    create(:tariff_package_plan, tariff_package:)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)

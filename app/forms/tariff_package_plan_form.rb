@@ -1,11 +1,11 @@
-class TariffPackageLineItemForm < TariffPlanLineItemForm
+class TariffPackagePlanForm < TariffPlanLineItemForm
   attribute :tariff_package
-  attribute :object, default: -> { TariffPackageLineItem.new }
+  attribute :object, default: -> { TariffPackagePlan.new }
 
   delegate :carrier, to: :tariff_package
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, "TariffPackageLineItem")
+    ActiveModel::Name.new(self, nil, "TariffPackagePlan")
   end
 
   def self.initialize_with(object)
