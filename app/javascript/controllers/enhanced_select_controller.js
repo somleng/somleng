@@ -37,10 +37,13 @@ export default class extends Controller {
     this._observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === "disabled") {
+          const ts = this.element.tomselect;
           if (this.element.disabled) {
-            this.element.tomselect.disable();
+            if (!ts.isDisabled) {
+              ts.disable();
+            }
           } else {
-            this.element.tomselect.enable();
+            ts.enable();
           }
         }
       });

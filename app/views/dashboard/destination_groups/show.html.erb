@@ -20,8 +20,14 @@
     <%= f.attribute :prefixes do %>
       <%= summarize_list(f.object.prefixes, max: 3) %>
     <% end %>
-    <%= f.attribute :tariff_schedules do %>
-      <%= external_link_to("Manage", dashboard_tariff_schedules_path(filter: { destination_group_id: f.object.id })) %>
+    <%= f.attribute :schedules do %>
+      <%= summarize_list(
+        DecoratedCollection.new(
+          f.object.tariff_schedules,
+        ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
+        max: 1,
+        link_to_remaining: dashboard_tariff_schedules_path(filter: { destination_group_id: f.object.id })
+      ) %>
     <% end %>
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
     <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>

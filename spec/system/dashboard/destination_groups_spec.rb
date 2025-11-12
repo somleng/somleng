@@ -64,12 +64,23 @@ RSpec.describe "Destination Groups" do
   it "show a destination group" do
     carrier = create(:carrier)
     destination_group = create(:destination_group, carrier:)
+    destination_tariff = create(
+      :destination_tariff,
+      destination_group:,
+      schedule: create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard")
+    )
+    create(
+      :destination_tariff,
+      destination_group:,
+      schedule: create(:tariff_schedule, :inbound_calls, carrier:)
+    )
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_destination_group_path(destination_group)
 
-    expect(page).to have_link("Manage", href: dashboard_destination_tariffs_path(filter: { destination_group_id: destination_group.id }))
+    expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_schedule_path(destination_tariff.schedule))
+    expect(page).to have_link("1 more", href: dashboard_tariff_schedules_path(filter: { destination_group_id: destination_group.id }))
   end
 
   it "update a destination group" do

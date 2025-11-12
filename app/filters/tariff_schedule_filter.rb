@@ -35,10 +35,23 @@ class TariffScheduleFilter < ResourceFilter
     end
   end
 
+  class DestinationGroupIDFilter < ApplicationFilter
+    filter_params do
+      optional(:destination_group_id).value(:string)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.joins(:destination_groups).where(destination_groups: { id: filter_params.fetch(:destination_group_id) })
+    end
+  end
+
   filter_with(
     CategoryFilter,
     NameFilter,
     TariffPlanIDFilter,
+    DestinationGroupIDFilter,
     :date_filter
   )
 end

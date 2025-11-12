@@ -8,11 +8,15 @@
 
     <%= form.select(
       :tariff_plan_id,
-      current_carrier.tariff_plans.map do |tariff_plan|
-        tariff_plan = TariffPlanDecorator.new(tariff_plan)
-        [tariff_plan.name, tariff_plan.id]
-      end,
+      DecoratedCollection.new(current_carrier.tariff_plans).map { [ _1.name, _1.id ] },
       { filter_value: params.dig(:filter, :tariff_plan_id) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
+
+    <%= form.select(
+      :destination_group_id,
+      DecoratedCollection.new(current_carrier.destination_groups).map { [ _1.name, _1.id ] },
+      { filter_value: params.dig(:filter, :destination_group_id) },
       { data: { controller: "enhanced-select" }}
     ) %>
 

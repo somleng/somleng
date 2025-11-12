@@ -1,7 +1,7 @@
 module Dashboard
   class DestinationGroupsController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(:prefixes))
+      @resources = apply_filters(scope.includes(:prefixes, :tariff_schedules))
       @resources = paginate_resources(@resources)
     end
 

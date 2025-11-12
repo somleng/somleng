@@ -56,13 +56,13 @@ RSpec.describe TariffScheduleForm do
     it "validates the destination groups are unique on update" do
       carrier = create(:carrier)
       destination_group = create(:destination_group, carrier:)
-      tariff_schedule = create(:tariff_schedule, carrier:)
+      schedule = create(:tariff_schedule, carrier:)
       destination_tariffs = [
-        create(:destination_tariff, tariff_schedule:, destination_group:),
-        create(:destination_tariff, tariff_schedule:)
+        create(:destination_tariff, schedule:, destination_group:),
+        create(:destination_tariff, schedule:)
       ]
 
-      form = TariffScheduleForm.initialize_with(tariff_schedule)
+      form = TariffScheduleForm.initialize_with(schedule)
       form.attributes = {
         destination_tariffs: [
           build_destination_tariff_form(

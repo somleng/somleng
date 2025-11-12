@@ -12,11 +12,11 @@ RSpec.describe DestinationTariffForm do
   describe "#save" do
     it "create a new tariff" do
       carrier = create(:carrier, billing_currency: "USD")
-      tariff_schedule = create(:tariff_schedule, carrier:)
+      schedule = create(:tariff_schedule, carrier:)
       destination_group = create(:destination_group, carrier:)
 
       form = build_form(
-        tariff_schedule:,
+        schedule:,
         destination_group_id: destination_group.id,
         rate: "0.005"
       )
@@ -25,7 +25,7 @@ RSpec.describe DestinationTariffForm do
 
       expect(form.object).to have_attributes(
         persisted?: true,
-        tariff_schedule:,
+        schedule:,
         destination_group:,
         tariff: have_attributes(
           rate: InfinitePrecisionMoney.from_amount(0.005, "USD")
@@ -47,8 +47,8 @@ RSpec.describe DestinationTariffForm do
 
     it "update a tariff" do
       carrier = create(:carrier, billing_currency: "USD")
-      tariff_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
-      destination_tariff = create(:destination_tariff, tariff_schedule:)
+      schedule = create(:tariff_schedule, :outbound_messages, carrier:)
+      destination_tariff = create(:destination_tariff, schedule:)
 
       form = DestinationTariffForm.initialize_with(destination_tariff)
 
@@ -60,7 +60,7 @@ RSpec.describe DestinationTariffForm do
 
       expect(form.object).to have_attributes(
         persisted?: true,
-        tariff_schedule:,
+        schedule:,
         destination_group: destination_tariff.destination_group,
         tariff: have_attributes(
           rate: InfinitePrecisionMoney.from_amount(0.001, "USD")
@@ -77,7 +77,7 @@ RSpec.describe DestinationTariffForm do
     carrier = attributes.fetch(:carrier) { build_stubbed(:carrier) }
 
     DestinationTariffForm.new(
-      tariff_schedule: build_stubbed(:tariff_schedule, carrier:),
+      schedule: build_stubbed(:tariff_schedule, carrier:),
       destination_group_id: build_stubbed(:destination_group, carrier:).id,
       rate: "0.005",
       **attributes
