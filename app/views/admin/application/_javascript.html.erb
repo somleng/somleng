@@ -21,7 +21,7 @@ by providing a `content_for(:javascript)` block.
 
 <script type="application/javascript">
   document.addEventListener("DOMContentLoaded", function() {
-    [].slice.call(document.querySelectorAll('time[data-behavior~=local-time]')).map(function (element) {
+    [].slice.call(document.querySelectorAll('time[data-controller~=local-time]')).map(function (element) {
       element.textContent = new Intl.DateTimeFormat(navigator.language, { dateStyle: "medium", timeStyle: "long"}).format(new Date(element.textContent));
     });
   })

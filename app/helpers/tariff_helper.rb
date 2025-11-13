@@ -62,7 +62,7 @@ module TariffHelper
 
     tag.span(class: "d-inline-flex align-items-center gap-0") do
       title = linkable.decorated.name
-      link_to([ :dashboard, linkable ], title:, data: { test_id: title, "bs-toggle" => "tooltip" }, target: "_blank") do
+      link_to([ :dashboard, linkable ], title:, data: { test_id: title, "bs-toggle" => "tooltip" }) do
         tariff_category_direction_icon(linkable.category)
       end
     end
