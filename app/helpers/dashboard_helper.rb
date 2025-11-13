@@ -4,17 +4,12 @@ module DashboardHelper
     "https://www.gravatar.com/avatar/#{user_email}?size=200"
   end
 
-  def page_title(title:, subtitle: nil, &block)
+  def page_title(title:, &block)
     content_for(:page_title, title)
 
     content_tag(:div, class: "card-header d-flex justify-content-between align-items-center") do
       content = "".html_safe
       content += content_tag(:h2, title, class: "card-title")
-
-      if subtitle.present?
-        content += " "
-        content += content_tag(:h3, subtitle, class: "card-subtitle")
-      end
 
       if block_given?
         content += content_tag(:div, class: "card-header-actions") do
