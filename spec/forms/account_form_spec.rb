@@ -134,20 +134,26 @@ RSpec.describe AccountForm do
     it "updates a customer managed account" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:)
+      tariff_plan = create(:tariff_plan, carrier:)
       account = create(
         :account,
         :customer_managed,
         carrier:,
         sip_trunk:,
-        calls_per_second: 1
+        calls_per_second: 1,
       )
+      tariff_plan_subscription = create(:tariff_plan_subscription, account:)
 
-      form = build_form(
-        carrier:,
-        object: account,
+      form = AccountForm.initialize_with(account)
+      form.attributes = {
         sip_trunk_id: nil,
-        calls_per_second: 10
-      )
+        calls_per_second: 10,
+        tariff_plan_subscriptions: {
+          plan_id: tariff_plan.id,
+          category: tariff_plan_subscription.category,
+          id: tariff_plan_subscription.id
+        }
+      }
 
       result = form.save
 

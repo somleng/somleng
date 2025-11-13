@@ -130,7 +130,6 @@ RSpec.describe "Accounts" do
   it "Update an account" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
-    tariff_plan = create(:tariff_plan, :outbound_messages, name: "Standard", carrier:)
     account = create(
       :account,
       :carrier_managed,
@@ -147,9 +146,6 @@ RSpec.describe "Accounts" do
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
     enhanced_select("Basic.Slt", from: "Default TTS voice")
-    within(".outbound-messages-line-item") do
-      enhanced_select("Outbound messages (Standard)", from: "Plan")
-    end
     uncheck("Enabled")
 
     perform_enqueued_jobs do
@@ -165,10 +161,6 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("John Doe")
     expect(page).to have_content("johndoe@example.com")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
-    expect(page).to have_link(
-      "Outbound messages (Standard)",
-      href: dashboard_tariff_plan_path(tariff_plan)
-    )
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
@@ -194,15 +186,27 @@ RSpec.describe "Accounts" do
   end
 
   it "Update a customer managed account" do
-    user = create(:user, :carrier)
-    create(:sip_trunk, carrier: user.carrier, name: "Main SIP Trunk")
+    carrier = create(:carrier)
+    create(:sip_trunk, carrier:, name: "Main SIP Trunk")
+    tariff_plan = create(:tariff_plan, :outbound_messages, name: "Standard", carrier:)
     account = create(
       :account,
       :customer_managed,
       :enabled,
-      carrier: user.carrier,
-      default_tts_voice: "Basic.Slt"
+      carrier:,
+      default_tts_voice: "Basic.Slt",
     )
+    existing_tariff_plan_subscription = create(
+      :tariff_plan_subscription,
+      account:,
+      plan: create(
+        :tariff_plan,
+        :outbound_calls,
+        carrier:,
+        name: "Standard"
+      )
+    )
+    user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
@@ -211,12 +215,23 @@ RSpec.describe "Accounts" do
     expect(page).to have_enhanced_select("Default TTS voice", disabled: true)
 
     enhanced_select("Main SIP Trunk", from: "SIP trunk")
+    within(".outbound-messages-line-item") do
+      enhanced_select("Outbound messages (Standard)", from: "Plan")
+    end
 
     click_on("Update Account")
 
     expect(page).to have_content("Account was successfully updated")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
     expect(page).to have_content("Customer managed")
+    expect(page).to have_link(
+      "Outbound messages (Standard)",
+      href: dashboard_tariff_plan_path(tariff_plan)
+    )
+    expect(page).to have_link(
+      "Outbound calls (Standard)",
+      href: dashboard_tariff_plan_path(existing_tariff_plan_subscription.plan)
+    )
   end
 
   it "Resend invitation" do
