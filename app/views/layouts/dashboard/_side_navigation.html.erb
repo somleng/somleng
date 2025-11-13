@@ -46,32 +46,6 @@
       </ul>
     </li>
 
-    <% if %i[tariff_package tariff_plan tariff_schedule destination_group].any? { |r| policy(r).index? } %>
-      <li class="nav-group" data-coreui="navigation">
-        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
-          <i class="nav-icon fa-solid fa-money-check-dollar"></i> Billing
-        </a>
-
-        <ul class="nav-group-items">
-          <% if policy(:tariff_package).index? %>
-            <%= sidebar_nav("Packages", dashboard_tariff_packages_path, icon_class: "fa-solid fa-boxes-packing") %>
-          <% end %>
-
-          <% if policy(:tariff_plan).index? %>
-            <%= sidebar_nav("Plans", dashboard_tariff_plans_path, icon_class: "fa-solid fa-receipt") %>
-          <% end %>
-
-          <% if policy(:tariff_schedule).index? %>
-            <%= sidebar_nav("Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
-          <% end %>
-
-          <% if policy(:destination_group).index? %>
-            <%= sidebar_nav("Destination Groups", dashboard_destination_groups_path, icon_class: "fa-solid fa-1") %>
-          <% end %>
-        </ul>
-      </li>
-    <% end %>
-
     <% if %i[sip_trunk phone_call tts_events].any? { |r| policy(r).index? } %>
       <li class="nav-group" data-coreui="navigation">
         <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
@@ -145,6 +119,32 @@
 
     <% if policy(:account_membership).index? %>
       <%= sidebar_nav("Team", dashboard_account_memberships_path, icon_class: "fa-solid fa-people-group") %>
+    <% end %>
+
+    <% if %i[tariff_package tariff_plan tariff_schedule destination_group].any? { |r| policy(r).index? } %>
+      <li class="nav-group" data-coreui="navigation">
+        <a class="nav-link nav-group-toggle" href="#" data-turbo="false">
+          <i class="nav-icon fa-solid fa-money-check-dollar"></i> Billing
+        </a>
+
+        <ul class="nav-group-items">
+          <% if policy(:tariff_package).index? %>
+            <%= sidebar_nav("Packages", dashboard_tariff_packages_path, icon_class: "fa-solid fa-boxes-packing") %>
+          <% end %>
+
+          <% if policy(:tariff_plan).index? %>
+            <%= sidebar_nav("Plans", dashboard_tariff_plans_path, icon_class: "fa-solid fa-receipt") %>
+          <% end %>
+
+          <% if policy(:tariff_schedule).index? %>
+            <%= sidebar_nav("Schedules", dashboard_tariff_schedules_path, icon_class: "fa-solid fa-table-columns") %>
+          <% end %>
+
+          <% if policy(:destination_group).index? %>
+            <%= sidebar_nav("Destination Groups", dashboard_destination_groups_path, icon_class: "fa-solid fa-1") %>
+          <% end %>
+        </ul>
+      </li>
     <% end %>
 
     <li class="nav-item"><hr/></li>
