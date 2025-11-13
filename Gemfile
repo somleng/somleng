@@ -46,17 +46,18 @@ gem "kaminari"
 gem "lograge"
 gem "money-rails"
 gem "okcomputer"
+gem "openssl"
 gem "pg"
 gem "pghero"
 gem "pg_query"
 gem "phony"
+gem "propshaft"
 gem "puma"
 gem "pundit"
 gem "recaptcha"
 gem "redis"
 gem "responders"
 gem "rqrcode"
-gem "sassc-rails"
 gem "sentry-rails"
 gem "sentry-ruby"
 gem "shoryuken"
@@ -73,9 +74,6 @@ gem "with_advisory_lock"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
-
-# https://github.com/ruby/openssl/issues/949
-gem "openssl"
 
 group :development, :test do
   gem "pry"
@@ -97,7 +95,6 @@ group :test do
   gem "factory_bot_rails"
   gem "mock_redis"
   gem "selenium-webdriver"
-  gem "shoulda-matchers"
   gem "simplecov", require: false
   gem "simplecov-lcov", require: false
   gem "webmock"

@@ -1,0 +1,14 @@
+class TariffPlanTier < ApplicationRecord
+  DEFAULT_WEIGHT = 10.0
+
+  belongs_to :plan, class_name: "TariffPlan"
+  belongs_to :schedule, class_name: "TariffSchedule"
+
+  before_create :set_default_weight
+
+  private
+
+  def set_default_weight
+    self.weight ||= DEFAULT_WEIGHT
+  end
+end

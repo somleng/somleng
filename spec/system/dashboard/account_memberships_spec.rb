@@ -16,7 +16,7 @@ RSpec.describe "Account Memberships" do
 
     expect(page).to have_content("Joe Bloggs")
     expect(page).to have_content("John Doe")
-    expect(page).not_to have_content("Bob Chann")
+    expect(page).to have_no_content("Bob Chann")
   end
 
   it "Invite an account member" do
@@ -26,12 +26,12 @@ RSpec.describe "Account Memberships" do
     carrier_sign_in(user)
     visit dashboard_account_memberships_path
 
-    click_link("New")
+    click_on("New")
     fill_in("Name", with: "John Doe")
     fill_in("Email", with: "johndoe@example.com")
     select("Admin", from: "Role")
 
-    click_button("Send an Invitation")
+    click_on("Send an Invitation")
     expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
     expect(page).to have_content("Admin")
   end
@@ -42,7 +42,7 @@ RSpec.describe "Account Memberships" do
 
     carrier_sign_in(user)
     visit new_dashboard_account_membership_path
-    click_button "Send an Invitation"
+    click_on "Send an Invitation"
 
     expect(page).to have_content("can't be blank")
   end
@@ -55,10 +55,10 @@ RSpec.describe "Account Memberships" do
 
     carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
-    click_link("Edit")
+    click_on("Edit")
 
     select("Owner", from: "Role")
-    click_button("Update User")
+    click_on("Update User")
 
     expect(page).to have_content("Account membership was successfully updated")
     expect(page).to have_content("Owner")
@@ -78,7 +78,7 @@ RSpec.describe "Account Memberships" do
     end
 
     expect(page).to have_content("Account membership was successfully destroyed")
-    expect(page).not_to have_content("Bob Chann")
+    expect(page).to have_no_content("Bob Chann")
   end
 
   it "Resend invitation" do

@@ -1,0 +1,77 @@
+<%= page_title(title: "Tariff Plan") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_plan_path(@resource)) %>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_plan_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource.decorated) do |f| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Tariff Calculator</h5>
+
+        <%= form_with url: url_for(action: :show), scope: :tariff_calculation, method: :get, local: true do |form| %>
+          <% form_submitted = @tariff_calculation.destination.present? %>
+          <% result = DestinationTariffDecorator.new(@tariff_calculation.result) if @tariff_calculation.result.present? %>
+
+          <div class="row">
+            <div class="col-sm-6"">
+              <%= form.label :destination, class: "form-label" %>
+              <div class="input-group mb-4">
+                <% field_classes = ["form-control"] %>
+                <% field_classes << "is-invalid" if form_submitted && result.blank? %>
+                <% field_classes << "is-valid" if form_submitted && result.present? %>
+                <%= form.telephone_field :destination, value: @tariff_calculation.destination, class: field_classes.join(" "), autocomplete: "off", required: true, pattern: "[0-9]*" %>
+                <% if form_submitted %>
+                  <% if result.present? %>
+                    <span class="input-group-text">
+                      <%= destination_tariff_diagram(result) %>
+                    </span>
+                  <% else %>
+                    <div class="invalid-feedback">No tariff found for <%= @tariff_calculation.destination %></div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <%= form.submit "Calculate Tariff", name: nil, class: "btn btn-primary float-right" %>
+          <%= link_to "Clear", url_for(action: :show), class: "btn btn-secondary float-left" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
+
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= f.object.id %>
+          </code>
+        <% end %>
+
+        <%= f.attribute :name %>
+        <%= f.attribute :category %>
+        <%= f.attribute :description %>
+        <%= f.attribute :tariff_packages do %>
+          <%= external_link_to("Manage", dashboard_tariff_packages_path(filter: { tariff_plan_id: f.object.id })) %>
+        <% end %>
+        <%= f.attribute :tariff_schedules do %>
+          <%= summarize_list(
+            DecoratedCollection.new(
+              f.object.schedules,
+            ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
+            max: 1,
+            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_plan_id: f.object.id })
+          ) %>
+        <% end %>
+        <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+        <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+      </div>
+    </div>
+  <% end %>
+</div>

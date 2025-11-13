@@ -16,7 +16,7 @@ RSpec.describe "TTS Events" do
     )
 
     expect(page).to have_content(tts_event.id)
-    expect(page).not_to have_content(other_tts_event.id)
+    expect(page).to have_no_content(other_tts_event.id)
 
     perform_enqueued_jobs do
       click_on("Export")
@@ -34,7 +34,7 @@ RSpec.describe "TTS Events" do
     expect(page).to have_content(tts_event.phone_call_id)
     expect(page).to have_content(tts_event.tts_voice)
     expect(page).to have_content(tts_event.num_chars)
-    expect(page).not_to have_content(other_tts_event.id)
+    expect(page).to have_no_content(other_tts_event.id)
   end
 
   it "Show a TTS Event" do

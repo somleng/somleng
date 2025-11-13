@@ -2,37 +2,76 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from "./application";
 
-import DashboardController from "./dashboard_controller"
-application.register("dashboard", DashboardController)
+import DashboardController from "./dashboard_controller";
+application.register("dashboard", DashboardController);
 
-import Filters__DatePickerController from "./filters/date_picker_controller"
-application.register("filters--date-picker", Filters__DatePickerController)
+import DestinationGroupFormController from "./destination_group_form_controller";
+application.register("destination-group-form", DestinationGroupFormController);
 
-import Filters__FieldController from "./filters/field_controller"
-application.register("filters--field", Filters__FieldController)
+import DestinationTariffFormController from "./destination_tariff_form_controller";
+application.register(
+  "destination-tariff-form",
+  DestinationTariffFormController
+);
 
-import FiltersController from "./filters_controller"
-application.register("filters", FiltersController)
+import EnhancedSelectController from "./enhanced_select_controller";
+application.register("enhanced-select", EnhancedSelectController);
 
-import MaskedContentController from "./masked_content_controller"
-application.register("masked-content", MaskedContentController)
+import Filters__DatePickerController from "./filters/date_picker_controller";
+application.register("filters--date-picker", Filters__DatePickerController);
 
-import MessagingServiceIntegrationController from "./messaging_service_integration_controller"
-application.register("messaging-service-integration", MessagingServiceIntegrationController)
+import Filters__FieldController from "./filters/field_controller";
+application.register("filters--field", Filters__FieldController);
 
-import SidebarController from "./sidebar_controller"
-application.register("sidebar", SidebarController)
+import FiltersController from "./filters_controller";
+application.register("filters", FiltersController);
 
-import SignUpController from "./sign_up_controller"
-application.register("sign-up", SignUpController)
+import LocalTimeController from "./local_time_controller";
+application.register("local-time", LocalTimeController);
 
-import SipTrunksController from "./sip_trunks_controller"
-application.register("sip-trunks", SipTrunksController)
+import MaskedContentController from "./masked_content_controller";
+application.register("masked-content", MaskedContentController);
 
-import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller"
-application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsController)
+import MessagingServiceIntegrationController from "./messaging_service_integration_controller";
+application.register(
+  "messaging-service-integration",
+  MessagingServiceIntegrationController
+);
 
-import VerificationServicesController from "./verification_services_controller"
-application.register("verification-services", VerificationServicesController)
+import RemoveNestedFormController from "./remove_nested_form_controller";
+application.register("remove-nested-form", RemoveNestedFormController);
+
+import SidebarController from "./sidebar_controller";
+application.register("sidebar", SidebarController);
+
+import SignUpController from "./sign_up_controller";
+application.register("sign-up", SignUpController);
+
+import SipTrunksController from "./sip_trunks_controller";
+application.register("sip-trunks", SipTrunksController);
+
+import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller";
+application.register(
+  "sms-gateway-channel-groups",
+  SmsGatewayChannelGroupsController
+);
+
+import TariffPackageSelectionController from "./tariff_package_selection_controller";
+application.register(
+  "tariff-package-selection",
+  TariffPackageSelectionController
+);
+
+import TariffPackageWizardController from "./tariff_package_wizard_controller";
+application.register("tariff-package-wizard", TariffPackageWizardController);
+
+import TariffCategoryFormController from "./tariff_category_form_controller";
+application.register("tariff-category-form", TariffCategoryFormController);
+
+import TariffPlanTierFormController from "./tariff_plan_tier_form_controller";
+application.register("tariff-plan-tier-form", TariffPlanTierFormController);
+
+import VerificationServicesController from "./verification_services_controller";
+application.register("verification-services", VerificationServicesController);

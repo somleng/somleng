@@ -15,12 +15,14 @@
 
           <% if current_user.carrier_user? %>
             <div class="col-sm-6">
-                <%= f.input :account_id,
-                            collection: resource.account_options_for_select,
-                            selected: resource.account_id,
-                            disabled: resource.persisted?,
-                            prompt: "",
-                            input_html: { data: { behavior: "choices-input" } } %>
+                <%= f.input(
+                  :account_id,
+                  collection: resource.account_options_for_select,
+                  selected: resource.account_id,
+                  disabled: resource.persisted?,
+                  prompt: "",
+                  input_html: { data: { controller: "enhanced-select" } }
+                ) %>
             </div>
           <% end %>
         </div>
@@ -42,8 +44,8 @@
                 input_html: {
                   multiple: true,
                   data: {
-                    behavior: "choices-input",
-                    choices_options: {
+                    controller: "enhanced-select",
+                    enhanced_select_options: {
                       removeItemButton: true
                     }
                   }

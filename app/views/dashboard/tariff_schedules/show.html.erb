@@ -1,0 +1,40 @@
+<%= page_title(title: "Tariff Schedule") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_tariff_schedule_path(@resource)) %>
+  <% end %>
+
+  <% if policy(@resource).destroy? %>
+    <%= render("shared/destroy_resource_page_action", path: dashboard_tariff_schedule_path(@resource)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource.decorated) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= f.object.id %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :name %>
+    <%= f.attribute :category %>
+    <%= f.attribute :description %>
+    <%= f.attribute :tariff_plans do %>
+      <%= summarize_list(
+        DecoratedCollection.new(
+          f.object.plans,
+        ).map { link_to(_1.name, dashboard_tariff_plan_path(_1)) },
+        max: 1,
+        link_to_remaining: dashboard_tariff_plans_path(filter: { tariff_schedule_id: f.object.id })
+      ) %>
+    <% end %>
+    <%= f.attribute :destination_tariffs do %>
+      <%= summarize_list(
+        DecoratedCollection.new(f.object.destination_tariffs).map { destination_tariff_diagram(_1) },
+        max: 1,
+      ).html_safe %>
+    <% end %>
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

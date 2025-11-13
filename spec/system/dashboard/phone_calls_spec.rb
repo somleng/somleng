@@ -45,7 +45,7 @@ RSpec.describe "Phone Calls" do
     expect(page).to have_content("+855 12 234 232")
     expect(page).to have_content("1294")
     filtered_out_phone_calls.each do |filtered_out_phone_call|
-      expect(page).not_to have_content(filtered_out_phone_call.id)
+      expect(page).to have_no_content(filtered_out_phone_call.id)
     end
 
     perform_enqueued_jobs do
@@ -64,7 +64,7 @@ RSpec.describe "Phone Calls" do
     expect(page).to have_content("MXN")
 
     filtered_out_phone_calls.each do |filtered_out_phone_call|
-      expect(page).not_to have_content(filtered_out_phone_call.id)
+      expect(page).to have_no_content(filtered_out_phone_call.id)
     end
   end
 

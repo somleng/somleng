@@ -12,7 +12,7 @@ RSpec.describe "Messaging Services" do
     visit(dashboard_messaging_services_path(filter: { name: "Messaging" }))
 
     expect(page).to have_content("My Messaging Service")
-    expect(page).not_to have_content("Foobar")
+    expect(page).to have_no_content("Foobar")
   end
 
   it "Shows a messaging service" do
@@ -55,14 +55,13 @@ RSpec.describe "Messaging Services" do
 
     click_on("New")
     fill_in("Name", with: "My Messaging Service")
-    choices_select("Rocket Rides", from: "Account")
+    enhanced_select("Rocket Rides", from: "Account")
     click_on("Next")
 
-    choices_select("+855 71 577 7777", from: "Phone numbers")
-    choices_select("+855 71 588 8888", from: "Phone numbers")
+    enhanced_select("+855 71 577 7777", "+855 71 588 8888", from: "Phone numbers")
     choose("Send a webhook")
     fill_in("Inbound request URL", with: "https://www.example.com/message.xml")
-    select("POST", from: "Inbound request method")
+    enhanced_select("POST", from: "Inbound request method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
     check("Smart encoding")
 
@@ -87,8 +86,8 @@ RSpec.describe "Messaging Services" do
     visit new_dashboard_messaging_service_path
 
     fill_in("Name", with: "My Messaging Service")
-    click_button("Next")
-    click_button("Save")
+    click_on("Next")
+    click_on("Save")
 
     expect(page).to have_content("Messaging service was successfully updated")
     expect(page).to have_content("My Messaging Service")
@@ -123,8 +122,8 @@ RSpec.describe "Messaging Services" do
     visit dashboard_messaging_service_path(messaging_service)
     click_on("Edit")
     fill_in("Name", with: "My Messaging Service")
-    choices_select("+855 71 577 7777", from: "Phone numbers")
-    choices_select("+855 71 588 8888", from: "Phone numbers")
+    enhanced_select("+855 71 577 7777", from: "Phone numbers")
+    enhanced_select("+855 71 588 8888", from: "Phone numbers")
     fill_in("Inbound request URL", with: "https://www.example.com/message.xml")
     select("POST", from: "Inbound request method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
@@ -158,6 +157,6 @@ RSpec.describe "Messaging Services" do
     click_on("Delete")
 
     expect(page).to have_content("Messaging service was successfully destroyed")
-    expect(page).not_to have_content("My Channel Group")
+    expect(page).to have_no_content("My Channel Group")
   end
 end

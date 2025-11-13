@@ -18,8 +18,8 @@ RSpec.describe "Events" do
     )
 
     expect(page).to have_content(event1.id)
-    expect(page).not_to have_content(event2.id)
-    expect(page).not_to have_content(event3.id)
+    expect(page).to have_no_content(event2.id)
+    expect(page).to have_no_content(event3.id)
   end
 
   it "Show an event" do

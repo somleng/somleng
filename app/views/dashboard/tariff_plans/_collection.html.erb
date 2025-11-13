@@ -1,0 +1,47 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Tariff Schedules
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |tariff_plan| %>
+      <% tariff_plan = TariffPlanDecorator.new(tariff_plan) %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(tariff_plan.id, dashboard_tariff_plan_path(tariff_plan)) %>
+        </td>
+
+        <td>
+          <%= tariff_plan.name %>
+        </td>
+
+        <td>
+          <%= summarize_list(
+            DecoratedCollection.new(
+              tariff_plan.schedules,
+            ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
+            max: 1,
+            link_to_remaining: dashboard_tariff_schedules_path(filter: { tariff_plan_id: tariff_plan.id })
+          ) %>
+        </td>
+
+        <td>
+          <%= local_time(tariff_plan.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

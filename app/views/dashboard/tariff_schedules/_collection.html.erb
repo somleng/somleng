@@ -1,0 +1,44 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Tariffs
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |tariff_schedule| %>
+      <% tariff_schedule = TariffScheduleDecorator.new(tariff_schedule) %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(tariff_schedule.id, dashboard_tariff_schedule_path(tariff_schedule)) %>
+        </td>
+
+        <td>
+          <%= tariff_schedule.name %>
+        </td>
+
+        <td>
+          <%= summarize_list(
+            tariff_schedule.destination_tariffs.map { destination_tariff_diagram(_1) },
+            max: 1
+          ) %>
+        </td>
+
+        <td>
+          <%= local_time(tariff_schedule.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

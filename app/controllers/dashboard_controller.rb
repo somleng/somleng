@@ -6,6 +6,7 @@ class DashboardController < ApplicationController
 
   prepend_before_action :authenticate_user!
   before_action :enforce_two_factor_authentication!
+  helper_method :filter_params
 
   private
 
@@ -22,7 +23,7 @@ class DashboardController < ApplicationController
   def apply_filters(resources_scope)
     filter_class(resources_scope).new(
       resources_scope:,
-      input_params: request.params
+      input_params: request.query_parameters
     ).apply
   end
 
@@ -32,5 +33,9 @@ class DashboardController < ApplicationController
 
   def filter_class(resources_scope)
     resources_scope.filter_class
+  end
+
+  def filter_params
+    request.query_parameters.slice(:filter)
   end
 end

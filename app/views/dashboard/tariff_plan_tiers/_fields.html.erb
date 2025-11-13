@@ -1,0 +1,50 @@
+<div class="card mb-3" data-controller="tariff-plan-tier-form remove-nested-form" data-remove-nested-form-target="element" data-tariff-plan-tier-form-tariff-schedules-by-category-value="<%= form.object.tariff_schedules_by_category.to_json %>" data-test-id="tariff-plan-tier-form">
+  <div class= "card-header d-flex justify-content-between align-items-center">
+    <h6>
+      <% if form.object.new_record? %>
+        New Tier
+      <% else %>
+        Edit Tier
+      <% end %>
+    </h6>
+    <div class="card-header-actions d-flex justify-content-end">
+      <button type="button" class="btn btn-outline-danger" data-action="click->remove-nested-form#remove" title="Delete">
+        <i class="fas fa-trash-alt"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <%= form.input :_destroy, as: :hidden, input_html: { data: { "remove-nested-form-target": "destroyElement" } } %>
+    <%= form.input :id, as: :hidden %>
+
+    <div class="row">
+      <div class="col-md-6">
+        <%= form.input(
+          :tariff_schedule_id,
+          collection: form.object.tariff_schedules_options_for_select,
+          prompt: true,
+          required: true,
+          disabled: form.object.persisted?,
+          input_html: {
+            data: {
+              controller: "enhanced-select",
+              tariff_plan_tier_form_target: "tariffScheduleInput"
+            }
+          }
+        ) %>
+      </div>
+
+      <div class="col-md-6">
+        <%= form.input(
+          :weight,
+          as: :numeric,
+          hint: "Used to set priority - higher values take precedence.",
+          input_html: {
+            min: 0
+          }
+        ) %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,14 +5,15 @@
     <div class="row">
       <div class="col-sm-6">
 
-        <%= f.input :default_tts_voice,
-                    collection: TTSVoices::Voice.all.map { |voice| [voice.to_s, voice.identifier] },
-                    prompt: "",
-                    selected: f.object.default_tts_voice.identifier,
-                    include_blank: false,
-                    disabled: local_assigns.fetch(:disabled, false),
-                    input_html: { data: { behavior: "choices-input" } } %>
-
+        <%= f.input(
+          :default_tts_voice,
+          collection: TTSVoices::Voice.all.map { |voice| [voice.to_s, voice.identifier] },
+          prompt: "",
+          selected: f.object.default_tts_voice.identifier,
+          include_blank: false,
+          disabled: local_assigns.fetch(:disabled, false),
+          input_html: { data: { controller: "enhanced-select" } }
+        ) %>
       </div>
     </div>
   </div>

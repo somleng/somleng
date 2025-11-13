@@ -1,0 +1,53 @@
+<% assignment_index = 0 %>
+<% group_collection_by(collection) { _1.category.type }.each do |(category_type, assignments)| %>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">
+        <%= category_type.to_s.humanize %>
+      </h5>
+      <div class="row">
+        <% assignments.each do |assignment| %>
+          <div class="col mb-3">
+            <%= form.simple_fields_for(collection_method, assignment, index: assignment_index) do |assignment_form| %>
+              <div class="card mb-3 <%= "#{assignment.category.value.dasherize}-line-item" %>">
+                <div class="card-body">
+                  <h6 class="card-title">
+                    <% if assignment.category.direction.inbound? %>
+                      <i class="fa-solid fa-arrow-left"></i>
+                    <% elsif assignment.category.direction.outbound? %>
+                      <i class="fa-solid fa-arrow-right"></i>
+                    <% end %>
+                    <%= assignment.category.direction.to_s.humanize %>
+                  </h6>
+
+                  <%= assignment_form.input(
+                    :plan_id,
+                    collection: assignment.plans_options_for_select,
+                    prompt: true,
+                    required: false,
+                    include_blank: true,
+                    input_html: {
+                      data: {
+                        controller: "enhanced-select",
+                        enhanced_select_options: {
+                          removeItemButton: true
+                        },
+                        tariff_package_selection_target: "tariffPlanInput",
+                        action: "change->tariff-package-selection#changeTariffPlan",
+                        category: assignment.category
+                      }
+                    }
+                  ) %>
+
+                  <%= assignment_form.input(:category, as: :hidden) %>
+                  <%= assignment_form.input(:id, as: :hidden) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <% assignment_index +=1 %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

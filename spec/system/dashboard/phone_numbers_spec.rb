@@ -45,19 +45,19 @@ RSpec.describe "Phone Numbers" do
     )
 
     expect(page).to have_content("+1 (251) 309-5500")
-    expect(page).not_to have_content("+1 (201) 309-5500")
-    expect(page).not_to have_content("+1 (251) 309-5501")
-    expect(page).not_to have_content("+1 (251) 309-5502")
-    expect(page).not_to have_content("+1 (251) 309-5503")
-    expect(page).not_to have_content("+1 (251) 309-5504")
-    expect(page).not_to have_content("+1 (251) 309-5505")
-    expect(page).not_to have_content("+1 (251) 309-5506")
-    expect(page).not_to have_content("+1 (251) 309-5507")
+    expect(page).to have_no_content("+1 (201) 309-5500")
+    expect(page).to have_no_content("+1 (251) 309-5501")
+    expect(page).to have_no_content("+1 (251) 309-5502")
+    expect(page).to have_no_content("+1 (251) 309-5503")
+    expect(page).to have_no_content("+1 (251) 309-5504")
+    expect(page).to have_no_content("+1 (251) 309-5505")
+    expect(page).to have_no_content("+1 (251) 309-5506")
+    expect(page).to have_no_content("+1 (251) 309-5507")
 
     click_on("Delete")
 
     expect(page).to have_content("Phone numbers were successfully destroyed")
-    expect(page).not_to have_content("+1 (251) 309-5500")
+    expect(page).to have_no_content("+1 (251) 309-5500")
     expect(page).not_to have_selector(:link_or_button, "Delete")
   end
 
@@ -114,7 +114,7 @@ RSpec.describe "Phone Numbers" do
     expect(page).to have_content("34.748463")
     expect(page).to have_content("-92.284434")
 
-    expect(page).not_to have_content("+12513095501")
+    expect(page).to have_no_content("+12513095501")
   end
 
   it "Import phone numbers" do
@@ -256,7 +256,7 @@ RSpec.describe "Phone Numbers" do
     fill_in("Rate center", with: "NEWTORONTO")
     fill_in("Latitude", with: "43.6008")
     fill_in("Longitude", with: "-79.5053")
-    choices_select("My Carrier Account", from: "Account")
+    enhanced_select("My Carrier Account", from: "Account")
 
     click_on("Update Phone number")
 
@@ -294,7 +294,7 @@ RSpec.describe "Phone Numbers" do
     click_on("Delete")
 
     expect(page).to have_content("Phone number was successfully destroyed")
-    expect(page).not_to have_content("1234")
+    expect(page).to have_no_content("1234")
 
     visit(dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_content("1234")

@@ -25,7 +25,7 @@ RSpec.describe "SIP Trunks" do
 
     expect(page).to have_content("Main SIP Trunk")
     expect(page).to have_content("South East Asia (Singapore)")
-    expect(page).not_to have_content("Old SIP Trunk")
+    expect(page).to have_no_content("Old SIP Trunk")
   end
 
   it "Create a SIP Trunk", :js do
@@ -46,7 +46,7 @@ RSpec.describe "SIP Trunks" do
     fill_in("Default sender", with: "+1 (234) 234-5678")
     check("National dialing")
     check("Plus prefix")
-    fill_in("Route prefixes", with: "85510")
+    fill_in("Route prefixes", with: "85510, 85515, 85516, 85516")
 
     click_on("Create SIP trunk")
 
@@ -59,6 +59,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_content("Unlimited")
     expect(page).to have_content("+1 (234) 234-5678")
+    expect(page).to have_content("85510, 85515, 85516")
   end
 
   it "Creates a SIP trunk with client credentials", :js do
@@ -136,7 +137,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_content("96.9.66.131, 96.9.66.132")
     expect(page).to have_content("Cambodia")
     expect(page).to have_content("XXXXXXXXXXX@96.9.66.132")
-    expect(page).not_to have_content("123456")
+    expect(page).to have_no_content("123456")
   end
 
   it "Delete a SIP Trunk" do
@@ -151,6 +152,6 @@ RSpec.describe "SIP Trunks" do
     click_on("Delete")
 
     expect(page).to have_content("SIP trunk was successfully destroyed")
-    expect(page).not_to have_content("My SIP Trunk")
+    expect(page).to have_no_content("My SIP Trunk")
   end
 end

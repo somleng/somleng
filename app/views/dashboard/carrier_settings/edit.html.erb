@@ -39,14 +39,32 @@
                 include_blank: false,
                 input_html: {
                   data: {
-                    behavior: "choices-input",
-                    choices_options: {
+                    controller: "enhanced-select",
+                    enhanced_select_options: {
                       position: "bottom"
                     }
                   }
                 }
               )
             %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <%= f.input(
+              :default_tariff_package_id,
+              collection: f.object.tariff_packages_options_for_select,
+              prompt: true,
+              input_html: {
+                data: {
+                  controller: "enhanced-select",
+                  enhanced_select_options: {
+                    removeItemButton: true
+                  },
+                }
+              }
+            ) %>
           </div>
         </div>
       </div>

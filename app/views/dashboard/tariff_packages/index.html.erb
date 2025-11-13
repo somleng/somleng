@@ -1,0 +1,31 @@
+<%= page_title(title: "Tariff Packages") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+    <%= form.select(
+      :tariff_plan_id,
+      current_carrier.tariff_plans.map do |tariff_plan|
+        tariff_plan = TariffPlanDecorator.new(tariff_plan)
+        [tariff_plan.name, tariff_plan.id]
+      end,
+      { filter_value: params.dig(:filter, :tariff_plan_id) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
+    <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if policy(:tariff_package).new? %>
+    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Wizard">
+      <%= link_to(new_dashboard_tariff_package_wizard_path, class: "btn btn-outline-success", title: "Wizard") do %>
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <% end %>
+    </span>
+
+    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_package_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

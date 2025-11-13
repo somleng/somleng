@@ -4,17 +4,12 @@ module DashboardHelper
     "https://www.gravatar.com/avatar/#{user_email}?size=200"
   end
 
-  def page_title(title:, subtitle: nil, &block)
+  def page_title(title:, &block)
     content_for(:page_title, title)
 
     content_tag(:div, class: "card-header d-flex justify-content-between align-items-center") do
       content = "".html_safe
-      content += content_tag(:span, title, class: "h2")
-
-      if subtitle.present?
-        content += " "
-        content += content_tag(:small, subtitle)
-      end
+      content += content_tag(:h2, title, class: "card-title")
 
       if block_given?
         content += content_tag(:div, class: "card-header-actions") do
@@ -29,7 +24,7 @@ module DashboardHelper
   def sidebar_nav(text, path, icon_class:, link_options: {})
     content_tag(:li, class: "nav-item") do
       sidebar_nav_class = "nav-link"
-      sidebar_nav_class += " active" if request.path == path
+      sidebar_nav_class += " active" if request.path.start_with?(path)
       link_to(path, class: sidebar_nav_class, **link_options) do
         content = "".html_safe
         content += content_tag(:i, nil, class: "nav-icon #{icon_class}")
@@ -132,5 +127,21 @@ module DashboardHelper
     tag.span(class: "badge text-bg-#{color} text-white") do
       status
     end
+  end
+
+  def link_to_cancel(link_text = "Cancel", location = :back, **, &)
+    link_to(link_text, location, class: "btn btn-outline-danger", **, &)
+  end
+
+  def summarize_list(items, max: nil, link_to_remaining: nil)
+    return to_sentence(items) if max.blank? || items.size <= max
+
+    displayed = items.take(max)
+    remaining = items.size - max
+
+    remaining_text = "#{remaining} more"
+    remaining_text = link_to(remaining_text, link_to_remaining) if link_to_remaining.present?
+
+    to_sentence([ *displayed, remaining_text.html_safe ])
   end
 end

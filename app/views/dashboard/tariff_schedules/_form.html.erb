@@ -1,0 +1,83 @@
+<div class="card-body">
+  <%= simple_form_for(
+    [ :dashboard, resource ],
+    wrapper: :input_group,
+    url: (dashboard_tariff_schedules_path(filter_params) if resource.new_record?),
+    html: {
+      data: {
+        controller: "tariff-category-form",
+        tariff_category_form_target: "form"
+      }
+    }
+  ) do |f| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          General
+        </h5>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(
+              :category,
+              prompt: true,
+              disabled: f.object.persisted?,
+              input_html: {
+                data: {
+                  tariff_category_form_target: "categoryInput",
+                  action: "change->tariff-category-form#toggleCategory"
+                }
+              }
+            ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(
+              :name,
+              prepend: f.object.category&.text,
+              input_html: {
+                data: { prepend_data: { tariff_category_form_target: "nameInputGroupText" } }
+              }
+            ) %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(:description, as: :text) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">
+          Tariffs
+        </h5>
+
+        <%= turbo_frame_tag("destination_tariffs") do %>
+          <% f.object.retained_destination_tariffs.each_with_index do |destination_tariff, index| %>
+            <%= f.simple_fields_for(:destination_tariffs, destination_tariff, index:) do |destination_tariffs_form| %>
+              <%= render("dashboard/destination_tariffs/fields", form: destination_tariffs_form) %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <div class="text-center">
+          <%= link_to(
+            new_dashboard_destination_tariff_path,
+            class: "btn btn-outline-success",
+            title: "Add Tariff",
+            data: { turbo_stream: true }) do %>
+              <i class="fa-solid fa-plus"></i>
+              Add Tariff
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+    <%= link_to_cancel %>
+  <% end %>
+</div>

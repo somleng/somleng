@@ -11,7 +11,7 @@ RSpec.describe "Admin/Exports" do
     expect(page).to have_content("1 of 1,000")
     expect(page).to have_link("John Doe")
 
-    click_link("John Doe")
+    click_on("John Doe")
     expect(page).to have_content(user.id)
   end
 end

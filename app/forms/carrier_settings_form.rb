@@ -18,7 +18,7 @@ class CarrierSettingsForm
       end
 
       scope = options.fetch(:scope) { ->(_) { Carrier } }
-      return record.errors.add(attribute, :taken) if scope.call(record).exists?(attribute => value)
+      record.errors.add(attribute, :taken) if scope.call(record).exists?(attribute => value)
     rescue Addressable::URI::InvalidURIError
       record.errors.add(attribute, :invalid)
     end
@@ -36,6 +36,7 @@ class CarrierSettingsForm
   attribute :favicon
   attribute :webhook_url
   attribute :enable_webhooks, :boolean, default: true
+  attribute :default_tariff_package_id
 
   delegate :persisted?, :id, to: :carrier
 
@@ -70,7 +71,8 @@ class CarrierSettingsForm
       webhook_url: carrier.webhook_endpoint&.url,
       enable_webhooks: carrier.webhooks_enabled?,
       custom_app_host: carrier.custom_app_host,
-      custom_api_host: carrier.custom_api_host
+      custom_api_host: carrier.custom_api_host,
+      default_tariff_package_id: carrier.default_tariff_package_id
     )
   end
 
@@ -84,7 +86,8 @@ class CarrierSettingsForm
       custom_app_host:,
       custom_api_host:,
       billing_currency:,
-      country_code: country
+      country_code: country,
+      default_tariff_package: (carrier.tariff_packages.find(default_tariff_package_id) if default_tariff_package_id.present?)
     }
 
     webhook_endpoint.enabled = enable_webhooks
@@ -111,6 +114,10 @@ class CarrierSettingsForm
 
   def available_currencies
     CURRENCIES.sort_by(&:priority)
+  end
+
+  def tariff_packages_options_for_select
+    DecoratedCollection.new(carrier.tariff_packages).map { [ _1.name, _1.id ] }
   end
 
   private

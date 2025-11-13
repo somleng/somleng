@@ -1,0 +1,16 @@
+<%= page_title(title: "Destination Groups") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+    <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if policy(:destination_group).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_destination_group_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

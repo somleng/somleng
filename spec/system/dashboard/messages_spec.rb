@@ -42,7 +42,7 @@ RSpec.describe "Messages" do
     expect(page).to have_content(message.id)
     expect(page).to have_content("+855 12 234 232")
     expect(page).to have_content("1294")
-    expect(page).not_to have_content(filtered_message.id)
+    expect(page).to have_no_content(filtered_message.id)
 
     perform_enqueued_jobs do
       click_on("Export")
@@ -59,7 +59,7 @@ RSpec.describe "Messages" do
     expect(page).to have_content("outbound-api")
     expect(page).to have_content("-0.001")
     expect(page).to have_content("MXN")
-    expect(page).not_to have_content(filtered_message.id)
+    expect(page).to have_no_content(filtered_message.id)
   end
 
   it "Shows a message" do

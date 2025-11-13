@@ -25,6 +25,13 @@ class Carrier < ApplicationRecord
   has_many :webhook_request_logs
   has_many :tts_events
   has_many :trial_interactions_credit_vouchers
+  has_many :tariff_packages
+  has_many :tariff_plans
+  has_many :tariff_schedules
+  has_many :tariffs
+  has_many :destination_tariffs, through: :tariff_schedules
+  has_many :destination_groups
+  belongs_to :default_tariff_package, class_name: "TariffPackage", optional: true
 
   has_one_attached :logo
   has_one_attached :favicon

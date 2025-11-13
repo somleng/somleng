@@ -19,11 +19,11 @@ if Rails.env.development? || Rails.env.test?
           },
           {
             gender: "Female", id: "Mia", language_code: "es-MX",
-            supported_engines: %w[neural standard]
+            supported_engines: %w[generative neural standard]
           },
           {
             gender: "Female", id: "Celine", language_code: "fr-FR",
-            supported_engines: %w[standard]
+            supported_engines: %w[generative standard]
           },
           {
             gender: "Female", id: "Zhiyu", language_code: "cmn-CN",

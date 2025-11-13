@@ -1,5 +1,13 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource], html: { data: { controller: "sms-gateway-channel-groups", sms_gateway_channel_groups_collection_value: resource.sms_gateways_options_for_select } }) do |f| %>
+  <%= simple_form_for(
+    [:dashboard, resource],
+    html: {
+      data: {
+        controller: "sms-gateway-channel-groups",
+        sms_gateway_channel_groups_available_channels_value: resource.sms_gateway_available_channels.to_json
+      }
+    }
+  ) do |f| %>
     <% form = SMSGatewayChannelGroupFormDecorator.new(f.object) %>
 
     <div class="row">
@@ -17,9 +25,9 @@
             disabled: resource.persisted?,
             input_html: {
               data: {
-                behavior: "choices-input",
+                controller: "enhanced-select",
                 sms_gateway_channel_groups_target: "smsGatewayInput",
-                action: "addItem->sms-gateway-channel-groups#changeSMSGateway",
+                action: "change->sms-gateway-channel-groups#changeSMSGateway",
               }
             },
             hint: "The SMS gateway to associate this channel group with."
@@ -49,7 +57,8 @@
           input_html: {
             multiple: true,
             data: {
-              choices_options: {
+              controller: "enhanced-select",
+              enhanced_select_options: {
                 removeItemButton: true
               },
               sms_gateway_channel_groups_target: "channelsInput"

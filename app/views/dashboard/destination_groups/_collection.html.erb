@@ -1,0 +1,54 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Prefixes
+      </th>
+      <th>
+        Schedules
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |destination_group| %>
+      <% destination_group = DestinationGroupDecorator.new(destination_group) %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(destination_group.id, dashboard_destination_group_path(destination_group)) %>
+        </td>
+
+        <td>
+          <%= destination_group.name %>
+        </td>
+
+        <td>
+          <%= summarize_list(destination_group.prefixes, max: 3) %>
+        </td>
+
+        <td>
+          <%= summarize_list(
+            DecoratedCollection.new(
+              destination_group.tariff_schedules,
+            ).map { link_to(_1.name, dashboard_tariff_schedule_path(_1)) },
+            max: 1,
+            link_to_remaining: dashboard_tariff_schedules_path(filter: { destination_group_id: destination_group.id })
+          ) %>
+        </td>
+
+        <td>
+          <%= local_time(destination_group.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

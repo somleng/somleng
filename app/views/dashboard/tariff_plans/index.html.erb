@@ -1,0 +1,30 @@
+<%= page_title(title: "Tariff Plans") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.select(
+      :category,
+      TariffPlan.category.values.map { |category| [ category.text, category ] },
+      { filter_value: params.dig(:filter, :category) }
+    ) %>
+
+    <%= form.text_field_tag(:name, params.dig(:filter, :name)) %>
+
+    <%= form.select(
+      :tariff_schedule_id,
+      DecoratedCollection.new(current_carrier.tariff_schedules).map { [ _1.name, _1.id ] },
+      { filter_value: params.dig(:filter, :tariff_schedule_id) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
+
+    <%= form.date_range title: "Created at", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if policy(:tariff_plan).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_tariff_plan_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

@@ -1,3 +1,16 @@
-<%= link_to(path, class: "btn btn-outline-success", title: "New") do %>
-  <i class="fa-solid fa-plus"></i>
+
+<% html_options = local_assigns.fetch(:html_options, {}) %>
+<% html_classes = Array(html_options.fetch(:class, [ "btn" ])) %>
+<% title = "New" %>
+<% if local_assigns.fetch(:disabled, false) %>
+  <% html_classes.concat([ "btn-outline-secondary", "disabled" ]) %>
+  <% title = local_assigns.fetch(:disabled_title, "New") %>
+<% else %>
+  <% html_classes.concat([ "btn-outline-success" ]) %>
 <% end %>
+
+<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="<%= title %>">
+  <%= link_to(path, class: html_classes.join(" "), title: "New") do %>
+    <i class="fa-solid fa-plus"></i>
+  <% end %>
+</span>

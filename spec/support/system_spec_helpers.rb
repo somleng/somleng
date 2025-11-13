@@ -12,20 +12,31 @@ module SystemSpecHelpers
     Capybara.current_driver == :rack_test ? yield : super
   end
 
-  def choices_select(value, from:)
-    return select(value, from:) if Capybara.current_driver == :rack_test
+  def enhanced_select(*values, from:, **options)
+    if Capybara.current_driver == :rack_test
+      values.each do |value|
+        select(value, from:, **options)
+      end
 
-    choices_wrapper = find_field(from, visible: false).find(:xpath, "../..")
-    choices_wrapper.click
+      return
+    end
 
-    dropdown = choices_wrapper.find(:xpath, ".//div[contains(@class, 'choices__list--dropdown')]")
-    item_xpath = value.present? ? ".//div[contains(@class, 'choices__item') and contains(., '#{value}')]" : ".//div[contains(@class, 'choices__item') and not(text())]"
+    control_wrapper = find_field(from, visible: false).find(:xpath, "..")
+    control_wrapper.click
 
-    item = dropdown.find(:xpath, item_xpath)
-    item.click
+
+    values.each do |value|
+      option = if options[:exact]
+        control_wrapper.first(:xpath, "..//*[text()='#{value}']")
+      else
+        control_wrapper.first(:xpath, "..//*[contains(text(), '#{value}')]")
+      end
+
+      option.click
+    end
   end
 
-  def have_choices_select(locator = nil, **options)
+  def have_enhanced_select(locator = nil, **options)
     options[:visible] = false unless Capybara.current_driver == :rack_test
     have_select(locator, **options)
   end

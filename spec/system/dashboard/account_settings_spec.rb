@@ -13,9 +13,9 @@ RSpec.describe "Account Settings" do
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("SID")
     expect(page).to have_content("Auth Token")
-    expect(page).not_to have_content(account.auth_token)
+    expect(page).to have_no_content(account.auth_token)
 
-    click_button("Reveal")
+    click_on("Reveal")
 
     expect(page).to have_content(account.auth_token)
   end
@@ -38,11 +38,11 @@ RSpec.describe "Account Settings" do
 
     carrier_sign_in(user)
     visit dashboard_account_settings_path
-    click_link("Edit")
+    click_on("Edit")
 
     fill_in("Name", with: "Car Rides")
-    choices_select("Basic.Slt", from: "Default TTS voice")
-    click_button("Update Account Settings")
+    enhanced_select("Basic.Slt", from: "Default TTS voice")
+    click_on("Update Account Settings")
 
     expect(page).to have_content("Account settings were successfully updated")
     expect(page).to have_content("Car Rides")

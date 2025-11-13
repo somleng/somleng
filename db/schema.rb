@@ -113,6 +113,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.citext "custom_api_host"
     t.citext "custom_app_host"
     t.text "custom_theme_css"
+    t.uuid "default_tariff_package_id"
     t.string "name", null: false
     t.boolean "restricted", default: false, null: false
     t.bigserial "sequence_number", null: false
@@ -122,8 +123,48 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
+    t.index ["default_tariff_package_id"], name: "index_carriers_on_default_tariff_package_id"
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true
+  end
+
+  create_table "destination_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.boolean "catch_all", default: false, null: false
+    t.datetime "created_at", null: false
+    t.citext "name", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id", "catch_all"], name: "index_destination_groups_on_carrier_id_and_catch_all", unique: true, where: "(catch_all = true)"
+    t.index ["carrier_id", "name", "created_at"], name: "index_destination_groups_on_carrier_id_and_name_and_created_at"
+    t.index ["carrier_id"], name: "index_destination_groups_on_carrier_id"
+    t.index ["sequence_number"], name: "index_destination_groups_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "destination_prefixes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "destination_group_id", null: false
+    t.string "prefix", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["destination_group_id", "prefix"], name: "index_destination_prefixes_on_destination_group_id_and_prefix", unique: true
+    t.index ["destination_group_id"], name: "index_destination_prefixes_on_destination_group_id"
+    t.index ["sequence_number"], name: "index_destination_prefixes_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "destination_tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "destination_group_id", null: false
+    t.uuid "schedule_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.uuid "tariff_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["destination_group_id"], name: "index_destination_tariffs_on_destination_group_id"
+    t.index ["schedule_id", "destination_group_id"], name: "idx_on_schedule_id_destination_group_id_c184a69300", unique: true
+    t.index ["schedule_id", "tariff_id"], name: "index_destination_tariffs_on_schedule_id_and_tariff_id", unique: true
+    t.index ["schedule_id"], name: "index_destination_tariffs_on_schedule_id"
+    t.index ["sequence_number"], name: "index_destination_tariffs_on_sequence_number", unique: true, order: :desc
+    t.index ["tariff_id"], name: "index_destination_tariffs_on_tariff_id"
   end
 
   create_table "error_log_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -673,6 +714,94 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 
+  create_table "tariff_package_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.uuid "package_id", null: false
+    t.uuid "plan_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["package_id", "category"], name: "index_tariff_package_plans_on_package_id_and_category", unique: true
+    t.index ["package_id"], name: "index_tariff_package_plans_on_package_id"
+    t.index ["plan_id"], name: "index_tariff_package_plans_on_plan_id"
+    t.index ["sequence_number"], name: "index_tariff_package_plans_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "tariff_packages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.citext "name", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id", "name"], name: "index_tariff_packages_on_carrier_id_and_name", unique: true
+    t.index ["carrier_id"], name: "index_tariff_packages_on_carrier_id"
+    t.index ["sequence_number"], name: "index_tariff_packages_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "tariff_plan_subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.uuid "plan_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "category"], name: "index_tariff_plan_subscriptions_on_account_id_and_category", unique: true
+    t.index ["account_id"], name: "index_tariff_plan_subscriptions_on_account_id"
+    t.index ["plan_id"], name: "index_tariff_plan_subscriptions_on_plan_id"
+    t.index ["sequence_number"], name: "index_tariff_plan_subscriptions_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "tariff_plan_tiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "plan_id", null: false
+    t.uuid "schedule_id", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "weight", precision: 8, scale: 2, null: false
+    t.index ["plan_id", "schedule_id"], name: "index_tariff_plan_tiers_on_plan_id_and_schedule_id", unique: true
+    t.index ["plan_id", "weight"], name: "index_tariff_plan_tiers_on_plan_id_and_weight", unique: true
+    t.index ["sequence_number"], name: "index_tariff_plan_tiers_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "tariff_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.citext "name", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id", "category", "name"], name: "index_tariff_plans_on_carrier_id_and_category_and_name", unique: true
+    t.index ["carrier_id"], name: "index_tariff_plans_on_carrier_id"
+    t.index ["sequence_number"], name: "index_tariff_plans_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "tariff_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.citext "name", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id", "category", "name"], name: "index_tariff_schedules_on_carrier_id_and_category_and_name", unique: true
+    t.index ["carrier_id"], name: "index_tariff_schedules_on_carrier_id"
+    t.index ["sequence_number"], name: "index_tariff_schedules_on_sequence_number", unique: true, order: :desc
+  end
+
+  create_table "tariffs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.string "currency", null: false
+    t.decimal "rate_cents", precision: 10, scale: 4, default: "0.0", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carrier_id"], name: "index_tariffs_on_carrier_id"
+    t.index ["sequence_number"], name: "index_tariffs_on_sequence_number", unique: true, order: :desc
+  end
+
   create_table "trial_interactions_credit_vouchers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "carrier_id", null: false
     t.datetime "created_at", null: false
@@ -857,6 +986,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "carriers", "tariff_packages", column: "default_tariff_package_id", on_delete: :nullify
+  add_foreign_key "destination_groups", "carriers", on_delete: :cascade
+  add_foreign_key "destination_prefixes", "destination_groups", on_delete: :cascade
+  add_foreign_key "destination_tariffs", "destination_groups", on_delete: :cascade
+  add_foreign_key "destination_tariffs", "tariff_schedules", column: "schedule_id", on_delete: :cascade
+  add_foreign_key "destination_tariffs", "tariffs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "error_logs", on_delete: :cascade
   add_foreign_key "error_log_notifications", "users", on_delete: :cascade
   add_foreign_key "error_logs", "accounts"
@@ -914,6 +1049,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
   add_foreign_key "sms_gateway_channels", "sms_gateway_channel_groups", column: "channel_group_id", on_delete: :cascade
   add_foreign_key "sms_gateway_channels", "sms_gateways", on_delete: :cascade
   add_foreign_key "sms_gateways", "carriers"
+  add_foreign_key "tariff_package_plans", "tariff_packages", column: "package_id", on_delete: :cascade
+  add_foreign_key "tariff_package_plans", "tariff_plans", column: "plan_id", on_delete: :cascade
+  add_foreign_key "tariff_packages", "carriers", on_delete: :cascade
+  add_foreign_key "tariff_plan_subscriptions", "accounts", on_delete: :cascade
+  add_foreign_key "tariff_plan_subscriptions", "tariff_plans", column: "plan_id", on_delete: :cascade
+  add_foreign_key "tariff_plan_tiers", "tariff_plans", column: "plan_id", on_delete: :cascade
+  add_foreign_key "tariff_plan_tiers", "tariff_schedules", column: "schedule_id", on_delete: :cascade
+  add_foreign_key "tariff_plans", "carriers", on_delete: :cascade
+  add_foreign_key "tariff_schedules", "carriers", on_delete: :cascade
+  add_foreign_key "tariffs", "carriers", on_delete: :cascade
   add_foreign_key "trial_interactions_credit_vouchers", "carriers", on_delete: :cascade
   add_foreign_key "tts_events", "accounts", on_delete: :nullify
   add_foreign_key "tts_events", "carriers"

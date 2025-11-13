@@ -4,6 +4,7 @@ RSpec.describe "Carrier Settings" do
   it "Update carrier settings" do
     carrier = create(:carrier, name: "My Carrier")
     user = create(:user, :carrier, :owner, carrier:)
+    create(:tariff_package, carrier:, name: "Standard Package")
 
     carrier_sign_in(user)
     visit dashboard_carrier_settings_path
@@ -11,13 +12,14 @@ RSpec.describe "Carrier Settings" do
     click_on("Edit")
     fill_in("Name", with: "T-Mobile")
     select("Zambia", from: "Country")
-    choices_select("Zambian Kwacha", from: "Billing currency")
+    enhanced_select("Zambian Kwacha", from: "Billing currency")
     fill_in("Website", with: "https://t-mobile.example.com")
     fill_in("Webhook URL", with: "https://example.com/webhook_endpoint")
     fill_in("Dashboard host", with: "dashboard.t-mobile.example.com")
     fill_in("API host", with: "api.t-mobile.example.com")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
     attach_file("Favicon", file_fixture("favicon-32x32.png"))
+    enhanced_select("Standard Package", from: "Default tariff package")
 
     click_on("Update Carrier Settings")
 
@@ -31,6 +33,7 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_content("api.t-mobile.example.com")
     expect(page).to have_xpath("//img[@title='Logo']")
     expect(page).to have_xpath("//img[@title='Favicon']")
+    expect(page).to have_content("Standard Package")
   end
 
   it "Update carrier subdomain" do
@@ -69,6 +72,6 @@ RSpec.describe "Carrier Settings" do
     click_on("Update Carrier Settings")
 
     expect(page).to have_content("Carrier settings were successfully updated")
-    expect(page).not_to have_content("https://www.example.com/webhooks")
+    expect(page).to have_no_content("https://www.example.com/webhooks")
   end
 end

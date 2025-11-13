@@ -14,6 +14,22 @@ FactoryBot.define do
     status_callback_method { "GET" }
   end
 
+  trait :inbound_calls do
+    category { "inbound_calls" }
+  end
+
+  trait :inbound_messages do
+    category { "inbound_messages" }
+  end
+
+  trait :outbound_calls do
+    category { "outbound_calls" }
+  end
+
+  trait :outbound_messages do
+    category { "outbound_messages" }
+  end
+
   factory :call_data_record do
     association :file, factory: :active_storage_attachment, filename: "freeswitch_cdr.json"
 
@@ -76,6 +92,12 @@ FactoryBot.define do
           application: carrier.oauth_application,
           scopes: :carrier_api
         )
+      end
+    end
+
+    trait :with_default_tariff_package do
+      after(:build) do |carrier|
+        carrier.default_tariff_package ||= build(:tariff_package, carrier:)
       end
     end
   end
@@ -188,7 +210,6 @@ FactoryBot.define do
         account.account_memberships << create(:account_membership, :owner, account:, carrier: account.carrier) if account.account_memberships.empty?
       end
     end
-
 
     trait :with_access_token do
       after(:build) do |account|
@@ -544,6 +565,97 @@ FactoryBot.define do
       inbound_request_url { "https://www.example.com/incoming_request.xml" }
       inbound_request_method { "POST" }
     end
+  end
+
+  factory :destination_group do
+    transient do
+      prefixes { [] }
+    end
+
+    trait :catch_all do
+      catch_all { true }
+    end
+
+    carrier
+    name { "Cambodia" }
+
+    after(:build) do |destination_group, evaluator|
+      evaluator.prefixes.each do |prefix|
+        destination_group.prefixes << build(:destination_prefix, destination_group:, prefix:)
+      end
+    end
+  end
+
+  factory :destination_prefix do
+    destination_group
+    sequence(:prefix) { |n| "8551#{n}" }
+  end
+
+  factory :tariff do
+    carrier { association :carrier, billing_currency: "USD" }
+    currency { carrier.billing_currency }
+    call
+
+    rate_cents { InfinitePrecisionMoney.new(10, currency).cents }
+
+    traits_for_enum :category, %w[call message]
+  end
+
+  factory :tariff_schedule do
+    carrier
+    outbound_calls
+    sequence(:name) { |n| "Standard#{n}" }
+  end
+
+  factory :tariff_plan do
+    carrier
+    outbound_calls
+    sequence(:name) { |n| "Standard#{n}" }
+  end
+
+  factory :tariff_plan_tier do
+    transient do
+      carrier { build(:carrier) }
+      category { :outbound_calls }
+    end
+
+    plan { association :tariff_plan, carrier:, category: }
+    schedule { association :tariff_schedule, carrier: plan.carrier, category: plan.category }
+  end
+
+  factory :tariff_package do
+    carrier
+    sequence(:name) { |n| "Standard#{n}" }
+  end
+
+  factory :tariff_package_plan do
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    package { association(:tariff_package, carrier:) }
+    plan { association(:tariff_plan, carrier: package.carrier) }
+    category { plan.category }
+  end
+
+  factory :tariff_plan_subscription do
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    account { association(:account, carrier:) }
+    plan { association(:tariff_plan, carrier: account.carrier) }
+    category { plan.category }
+  end
+
+  factory :destination_tariff do
+    transient do
+      carrier { build(:carrier) }
+    end
+
+    schedule { association :tariff_schedule, carrier: }
+    tariff { association(:tariff, category: schedule.category.tariff_category, carrier: schedule.carrier) }
+    destination_group { association :destination_group, carrier: schedule.carrier }
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
