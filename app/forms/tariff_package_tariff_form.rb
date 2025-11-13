@@ -37,9 +37,7 @@ class TariffPackageTariffForm < ApplicationForm
   end
 
   def rate_unit
-    result = billing_currency.symbol
-    result += " / min" if category.type.calls?
-    result
+    TariffDecorator.new(Tariff.new(currency: billing_currency, category: category.tariff_category)).rate_unit
   end
 
   def hint

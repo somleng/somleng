@@ -4,11 +4,11 @@ class TariffDecorator < SimpleDelegator
   end
 
   def rate
-    if message?
-      display_rate(object.rate)
-    elsif call?
-      [ display_rate(object.rate), "/ min" ].join(" ")
-    end
+    [ display_rate(object.rate), rate_unit ].compact.join(" ")
+  end
+
+  def rate_unit(with_currency: false)
+    [ (object.currency.symbol if with_currency), ("/ min" if call?) ].compact.join(" ").presence
   end
 
   private
