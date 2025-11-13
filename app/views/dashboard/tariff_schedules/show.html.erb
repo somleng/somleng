@@ -30,7 +30,7 @@
     <% end %>
     <%= f.attribute :destination_tariffs do %>
       <%= summarize_list(
-        f.object.decorated.destination_tariffs.map { destination_tariff_diagram(_1) },
+        DecoratedCollection.new(f.object.destination_tariffs).map { destination_tariff_diagram(_1) },
         max: 1,
       ).html_safe %>
     <% end %>

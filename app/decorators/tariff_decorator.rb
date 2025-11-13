@@ -3,10 +3,6 @@ class TariffDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :Tariff
   end
 
-  def category
-    object.category.text
-  end
-
   def rate
     if message?
       display_rate(object.rate)
