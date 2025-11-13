@@ -37,7 +37,7 @@ class TariffPackageTariffForm < ApplicationForm
   end
 
   def rate_unit
-    TariffDecorator.new(Tariff.new(currency: billing_currency, category: category.tariff_category)).rate_unit
+    TariffDecorator.new(Tariff.new(currency: billing_currency, category: category.tariff_category)).rate_unit(with_currency: true)
   end
 
   def hint
