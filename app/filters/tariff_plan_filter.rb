@@ -38,6 +38,7 @@ class TariffPlanFilter < ResourceFilter
   filter_with(
     CategoryFilter,
     NameFilter,
+    TariffScheduleIDFilter,
     :date_filter
   )
 end

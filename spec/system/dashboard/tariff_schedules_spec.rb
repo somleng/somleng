@@ -3,12 +3,12 @@ require "rails_helper"
 RSpec.describe "Tariff Schedules" do
   it "filter schedules" do
     carrier = create(:carrier)
-    plan = create(:tariff_plan, carrier:)
+    plan = create(:tariff_plan, :outbound_messages, carrier:)
     schedule = create(:tariff_schedule, category: plan.category, carrier:, name: "Standard")
     create(:tariff_plan_tier, schedule:, plan:)
     excluded_schedules = [
       create(:tariff_schedule, plan.category, carrier:, name: "Promo"),
-      create(:tariff_schedule, :outbound_messages, carrier:, name: "Standard"),
+      create(:tariff_schedule, :outbound_calls, carrier:, name: "Standard"),
       create(:tariff_schedule, plan.category, carrier:, name: "Standard 2")
     ]
     user = create(:user, :carrier, carrier:)
@@ -18,7 +18,7 @@ RSpec.describe "Tariff Schedules" do
       dashboard_tariff_schedules_path(
         filter: {
           name: "standard",
-          category: "outbound_calls",
+          category: "outbound_messages",
           tariff_plan_id: plan.id
         }
       )
