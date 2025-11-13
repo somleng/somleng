@@ -31,7 +31,6 @@ class AccountForm
             }
 
   validate :validate_owner
-  validate :validate_tariff_plan_subscriptions
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Account")
@@ -141,11 +140,5 @@ class AccountForm
     end
 
     FormCollection.new(collection, form: TariffPlanSubscriptionForm)
-  end
-
-  def validate_tariff_plan_subscriptions
-    return if filled_tariff_plan_subscriptions.none?(&:invalid?)
-
-    errors.add(:tariff_plan_subscriptions, :invalid)
   end
 end
