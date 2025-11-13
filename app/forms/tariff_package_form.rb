@@ -8,7 +8,6 @@ class TariffPackageForm < ApplicationForm
             default: []
 
   validates :name, presence: true
-  validate :validate_plans
   validate :validate_name
 
   delegate :persisted?, :new_record?, :id, to: :object
@@ -67,12 +66,6 @@ class TariffPackageForm < ApplicationForm
     end
 
     FormCollection.new(collection, form: TariffPackagePlanForm)
-  end
-
-  def validate_plans
-    return if filled_plans.none?(&:invalid?)
-
-    errors.add(:plans, :invalid)
   end
 
   def validate_name
