@@ -416,7 +416,8 @@ GEM
     nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    okcomputer (1.19.0)
+    okcomputer (1.19.1)
+      benchmark
     openssl (3.3.2)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
