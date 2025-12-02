@@ -43,6 +43,6 @@ class CreatePhoneCallEventJob < ApplicationJob
     Handler.new(...).perform
   end
 
-  retry_on(Handler::PhoneCallNotFoundError,  wait: :polynomially_longer)
+  retry_on(Handler::PhoneCallNotFoundError,  wait: :polynomially_longer, attempts: 3)
   discard_on(Handler::InvalidStateTransitionError)
 end
