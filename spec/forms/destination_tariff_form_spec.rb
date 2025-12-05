@@ -58,7 +58,7 @@ RSpec.describe DestinationTariffForm do
 
       form.save
 
-      expect(form.object).to have_attributes(
+      expect(form.object.reload).to have_attributes(
         persisted?: true,
         schedule:,
         destination_group: destination_tariff.destination_group,
@@ -66,10 +66,7 @@ RSpec.describe DestinationTariffForm do
           rate: InfinitePrecisionMoney.from_amount(0.001, "USD")
         )
       )
-
-      expect(carrier.tariffs).to contain_exactly(
-        form.object.tariff
-      )
+      expect(carrier.tariffs).to contain_exactly(form.object.tariff)
     end
   end
 
