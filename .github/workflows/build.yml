@@ -44,7 +44,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "remove_old_redis",
+              "branch": "develop",
               "environment": "staging",
               "friendly_image_tag": "beta",
               "image_tag": "stag-${{ github.sha }}",
