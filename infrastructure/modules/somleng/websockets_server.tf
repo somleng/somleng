@@ -61,6 +61,10 @@ resource "aws_ecs_task_definition" "ws" {
             value = local.redis_url
           },
           {
+            name  = "ANYCABLE_REDIS_TLS_VERIFY",
+            value = "true"
+          },
+          {
             name  = "ANYCABLE_RPC_HOST",
             value = "${aws_route53_record.anycable.fqdn}:${var.region.internal_load_balancer.https_listener.port}",
           },
