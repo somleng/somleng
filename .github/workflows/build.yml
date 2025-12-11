@@ -53,7 +53,7 @@ jobs:
             },
             {
               "identifier": "somleng",
-              "branch": "master",
+              "branch": "remove_old_redis",
               "environment": "production",
               "friendly_image_tag": "latest",
               "image_tag": "prod-${{ github.sha }}",
