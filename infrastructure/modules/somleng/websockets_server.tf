@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "ws" {
             value = local.redis_url
           },
           {
-            name  = "ANYCABLE_REDIS_TLS_VERIFY",
+            name  = "ANYCABLE_REDIS_DISABLE_CACHE",
             value = "true"
           },
           {
