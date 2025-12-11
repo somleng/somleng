@@ -28,9 +28,6 @@ module "somleng" {
   db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
   db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.id
 
-  redis_security_group = data.terraform_remote_state.core.outputs.redis_security_group.id
-  redis_url            = "redis://${data.terraform_remote_state.core.outputs.elasticache_redis_endpoint}/0"
-
   call_service_queue_name = "switch-services"
 
   worker_min_tasks = 1

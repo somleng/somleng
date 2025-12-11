@@ -45,7 +45,7 @@ jobs:
             {
               "identifier": "somleng-staging",
               "branch": "develop",
-              "environment": "staging",
+              "environment": "use_serverless_redis",
               "friendly_image_tag": "beta",
               "image_tag": "stag-${{ github.sha }}",
               "ecs_cluster": "somleng-staging",

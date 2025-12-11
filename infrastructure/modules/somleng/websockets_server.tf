@@ -58,7 +58,7 @@ resource "aws_ecs_task_definition" "ws" {
         environment = [
           {
             name  = "REDIS_URL",
-            value = var.redis_url
+            value = local.redis_url
           },
           {
             name  = "ANYCABLE_RPC_HOST",
@@ -168,7 +168,7 @@ resource "aws_ecs_service" "ws" {
     security_groups = [
       aws_security_group.ws.id,
       var.db_security_group,
-      var.redis_security_group
+      aws_security_group.redis.id
     ]
   }
 

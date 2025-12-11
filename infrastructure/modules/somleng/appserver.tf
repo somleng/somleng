@@ -94,7 +94,7 @@ resource "aws_ecs_service" "appserver" {
     security_groups = [
       aws_security_group.appserver.id,
       var.db_security_group,
-      var.redis_security_group
+      aws_security_group.redis.id
     ]
   }
 

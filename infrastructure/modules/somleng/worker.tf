@@ -85,7 +85,7 @@ resource "aws_ecs_service" "worker" {
     security_groups = [
       aws_security_group.worker.id,
       var.db_security_group,
-      var.redis_security_group
+      aws_security_group.redis.id
     ]
   }
 

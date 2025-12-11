@@ -96,7 +96,7 @@ locals {
     },
     {
       name  = "REDIS_URL",
-      value = var.redis_url
+      value = local.redis_url
     },
     {
       name  = "UPLOADS_BUCKET",
