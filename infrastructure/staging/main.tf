@@ -31,13 +31,13 @@ module "somleng" {
 
   call_service_queue_name = "switch-services-staging"
 
-  appserver_min_tasks = 0
+  appserver_min_tasks = 1
   appserver_max_tasks = 1
-  worker_min_tasks    = 0
+  worker_min_tasks    = 1
   worker_max_tasks    = 1
-  anycable_min_tasks  = 0
+  anycable_min_tasks  = 1
   anycable_max_tasks  = 1
-  ws_min_tasks        = 0
+  ws_min_tasks        = 1
   ws_max_tasks        = 1
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"

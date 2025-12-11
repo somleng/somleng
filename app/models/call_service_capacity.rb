@@ -21,7 +21,7 @@ class CallServiceCapacity
     private
 
     def capacity_key(region)
-      "call_service_capacity:#{region}"
+      "{call_service_capacity}:#{region}"
     end
   end
 

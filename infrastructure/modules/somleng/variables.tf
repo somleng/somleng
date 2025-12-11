@@ -1,5 +1,5 @@
 locals {
-  redis_url = "redis://somleng-redis.lrtqbo.0001.apse1.cache.amazonaws.com:6379"
+  redis_url = "rediss://${aws_elasticache_serverless_cache.redis.endpoint.0.address}"
 }
 
 variable "app_identifier" {}

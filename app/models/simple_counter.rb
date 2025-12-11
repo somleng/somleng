@@ -1,8 +1,9 @@
 class SimpleCounter
-  attr_reader :key, :limit, :expiry, :backend
+  attr_reader :tag, :key, :limit, :expiry, :backend
 
   def initialize(**options)
-    @key = options.fetch(:key, nil)
+    @key = options.fetch(:key)
+    @tag = "{counter:#{key}}"
     @limit = options.fetch(:limit, nil)
     @expiry = options.fetch(:expiry, 5.minutes)
     @backend = options.fetch(:backend) { AppSettings.redis }
@@ -38,6 +39,6 @@ class SimpleCounter
   private
 
   def build_key(scope)
-    [ scope, key ].compact.join(":")
+    [ tag, scope, key ].compact.join(":")
   end
 end
