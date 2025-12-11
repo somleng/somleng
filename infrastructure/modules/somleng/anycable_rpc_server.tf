@@ -121,7 +121,7 @@ resource "aws_ecs_service" "anycable" {
     security_groups = [
       aws_security_group.anycable.id,
       var.db_security_group,
-      var.redis_security_group
+      aws_security_group.redis.id
     ]
   }
 

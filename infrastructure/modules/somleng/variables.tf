@@ -1,3 +1,7 @@
+locals {
+  redis_url = "rediss://${aws_elasticache_serverless_cache.redis.endpoint.0.address}"
+}
+
 variable "app_identifier" {}
 variable "app_environment" {}
 variable "app_image" {}
@@ -41,8 +45,6 @@ variable "pghero_other_databases" {
 }
 
 variable "db_security_group" {}
-variable "redis_security_group" {}
-variable "redis_url" {}
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
 variable "appserver_max_tasks" {

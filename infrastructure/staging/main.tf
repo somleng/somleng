@@ -22,15 +22,12 @@ module "somleng" {
   uploads_bucket = "uploads-staging.somleng.org"
 
   db_name                   = "somleng_staging"
-  db_username               = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.master_username
-  db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db_master_password_parameter.arn
-  db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
-  db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
-  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
-  db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.id
-
-  redis_security_group = data.terraform_remote_state.core.outputs.redis_security_group.id
-  redis_url            = "redis://${data.terraform_remote_state.core.outputs.elasticache_redis_endpoint}/1"
+  db_username               = data.terraform_remote_state.core_infrastructure.outputs.db.this.master_username
+  db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db.master_password_parameter.arn
+  db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.endpoint
+  db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.port
+  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db.security_group.id
+  db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db.this.id
 
   call_service_queue_name = "switch-services-staging"
 
