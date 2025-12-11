@@ -48,9 +48,10 @@ class UniqueFIFOQueue
   attr_reader :key, :tmp_key, :processing_hash, :backend
 
   def initialize(key:, **options)
-    @key = key
-    @tmp_key = "tmp:#{key}"
-    @processing_hash = "#{key}:processing_started"
+    tag = "{queue:#{key}}"
+    @key = "#{tag}:#{key}"
+    @tmp_key = "#{tag}:tmp:#{key}"
+    @processing_hash = "#{tag}:#{key}:processing_started"
     @backend = options.fetch(:backend) { AppSettings.redis }
   end
 
