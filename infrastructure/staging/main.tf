@@ -22,22 +22,22 @@ module "somleng" {
   uploads_bucket = "uploads-staging.somleng.org"
 
   db_name                   = "somleng_staging"
-  db_username               = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.master_username
-  db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db_master_password_parameter.arn
-  db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.endpoint
-  db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.port
-  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db_security_group.id
-  db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db_cluster.id
+  db_username               = data.terraform_remote_state.core_infrastructure.outputs.db.this.master_username
+  db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db.master_password_parameter.arn
+  db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.endpoint
+  db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.port
+  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db.security_group.id
+  db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db.this.id
 
   call_service_queue_name = "switch-services-staging"
 
-  appserver_min_tasks = 0
+  appserver_min_tasks = 1
   appserver_max_tasks = 1
-  worker_min_tasks    = 0
+  worker_min_tasks    = 1
   worker_max_tasks    = 1
-  anycable_min_tasks  = 0
+  anycable_min_tasks  = 1
   anycable_max_tasks  = 1
-  ws_min_tasks        = 0
+  ws_min_tasks        = 1
   ws_max_tasks        = 1
 
   raw_recordings_bucket_name = "raw-recordings-staging.somleng.org"

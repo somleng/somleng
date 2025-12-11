@@ -1,5 +1,5 @@
 locals {
-  redis_url = "redis://${aws_elasticache_serverless_cache.redis.endpoint.0.address}/0"
+  redis_url = "rediss://${aws_elasticache_serverless_cache.redis.endpoint.0.address}/0"
 }
 
 variable "app_identifier" {}
