@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: 4ffbef3512c9ebb73cfd527d39ca326ca921459a
+  revision: fdd3164d46290ce2b2baa55c1ac6c6e11af6e8ef
   specs:
     administrate (1.0.0)
       actionpack (>= 6.0, < 9.0)
@@ -338,7 +338,7 @@ GEM
     jmespath (1.6.2)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.17.0)
+    json (2.18.0)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (3.1.2)
@@ -387,7 +387,7 @@ GEM
       logger
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (5.26.2)
+    minitest (5.27.0)
     mock_redis (0.53.0)
       redis (~> 5)
     monetize (1.13.0)
@@ -620,7 +620,7 @@ GEM
       railties (>= 6.0.0)
     stringio (3.1.8)
     thor (1.4.0)
-    timeout (0.4.4)
+    timeout (0.5.0)
     tsort (0.2.0)
     turbo-rails (2.0.20)
       actionpack (>= 7.1.0)
