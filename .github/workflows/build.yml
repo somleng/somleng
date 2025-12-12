@@ -44,7 +44,7 @@ jobs:
           [
             {
               "identifier": "somleng-staging",
-              "branch": "split_production_and_staging_databases",
+              "branch": "develop",
               "environment": "staging",
               "friendly_image_tag": "beta",
               "image_tag": "stag-${{ github.sha }}",
