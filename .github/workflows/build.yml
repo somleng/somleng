@@ -137,7 +137,7 @@ jobs:
           ruby-version: "3.3"
 
       - name: Download Documentation Source
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: documentation_source
           path: api_docs
