@@ -22,12 +22,12 @@ module "somleng" {
   uploads_bucket = "uploads-staging.somleng.org"
 
   db_name                   = "somleng_staging"
-  db_username               = data.terraform_remote_state.core_infrastructure.outputs.db.this.master_username
-  db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db.master_password_parameter.arn
-  db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.endpoint
-  db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.port
-  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db.security_group.id
-  db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db.this.id
+  db_username               = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.master_username
+  db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db_staging.master_password_parameter.arn
+  db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.endpoint
+  db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.port
+  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db_staging.security_group.id
+  db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.id
 
   call_service_queue_name = "switch-services-staging"
 
