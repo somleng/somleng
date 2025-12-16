@@ -418,7 +418,7 @@ GEM
       racc (~> 1.4)
     okcomputer (1.19.1)
       benchmark
-    openssl (3.3.2)
+    openssl (4.0.0)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (1.27.0)
