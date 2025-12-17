@@ -430,7 +430,7 @@ GEM
       google-protobuf (>= 3.25.3)
     pghero (3.7.0)
       activerecord (>= 7.1)
-    phony (2.22.7)
+    phony (3.0.2)
     pp (0.6.3)
       prettyprint
     premailer (1.27.0)
