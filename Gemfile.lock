@@ -401,7 +401,7 @@ GEM
       railties (>= 3.0)
     msgpack (1.8.0)
     mustache (1.1.1)
-    net-http (0.8.0)
+    net-http (0.9.1)
       uri (>= 0.11.1)
     net-imap (0.5.12)
       date
@@ -625,7 +625,7 @@ GEM
     turbo-rails (2.0.20)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
-    twilio-ruby (7.8.8)
+    twilio-ruby (7.9.0)
       faraday (>= 0.9, < 3.0)
       jwt (>= 1.5, < 4.0)
       nokogiri (>= 1.6, < 2.0)
