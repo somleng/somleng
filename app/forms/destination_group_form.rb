@@ -4,7 +4,7 @@ class DestinationGroupForm < ApplicationForm
   attribute :object, default: -> { DestinationGroup.new }
   attribute :name
   attribute :prefixes, RoutePrefixesType.new, default: []
-  attribute :rating_engine_workflow, default: -> { UpsertRatingEngineResource }
+  attribute :rating_engine_update, default: -> { UpsertRatingEngineResource.new }
 
   validates :name, :prefixes, presence: true, unless: :catch_all
   validate :validate_catch_all
@@ -40,10 +40,9 @@ class DestinationGroupForm < ApplicationForm
       object.prefixes = prefixes.map { |prefix| object.prefixes.find_or_initialize_by(prefix:) }
     end
 
-    rating_engine_workflow.call(
-      object, remote_action: ->(resource, client) {
-        client.upsert_destination_group(resource)
-      }
+    rating_engine_update.call(
+      object,
+      remote_action: ->(resource, client) { client.upsert_destination_group(resource) }
     )
 
     true

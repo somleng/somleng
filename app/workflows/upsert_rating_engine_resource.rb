@@ -1,14 +1,12 @@
-class UpsertRatingEngineResource < ApplicationWorkflow
-  attr_reader :resource, :client
+class UpsertRatingEngineResource
+  attr_reader :client
 
-  def initialize(resource, remote_action:, **options)
+  def initialize(**options)
     super()
-    @resource = resource
-    @remote_action = remote_action
     @client = options.fetch(:client) { RatingEngineClient.new }
   end
 
-  def call
+  def call(resource, remote_action:)
     ApplicationRecord.transaction do
       resource.save!
       remote_action.call(resource, client)

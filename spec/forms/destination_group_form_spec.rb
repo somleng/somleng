@@ -50,6 +50,7 @@ RSpec.describe DestinationGroupForm do
           have_attributes(prefix: "85516")
         )
       )
+      expect(form.rating_engine_update.client).to have_received(:upsert_destination_group).with(form.object)
     end
 
     it "creates a catch all destination group" do
@@ -105,6 +106,7 @@ RSpec.describe DestinationGroupForm do
           have_attributes(prefix: "85516")
         )
       )
+      expect(form.rating_engine_update.client).to have_received(:upsert_destination_group).with(form.object)
     end
   end
 
@@ -114,7 +116,11 @@ RSpec.describe DestinationGroupForm do
       name: "Smart Cambodia",
       prefixes: [ "85510", "85515", "85516" ],
       catch_all: false,
-      rating_engine_workflow: attributes.fetch(:rating_engine_workflow) { ->(resource, *) { resource.save! } },
+      rating_engine_update: attributes.fetch(:rating_engine_update) {
+        UpsertRatingEngineResource.new(
+          client: instance_double(RatingEngineClient, upsert_destination_group: nil)
+        )
+      },
       **attributes
     )
   end
