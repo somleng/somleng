@@ -11,7 +11,7 @@ class UpsertRatingEngineResource < ApplicationWorkflow
   def call
     ApplicationRecord.transaction do
       resource.save!
-      remote_action.call(client, resource)
+      remote_action.call(resource, client)
     end
   end
 end

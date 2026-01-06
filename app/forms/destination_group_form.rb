@@ -41,7 +41,7 @@ class DestinationGroupForm < ApplicationForm
     end
 
     rating_engine_workflow.call(
-      object, remote_action: ->(client, resource) {
+      object, remote_action: ->(resource, client) {
         client.upsert_destination_group(resource)
       }
     )

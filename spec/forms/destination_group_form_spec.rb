@@ -114,6 +114,7 @@ RSpec.describe DestinationGroupForm do
       name: "Smart Cambodia",
       prefixes: [ "85510", "85515", "85516" ],
       catch_all: false,
+      rating_engine_workflow: attributes.fetch(:rating_engine_workflow) { ->(resource, *) { resource.save! } },
       **attributes
     )
   end
