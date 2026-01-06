@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/somleng/cgrates-ruby.git
+  revision: 8043ac7a202fc77594a6dd2a1494de73edc44406
+  specs:
+    cgrates (0.1.0)
+      faraday
+
+GIT
   remote: https://github.com/somleng/tts_voices.git
   revision: 6cdc3b83ff9d7d91123c5d1ac7be631f7fea27d8
   specs:
@@ -681,6 +688,7 @@ DEPENDENCIES
   bootsnap
   bootstrap-email (= 1.8.1)
   capybara
+  cgrates!
   connection_pool
   country_select
   cssbundling-rails

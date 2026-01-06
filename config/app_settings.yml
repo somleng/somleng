@@ -31,6 +31,9 @@ default: &default
   sip_port: 5060
   redis_url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
   redis_pool_size: <%= ENV.fetch('DB_POOL') { 250 } %>
+  rating_engine_host: <%= ENV.fetch("RATING_ENGINE_HOST", "http://localhost:2080") %>
+  rating_engine_username: <%= ENV.fetch("RATING_ENGINE_USERNAME", "somleng") %>
+  rating_engine_password: <%= ENV.fetch("RATING_ENGINE_PASSWORD", "password") %>
   pghero_other_databases: "<%= ENV["PGHERO_OTHER_DATABASES"] %>"
   pghero_db_instance_identifier: "<%= ENV["PGHERO_DB_INSTANCE_IDENTIFIER"] %>"
   global_call_sessions_limit: <%= ENV.fetch("GLOBAL_CALL_SESSIONS_LIMIT", 120) %>
