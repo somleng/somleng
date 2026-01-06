@@ -1,11 +1,11 @@
 class RatingEngineClient
   class APIError < StandardError; end
 
-  def create_destination_group(destination_group)
+  def upsert_destination_group(destination_group)
     client.set_tp_destination(
       tp_id: destination_group.carrier.id,
       id: destination_group.id,
-      prefixes: destination_group.prefixes.pluck(:prefix),
+      prefixes: destination_group.prefixes.pluck(:prefix)
     )
   end
 
