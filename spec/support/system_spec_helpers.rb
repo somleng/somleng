@@ -40,6 +40,16 @@ module SystemSpecHelpers
     options[:visible] = false unless Capybara.current_driver == :rack_test
     have_select(locator, **options)
   end
+
+  def stub_rating_engine_request
+    stub_request(:post, "#{AppSettings.fetch(:rating_engine_host)}/jsonrpc").to_return ->(request) {
+      {
+        status: 200,
+        body: JSON.parse(request.body).slice("id").merge(result: "OK", error: nil).to_json,
+        headers: { "Content-Type" => "application/json" }
+      }
+    }
+  end
 end
 
 RSpec.configure do |config|

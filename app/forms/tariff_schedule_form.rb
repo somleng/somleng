@@ -4,6 +4,7 @@ class TariffScheduleForm < ApplicationForm
   attribute :object, default: -> { TariffSchedule.new }
   attribute :name
   attribute :description
+  attribute :rating_engine_client, default: -> { RatingEngineClient.new }
 
   attribute :destination_tariffs,
             FormCollectionType.new(form: DestinationTariffForm),
@@ -58,6 +59,8 @@ class TariffScheduleForm < ApplicationForm
       object.save!
 
       destination_tariffs.all?(&:save)
+
+      rating_engine_client.upsert_tariff_schedule(object)
     end
   end
 

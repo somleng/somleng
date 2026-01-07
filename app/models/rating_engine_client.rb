@@ -9,6 +9,48 @@ class RatingEngineClient
     )
   end
 
+  def upsert_tariff_schedule(tariff_schedule)
+    destination_tariffs = tariff_schedule.destination_tariffs.includes(:tariff)
+
+    destination_tariffs.each do |destination_tariff|
+      tariff = destination_tariff.tariff
+      client.set_tp_rate(
+        tp_id: tariff_schedule.carrier_id,
+        id: tariff.id,
+        rate_slots: [
+          { rate: tariff.rate.to_f, rate_unit: "60s", rate_increment: "60s" }
+        ]
+      )
+    end
+
+    client.set_tp_destination_rate(
+      tp_id: tariff_schedule.carrier_id,
+      id: tariff_schedule.id,
+      destination_rates: destination_tariffs.map do |destination_tariff|
+        {
+          rounding_decimals: 4,
+          rate_id: destination_tariff.tariff_id,
+          destination_id: destination_tariff.destination_group_id,
+          rounding_method: "*up"
+        }
+      end
+    )
+  end
+
+  def destroy_tariff_schedule(tariff_schedule)
+    client.remove_tp_destination_rate(
+      tp_id: tariff_schedule.carrier_id,
+      id: tariff_schedule.id,
+    )
+  end
+
+  def destroy_tariff(tariff)
+    client.remove_tp_rate(
+      tp_id: tariff.carrier_id,
+      id: tariff.id
+    )
+  end
+
   private
 
   def make_request

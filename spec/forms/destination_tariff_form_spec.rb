@@ -38,11 +38,13 @@ RSpec.describe DestinationTariffForm do
       destination_tariff = create(:destination_tariff, carrier:)
 
       form = DestinationTariffForm.initialize_with(destination_tariff)
+      form.rating_engine_client = instance_spy(RatingEngineClient)
       form._destroy = true
 
       form.save
 
       expect(form.object).not_to be_persisted
+      expect(form.rating_engine_client).to have_received(:destroy_tariff).with(form.object.tariff)
     end
 
     it "update a tariff" do
@@ -77,6 +79,7 @@ RSpec.describe DestinationTariffForm do
       schedule: build_stubbed(:tariff_schedule, carrier:),
       destination_group_id: build_stubbed(:destination_group, carrier:).id,
       rate: "0.005",
+      rating_engine_client: instance_spy(RatingEngineClient),
       **attributes
     )
   end

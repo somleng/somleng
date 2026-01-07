@@ -6,6 +6,7 @@ class DestinationTariffForm < ApplicationForm
   attribute :rate
   attribute :currency
   attribute :_destroy, :boolean, default: false
+  attribute :rating_engine_client, default: -> { RatingEngineClient.new }
 
   validates :destination_group_id, presence: true
   validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -32,7 +33,7 @@ class DestinationTariffForm < ApplicationForm
 
   def save
     return false if invalid?
-    return object.destroy! unless retain?
+    return destroy_destination_tariff! unless retain?
 
     object.attributes = {
       schedule:,
@@ -100,5 +101,12 @@ class DestinationTariffForm < ApplicationForm
     return if schedule.blank?
 
     self.object = schedule.destination_tariffs.find(id)
+  end
+
+  def destroy_destination_tariff!
+    ApplicationRecord.transaction do
+      object.destroy!
+      rating_engine_client.destroy_tariff(object.tariff)
+    end
   end
 end
