@@ -44,6 +44,23 @@ class RatingEngineClient
     )
   end
 
+  def upsert_tariff_plan(tariff_plan)
+    client.set_tp_rating_plan(
+      tp_id: tariff_plan.carrier_id,
+      id: tariff_plan.id,
+      rating_plan_bindings: tariff_plan.tiers.map do |tier|
+        { weight: tier.weight.to_f, timing_id: "*any", destination_rates_id: tier.schedule_id }
+      end
+    )
+  end
+
+  def destroy_tariff_plan(tariff_plan)
+    client.remove_tp_rating_plan(
+      tp_id: tariff_plan.carrier_id,
+      id: tariff_plan.id,
+    )
+  end
+
   private
 
   def make_request
