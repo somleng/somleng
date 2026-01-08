@@ -61,6 +61,37 @@ class RatingEngineClient
     )
   end
 
+  def upsert_account_tariff_plan_subscriptions(account)
+    client.set_account(
+      tenant: "cgrates.org",
+      account: account.id,
+    )
+
+    account.tariff_plan_subscriptions.each do |subscription|
+      client.set_tp_rating_profile(
+        tp_id: account.carrier_id,
+        id: subscription.id,
+        load_id: subscription.id,
+        category: subscription.category,
+        tenant: "cgrates.org",
+        subject: account.id,
+        rating_plan_activations: [
+          {
+            activation_time: subscription.created_at.iso8601,
+            rating_plan_id: subscription.plan_id
+          }
+        ]
+      )
+    end
+  end
+
+  def destroy_account(account)
+    client.remove_account(
+      tenant: "cgrates.org",
+      account: account.id,
+    )
+  end
+
   private
 
   def make_request
