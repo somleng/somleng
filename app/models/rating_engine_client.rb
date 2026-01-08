@@ -3,7 +3,7 @@ class RatingEngineClient
 
   def upsert_destination_group(destination_group)
     client.set_tp_destination(
-      tp_id: destination_group.carrier.id,
+      tp_id: destination_group.carrier_id,
       id: destination_group.id,
       prefixes: destination_group.prefixes.pluck(:prefix)
     )
@@ -41,13 +41,6 @@ class RatingEngineClient
     client.remove_tp_destination_rate(
       tp_id: tariff_schedule.carrier_id,
       id: tariff_schedule.id,
-    )
-  end
-
-  def destroy_tariff(tariff)
-    client.remove_tp_rate(
-      tp_id: tariff.carrier_id,
-      id: tariff.id
     )
   end
 

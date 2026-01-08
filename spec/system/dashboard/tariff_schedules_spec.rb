@@ -187,6 +187,7 @@ RSpec.describe "Tariff Schedules" do
     schedule = create(:tariff_schedule, carrier:, name: "Standard")
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_tariff_schedule_path(schedule)
     click_on("Delete")

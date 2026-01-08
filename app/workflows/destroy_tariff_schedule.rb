@@ -1,4 +1,4 @@
-class UpdateRatingEngineResource < ApplicationWorkflow
+class DestroyTariffSchedule < ApplicationWorkflow
   attr_reader :resource, :client
 
   def initialize(resource, **options)
@@ -7,9 +7,9 @@ class UpdateRatingEngineResource < ApplicationWorkflow
     @client = options.fetch(:client) { RatingEngineClient.new }
   end
 
-  def call(&block)
+  def call
     ApplicationRecord.transaction do
-      block.call if resource.save
+      client.destroy_tariff_schedule(resource) if resource.destroy
     end
   end
 end

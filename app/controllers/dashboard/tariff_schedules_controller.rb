@@ -32,7 +32,7 @@ module Dashboard
 
     def destroy
       @resource = record
-      @resource.destroy
+      DestroyTariffSchedule.call(@resource)
       respond_with(:dashboard, @resource)
     end
 
