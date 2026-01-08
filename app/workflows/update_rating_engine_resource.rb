@@ -1,18 +1,15 @@
 class UpdateRatingEngineResource < ApplicationWorkflow
-  attr_reader :resource, :action, :client
+  attr_reader :resource, :client
 
-  def initialize(resource, action:, **options)
+  def initialize(resource, **options)
     super()
     @resource = resource
-    @action = action
     @client = options.fetch(:client) { RatingEngineClient.new }
   end
 
-  def call
+  def call(&block)
     ApplicationRecord.transaction do
-      resource.save
-      action.call(resource, client) if resource.persisted?
-      resource
+      block.call if resource.save
     end
   end
 end

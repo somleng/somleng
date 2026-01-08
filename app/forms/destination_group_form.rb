@@ -39,7 +39,7 @@ class DestinationGroupForm < ApplicationForm
       object.prefixes = prefixes.map { |prefix| object.prefixes.find_or_initialize_by(prefix:) }
     end
 
-    true
+    object.save!
   end
 
   def catch_all?
