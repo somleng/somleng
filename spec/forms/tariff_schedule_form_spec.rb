@@ -114,14 +114,12 @@ RSpec.describe TariffScheduleForm do
           )
         )
       )
-      expect(form.rating_engine_client).to have_received(:upsert_tariff_schedule).with(form.object)
     end
   end
 
   def build_form(**)
     TariffScheduleForm.new(
       carrier: build_stubbed(:carrier),
-      rating_engine_client: instance_spy(RatingEngineClient),
       **
     )
   end

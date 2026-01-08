@@ -4,7 +4,6 @@ class DestinationGroupForm < ApplicationForm
   attribute :object, default: -> { DestinationGroup.new }
   attribute :name
   attribute :prefixes, RoutePrefixesType.new, default: []
-  attribute :rating_engine_client, default: -> { RatingEngineClient.new }
 
   validates :name, :prefixes, presence: true, unless: :catch_all
   validate :validate_catch_all
@@ -38,11 +37,6 @@ class DestinationGroupForm < ApplicationForm
       object.prefixes = []
     else
       object.prefixes = prefixes.map { |prefix| object.prefixes.find_or_initialize_by(prefix:) }
-    end
-
-    ApplicationRecord.transaction do
-      object.save!
-      rating_engine_client.upsert_destination_group(object)
     end
 
     true

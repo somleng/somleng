@@ -11,7 +11,7 @@ module Dashboard
 
     def create
       @resource = DestinationGroupForm.new(carrier: current_carrier, **permitted_params)
-      @resource.save
+      UpdateDestinationGroup.call(@resource)
       respond_with(:dashboard, @resource, location: dashboard_destination_groups_path)
     end
 
@@ -26,7 +26,7 @@ module Dashboard
     def update
       @resource = DestinationGroupForm.initialize_with(record)
       @resource.attributes = permitted_params
-      @resource.save
+      UpdateDestinationGroup.call(@resource)
       respond_with(:dashboard, @resource)
     end
 
