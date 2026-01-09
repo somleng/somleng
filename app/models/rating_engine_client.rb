@@ -67,11 +67,12 @@ class RatingEngineClient
       account: account.id,
     )
 
+
+
     account.tariff_plan_subscriptions.each do |subscription|
       client.set_tp_rating_profile(
         tp_id: account.carrier_id,
-        id: subscription.id,
-        load_id: subscription.id,
+        load_id: "somleng.org",
         category: subscription.category,
         tenant: "cgrates.org",
         subject: account.id,
@@ -81,6 +82,18 @@ class RatingEngineClient
             rating_plan_id: subscription.plan_id
           }
         ]
+      )
+    end
+
+    subscribed_categories = account.tariff_plan_subscriptions.pluck(:category)
+    all_categories = TariffPlanSubscription.category.values
+    (all_categories - subscribed_categories).each do |category|
+      client.remove_tp_rating_profile(
+        tp_id: account.carrier_id,
+        load_id: "somleng.org",
+        category:,
+        tenant: "cgrates.org",
+        subject: account.id,
       )
     end
   end
