@@ -9,7 +9,9 @@ class DestroyAccount < ApplicationWorkflow
 
   def call
     ApplicationRecord.transaction do
-      client.destroy_account(resource) if resource.destroy
+      result = resource.destroy
+      client.destroy_account(resource) if result
+      result
     end
   end
 end

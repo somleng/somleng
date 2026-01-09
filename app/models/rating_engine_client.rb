@@ -62,13 +62,6 @@ class RatingEngineClient
   end
 
   def upsert_account_tariff_plan_subscriptions(account)
-    client.set_account(
-      tenant: "cgrates.org",
-      account: account.id,
-    )
-
-
-
     account.tariff_plan_subscriptions.each do |subscription|
       client.set_tp_rating_profile(
         tp_id: account.carrier_id,
@@ -96,6 +89,11 @@ class RatingEngineClient
         subject: account.id,
       )
     end
+
+    client.set_account(
+      tenant: "cgrates.org",
+      account: account.id,
+    )
   end
 
   def destroy_account(account)

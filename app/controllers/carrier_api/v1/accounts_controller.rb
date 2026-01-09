@@ -33,7 +33,7 @@ module CarrierAPI
 
       def destroy
         account = find_account
-        if account.destroy
+        if DestroyAccount.call(account)
           respond_with_resource(account)
         else
           respond_with_errors(
