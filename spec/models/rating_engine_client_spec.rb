@@ -22,8 +22,8 @@ RSpec.describe RatingEngineClient do
       carrier = create(:carrier, billing_currency: "USD")
       tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:)
       tariffs = [
-        create(:tariff, :call, carrier:),
-        create(:tariff, :call, carrier:)
+        create(:tariff, :call, carrier:, rate_cents: InfinitePrecisionMoney.from_amount(0.005, "USD").cents),
+        create(:tariff, :call, carrier:, rate_cents: InfinitePrecisionMoney.from_amount(0.001, "USD").cents)
       ]
       destination_tariffs = [
         create(:destination_tariff, schedule: tariff_schedule, tariff: tariffs[0]),
@@ -34,15 +34,20 @@ RSpec.describe RatingEngineClient do
 
       rating_engine_client.upsert_tariff_schedule(tariff_schedule)
 
-      tariffs.each do |tariff|
-        expect(client).to have_received(:set_tp_rate).with(
-          tp_id: carrier.id,
-          id: tariff.id,
-          rate_slots: [
-            { rate: tariff.rate.to_f, rate_unit: "60s", rate_increment: "60s" }
-          ]
-        )
-      end
+      expect(client).to have_received(:set_tp_rate).with(
+        tp_id: carrier.id,
+        id: tariffs[0].id,
+        rate_slots: [
+          { rate: 0.005, rate_unit: "60s", rate_increment: "60s" }
+        ]
+      )
+      expect(client).to have_received(:set_tp_rate).with(
+        tp_id: carrier.id,
+        id: tariffs[1].id,
+        rate_slots: [
+          { rate: 0.001, rate_unit: "60s", rate_increment: "60s" }
+        ]
+      )
       expect(client).to have_received(:set_tp_destination_rate).with(
         tp_id: carrier.id,
         id: tariff_schedule.id,
