@@ -9,7 +9,7 @@ class UpdateAccountForm < ApplicationWorkflow
 
   def call
     ApplicationRecord.transaction do
-      client.upsert_account_tariff_plan_subscriptions(resource.object) if resource.save
+      client.upsert_account(resource.object) if resource.save
     end
   end
 end

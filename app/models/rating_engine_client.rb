@@ -55,7 +55,11 @@ class RatingEngineClient
       tp_id: tariff_plan.carrier_id,
       id: tariff_plan.id,
       rating_plan_bindings: tariff_plan.tiers.map do |tier|
-        { weight: tier.weight.to_f, timing_id: "*any", destination_rates_id: tier.schedule_id }
+        {
+          weight: tier.weight.to_f,
+          timing_id: "*any",
+          destination_rates_id: tier.schedule_id
+        }
       end
     )
   end
@@ -67,7 +71,7 @@ class RatingEngineClient
     )
   end
 
-  def upsert_account_tariff_plan_subscriptions(account)
+  def upsert_account(account)
     account.tariff_plan_subscriptions.each do |subscription|
       client.set_tp_rating_profile(
         tp_id: account.carrier_id,

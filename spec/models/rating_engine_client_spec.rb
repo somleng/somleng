@@ -66,4 +66,116 @@ RSpec.describe RatingEngineClient do
       )
     end
   end
+
+  describe "#destroy_tariff_schedule" do
+    it "sends a request to destroy a tariff schedule" do
+      tariff_schedule = create(:tariff_schedule)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.destroy_tariff_schedule(tariff_schedule)
+
+      expect(client).to have_received(:remove_tp_destination_rate).with(
+        tp_id: tariff_schedule.carrier_id,
+        id: tariff_schedule.id,
+      )
+    end
+  end
+
+  describe "#upsert_tariff_plan" do
+    it "sends a request to upsert a tariff plan" do
+      tariff_plan = create(:tariff_plan)
+      tiers = [
+        create(:tariff_plan_tier, plan: tariff_plan, weight: 20),
+        create(:tariff_plan_tier, plan: tariff_plan, weight: 10)
+      ]
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.upsert_tariff_plan(tariff_plan)
+
+      expect(client).to have_received(:set_tp_rating_plan).with(
+        tp_id: tariff_plan.carrier_id,
+        id: tariff_plan.id,
+        rating_plan_bindings: [
+          { weight: 20.0, timing_id: "*any", destination_rates_id: tiers[0].schedule_id },
+          { weight: 10.0, timing_id: "*any", destination_rates_id: tiers[1].schedule_id }
+        ]
+      )
+    end
+  end
+
+  describe "#destroy_tariff_plan" do
+    it "sends a request to destroy a tariff plan" do
+      tariff_plan = create(:tariff_plan)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.destroy_tariff_plan(tariff_plan)
+
+      expect(client).to have_received(:remove_tp_rating_plan).with(
+        tp_id: tariff_plan.carrier_id,
+        id: tariff_plan.id,
+      )
+    end
+  end
+
+  describe "#upsert_account" do
+    it "sends a request to upsert an account" do
+      account = create(:account)
+      subscriptions = [
+        create(:tariff_plan_subscription, :outbound_calls, account:),
+        create(:tariff_plan_subscription, :outbound_messages, account:)
+      ]
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.upsert_account(account)
+
+      expect(client).to have_received(:set_account).with(
+        tenant: "cgrates.org",
+        account: account.id
+      )
+      subscriptions.each do |subscription|
+        expect(client).to have_received(:set_tp_rating_profile).with(
+          tp_id: account.carrier_id,
+          load_id: "somleng.org",
+          category: subscription.category,
+          tenant: "cgrates.org",
+          subject: account.id,
+          rating_plan_activations: [
+            {
+              activation_time: subscription.created_at.iso8601,
+              rating_plan_id: subscription.plan_id
+            }
+          ]
+        )
+      end
+
+      ["inbound_calls", "inbound_messages"].each do |category|
+        expect(client).to have_received(:remove_tp_rating_profile).with(
+          tp_id: account.carrier_id,
+          load_id: "somleng.org",
+          category:,
+          tenant: "cgrates.org",
+          subject: account.id,
+        )
+      end
+    end
+  end
+
+  describe "#destroy_account" do
+    it "sends a request to destroy an account" do
+      account = create(:account)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.destroy_account(account)
+
+      expect(client).to have_received(:remove_account).with(
+        tenant: "cgrates.org",
+        account: account.id
+      )
+    end
+  end
 end
