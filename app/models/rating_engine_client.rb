@@ -1,4 +1,10 @@
 class RatingEngineClient
+  attr_reader :client
+
+  def initialize(**options)
+    @client = options.fetch(:client) { CGRateS::Client.new }
+  end
+
   class APIError < StandardError; end
 
   def upsert_destination_group(destination_group)
@@ -109,9 +115,5 @@ class RatingEngineClient
     yield
   rescue CGRateS::APIError => e
     raise APIError.new(e.message)
-  end
-
-  def client
-    @client ||= CGRateS::Client.new
   end
 end
