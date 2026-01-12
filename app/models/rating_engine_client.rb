@@ -127,9 +127,17 @@ class RatingEngineClient
     end
   end
 
+  def refresh_carrier_rates(carrier)
+    handle_request do
+      client.load_tariff_plan_from_stor_db(
+        tp_id: carrier.id,
+      )
+    end
+  end
+
   private
 
-  def handle_request
+  def handle_request(&)
     yield
   rescue CGRateS::Client::APIError => e
     raise APIError.new(e.message)
