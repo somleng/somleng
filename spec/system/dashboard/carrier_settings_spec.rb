@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Carrier Settings" do
-  it "Update carrier settings", :js, :selenium_chrome do
+  it "Update carrier settings" do
     carrier = create(:carrier, name: "My Carrier")
     user = create(:user, :carrier, :owner, carrier:)
     create(:tariff_package, carrier:, name: "Standard Package")
