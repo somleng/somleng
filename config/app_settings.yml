@@ -50,6 +50,9 @@ production: &production
   call_service_default_host: "<%= ENV.fetch("CALL_SERVICE_DEFAULT_HOST", "https://switch.hydrogen.somleng.org") %>"
   call_service_password: "<%= ENV.fetch('CALL_SERVICE_PASSWORD', nil) %>"
   call_service_queue_url: "<%= ENV.fetch('CALL_SERVICE_QUEUE_URL', nil) %>"
+  rating_engine_host: <%= ENV.fetch("RATING_ENGINE_HOST", "https://rating-engine.somleng.org") %>
+  rating_engine_username: <%= ENV.fetch("RATING_ENGINE_USERNAME", nil) %>
+  rating_engine_password: <%= ENV.fetch("RATING_ENGINE_PASSWORD", nil) %>
   sentry_dsn: "<%= ENV.fetch("SENTRY_DSN") { Rails.application.credentials.sentry_dsn } %>"
   services_password: '<%= ENV.fetch("SERVICES_PASSWORD", nil) %>'
   recaptcha_site_key: "<%= ENV.fetch("RECAPTCHA_SITE_KEY") { Rails.application.credentials.recaptcha_site_key } %>"
@@ -73,6 +76,7 @@ staging:
   verify_subdomain: "verify-staging"
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "https://app-staging.somleng.org") %>
   asset_url_host: <%= ENV.fetch("ASSET_URL_HOST", "https://cdn-staging.somleng.org") %>
+  rating_engine_host: <%= ENV.fetch("RATING_ENGINE_HOST", "https://rating-engine-staging.somleng.org") %>
   call_service_default_host: <%= ENV.fetch("CALL_SERVICE_DEFAULT_HOST", "https://switch-staging.hydrogen.somleng.org") %>
   sip_port: 6060
   client_gateway_domain: "Connect Via Public IP"
