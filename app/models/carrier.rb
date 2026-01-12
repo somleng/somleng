@@ -38,6 +38,10 @@ class Carrier < ApplicationRecord
 
   attribute :billing_currency, CurrencyType.new
 
+  def self.billing_enabled
+    where(billing_enabled: true)
+  end
+
   def country
     ISO3166::Country.new(country_code)
   end
