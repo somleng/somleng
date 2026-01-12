@@ -177,4 +177,17 @@ RSpec.describe RatingEngineClient do
       )
     end
   end
+
+  describe "#handle_request" do
+    it "raises an API error" do
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:set_tp_destination).and_raise(CGRateS::Client::APIError.new("API error"))
+      destination_group = create(:destination_group)
+
+      expect {
+        rating_engine_client.upsert_destination_group(destination_group)
+      }.to raise_error(RatingEngineClient::APIError)
+    end
+  end
 end
