@@ -32,7 +32,7 @@ default: &default
   redis_url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
   redis_pool_size: <%= ENV.fetch('DB_POOL') { 250 } %>
   rating_engine_host: <%= ENV.fetch("RATING_ENGINE_HOST", "http://localhost:2080") %>
-  rating_engine_username: <%= ENV.fetch("RATING_ENGINE_USERNAME", "somleng") %>
+  rating_engine_username: <%= ENV.fetch("RATING_ENGINE_USERNAME", "cgrates") %>
   rating_engine_password: <%= ENV.fetch("RATING_ENGINE_PASSWORD", "password") %>
   pghero_other_databases: "<%= ENV["PGHERO_OTHER_DATABASES"] %>"
   pghero_db_instance_identifier: "<%= ENV["PGHERO_DB_INSTANCE_IDENTIFIER"] %>"
@@ -51,7 +51,7 @@ production: &production
   call_service_password: "<%= ENV.fetch('CALL_SERVICE_PASSWORD', nil) %>"
   call_service_queue_url: "<%= ENV.fetch('CALL_SERVICE_QUEUE_URL', nil) %>"
   rating_engine_host: <%= ENV.fetch("RATING_ENGINE_HOST", "https://rating-engine.somleng.org") %>
-  rating_engine_username: <%= ENV.fetch("RATING_ENGINE_USERNAME", nil) %>
+  rating_engine_username: <%= ENV.fetch("RATING_ENGINE_USERNAME", "cgrates") %>
   rating_engine_password: <%= ENV.fetch("RATING_ENGINE_PASSWORD", nil) %>
   sentry_dsn: "<%= ENV.fetch("SENTRY_DSN") { Rails.application.credentials.sentry_dsn } %>"
   services_password: '<%= ENV.fetch("SERVICES_PASSWORD", nil) %>'
