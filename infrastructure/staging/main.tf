@@ -33,9 +33,9 @@ module "somleng" {
 
   call_service_queue_name = "switch-services-staging"
 
-  appserver_min_tasks = 1
+  appserver_min_tasks = 0
   appserver_max_tasks = 1
-  worker_min_tasks    = 1
+  worker_min_tasks    = 0
   worker_max_tasks    = 1
   anycable_min_tasks  = 0
   anycable_max_tasks  = 1
