@@ -25,6 +25,16 @@
           <%= @resource.country.emoji_flag %>
           <%= @resource.country.iso_short_name %>
         <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Billing</h5>
+
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute :billing_enabled %>
         <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
         <%= f.attribute :default_tariff_package, value: @resource.default_tariff_package&.name %>
       <% end %>
