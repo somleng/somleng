@@ -21,7 +21,9 @@ class CarrierDashboard < Administrate::BaseDashboard
     subdomain: Field::String,
     website: Field::String,
     custom_app_host: Field::String,
-    custom_api_host: Field::String
+    custom_api_host: Field::String,
+    billing_enabled: Field::Boolean,
+    billing_currency: Field::String,
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -50,6 +52,8 @@ class CarrierDashboard < Administrate::BaseDashboard
     phone_calls
     carrier_users
     account_users
+    billing_enabled
+    billing_currency
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze

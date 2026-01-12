@@ -135,7 +135,8 @@ data "aws_iam_policy_document" "task_execution_policy" {
       aws_ssm_parameter.anycable_secret.arn,
       var.db_password_parameter_arn,
       data.aws_ssm_parameter.region_data.arn,
-      data.aws_ssm_parameter.call_service_password.arn
+      data.aws_ssm_parameter.call_service_password.arn,
+      data.aws_ssm_parameter.rating_engine_password.arn
     ]
   }
 }

@@ -8,6 +8,7 @@ variable "app_image" {}
 variable "ws_image" {
   default = "anycable/anycable-go:latest-alpine"
 }
+variable "rating_engine_identifier" {}
 variable "nginx_image" {}
 variable "aws_ses_region" {}
 variable "region" {}

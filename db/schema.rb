@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_093737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -107,6 +107,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "billing_currency", null: false
+    t.boolean "billing_enabled", default: false, null: false
     t.integer "calls_per_second", default: 0, null: false
     t.string "country_code", null: false
     t.datetime "created_at", null: false
@@ -121,6 +122,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_04_200509) do
     t.datetime "updated_at", null: false
     t.string "website", null: false
     t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
+    t.index ["billing_enabled"], name: "index_carriers_on_billing_enabled"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["default_tariff_package_id"], name: "index_carriers_on_default_tariff_package_id"

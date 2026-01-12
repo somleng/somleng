@@ -28,6 +28,7 @@ RSpec.describe "Tariff Plans" do
 
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_tariff_plans_path
     click_on("New")
@@ -118,6 +119,7 @@ RSpec.describe "Tariff Plans" do
     new_schedule = create(:tariff_schedule, :outbound_calls, carrier:, name: "New VIP")
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_tariff_plan_path(plan)
     click_on("Edit")
@@ -186,6 +188,7 @@ RSpec.describe "Tariff Plans" do
     plan = create(:tariff_plan, carrier:, name: "Standard")
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_tariff_plan_path(plan)
     click_on("Delete")

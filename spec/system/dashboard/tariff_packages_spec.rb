@@ -80,6 +80,7 @@ RSpec.describe "Tariff Packages" do
     carrier = create(:carrier, billing_currency: "USD")
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit(dashboard_tariff_packages_path)
     click_on("Wizard")

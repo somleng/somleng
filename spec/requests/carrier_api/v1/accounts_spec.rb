@@ -189,6 +189,7 @@ resource "Accounts", document: :carrier_api do
       carrier = create(:carrier)
       account = create(:account, carrier:)
 
+      stub_rating_engine_request
       set_carrier_api_authorization_header(carrier)
       do_request(id: account.id)
 

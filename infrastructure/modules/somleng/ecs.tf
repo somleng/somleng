@@ -19,6 +19,10 @@ locals {
     {
       name      = "CALL_SERVICE_PASSWORD"
       valueFrom = data.aws_ssm_parameter.call_service_password.arn
+    },
+    {
+      name      = "RATING_ENGINE_PASSWORD"
+      valueFrom = data.aws_ssm_parameter.rating_engine_password.arn
     }
   ]
 

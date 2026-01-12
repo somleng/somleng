@@ -10,6 +10,8 @@ module "somleng" {
   verify_subdomain   = "verify"
   anycable_subdomain = "anycable"
 
+  rating_engine_identifier = "rating-engine"
+
   app_image             = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image           = data.terraform_remote_state.core.outputs.nginx_ecr_repository
   region                = data.terraform_remote_state.core_infrastructure.outputs.hydrogen_region

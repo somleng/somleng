@@ -83,6 +83,40 @@ RSpec.describe TariffScheduleForm do
     end
   end
 
+  describe "#save" do
+    it "create a new tariff schedule" do
+      carrier = create(:carrier, billing_currency: "USD")
+      destination_group = create(:destination_group, carrier:)
+
+      form = build_form(
+        carrier:,
+        name: "Standard",
+        category: "outbound_calls",
+        description: "My description",
+        destination_tariffs: [
+          build_destination_tariff_form(destination_group_id: destination_group.id),
+        ]
+      )
+
+      form.save
+
+      expect(form.object).to have_attributes(
+        persisted?: true,
+        name: "Standard",
+        category: "outbound_calls",
+        description: "My description",
+        destination_tariffs: contain_exactly(
+          have_attributes(
+            destination_group:,
+            tariff: have_attributes(
+              rate: InfinitePrecisionMoney.from_amount(0.005, "USD")
+            )
+          )
+        )
+      )
+    end
+  end
+
   def build_form(**)
     TariffScheduleForm.new(
       carrier: build_stubbed(:carrier),

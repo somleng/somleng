@@ -22,6 +22,7 @@ RSpec.describe "Destination Groups" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_destination_groups_path
     click_on("New")
@@ -39,10 +40,12 @@ RSpec.describe "Destination Groups" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit new_dashboard_destination_group_path
     check("Catch all")
     click_on("Create Destination group")
+
 
     expect(page).to have_content("Destination group was successfully created.")
     expect(page).to have_content("Catch all")
@@ -88,6 +91,7 @@ RSpec.describe "Destination Groups" do
     destination_group = create(:destination_group, carrier:, name: "US Destinations", prefixes: [ "1" ])
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_destination_group_path(destination_group)
     click_on("Edit")

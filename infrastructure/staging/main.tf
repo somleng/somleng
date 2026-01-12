@@ -9,6 +9,8 @@ module "somleng" {
   verify_subdomain   = "verify-staging"
   anycable_subdomain = "anycable-staging"
 
+  rating_engine_identifier = "rating-engine-staging"
+
   app_image             = data.terraform_remote_state.core.outputs.app_ecr_repository
   nginx_image           = data.terraform_remote_state.core.outputs.nginx_ecr_repository
   aws_ses_region        = "us-east-1"

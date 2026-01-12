@@ -6,7 +6,7 @@ module Dashboard
 
     def create
       @resource = TariffPackageWizardForm.new(carrier: current_carrier, **permitted_params)
-      @resource.save
+      CreateTariffPackageWizardForm.call(@resource)
       respond_with(:dashboard, @resource, location: dashboard_tariff_packages_path)
     end
 

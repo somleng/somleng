@@ -15,7 +15,7 @@ module Dashboard
 
     def create
       @resource = AccountForm.new(carrier: current_carrier, current_user:, **permitted_params)
-      @resource.save
+      UpdateAccountForm.call(@resource)
 
       respond_with(:dashboard, @resource)
     end
@@ -27,13 +27,13 @@ module Dashboard
     def update
       @resource = AccountForm.initialize_with(record)
       @resource.attributes = permitted_params
-      @resource.save
+      UpdateAccountForm.call(@resource)
 
       respond_with(:dashboard, @resource)
     end
 
     def destroy
-      record.destroy
+      DestroyAccount.call(record)
       respond_with(:dashboard, record)
     end
 

@@ -54,6 +54,7 @@ RSpec.describe "Accounts" do
     )
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_accounts_path
     click_on("New")
@@ -139,6 +140,7 @@ RSpec.describe "Accounts" do
     )
     sip_trunk = create(:sip_trunk, carrier:, name: "Main SIP Trunk")
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_on("Edit")
@@ -173,6 +175,7 @@ RSpec.describe "Accounts" do
       carrier: user.carrier
     )
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
@@ -208,6 +211,7 @@ RSpec.describe "Accounts" do
     )
     user = create(:user, :carrier, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
@@ -263,6 +267,7 @@ RSpec.describe "Accounts" do
       carrier:,
     )
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 

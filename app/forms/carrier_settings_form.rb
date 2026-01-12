@@ -27,6 +27,7 @@ class CarrierSettingsForm
   attribute :carrier
   attribute :name
   attribute :country
+  attribute :billing_enabled, :boolean, default: false
   attribute :billing_currency, CurrencyType.new
   attribute :website
   attribute :subdomain, SubdomainType.new
@@ -65,6 +66,7 @@ class CarrierSettingsForm
       subdomain: carrier.subdomain,
       website: carrier.website,
       country: carrier.country_code,
+      billing_enabled: carrier.billing_enabled?,
       billing_currency: carrier.billing_currency,
       logo: carrier.logo,
       favicon: carrier.favicon,
@@ -85,6 +87,7 @@ class CarrierSettingsForm
       subdomain:,
       custom_app_host:,
       custom_api_host:,
+      billing_enabled:,
       billing_currency:,
       country_code: country,
       default_tariff_package: (carrier.tariff_packages.find(default_tariff_package_id) if default_tariff_package_id.present?)

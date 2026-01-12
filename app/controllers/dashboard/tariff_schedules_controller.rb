@@ -11,7 +11,7 @@ module Dashboard
 
     def create
       @resource = TariffScheduleForm.new(carrier: current_carrier, **permitted_params)
-      @resource.save
+      UpdateTariffScheduleForm.call(@resource)
       respond_with(:dashboard, @resource, location: dashboard_tariff_schedules_path(filter_params))
     end
 
@@ -26,13 +26,13 @@ module Dashboard
     def update
       @resource = TariffScheduleForm.initialize_with(record)
       @resource.attributes = permitted_params.except(:category)
-      @resource.save
+      UpdateTariffScheduleForm.call(@resource)
       respond_with(:dashboard, @resource)
     end
 
     def destroy
       @resource = record
-      @resource.destroy
+      DestroyTariffSchedule.call(@resource)
       respond_with(:dashboard, @resource)
     end
 

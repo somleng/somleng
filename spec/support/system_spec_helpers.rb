@@ -44,4 +44,5 @@ end
 
 RSpec.configure do |config|
   config.include SystemSpecHelpers, type: :system
+  config.include RatingEngineHelpers, type: :system
 end

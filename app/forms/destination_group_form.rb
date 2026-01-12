@@ -40,8 +40,6 @@ class DestinationGroupForm < ApplicationForm
     end
 
     object.save!
-
-    true
   end
 
   def catch_all?

@@ -4,7 +4,6 @@ class TariffScheduleForm < ApplicationForm
   attribute :object, default: -> { TariffSchedule.new }
   attribute :name
   attribute :description
-
   attribute :destination_tariffs,
             FormCollectionType.new(form: DestinationTariffForm),
             default: []

@@ -17,7 +17,7 @@ module Dashboard
         :name, :category, :description, tiers: [ :tariff_schedule_id, :weight ]
       )
       @resource = TariffPlanForm.new(carrier: current_carrier, **permitted_params)
-      @resource.save
+      UpdateTariffPlanForm.call(@resource)
       respond_with(:dashboard, @resource, location: dashboard_tariff_plans_path(filter_params))
     end
 
@@ -37,13 +37,13 @@ module Dashboard
         :name, :description, tiers: [ :id, :tariff_schedule_id, :weight, :_destroy ]
       )
       @resource.attributes = permitted_params
-      @resource.save
+      UpdateTariffPlanForm.call(@resource)
       respond_with(:dashboard, @resource)
     end
 
     def destroy
       @resource = record
-      @resource.destroy
+      DestroyTariffPlan.call(@resource)
       respond_with(:dashboard, @resource)
     end
 
