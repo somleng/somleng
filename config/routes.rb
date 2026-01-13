@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       resources :sms_gateway_channel_groups
       resources :carrier_users
       resources :tariff_packages
+      resources :balance_transactions, only: [ :index, :show, :new, :create ]
       resource :tariff_package_wizard, only: [ :new, :create ]
       resources :tariff_plans
       resources :tariff_plan_tiers, only: [ :new ]
@@ -205,7 +206,7 @@ Rails.application.routes.draw do
       resources :messaging_services, only: :show
       resources :verification_services, only: :show
       resources :media_stream_events, only: :show
-
+      resources :balance_transactions, only: %i[show index]
       root to: "statistics#index"
     end
 

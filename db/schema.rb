@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_13_085205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -85,6 +85,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "balance_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.integer "amount_cents", null: false
+    t.uuid "carrier_id", null: false
+    t.datetime "created_at", null: false
+    t.uuid "created_by_id"
+    t.string "currency", null: false
+    t.text "description"
+    t.bigserial "sequence_number", null: false
+    t.string "type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_balance_transactions_on_account_id"
+    t.index ["carrier_id"], name: "index_balance_transactions_on_carrier_id"
+    t.index ["created_by_id"], name: "index_balance_transactions_on_created_by_id"
+    t.index ["sequence_number"], name: "index_balance_transactions_on_sequence_number", unique: true, order: :desc
+    t.index ["type"], name: "index_balance_transactions_on_type"
   end
 
   create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -990,6 +1008,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "balance_transactions", "accounts"
+  add_foreign_key "balance_transactions", "carriers"
+  add_foreign_key "balance_transactions", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "carriers", "tariff_packages", column: "default_tariff_package_id", on_delete: :nullify
   add_foreign_key "destination_groups", "carriers", on_delete: :cascade

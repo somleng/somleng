@@ -31,6 +31,7 @@ class Carrier < ApplicationRecord
   has_many :tariffs
   has_many :destination_tariffs, through: :tariff_schedules
   has_many :destination_groups
+  has_many :balance_transactions
   belongs_to :default_tariff_package, class_name: "TariffPackage", optional: true
 
   has_one_attached :logo

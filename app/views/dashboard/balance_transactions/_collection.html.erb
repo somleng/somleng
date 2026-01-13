@@ -1,0 +1,51 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        ID
+      </th>
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+      <th>
+        Type
+      </th>
+      <th>
+        Amount
+      </th>
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |balance_transaction| %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(balance_transaction.id, dashboard_balance_transaction_path(balance_transaction)) %>
+        </td>
+
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(balance_transaction.account.name, dashboard_account_path(balance_transaction.account_id)) %>
+          </td>
+        <% end %>
+
+        <td>
+          <%= balance_transaction.type.text %>
+        </td>
+
+        <td>
+          <%= balance_transaction.amount.format %>
+        </td>
+
+        <td>
+          <%= local_time(balance_transaction.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

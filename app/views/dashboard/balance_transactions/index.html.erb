@@ -1,0 +1,32 @@
+<%= page_title(title: "Balance Transactions") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:id, params.dig(:filter, :id), title: "ID") %>
+
+    <% if policy(:account).show? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.accounts.map { |account| [account.name, account.id] },
+          { filter_value: params.dig(:filter, :account_id) },
+          { data: { controller: "enhanced-select" }}
+        )
+      %>
+    <% end %>
+
+    <%= form.select :type, BalanceTransaction.type.values.map { [it.text, it] }, { filter_value: params.dig(:filter, :type) } %>
+    <%= form.date_range(
+      title: "Created At",
+      filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)],
+      restrict_date_range: true
+    ) %>
+  <% end %>
+
+  <% if policy(:balance_transaction).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_balance_transaction_path) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

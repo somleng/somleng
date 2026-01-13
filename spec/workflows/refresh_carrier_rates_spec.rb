@@ -10,7 +10,6 @@ RSpec.describe RefreshCarrierRates do
 
     RefreshCarrierRates.call(client:)
 
-    expect(client).to have_received(:refresh_carrier_rates).with(carrier)
-    expect(client).to have_received(:refresh_carrier_rates).once
+    expect(client).to have_received(:refresh_carrier_rates).once.with(carrier)
   end
 end

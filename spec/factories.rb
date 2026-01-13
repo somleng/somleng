@@ -871,4 +871,11 @@ FactoryBot.define do
     message
     sms_gateway { message.sms_gateway }
   end
+
+  factory :balance_transaction do
+    carrier
+    account { association :account, carrier: }
+    type { :topup }
+    amount { Money.from_amount(100, account.billing_currency) }
+  end
 end

@@ -1,0 +1,12 @@
+class BalanceTransaction < ApplicationRecord
+  extend Enumerize
+  self.inheritance_column = :_type_disabled
+
+  belongs_to :account
+  belongs_to :carrier
+  belongs_to :created_by, class_name: "User", optional: true
+
+  enumerize :type, in: [ :topup, :adjustment ], predicates: true, scope: :shallow
+
+  monetize :amount_cents, with_model_currency: :currency
+end
