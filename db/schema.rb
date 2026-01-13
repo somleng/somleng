@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_12_093737) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -34,6 +34,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_093737) do
     t.integer "account_memberships_count", default: 0, null: false
     t.string "allowed_calling_codes", default: [], null: false, array: true
     t.string "billing_currency", null: false
+    t.boolean "billing_enabled", default: false, null: false
+    t.string "billing_mode", null: false
     t.integer "calls_per_second", default: 1, null: false
     t.uuid "carrier_id", null: false
     t.datetime "created_at", precision: nil, null: false
@@ -46,6 +48,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_093737) do
     t.string "type", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["billing_currency"], name: "index_accounts_on_billing_currency"
+    t.index ["billing_enabled"], name: "index_accounts_on_billing_enabled"
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
