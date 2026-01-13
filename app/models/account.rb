@@ -37,6 +37,10 @@ class Account < ApplicationRecord
 
   before_create :set_defaults
 
+  def self.billing_enabled
+    where(billing_enabled: true)
+  end
+
   def auth_token
     access_token.token
   end

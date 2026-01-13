@@ -7,7 +7,7 @@ class RefreshCarrierRates < ApplicationWorkflow
   end
 
   def call
-    Carrier.billing_enabled.find_each do |carrier|
+    Carrier.billing_enabled.joins(:accounts).merge(Account.billing_enabled).distinct.find_each do |carrier|
       client.refresh_carrier_rates(carrier)
     end
   end
