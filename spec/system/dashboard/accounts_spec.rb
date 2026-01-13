@@ -144,7 +144,7 @@ RSpec.describe "Accounts" do
       :account,
       :carrier_managed,
       :enabled,
-      billing_enabled: true,
+      :billing_enabled,
       carrier: user.carrier,
       default_tts_voice: "Basic.Kal"
     )
