@@ -11,6 +11,14 @@ resource "Accounts", document: :carrier_api do
         required: true
       )
       parameter(
+        :billing_enabled,
+        "Enable billing for the account. Defaults to `false`.",
+      )
+      parameter(
+        :billing_mode,
+        "The billing mode for the account. Only `prepaid` is supported at this time.",
+      )
+      parameter(
         :tts_voice,
         "The default TTS voice identifier. Defaults to: #{TTSVoices::Voice.default.identifier}"
       )
@@ -30,6 +38,8 @@ resource "Accounts", document: :carrier_api do
           attributes: {
             name: "Rocket Rides",
             default_tts_voice: "Basic.Kal",
+            billing_enabled: true,
+            billing_mode: "prepaid",
             metadata: {
               foo: "bar"
             }
@@ -39,9 +49,14 @@ resource "Accounts", document: :carrier_api do
 
       expect(response_status).to eq(201)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/account")
-      expect(jsonapi_response_attributes.fetch("name")).to eq("Rocket Rides")
-      expect(jsonapi_response_attributes.fetch("type")).to eq("carrier_managed")
-      expect(jsonapi_response_attributes.fetch("default_tts_voice")).to eq("Basic.Kal")
+      expect(jsonapi_response_attributes).to include(
+        "name" => "Rocket Rides",
+        "type" => "carrier_managed",
+        "default_tts_voice" => "Basic.Kal",
+        "billing_enabled" => true,
+        "billing_mode" => "prepaid",
+        "metadata" => { "foo" => "bar" }
+      )
     end
 
     example "handles invalid requests", document: false do
@@ -73,6 +88,7 @@ resource "Accounts", document: :carrier_api do
     example "Update an account" do
       account = create(
         :account,
+        :billing_enabled,
         name: "Rocket Rides",
         status: :enabled,
         default_tts_voice: "Basic.Slt",
@@ -90,6 +106,7 @@ resource "Accounts", document: :carrier_api do
           attributes: {
             name: "Bob Cats",
             status: "disabled",
+            billing_enabled: false,
             default_tts_voice: "Basic.Kal",
             metadata: {
               "bar" => "foo"
@@ -103,6 +120,7 @@ resource "Accounts", document: :carrier_api do
       expect(jsonapi_response_attributes).to include(
         "status" => "disabled",
         "default_tts_voice" => "Basic.Kal",
+        "billing_enabled" => false,
         "metadata" => {
           "bar" => "foo",
           "foo" => "bar"

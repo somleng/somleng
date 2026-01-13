@@ -35,6 +35,9 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_xpath("//img[@title='Logo']")
     expect(page).to have_xpath("//img[@title='Favicon']")
     expect(page).to have_content("Standard Package")
+    within("#billing-enabled") do
+      expect(page).to have_content("Yes")
+    end
   end
 
   it "Update carrier subdomain" do

@@ -1,10 +1,9 @@
-class AccountForm
-  include ActiveModel::Model
-  include ActiveModel::Attributes
-
+class AccountForm < ApplicationForm
   attribute :carrier
   attribute :name
   attribute :enabled, :boolean, default: true
+  attribute :billing_enabled, :boolean, default: false
+  attribute :billing_mode
   attribute :object, default: -> { Account.new(type: :carrier_managed, access_token: Doorkeeper::AccessToken.new) }
   attribute :sip_trunk_id
   attribute :owner_name
@@ -16,6 +15,8 @@ class AccountForm
   attribute :tariff_plan_subscriptions,
             FormCollectionType.new(form: TariffPlanSubscriptionForm),
             default: []
+
+  enumerize :billing_mode, in: Account.billing_mode.values, default: :prepaid
 
   delegate :new_record?, :persisted?, :id, :customer_managed?, :carrier_managed?, to: :object
 
@@ -47,6 +48,8 @@ class AccountForm
       owner_name: object.owner&.name,
       owner_email: object.owner&.email,
       default_tts_voice: object.default_tts_voice,
+      billing_enabled: object.billing_enabled?,
+      billing_mode: object.billing_mode,
       tariff_plan_subscriptions: object.tariff_plan_subscriptions
     )
   end
@@ -69,6 +72,8 @@ class AccountForm
     Account.transaction do
       object.carrier = carrier
       object.status = enabled ? "enabled" : "disabled"
+      object.billing_enabled = billing_enabled
+      object.billing_mode = billing_mode
       object.calls_per_second = calls_per_second
       object.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
       if carrier_managed?

@@ -68,9 +68,19 @@
 
     <div class="card mb-3" data-controller="tariff-package-selection" data-tariff-package-selection-plans-value="<%= f.object.tariff_plans_by_category.to_json %>">
       <div class="card-body">
-        <h5 class="card-title">Tariffs</h5>
+        <h5 class="card-title">Billing</h5>
 
         <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :billing_enabled, as: :boolean, wrapper: :custom_boolean_switch %>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :billing_mode, include_blank: false, input_html: { data: { controller: "enhanced-select" } } %>
+          </div>
+
           <div class="col-sm-6">
             <% if f.object.new_record? %>
               <%= f.input(

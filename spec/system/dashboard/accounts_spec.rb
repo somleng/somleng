@@ -62,6 +62,8 @@ RSpec.describe "Accounts" do
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
     enhanced_select("Basic.Slt", from: "Default TTS voice")
+    check("Billing enabled")
+    enhanced_select("Prepaid", from: "Billing mode")
     click_on("Create Account")
 
     expect(page).to have_content("Account was successfully created")
@@ -69,13 +71,20 @@ RSpec.describe "Accounts" do
       expect(page).to have_content("Calls per second")
       expect(page).to have_content("2")
     end
+
     expect(page).to have_content("Rocket Rides")
     expect(page).to have_content("Enabled")
     expect(page).to have_link("Edit")
     expect(page).to have_content("Auth Token")
     expect(page).to have_content("Carrier managed")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
-    expect(page).to have_link("Outbound calls (Standard)")
+    within("#billing") do
+      within("#billing-enabled") do
+        expect(page).to have_content("Yes")
+      end
+      expect(page).to have_content("Prepaid")
+      expect(page).to have_link("Outbound calls (Standard)")
+    end
   end
 
   it "Handle validation errors" do
@@ -135,6 +144,7 @@ RSpec.describe "Accounts" do
       :account,
       :carrier_managed,
       :enabled,
+      :billing_enabled,
       carrier: user.carrier,
       default_tts_voice: "Basic.Kal"
     )
@@ -148,6 +158,7 @@ RSpec.describe "Accounts" do
     fill_in("Owner's name", with: "John Doe")
     fill_in("Owner's email", with: "johndoe@example.com")
     enhanced_select("Basic.Slt", from: "Default TTS voice")
+    uncheck("Billing enabled")
     uncheck("Enabled")
 
     perform_enqueued_jobs do
@@ -163,6 +174,9 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("John Doe")
     expect(page).to have_content("johndoe@example.com")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
+    within("#billing-enabled") do
+      expect(page).to have_content("No")
+    end
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 

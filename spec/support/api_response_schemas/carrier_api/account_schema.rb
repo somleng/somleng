@@ -8,6 +8,8 @@ module APIResponseSchema
         required(:name).filled(:str?)
         required(:status).filled(:str?)
         required(:type).filled(:str?)
+        required(:billing_enabled).filled(:bool?)
+        required(:billing_mode).filled(:str?)
         optional(:auth_token).filled(:str?)
         required(:metadata).maybe(:hash?)
         required(:created_at).filled(:str?)

@@ -48,6 +48,8 @@ module Dashboard
         :sip_trunk_id,
         :calls_per_second,
         :enabled,
+        :billing_enabled,
+        :billing_mode,
         tariff_plan_subscriptions: [ :id, :plan_id, :category ]
       )
     end

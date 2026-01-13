@@ -5,6 +5,7 @@ class Account < ApplicationRecord
 
   enumerize :type, in: [ :carrier_managed, :customer_managed ], predicates: true, scope: :shallow
   enumerize :status, in: %i[enabled disabled], predicates: true, default: :enabled
+  enumerize :billing_mode, in: [ :prepaid ], predicates: true, default: :prepaid
 
   attribute :default_tts_voice, TTSVoiceType.new
   attribute :billing_currency, CurrencyType.new

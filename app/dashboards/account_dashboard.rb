@@ -25,7 +25,10 @@ class AccountDashboard < Administrate::BaseDashboard
       }
     ),
     allowed_calling_codes: Field::String,
-    metadata: Field::JSON.with_options(searchable: false)
+    metadata: Field::JSON.with_options(searchable: false),
+    billing_mode: Field::String,
+    billing_currency: Field::String,
+    billing_enabled: Field::Boolean
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -47,6 +50,9 @@ class AccountDashboard < Administrate::BaseDashboard
     current_call_sessions
     default_tts_voice
     sip_trunk
+    billing_enabled
+    billing_currency
+    billing_mode
     created_at
     updated_at
     allowed_calling_codes
