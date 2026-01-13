@@ -203,6 +203,10 @@ FactoryBot.define do
     traits_for_enum :status, %w[enabled disabled]
     carrier_managed
 
+    trait :billing_enabled do
+      billing_enabled { true }
+    end
+
     trait :customer_managed do
       type { :customer_managed }
 
