@@ -135,6 +135,26 @@ class RatingEngineClient
     end
   end
 
+  def update_account_balance(balance_transaction)
+    handle_request do
+      params = {
+        tenant: "cgrates.org",
+        account: balance_transaction.account_id,
+        balance_type: "*monetary",
+        value: balance_transaction.amount.abs.to_f,
+        balance: {
+          id: balance_transaction.account_id,
+        }
+      }
+
+      if balance_transaction.credit?
+        client.add_balance(**params)
+      else
+        client.debit_balance(**params)
+      end
+    end
+  end
+
   private
 
   def handle_request(&)

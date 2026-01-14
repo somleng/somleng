@@ -15,7 +15,7 @@ module Dashboard
         created_by: current_user,
         **permitted_params
       )
-      @resource.save
+      UpdateAccountBalanceForm.call(@resource)
       respond_with(:dashboard, @resource)
     end
 

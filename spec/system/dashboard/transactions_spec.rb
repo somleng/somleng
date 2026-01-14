@@ -39,6 +39,7 @@ RSpec.describe "Transactions" do
     user = create(:user, :carrier, carrier:, name: "John Doe")
     account = create(:account, carrier:)
 
+    stub_rating_engine_request
     carrier_sign_in(user)
     visit dashboard_balance_transactions_path
     click_on("New")

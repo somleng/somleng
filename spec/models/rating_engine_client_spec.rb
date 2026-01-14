@@ -192,6 +192,48 @@ RSpec.describe RatingEngineClient do
     end
   end
 
+  describe "#update_account_balance" do
+    context "credit" do
+      it "sends a request to add a balance" do
+        balance_transaction = create(:balance_transaction, type: :topup, amount: Money.from_amount(100, "USD"))
+        client = instance_spy(CGRateS::Client)
+        rating_engine_client = RatingEngineClient.new(client:)
+
+        rating_engine_client.update_account_balance(balance_transaction)
+
+        expect(client).to have_received(:add_balance).with(
+          tenant: "cgrates.org",
+          account: balance_transaction.account_id,
+          balance_type: "*monetary",
+          value: 100.0,
+          balance: {
+            id: balance_transaction.account_id,
+          }
+        )
+      end
+    end
+
+    context "debit" do
+      it "sends a request to debit a balance" do
+        balance_transaction = create(:balance_transaction, type: :adjustment, amount: Money.from_amount(-100, "USD"))
+        client = instance_spy(CGRateS::Client)
+        rating_engine_client = RatingEngineClient.new(client:)
+
+        rating_engine_client.update_account_balance(balance_transaction)
+
+        expect(client).to have_received(:debit_balance).with(
+          tenant: "cgrates.org",
+          account: balance_transaction.account_id,
+          balance_type: "*monetary",
+          value: 100.0,
+          balance: {
+            id: balance_transaction.account_id,
+          }
+        )
+      end
+    end
+  end
+
   it "handles API errors" do
     client = instance_spy(CGRateS::Client)
     rating_engine_client = RatingEngineClient.new(client:)

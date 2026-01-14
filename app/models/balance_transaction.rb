@@ -9,4 +9,11 @@ class BalanceTransaction < ApplicationRecord
   enumerize :type, in: [ :topup, :adjustment ], predicates: true, scope: :shallow
 
   monetize :amount_cents, with_model_currency: :currency
+
+  def credit?
+    return true if topup?
+    return amount.positive? if adjustment?
+
+    raise "Invalid balance transaction type: #{type}"
+  end
 end
