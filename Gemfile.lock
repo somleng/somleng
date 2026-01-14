@@ -190,7 +190,7 @@ GEM
     bcrypt (3.1.21)
     benchmark (0.5.0)
     bigdecimal (4.0.1)
-    bootsnap (1.21.0)
+    bootsnap (1.21.1)
       msgpack (~> 1.2)
     bootstrap-email (1.8.1)
       htmlbeautifier (~> 1.3)
