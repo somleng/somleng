@@ -1,11 +1,33 @@
 class RatingEngineClient
   attr_reader :client
 
+  TENANT = "cgrates.org"
+  LOAD_ID = "somleng.org"
+  BALANCE_TYPE = "*monetary"
+  ROUNDING_DECIMALS = 4
+  ROUNDING_METHOD = "*up"
+  RATE_UNIT = "60s"
+  RATE_INCREMENT = "60s"
+
   def initialize(**options)
     @client = options.fetch(:client) { CGRateS::Client.new }
   end
 
   class APIError < StandardError; end
+
+  def account_balance(account)
+    response = handle_request do
+      client.get_account(
+        tenant: TENANT,
+        account: account.id,
+      )
+    end
+
+    value = response.result.dig("BalanceMap", "*monetary", 0, "Value")
+    value = 0 if value.blank?
+
+    Money.from_amount(value, account.billing_currency)
+  end
 
   def upsert_destination_group(destination_group)
     handle_request do
@@ -27,7 +49,7 @@ class RatingEngineClient
           tp_id: tariff_schedule.carrier_id,
           id: tariff.id,
           rate_slots: [
-            { rate: tariff.rate.to_f, rate_unit: "60s", rate_increment: "60s" }
+            { rate: tariff.rate.to_f, rate_unit: RATE_UNIT, rate_increment: RATE_INCREMENT }
           ]
         )
       end
@@ -37,10 +59,10 @@ class RatingEngineClient
         id: tariff_schedule.id,
         destination_rates: destination_tariffs.map do |destination_tariff|
           {
-            rounding_decimals: 4,
+            rounding_decimals: ROUNDING_DECIMALS,
             rate_id: destination_tariff.tariff_id,
             destination_id: destination_tariff.destination_group_id,
-            rounding_method: "*up"
+            rounding_method: ROUNDING_METHOD
           }
         end
       )
@@ -86,9 +108,9 @@ class RatingEngineClient
       account.tariff_plan_subscriptions.each do |subscription|
         client.set_tp_rating_profile(
           tp_id: account.carrier_id,
-          load_id: "somleng.org",
+          load_id: LOAD_ID,
           category: subscription.category,
-          tenant: "cgrates.org",
+          tenant: TENANT,
           subject: account.id,
           rating_plan_activations: [
             {
@@ -104,15 +126,15 @@ class RatingEngineClient
       (all_categories - subscribed_categories).each do |category|
         client.remove_tp_rating_profile(
           tp_id: account.carrier_id,
-          load_id: "somleng.org",
+          load_id: LOAD_ID,
           category:,
-          tenant: "cgrates.org",
+          tenant: TENANT,
           subject: account.id,
         )
       end
 
       client.set_account(
-        tenant: "cgrates.org",
+        tenant: TENANT,
         account: account.id,
       )
     end
@@ -121,7 +143,7 @@ class RatingEngineClient
   def destroy_account(account)
     handle_request do
       client.remove_account(
-        tenant: "cgrates.org",
+        tenant: TENANT,
         account: account.id,
       )
     end
@@ -138,9 +160,9 @@ class RatingEngineClient
   def update_account_balance(balance_transaction)
     handle_request do
       params = {
-        tenant: "cgrates.org",
+        tenant: TENANT,
         account: balance_transaction.account_id,
-        balance_type: "*monetary",
+        balance_type: BALANCE_TYPE,
         value: balance_transaction.amount.abs.to_f,
         balance: {
           id: balance_transaction.account_id,

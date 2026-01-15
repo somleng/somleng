@@ -1,6 +1,34 @@
 require "rails_helper"
 
 RSpec.describe RatingEngineClient do
+  describe "#account_balance" do
+    it "sends a request to get an account balance" do
+      account = create(:account)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_account).and_return(
+        CGRateS::Response.new(id: 1, result: { "BalanceMap" => { "*monetary" => [ { "Value" => 100 } ] } })
+      )
+
+      balance = rating_engine_client.account_balance(account)
+
+      expect(balance).to eq(Money.from_amount(100, account.billing_currency))
+    end
+
+    it "returns a zero balance if the account has no balance" do
+      account = create(:account)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_account).and_return(
+        CGRateS::Response.new(id: 1, result: { "BalanceMap" => nil })
+      )
+
+      balance = rating_engine_client.account_balance(account)
+
+      expect(balance).to eq(Money.from_amount(0, account.billing_currency))
+    end
+  end
+
   describe "#upsert_destination_group" do
     it "sends a request to upsert a destination group" do
       destination_group = create(:destination_group, prefixes: [ "855" ])
