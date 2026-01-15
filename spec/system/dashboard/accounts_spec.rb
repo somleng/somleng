@@ -54,7 +54,7 @@ RSpec.describe "Accounts" do
     )
     user = create(:user, :carrier, carrier:)
 
-    stub_rating_engine_request
+    stub_rating_engine_request(response: { result: { "BalanceMap" => nil } })
     carrier_sign_in(user)
     visit dashboard_accounts_path
     click_on("New")
@@ -99,14 +99,16 @@ RSpec.describe "Accounts" do
 
   it "Show an account" do
     carrier = create(:carrier, billing_currency: "USD")
-    account = create(:account, carrier:)
+    account = create(:account, carrier:, billing_enabled: true)
     user = create(:user, :carrier, carrier: account.carrier)
 
+    stub_rating_engine_request(response: { result: { "BalanceMap" => { "*monetary" => [ { "Value" => 100.00 } ] } } })
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
     within("#billing") do
       expect(page).to have_content("United States Dollar")
+      expect(page).to have_content("$100.00")
       expect(page).to have_link("Manage", href: dashboard_phone_number_plans_path(filter: { account_id: account.id }))
     end
 
@@ -150,7 +152,7 @@ RSpec.describe "Accounts" do
     )
     sip_trunk = create(:sip_trunk, carrier:, name: "Main SIP Trunk")
 
-    stub_rating_engine_request
+    stub_rating_engine_request(response: { result: { "BalanceMap" => nil } })
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_on("Edit")

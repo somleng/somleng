@@ -61,6 +61,9 @@
           <%= f.attribute :billing_enabled %>
         </span>
 
+        <% if @resource.billing_enabled? %>
+          <%= f.attribute :balance, value: GetAccountBalance.call(@resource).format %>
+        <% end %>
         <%= f.attribute :billing_mode, value: @resource.billing_mode.text %>
         <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
         <%= f.attribute :phone_number_plans, value: external_link_to("View", dashboard_phone_number_plans_path(filter: {account_id: @resource.id}), title: "Manage") %>
