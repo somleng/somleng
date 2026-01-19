@@ -166,7 +166,8 @@ class RatingEngineClient
         value: balance_transaction.amount.abs.to_f,
         balance: {
           id: balance_transaction.account_id,
-        }
+        },
+        cdrlog: true
       }
 
       if balance_transaction.credit?
