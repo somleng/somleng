@@ -237,7 +237,10 @@ RSpec.describe RatingEngineClient do
           balance: {
             id: balance_transaction.account_id,
           },
-          cdrlog: true
+          cdrlog: true,
+          action_extra_data: {
+            balance_transaction_id: balance_transaction.id
+          }
         )
       end
     end
@@ -258,7 +261,10 @@ RSpec.describe RatingEngineClient do
           balance: {
             id: balance_transaction.account_id,
           },
-          cdrlog: true
+          cdrlog: true,
+          action_extra_data: {
+            balance_transaction_id: balance_transaction.id
+          }
         )
       end
     end

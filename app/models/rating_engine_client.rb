@@ -167,7 +167,10 @@ class RatingEngineClient
         balance: {
           id: balance_transaction.account_id,
         },
-        cdrlog: true
+        cdrlog: true,
+        action_extra_data: {
+          balance_transaction_id: balance_transaction.id
+        }
       }
 
       if balance_transaction.credit?
