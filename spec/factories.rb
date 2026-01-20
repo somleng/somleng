@@ -873,9 +873,18 @@ FactoryBot.define do
   end
 
   factory :balance_transaction do
-    carrier
-    account { association :account, carrier: }
-    type { :topup }
-    amount { Money.from_amount(100, account.billing_currency) }
+    carrier { account.carrier }
+    account
+    charge
+
+    trait :topup do
+      type { :topup }
+      amount { Money.from_amount(100, account.billing_currency) }
+    end
+
+    trait :charge do
+      type { :charge }
+      amount { Money.from_amount(-100, account.billing_currency) }
+    end
   end
 end

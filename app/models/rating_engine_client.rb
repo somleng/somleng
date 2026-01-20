@@ -9,6 +9,8 @@ class RatingEngineClient
   RATE_UNIT = "60s"
   RATE_INCREMENT = "60s"
 
+  CDR = Data.define(:id, :account_id, :cost, :balance_transaction_id)
+
   def initialize(**options)
     @client = options.fetch(:client) { CGRateS::Client.new }
   end
@@ -179,6 +181,28 @@ class RatingEngineClient
         client.debit_balance(**params)
       end
     end
+  end
+
+  def fetch_cdrs(last_id:, limit:)
+    response = client.get_cdrs(
+      tenants: [ TENANT ],
+      order_by: "OrderID",
+      extra_args: { "OrderIDStart" => last_id.to_i },
+      limit:
+    )
+
+    response.result.map do |cdr|
+      CDR.new(
+        id: cdr.fetch("OrderID"),
+        account_id: cdr.fetch("Account"),
+        cost: cdr.fetch("Cost"),
+        balance_transaction_id: cdr.dig("ExtraFields", "balance_transaction_id")
+      )
+    end
+  rescue CGRateS::Client::APIError => e
+    return [] if e.response["error"] == "NOT_FOUND"
+
+    raise APIError.new(e.message)
   end
 
   private

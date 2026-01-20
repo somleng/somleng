@@ -6,5 +6,6 @@ class PerMinuteJob < ApplicationJob
     ExecuteWorkflowJob.perform_later(PublishOutboundCallsQueueMetrics.to_s)
     ExecuteWorkflowJob.perform_later(FailSendingMessages.to_s)
     ExecuteWorkflowJob.perform_later(RefreshCarrierRates.to_s)
+    ExecuteWorkflowJob.perform_later(SyncRatingEngineTransactions.to_s)
   end
 end

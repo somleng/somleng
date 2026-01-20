@@ -95,12 +95,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_085205) do
     t.uuid "created_by_id"
     t.string "currency", null: false
     t.text "description"
+    t.bigint "external_id"
     t.bigserial "sequence_number", null: false
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_balance_transactions_on_account_id"
     t.index ["carrier_id"], name: "index_balance_transactions_on_carrier_id"
     t.index ["created_by_id"], name: "index_balance_transactions_on_created_by_id"
+    t.index ["external_id"], name: "index_balance_transactions_on_external_id", unique: true, order: :desc
     t.index ["sequence_number"], name: "index_balance_transactions_on_sequence_number", unique: true, order: :desc
     t.index ["type"], name: "index_balance_transactions_on_type"
   end

@@ -270,14 +270,82 @@ RSpec.describe RatingEngineClient do
     end
   end
 
+  describe "#sync_transactions" do
+    it "sends a request to sync transactions" do
+      client = instance_spy(
+        CGRateS::Client,
+        get_cdrs: CGRateS::Response.new(
+          id: 1,
+          result: [
+            {
+              "OrderID" => 123,
+              "Account" => 123,
+              "Cost" => 100,
+              "ExtraFields" => { "balance_transaction_id" => 123 }
+            },
+            {
+              "OrderID" => 124,
+              "Account" => 123,
+              "Cost" => 200,
+              "ExtraFields" => {}
+            }
+          ]
+        )
+      )
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      cdrs = rating_engine_client.fetch_cdrs(
+        last_id: "123",
+        limit: 10
+      )
+
+      expect(client).to have_received(:get_cdrs).with(
+        tenants: [ "cgrates.org" ],
+        order_by: "OrderID",
+        extra_args: { "OrderIDStart" => 123 },
+        limit: 10
+      )
+      expect(cdrs).to contain_exactly(
+        have_attributes(
+          id: 123,
+          account_id: 123,
+          cost: 100,
+          balance_transaction_id: 123
+        ),
+        have_attributes(
+          id: 124,
+          account_id: 123,
+          cost: 200,
+          balance_transaction_id: nil
+        )
+      )
+    end
+
+    it "returns an empty array if the CDRs are not found" do
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_cdrs).and_raise(
+        build_api_error(response: { "error" => "NOT_FOUND" })
+      )
+
+      cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
+
+      expect(cdrs).to be_empty
+    end
+  end
+
   it "handles API errors" do
     client = instance_spy(CGRateS::Client)
     rating_engine_client = RatingEngineClient.new(client:)
-    allow(client).to receive(:set_tp_destination).and_raise(CGRateS::Client::APIError.new("API error"))
+    allow(client).to receive(:set_tp_destination).and_raise(build_api_error)
     destination_group = create(:destination_group)
 
     expect {
       rating_engine_client.upsert_destination_group(destination_group)
     }.to raise_error(RatingEngineClient::APIError)
+  end
+
+  def build_api_error(message: nil, response: {})
+    CGRateS::Client::APIError.new(message, response:)
   end
 end

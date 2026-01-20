@@ -7,6 +7,7 @@ class CreateBalanceTransactions < ActiveRecord::Migration[8.1]
       t.string :type, null: false
       t.integer :amount_cents, null: false
       t.string :currency, null: false
+      t.bigint :external_id, null: true, index: { unique: true, order: :desc }
       t.text :description, null: true
 
       t.index :type
