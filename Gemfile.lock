@@ -159,8 +159,8 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-ec2 (1.590.0)
-      aws-sdk-core (~> 3, >= 3.241.3)
+    aws-sdk-ec2 (1.591.0)
+      aws-sdk-core (~> 3, >= 3.241.4)
       aws-sigv4 (~> 1.5)
     aws-sdk-kms (1.121.0)
       aws-sdk-core (~> 3, >= 3.241.4)
