@@ -199,9 +199,9 @@ class RatingEngineClient
         balance_transaction_id: cdr.dig("ExtraFields", "balance_transaction_id")
       )
     end
+  rescue CGRateS::Client::NotFoundError
+    []
   rescue CGRateS::Client::APIError => e
-    return [] if e.response["error"] == "NOT_FOUND"
-
     raise APIError.new(e.message)
   end
 

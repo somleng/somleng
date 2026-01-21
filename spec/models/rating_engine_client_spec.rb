@@ -325,7 +325,7 @@ RSpec.describe RatingEngineClient do
       client = instance_spy(CGRateS::Client)
       rating_engine_client = RatingEngineClient.new(client:)
       allow(client).to receive(:get_cdrs).and_raise(
-        build_api_error(response: { "error" => "NOT_FOUND" })
+        build_api_error(error_class: CGRateS::Client::NotFoundError)
       )
 
       cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
@@ -345,7 +345,7 @@ RSpec.describe RatingEngineClient do
     }.to raise_error(RatingEngineClient::APIError)
   end
 
-  def build_api_error(message: nil, response: {})
-    CGRateS::Client::APIError.new(message, response:)
+  def build_api_error(error_class: CGRateS::Client::APIError, message: nil, response: {})
+    error_class.new(message, response:)
   end
 end
