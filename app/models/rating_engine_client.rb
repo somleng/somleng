@@ -233,6 +233,7 @@ class RatingEngineClient
   def fetch_cdrs(last_id:, limit:)
     response = client.get_cdrs(
       tenants: [ TENANT ],
+      not_costs: [ -1 ],
       order_by: "OrderID",
       extra_args: { "OrderIDStart" => last_id.to_i },
       limit:
