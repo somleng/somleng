@@ -5,25 +5,38 @@ default: &default
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("DB_POOL") { 5 } %>
   host: <%= ENV.fetch("DATABASE_HOST") { "localhost" } %>
+  port: <%= ENV.fetch("DATABASE_PORT") { 5432 } %>
   username: <%= ENV.fetch("DATABASE_USERNAME") { "postgres" } %>
   password: <%= ENV.fetch("DATABASE_PASSWORD") { "password" } %>
   reaping_frequency: 10
 
 development: &development
-  <<: *default
-  database: somleng_development
+  primary:
+    <<: *default
+    database: somleng_development
+  primary_replica:
+    <<: *default
+    database: somleng_development
+    replica: true
 
 test:
-  <<: *default
-  database: somleng_test
+  primary:
+    <<: *default
+    database: somleng_test
+  primary_replica:
+    <<: *default
+    database: somleng_test
+    replica: true
 
 production: &production
-  <<: *default
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-  database: <%= ENV['DATABASE_NAME'] %>
-  host: <%= ENV['DATABASE_HOST'] %>
-  port: <%= ENV['DATABASE_PORT'] %>
+  primary:
+    <<: *default
+    database: <%= ENV["DATABASE_NAME"] %>
+  primary_replica:
+    <<: *default
+    database: <%= ENV["DATABASE_NAME"] %>
+    host: <%= ENV.fetch("DATABASE_RO_HOST") { ENV["DATABASE_HOST"] } %>
+    replica: true
 
 staging:
   <<: *production
