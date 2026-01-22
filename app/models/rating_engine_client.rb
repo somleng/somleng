@@ -9,6 +9,17 @@ class RatingEngineClient
   RATE_UNIT = "60s"
   RATE_INCREMENT = "60s"
 
+  RATE_UNITS = {
+    call: {
+      unit: "60s",
+      increment: "60s"
+    },
+    message: {
+      unit: "1",
+      increment: "1"
+    }
+  }
+
   CDR = Data.define(:id, :account_id, :cost, :balance_transaction_id)
 
   def initialize(**options)
@@ -16,6 +27,7 @@ class RatingEngineClient
   end
 
   class APIError < StandardError; end
+  class InsufficientBalanceError < APIError; end
 
   def account_balance(account)
     response = handle_request do
@@ -47,11 +59,17 @@ class RatingEngineClient
 
       destination_tariffs.each do |destination_tariff|
         tariff = destination_tariff.tariff
+        rate_unit = RATE_UNITS.fetch(tariff.category.to_sym)
+
         client.set_tp_rate(
           tp_id: tariff_schedule.carrier_id,
           id: tariff.id,
           rate_slots: [
-            { rate: tariff.rate.to_f, rate_unit: RATE_UNIT, rate_increment: RATE_INCREMENT }
+            {
+              rate: tariff.rate.to_f,
+              rate_unit: rate_unit.fetch(:unit),
+              rate_increment: rate_unit.fetch(:increment)
+            }
           ]
         )
       end
@@ -179,6 +197,35 @@ class RatingEngineClient
         client.add_balance(**params)
       else
         client.debit_balance(**params)
+      end
+    end
+  end
+
+  def create_message_charge(message)
+    handle_request do
+      client.process_external_cdr(
+        category: message.tariff_category,
+        request_type: "*#{message.account.billing_mode}",
+        tor: "*message",
+        tenant: TENANT,
+        account: message.account_id,
+        destination: message.to,
+        answer_time: message.created_at.iso8601,
+        setup_time: message.created_at.iso8601,
+        usage: message.segments,
+        origin_id: message.id
+      )
+
+      response = client.get_cdrs(
+        tenants: [ TENANT ],
+        origin_ids: [ message.id ]
+      )
+
+      cdr = response.result[0]
+      if cdr.fetch("Cost").negative?
+        raise InsufficientBalanceError if cdr.fetch("ExtraInfo") == "MAX_USAGE_EXCEEDED"
+
+        raise APIError.new(cdr.fetch("ExtraInfo"))
       end
     end
   end

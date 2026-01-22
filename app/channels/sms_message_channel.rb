@@ -54,7 +54,11 @@ class SMSMessageChannel < ApplicationCable::Channel
 
   def message_send_requested(data)
     message = current_sms_gateway.messages.sending.find(data.fetch("id"))
-    MessageSendRequest.create!(message:, sms_gateway: current_sms_gateway)
+
+    ApplicationRecord.transaction do
+      MessageSendRequest.create!(message:, sms_gateway: current_sms_gateway)
+      CreateMessageCharge.call(message)
+    end
 
     transmit({
       type: "message_send_request_confirmed",
@@ -66,7 +70,7 @@ class SMSMessageChannel < ApplicationCable::Channel
         channel: message.channel
       }
     })
-  rescue ActiveRecord::RecordNotUnique
+  rescue ActiveRecord::RecordNotUnique, CreateMessageCharge::Error
     # do nothing
   end
 

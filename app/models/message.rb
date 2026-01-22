@@ -66,6 +66,10 @@ class Message < ApplicationRecord
     direction.in?(%w[outbound_api outbound outbound_call outbound_reply])
   end
 
+  def tariff_category
+    outbound? ? :outbound_messages : :inbound_messages
+  end
+
   def complete?
     status.in?(%w[sent failed received])
   end

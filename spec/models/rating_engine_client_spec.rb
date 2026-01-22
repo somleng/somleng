@@ -93,6 +93,26 @@ RSpec.describe RatingEngineClient do
         ]
       )
     end
+
+    it "sends a request to upsert a tariff schedule with a message tariff" do
+      carrier = create(:carrier, billing_currency: "USD")
+      tariff_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
+      tariff = create(:tariff, :message, carrier:, rate_cents: InfinitePrecisionMoney.from_amount(0.005, "USD").cents)
+      create(:destination_tariff, schedule: tariff_schedule, tariff:)
+
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.upsert_tariff_schedule(tariff_schedule)
+
+      expect(client).to have_received(:set_tp_rate).with(
+        tp_id: carrier.id,
+        id: tariff.id,
+        rate_slots: [
+          { rate: 0.005, rate_unit: "1", rate_increment: "1" }
+        ]
+      )
+    end
   end
 
   describe "#destroy_tariff_schedule" do
@@ -331,6 +351,31 @@ RSpec.describe RatingEngineClient do
       cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
 
       expect(cdrs).to be_empty
+    end
+  end
+
+  describe "#create_message_charge" do
+    it "sends a request to refresh carrier rates" do
+      account = create(:account, billing_mode: :prepaid)
+      message = create(:message, direction: :outbound_api, account:)
+
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.create_message_charge(message)
+
+      expect(client).to have_received(:process_external_cdr).with(
+        category: :outbound_messages,
+        request_type: "*prepaid",
+        tor: "*message",
+        tenant: "cgrates.org",
+        account: message.account_id,
+        destination: message.to,
+        answer_time: message.created_at.iso8601,
+        setup_time: message.created_at.iso8601,
+        usage: message.segments,
+        origin_id: message.id
+      )
     end
   end
 
