@@ -33,7 +33,7 @@ class Account < ApplicationRecord
   has_many :interactions
   has_many :tts_events
   has_many :tariff_plan_subscriptions
-  has_many :tariff_plans, through: :tariff_plan_subscriptions
+  has_many :tariff_plans, through: :tariff_plan_subscriptions, source: :plan
   has_many :balance_transactions
 
   before_create :set_defaults

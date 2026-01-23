@@ -28,6 +28,18 @@ class AccountFilter < ResourceFilter
     end
   end
 
+  class TariffPlanIDFilter < ApplicationFilter
+    filter_params do
+      optional(:tariff_plan_id).value(:string)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.joins(:tariff_plans).where(tariff_plans: { id: filter_params.fetch(:tariff_plan_id) })
+    end
+  end
+
   class MetadataFilter < ApplicationFilter
     self.filter_schema = Dry::Validation.Contract do
       params do
@@ -51,5 +63,12 @@ class AccountFilter < ResourceFilter
     end
   end
 
-  filter_with StatusFilter, TypeFilter, MetadataFilter, :id_filter, :date_filter
+  filter_with(
+    StatusFilter,
+    TypeFilter,
+    TariffPlanIDFilter,
+    MetadataFilter,
+    :id_filter,
+    :date_filter
+  )
 end

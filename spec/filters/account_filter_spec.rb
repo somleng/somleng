@@ -83,4 +83,25 @@ RSpec.describe AccountFilter do
 
     expect(result).to eq([ carrier_managed_account ])
   end
+
+  it "filters by tariff_plan_id" do
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    plan = create(:tariff_plan, carrier:)
+    create(:tariff_plan_subscription, plan:, account:)
+    create(:account, carrier:)
+
+    filter = AccountFilter.new(
+      resources_scope: Account,
+      input_params: {
+        filter: {
+          tariff_plan_id: plan.id
+        }
+      }
+    )
+
+    result = filter.apply
+
+    expect(result).to contain_exactly(account)
+  end
 end

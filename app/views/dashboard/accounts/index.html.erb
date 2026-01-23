@@ -3,6 +3,12 @@
     <%= form.text_field_tag(:id, params.dig(:filter, :id), title: "SID") %>
     <%= form.select :type, Account.type.values.map { |t| [t.humanize, t] }, { filter_value: params.dig(:filter, :type) } %>
     <%= form.select :status, Account.status.values.map { |s| [s.humanize, s] }, { filter_value: params.dig(:filter, :status) } %>
+    <%= form.select(
+      :tariff_plan_id,
+      DecoratedCollection.new(current_carrier.tariff_plans).map { [ _1.name, _1.id ] },
+      { filter_value: params.dig(:filter, :tariff_plan_id) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
     <%= form.key_value(:metadata, params.dig(:filter, :metadata, :key), params.dig(:filter, :metadata, :value)) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
