@@ -1,7 +1,7 @@
 module RatingEngineHelpers
-  def stub_rating_engine_request(options = {})
+  def stub_rating_engine_request(**options)
     options.reverse_merge!(
-      response: { result: "OK", error: nil }
+      response: { result: options.fetch(:result, "OK"), error: options.fetch(:error, nil) }
     )
 
     stub_request(:post, "#{AppSettings.fetch(:rating_engine_host)}/jsonrpc").to_return ->(request) {

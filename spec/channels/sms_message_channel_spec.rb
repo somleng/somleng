@@ -146,13 +146,13 @@ RSpec.describe SMSMessageChannel, type: :channel do
     it "handles a message send request" do
       sms_gateway = stub_current_sms_gateway
       message = create(:message, :sending, sms_gateway:)
-      # stub_rating_engine_request
+      stub_rating_engine_request(result: build_list(:rating_engine_cdr_response, 1, :success))
 
       subscribe
       perform(:message_send_requested, id: message.id)
 
+      expect(message.send_request).to be_persisted
       expect(message.send_request).to have_attributes(
-        be_persisted,
         sms_gateway:,
         message:
       )
@@ -168,7 +168,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
       )
     end
 
-    it "handles a message send request that already has a send request" do
+    it "handles a messages that already have a send request" do
       sms_gateway = stub_current_sms_gateway
       message = create(:message, :sending, sms_gateway:)
       create(:message_send_request, message:, sms_gateway:)
@@ -177,6 +177,22 @@ RSpec.describe SMSMessageChannel, type: :channel do
       perform(:message_send_requested, id: message.id)
 
       expect(transmissions).to be_empty
+    end
+
+    it "handles insufficient balance errors" do
+      sms_gateway = stub_current_sms_gateway
+      message = create(:message, :sending, sms_gateway:)
+      stub_rating_engine_request(
+        result: build_list(:rating_engine_cdr_response, 1, :max_usage_exceeded)
+      )
+
+      subscribe
+      perform(:message_send_requested, id: message.id)
+
+      expect(message.reload).to have_attributes(
+        status: "failed",
+        send_request: be_present
+      )
     end
   end
 

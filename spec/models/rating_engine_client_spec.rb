@@ -296,14 +296,16 @@ RSpec.describe RatingEngineClient do
         CGRateS::Client,
         get_cdrs: build_response(
           result: [
-            build_cdr_response(
-              "OrderID" => 123,
-              "Cost" => 100,
-              "ExtraFields" => { "balance_transaction_id" => 123 }
+            build(
+              :rating_engine_cdr_response,
+              order_id: 123,
+              cost: 100,
+              extra_fields: { "balance_transaction_id" => 123 }
             ),
-            build_cdr_response(
-              "OrderID" => 124,
-              "Cost" => 200,
+            build(
+              :rating_engine_cdr_response,
+              order_id: 124,
+              cost: 200,
             )
           ]
         )
@@ -353,7 +355,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client = RatingEngineClient.new(
         client: instance_spy(
           CGRateS::Client,
-          get_cdrs: build_response(result: [ build_cdr_response("Cost" => 100) ])
+          get_cdrs: build_response(result: build_list(:rating_engine_cdr_response, 1, :success))
         )
       )
 
@@ -384,12 +386,7 @@ RSpec.describe RatingEngineClient do
         client: instance_spy(
           CGRateS::Client,
           get_cdrs: build_response(
-            result: [
-              build_cdr_response(
-                "Cost" => -1,
-                "ExtraInfo" => "MAX_USAGE_EXCEEDED"
-              )
-            ]
+            result: build_list(:rating_engine_cdr_response, 1, :max_usage_exceeded)
           )
         )
       )
@@ -405,12 +402,7 @@ RSpec.describe RatingEngineClient do
         client: instance_spy(
           CGRateS::Client,
           get_cdrs: build_response(
-            result: [
-              build_cdr_response(
-                "Cost" => -1,
-                "ExtraInfo" => "INVALID_ACCOUNT"
-              )
-            ]
+            result: build_list(:rating_engine_cdr_response, 1, :invalid_account)
           )
         )
       )
@@ -438,16 +430,5 @@ RSpec.describe RatingEngineClient do
 
   def build_response(**)
     CGRateS::Response.new(id: SecureRandom.uuid, result: "OK", **)
-  end
-
-  def build_cdr_response(**)
-    {
-      "OrderID" => 123,
-      "Account" => SecureRandom.uuid,
-      "Cost" => 100,
-      "ExtraFields" => {},
-      "ExtraInfo" => "",
-      **
-    }
   end
 end

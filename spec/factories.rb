@@ -887,4 +887,41 @@ FactoryBot.define do
       amount { Money.from_amount(-100, account.billing_currency) }
     end
   end
+
+  factory :rating_engine_cdr_response, class: Hash do
+    success
+
+    order_id { 123 }
+    account { SecureRandom.uuid }
+    extra_fields { {} }
+    extra_info { "" }
+
+    trait :success do
+      cost { 100 }
+    end
+
+    trait :failed do
+      cost { -1 }
+    end
+
+    trait :max_usage_exceeded do
+      failed
+      extra_info { "MAX_USAGE_EXCEEDED" }
+    end
+
+    trait :invalid_account do
+      failed
+      extra_info { "INVALID_ACCOUNT" }
+    end
+
+    initialize_with do
+      {
+        "OrderID" => order_id,
+        "Account" => account,
+        "Cost" => cost,
+        "ExtraFields" => extra_fields,
+        "ExtraInfo" => extra_info
+      }
+    end
+  end
 end
