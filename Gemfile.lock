@@ -236,7 +236,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-two-factor (6.3.0)
+    devise-two-factor (6.3.1)
       activesupport (>= 7.0, < 8.2)
       devise (>= 4.0, < 5.0)
       railties (>= 7.0, < 8.2)
