@@ -920,4 +920,14 @@ FactoryBot.define do
       }
     end
   end
+
+  factory :rating_engine_account_response, class: Hash do
+    balance { nil }
+
+    initialize_with do
+      {
+        "BalanceMap" => balance && { "*monetary" => [ { "Value" => balance } ] },
+      }
+    end
+  end
 end

@@ -54,7 +54,7 @@ RSpec.describe "Accounts" do
     )
     user = create(:user, :carrier, carrier:)
 
-    stub_rating_engine_request(response: { result: { "BalanceMap" => nil } })
+    stub_rating_engine_request(result: build(:rating_engine_account_response, balance: nil))
     carrier_sign_in(user)
     visit dashboard_accounts_path
     click_on("New")
@@ -102,7 +102,7 @@ RSpec.describe "Accounts" do
     account = create(:account, carrier:, billing_enabled: true)
     user = create(:user, :carrier, carrier: account.carrier)
 
-    stub_rating_engine_request(response: { result: { "BalanceMap" => { "*monetary" => [ { "Value" => 100.00 } ] } } })
+    stub_rating_engine_request(result: build(:rating_engine_account_response, balance: 100.00))
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 

@@ -22,12 +22,23 @@ class RatingEngineClient
 
   CDR = Data.define(:id, :account_id, :cost, :balance_transaction_id, :extra_info, :success?)
 
+  CDR_ERROR_CODES = {
+    "MAX_USAGE_EXCEEDED" => :insufficient_balance,
+  }
+
   def initialize(**options)
     @client = options.fetch(:client) { CGRateS::Client.new }
   end
 
   class APIError < StandardError; end
-  class InsufficientBalanceError < APIError; end
+  class FailedCDRError < APIError
+    attr_reader :error_code
+
+    def initialize(message, error_code:)
+      super(message)
+      @error_code = error_code
+    end
+  end
 
   def account_balance(account)
     response = handle_request do
@@ -224,7 +235,7 @@ class RatingEngineClient
       cdr = build_cdr(response.result[0])
       return if cdr.success?
 
-      raise InsufficientBalanceError if cdr.extra_info == "MAX_USAGE_EXCEEDED"
+      raise FailedCDRError.new(cdr.extra_info, error_code: CDR_ERROR_CODES.fetch(cdr.extra_info)) if CDR_ERROR_CODES.key?(cdr.extra_info)
       raise APIError.new(cdr.extra_info)
     end
   end
@@ -261,7 +272,7 @@ class RatingEngineClient
       cost:,
       balance_transaction_id: response.dig("ExtraFields", "balance_transaction_id"),
       extra_info: response.fetch("ExtraInfo"),
-      success?: cost != -1
+      success?: !cost.negative?
     )
   end
 end

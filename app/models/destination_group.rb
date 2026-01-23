@@ -4,7 +4,7 @@ class DestinationGroup < ApplicationRecord
 
   belongs_to :carrier
   has_many :prefixes, class_name: "DestinationPrefix", dependent: :destroy, autosave: true, inverse_of: :destination_group
-  has_many :destination_tariffs
+  has_many :destination_tariffs, dependent: :restrict_with_error
   has_many :tariffs, through: :destination_tariffs
   has_many :tariff_schedules, through: :destination_tariffs, source: :schedule
 

@@ -7,7 +7,7 @@ RSpec.describe RatingEngineClient do
       client = instance_spy(CGRateS::Client)
       rating_engine_client = RatingEngineClient.new(client:)
       allow(client).to receive(:get_account).and_return(
-        build_response(result: { "BalanceMap" => { "*monetary" => [ { "Value" => 100 } ] } })
+        build_response(result: build(:rating_engine_account_response, balance: 100))
       )
 
       balance = rating_engine_client.account_balance(account)
@@ -20,7 +20,7 @@ RSpec.describe RatingEngineClient do
       client = instance_spy(CGRateS::Client)
       rating_engine_client = RatingEngineClient.new(client:)
       allow(client).to receive(:get_account).and_return(
-        build_response(result: { "BalanceMap" => nil })
+        build_response(result: build(:rating_engine_account_response, balance: nil))
       )
 
       balance = rating_engine_client.account_balance(account)
