@@ -53,7 +53,8 @@ class SMSMessageChannel < ApplicationCable::Channel
   end
 
   def message_send_requested(data)
-    message = current_sms_gateway.messages.sending.find(data.fetch("id"))
+    message = current_sms_gateway.messages.find(data.fetch("id"))
+    return unless message.sending?
 
     MessageSendRequest.create!(message:, sms_gateway: current_sms_gateway)
     CreateMessageCharge.call(message)

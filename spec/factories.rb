@@ -68,10 +68,6 @@ FactoryBot.define do
     website { "https://at-t.com" }
     with_oauth_application
 
-    trait :billing_enabled do
-      billing_enabled { true }
-    end
-
     trait :restricted do
       restricted { true }
     end

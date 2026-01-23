@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_085205) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_23_083334) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -91,24 +91,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_085205) do
     t.uuid "account_id", null: false
     t.integer "amount_cents", null: false
     t.uuid "carrier_id", null: false
-    t.string "charge_category"
     t.datetime "created_at", null: false
     t.uuid "created_by_id"
     t.string "currency", null: false
     t.text "description"
     t.bigint "external_id"
-    t.uuid "message_id"
-    t.uuid "phone_call_id"
     t.bigserial "sequence_number", null: false
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_balance_transactions_on_account_id"
     t.index ["carrier_id"], name: "index_balance_transactions_on_carrier_id"
-    t.index ["charge_category"], name: "index_balance_transactions_on_charge_category"
     t.index ["created_by_id"], name: "index_balance_transactions_on_created_by_id"
     t.index ["external_id"], name: "index_balance_transactions_on_external_id", unique: true, order: :desc
-    t.index ["message_id"], name: "index_balance_transactions_on_message_id", unique: true
-    t.index ["phone_call_id"], name: "index_balance_transactions_on_phone_call_id", unique: true
     t.index ["sequence_number"], name: "index_balance_transactions_on_sequence_number", unique: true, order: :desc
     t.index ["type"], name: "index_balance_transactions_on_type"
   end
@@ -136,7 +130,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_085205) do
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "billing_currency", null: false
-    t.boolean "billing_enabled", default: false, null: false
     t.integer "calls_per_second", default: 0, null: false
     t.string "country_code", null: false
     t.datetime "created_at", null: false
@@ -151,7 +144,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_085205) do
     t.datetime "updated_at", null: false
     t.string "website", null: false
     t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
-    t.index ["billing_enabled"], name: "index_carriers_on_billing_enabled"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["default_tariff_package_id"], name: "index_carriers_on_default_tariff_package_id"
@@ -1018,8 +1010,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_085205) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "balance_transactions", "accounts"
   add_foreign_key "balance_transactions", "carriers"
-  add_foreign_key "balance_transactions", "messages", on_delete: :nullify
-  add_foreign_key "balance_transactions", "phone_calls", on_delete: :nullify
   add_foreign_key "balance_transactions", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "carriers", "tariff_packages", column: "default_tariff_package_id", on_delete: :nullify

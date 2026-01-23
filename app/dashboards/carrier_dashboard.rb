@@ -22,7 +22,6 @@ class CarrierDashboard < Administrate::BaseDashboard
     website: Field::String,
     custom_app_host: Field::String,
     custom_api_host: Field::String,
-    billing_enabled: Field::Boolean,
     billing_currency: Field::String,
   }.freeze
 
@@ -52,7 +51,6 @@ class CarrierDashboard < Administrate::BaseDashboard
     phone_calls
     carrier_users
     account_users
-    billing_enabled
     billing_currency
   ].freeze
 

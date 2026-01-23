@@ -19,7 +19,6 @@ RSpec.describe "Carrier Settings" do
     fill_in("API host", with: "api.t-mobile.example.com")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
     attach_file("Favicon", file_fixture("favicon-32x32.png"))
-    check("Billing enabled")
     enhanced_select("Standard Package", from: "Default tariff package")
 
     click_on("Update Carrier Settings")
@@ -35,9 +34,6 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_xpath("//img[@title='Logo']")
     expect(page).to have_xpath("//img[@title='Favicon']")
     expect(page).to have_content("Standard Package")
-    within("#billing-enabled") do
-      expect(page).to have_content("Yes")
-    end
   end
 
   it "Update carrier subdomain" do
