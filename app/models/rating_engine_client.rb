@@ -24,6 +24,7 @@ class RatingEngineClient
 
   CDR_ERROR_CODES = {
     "MAX_USAGE_EXCEEDED" => :insufficient_balance,
+    "RATING_PLAN_NOT_FOUND" => :subscription_disabled
   }
 
   def initialize(**options)

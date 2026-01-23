@@ -11,6 +11,10 @@ module ApplicationError
       ),
       carrier_standing: Error.new(code: "S1004", message: "Carrier is not in good standing"),
       insufficient_balance: Error.new(code: "S1005", message: "Insufficient balance"),
+      subscription_disabled: Error.new(
+        code: "S1006",
+        message: "The subscription for this service is disabled"
+      ),
       account_suspended: Error.new(code: "30002", message: "Account suspended"),
       messaging_service_blank: Error.new(
         code: "21701",

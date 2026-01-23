@@ -16,7 +16,7 @@ class CreateMessageCharge < ApplicationWorkflow
     client.create_message_charge(message)
   rescue RatingEngineClient::FailedCDRError => e
     mark_as_failed(e.error_code)
-    raise Error.new(e.message)
+    raise Error, e.message
   end
 
   private
@@ -33,7 +33,7 @@ class CreateMessageCharge < ApplicationWorkflow
   end
 
   def handle_missing_subscription
-    mark_as_failed(:messaging_disabled)
+    mark_as_failed(:subscription_disabled)
     raise Error, "Missing tariff plan subscription"
   end
 end
