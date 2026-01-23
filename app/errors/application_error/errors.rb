@@ -58,6 +58,10 @@ module ApplicationError
         code: "13224",
         message: "Calling this number is unsupported or the number is invalid"
       ),
+      messaging_disabled: Error.new(
+        code: "30037",
+        message: "Messaging is disabled"
+      ),
       message_not_cancelable: Error.new(
         code: "30409",
         message: "Message is not in a cancelable state."

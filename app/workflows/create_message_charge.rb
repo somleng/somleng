@@ -11,7 +11,7 @@ class CreateMessageCharge < ApplicationWorkflow
 
   def call
     return unless message.account.billing_enabled?
-    handle_missing_tariff_plan_subscription unless tariff_plan_subscription_exists?
+    handle_missing_subscription unless subscription_exists?
 
     client.create_message_charge(message)
   rescue RatingEngineClient::FailedCDRError => e
@@ -28,12 +28,12 @@ class CreateMessageCharge < ApplicationWorkflow
     message.mark_as_failed!
   end
 
-  def tariff_plan_subscription_exists?
+  def subscription_exists?
     message.account.tariff_plan_subscriptions.exists?(category: message.tariff_category)
   end
 
-  def handle_missing_tariff_plan_subscription
-    mark_as_failed(:missing_tariff_plan_subscription)
+  def handle_missing_subscription
+    mark_as_failed(:messaging_disabled)
     raise Error, "Missing tariff plan subscription"
   end
 end
