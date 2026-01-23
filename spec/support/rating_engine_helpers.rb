@@ -13,3 +13,7 @@ module RatingEngineHelpers
     }
   end
 end
+
+RSpec.configure do |config|
+  config.include RatingEngineHelpers
+end

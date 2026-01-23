@@ -32,7 +32,6 @@ end
 
 RSpec.configure do |config|
   config.include RequestHelpers, type: :request
-  config.include RatingEngineHelpers, type: :request
   config.before(:each, type: :request) do
     host! "api.somleng.org"
   end

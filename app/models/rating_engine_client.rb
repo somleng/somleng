@@ -20,7 +20,7 @@ class RatingEngineClient
     }
   }
 
-  CDR = Data.define(:id, :account_id, :cost, :balance_transaction_id)
+  CDR = Data.define(:id, :account_id, :cost, :balance_transaction_id, :extra_info, :success?)
 
   def initialize(**options)
     @client = options.fetch(:client) { CGRateS::Client.new }
@@ -212,7 +212,7 @@ class RatingEngineClient
         destination: message.to,
         answer_time: message.created_at.iso8601,
         setup_time: message.created_at.iso8601,
-        usage: message.segments,
+        usage: message.segments.to_s,
         origin_id: message.id
       )
 
@@ -221,32 +221,24 @@ class RatingEngineClient
         origin_ids: [ message.id ]
       )
 
-      cdr = response.result[0]
-      if cdr.fetch("Cost").negative?
-        raise InsufficientBalanceError if cdr.fetch("ExtraInfo") == "MAX_USAGE_EXCEEDED"
+      cdr = build_cdr(response.result[0])
+      return if cdr.success?
 
-        raise APIError.new(cdr.fetch("ExtraInfo"))
-      end
+      raise InsufficientBalanceError if cdr.extra_info == "MAX_USAGE_EXCEEDED"
+      raise APIError.new(cdr.extra_info)
     end
   end
 
   def fetch_cdrs(last_id:, limit:)
     response = client.get_cdrs(
       tenants: [ TENANT ],
-      not_costs: [ -1 ],
+      not_costs: [ -1, 0 ],
       order_by: "OrderID",
       extra_args: { "OrderIDStart" => last_id.to_i },
       limit:
     )
 
-    response.result.map do |cdr|
-      CDR.new(
-        id: cdr.fetch("OrderID"),
-        account_id: cdr.fetch("Account"),
-        cost: cdr.fetch("Cost"),
-        balance_transaction_id: cdr.dig("ExtraFields", "balance_transaction_id")
-      )
-    end
+    response.result.map { |it| build_cdr(it) }
   rescue CGRateS::Client::NotFoundError
     []
   rescue CGRateS::Client::APIError => e
@@ -259,5 +251,17 @@ class RatingEngineClient
     yield
   rescue CGRateS::Client::APIError => e
     raise APIError.new(e.message)
+  end
+
+  def build_cdr(response)
+    cost = response.fetch("Cost")
+    CDR.new(
+      id: response.fetch("OrderID"),
+      account_id: response.fetch("Account"),
+      cost:,
+      balance_transaction_id: response.dig("ExtraFields", "balance_transaction_id"),
+      extra_info: response.fetch("ExtraInfo"),
+      success?: cost != -1
+    )
   end
 end

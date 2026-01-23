@@ -7,7 +7,7 @@ RSpec.describe RatingEngineClient do
       client = instance_spy(CGRateS::Client)
       rating_engine_client = RatingEngineClient.new(client:)
       allow(client).to receive(:get_account).and_return(
-        CGRateS::Response.new(id: 1, result: { "BalanceMap" => { "*monetary" => [ { "Value" => 100 } ] } })
+        build_response(result: { "BalanceMap" => { "*monetary" => [ { "Value" => 100 } ] } })
       )
 
       balance = rating_engine_client.account_balance(account)
@@ -20,7 +20,7 @@ RSpec.describe RatingEngineClient do
       client = instance_spy(CGRateS::Client)
       rating_engine_client = RatingEngineClient.new(client:)
       allow(client).to receive(:get_account).and_return(
-        CGRateS::Response.new(id: 1, result: { "BalanceMap" => nil })
+        build_response(result: { "BalanceMap" => nil })
       )
 
       balance = rating_engine_client.account_balance(account)
@@ -294,47 +294,39 @@ RSpec.describe RatingEngineClient do
     it "sends a request to sync transactions" do
       client = instance_spy(
         CGRateS::Client,
-        get_cdrs: CGRateS::Response.new(
-          id: 1,
+        get_cdrs: build_response(
           result: [
-            {
+            build_cdr_response(
               "OrderID" => 123,
-              "Account" => 123,
               "Cost" => 100,
               "ExtraFields" => { "balance_transaction_id" => 123 }
-            },
-            {
+            ),
+            build_cdr_response(
               "OrderID" => 124,
-              "Account" => 123,
               "Cost" => 200,
-              "ExtraFields" => {}
-            }
+            )
           ]
         )
       )
       rating_engine_client = RatingEngineClient.new(client:)
 
-      cdrs = rating_engine_client.fetch_cdrs(
-        last_id: "123",
-        limit: 10
-      )
+      cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
 
       expect(client).to have_received(:get_cdrs).with(
         tenants: [ "cgrates.org" ],
         order_by: "OrderID",
+        not_costs: [ -1, 0 ],
         extra_args: { "OrderIDStart" => 123 },
         limit: 10
       )
       expect(cdrs).to contain_exactly(
         have_attributes(
           id: 123,
-          account_id: 123,
           cost: 100,
           balance_transaction_id: 123
         ),
         have_attributes(
           id: 124,
-          account_id: 123,
           cost: 200,
           balance_transaction_id: nil
         )
@@ -357,14 +349,17 @@ RSpec.describe RatingEngineClient do
   describe "#create_message_charge" do
     it "sends a request to refresh carrier rates" do
       account = create(:account, billing_mode: :prepaid)
-      message = create(:message, direction: :outbound_api, account:)
-
-      client = instance_spy(CGRateS::Client)
-      rating_engine_client = RatingEngineClient.new(client:)
+      message = create(:message, direction: :outbound_api, account:, segments: 2)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_cdrs: build_response(result: [ build_cdr_response("Cost" => 100) ])
+        )
+      )
 
       rating_engine_client.create_message_charge(message)
 
-      expect(client).to have_received(:process_external_cdr).with(
+      expect(rating_engine_client.client).to have_received(:process_external_cdr).with(
         category: :outbound_messages,
         request_type: "*prepaid",
         tor: "*message",
@@ -373,9 +368,56 @@ RSpec.describe RatingEngineClient do
         destination: message.to,
         answer_time: message.created_at.iso8601,
         setup_time: message.created_at.iso8601,
-        usage: message.segments,
+        usage: "2",
         origin_id: message.id
       )
+      expect(rating_engine_client.client).to have_received(:get_cdrs).with(
+        hash_including(
+          origin_ids: [ message.id ]
+        )
+      )
+    end
+
+    it "handles insufficient balance errors" do
+      message = create(:message)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_cdrs: build_response(
+            result: [
+              build_cdr_response(
+                "Cost" => -1,
+                "ExtraInfo" => "MAX_USAGE_EXCEEDED"
+              )
+            ]
+          )
+        )
+      )
+
+      expect {
+        rating_engine_client.create_message_charge(message)
+      }.to raise_error(RatingEngineClient::InsufficientBalanceError)
+    end
+
+    it "handles other invalid CDR errors" do
+      message = create(:message)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_cdrs: build_response(
+            result: [
+              build_cdr_response(
+                "Cost" => -1,
+                "ExtraInfo" => "INVALID_ACCOUNT"
+              )
+            ]
+          )
+        )
+      )
+
+      expect {
+        rating_engine_client.create_message_charge(message)
+      }.to raise_error(RatingEngineClient::APIError)
     end
   end
 
@@ -392,5 +434,20 @@ RSpec.describe RatingEngineClient do
 
   def build_api_error(error_class: CGRateS::Client::APIError, message: nil, response: {})
     error_class.new(message, response:)
+  end
+
+  def build_response(**)
+    CGRateS::Response.new(id: SecureRandom.uuid, result: "OK", **)
+  end
+
+  def build_cdr_response(**)
+    {
+      "OrderID" => 123,
+      "Account" => SecureRandom.uuid,
+      "Cost" => 100,
+      "ExtraFields" => {},
+      "ExtraInfo" => "",
+      **
+    }
   end
 end

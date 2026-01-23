@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SMSMessageChannel, type: :channel do
   describe "#sent" do
-    it "handles sent delevery status" do
+    it "handles sent delivery status" do
       sms_gateway = stub_current_sms_gateway
       message = create(
         :message,
@@ -29,7 +29,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
       )
     end
 
-    it "handles delivered delevery status" do
+    it "handles delivered delivery status" do
       sms_gateway = stub_current_sms_gateway
       message = create(
         :message,
@@ -146,12 +146,13 @@ RSpec.describe SMSMessageChannel, type: :channel do
     it "handles a message send request" do
       sms_gateway = stub_current_sms_gateway
       message = create(:message, :sending, sms_gateway:)
+      # stub_rating_engine_request
 
       subscribe
       perform(:message_send_requested, id: message.id)
 
-      expect(message.send_request).to be_present
       expect(message.send_request).to have_attributes(
+        be_persisted,
         sms_gateway:,
         message:
       )
