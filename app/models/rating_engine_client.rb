@@ -49,10 +49,10 @@ class RatingEngineClient
       )
     end
 
-    value = response.result.dig("BalanceMap", "*monetary", 0, "Value")
+    value = response.result.dig("BalanceMap", BALANCE_TYPE, 0, "Value")
     value = 0 if value.blank?
 
-    Money.from_amount(value, account.billing_currency)
+    Money.new(value, account.billing_currency)
   end
 
   def upsert_destination_group(destination_group)
@@ -78,7 +78,7 @@ class RatingEngineClient
           id: tariff.id,
           rate_slots: [
             {
-              rate: tariff.rate.to_f,
+              rate: tariff.rate_cents.to_f,
               rate_unit: rate_unit.fetch(:unit),
               rate_increment: rate_unit.fetch(:increment)
             }
@@ -195,9 +195,9 @@ class RatingEngineClient
         tenant: TENANT,
         account: balance_transaction.account_id,
         balance_type: BALANCE_TYPE,
-        value: balance_transaction.amount.abs.to_f,
+        value: balance_transaction.amount_cents.abs,
         balance: {
-          id: balance_transaction.account_id,
+          id: balance_transaction.account_id
         },
         cdrlog: true,
         action_extra_data: {

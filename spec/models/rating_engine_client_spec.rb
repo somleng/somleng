@@ -3,16 +3,16 @@ require "rails_helper"
 RSpec.describe RatingEngineClient do
   describe "#account_balance" do
     it "sends a request to get an account balance" do
-      account = create(:account)
+      account = create(:account, billing_currency: "USD")
       client = instance_spy(CGRateS::Client)
       rating_engine_client = RatingEngineClient.new(client:)
       allow(client).to receive(:get_account).and_return(
-        build_response(result: build(:rating_engine_account_response, balance: 100))
+        build_response(result: build(:rating_engine_account_response, balance: 10000))
       )
 
       balance = rating_engine_client.account_balance(account)
 
-      expect(balance).to eq(Money.from_amount(100, account.billing_currency))
+      expect(balance).to eq(Money.from_amount(100, "USD"))
     end
 
     it "returns a zero balance if the account has no balance" do
@@ -66,14 +66,14 @@ RSpec.describe RatingEngineClient do
         tp_id: carrier.id,
         id: tariffs[0].id,
         rate_slots: [
-          { rate: 0.005, rate_unit: "60s", rate_increment: "60s" }
+          { rate: 0.5, rate_unit: "60s", rate_increment: "60s" }
         ]
       )
       expect(client).to have_received(:set_tp_rate).with(
         tp_id: carrier.id,
         id: tariffs[1].id,
         rate_slots: [
-          { rate: 0.001, rate_unit: "60s", rate_increment: "60s" }
+          { rate: 0.1, rate_unit: "60s", rate_increment: "60s" }
         ]
       )
       expect(client).to have_received(:set_tp_destination_rate).with(
@@ -109,7 +109,7 @@ RSpec.describe RatingEngineClient do
         tp_id: carrier.id,
         id: tariff.id,
         rate_slots: [
-          { rate: 0.005, rate_unit: "1", rate_increment: "1" }
+          { rate: 0.5, rate_unit: "1", rate_increment: "1" }
         ]
       )
     end
@@ -253,9 +253,9 @@ RSpec.describe RatingEngineClient do
           tenant: "cgrates.org",
           account: balance_transaction.account_id,
           balance_type: "*monetary",
-          value: 100.0,
+          value: 10000,
           balance: {
-            id: balance_transaction.account_id,
+            id: balance_transaction.account_id
           },
           cdrlog: true,
           action_extra_data: {
@@ -277,7 +277,7 @@ RSpec.describe RatingEngineClient do
           tenant: "cgrates.org",
           account: balance_transaction.account_id,
           balance_type: "*monetary",
-          value: 100.0,
+          value: 10000,
           balance: {
             id: balance_transaction.account_id,
           },
@@ -393,7 +393,7 @@ RSpec.describe RatingEngineClient do
 
       expect {
         rating_engine_client.create_message_charge(message)
-      }.to raise_error(RatingEngineClient::InsufficientBalanceError)
+      }.to raise_error(an_instance_of(RatingEngineClient::FailedCDRError).and having_attributes(error_code: :insufficient_balance))
     end
 
     it "handles other invalid CDR errors" do
