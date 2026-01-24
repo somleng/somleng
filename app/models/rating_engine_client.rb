@@ -1,7 +1,6 @@
 class RatingEngineClient
   attr_reader :client
 
-  TENANT = "cgrates.org"
   LOAD_ID = "somleng.org"
   BALANCE_TYPE = "*monetary"
   ROUNDING_DECIMALS = 4
@@ -44,7 +43,7 @@ class RatingEngineClient
   def account_balance(account)
     response = handle_request do
       client.get_account(
-        tenant: TENANT,
+        tenant: account.carrier_id,
         account: account.id,
       )
     end
@@ -142,7 +141,7 @@ class RatingEngineClient
           tp_id: account.carrier_id,
           load_id: LOAD_ID,
           category: subscription.category,
-          tenant: TENANT,
+          tenant: account.carrier_id,
           subject: account.id,
           rating_plan_activations: [
             {
@@ -160,13 +159,13 @@ class RatingEngineClient
           tp_id: account.carrier_id,
           load_id: LOAD_ID,
           category:,
-          tenant: TENANT,
+          tenant: account.carrier_id,
           subject: account.id,
         )
       end
 
       client.set_account(
-        tenant: TENANT,
+        tenant: account.carrier_id,
         account: account.id,
       )
     end
@@ -175,7 +174,7 @@ class RatingEngineClient
   def destroy_account(account)
     handle_request do
       client.remove_account(
-        tenant: TENANT,
+        tenant: account.carrier_id,
         account: account.id,
       )
     end
@@ -192,7 +191,7 @@ class RatingEngineClient
   def update_account_balance(balance_transaction)
     handle_request do
       params = {
-        tenant: TENANT,
+        tenant: balance_transaction.carrier_id,
         account: balance_transaction.account_id,
         balance_type: BALANCE_TYPE,
         value: balance_transaction.amount_cents.abs,
@@ -219,7 +218,7 @@ class RatingEngineClient
         category: message.tariff_category,
         request_type: "*#{message.account.billing_mode}",
         tor: "*message",
-        tenant: TENANT,
+        tenant: message.carrier_id,
         account: message.account_id,
         destination: message.to,
         answer_time: message.created_at.iso8601,
@@ -228,10 +227,7 @@ class RatingEngineClient
         origin_id: message.id
       )
 
-      response = client.get_cdrs(
-        tenants: [ TENANT ],
-        origin_ids: [ message.id ]
-      )
+      response = client.get_cdrs(origin_ids: [ message.id ])
 
       cdr = build_cdr(response.result[0])
       return if cdr.success?
@@ -243,7 +239,6 @@ class RatingEngineClient
 
   def fetch_cdrs(last_id:, limit:)
     response = client.get_cdrs(
-      tenants: [ TENANT ],
       not_costs: [ -1, 0 ],
       order_by: "OrderID",
       extra_args: { "OrderIDStart" => last_id.to_i },
