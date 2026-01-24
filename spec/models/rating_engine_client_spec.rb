@@ -13,6 +13,10 @@ RSpec.describe RatingEngineClient do
       balance = rating_engine_client.account_balance(account)
 
       expect(balance).to eq(Money.from_amount(100, "USD"))
+      expect(client).to have_received(:get_account).with(
+        tenant: account.carrier_id,
+        account: account.id
+      )
     end
 
     it "returns a zero balance if the account has no balance" do
@@ -181,7 +185,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client.upsert_account(account)
 
       expect(client).to have_received(:set_account).with(
-        tenant: "cgrates.org",
+        tenant: account.carrier_id,
         account: account.id
       )
       subscriptions.each do |subscription|
@@ -189,7 +193,7 @@ RSpec.describe RatingEngineClient do
           tp_id: account.carrier_id,
           load_id: "somleng.org",
           category: subscription.category,
-          tenant: "cgrates.org",
+          tenant: account.carrier_id,
           subject: account.id,
           rating_plan_activations: [
             {
@@ -204,7 +208,7 @@ RSpec.describe RatingEngineClient do
           tp_id: account.carrier_id,
           load_id: "somleng.org",
           category:,
-          tenant: "cgrates.org",
+          tenant: account.carrier_id,
           subject: account.id,
         )
       end
@@ -220,7 +224,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client.destroy_account(account)
 
       expect(client).to have_received(:remove_account).with(
-        tenant: "cgrates.org",
+        tenant: account.carrier_id,
         account: account.id
       )
     end
@@ -250,7 +254,7 @@ RSpec.describe RatingEngineClient do
         rating_engine_client.update_account_balance(balance_transaction)
 
         expect(client).to have_received(:add_balance).with(
-          tenant: "cgrates.org",
+          tenant: balance_transaction.carrier_id,
           account: balance_transaction.account_id,
           balance_type: "*monetary",
           value: 10000,
@@ -274,7 +278,7 @@ RSpec.describe RatingEngineClient do
         rating_engine_client.update_account_balance(balance_transaction)
 
         expect(client).to have_received(:debit_balance).with(
-          tenant: "cgrates.org",
+          tenant: balance_transaction.carrier_id,
           account: balance_transaction.account_id,
           balance_type: "*monetary",
           value: 10000,
@@ -315,7 +319,6 @@ RSpec.describe RatingEngineClient do
       cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
 
       expect(client).to have_received(:get_cdrs).with(
-        tenants: [ "cgrates.org" ],
         order_by: "OrderID",
         not_costs: [ -1, 0 ],
         extra_args: { "OrderIDStart" => 123 },
@@ -365,7 +368,7 @@ RSpec.describe RatingEngineClient do
         category: :outbound_messages,
         request_type: "*prepaid",
         tor: "*message",
-        tenant: "cgrates.org",
+        tenant: account.carrier_id,
         account: message.account_id,
         destination: message.to,
         answer_time: message.created_at.iso8601,
