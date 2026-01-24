@@ -5,8 +5,9 @@ RSpec.describe DestroyTariffPlan do
     tariff_plan = create(:tariff_plan)
     client = instance_spy(RatingEngineClient)
 
-    DestroyTariffPlan.call(tariff_plan, client:)
+    result = DestroyTariffPlan.call(tariff_plan, client:)
 
+    expect(result).to be_truthy
     expect(tariff_plan).to have_attributes(
       persisted?: false
     )
@@ -18,8 +19,9 @@ RSpec.describe DestroyTariffPlan do
     create(:tariff_plan_subscription, plan: tariff_plan, carrier: tariff_plan.carrier)
     client = instance_spy(RatingEngineClient)
 
-    DestroyTariffPlan.call(tariff_plan, client:)
+    result = DestroyTariffPlan.call(tariff_plan, client:)
 
+    expect(result).to be_falsey
     expect(tariff_plan).to have_attributes(
       persisted?: true,
       subscriptions: contain_exactly(

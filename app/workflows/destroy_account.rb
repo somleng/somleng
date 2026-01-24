@@ -15,11 +15,11 @@ class DestroyAccount < ApplicationWorkflow
 
   def destroy_account
     ApplicationRecord.transaction do
-      result = account.destroy!
+      account.destroy!
       client.destroy_account(account)
-      result
+      account.destroyed?
     end
   rescue ActiveRecord::RecordNotDestroyed
-    account
+    false
   end
 end

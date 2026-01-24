@@ -9,9 +9,9 @@ class DestroyTariffPlan < ApplicationWorkflow
 
   def call
     ApplicationRecord.transaction do
-      result = tariff_plan.destroy
+      tariff_plan.destroy
       client.destroy_tariff_plan(tariff_plan) if tariff_plan.destroyed?
-      result
+      tariff_plan.destroyed?
     end
   end
 end

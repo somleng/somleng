@@ -5,8 +5,9 @@ RSpec.describe DestroyAccount do
     account = create(:account)
     client = instance_spy(RatingEngineClient)
 
-    DestroyAccount.call(account, client:)
+    result = DestroyAccount.call(account, client:)
 
+    expect(result).to be_truthy
     expect(account).to have_attributes(
       persisted?: false
     )
@@ -17,8 +18,9 @@ RSpec.describe DestroyAccount do
     account = create(:account, :customer_managed, :with_access_token)
     client = instance_spy(RatingEngineClient)
 
-    DestroyAccount.call(account, client:)
+    result = DestroyAccount.call(account, client:)
 
+    expect(result).to be_falsey
     expect(account).to have_attributes(
       persisted?: true,
       access_token: have_attributes(
