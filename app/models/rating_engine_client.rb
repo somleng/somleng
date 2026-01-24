@@ -54,6 +54,15 @@ class RatingEngineClient
     Money.new(value, account.billing_currency)
   end
 
+  def upsert_charging_profile(carrier)
+    handle_request do
+      client.set_charger_profile(
+        tenant: carrier.id,
+        id: carrier.id
+      )
+    end
+  end
+
   def upsert_destination_group(destination_group)
     handle_request do
       client.set_tp_destination(

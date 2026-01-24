@@ -351,6 +351,21 @@ RSpec.describe RatingEngineClient do
     end
   end
 
+  describe "#upsert_charging_profile" do
+    it "sends a request to upsert a charging profile" do
+      carrier = create(:carrier)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.upsert_charging_profile(carrier)
+
+      expect(client).to have_received(:set_charger_profile).with(
+        id: carrier.id,
+        tenant: carrier.id
+      )
+    end
+  end
+
   describe "#create_message_charge" do
     it "sends a request to refresh carrier rates" do
       account = create(:account, billing_mode: :prepaid)

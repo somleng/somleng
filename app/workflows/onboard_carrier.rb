@@ -1,7 +1,8 @@
 class OnboardCarrier < ApplicationWorkflow
   attr_reader :name, :country_code, :owner_params, :restricted, :website, :subdomain, :billing_currency
 
-  def initialize(params)
+  def initialize(**params)
+    super()
     @name = params.fetch(:name)
     @country_code = params.fetch(:country_code)
     @restricted = params.fetch(:restricted)
