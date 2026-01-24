@@ -9,7 +9,9 @@ class DestroyTariffSchedule < ApplicationWorkflow
 
   def call
     ApplicationRecord.transaction do
-      client.destroy_tariff_schedule(resource) if resource.destroy
+      result = resource.destroy
+      client.destroy_tariff_schedule(resource) if resource.destroyed?
+      result
     end
   end
 end
