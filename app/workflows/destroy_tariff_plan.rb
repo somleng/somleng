@@ -1,15 +1,17 @@
 class DestroyTariffPlan < ApplicationWorkflow
-  attr_reader :resource, :client
+  attr_reader :tariff_plan, :client
 
-  def initialize(resource, **options)
+  def initialize(tariff_plan, **options)
     super()
-    @resource = resource
+    @tariff_plan = tariff_plan
     @client = options.fetch(:client) { RatingEngineClient.new }
   end
 
   def call
     ApplicationRecord.transaction do
-      client.destroy_tariff_plan(resource) if resource.destroy
+      tariff_plan.destroy
+      client.destroy_tariff_plan(tariff_plan) if tariff_plan.destroyed?
+      tariff_plan.destroyed?
     end
   end
 end
