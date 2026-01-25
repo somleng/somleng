@@ -926,7 +926,7 @@ FactoryBot.define do
 
     initialize_with do
       {
-        "BalanceMap" => balance && { "*monetary" => [ { "Value" => balance } ] },
+        "BalanceMap" => balance && { "*monetary" => [ { "Value" => balance } ] }
       }
     end
   end

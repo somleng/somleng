@@ -27,7 +27,7 @@ class RatingEngineClient
   }
 
   def initialize(**options)
-    @client = options.fetch(:client) { CGRateS::Client.new }
+    @client = options.fetch(:client) { AppSettings.stub_rating_engine? ? CGRateS::FakeClient.new : CGRateS::Client.new }
   end
 
   class APIError < StandardError; end

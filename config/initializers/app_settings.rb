@@ -12,6 +12,10 @@ class AppSettings
       value
     end
 
+    def stub_rating_engine?
+      Rails.env.development? && config.fetch(:stub_rating_engine, true)
+    end
+
     def dig(...)
       config.dig(...)
     end
