@@ -30,18 +30,7 @@ class SMSMessageChannel < ApplicationCable::Channel
     )
 
     if schema.success?
-      attributes = schema.output
-      return if drop_message?(attributes)
-
-      message = Message.create!(attributes)
-      create_interaction(message)
-
-      ExecuteWorkflowJob.perform_later(
-        "ExecuteMessagingTwiML",
-        message:,
-        url: message.sms_url,
-        http_method: message.sms_method
-      )
+      CreateInboundMessage.call(schema.output)
     elsif error_log_messages.messages.present?
       CreateErrorLog.call(
         type: :inbound_message,
@@ -89,12 +78,6 @@ class SMSMessageChannel < ApplicationCable::Channel
       CreateEvent.call(eventable: message, type: "message.delivered")
       create_interaction(message)
     end
-  end
-
-  def drop_message?(attributes)
-    return false if attributes[:messaging_service].blank?
-
-    attributes.fetch(:messaging_service).inbound_message_behavior.drop?
   end
 
   def create_interaction(message)

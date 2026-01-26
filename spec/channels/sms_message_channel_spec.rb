@@ -73,7 +73,8 @@ RSpec.describe SMSMessageChannel, type: :channel do
   describe "#received" do
     it "handles an inbound message" do
       sms_gateway = stub_current_sms_gateway
-      account = create(:account, carrier: sms_gateway.carrier)
+      account = create(:account, carrier: sms_gateway.carrier, billing_enabled: true)
+      create(:tariff_plan_subscription, account:, category: :inbound_messages)
       incoming_phone_number = create(
         :incoming_phone_number,
         account:,
@@ -82,6 +83,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
         number: "85510888888",
       )
 
+      stub_rating_engine_request(result: build_list(:rating_engine_cdr_response, 1, :success))
       stub_request(:post, "https://www.example.com/messaging.xml").to_return(body: <<~TWIML)
         <?xml version="1.0" encoding="UTF-8" ?>
         <Response></Response>
@@ -117,28 +119,6 @@ RSpec.describe SMSMessageChannel, type: :channel do
         carrier: sms_gateway.carrier,
         error_message: "Phone number 85510888888 does not exist."
       )
-    end
-
-    it "handles messages configured to be dropped" do
-      sms_gateway = stub_current_sms_gateway
-      account = create(:account, carrier: sms_gateway.carrier)
-      messaging_service = create(
-        :messaging_service, :drop, account:, carrier: sms_gateway.carrier
-      )
-      create(
-        :incoming_phone_number,
-        messaging_service:,
-        sms_url: "https://www.example.com/messaging.xml",
-        sms_method: "POST",
-        number: "85510888888",
-        account:
-      )
-
-      subscribe
-      perform(:received, from: "85510777777", to: "85510888888", body: "message body")
-
-      expect(sms_gateway.messages).to be_empty
-      expect(ErrorLog.count).to eq(0)
     end
   end
 

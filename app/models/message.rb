@@ -54,7 +54,7 @@ class Message < ApplicationRecord
     end
 
     event :mark_as_failed do
-      transitions from: %i[accepted queued sending sent], to: :failed
+      transitions from: %i[accepted queued sending sent received], to: :failed
     end
 
     event :cancel do

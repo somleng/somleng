@@ -1,5 +1,12 @@
 class CreateMessageCharge < ApplicationWorkflow
-  class Error < StandardError; end
+  class Error < StandardError
+    attr_reader :record
+
+    def initialize(message, record:)
+      super(message)
+      @record = record
+    end
+  end
 
   attr_reader :message, :client
 
@@ -16,7 +23,7 @@ class CreateMessageCharge < ApplicationWorkflow
     client.create_message_charge(message)
   rescue RatingEngineClient::FailedCDRError => e
     mark_as_failed(e.error_code)
-    raise Error, e.message
+    raise Error.new(e.message, record: message)
   end
 
   private
@@ -34,6 +41,6 @@ class CreateMessageCharge < ApplicationWorkflow
 
   def handle_missing_subscription
     mark_as_failed(:subscription_disabled)
-    raise Error, "Missing tariff plan subscription"
+    raise Error.new("Missing tariff plan subscription", record: message)
   end
 end
