@@ -19,15 +19,38 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
         end
 
         account = Account.find(cdr.account_id)
-        amount = Money.from_amount(cdr.cost, account.billing_currency)
+        amount = InfinitePrecisionMoney.new(cdr.cost, account.billing_currency)
 
         next unless amount.positive?
 
-        BalanceTransaction.create_or_find_by!(external_id: cdr.id) do |balance_transaction|
-          balance_transaction.account = account
-          balance_transaction.carrier_id = account.carrier_id
-          balance_transaction.type = :charge
-          balance_transaction.amount = -amount
+        balance_transaction = BalanceTransaction.create_or_find_by!(external_id: cdr.id) do |record|
+          record.account = account
+          record.carrier_id = account.carrier_id
+          record.type = :charge
+          record.amount = -amount
+          record.charge_category = cdr.category
+
+          if record.charge_category.tariff_category.message?
+            record.message = Message.find_by(id: cdr.origin_id)
+          elseif record.charge_category.tariff_category.call?
+            record.phone_call = PhoneCall.find_by(id: cdr.origin_id)
+          else
+            raise "Invalid charge category: #{record.charge_category}"
+          end
+        end
+
+        if balance_transaction.message.present?
+          balance_transaction.message.update!(
+            price_cents: amount.cents,
+            price_unit: amount.currency
+          )
+        end
+
+        if balance_transaction.phone_call.present?
+          balance_transaction.phone_call.update!(
+            price_cents: amount.cents,
+            price_unit: amount.currency
+          )
         end
       end
 

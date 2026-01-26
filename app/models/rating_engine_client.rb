@@ -3,7 +3,7 @@ class RatingEngineClient
 
   LOAD_ID = "somleng.org"
   BALANCE_TYPE = "*monetary"
-  ROUNDING_DECIMALS = 4
+  ROUNDING_DECIMALS = 5
   ROUNDING_METHOD = "*up"
   RATE_UNIT = "60s"
   RATE_INCREMENT = "60s"
@@ -19,7 +19,7 @@ class RatingEngineClient
     }
   }
 
-  CDR = Data.define(:id, :account_id, :cost, :balance_transaction_id, :extra_info, :success?)
+  CDR = Data.define(:id, :origin_id, :category, :account_id, :cost, :balance_transaction_id, :extra_info, :success?)
 
   CDR_ERROR_CODES = {
     "MAX_USAGE_EXCEEDED" => :insufficient_balance,
@@ -277,6 +277,8 @@ class RatingEngineClient
       cost:,
       balance_transaction_id: response.dig("ExtraFields", "balance_transaction_id"),
       extra_info: response.fetch("ExtraInfo"),
+      origin_id: response.fetch("OriginID"),
+      category: response.fetch("Category"),
       success?: !cost.negative?
     )
   end

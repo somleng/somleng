@@ -67,5 +67,9 @@ module TwilioAPI
     def collection_name
       "calls"
     end
+
+    def price
+      format_price(object.price)
+    end
   end
 end

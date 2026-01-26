@@ -33,7 +33,8 @@ class BalanceTransactionForm < ApplicationForm
     object.carrier = carrier
     object.account = account
     object.type = type
-    object.amount = Money.from_amount(amount, account.billing_currency)
+    object.amount_cents = InfinitePrecisionMoney.from_amount(amount, account.billing_currency).cents
+    object.currency = account.billing_currency
     object.description = description
     object.created_by = created_by
     object.save!

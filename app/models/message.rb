@@ -80,6 +80,10 @@ class Message < ApplicationRecord
     (queued_at + validity_period.seconds).past?
   end
 
+  def price
+    InfinitePrecisionMoney.new(price_cents, price_unit) if price_cents.present?
+  end
+
   private
 
   def set_beneficiary_data

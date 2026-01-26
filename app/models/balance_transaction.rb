@@ -11,12 +11,14 @@ class BalanceTransaction < ApplicationRecord
   enumerize :type, in: [ :topup, :adjustment, :charge ], predicates: true, scope: :shallow
   enumerize :charge_category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
 
-  monetize :amount_cents, with_model_currency: :currency
-
   def credit?
     return true if topup?
     return amount.positive? if adjustment?
 
     raise "Invalid balance transaction type: #{type}"
+  end
+
+  def amount
+    InfinitePrecisionMoney.new(amount_cents, currency)
   end
 end
