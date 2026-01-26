@@ -875,12 +875,14 @@ FactoryBot.define do
 
     trait :topup do
       type { :topup }
-      amount { Money.from_amount(100, account.billing_currency) }
+      amount_cents { 10000 }
+      currency { account.billing_currency }
     end
 
     trait :charge do
       type { :charge }
-      amount { Money.from_amount(-100, account.billing_currency) }
+      amount_cents { -10000 }
+      currency { account.billing_currency }
     end
   end
 

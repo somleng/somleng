@@ -113,6 +113,10 @@ class PhoneCall < ApplicationRecord
     InfinitePrecisionMoney.new(price_cents, price_unit) if price_cents.present?
   end
 
+  def tariff_category
+    outbound? ? :outbound_calls : :inbound_calls
+  end
+
   private
 
   def set_beneficiary_data
