@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe OnboardCarrier do
   it "onboards a new carrier" do
+    rating_engine_client = instance_spy(RatingEngineClient)
+
     carrier, owner = OnboardCarrier.call(
       name: "AT&T",
       country_code: "US",
@@ -11,7 +13,8 @@ RSpec.describe OnboardCarrier do
       owner: {
         name: "John Doe",
         email: "johndoe@example.com"
-      }
+      },
+      rating_engine_client:
     )
 
     expect(carrier).to have_attributes(
@@ -30,5 +33,6 @@ RSpec.describe OnboardCarrier do
     )
 
     expect(ActionMailer::MailDeliveryJob).to have_been_enqueued
+    expect(rating_engine_client).to have_received(:upsert_charging_profile).with(carrier)
   end
 end

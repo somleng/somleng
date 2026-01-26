@@ -21,6 +21,8 @@ RSpec.describe CarrierForm do
 
   describe "#save" do
     it "creates a carrier" do
+      stub_rating_engine_request
+
       form = CarrierForm.new(
         name: "John Doe",
         work_email: "johndoe@example.com",

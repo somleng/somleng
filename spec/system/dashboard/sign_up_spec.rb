@@ -12,6 +12,7 @@ RSpec.describe "Signup" do
     fill_in("Password", with: "Super Secret", match: :prefer_exact)
     fill_in("Password confirmation", with: "Super Secret")
 
+    stub_rating_engine_request
     perform_enqueued_jobs do
       click_on("Sign up")
     end

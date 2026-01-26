@@ -3,6 +3,7 @@ require Rails.root.join("db/application_seeder")
 
 describe ApplicationSeeder do
   it "seeds the database" do
+    stub_rating_engine_request
     ApplicationSeeder.new.seed!
 
     expect(Carrier.count).to eq(1)
@@ -25,6 +26,7 @@ describe ApplicationSeeder do
   end
 
   it "behaves idempotently" do
+    stub_rating_engine_request
     seeder = ApplicationSeeder.new
 
     2.times { seeder.seed! }
