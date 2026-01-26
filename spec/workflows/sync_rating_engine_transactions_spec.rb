@@ -74,6 +74,8 @@ RSpec.describe SyncRatingEngineTransactions do
       account_id: build_stubbed(:account).id,
       cost: 100,
       balance_transaction_id: nil,
+      extra_info: {},
+      success?: true,
       **
     )
   end

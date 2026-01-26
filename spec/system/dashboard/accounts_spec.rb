@@ -102,7 +102,7 @@ RSpec.describe "Accounts" do
     account = create(:account, carrier:, billing_enabled: true)
     user = create(:user, :carrier, carrier: account.carrier)
 
-    stub_rating_engine_request(result: build(:rating_engine_account_response, balance: 100.00))
+    stub_rating_engine_request(result: build(:rating_engine_account_response, balance: 10000))
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
