@@ -81,6 +81,6 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
   end
 
   def update_interaction(cdr)
-    cdr.interaction&.update!(price_cents: cdr.amount.cents, price_unit: cdr.amount.currency)
+    cdr.interaction&.update_columns(price_cents: cdr.amount.cents, price_unit: cdr.amount.currency.to_s)
   end
 end

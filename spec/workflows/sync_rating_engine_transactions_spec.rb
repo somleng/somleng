@@ -28,7 +28,7 @@ RSpec.describe SyncRatingEngineTransactions do
 
     SyncRatingEngineTransactions.call(client:)
 
-    expect(BalanceTransaction.all).to contain_exactly(
+    expect(carrier.balance_transactions).to contain_exactly(
       have_attributes(
         external_id: 1000,
         account: accounts[0],
