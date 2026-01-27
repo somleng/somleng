@@ -13,8 +13,8 @@ module SchemaRules
         @error_code = :call_blocked_by_blocked_list
       elsif @destination_rules.sip_trunk.blank?
         @error_code = :calling_number_unsupported_or_invalid
-      elsif insufficient_balance?(account:, destination:)
-        @error_code = :insufficient_balance
+      elsif !account_billing_policy_valid?(account:, destination:)
+        @error_code = account_billing_policy.error_code
       end
 
       error_code.blank?
@@ -26,11 +26,11 @@ module SchemaRules
 
     private
 
-    def insufficient_balance?(account:, destination:)
-      !account_billing_policy.good_standing?(
+    def account_billing_policy_valid?(account:, destination:)
+      !account_billing_policy.valid?(
         account:,
         usage: "1s",
-        category: PhoneCall.new(direction: "outbound").tariff_category,
+        category: PhoneCall.new(direction: :outbound_api).tariff_category,
         destination:
       )
     end

@@ -12,8 +12,8 @@ module TwilioAPI
 
       if sms_gateway.blank?
         @error_code = :unreachable_carrier
-      elsif insufficient_balance?(account:, destination:)
-        @error_code = :insufficient_balance
+      elsif !account_billing_policy_valid?(account:, destination:)
+        @error_code = account_billing_policy.error_code
       end
 
       @error_code.blank?
@@ -21,11 +21,11 @@ module TwilioAPI
 
     private
 
-    def insufficient_balance?(account:, destination:)
-      !account_billing_policy.good_standing?(
+    def account_billing_policy_valid?(account:, destination:)
+      !account_billing_policy.valid?(
         account:,
         usage: "1",
-        category: Message.new(direction: "outbound").tariff_category,
+        category: Message.new(direction: :outbound_api).tariff_category,
         destination:
       )
     end

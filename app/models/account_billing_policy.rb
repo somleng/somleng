@@ -1,19 +1,19 @@
 class AccountBillingPolicy
-  attr_reader :rating_engine_client
+  attr_reader :credit_validator, :error_code
 
   def initialize(**options)
-    @rating_engine_client = options.fetch(:rating_engine_client) { RatingEngineClient.new }
+    @credit_validator = options.fetch(:credit_validator) { RatingEngineClient.new }
   end
 
-  def good_standing?(account:, usage:, category:, destination:)
+  def valid?(account:, usage:, category:, destination:)
     return true unless account.billing_enabled?
-    return false unless account.tariff_plan_subscriptions.exists?(category:)
 
-    rating_engine_client.sufficient_balance?(
-      account,
-      usage:,
-      category:,
-      destination:
-    )
+    if !account.tariff_plan_subscriptions.exists?(category:)
+      @error_code = :subscription_disabled
+    elsif !credit_validator.sufficient_balance?(account, usage:, category:, destination:)
+      @error_code = :insufficient_balance
+    end
+
+    @error_code.blank?
   end
 end

@@ -8,18 +8,25 @@ class CreateMessageCharge < ApplicationWorkflow
     end
   end
 
-  attr_reader :message, :client
+  class CreditValidator
+    def sufficient_balance?(...)
+      true
+    end
+  end
+
+  attr_reader :message, :client, :account_billing_policy
 
   def initialize(message, **options)
     super()
     @message = message
     @client = options.fetch(:client) { RatingEngineClient.new }
+    @account_billing_policy = options.fetch(:account_billing_policy) { AccountBillingPolicy.new(credit_validator: CreditValidator.new) }
   end
 
   def call
     return unless message.account.billing_enabled?
-    handle_missing_subscription unless subscription_exists?
 
+    validate_account_billing_policy!
     client.create_message_charge(message)
   rescue RatingEngineClient::FailedCDRError => e
     mark_as_failed(e.error_code)
@@ -35,12 +42,15 @@ class CreateMessageCharge < ApplicationWorkflow
     message.mark_as_failed!
   end
 
-  def subscription_exists?
-    message.account.tariff_plan_subscriptions.exists?(category: message.tariff_category)
-  end
+  def validate_account_billing_policy!
+    return if account_billing_policy.valid?(
+      account: message.account,
+      destination: message.to,
+      usage: message.segments,
+      category: message.tariff_category
+    )
 
-  def handle_missing_subscription
-    mark_as_failed(:subscription_disabled)
-    raise Error.new("Missing tariff plan subscription", record: message)
+    mark_as_failed(account_billing_policy.error_code)
+    raise Error.new(account_billing_policy.error_code, record: message)
   end
 end
