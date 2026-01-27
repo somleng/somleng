@@ -3,9 +3,12 @@ require "rails_helper"
 module TwilioAPI
   RSpec.describe PhoneCallRequestSchema, type: :request_schema do
     it "validates To" do
-      account = create(:account, allowed_calling_codes: [ "855" ])
+      carrier = create(:carrier)
+      account = create(:account, allowed_calling_codes: [ "855" ], carrier:)
       account_with_no_sip_trunks = create(:account)
-      create(:sip_trunk, carrier: account.carrier)
+      billing_enabled_account = create(:account, :billing_enabled, carrier:)
+      create(:sip_trunk, carrier:)
+
       expect(
         validate_request_schema(
           input_params: {
@@ -34,7 +37,12 @@ module TwilioAPI
       ).not_to have_valid_field(:To, error_message: "is invalid")
 
       expect(
-        validate_request_schema(input_params: { To: "61428234567" }, options: { account: })
+        validate_request_schema(
+          input_params: {
+            To: "61428234567"
+          },
+          options: { account: }
+        )
       ).not_to have_valid_schema(
         error_message: ApplicationError::Errors.fetch(:call_blocked_by_blocked_list).message
       )
@@ -48,6 +56,17 @@ module TwilioAPI
         )
       ).not_to have_valid_schema(
         error_message: ApplicationError::Errors.fetch(:calling_number_unsupported_or_invalid).message
+      )
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            To: "855716100235"
+          },
+          options: { account: billing_enabled_account }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:subscription_disabled).message
       )
     end
 

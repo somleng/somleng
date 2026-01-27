@@ -7,7 +7,7 @@ RSpec.describe SyncRatingEngineTransactions do
     message = create(:message, :inbound, account:)
     existing_balance_transaction = create(:balance_transaction, :topup, account:)
     cdrs = [
-      build_cdr(id: 1000, account_id: account.id, origin_id: message.id, category: message.tariff_category, cost: 100),
+      build_cdr(id: 1000, account_id: account.id, origin_id: message.id, category: message.tariff_schedule_category, cost: 100),
       build_cdr(id: 1001, account_id: account.id, balance_transaction_id: existing_balance_transaction.id),
       build_cdr(id: 1002, account_id: account.id, success?: false)
     ]

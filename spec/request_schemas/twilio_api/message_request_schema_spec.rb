@@ -3,8 +3,10 @@ require "rails_helper"
 module TwilioAPI
   RSpec.describe MessageRequestSchema, type: :request_schema do
     it "validates To" do
-      account = create(:account)
-      create(:sms_gateway, carrier: account.carrier)
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      billing_enabled_account = create(:account, :billing_enabled, carrier:)
+      create(:sms_gateway, carrier:)
 
       expect(
         validate_request_schema(
@@ -14,6 +16,15 @@ module TwilioAPI
           options: { account: }
         )
       ).to have_valid_field(:To)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            To: "855716100235"
+          },
+          options: { account: billing_enabled_account }
+        )
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:subscription_disabled).message)
 
       expect(
         validate_request_schema(

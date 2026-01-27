@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe CreateMessageCharge do
   it "creates a message charge" do
     account = create(:account, billing_enabled: true)
-    create(:tariff_plan_subscription, account:, category: :outbound_messages)
+    create(:tariff_plan_subscription, account:, plan_category: :outbound_messages)
     message = create(:message, :sending, account:, direction: :outbound)
     rating_engine_client = instance_spy(RatingEngineClient)
 
@@ -37,7 +37,7 @@ RSpec.describe CreateMessageCharge do
 
   it "handles insufficient balance errors" do
     account = create(:account, billing_enabled: true)
-    create(:tariff_plan_subscription, account:, category: :outbound_messages)
+    create(:tariff_plan_subscription, account:, plan_category: :outbound_messages)
     message = create(:message, :sending, account:, direction: :outbound)
     rating_engine_client = instance_spy(RatingEngineClient)
     allow(rating_engine_client).to receive(:create_message_charge).and_raise(RatingEngineClient::FailedCDRError.new("Insufficient balance", error_code: :insufficient_balance))

@@ -45,9 +45,7 @@ class CreateMessageCharge < ApplicationWorkflow
   def validate_account_billing_policy!
     return if account_billing_policy.valid?(
       account: message.account,
-      destination: message.to,
-      usage: message.segments,
-      category: message.tariff_category
+      interaction: message
     )
 
     mark_as_failed(account_billing_policy.error_code)

@@ -22,11 +22,8 @@ module TwilioAPI
     private
 
     def account_billing_policy_valid?(account:, destination:)
-      !account_billing_policy.valid?(
-        account:,
-        usage: "1",
-        category: Message.new(direction: :outbound_api).tariff_category,
-        destination:
+      account_billing_policy.valid?(
+        interaction: Message.new(account:, direction: :outbound_api, to: destination)
       )
     end
   end

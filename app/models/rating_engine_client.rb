@@ -3,7 +3,7 @@ class RatingEngineClient
 
   LOAD_ID = "somleng.org"
   BALANCE_TYPE = "*monetary"
-  ROUNDING_DECIMALS = 5
+  ROUNDING_DECIMALS = 4
   ROUNDING_METHOD = "*up"
   RATE_UNIT = "60s"
   RATE_INCREMENT = "60s"
@@ -21,7 +21,7 @@ class RatingEngineClient
 
   CDR = Data.define(:id, :origin_id, :category, :account_id, :cost, :balance_transaction_id, :extra_info, :success?)
 
-  CDR_ERROR_CODES = {
+  ERROR_CODES = {
     "MAX_USAGE_EXCEEDED" => :insufficient_balance,
     "RATING_PLAN_NOT_FOUND" => :subscription_disabled
   }
@@ -224,7 +224,7 @@ class RatingEngineClient
   def create_message_charge(message)
     handle_request do
       client.process_external_cdr(
-        category: message.tariff_category,
+        category: message.tariff_schedule_category,
         request_type: "*#{message.account.billing_mode}",
         tor: "*message",
         tenant: message.carrier_id,
@@ -241,7 +241,7 @@ class RatingEngineClient
       cdr = build_cdr(response.result[0])
       return if cdr.success?
 
-      raise FailedCDRError.new(cdr.extra_info, error_code: CDR_ERROR_CODES.fetch(cdr.extra_info)) if CDR_ERROR_CODES.key?(cdr.extra_info)
+      raise FailedCDRError.new(cdr.extra_info, error_code: ERROR_CODES.fetch(cdr.extra_info)) if ERROR_CODES.key?(cdr.extra_info)
       raise APIError.new(cdr.extra_info)
     end
   end
@@ -261,19 +261,22 @@ class RatingEngineClient
     raise APIError.new(e.message)
   end
 
-  def sufficient_balance?(account, usage:, category:, destination:)
+  def sufficient_balance?(interaction)
+    category = interaction.tariff_schedule_category
+    rate_unit = RATE_UNITS.fetch(category.tariff_category.to_sym)
+
     client.get_cost(
-      tenant: account.carrier_id,
-      account: account.id,
-      usage:,
-      category:,
-      destination:
+      tenant: interaction.account.carrier_id,
+      subject: interaction.account.id,
+      usage: rate_unit.fetch(:unit),
+      category: category.to_s,
+      destination: interaction.to.value
     )
 
     true
+  rescue CGRateS::Client::MaxUsageExceededError
+    false
   rescue CGRateS::Client::APIError => e
-    return false if e.message.include?("MAX_USAGE_EXCEEDED")
-
     raise APIError.new(e.message)
   end
 

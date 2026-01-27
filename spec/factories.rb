@@ -645,10 +645,11 @@ FactoryBot.define do
   factory :tariff_plan_subscription do
     transient do
       carrier { build(:carrier) }
+      plan_category { :outbound_calls }
     end
 
     account { association(:account, carrier:) }
-    plan { association(:tariff_plan, carrier: account.carrier) }
+    plan { association(:tariff_plan, carrier: account.carrier, category: plan_category) }
     category { plan.category }
   end
 
@@ -869,9 +870,15 @@ FactoryBot.define do
   end
 
   factory :balance_transaction do
+    transient do
+      amount { Money.from_amount(100, account.billing_currency) }
+    end
+
     carrier { account.carrier }
     account
     charge
+    amount_cents { amount.cents }
+    currency { amount.currency }
 
     trait :topup do
       type { :topup }
@@ -891,6 +898,8 @@ FactoryBot.define do
 
     order_id { 123 }
     account { SecureRandom.uuid }
+    origin_id { SecureRandom.uuid }
+    category { "outbound_calls" }
     extra_fields { {} }
     extra_info { "" }
 
@@ -915,10 +924,12 @@ FactoryBot.define do
     initialize_with do
       {
         "OrderID" => order_id,
+        "OriginID" => origin_id,
         "Account" => account,
         "Cost" => cost,
         "ExtraFields" => extra_fields,
-        "ExtraInfo" => extra_info
+        "ExtraInfo" => extra_info,
+        "Category" => category
       }
     end
   end
@@ -930,6 +941,28 @@ FactoryBot.define do
       {
         "BalanceMap" => balance && { "*monetary" => [ { "Value" => balance } ] }
       }
+    end
+  end
+
+  factory :rating_engine_cost_response, class: Object do
+    trait :success do
+      cost { 7 }
+
+      initialize_with do
+        {
+          "Cost" => cost
+        }
+      end
+    end
+
+    trait :max_usage_exceeded do
+      failed
+      error { "SERVER_ERROR: MAX_USAGE_EXCEEDED" }
+    end
+
+    trait :failed do
+      error { "SERVER_ERROR: RATING_PLAN_NOT_FOUND" }
+      initialize_with { error }
     end
   end
 end

@@ -27,11 +27,8 @@ module SchemaRules
     private
 
     def account_billing_policy_valid?(account:, destination:)
-      !account_billing_policy.valid?(
-        account:,
-        usage: "1s",
-        category: PhoneCall.new(direction: :outbound_api).tariff_category,
-        destination:
+      account_billing_policy.valid?(
+        interaction: PhoneCall.new(account:, direction: :outbound_api, to: destination)
       )
     end
   end

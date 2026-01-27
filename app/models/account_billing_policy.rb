@@ -5,12 +5,12 @@ class AccountBillingPolicy
     @credit_validator = options.fetch(:credit_validator) { RatingEngineClient.new }
   end
 
-  def valid?(account:, usage:, category:, destination:)
-    return true unless account.billing_enabled?
+  def valid?(interaction:)
+    return true unless interaction.account.billing_enabled?
 
-    if !account.tariff_plan_subscriptions.exists?(category:)
+    if !interaction.account.tariff_plan_subscriptions.exists?(category: interaction.tariff_schedule_category)
       @error_code = :subscription_disabled
-    elsif !credit_validator.sufficient_balance?(account, usage:, category:, destination:)
+    elsif !credit_validator.sufficient_balance?(interaction)
       @error_code = :insufficient_balance
     end
 

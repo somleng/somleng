@@ -10,7 +10,7 @@ RSpec.describe ProcessRatingEngineCDRJob do
       id: 1000,
       account_id: account.id,
       origin_id: message.id,
-      category: message.tariff_category,
+      category: message.tariff_schedule_category,
       cost: 100
     )
 
@@ -40,7 +40,7 @@ RSpec.describe ProcessRatingEngineCDRJob do
       account_id: account.id,
       cost: 300,
       origin_id: phone_call.external_id,
-      category: phone_call.tariff_category
+      category: phone_call.tariff_schedule_category
     )
 
     ProcessRatingEngineCDRJob.perform_now(cdr)

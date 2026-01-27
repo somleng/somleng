@@ -74,7 +74,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
     it "handles an inbound message" do
       sms_gateway = stub_current_sms_gateway
       account = create(:account, carrier: sms_gateway.carrier, billing_enabled: true)
-      create(:tariff_plan_subscription, account:, category: :inbound_messages)
+      create(:tariff_plan_subscription, account:, plan_category: :inbound_messages)
       incoming_phone_number = create(
         :incoming_phone_number,
         account:,
@@ -162,7 +162,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
     it "handles insufficient balance errors" do
       sms_gateway = stub_current_sms_gateway
       account = create(:account, billing_enabled: true)
-      create(:tariff_plan_subscription, account:, category: :outbound_messages)
+      create(:tariff_plan_subscription, account:, plan_category: :outbound_messages)
       message = create(:message, :sending, sms_gateway:, account:)
       stub_rating_engine_request(
         result: build_list(:rating_engine_cdr_response, 1, :max_usage_exceeded)
