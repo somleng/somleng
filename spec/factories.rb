@@ -944,25 +944,13 @@ FactoryBot.define do
     end
   end
 
-  factory :rating_engine_cost_response, class: Object do
-    trait :success do
-      cost { 7 }
+  factory :rating_engine_cost_response, class: Hash do
+    cost { 7 }
 
-      initialize_with do
-        {
-          "Cost" => cost
-        }
-      end
-    end
-
-    trait :max_usage_exceeded do
-      failed
-      error { "SERVER_ERROR: MAX_USAGE_EXCEEDED" }
-    end
-
-    trait :failed do
-      error { "SERVER_ERROR: RATING_PLAN_NOT_FOUND" }
-      initialize_with { error }
+    initialize_with do
+      {
+        "Cost" => cost
+      }
     end
   end
 end
