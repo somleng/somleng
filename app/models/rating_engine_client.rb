@@ -261,6 +261,22 @@ class RatingEngineClient
     raise APIError.new(e.message)
   end
 
+  def sufficient_balance?(account, usage:, category:, destination:)
+    client.get_cost(
+      tenant: account.carrier_id,
+      account: account.id,
+      usage:,
+      category:,
+      destination:
+    )
+
+    true
+  rescue CGRateS::Client::APIError => e
+    return false if e.message.include?("MAX_USAGE_EXCEEDED")
+
+    raise APIError.new(e.message)
+  end
+
   private
 
   def handle_request(&)

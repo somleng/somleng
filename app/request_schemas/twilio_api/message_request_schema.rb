@@ -12,6 +12,7 @@ module TwilioAPI
     option :sender, optional: true
 
     option :url_validator, default: proc { URLValidator.new(allow_http: true) }
+    option :account_billing_policy, default: -> { AccountBillingPolicy.new }
 
     params do
       optional(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -28,10 +29,7 @@ module TwilioAPI
     rule(:To) do |context:|
       next key.failure("is invalid") unless phone_number_validator.valid?(value)
 
-      message_destination_schema_rules.carrier = account.carrier
-      message_destination_schema_rules.destination = value
-
-      if message_destination_schema_rules.valid?
+      if message_destination_schema_rules.valid?(account:, destination: value)
         context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
       else
         base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
