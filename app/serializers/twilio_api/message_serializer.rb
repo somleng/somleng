@@ -59,7 +59,7 @@ module TwilioAPI
     end
 
     def price
-      format_price(object.price)
+      object.price_formatted
     end
   end
 end

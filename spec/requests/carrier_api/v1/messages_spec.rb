@@ -80,7 +80,7 @@ resource "Messages", document: :carrier_api do
 
     example "Update a message" do
       account = create(:account, billing_currency: "USD")
-      message = create(:message, :sent, account:, price: nil, price_unit: nil)
+      message = create(:message, :sent, account:, price_cents: nil, price_unit: nil)
 
       set_carrier_api_authorization_header(message.carrier)
       do_request(
@@ -97,7 +97,7 @@ resource "Messages", document: :carrier_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/message")
       expect(json_response.dig("data", "attributes")).to include(
-        "price" => "-0.05",
+        "price" => "-0.05000",
         "price_unit" => "USD"
       )
     end

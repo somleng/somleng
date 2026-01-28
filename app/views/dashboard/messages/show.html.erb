@@ -34,7 +34,7 @@
     <%= f.attribute :direction, value: message.direction.humanize %>
     <%= f.attribute :encoding %>
     <%= f.attribute :smart_encoded %>
-    <%= f.attribute :price, value: message.price_formatted %>
+    <%= f.attribute :price, value: message.price_formatted(with_currency: true) %>
     <%= f.attribute :price_unit %>
     <%= f.attribute :status_callback_url %>
     <%= f.attribute :error_message %>

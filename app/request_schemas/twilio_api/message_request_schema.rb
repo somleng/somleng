@@ -1,6 +1,6 @@
 module TwilioAPI
   class MessageRequestSchema < TwilioAPIRequestSchema
-    option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
            default: -> { PhoneNumberConfigurationRules.new }
     option :sms_encoding,

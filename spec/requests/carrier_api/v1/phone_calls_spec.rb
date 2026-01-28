@@ -98,7 +98,7 @@ resource "Phone Calls", document: :carrier_api do
 
     example "Update a phone call" do
       account = create(:account, billing_currency: "USD")
-      phone_call = create(:phone_call, :completed, account:, price: nil, price_unit: nil)
+      phone_call = create(:phone_call, :completed, account:, price_cents: nil, price_unit: nil)
 
       set_carrier_api_authorization_header(phone_call.carrier)
       do_request(
@@ -115,7 +115,7 @@ resource "Phone Calls", document: :carrier_api do
       expect(response_status).to eq(200)
       expect(response_body).to match_jsonapi_resource_schema("carrier_api/phone_call")
       expect(json_response.dig("data", "attributes")).to include(
-        "price" => "-0.05",
+        "price" => "-0.05000",
         "price_unit" => "USD"
       )
     end

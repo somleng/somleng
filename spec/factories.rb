@@ -411,6 +411,13 @@ FactoryBot.define do
     region { "hydrogen" }
     external_id { SecureRandom.uuid }
 
+    transient do
+      price { nil }
+    end
+
+    price_cents { price.present? && price.cents.abs }
+    price_unit { price.present? && price.currency }
+
     trait :routable do
       association :account, factory: %i[account with_sip_trunk]
     end
@@ -484,6 +491,13 @@ FactoryBot.define do
     body { "Hello World" }
     segments { 1 }
     encoding { "GSM" }
+
+    transient do
+      price { nil }
+    end
+
+    price_cents { price.present? && price.cents.abs }
+    price_unit { price.present? && price.currency }
 
     trait :robot do
       inbound

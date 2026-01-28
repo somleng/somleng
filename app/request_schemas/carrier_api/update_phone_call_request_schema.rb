@@ -1,5 +1,7 @@
 module CarrierAPI
   class UpdatePhoneCallRequestSchema < CarrierAPIRequestSchema
+    option :price_parameter_parser, default: -> { PriceParameterParser.new }
+
     params do
       required(:data).value(:hash).schema do
         required(:type).filled(:string, eql?: "phone_call")
@@ -14,8 +16,7 @@ module CarrierAPI
       params = super
 
       result = {}
-      result[:price] = params.fetch(:price) if params.key?(:price)
-      result[:price_unit] = resource.account.billing_currency
+      result[:price_cents], result[:price_unit] = price_parameter_parser.parse(params.fetch(:price), resource.account.billing_currency) if params.key?(:price)
       result
     end
   end

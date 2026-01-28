@@ -34,11 +34,5 @@ module TwilioAPI
 
       value.utc.rfc2822
     end
-
-    def format_price(value)
-      return if value.blank?
-
-      "-%0.5f" % value.to_f
-    end
   end
 end

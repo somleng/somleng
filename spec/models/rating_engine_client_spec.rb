@@ -380,7 +380,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client.create_message_charge(message)
 
       expect(rating_engine_client.client).to have_received(:process_external_cdr).with(
-        category: :outbound_messages,
+        category: "outbound_messages",
         request_type: "*prepaid",
         tor: "*message",
         tenant: account.carrier_id,
@@ -453,7 +453,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client = RatingEngineClient.new(
         client: instance_spy(
           CGRateS::Client,
-          get_cost: build_response(result: build(:rating_engine_cost_response, :success))
+          get_cost: build_response(result: build(:rating_engine_cost_response))
         )
       )
       interaction = Message.new(account:, direction: :outbound_api, to: "855715100989")
@@ -475,7 +475,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client = RatingEngineClient.new(
         client: instance_spy(
           CGRateS::Client,
-          get_cost: build_response(result: build(:rating_engine_cost_response, :success))
+          get_cost: build_response(result: build(:rating_engine_cost_response))
         )
       )
       interaction = PhoneCall.new(account:, direction: :outbound_api, to: "855715100989")

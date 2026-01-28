@@ -75,8 +75,8 @@ class MessageDecorator < SimpleDelegator
     TWILIO_MESSAGE_STATUS_MAPPINGS.fetch(super)
   end
 
-  def price_formatted
-    price_formatter.format(price, object.price_unit)
+  def price_formatted(**)
+    price_formatter.format(object.price, **)
   end
 
   def incoming_phone_number

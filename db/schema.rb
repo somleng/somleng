@@ -419,6 +419,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_112656) do
     t.index ["internal"], name: "index_messages_on_internal"
     t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
+    t.index ["price_cents"], name: "index_messages_on_price_cents"
+    t.index ["price_unit"], name: "index_messages_on_price_unit"
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
     t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
     t.index ["status", "sending_at"], name: "index_messages_on_status_and_sending_at", where: "((status)::text = 'sending'::text)"

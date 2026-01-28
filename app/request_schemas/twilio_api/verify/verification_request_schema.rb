@@ -23,10 +23,7 @@ module TwilioAPI
 
       rule(:To, :Channel) do |context:|
         if values[:Channel] == "sms"
-          message_destination_schema_rules.carrier = account.carrier
-          message_destination_schema_rules.destination = values[:To]
-
-          if message_destination_schema_rules.valid?
+          if message_destination_schema_rules.valid?(account:, destination: values[:To])
             sms_gateway, = message_destination_schema_rules.sms_gateway
             context[:sender] = sms_gateway.default_sender
           else

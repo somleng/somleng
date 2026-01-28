@@ -224,7 +224,7 @@ class RatingEngineClient
   def create_message_charge(message)
     handle_request do
       client.process_external_cdr(
-        category: message.tariff_schedule_category,
+        category: message.tariff_schedule_category.to_s,
         request_type: "*#{message.account.billing_mode}",
         tor: "*message",
         tenant: message.carrier_id,

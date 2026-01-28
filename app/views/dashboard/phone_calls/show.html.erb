@@ -36,7 +36,7 @@
     <%= f.attribute :status, value: phone_call.status.humanize %>
     <%= f.attribute :direction, value: phone_call.direction.humanize %>
     <%= f.attribute :duration, value: pluralize(phone_call.duration, "seconds") %>
-    <%= f.attribute :price, value: phone_call.price_formatted %>
+    <%= f.attribute :price, value: phone_call.price_formatted(with_currency: true) %>
     <%= f.attribute :price_unit %>
     <%= f.attribute :voice_url %>
     <%= f.attribute :voice_method %>

@@ -14,5 +14,11 @@ module CSVSerializer
         "status" => nil
       )
     end
+
+    private
+
+    def price
+      object.price_formatted
+    end
   end
 end

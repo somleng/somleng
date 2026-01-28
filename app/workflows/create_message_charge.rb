@@ -43,10 +43,7 @@ class CreateMessageCharge < ApplicationWorkflow
   end
 
   def validate_account_billing_policy!
-    return if account_billing_policy.valid?(
-      account: message.account,
-      interaction: message
-    )
+    return if account_billing_policy.valid?(interaction: message)
 
     mark_as_failed(account_billing_policy.error_code)
     raise Error.new(account_billing_policy.error_code, record: message)
