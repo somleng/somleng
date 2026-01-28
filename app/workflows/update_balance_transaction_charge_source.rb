@@ -10,7 +10,10 @@ class UpdateBalanceTransactionChargeSource < ApplicationWorkflow
     return if charge_source.blank?
     return if charge_source.price.present?
 
-    charge_source.update_columns(price_cents: balance_transaction.amount.cents.abs, price_unit: balance_transaction.amount.currency.to_s)
+    charge_source.update_columns(
+      price_cents: balance_transaction.amount.cents,
+      price_unit: balance_transaction.amount.currency.to_s
+    )
   end
 
   private

@@ -26,7 +26,7 @@ RSpec.describe SyncRatingEngineTransactions do
         charge_category: "inbound_messages",
         charge_source_id: message.id,
         message: have_attributes(
-          price: InfinitePrecisionMoney.new(100, account.billing_currency)
+          price: InfinitePrecisionMoney.new(-100, account.billing_currency)
         )
       ),
       have_attributes(
@@ -37,7 +37,7 @@ RSpec.describe SyncRatingEngineTransactions do
         charge_category: "outbound_calls",
         charge_source_id: phone_call.external_id,
         phone_call: have_attributes(
-          price: InfinitePrecisionMoney.new(200, account.billing_currency)
+          price: InfinitePrecisionMoney.new(-200, account.billing_currency)
         )
       ),
       have_attributes(
@@ -56,8 +56,7 @@ RSpec.describe SyncRatingEngineTransactions do
     )
     expect(ExecuteWorkflowJob).to have_been_enqueued.with(
       ReconcileBalanceTransactionChargeSource.to_s,
-      account.balance_transactions.find_by(external_id: 1002),
-      charge_source_id: cdrs[2].origin_id
+      account.balance_transactions.find_by(external_id: 1002)
     )
   end
 

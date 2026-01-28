@@ -15,7 +15,7 @@ class PriceFormatter
 
   def format_with_currency(value)
     formatter.number_to_currency(
-      -value,
+      value,
       unit: value.currency.symbol,
       precision: 5
     )
@@ -24,6 +24,6 @@ class PriceFormatter
   def format_without_currency(value)
     return if value.blank?
 
-    "-%0.5f" % value.to_f
+    "%0.5f" % value.to_f
   end
 end

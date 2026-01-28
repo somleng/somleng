@@ -14,7 +14,7 @@ RSpec.describe "Messages" do
       to: "85512234232",
       from: "1294",
       created_at: Time.utc(2021, 12, 1),
-      price: InfinitePrecisionMoney.from_amount(0.001, "MXN"),
+      price: InfinitePrecisionMoney.from_amount(-0.001, "MXN"),
     )
     filtered_message = create(
       :message,
@@ -75,7 +75,7 @@ RSpec.describe "Messages" do
       sms_gateway:,
       account:,
       incoming_phone_number:,
-      price: InfinitePrecisionMoney.from_amount(0.001, "MXN"),
+      price: InfinitePrecisionMoney.from_amount(-0.001, "MXN"),
       encoding: "GSM"
     )
     user = create(:user, :carrier, carrier:)

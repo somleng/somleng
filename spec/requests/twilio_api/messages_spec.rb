@@ -81,7 +81,7 @@ RSpec.resource "Messages", document: :twilio_api do
       create(:sms_gateway, carrier: account.carrier)
       create(:incoming_phone_number, account:, number: "855716788999")
       create(:tariff_plan_subscription, account:, plan_category: :outbound_messages)
-      stub_rating_engine_request(result: build(:rating_engine_cost_response))
+      stub_rating_engine_request(result: 100)
 
       set_twilio_api_authorization_header(account)
 

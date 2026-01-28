@@ -13,7 +13,7 @@ RSpec.describe "Phone Calls" do
       to: "85512234232",
       from: "1294",
       created_at: Time.utc(2021, 12, 1),
-      price: InfinitePrecisionMoney.from_amount(0.001, "MXN")
+      price: InfinitePrecisionMoney.from_amount(-0.001, "MXN")
     )
     filtered_out_phone_calls = [
       create(:phone_call, account:, created_at: Time.utc(2021, 10, 10)),
@@ -81,7 +81,7 @@ RSpec.describe "Phone Calls" do
       sip_trunk:,
       account:,
       incoming_phone_number:,
-      price: InfinitePrecisionMoney.from_amount(0.001, "MXN")
+      price: InfinitePrecisionMoney.from_amount(-0.001, "MXN")
     )
     create(:recording, :completed, phone_call:)
     create(:call_data_record, bill_sec: 5, phone_call:)

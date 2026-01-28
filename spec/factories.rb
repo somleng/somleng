@@ -415,8 +415,8 @@ FactoryBot.define do
       price { nil }
     end
 
-    price_cents { price.present? && price.cents.abs }
-    price_unit { price.present? && price.currency }
+    price_cents { price.cents if price.present? }
+    price_unit { price.currency if price.present? }
 
     trait :routable do
       association :account, factory: %i[account with_sip_trunk]
@@ -496,8 +496,8 @@ FactoryBot.define do
       price { nil }
     end
 
-    price_cents { price.present? && price.cents.abs }
-    price_unit { price.present? && price.currency }
+    price_cents { price.cents if price.present? }
+    price_unit { price.currency if price.present? }
 
     trait :robot do
       inbound
@@ -909,7 +909,7 @@ FactoryBot.define do
 
     trait :for_phone_call do
       charge
-      phone_call { association(:phone_call, account:, price_cents: amount.cents.abs, price_unit: amount.currency) }
+      phone_call { association(:phone_call, account:, price: amount) }
       charge_category { phone_call.tariff_schedule_category }
       charge_source_id { phone_call.external_id }
     end
@@ -962,16 +962,6 @@ FactoryBot.define do
     initialize_with do
       {
         "BalanceMap" => balance && { "*monetary" => [ { "Value" => balance } ] }
-      }
-    end
-  end
-
-  factory :rating_engine_cost_response, class: Hash do
-    cost { 7 }
-
-    initialize_with do
-      {
-        "Cost" => cost
       }
     end
   end

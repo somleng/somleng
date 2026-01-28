@@ -9,7 +9,7 @@ RSpec.describe ReconcileBalanceTransactionChargeSource do
 
     expect(balance_transaction).to have_attributes(
       phone_call: have_attributes(
-        price: balance_transaction.amount.abs
+        price: balance_transaction.amount
       )
     )
   end

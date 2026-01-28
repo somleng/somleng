@@ -86,8 +86,7 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
 
     ExecuteWorkflowJob.perform_later(
       ReconcileBalanceTransactionChargeSource.to_s,
-      balance_transaction,
-      charge_source_id: cdr.origin_id
+      balance_transaction
     )
   end
 

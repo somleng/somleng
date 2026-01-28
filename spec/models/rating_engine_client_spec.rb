@@ -431,29 +431,13 @@ RSpec.describe RatingEngineClient do
     end
   end
 
-  # def sufficient_balance?(account, usage:, category:, destination:)
-  #   client.get_cost(
-  #     tenant: account.carrier_id,
-  #     subject: account.id,
-  #     usage:,
-  #     category:,
-  #     destination:
-  #   )
-
-  #   true
-  # rescue CGRateS::Client::APIError => e
-  #   return false if e.message.include?("MAX_USAGE_EXCEEDED")
-
-  #   raise APIError.new(e.message)
-  # end
-
   describe "#sufficient_balance?" do
     it "sends a request to get the cost of a message" do
       account = create(:account)
       rating_engine_client = RatingEngineClient.new(
         client: instance_spy(
           CGRateS::Client,
-          get_cost: build_response(result: build(:rating_engine_cost_response))
+          get_max_session_time: build_response(result: 100)
         )
       )
       interaction = Message.new(account:, direction: :outbound_api, to: "855715100989")
@@ -461,57 +445,29 @@ RSpec.describe RatingEngineClient do
       result = rating_engine_client.sufficient_balance?(interaction)
 
       expect(result).to be_truthy
-      expect(rating_engine_client.client).to have_received(:get_cost).with(
-        tenant: account.carrier_id,
-        subject: account.id,
-        usage: "1",
-        category: "outbound_messages",
-        destination: "855715100989"
-      )
-    end
-
-    it "sends a request to get the cost of a phone call" do
-      account = create(:account)
-      rating_engine_client = RatingEngineClient.new(
-        client: instance_spy(
-          CGRateS::Client,
-          get_cost: build_response(result: build(:rating_engine_cost_response))
+      expect(rating_engine_client.client).to have_received(:get_max_session_time).with(
+        hash_including(
+          tenant: account.carrier_id,
+          account: account.id,
+          category: "outbound_messages",
+          destination: "855715100989",
         )
-      )
-      interaction = PhoneCall.new(account:, direction: :outbound_api, to: "855715100989")
-
-      result = rating_engine_client.sufficient_balance?(interaction)
-
-      expect(result).to be_truthy
-      expect(rating_engine_client.client).to have_received(:get_cost).with(
-        tenant: account.carrier_id,
-        subject: account.id,
-        usage: "60s",
-        category: "outbound_calls",
-        destination: "855715100989"
       )
     end
 
     it "handles insufficient balances" do
       account = create(:account)
-      client = instance_spy(CGRateS::Client)
-      allow(client).to receive(:get_cost).and_raise(build_api_error(error_class: CGRateS::Client::MaxUsageExceededError))
       interaction = Message.new(account:, direction: :outbound_api, to: "855715100989")
-      rating_engine_client = RatingEngineClient.new(client:)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_max_session_time: build_response(result: 0)
+        )
+      )
 
       result = rating_engine_client.sufficient_balance?(interaction)
 
       expect(result).to be_falsey
-    end
-
-    it "handles other API errors" do
-      account = create(:account)
-      client = instance_spy(CGRateS::Client)
-      allow(client).to receive(:get_cost).and_raise(build_api_error)
-      interaction = Message.new(account:, direction: :outbound_api, to: "855715100989")
-      rating_engine_client = RatingEngineClient.new(client:)
-
-      expect { rating_engine_client.sufficient_balance?(interaction) }.to raise_error(RatingEngineClient::APIError)
     end
   end
 

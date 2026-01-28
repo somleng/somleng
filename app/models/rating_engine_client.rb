@@ -262,22 +262,18 @@ class RatingEngineClient
   end
 
   def sufficient_balance?(interaction)
-    category = interaction.tariff_schedule_category
-    rate_unit = RATE_UNITS.fetch(category.tariff_category.to_sym)
+    handle_request do
+      response = client.get_max_session_time(
+        tenant: interaction.account.carrier_id,
+        account: interaction.account.id,
+        category: interaction.tariff_schedule_category.to_s,
+        destination: interaction.to.value,
+        time_start: "0001-01-01T00:00:00Z",
+        time_end: "0001-01-01T03:00:01Z"
+      )
 
-    client.get_cost(
-      tenant: interaction.account.carrier_id,
-      subject: interaction.account.id,
-      usage: rate_unit.fetch(:unit),
-      category: category.to_s,
-      destination: interaction.to.value
-    )
-
-    true
-  rescue CGRateS::Client::MaxUsageExceededError
-    false
-  rescue CGRateS::Client::APIError => e
-    raise APIError.new(e.message)
+      response.result.positive?
+    end
   end
 
   private

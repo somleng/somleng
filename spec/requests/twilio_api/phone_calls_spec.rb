@@ -57,9 +57,11 @@ RSpec.resource "Phone Calls", document: :twilio_api do
         Calls can be made via the REST API to phone numbers. To place a new outbound call, make an `HTTP POST` request to your account's Call resource.
       HEREDOC
 
-      account = create(:account)
+      account = create(:account, :billing_enabled)
       create(:incoming_phone_number, number: "12513095500", account:)
       create(:sip_trunk, carrier: account.carrier, region: :hydrogen)
+      create(:tariff_plan_subscription, account:, plan_category: :outbound_calls)
+      stub_rating_engine_request(result: 100)
       stub_switch_request(region: :hydrogen)
 
       set_twilio_api_authorization_header(account)
