@@ -6,6 +6,7 @@ class CreateBalanceTransactions < ActiveRecord::Migration[8.1]
       t.references :created_by, null: true, foreign_key: { to_table: :users, on_delete: :nullify }, type: :uuid
       t.references :message, null: true, foreign_key: { on_delete: :nullify }, type: :uuid, index: { unique: true }
       t.references :phone_call, null: true, foreign_key: { on_delete: :nullify }, type: :uuid, index: { unique: true }
+      t.string :charge_source_id, null: true, index: true
       t.string :type, null: false, index: true
       t.decimal :amount_cents, null: false, precision: 12, scale: 4
       t.string :currency, null: false

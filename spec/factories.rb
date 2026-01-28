@@ -889,7 +889,15 @@ FactoryBot.define do
     trait :charge do
       type { :charge }
       amount_cents { -10000 }
+      charge_source_id { SecureRandom.uuid }
       currency { account.billing_currency }
+    end
+
+    trait :for_phone_call do
+      charge
+      phone_call { association(:phone_call, account:, price_cents: amount.cents.abs, price_unit: amount.currency) }
+      charge_category { phone_call.tariff_schedule_category }
+      charge_source_id { phone_call.external_id }
     end
   end
 

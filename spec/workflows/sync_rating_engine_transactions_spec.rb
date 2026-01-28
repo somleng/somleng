@@ -2,34 +2,78 @@ require "rails_helper"
 
 RSpec.describe SyncRatingEngineTransactions do
   it "syncs rating engine transactions" do
-    carrier = create(:carrier)
-    account = create(:account, carrier:)
+    account = create(:account)
     message = create(:message, :inbound, account:)
+    phone_call = create(:phone_call, :outbound, :initiated, account:)
     existing_balance_transaction = create(:balance_transaction, :topup, account:)
     cdrs = [
       build_cdr(id: 1000, account_id: account.id, origin_id: message.id, category: message.tariff_schedule_category, cost: 100),
-      build_cdr(id: 1001, account_id: account.id, balance_transaction_id: existing_balance_transaction.id),
-      build_cdr(id: 1002, account_id: account.id, success?: false)
+      build_cdr(id: 1001, account_id: account.id, origin_id: phone_call.external_id, category: phone_call.tariff_schedule_category, cost: 200),
+      build_cdr(id: 1002, account_id: account.id, category: phone_call.tariff_schedule_category, cost: 300),
+      build_cdr(id: 1003, account_id: account.id, balance_transaction_id: existing_balance_transaction.id),
+      build_cdr(id: 1004, account_id: account.id, success?: false)
     ]
-
     client = instance_double(RatingEngineClient, fetch_cdrs: cdrs)
 
     SyncRatingEngineTransactions.call(client:)
 
-    expect(ProcessRatingEngineCDRJob).to have_been_enqueued.once
-    expect(ProcessRatingEngineCDRJob).to have_been_enqueued.with(cdrs[0].to_h).once
-    expect(existing_balance_transaction.reload).to have_attributes(
-      external_id: 1001
+    expect(account.balance_transactions).to contain_exactly(
+      have_attributes(
+        external_id: 1000,
+        carrier: account.carrier,
+        type: "charge",
+        amount: InfinitePrecisionMoney.new(-100, account.billing_currency),
+        charge_category: "inbound_messages",
+        charge_source_id: message.id,
+        message: have_attributes(
+          price: InfinitePrecisionMoney.new(100, account.billing_currency)
+        )
+      ),
+      have_attributes(
+        external_id: 1001,
+        carrier: account.carrier,
+        type: "charge",
+        amount: InfinitePrecisionMoney.new(-200, account.billing_currency),
+        charge_category: "outbound_calls",
+        charge_source_id: phone_call.external_id,
+        phone_call: have_attributes(
+          price: InfinitePrecisionMoney.new(200, account.billing_currency)
+        )
+      ),
+      have_attributes(
+        external_id: 1002,
+        carrier: account.carrier,
+        type: "charge",
+        amount: InfinitePrecisionMoney.new(-300, account.billing_currency),
+        charge_category: "outbound_calls",
+        charge_source_id: cdrs[2].origin_id,
+        phone_call: be_blank
+      ),
+      have_attributes(
+        id: existing_balance_transaction.id,
+        external_id: 1003
+      )
+    )
+    expect(ExecuteWorkflowJob).to have_been_enqueued.with(
+      ReconcileBalanceTransactionChargeSource.to_s,
+      account.balance_transactions.find_by(external_id: 1002),
+      charge_source_id: cdrs[2].origin_id
     )
   end
 
   it "syncs rating engine transactions with pagination" do
+    account = create(:account)
     client = instance_double(RatingEngineClient)
     allow(client).to receive(:fetch_cdrs).with(last_id: nil, limit: 2).and_return(
-      [ build_cdr(id: 1000), build_cdr(id: 1001) ]
+      [
+        build_cdr(id: 1000, account_id: account.id),
+        build_cdr(id: 1001, account_id: account.id)
+      ]
     )
     allow(client).to receive(:fetch_cdrs).with(last_id: 1001, limit: 2).and_return(
-      [ build_cdr(id: 1001) ]
+      [
+        build_cdr(id: 1001, account_id: account.id)
+      ]
     )
 
     SyncRatingEngineTransactions.call(client:, batch_size: 2)

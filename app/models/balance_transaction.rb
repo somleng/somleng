@@ -11,6 +11,10 @@ class BalanceTransaction < ApplicationRecord
   enumerize :type, in: [ :topup, :adjustment, :charge ], predicates: true, scope: :shallow
   enumerize :charge_category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
 
+  def charge_source
+    phone_call || message
+  end
+
   def credit?
     return true if topup?
     return amount.positive? if adjustment?
