@@ -2,7 +2,6 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
   CDR = Data.define(
     :id,
     :origin_id,
-    :balance_transaction_id,
     :category,
     :account,
     :amount,
@@ -58,7 +57,6 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
     CDR.new(
       id: cdr.id,
       origin_id: cdr.origin_id,
-      balance_transaction_id: cdr.balance_transaction_id,
       category:,
       account:,
       amount: InfinitePrecisionMoney.new(cdr.cost, account.billing_currency),
