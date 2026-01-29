@@ -267,9 +267,7 @@ class RatingEngineClient
         tenant: interaction.account.carrier_id,
         account: interaction.account.id,
         category: interaction.tariff_schedule_category.to_s,
-        destination: interaction.to.value,
-        time_start: "0001-01-01T00:00:00Z",
-        time_end: "0001-01-01T03:00:01Z"
+        destination: interaction.to.value
       )
 
       response.result.positive?

@@ -450,7 +450,7 @@ RSpec.describe RatingEngineClient do
           tenant: account.carrier_id,
           account: account.id,
           category: "outbound_messages",
-          destination: "855715100989",
+          destination: "855715100989"
         )
       )
     end
