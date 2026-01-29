@@ -2,11 +2,12 @@ require "rails_helper"
 
 RSpec.describe "Account Settings" do
   it "View account settings", :js do
-    account = create(:account, :with_access_token, name: "Rocket Rides")
+    account = create(:account, :with_access_token, :billing_enabled, name: "Rocket Rides", billing_currency: "USD")
     user = create(
       :user, :with_account_membership, account_role: :member, account:
     )
 
+    stub_rating_engine_request(result: build(:rating_engine_account_response, balance: 10000))
     carrier_sign_in(user)
     visit dashboard_account_settings_path
 
@@ -18,6 +19,9 @@ RSpec.describe "Account Settings" do
     click_on("Reveal")
 
     expect(page).to have_content(account.auth_token)
+    within("#billing") do
+      expect(page).to have_content("$100.00")
+    end
   end
 
   it "Visit account settings as a carrier user" do

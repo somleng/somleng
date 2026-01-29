@@ -9,7 +9,7 @@ module CarrierAPI
         validate_request_schema(
           with: AccountRequestSchema, **serializer_options
         ) do |permitted_params|
-          accounts_scope.create!(permitted_params)
+          CreateAccount.call(permitted_params)
         end
       end
 
