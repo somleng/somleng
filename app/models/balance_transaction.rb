@@ -16,10 +16,7 @@ class BalanceTransaction < ApplicationRecord
   end
 
   def credit?
-    return true if topup?
-    return amount.positive? if adjustment?
-
-    raise "Invalid balance transaction type: #{type}"
+    amount.positive?
   end
 
   def amount

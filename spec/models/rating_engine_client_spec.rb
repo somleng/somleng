@@ -320,7 +320,7 @@ RSpec.describe RatingEngineClient do
 
       expect(client).to have_received(:get_cdrs).with(
         order_by: "OrderID",
-        not_costs: [ -1, 0 ],
+        not_costs: [ -1 ],
         extra_args: { "OrderIDStart" => 123 },
         limit: 10
       )
@@ -348,6 +348,17 @@ RSpec.describe RatingEngineClient do
       cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
 
       expect(cdrs).to be_empty
+    end
+
+
+    it "handles API errors" do
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_cdrs).and_raise(build_api_error)
+
+      expect {
+        rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
+      }.to raise_error(RatingEngineClient::APIError)
     end
   end
 
