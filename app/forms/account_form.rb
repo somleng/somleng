@@ -57,6 +57,7 @@ class AccountForm < ApplicationForm
   def initialize(**)
     super(**)
     self.object.carrier = carrier
+    self.billing_enabled = carrier.default_billing_enabled if new_record?
     self.tariff_package_id = carrier.default_tariff_package_id
     self.tariff_plan_subscriptions = build_tariff_plan_subscriptions
   end

@@ -144,6 +144,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_112656) do
     t.citext "custom_api_host"
     t.citext "custom_app_host"
     t.text "custom_theme_css"
+    t.boolean "default_billing_enabled", default: false, null: false
     t.uuid "default_tariff_package_id"
     t.string "name", null: false
     t.boolean "restricted", default: false, null: false
@@ -154,6 +155,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_112656) do
     t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
+    t.index ["default_billing_enabled"], name: "index_carriers_on_default_billing_enabled"
     t.index ["default_tariff_package_id"], name: "index_carriers_on_default_tariff_package_id"
     t.index ["sequence_number"], name: "index_carriers_on_sequence_number", unique: true, order: :desc
     t.index ["subdomain"], name: "index_carriers_on_subdomain", unique: true

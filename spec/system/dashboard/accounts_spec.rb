@@ -46,7 +46,7 @@ RSpec.describe "Accounts" do
   end
 
   it "Create an account" do
-    carrier = create(:carrier, :with_default_tariff_package)
+    carrier = create(:carrier, :with_default_tariff_package, default_billing_enabled: true)
     create(
       :tariff_package_plan,
       package: carrier.default_tariff_package,
@@ -62,7 +62,6 @@ RSpec.describe "Accounts" do
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
     enhanced_select("Basic.Slt", from: "Default TTS voice")
-    check("Billing enabled")
     enhanced_select("Prepaid", from: "Billing mode")
     click_on("Create Account")
 

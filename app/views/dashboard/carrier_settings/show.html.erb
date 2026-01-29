@@ -35,6 +35,18 @@
 
       <%= show_for(@resource) do |f| %>
         <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Account Defaults</h5>
+
+      <%= show_for(@resource) do |f| %>
+        <span id="default-billing-enabled">
+          <%= f.attribute :default_billing_enabled %>
+        </span>
         <%= f.attribute :default_tariff_package, value: @resource.default_tariff_package&.name %>
       <% end %>
     </div>

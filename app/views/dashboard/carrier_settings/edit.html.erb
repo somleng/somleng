@@ -57,7 +57,21 @@
               )
             %>
           </div>
+        </div>
+      </div>
+    <div>
 
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Account Defaults</h5>
+
+        <div class="row">
+          <div class="col-6">
+            <%= f.input :default_billing_enabled, as: :boolean, wrapper: :custom_boolean_switch %>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-6">
             <%= f.input(
               :default_tariff_package_id,
