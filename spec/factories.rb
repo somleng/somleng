@@ -240,6 +240,10 @@ FactoryBot.define do
       admin
     end
 
+    trait :customer do
+      carrier_role { nil }
+    end
+
     trait :invited do
       invitation_sent_at { Time.current }
       invitation_token { SecureRandom.urlsafe_base64 }

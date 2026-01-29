@@ -1,10 +1,6 @@
 class AccountPolicy < ApplicationPolicy
   delegate :carrier_managed?, :customer_managed?, to: :record
 
-  def index?
-    read?
-  end
-
   def read?
     user.carrier_user?
   end
@@ -15,5 +11,9 @@ class AccountPolicy < ApplicationPolicy
 
   def manage?
     carrier_admin?
+  end
+
+  def destroy?
+    super && carrier_managed? && record.messages.blank? && record.phone_calls.blank?
   end
 end
