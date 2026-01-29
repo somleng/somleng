@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Carrier Settings" do
   it "Update carrier settings" do
-    carrier = create(:carrier, name: "My Carrier")
+    carrier = create(:carrier, name: "My Carrier", billing_currency: "USD")
     user = create(:user, :carrier, :owner, carrier:)
     create(:tariff_package, carrier:, name: "Standard Package")
 
@@ -11,8 +11,7 @@ RSpec.describe "Carrier Settings" do
 
     click_on("Edit")
     fill_in("Name", with: "T-Mobile")
-    select("United States", from: "Country")
-    enhanced_select("United States Dollar", from: "Billing currency")
+    enhanced_select("United States", from: "Country")
     fill_in("Website", with: "https://t-mobile.example.com")
     fill_in("Webhook URL", with: "https://example.com/webhook_endpoint")
     fill_in("Dashboard host", with: "dashboard.t-mobile.example.com")

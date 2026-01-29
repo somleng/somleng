@@ -180,6 +180,7 @@ class ApplicationSeeder
       restricted: false,
       subdomain: "my-carrier",
       website: "https://example.com",
+      billing_currency: "USD",
       owner: build_user_params(
         email: "johndoe@carrier.com",
         name: "John Doe",

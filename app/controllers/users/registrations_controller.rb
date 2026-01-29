@@ -36,6 +36,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         company
         subdomain
         country
+        billing_currency
         website
       ]
     )

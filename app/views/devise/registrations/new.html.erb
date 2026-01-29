@@ -1,14 +1,13 @@
 <h1>Sign up</h1>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), wrapper: :input_group, html: { data: { controller: "sign-up", turbo: false } }) do |f| %>
-  <%= f.input :name, autofocus: true, prepend: "<i class='fa-solid fa-user-edit'></i>".html_safe %>
-  <%= f.input :work_email, prepend: "<i class='fa-solid fa-at'></i>".html_safe %>
+  <%= f.input :name, autofocus: true %>
+  <%= f.input :work_email %>
 
   <div class="row">
-    <div class="col-6">
+    <div class="col">
       <%= f.input(
         :company,
-        prepend: "<i class='fa-solid fa-building'></i>".html_safe,
         input_html: {
           data: {
             "sign-up-target" => "companyInput",
@@ -17,14 +16,40 @@
         }
       ) %>
     </div>
-    <div class="col-6">
-      <%= f.input :country, prepend: "<i class='fa-solid fa-flag'></i>".html_safe %>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <%= f.input :country,
+          priority: ["US"],
+          input_html: {
+            data: {
+              controller: "enhanced-select"
+            }
+          }
+      %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <%=
+        f.input(
+          :billing_currency,
+          collection: resource.available_currencies.map {|currency| [currency.name, currency.iso_code] },
+          input_html: {
+            data: {
+              controller: "enhanced-select"
+            }
+          }
+        )
+      %>
     </div>
   </div>
 
   <div class="row">
     <div class="col-6">
-      <%= f.input :website, hint: "Must start with http or https", prepend: "<i class='fa-solid fa-globe'></i>".html_safe %>
+      <%= f.input :website, hint: "Must start with http or https" %>
     </div>
     <div class="col-6">
       <%=
@@ -45,15 +70,13 @@
   <%= f.input(
       :password,
       hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-      input_html: { autocomplete: "new-password" },
-      prepend: "<i class='fa-solid fa-lock'></i>".html_safe
+      input_html: { autocomplete: "new-password" }
     )
   %>
 
   <%= f.input(
       :password_confirmation,
-      input_html: { autocomplete: "new-password" },
-      prepend: "<i class='fa-solid fa-lock'></i>".html_safe
+      input_html: { autocomplete: "new-password" }
     )
   %>
 

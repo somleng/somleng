@@ -9,7 +9,7 @@ class OnboardCarrier < ApplicationWorkflow
     @subdomain = params.fetch(:subdomain)
     @website = params.fetch(:website)
     @owner_params = params.fetch(:owner)
-    @billing_currency = params.fetch(:billing_currency) { ISO3166::Country.new(country_code).currency_code }
+    @billing_currency = params.fetch(:billing_currency)
     @rating_engine_client = params.fetch(:rating_engine_client) { RatingEngineClient.new }
   end
 

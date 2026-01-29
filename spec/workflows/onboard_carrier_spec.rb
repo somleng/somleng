@@ -10,6 +10,7 @@ RSpec.describe OnboardCarrier do
       website: "https://www.att.com",
       restricted: true,
       subdomain: "at-t",
+      billing_currency: "USD",
       owner: {
         name: "John Doe",
         email: "johndoe@example.com"
@@ -23,7 +24,8 @@ RSpec.describe OnboardCarrier do
       api_key: be_present,
       oauth_application: be_present,
       restricted: true,
-      subdomain: "at-t"
+      subdomain: "at-t",
+      billing_currency: "USD",
     )
 
     expect(owner).to have_attributes(

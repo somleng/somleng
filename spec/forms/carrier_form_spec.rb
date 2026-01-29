@@ -17,6 +17,13 @@ RSpec.describe CarrierForm do
       expect(form).to be_invalid
       expect(form.errors[:work_email]).to be_present
     end
+
+    it "validates the currency" do
+      form = CarrierForm.new(billing_currency: "BTC")
+
+      expect(form).to be_invalid
+      expect(form.errors[:billing_currency]).to be_present
+    end
   end
 
   describe "#save" do
@@ -29,6 +36,7 @@ RSpec.describe CarrierForm do
         company: "AT&T",
         subdomain: "at-t",
         country: "KH",
+        billing_currency: "USD",
         website: "https://example.com",
         password: "Super Secret",
         password_confirmation: "Super Secret"
@@ -45,7 +53,8 @@ RSpec.describe CarrierForm do
       expect(form.user.carrier).to have_attributes(
         name: "AT&T",
         country_code: "KH",
-        restricted: true
+        restricted: true,
+        billing_currency: "USD",
       )
       expect(ActionMailer::MailDeliveryJob).to have_been_enqueued
     end

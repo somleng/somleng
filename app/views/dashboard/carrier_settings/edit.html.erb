@@ -28,7 +28,9 @@
 
         <div class="row">
           <div class="col-6">
-            <%= f.input :country %>
+            <%= f.input :country,
+              priority: ["US"],
+              input_html: { data: { controller: "enhanced-select" } } %>
           </div>
         </div>
       </div>
@@ -39,25 +41,6 @@
         <h5 class="card-title">Billing</h5>
 
         <div class="row">
-          <div class="col-6">
-            <%=
-              f.input(
-                :billing_currency,
-                collection: @resource.available_currencies.map {|currency| [currency.name, currency.iso_code] },
-                include_blank: false,
-                input_html: {
-                  data: {
-                    controller: "enhanced-select",
-                    enhanced_select_options: {
-                      removeItemButton: true,
-                      position: "bottom"
-                    }
-                  }
-                }
-              )
-            %>
-          </div>
-
           <div class="col-6">
             <%= f.input(
               :default_tariff_package_id,
