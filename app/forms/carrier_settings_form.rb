@@ -37,7 +37,6 @@ class CarrierSettingsForm
   attribute :webhook_url
   attribute :enable_webhooks, :boolean, default: true
   attribute :default_tariff_package_id
-  attribute :default_billing_enabled, :boolean, default: false
 
   delegate :persisted?, :id, to: :carrier
 
@@ -74,7 +73,6 @@ class CarrierSettingsForm
       custom_app_host: carrier.custom_app_host,
       custom_api_host: carrier.custom_api_host,
       default_tariff_package_id: carrier.default_tariff_package_id,
-      default_billing_enabled: carrier.default_billing_enabled
     )
   end
 
@@ -90,7 +88,6 @@ class CarrierSettingsForm
       billing_currency:,
       country_code: country,
       default_tariff_package: (carrier.tariff_packages.find(default_tariff_package_id) if default_tariff_package_id.present?),
-      default_billing_enabled: default_billing_enabled
     }
 
     webhook_endpoint.enabled = enable_webhooks

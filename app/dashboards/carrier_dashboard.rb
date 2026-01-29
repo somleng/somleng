@@ -23,7 +23,6 @@ class CarrierDashboard < Administrate::BaseDashboard
     custom_app_host: Field::String,
     custom_api_host: Field::String,
     billing_currency: Field::String,
-    default_billing_enabled: Field::Boolean
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -53,7 +52,6 @@ class CarrierDashboard < Administrate::BaseDashboard
     carrier_users
     account_users
     billing_currency
-    default_billing_enabled
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze

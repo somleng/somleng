@@ -46,7 +46,7 @@ RSpec.describe "Accounts" do
   end
 
   it "Create an account" do
-    carrier = create(:carrier, :with_default_tariff_package, default_billing_enabled: true)
+    carrier = create(:carrier, :with_default_tariff_package)
     create(
       :tariff_package_plan,
       package: carrier.default_tariff_package,
