@@ -6,7 +6,7 @@ export default class extends Controller {
   connect() {
     if (this.element.tomselect) return;
 
-    const defaultPlugins = [""];
+    const defaultPlugins = [];
 
     // Read options from data attribute, default to empty object
     const options = this.element.dataset.enhancedSelectOptions

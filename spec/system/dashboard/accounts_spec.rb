@@ -160,7 +160,9 @@ RSpec.describe "Accounts" do
     fill_in("Owner's email", with: "johndoe@example.com")
     enhanced_select("Basic.Slt", from: "Default TTS voice")
     uncheck("Billing enabled")
-    uncheck("Enabled")
+    within("#danger-zone") do
+      uncheck("Enabled")
+    end
 
     perform_enqueued_jobs do
       click_on("Update Account")

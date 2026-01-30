@@ -2,76 +2,67 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application";
+import { application } from "./application"
 
-import DashboardController from "./dashboard_controller";
-application.register("dashboard", DashboardController);
+import DashboardController from "./dashboard_controller"
+application.register("dashboard", DashboardController)
 
-import DestinationGroupFormController from "./destination_group_form_controller";
-application.register("destination-group-form", DestinationGroupFormController);
+import DestinationGroupFormController from "./destination_group_form_controller"
+application.register("destination-group-form", DestinationGroupFormController)
 
-import DestinationTariffFormController from "./destination_tariff_form_controller";
-application.register(
-  "destination-tariff-form",
-  DestinationTariffFormController
-);
+import DestinationTariffFormController from "./destination_tariff_form_controller"
+application.register("destination-tariff-form", DestinationTariffFormController)
 
-import EnhancedSelectController from "./enhanced_select_controller";
-application.register("enhanced-select", EnhancedSelectController);
+import EnhancedSelectController from "./enhanced_select_controller"
+application.register("enhanced-select", EnhancedSelectController)
 
-import Filters__DatePickerController from "./filters/date_picker_controller";
-application.register("filters--date-picker", Filters__DatePickerController);
+import Filters__DatePickerController from "./filters/date_picker_controller"
+application.register("filters--date-picker", Filters__DatePickerController)
 
-import Filters__FieldController from "./filters/field_controller";
-application.register("filters--field", Filters__FieldController);
+import Filters__FieldController from "./filters/field_controller"
+application.register("filters--field", Filters__FieldController)
 
-import FiltersController from "./filters_controller";
-application.register("filters", FiltersController);
+import FiltersController from "./filters_controller"
+application.register("filters", FiltersController)
 
-import LocalTimeController from "./local_time_controller";
-application.register("local-time", LocalTimeController);
+import LocalTimeController from "./local_time_controller"
+application.register("local-time", LocalTimeController)
 
-import MaskedContentController from "./masked_content_controller";
-application.register("masked-content", MaskedContentController);
+import MaskedContentController from "./masked_content_controller"
+application.register("masked-content", MaskedContentController)
 
-import MessagingServiceIntegrationController from "./messaging_service_integration_controller";
-application.register(
-  "messaging-service-integration",
-  MessagingServiceIntegrationController
-);
+import MessagingServiceIntegrationController from "./messaging_service_integration_controller"
+application.register("messaging-service-integration", MessagingServiceIntegrationController)
 
-import RemoveNestedFormController from "./remove_nested_form_controller";
-application.register("remove-nested-form", RemoveNestedFormController);
+import RemoveNestedFormController from "./remove_nested_form_controller"
+application.register("remove-nested-form", RemoveNestedFormController)
 
-import SidebarController from "./sidebar_controller";
-application.register("sidebar", SidebarController);
+import SidebarController from "./sidebar_controller"
+application.register("sidebar", SidebarController)
 
-import SignUpController from "./sign_up_controller";
-application.register("sign-up", SignUpController);
+import SignUpController from "./sign_up_controller"
+application.register("sign-up", SignUpController)
 
-import SipTrunksController from "./sip_trunks_controller";
-application.register("sip-trunks", SipTrunksController);
+import SipTrunksController from "./sip_trunks_controller"
+application.register("sip-trunks", SipTrunksController)
 
-import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller";
-application.register(
-  "sms-gateway-channel-groups",
-  SmsGatewayChannelGroupsController
-);
+import SmsGatewayChannelGroupsController from "./sms_gateway_channel_groups_controller"
+application.register("sms-gateway-channel-groups", SmsGatewayChannelGroupsController)
 
-import TariffPackageSelectionController from "./tariff_package_selection_controller";
-application.register(
-  "tariff-package-selection",
-  TariffPackageSelectionController
-);
+import TariffCategoryFormController from "./tariff_category_form_controller"
+application.register("tariff-category-form", TariffCategoryFormController)
 
-import TariffPackageWizardController from "./tariff_package_wizard_controller";
-application.register("tariff-package-wizard", TariffPackageWizardController);
+import TariffPackageSelectionController from "./tariff_package_selection_controller"
+application.register("tariff-package-selection", TariffPackageSelectionController)
 
-import TariffCategoryFormController from "./tariff_category_form_controller";
-application.register("tariff-category-form", TariffCategoryFormController);
+import TariffPlanTierFormController from "./tariff_plan_tier_form_controller"
+application.register("tariff-plan-tier-form", TariffPlanTierFormController)
 
-import TariffPlanTierFormController from "./tariff_plan_tier_form_controller";
-application.register("tariff-plan-tier-form", TariffPlanTierFormController);
+import ToggleFormSectionController from "./toggle_form_section_controller"
+application.register("toggle-form-section", ToggleFormSectionController)
 
-import VerificationServicesController from "./verification_services_controller";
-application.register("verification-services", VerificationServicesController);
+import ToggleInputController from "./toggle_input_controller"
+application.register("toggle-input", ToggleInputController)
+
+import VerificationServicesController from "./verification_services_controller"
+application.register("verification-services", VerificationServicesController)

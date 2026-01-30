@@ -1,8 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="tariff-package-wizard"
 export default class extends Controller {
-  static targets = ["enabledInput", "rateInput"];
+  static targets = ["enabledInput", "container"];
 
   connect() {
     this.toggleEnabled();
@@ -10,6 +9,6 @@ export default class extends Controller {
 
   toggleEnabled() {
     const enabled = this.enabledInputTarget.checked;
-    this.rateInputTarget.disabled = !enabled;
+    this.containerTarget.style.display = enabled ? "block" : "none";
   }
 }

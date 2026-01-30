@@ -37,51 +37,50 @@
                   <% tariffs.each do |tariff| %>
                     <%= f.simple_fields_for(:tariffs, tariff, index: tariff_index) do |tariff_form| %>
                       <div class="col">
-                        <div class="card mb-2 <%= "#{tariff.category.dasherize}" %>" data-controller="tariff-package-wizard">
+                        <div class="card mb-2 <%= "#{tariff.category.dasherize}" %>" data-controller="toggle-input">
                           <div class="card-body">
                             <h6 class="card-title">
-                              <% if tariff.category.direction.inbound? %>
-                                <i class="fa-solid fa-arrow-left"></i>
-                              <% elsif tariff.category.direction.outbound? %>
-                                <i class="fa-solid fa-arrow-right"></i>
-                              <% end %>
-                              <%= tariff.category.direction.to_s.humanize %>
+                              <div class="row">
+                                <div class="col-sm-9">
+                                  <% if tariff.category.direction.inbound? %>
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                  <% elsif tariff.category.direction.outbound? %>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                  <% end %>
+                                  <%= tariff.category.direction.to_s.humanize %>
+                                </div>
+                                <div class="col-sm-3 d-flex justify-content-end">
+                                  <%= tariff_form.input(
+                                    :enabled,
+                                    as: :boolean,
+                                    wrapper: :custom_boolean_switch,
+                                    input_html: {
+                                      data: {
+                                        toggle_input_target: "enabledInput",
+                                        action: "toggle-input#toggleEnabled"
+                                      }
+                                    }
+                                  ) %>
+                                </div>
+                              </div>
                             </h6>
 
-                            <div class="row">
-                              <div class="col-sm-3">
-                                <%= tariff_form.input(
-                                  :enabled,
-                                  as: :boolean,
-                                  wrapper: :custom_boolean_switch,
-                                  input_html: {
-                                    data: {
-                                      tariff_package_wizard_target: "enabledInput",
-                                      action: "tariff-package-wizard#toggleEnabled"
-                                    }
-                                  }
-                                ) %>
-                              </div>
+                            <%= tariff_form.input(
+                              :rate,
+                              label: "Rate (#{tariff_form.object.billing_currency.iso_code})",
+                              as: :numeric,
+                              required: true,
+                              append: tariff_form.object.rate_unit,
+                              hint: tariff_form.object.hint,
+                              input_html: {
+                                min: 0, step: 0.0001,
+                                data: {
+                                  toggle_input_target: "input"
+                                }
+                              }
+                            ) %>
 
-                              <div class="col-sm-9">
-                                <%= tariff_form.input(
-                                  :rate,
-                                  label: "Rate (#{tariff_form.object.billing_currency.iso_code})",
-                                  as: :numeric,
-                                  required: true,
-                                  append: tariff_form.object.rate_unit,
-                                  hint: tariff_form.object.hint,
-                                  input_html: {
-                                    min: 0, step: 0.0001,
-                                    data: {
-                                      tariff_package_wizard_target: "rateInput"
-                                    }
-                                  }
-                                ) %>
-
-                                <%= tariff_form.input(:category, as: :hidden) %>
-                              </div>
-                            </div>
+                            <%= tariff_form.input(:category, as: :hidden) %>
                           </div>
                         </div>
                       </div>

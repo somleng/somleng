@@ -7,36 +7,51 @@
       </h5>
       <div class="row">
         <% assignments.each do |assignment| %>
-          <div class="col mb-3">
+          <div class="col">
             <%= form.simple_fields_for(collection_method, assignment, index: assignment_index) do |assignment_form| %>
-              <div class="card mb-3 <%= "#{assignment.category.value.dasherize}-line-item" %>">
+              <div class="card <%= "#{assignment.category.value.dasherize}-line-item" %>" data-controller="toggle-input" data-tariff-package-selection-target="tariffPlanInputGroup">
                 <div class="card-body">
                   <h6 class="card-title">
-                    <% if assignment.category.direction.inbound? %>
-                      <i class="fa-solid fa-arrow-left"></i>
-                    <% elsif assignment.category.direction.outbound? %>
-                      <i class="fa-solid fa-arrow-right"></i>
-                    <% end %>
-                    <%= assignment.category.direction.to_s.humanize %>
+                    <div class="row">
+                      <div class="col-sm-9">
+                        <% if assignment.category.direction.inbound? %>
+                          <i class="fa-solid fa-arrow-left"></i>
+                        <% elsif assignment.category.direction.outbound? %>
+                          <i class="fa-solid fa-arrow-right"></i>
+                        <% end %>
+                        <%= assignment.category.direction.to_s.humanize %>
+                      </div>
+                      <div class="col-sm-3 d-flex justify-content-end">
+                        <%= assignment_form.input(
+                          :enabled,
+                          as: :boolean,
+                          wrapper: :custom_boolean_switch,
+                          input_html: {
+                            class: "toggle-input",
+                            data: {
+                              toggle_input_target: "enabledInput",
+                              action: "toggle-input#toggleEnabled"
+                            }
+                          }
+                        ) %>
+                      </div>
+                    </div>
                   </h6>
 
                   <%= assignment_form.input(
                     :plan_id,
                     collection: assignment.plans_options_for_select,
-                    prompt: "Disabled",
-                    required: false,
+                    prompt: true,
+                    required: true,
                     include_blank: true,
-                    hint: "Disabling this plan will block #{assignment.category.text.downcase}.",
                     hint_html: { class: "text-danger", data: { change_me: "bar" } },
                     input_html: {
+                      class: "plan-id-input",
                       data: {
                         controller: "enhanced-select",
-                        enhanced_select_options: {
-                          removeItemButton: true
-                        },
-                        tariff_package_selection_target: "tariffPlanInput",
                         action: "change->tariff-package-selection#changeTariffPlan",
-                        category: assignment.category
+                        category: assignment.category,
+                        toggle_input_target: "input"
                       }
                     }
                   ) %>

@@ -50,7 +50,7 @@ module Dashboard
         :enabled,
         :billing_enabled,
         :billing_mode,
-        tariff_plan_subscriptions: [ :id, :plan_id, :category ]
+        tariff_plan_subscriptions: [ :id, :plan_id, :category, :enabled ]
       )
     end
 

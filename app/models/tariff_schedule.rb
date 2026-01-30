@@ -9,10 +9,10 @@ class TariffSchedule < ApplicationRecord
 
   enumerize :category,
     in: [
-      :outbound_messages,
-      :inbound_messages,
       :outbound_calls,
-      :inbound_calls
+      :inbound_calls,
+      :outbound_messages,
+      :inbound_messages
     ],
     value_class: TariffScheduleCategoryValue
 end
