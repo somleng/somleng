@@ -23,9 +23,11 @@
                   <%= assignment_form.input(
                     :plan_id,
                     collection: assignment.plans_options_for_select,
-                    prompt: true,
+                    prompt: "Disabled",
                     required: false,
                     include_blank: true,
+                    hint: "Disabling this plan will block #{assignment.category.text.downcase}.",
+                    hint_html: { class: "text-danger", data: { change_me: "bar" } },
                     input_html: {
                       data: {
                         controller: "enhanced-select",
