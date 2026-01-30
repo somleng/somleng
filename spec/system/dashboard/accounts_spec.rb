@@ -212,6 +212,7 @@ RSpec.describe "Accounts" do
     account = create(
       :account,
       :customer_managed,
+      :billing_enabled,
       :enabled,
       carrier:,
       default_tts_voice: "Basic.Slt",
@@ -228,7 +229,7 @@ RSpec.describe "Accounts" do
     )
     user = create(:user, :carrier, carrier:)
 
-    stub_rating_engine_request
+    stub_rating_engine_request(response: { result: { "BalanceMap" => nil } })
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
@@ -237,6 +238,7 @@ RSpec.describe "Accounts" do
 
     enhanced_select("Main SIP Trunk", from: "SIP trunk")
     within(".outbound-messages-line-item") do
+      check("Enabled")
       enhanced_select("Outbound messages (Standard)", from: "Plan")
     end
 

@@ -23,6 +23,8 @@ class AccountForm < ApplicationForm
   validates :default_tts_voice, presence: true
   validates :name, presence: true, unless: :customer_managed?
   validates :owner_email, email_format: true, allow_blank: true, allow_nil: true
+  validates :billing_enabled, inclusion: { in: [ true, false ] }
+  validates :billing_mode, presence: true
   validates :calls_per_second,
             presence: true,
             numericality: {
@@ -88,8 +90,10 @@ class AccountForm < ApplicationForm
         end
       end
 
-      object.save!
-      tariff_plan_subscriptions.all? { _1.save } if billing_enabled
+      result = object.save!
+      return result unless billing_enabled
+
+      tariff_plan_subscriptions.all? { _1.save }
     end
   end
 

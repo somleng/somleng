@@ -1,6 +1,30 @@
 require "rails_helper"
 
 RSpec.describe AccountForm do
+  describe "defaults" do
+    it "sets default values" do
+      carrier_with_billing_enabled = create(:carrier, :with_default_tariff_package)
+
+      expect(
+        build_form(carrier: carrier_with_billing_enabled).billing_enabled
+      ).to be_truthy
+
+      expect(
+        build_form(carrier: build_stubbed(:carrier)).billing_enabled
+      ).to be_falsey
+
+      expect(
+        AccountForm.initialize_with(
+          build_stubbed(:account, carrier: carrier_with_billing_enabled, billing_enabled: false)
+        ).billing_enabled
+      ).to be_falsey
+
+      expect(
+        AccountForm.initialize_with(build_stubbed(:account, billing_enabled: true)).billing_enabled
+      ).to be_truthy
+    end
+  end
+
   describe "validations" do
     it "validates the owner does not have a carrier role" do
       user = create(:user, :carrier, email: "johndoe@example.com")
@@ -62,9 +86,9 @@ RSpec.describe AccountForm do
         name: "Rocket Rides",
         enabled: true,
         calls_per_second: 2,
-        default_tts_voice: "Basic.Slt"
+        default_tts_voice: "Basic.Slt",
+        carrier:
       )
-      form.carrier = carrier
 
       result = form.save
 
@@ -77,6 +101,23 @@ RSpec.describe AccountForm do
         default_tts_voice: have_attributes(
           identifier: "Basic.Slt"
         )
+      )
+    end
+
+    it "handles billing enabled" do
+      carrier = create(:carrier)
+      form = build_form(
+        name: "Rocket Rides",
+        billing_enabled: false,
+        carrier:
+      )
+
+      result = form.save
+
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
+        persisted?: true,
+        billing_enabled: false
       )
     end
 
@@ -134,34 +175,52 @@ RSpec.describe AccountForm do
     it "updates a customer managed account" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:)
-      tariff_plan = create(:tariff_plan, carrier:)
+      tariff_plan = create(:tariff_plan, :outbound_messages, carrier:)
       account = create(
         :account,
         :customer_managed,
         carrier:,
         sip_trunk:,
-        calls_per_second: 1,
+        calls_per_second: 1
       )
-      tariff_plan_subscription = create(:tariff_plan_subscription, account:)
+      tariff_plan_subscription = create(:tariff_plan_subscription, account:, plan_category: :outbound_calls)
 
       form = AccountForm.initialize_with(account)
       form.attributes = {
         sip_trunk_id: nil,
         calls_per_second: 10,
-        tariff_plan_subscriptions: {
-          plan_id: tariff_plan.id,
-          category: tariff_plan_subscription.category,
-          id: tariff_plan_subscription.id
-        }
+        billing_enabled: true,
+        tariff_plan_subscriptions: [
+          {
+            enabled: true,
+            plan_id: tariff_plan_subscription.plan_id,
+            category: tariff_plan_subscription.category,
+            id: tariff_plan_subscription.id
+          },
+          {
+            enabled: true,
+            plan_id: tariff_plan.id,
+            category: tariff_plan.category
+          }
+        ]
       }
 
       result = form.save
 
       expect(result).to be_truthy
-      expect(form.object).to have_attributes(
+      expect(form.object.reload).to have_attributes(
         sip_trunk: nil,
         calls_per_second: 10,
-        type: "customer_managed"
+        type: "customer_managed",
+        billing_enabled: true,
+        # tariff_plan_subscriptions: contain_exactly(
+        #   tariff_plan_subscription,
+        #   have_attributes(
+        #     persisted?: true,
+        #     plan: tariff_plan,
+        #     category: tariff_plan.category
+        #   )
+        # )
       )
     end
   end

@@ -15,9 +15,13 @@ class TariffPlanAssignmentForm < ApplicationForm
       object:,
       id: object.id,
       plan_id: object.plan_id,
-      category: object.category,
-      enabled: object.plan_id.present?
+      category: object.category
     )
+  end
+
+  def initialize(**)
+    super(**)
+    self.enabled = plan_id.present?
   end
 
   def save
@@ -26,7 +30,7 @@ class TariffPlanAssignmentForm < ApplicationForm
     self.object = object.class.where(**parent_attributes, category:).find(id) if id.present?
 
     return object.destroy! if destroy?
-    return unless enabled
+    return true unless enabled
 
     object.attributes = {
       **parent_attributes,

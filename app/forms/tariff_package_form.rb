@@ -49,7 +49,7 @@ class TariffPackageForm < ApplicationForm
 
     ApplicationRecord.transaction do
       object.save!
-      enabled_plans.all? { _1.save }
+      plans.all? { _1.save }
     end
   end
 
@@ -72,16 +72,12 @@ class TariffPackageForm < ApplicationForm
   end
 
   def validate_plans
-    if enabled_plans.blank?
+    if plans.select(&:enabled).blank?
       plans.first.errors.add(:plan_id, :blank)
       return errors.add(:plans, :invalid)
     end
 
-    enabled_plans.each(&:valid?)
-    errors.add(:plans, :invalid) if enabled_plans.any? { _1.errors.present? }
-  end
-
-  def enabled_plans
-    plans.select(&:enabled)
+    plans.each(&:valid?)
+    errors.add(:plans, :invalid) if plans.any? { _1.errors.present? }
   end
 end
