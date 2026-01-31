@@ -5,8 +5,7 @@ class TariffPlanAssignmentForm < ApplicationForm
   attribute :category
   attribute :enabled, :boolean, default: false
 
-  before_validation :reset_plan_id
-  validates :plan_id, presence: true, if: ->(form) { form.enabled }
+  validates :plan_id, presence: true, if: ->(form) { form.enabled? }
 
   enumerize :category, in: TariffSchedule.category.values, value_class: TariffScheduleCategoryValue
 
@@ -30,7 +29,7 @@ class TariffPlanAssignmentForm < ApplicationForm
     self.object = object.class.where(**parent_attributes, category:).find(id) if id.present?
 
     return object.destroy! if destroy?
-    return true unless enabled
+    return true unless enabled?
 
     object.attributes = {
       **parent_attributes,
@@ -47,19 +46,17 @@ class TariffPlanAssignmentForm < ApplicationForm
     end
   end
 
+  def enabled?
+    !!enabled
+  end
+
   private
 
   def destroy?
-    object.persisted? && plan_id.blank?
+    object.persisted? && !enabled?
   end
 
   def plans
     @plans ||= carrier.tariff_plans.where(category:)
-  end
-
-  def reset_plan_id
-    return if enabled
-
-    self.plan_id = nil
   end
 end

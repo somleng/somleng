@@ -175,7 +175,7 @@ RSpec.describe AccountForm do
     it "updates a customer managed account" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:)
-      tariff_plan = create(:tariff_plan, :outbound_messages, carrier:)
+      new_tariff_plan = create(:tariff_plan, :outbound_messages, carrier:)
       account = create(
         :account,
         :customer_managed,
@@ -183,7 +183,16 @@ RSpec.describe AccountForm do
         sip_trunk:,
         calls_per_second: 1
       )
-      tariff_plan_subscription = create(:tariff_plan_subscription, account:, plan_category: :outbound_calls)
+      retained_tariff_plan_subscription = create(
+        :tariff_plan_subscription,
+        account:,
+        plan_category: :outbound_calls
+      )
+      deleted_tariff_plan_subscription = create(
+        :tariff_plan_subscription,
+        account:,
+        plan_category: :inbound_messages
+      )
 
       form = AccountForm.initialize_with(account)
       form.attributes = {
@@ -193,14 +202,19 @@ RSpec.describe AccountForm do
         tariff_plan_subscriptions: [
           {
             enabled: true,
-            plan_id: tariff_plan_subscription.plan_id,
-            category: tariff_plan_subscription.category,
-            id: tariff_plan_subscription.id
+            plan_id: retained_tariff_plan_subscription.plan_id,
+            category: retained_tariff_plan_subscription.category,
+            id: retained_tariff_plan_subscription.id
           },
           {
             enabled: true,
-            plan_id: tariff_plan.id,
-            category: tariff_plan.category
+            plan_id: new_tariff_plan.id,
+            category: new_tariff_plan.category
+          },
+          {
+            enabled: false,
+            category: deleted_tariff_plan_subscription.category,
+            id: deleted_tariff_plan_subscription.id
           }
         ]
       }
@@ -213,14 +227,14 @@ RSpec.describe AccountForm do
         calls_per_second: 10,
         type: "customer_managed",
         billing_enabled: true,
-        # tariff_plan_subscriptions: contain_exactly(
-        #   tariff_plan_subscription,
-        #   have_attributes(
-        #     persisted?: true,
-        #     plan: tariff_plan,
-        #     category: tariff_plan.category
-        #   )
-        # )
+        tariff_plan_subscriptions: contain_exactly(
+          retained_tariff_plan_subscription,
+          have_attributes(
+            persisted?: true,
+            plan: new_tariff_plan,
+            category: new_tariff_plan.category
+          )
+        )
       )
     end
   end
