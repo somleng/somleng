@@ -28,7 +28,7 @@ class TariffPlanAssignmentForm < ApplicationForm
 
     self.object = object.class.where(**parent_attributes, category:).find(id) if id.present?
 
-    return object.destroy! if destroy?
+    return object.destroy! if object.persisted? && !enabled?
     return true unless enabled?
 
     object.attributes = {
@@ -51,10 +51,6 @@ class TariffPlanAssignmentForm < ApplicationForm
   end
 
   private
-
-  def destroy?
-    object.persisted? && !enabled?
-  end
 
   def plans
     @plans ||= carrier.tariff_plans.where(category:)

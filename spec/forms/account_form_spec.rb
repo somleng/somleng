@@ -104,20 +104,29 @@ RSpec.describe AccountForm do
       )
     end
 
-    it "handles billing enabled" do
+    it "handles disabled billing" do
       carrier = create(:carrier)
+      tariff_plan = create(:tariff_plan, carrier:)
       form = build_form(
         name: "Rocket Rides",
         billing_enabled: false,
-        carrier:
+        carrier:,
+        tariff_plan_subscriptions: [
+          {
+            enabled: true,
+            plan_id: tariff_plan.id,
+            category: tariff_plan.category
+          }
+        ]
       )
 
       result = form.save
 
       expect(result).to be_truthy
-      expect(form.object).to have_attributes(
+      expect(form.object.reload).to have_attributes(
         persisted?: true,
-        billing_enabled: false
+        billing_enabled: false,
+        tariff_plan_subscriptions: be_empty
       )
     end
 

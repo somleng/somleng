@@ -34,7 +34,7 @@ class AccountForm < ApplicationForm
             }
 
   validate :validate_owner
-  validate :validate_tariff_plan_subscriptions, if: ->(form) { form.billing_enabled }
+  validate :validate_tariff_plan_subscriptions, if: ->(form) { form.billing_enabled? }
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Account")
@@ -76,8 +76,8 @@ class AccountForm < ApplicationForm
     Account.transaction do
       object.carrier = carrier
       object.status = enabled ? "enabled" : "disabled"
-      object.billing_enabled = billing_enabled
-      object.billing_mode = billing_mode if billing_enabled
+      object.billing_enabled = billing_enabled?
+      object.billing_mode = billing_mode if billing_enabled?
       object.calls_per_second = calls_per_second
       object.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
       if carrier_managed?
@@ -91,7 +91,7 @@ class AccountForm < ApplicationForm
       end
 
       result = object.save!
-      return result unless billing_enabled
+      return result unless billing_enabled?
 
       tariff_plan_subscriptions.all? { _1.save }
     end
@@ -112,6 +112,10 @@ class AccountForm < ApplicationForm
         category_result[package_plan.category] = package_plan.plan_id
       end
     end
+  end
+
+  def billing_enabled?
+    !!billing_enabled
   end
 
   private
