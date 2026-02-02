@@ -1,4 +1,6 @@
-<h2>Change your password</h2>
+<% content_for(:page_title) do %>
+  Change your password
+<% end %>
 
 <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, data: { turbo: false } }) do |f| %>
   <%= f.error_notification %>

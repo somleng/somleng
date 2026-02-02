@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Signup" do
   it "Sign up as a carrier" do
     visit(new_user_registration_path)
-    fill_in("Name", with: "John Doe")
+    fill_in("Your name", with: "John Doe")
     fill_in("Work email", with: "johndoe@att.com")
     fill_in("Company", with: "AT&T")
     fill_in("Subdomain", with: "at-t")
@@ -33,7 +33,7 @@ RSpec.describe "Signup" do
   it "Handles captcha", :js, :allow_net_connect, :captcha do
     stub_app_settings(recaptcha_minimum_score: 1)
     visit(new_user_registration_path)
-    fill_in("Name", with: "John Doe")
+    fill_in("Your name", with: "John Doe")
     fill_in("Work email", with: "johndoe@att.com")
     fill_in("Company", with: "AT&T")
     fill_in("Subdomain", with: "at-t")
@@ -45,7 +45,7 @@ RSpec.describe "Signup" do
 
     click_on("Sign up")
 
-    expect(page).to have_field("Name", with: "John Doe")
+    expect(page).to have_field("Your name", with: "John Doe")
     expect(page).to have_xpath("//iframe[@title='reCAPTCHA']")
   end
 

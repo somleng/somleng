@@ -1,4 +1,6 @@
-<%= page_title(title: "Invite user to #{current_user.carrier.name}") %>
+<% content_for(:page_title) do %>
+  <%= "Invite user to #{current_user.carrier.name}" %>
+<% end %>
 
 <div class="card-body">
   <%= simple_form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post, data: { turbo: false } }) do |f| %>

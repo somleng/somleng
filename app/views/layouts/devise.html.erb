@@ -35,6 +35,12 @@
           <div class="card-group">
             <div class="card p-4">
               <div class="card-body">
+                <% if content_for?(:page_title) %>
+                  <h2 class="card-title text-center">
+                    <%= yield(:page_title) %>
+                  </h2>
+                <% end %>
+
                 <%= render "shared/alerts" %>
                 <%= yield(:flash) if content_for?(:flash) %>
 

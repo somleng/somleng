@@ -1,13 +1,16 @@
-<h1>Sign up</h1>
+<% content_for(:page_title) do %>
+  Carrier Registration
+<% end %>
 
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), wrapper: :input_group, html: { data: { controller: "sign-up", turbo: false } }) do |f| %>
-  <%= f.input :name, autofocus: true %>
-  <%= f.input :work_email %>
+  <%= f.input(:name, autofocus: true, label: "Your name") %>
+  <%= f.input(:work_email) %>
 
   <div class="row">
     <div class="col">
       <%= f.input(
         :company,
+        label: "Company / Carrier name",
         input_html: {
           data: {
             "sign-up-target" => "companyInput",
@@ -20,14 +23,18 @@
 
   <div class="row">
     <div class="col">
-      <%= f.input :country,
-          priority: ["US"],
-          input_html: {
-            data: {
-              controller: "enhanced-select"
-            }
+      <%= f.input(
+        :country,
+        priority: ["US", "UK", "CA", "AU", "DE", "FR"],
+        sort_provided: false,
+        include_blank: true,
+        input_html: {
+          class: "form-select",
+          data: {
+            controller: "enhanced-select"
           }
-      %>
+        }
+      ) %>
     </div>
   </div>
 
@@ -36,7 +43,8 @@
       <%=
         f.input(
           :billing_currency,
-          collection: resource.available_currencies.map {|currency| [currency.name, currency.iso_code] },
+          collection: f.object.available_currencies.map { [ it.name, it.iso_code] },
+          hint: "The currency used to charge your customers",
           input_html: {
             data: {
               controller: "enhanced-select"
@@ -49,7 +57,7 @@
 
   <div class="row">
     <div class="col-6">
-      <%= f.input :website, hint: "Must start with http or https" %>
+      <%= f.input(:website, hint: "Must start with http or https") %>
     </div>
     <div class="col-6">
       <%=
