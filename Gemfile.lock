@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/somleng/cgrates-ruby.git
-  revision: 58f4a7285da1ef378e720fe50b94413d7b483526
+  revision: 4d23b3fb5f6646362c04dae452228560a567039c
   branch: add_balance_endpoints
   specs:
     cgrates (0.1.0)
