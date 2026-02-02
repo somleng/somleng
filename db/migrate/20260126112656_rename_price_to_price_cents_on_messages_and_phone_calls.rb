@@ -13,5 +13,8 @@ class RenamePriceToPriceCentsOnMessagesAndPhoneCalls < ActiveRecord::Migration[8
 
     add_index(:messages, :price_cents, algorithm: :concurrently)
     add_index(:messages, :price_unit, algorithm: :concurrently)
+
+    add_index(:phone_calls, :price_cents, algorithm: :concurrently)
+    add_index(:phone_calls, :price_unit, algorithm: :concurrently)
   end
 end

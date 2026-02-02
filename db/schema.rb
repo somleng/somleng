@@ -574,6 +574,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_112656) do
     t.index ["internal"], name: "index_phone_calls_on_internal"
     t.index ["parent_call_id"], name: "index_phone_calls_on_parent_call_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
+    t.index ["price_cents"], name: "index_phone_calls_on_price_cents"
+    t.index ["price_unit"], name: "index_phone_calls_on_price_unit"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id", "status", "created_at"], name: "index_phone_calls_on_sip_trunk_id_and_status_and_created_at"
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
