@@ -214,6 +214,8 @@ Rails.application.routes.draw do
       resources :tariff_plan_tiers, only: :show
       resources :tariff_plans, only: %i[show index]
       resources :tariff_plan_subscriptions, only: %i[show]
+      resources :tariff_packages, only: %i[show index]
+      resources :tariff_package_plans, only: %i[show]
 
       root to: "statistics#index"
     end
