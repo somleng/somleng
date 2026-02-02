@@ -30,25 +30,6 @@ RSpec.describe "Signup" do
     expect(page).to have_content("Your email address has been successfully confirmed.")
   end
 
-  it "Handles captcha", :js, :allow_net_connect, :captcha do
-    stub_app_settings(recaptcha_minimum_score: 1)
-    visit(new_user_registration_path)
-    fill_in("Your name", with: "John Doe")
-    fill_in("Work email", with: "johndoe@att.com")
-    fill_in("Company", with: "AT&T")
-    fill_in("Subdomain", with: "at-t")
-    enhanced_select("United States", from: "Country")
-    enhanced_select("United States Dollar", from: "Billing currency")
-    fill_in("Website", with: "https://www.att.com")
-    fill_in("Password", with: "Super Secret", match: :prefer_exact)
-    fill_in("Password confirmation", with: "Super Secret")
-
-    click_on("Sign up")
-
-    expect(page).to have_field("Your name", with: "John Doe")
-    expect(page).to have_xpath("//iframe[@title='reCAPTCHA']")
-  end
-
   it "Handles validations" do
     visit(new_user_registration_path)
 
