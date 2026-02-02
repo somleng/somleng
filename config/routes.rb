@@ -207,6 +207,12 @@ Rails.application.routes.draw do
       resources :verification_services, only: :show
       resources :media_stream_events, only: :show
       resources :balance_transactions, only: %i[show index]
+      resources :destination_groups, only: %i[show index]
+      resources :tariff_schedules, only: %i[show index]
+      resources :destination_tariffs, only: :show
+      resources :tariffs, only: :show
+      resources :tariff_plan_tiers, only: :show
+
       root to: "statistics#index"
     end
 
