@@ -5,6 +5,11 @@ class DestinationGroupDashboard < Administrate::BaseDashboard
     id: Field::String,
     carrier: Field::BelongsTo,
     catch_all: Field::Boolean,
+    prefixes: Field::String.with_options(
+      getter: ->(field) {
+        field.resource.prefixes.pluck(:prefix).join(", ")
+      }
+    ),
     name: Field::String,
     created_at: Field::LocalTime,
     updated_at: Field::LocalTime
@@ -23,6 +28,7 @@ class DestinationGroupDashboard < Administrate::BaseDashboard
     carrier
     name
     catch_all
+    prefixes
     created_at
     updated_at
   ].freeze

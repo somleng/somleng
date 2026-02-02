@@ -12,7 +12,8 @@ RSpec.describe "Admin/Tariff Schedules" do
     click_on(tariff_schedule.id)
 
     expect(page).to have_content(tariff_schedule.id)
-    expect(page).to have_link(tariff_schedule.tariff_id)
+    expect(page).to have_link(destination_tariff.tariff_id)
+    expect(page).to have_link(plan_tier.id)
 
     click_on(destination_tariff.id)
 

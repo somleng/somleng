@@ -24,11 +24,17 @@ class AccountDashboard < Administrate::BaseDashboard
         end
       }
     ),
+    balance: Field::String.with_options(
+      getter: ->(field) {
+        GetAccountBalance.call(field.resource).format
+      }
+    ),
     allowed_calling_codes: Field::String,
     metadata: Field::JSON.with_options(searchable: false),
     billing_mode: Field::String,
     billing_currency: Field::String,
-    billing_enabled: Field::Boolean
+    billing_enabled: Field::Boolean,
+    tariff_plan_subscriptions: Field::HasMany
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -51,8 +57,10 @@ class AccountDashboard < Administrate::BaseDashboard
     default_tts_voice
     sip_trunk
     billing_enabled
+    balance
     billing_currency
     billing_mode
+    tariff_plan_subscriptions
     created_at
     updated_at
     allowed_calling_codes
