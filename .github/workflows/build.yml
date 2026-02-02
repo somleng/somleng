@@ -96,6 +96,13 @@ jobs:
           bundle exec rails spec:prepare
           bundle exec rspec --format RspecApiDocumentation::ApiFormatter
 
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v6
+        if: failure()
+        with:
+          name: screenshots
+          path: tmp/capybara
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
