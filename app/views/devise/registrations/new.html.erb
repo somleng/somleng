@@ -25,6 +25,7 @@
     <div class="col">
       <%= f.input(
         :country,
+        format: :with_flag,
         priority: ["US", "UK", "CA", "AU", "DE", "FR"],
         sort_provided: false,
         include_blank: true,

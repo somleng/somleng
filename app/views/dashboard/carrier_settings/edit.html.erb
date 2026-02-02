@@ -29,7 +29,9 @@
         <div class="row">
           <div class="col-6">
             <%= f.input :country,
-              priority: ["US"],
+              format: :with_flag,
+              priority: ["US", "UK", "CA", "AU", "DE", "FR"],
+              sort_provided: false,
               input_html: { data: { controller: "enhanced-select" } } %>
           </div>
         </div>
