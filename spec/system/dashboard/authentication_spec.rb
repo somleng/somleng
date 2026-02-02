@@ -14,7 +14,7 @@ RSpec.describe "Authentication" do
     expect(page).to have_content("Signed in successfully")
   end
 
-  it "Handles captcha", :js, :allow_net_connect do
+  it "Handles captcha", :js, :allow_net_connect, :captcha do
     stub_app_settings(recaptcha_minimum_score: 1)
     carrier = create_carrier
     user = create(:user, :carrier, carrier:, password: "Super Secret")
