@@ -68,14 +68,14 @@
         <% if @resource.billing_enabled? %>
           <%= f.attribute :balance, value: GetAccountBalance.call(@resource).format %>
           <%= f.attribute :billing_mode, value: @resource.billing_mode.text %>
+          <%= f.attribute :tariff_plans do %>
+            <% if f.object.tariff_plan_subscriptions.present? %>
+              <%= tariff_plans(f.object.tariff_plan_subscriptions) %>
+            <% end %>
+          <% end %>
         <% end %>
         <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
         <%= f.attribute :phone_number_plans, value: external_link_to("View", dashboard_phone_number_plans_path(filter: {account_id: @resource.id}), title: "Manage") %>
-        <%= f.attribute :tariff_plans do %>
-          <% if f.object.tariff_plan_subscriptions.present? %>
-            <%= tariff_plans(f.object.tariff_plan_subscriptions) %>
-          <% end %>
-        <% end %>
       <% end %>
     </div>
   </div>

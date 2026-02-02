@@ -145,9 +145,9 @@ class AccountForm < ApplicationForm
         plan_id: default_plans.find { _1.category == category }&.id
       )
     end
-    collection = default_subscriptions.each_with_object([]) do |default_plan, result|
-      existing_plan = tariff_plan_subscriptions.find { _1.category == default_plan.category }
-      result << (existing_plan || default_plan)
+    collection = default_subscriptions.each_with_object([]) do |subscription, result|
+      existing_subscription = tariff_plan_subscriptions.find { _1.category == subscription.category }
+      result << (existing_subscription || subscription)
     end
 
     FormCollection.new(collection, form: TariffPlanSubscriptionForm)
