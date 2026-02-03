@@ -52,9 +52,7 @@ RSpec.describe BalanceTransactionForm do
     end
   end
 
-  def build_form(account: nil, **)
-    account ||= build_stubbed(:account)
-
+  def build_form(account: build_stubbed(:account), **)
     BalanceTransactionForm.new(
       carrier: account.carrier,
       account_id: account.id,
