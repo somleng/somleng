@@ -107,7 +107,7 @@ module Services
     def route_to_sip_domain(incoming_phone_number)
       response = Twilio::TwiML::VoiceResponse.new
       response.dial do |dial|
-        dial.sip("sip:#{incoming_phone_number.number}@#{incoming_phone_number.sip_domain}")
+        dial.sip(sip_url: "sip:#{incoming_phone_number.number}@#{incoming_phone_number.sip_domain}")
       end
       response.to_xml
     end

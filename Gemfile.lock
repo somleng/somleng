@@ -605,11 +605,10 @@ GEM
     sentry-ruby (6.3.0)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
-    shoryuken (7.0.0)
-      aws-sdk-sqs (>= 1.66.0)
+    shoryuken (6.2.1)
+      aws-sdk-core (>= 2)
       concurrent-ruby
       thor
-      zeitwerk (~> 2.6)
     show_for (0.9.0)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
@@ -739,7 +738,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-rails
   sentry-ruby
-  shoryuken
+  shoryuken (= 6.2.1)
   show_for
   simple_form
   simplecov

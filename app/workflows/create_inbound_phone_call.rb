@@ -2,9 +2,9 @@ class CreateInboundPhoneCall < ApplicationWorkflow
   attr_reader :params, :session_limiters
 
   def initialize(params, **options)
-    super(**options)
+    super()
     @params = params
-    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new(logger:) ] }
+    @session_limiters = options.fetch(:session_limiters) { [ AccountCallSessionLimiter.new, GlobalCallSessionLimiter.new ] }
   end
 
   def call
