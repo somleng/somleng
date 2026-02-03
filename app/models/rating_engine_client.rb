@@ -8,14 +8,16 @@ class RatingEngineClient
   RATE_UNIT = "60s"
   RATE_INCREMENT = "60s"
 
-  RATE_UNITS = {
+  RATE_ATTRIBUTES = {
     call: {
       unit: "60s",
-      increment: "60s"
+      increment: "60s",
+      tor: "*voice"
     },
     message: {
       unit: "1",
-      increment: "1"
+      increment: "1",
+      tor: "*sms"
     }
   }
 
@@ -79,7 +81,7 @@ class RatingEngineClient
 
       destination_tariffs.each do |destination_tariff|
         tariff = destination_tariff.tariff
-        rate_unit = RATE_UNITS.fetch(tariff.category.to_sym)
+        rate_attributes = RATE_ATTRIBUTES.fetch(tariff.category.to_sym)
 
         client.set_tp_rate(
           tp_id: tariff_schedule.carrier_id,
@@ -87,8 +89,8 @@ class RatingEngineClient
           rate_slots: [
             {
               rate: tariff.rate_cents.to_f,
-              rate_unit: rate_unit.fetch(:unit),
-              rate_increment: rate_unit.fetch(:increment)
+              rate_unit: rate_attributes.fetch(:unit),
+              rate_increment: rate_attributes.fetch(:increment)
             }
           ]
         )
@@ -222,11 +224,13 @@ class RatingEngineClient
   end
 
   def create_message_charge(message)
+    rate_attributes = RATE_ATTRIBUTES.fetch(message.tariff_schedule_category.tariff_category.to_sym)
+
     handle_request do
       client.process_external_cdr(
         category: message.tariff_schedule_category.to_s,
         request_type: "*#{message.account.billing_mode}",
-        tor: "*message",
+        tor: rate_attributes.fetch(:tor),
         tenant: message.carrier_id,
         account: message.account_id,
         destination: message.to,
@@ -262,12 +266,17 @@ class RatingEngineClient
   end
 
   def sufficient_balance?(interaction)
+    category = interaction.tariff_schedule_category
+    rate_attributes = RATE_ATTRIBUTES.fetch(category.tariff_category.to_sym)
+
     handle_request do
-      response = client.get_max_session_time(
+      response = client.get_max_usage(
         tenant: interaction.account.carrier_id,
         account: interaction.account.id,
-        category: interaction.tariff_schedule_category.to_s,
-        destination: interaction.to.value
+        category: category.to_s,
+        destination: interaction.to.value,
+        request_type: "*#{interaction.account.billing_mode}",
+        tor: rate_attributes.fetch(:tor)
       )
 
       response.result.positive?

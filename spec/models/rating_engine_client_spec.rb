@@ -350,7 +350,6 @@ RSpec.describe RatingEngineClient do
       expect(cdrs).to be_empty
     end
 
-
     it "handles API errors" do
       client = instance_spy(CGRateS::Client)
       rating_engine_client = RatingEngineClient.new(client:)
@@ -393,7 +392,7 @@ RSpec.describe RatingEngineClient do
       expect(rating_engine_client.client).to have_received(:process_external_cdr).with(
         category: "outbound_messages",
         request_type: "*prepaid",
-        tor: "*message",
+        tor: "*sms",
         tenant: account.carrier_id,
         account: message.account_id,
         destination: message.to,
@@ -444,11 +443,11 @@ RSpec.describe RatingEngineClient do
 
   describe "#sufficient_balance?" do
     it "sends a request to get the cost of a message" do
-      account = create(:account)
+      account = create(:account, billing_mode: "prepaid")
       rating_engine_client = RatingEngineClient.new(
         client: instance_spy(
           CGRateS::Client,
-          get_max_session_time: build_response(result: 100)
+          get_max_usage: build_response(result: 100)
         )
       )
       interaction = Message.new(account:, direction: :outbound_api, to: "855715100989")
@@ -456,12 +455,35 @@ RSpec.describe RatingEngineClient do
       result = rating_engine_client.sufficient_balance?(interaction)
 
       expect(result).to be_truthy
-      expect(rating_engine_client.client).to have_received(:get_max_session_time).with(
+      expect(rating_engine_client.client).to have_received(:get_max_usage).with(
         hash_including(
           tenant: account.carrier_id,
           account: account.id,
           category: "outbound_messages",
-          destination: "855715100989"
+          destination: "855715100989",
+          tor: "*sms",
+          request_type: "*prepaid"
+        )
+      )
+    end
+
+    it "sends a request to get the cost of a call" do
+      account = create(:account)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_max_usage: build_response(result: 100)
+        )
+      )
+      interaction = PhoneCall.new(account:, direction: :outbound_api, to: "855715100989")
+
+      rating_engine_client.sufficient_balance?(interaction)
+
+      expect(rating_engine_client.client).to have_received(:get_max_usage).with(
+        hash_including(
+          category: "outbound_calls",
+          destination: "855715100989",
+          tor: "*voice"
         )
       )
     end
@@ -472,7 +494,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client = RatingEngineClient.new(
         client: instance_spy(
           CGRateS::Client,
-          get_max_session_time: build_response(result: 0)
+          get_max_usage: build_response(result: 0)
         )
       )
 
