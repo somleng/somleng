@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_26_112656) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_03_040606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -89,7 +89,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_26_112656) do
 
   create_table "balance_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
-    t.decimal "amount_cents", precision: 12, scale: 4, null: false
+    t.decimal "amount_cents", precision: 14, scale: 4, null: false
     t.uuid "carrier_id", null: false
     t.string "charge_category"
     t.string "charge_source_id"

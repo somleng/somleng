@@ -18,6 +18,8 @@ class BalanceTransactionForm < ApplicationForm
   }
 
   validates :amount, numericality: {
+    greater_than: -10**10,
+    less_than: 10**10,
     other_than: 0
   }
 
