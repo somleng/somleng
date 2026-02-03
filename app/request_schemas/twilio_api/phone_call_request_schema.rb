@@ -25,17 +25,6 @@ module TwilioAPI
       optional(:Twiml).filled(:str?)
     end
 
-    rule(:To) do |context:|
-      next unless key?
-      next key.failure("is invalid") unless phone_number_validator.valid?(value)
-
-      if phone_call_destination_schema_rules.valid?(account:, destination: value)
-        context[:sip_trunk] = phone_call_destination_schema_rules.sip_trunk
-      else
-        base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
-      end
-    end
-
     rule(:From) do |context:|
       next if sender.present?
 
@@ -65,6 +54,18 @@ module TwilioAPI
       next if url_validator.valid?(value)
 
       key(:StatusCallback).failure("is invalid")
+    end
+
+    rule(:To) do |context:|
+      next unless key?
+      next key.failure("is invalid") unless phone_number_validator.valid?(value)
+      next if result.errors.any?
+
+      if phone_call_destination_schema_rules.valid?(account:, destination: value)
+        context[:sip_trunk] = phone_call_destination_schema_rules.sip_trunk
+      else
+        base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
+      end
     end
 
     def output

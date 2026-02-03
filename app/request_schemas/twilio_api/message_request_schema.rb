@@ -26,16 +26,6 @@ module TwilioAPI
       optional(:ScheduleType).filled(:string, eql?: "fixed")
     end
 
-    rule(:To) do |context:|
-      next key.failure("is invalid") unless phone_number_validator.valid?(value)
-
-      if message_destination_schema_rules.valid?(account:, destination: value)
-        context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
-      else
-        base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
-      end
-    end
-
     rule(:From, :MessagingServiceSid) do |context:|
       if values[:From].blank? && values[:MessagingServiceSid].blank?
         next key(:From).failure("is required")
@@ -90,6 +80,18 @@ module TwilioAPI
 
       key(:StatusCallback).failure("is invalid")
     end
+
+    rule(:To) do |context:|
+      next key.failure("is invalid") unless phone_number_validator.valid?(value)
+      next if result.errors.any?
+
+      if message_destination_schema_rules.valid?(account:, destination: value)
+        context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
+      else
+        base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
+      end
+    end
+
 
     def output
       params = super
