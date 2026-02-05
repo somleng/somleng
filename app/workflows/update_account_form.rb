@@ -9,7 +9,7 @@ class UpdateAccountForm < ApplicationWorkflow
 
   def call
     ApplicationRecord.transaction do
-      client.upsert_account(resource.object) if resource.save
+      client.upsert_account(resource.object.reload) if resource.save
     end
   end
 end

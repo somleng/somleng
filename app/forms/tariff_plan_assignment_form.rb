@@ -14,13 +14,9 @@ class TariffPlanAssignmentForm < ApplicationForm
       object:,
       id: object.id,
       plan_id: object.plan_id,
-      category: object.category
+      category: object.category,
+      enabled: object.plan_id.present?
     )
-  end
-
-  def initialize(**)
-    super(**)
-    self.enabled = plan_id.present?
   end
 
   def save

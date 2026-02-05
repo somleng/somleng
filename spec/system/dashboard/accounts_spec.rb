@@ -217,16 +217,28 @@ RSpec.describe "Accounts" do
       carrier:,
       default_tts_voice: "Basic.Slt",
     )
-    existing_tariff_plan_subscription = create(
-      :tariff_plan_subscription,
-      account:,
-      plan: create(
-        :tariff_plan,
-        :outbound_calls,
-        carrier:,
-        name: "Standard"
+    existing_tariff_plan_subscriptions = [
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan: create(
+          :tariff_plan,
+          :outbound_calls,
+          carrier:,
+          name: "Standard"
+        )
+      ),
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan: create(
+          :tariff_plan,
+          :inbound_calls,
+          carrier:,
+          name: "Standard"
+        )
       )
-    )
+    ]
     user = create(:user, :carrier, carrier:)
 
     stub_rating_engine_request(response: { result: { "BalanceMap" => nil } })
@@ -237,9 +249,14 @@ RSpec.describe "Accounts" do
     expect(page).to have_enhanced_select("Default TTS voice", disabled: true)
 
     enhanced_select("Main SIP Trunk", from: "SIP trunk")
+
     within(".outbound-messages-line-item") do
       check("Enabled")
       enhanced_select("Outbound messages (Standard)", from: "Plan")
+    end
+
+    within(".inbound-calls-line-item") do
+      uncheck("Enabled")
     end
 
     click_on("Update Account")
@@ -247,14 +264,16 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Account was successfully updated")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
     expect(page).to have_content("Customer managed")
+
     expect(page).to have_link(
       "Outbound messages (Standard)",
       href: dashboard_tariff_plan_path(tariff_plan)
     )
     expect(page).to have_link(
       "Outbound calls (Standard)",
-      href: dashboard_tariff_plan_path(existing_tariff_plan_subscription.plan)
+      href: dashboard_tariff_plan_path(existing_tariff_plan_subscriptions[0].plan)
     )
+    expect(page).to have_no_link("Inbound calls (Standard)")
   end
 
   it "Resend invitation" do

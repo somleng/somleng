@@ -57,8 +57,8 @@ class AccountForm < ApplicationForm
     )
   end
 
-  def initialize(**)
-    super(**)
+  def initialize(**params)
+    super(**params)
     self.object.carrier = carrier
     self.tariff_package_id = carrier.default_tariff_package_id
     self.billing_enabled = carrier.default_tariff_package_id.present? if billing_enabled.nil?
@@ -140,14 +140,16 @@ class AccountForm < ApplicationForm
     default_tariff_package = carrier.default_tariff_package
     default_plans = Array(new_record? ? default_tariff_package&.plans : [])
     default_subscriptions = TariffSchedule.category.values.map do |category|
+      plan_id = default_plans.find { _1.category == category }&.id
       TariffPlanSubscriptionForm.new(
         category:,
-        plan_id: default_plans.find { _1.category == category }&.id
+        plan_id:,
+        enabled: plan_id.present?
       )
     end
-    collection = default_subscriptions.each_with_object([]) do |subscription, result|
-      existing_subscription = tariff_plan_subscriptions.find { _1.category == subscription.category }
-      result << (existing_subscription || subscription)
+    collection = default_subscriptions.each_with_object([]) do |default_subscription, result|
+      existing_subscription = tariff_plan_subscriptions.find { _1.category == default_subscription.category }
+      result << (existing_subscription || default_subscription)
     end
 
     FormCollection.new(collection, form: TariffPlanSubscriptionForm)

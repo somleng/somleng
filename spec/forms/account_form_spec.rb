@@ -3,11 +3,40 @@ require "rails_helper"
 RSpec.describe AccountForm do
   describe "defaults" do
     it "sets default values" do
-      carrier_with_billing_enabled = create(:carrier, :with_default_tariff_package)
+      carrier = create(:carrier, :with_default_tariff_package)
+      create(
+        :tariff_package_plan,
+        package: carrier.default_tariff_package,
+        plan: create(:tariff_plan, :outbound_calls, carrier:, name: "Standard")
+      )
 
-      expect(
-        build_form(carrier: carrier_with_billing_enabled).billing_enabled
-      ).to be_truthy
+      form = build_form(carrier:)
+
+      expect(form).to have_attributes(
+        billing_enabled: true,
+        tariff_plan_subscriptions: have_attributes(
+          to_a: contain_exactly(
+            have_attributes(
+              category: "outbound_calls",
+              plan_id: be_present,
+              enabled: true
+            ),
+            have_attributes(
+              category: "inbound_calls",
+              enabled: false
+            ),
+            have_attributes(
+              category: "outbound_messages",
+              enabled: false
+
+            ),
+            have_attributes(
+              category: "inbound_messages",
+              enabled: false
+            )
+          )
+        )
+      )
 
       expect(
         build_form(carrier: build_stubbed(:carrier)).billing_enabled
@@ -15,7 +44,7 @@ RSpec.describe AccountForm do
 
       expect(
         AccountForm.initialize_with(
-          build_stubbed(:account, carrier: carrier_with_billing_enabled, billing_enabled: false)
+          build_stubbed(:account, carrier:, billing_enabled: false)
         ).billing_enabled
       ).to be_falsey
 
