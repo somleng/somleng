@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/somleng/cgrates-ruby.git
-  revision: de9ab0abe19cf103c6c4518a26dc889a72a49d0c
+  revision: 9709a5e4d26dfb03e2d7b4ce3bddf58ed29d2b0b
   branch: add_balance_endpoints
   specs:
     cgrates (0.1.0)
@@ -346,7 +346,7 @@ GEM
     jmespath (1.6.2)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.18.0)
+    json (2.18.1)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (3.1.2)

@@ -148,31 +148,37 @@ class RatingEngineClient
   def upsert_account(account)
     handle_request do
       account.tariff_plan_subscriptions.each do |subscription|
-        client.set_tp_rating_profile(
-          tp_id: account.carrier_id,
-          load_id: LOAD_ID,
+        params = {
           category: subscription.category,
           tenant: account.carrier_id,
           subject: account.id,
           rating_plan_activations: [
             {
-              activation_time: subscription.created_at.iso8601,
+              activation_time: Time.current.utc.iso8601,
               rating_plan_id: subscription.plan_id
             }
           ]
-        )
+        }
+
+        client.set_tp_rating_profile(tp_id: account.carrier_id, load_id: LOAD_ID, **params)
+        client.set_rating_profile(overwrite: true, **params)
       end
 
       subscribed_categories = account.tariff_plan_subscriptions.pluck(:category)
       all_categories = TariffPlanSubscription.category.values
       (all_categories - subscribed_categories).each do |category|
+        params = {
+          category:,
+          tenant: account.carrier_id,
+          subject: account.id
+        }
+
         client.remove_tp_rating_profile(
           tp_id: account.carrier_id,
           load_id: LOAD_ID,
-          category:,
-          tenant: account.carrier_id,
-          subject: account.id,
+          **params
         )
+        client.remove_rating_profile(**params)
       end
 
       client.set_account(

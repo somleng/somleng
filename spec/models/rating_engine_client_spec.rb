@@ -174,43 +174,63 @@ RSpec.describe RatingEngineClient do
 
   describe "#upsert_account" do
     it "sends a request to upsert an account" do
-      account = create(:account)
-      subscriptions = [
-        create(:tariff_plan_subscription, plan_category: :outbound_calls, account:),
-        create(:tariff_plan_subscription, plan_category: :outbound_messages, account:)
-      ]
-      client = instance_spy(CGRateS::Client)
-      rating_engine_client = RatingEngineClient.new(client:)
+      travel_to Time.current do
+        account = create(:account)
+        subscriptions = [
+          create(:tariff_plan_subscription, plan_category: :outbound_calls, account:),
+          create(:tariff_plan_subscription, plan_category: :outbound_messages, account:)
+        ]
+        client = instance_spy(CGRateS::Client)
+        rating_engine_client = RatingEngineClient.new(client:)
 
-      rating_engine_client.upsert_account(account)
+        rating_engine_client.upsert_account(account)
 
-      expect(client).to have_received(:set_account).with(
-        tenant: account.carrier_id,
-        account: account.id
-      )
-      subscriptions.each do |subscription|
-        expect(client).to have_received(:set_tp_rating_profile).with(
-          tp_id: account.carrier_id,
-          load_id: "somleng.org",
-          category: subscription.category,
+        expect(client).to have_received(:set_account).with(
           tenant: account.carrier_id,
-          subject: account.id,
-          rating_plan_activations: [
-            {
-              activation_time: subscription.created_at.iso8601,
-              rating_plan_id: subscription.plan_id
-            }
-          ]
+          account: account.id
         )
-      end
-      [ "inbound_calls", "inbound_messages" ].each do |category|
-        expect(client).to have_received(:remove_tp_rating_profile).with(
-          tp_id: account.carrier_id,
-          load_id: "somleng.org",
-          category:,
-          tenant: account.carrier_id,
-          subject: account.id,
-        )
+        subscriptions.each do |subscription|
+          expect(client).to have_received(:set_tp_rating_profile).with(
+            tp_id: account.carrier_id,
+            load_id: "somleng.org",
+            category: subscription.category,
+            tenant: account.carrier_id,
+            subject: account.id,
+            rating_plan_activations: [
+              {
+                activation_time: Time.current.utc.iso8601,
+                rating_plan_id: subscription.plan_id
+              }
+            ]
+          )
+          expect(client).to have_received(:set_rating_profile).with(
+            category: subscription.category,
+            tenant: account.carrier_id,
+            subject: account.id,
+            rating_plan_activations: [
+              {
+                activation_time: Time.current.utc.iso8601,
+                rating_plan_id: subscription.plan_id
+              }
+            ],
+            overwrite: true
+          )
+        end
+
+        [ "inbound_calls", "inbound_messages" ].each do |category|
+          expect(client).to have_received(:remove_tp_rating_profile).with(
+            tp_id: account.carrier_id,
+            load_id: "somleng.org",
+            category:,
+            tenant: account.carrier_id,
+            subject: account.id,
+          )
+          expect(client).to have_received(:remove_rating_profile).with(
+            category:,
+            tenant: account.carrier_id,
+            subject: account.id,
+          )
+        end
       end
     end
   end
