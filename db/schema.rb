@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_03_040606) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_05_110345) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -393,7 +393,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_03_040606) do
     t.boolean "internal", default: false, null: false
     t.uuid "messaging_service_id"
     t.uuid "phone_number_id"
-    t.decimal "price_cents", precision: 10, scale: 4
+    t.decimal "price_cents", precision: 14, scale: 4
     t.string "price_unit"
     t.datetime "queued_at"
     t.datetime "received_at"
@@ -540,7 +540,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_03_040606) do
     t.boolean "internal", default: false, null: false
     t.uuid "parent_call_id"
     t.uuid "phone_number_id"
-    t.decimal "price_cents", precision: 10, scale: 4
+    t.decimal "price_cents", precision: 14, scale: 4
     t.string "price_unit"
     t.string "region"
     t.bigserial "sequence_number", null: false
@@ -830,7 +830,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_03_040606) do
     t.string "category", null: false
     t.datetime "created_at", null: false
     t.string "currency", null: false
-    t.decimal "rate_cents", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "rate_cents", precision: 14, scale: 4, default: "0.0", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "updated_at", null: false
     t.index ["carrier_id"], name: "index_tariffs_on_carrier_id"

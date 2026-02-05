@@ -8,7 +8,9 @@ class DestinationTariffForm < ApplicationForm
   attribute :_destroy, :boolean, default: false
 
   validates :destination_group_id, presence: true
-  validates :rate, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :amount,
+    presence: true,
+    numericality: { greater_than: 0, less_than: 10**10 }
 
   delegate :carrier, :category, to: :schedule
   delegate :persisted?, :new_record?, to: :object
