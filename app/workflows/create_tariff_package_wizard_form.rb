@@ -22,6 +22,8 @@ class CreateTariffPackageWizardForm < ApplicationWorkflow
           client.upsert_tariff_schedule(schedule)
         end
       end
+
+      package
     end
   end
 end

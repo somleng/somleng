@@ -1,5 +1,9 @@
 class ApplicationSeeder
   USER_PASSWORD = "Somleng1234!".freeze
+  OUTBOUND_CALLS_RATE = 0.10
+  INBOUND_CALLS_RATE = 0.02
+  OUTBOUND_MESSAGES_RATE = 0.05
+  INBOUND_MESSAGES_RATE = 0.01
 
   def seed!
     carrier, carrier_owner = create_carrier
@@ -23,6 +27,9 @@ class ApplicationSeeder
     )
     sms_gateway = create_sms_gateway(carrier:)
 
+    tariff_package = create_tariff_package(carrier:)
+    assign_tariff_package(account: carrier_managed_account, tariff_package:)
+
     puts(<<~INFO)
       Account SID:              #{carrier_managed_account.id}
       Auth Token:               #{carrier_managed_account.auth_token}
@@ -33,6 +40,12 @@ class ApplicationSeeder
       Carrier User Email:       #{carrier_owner.email}
       Carrier User Password:    #{USER_PASSWORD}
       Carrier API Key:          #{carrier.api_key}
+      ---------------------------------------------
+      Outbound Calls Rate:      #{OUTBOUND_CALLS_RATE}
+      Inbound Calls Rate:       #{INBOUND_CALLS_RATE}
+      Outbound Messages Rate:   #{OUTBOUND_MESSAGES_RATE}
+      Inbound Messages Rate:    #{INBOUND_MESSAGES_RATE}
+      ---------------------------------------------
     INFO
   end
 
@@ -187,5 +200,31 @@ class ApplicationSeeder
         carrier_role: :owner
       )
     )
+  end
+
+  def create_tariff_package(carrier:)
+    return TariffPackage.first if TariffPackage.exists?
+
+    resource = TariffPackageWizardForm.new(
+      carrier:,
+      name: "My Tariff Package",
+      tariffs: [
+        { enabled: true, rate: OUTBOUND_CALLS_RATE, category: "outbound_calls" },
+        { enabled: true, rate: INBOUND_CALLS_RATE, category: "inbound_calls" },
+        { enabled: true, rate: OUTBOUND_MESSAGES_RATE, category: "outbound_messages" },
+        { enabled: true, rate: INBOUND_MESSAGES_RATE, category: "inbound_messages" }
+      ]
+    )
+    CreateTariffPackageWizardForm.call(resource)
+  end
+
+  def assign_tariff_package(account:, tariff_package:)
+    tariff_package.plans.each do |plan|
+      TariffPlanSubscription.find_or_create_by!(
+        account:,
+        plan:,
+        category: plan.category
+      )
+    end
   end
 end

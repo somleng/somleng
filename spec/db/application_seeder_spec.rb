@@ -16,6 +16,8 @@ describe ApplicationSeeder do
     expect(PhoneNumberPlan.count).to eq(1)
     expect(PhoneCall.count).to eq(1)
     expect(SMSGateway.count).to eq(1)
+    expect(TariffPackage.count).to eq(1)
+    expect(TariffPlanSubscription.count).to eq(4)
 
     Account.all.each do |account|
       expect(account).to have_attributes(
@@ -41,5 +43,6 @@ describe ApplicationSeeder do
     expect(PhoneCall.count).to eq(1)
     expect(SMSGateway.count).to eq(1)
     expect(ErrorLogNotification.count).to eq(1)
+    expect(TariffPackage.count).to eq(1)
   end
 end
