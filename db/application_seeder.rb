@@ -8,7 +8,9 @@ class ApplicationSeeder
   def seed!
     carrier, carrier_owner = create_carrier
     sip_trunk = create_sip_trunk(carrier:)
-    carrier_managed_account = create_carrier_managed_account(carrier:)
+    carrier_managed_account = create_carrier_managed_account(carrier:, billing_enabled: true)
+    setup_billing_for(carrier_managed_account)
+    create_topup_for(carrier_managed_account)
     create_customer_managed_account(carrier:)
     create_error_log_notification(
       carrier:,
@@ -26,11 +28,6 @@ class ApplicationSeeder
       incoming_phone_number: plan.incoming_phone_number
     )
     sms_gateway = create_sms_gateway(carrier:)
-
-    tariff_package = create_tariff_package(carrier:)
-    assign_tariff_package(account: carrier_managed_account, tariff_package:)
-
-    create_topup(carrier_managed_account)
 
     puts(<<~INFO)
       Account SID:              #{carrier_managed_account.id}
@@ -132,13 +129,8 @@ class ApplicationSeeder
     @url_helpers ||= Rails.application.routes.url_helpers
   end
 
-  def create_account(**params, &block)
-    Account.create!(
-      default_tts_voice: TTSVoices::Voice.default,
-      billing_enabled: true,
-      **params,
-      &:build_access_token
-    )
+  def create_account(**)
+    Account.create!(default_tts_voice: TTSVoices::Voice.default, **, &:build_access_token)
   end
 
   def build_user_params(**params)
@@ -205,8 +197,19 @@ class ApplicationSeeder
     )
   end
 
-  def create_tariff_package(carrier:)
-    return TariffPackage.first if TariffPackage.exists?
+  def setup_billing_for(account)
+    return if account.tariff_plan_subscriptions.exists?
+
+    tariff_package = create_tariff_package_for(account.carrier)
+    form = AccountForm.initialize_with(account)
+    form.tariff_plan_subscriptions = tariff_package.plans.map do |plan|
+      { enabled: true, plan_id: plan.id, category: plan.category }
+    end
+    UpdateAccountForm.call(form)
+  end
+
+  def create_tariff_package_for(carrier)
+    return carrier.tariff_packages.first if carrier.tariff_packages.exists?
 
     resource = TariffPackageWizardForm.new(
       carrier:,
@@ -221,17 +224,7 @@ class ApplicationSeeder
     CreateTariffPackageWizardForm.call(resource)
   end
 
-  def assign_tariff_package(account:, tariff_package:)
-    tariff_package.plans.each do |plan|
-      TariffPlanSubscription.find_or_create_by!(
-        account:,
-        plan:,
-        category: plan.category
-      )
-    end
-  end
-
-  def create_topup(account)
+  def create_topup_for(account)
     return if account.balance_transactions.exists?
 
     form = BalanceTransactionForm.new(
