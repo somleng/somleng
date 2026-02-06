@@ -1,9 +1,17 @@
 class ApplicationSeeder
   USER_PASSWORD = "Somleng1234!".freeze
-  OUTBOUND_CALLS_RATE = 0.10
-  INBOUND_CALLS_RATE = 0.02
-  OUTBOUND_MESSAGES_RATE = 0.05
-  INBOUND_MESSAGES_RATE = 0.01
+  RATES = {
+    outbound_calls: 0.10,
+    inbound_calls: 0.02,
+    outbound_messages: 0.05,
+    inbound_messages: 0.01
+  }.freeze
+
+  attr_reader :rating_engine_client
+
+  def initialize(**options)
+    @rating_engine_client = options.fetch(:rating_engine_client) { RatingEngineClient.new }
+  end
 
   def seed!
     carrier, carrier_owner = create_carrier
@@ -40,10 +48,10 @@ class ApplicationSeeder
       Carrier User Password:    #{USER_PASSWORD}
       Carrier API Key:          #{carrier.api_key}
       ---------------------------------------------
-      Outbound Calls Rate:      #{OUTBOUND_CALLS_RATE}
-      Inbound Calls Rate:       #{INBOUND_CALLS_RATE}
-      Outbound Messages Rate:   #{OUTBOUND_MESSAGES_RATE}
-      Inbound Messages Rate:    #{INBOUND_MESSAGES_RATE}
+      Outbound Calls Rate:      #{RATES.fetch(:outbound_calls)}
+      Inbound Calls Rate:       #{RATES.fetch(:inbound_calls)}
+      Outbound Messages Rate:   #{RATES.fetch(:outbound_messages)}
+      Inbound Messages Rate:    #{RATES.fetch(:inbound_messages)}
       ---------------------------------------------
     INFO
   end
@@ -211,17 +219,14 @@ class ApplicationSeeder
   def create_tariff_package_for(carrier)
     return carrier.tariff_packages.first if carrier.tariff_packages.exists?
 
-    resource = TariffPackageWizardForm.new(
+    form = TariffPackageWizardForm.new(
       carrier:,
       name: "My Tariff Package",
-      tariffs: [
-        { enabled: true, rate: OUTBOUND_CALLS_RATE, category: "outbound_calls" },
-        { enabled: true, rate: INBOUND_CALLS_RATE, category: "inbound_calls" },
-        { enabled: true, rate: OUTBOUND_MESSAGES_RATE, category: "outbound_messages" },
-        { enabled: true, rate: INBOUND_MESSAGES_RATE, category: "inbound_messages" }
-      ]
+      tariffs: TariffSchedule.category.values.map do |category|
+        { enabled: true, rate: RATES.fetch(category.to_sym), category: }
+      end
     )
-    CreateTariffPackageWizardForm.call(resource)
+    CreateTariffPackageWizardForm.call(form)
   end
 
   def create_topup_for(account)
