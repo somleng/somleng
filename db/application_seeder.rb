@@ -30,6 +30,8 @@ class ApplicationSeeder
     tariff_package = create_tariff_package(carrier:)
     assign_tariff_package(account: carrier_managed_account, tariff_package:)
 
+    create_topup(carrier_managed_account)
+
     puts(<<~INFO)
       Account SID:              #{carrier_managed_account.id}
       Auth Token:               #{carrier_managed_account.auth_token}
@@ -226,5 +228,18 @@ class ApplicationSeeder
         category: plan.category
       )
     end
+  end
+
+  def create_topup(account)
+    return if account.balance_transactions.exists?
+
+    form = BalanceTransactionForm.new(
+      carrier: account.carrier,
+      account_id: account.id,
+      type: "topup",
+      amount: "100",
+      description: "Initial balance"
+    )
+    UpdateAccountBalanceForm.call(form)
   end
 end

@@ -18,6 +18,7 @@ describe ApplicationSeeder do
     expect(SMSGateway.count).to eq(1)
     expect(TariffPackage.count).to eq(1)
     expect(TariffPlanSubscription.count).to eq(4)
+    expect(BalanceTransaction.count).to eq(1)
 
     Account.all.each do |account|
       expect(account).to have_attributes(
@@ -44,5 +45,6 @@ describe ApplicationSeeder do
     expect(SMSGateway.count).to eq(1)
     expect(ErrorLogNotification.count).to eq(1)
     expect(TariffPackage.count).to eq(1)
+    expect(BalanceTransaction.count).to eq(1)
   end
 end
