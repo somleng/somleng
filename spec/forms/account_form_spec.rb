@@ -152,7 +152,7 @@ RSpec.describe AccountForm do
       result = form.save
 
       expect(result).to be_truthy
-      expect(form.object.reload).to have_attributes(
+      expect(form.object).to have_attributes(
         persisted?: true,
         billing_enabled: false,
         tariff_plan_subscriptions: be_empty
@@ -260,7 +260,7 @@ RSpec.describe AccountForm do
       result = form.save
 
       expect(result).to be_truthy
-      expect(form.object.reload).to have_attributes(
+      expect(form.object).to have_attributes(
         sip_trunk: nil,
         calls_per_second: 10,
         type: "customer_managed",

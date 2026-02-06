@@ -1,6 +1,5 @@
 class TariffPlanAssignmentForm < ApplicationForm
   attribute :id
-  attribute :object
   attribute :plan_id
   attribute :category
   attribute :enabled, :boolean, default: false
@@ -21,9 +20,6 @@ class TariffPlanAssignmentForm < ApplicationForm
 
   def save
     return false if invalid?
-
-    self.object = object.class.where(**parent_attributes, category:).find(id) if id.present?
-
     return object.destroy! if object.persisted? && !enabled?
     return true unless enabled?
 

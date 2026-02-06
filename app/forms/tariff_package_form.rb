@@ -25,7 +25,10 @@ class TariffPackageForm < ApplicationForm
 
   def plans=(value)
     super
-    plans.each { _1.package = object }
+    plans.each do |package_plan|
+      package_plan.package = object
+      package_plan.object = object.package_plans.find(package_plan.id) if package_plan.id.present?
+    end
   end
 
   def self.initialize_with(tariff_package)

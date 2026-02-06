@@ -46,11 +46,10 @@ RSpec.describe TariffPlanForm do
 
   describe "#save" do
     it "creates a plan" do
-      carrier = create(:carrier)
-      tariff_schedule = create(:tariff_schedule, :outbound_calls, carrier:)
+      tariff_schedule = create(:tariff_schedule, :outbound_calls)
 
       form = build_form(
-        carrier:,
+        carrier: tariff_schedule.carrier,
         name: "My Plan",
         category: "outbound_calls",
         description: "My Plan Description",
@@ -73,42 +72,44 @@ RSpec.describe TariffPlanForm do
     end
 
     it "updates the plan" do
-      carrier = create(:carrier)
-      tariff_plan = create(:tariff_plan, carrier:)
-      tariff_schedule = create(:tariff_schedule, carrier:, category: tariff_plan.category)
-      other_tariff_schedule = create(:tariff_schedule, carrier:, category: tariff_plan.category)
-      tariff_plan_tier = create(
+      tariff_plan = create(:tariff_plan)
+      new_tariff_schedule = create(:tariff_schedule, carrier: tariff_plan.carrier, category: tariff_plan.category)
+      retained_plan_tier = create(
         :tariff_plan_tier,
         plan: tariff_plan,
-        schedule: tariff_schedule,
         weight: 10
+      )
+      deleted_plan_tier = create(
+        :tariff_plan_tier,
+        plan: tariff_plan,
+        weight: 40
       )
 
       form = TariffPlanForm.initialize_with(tariff_plan)
-
       form.attributes = {
         name: "My Updated Plan",
         description: "My Updated Description",
         tiers: [
-          build_tier(id: tariff_plan_tier.id, tariff_schedule_id: tariff_schedule.id, weight: 20),
-          build_tier(tariff_schedule_id: other_tariff_schedule.id, weight: 30)
+          build_tier(id: retained_plan_tier.id, tariff_schedule_id: retained_plan_tier.schedule_id, weight: 20),
+          build_tier(tariff_schedule_id: new_tariff_schedule.id, weight: 30),
+          build_tier(id: deleted_plan_tier.id, tariff_schedule_id: deleted_plan_tier.schedule_id, _destroy: true)
         ]
       }
 
       expect(form.save).to be_truthy
-      expect(form.object.reload).to have_attributes(
+      expect(form.object).to have_attributes(
         name: "My Updated Plan",
         description: "My Updated Description",
         tiers: contain_exactly(
           have_attributes(
-            id: tariff_plan_tier.id,
-            schedule: tariff_schedule,
+            id: retained_plan_tier.id,
+            schedule: retained_plan_tier.schedule,
             weight: 20
           ),
           have_attributes(
-            schedule: other_tariff_schedule,
+            schedule: new_tariff_schedule,
             weight: 30
-          ),
+          )
         )
       )
     end

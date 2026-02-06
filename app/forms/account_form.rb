@@ -67,7 +67,10 @@ class AccountForm < ApplicationForm
 
   def tariff_plan_subscriptions=(value)
     super
-    tariff_plan_subscriptions.each { _1.account = object }
+    tariff_plan_subscriptions.each do |subscription|
+      subscription.account = object
+      subscription.object = object.tariff_plan_subscriptions.find(subscription.id) if subscription.id.present?
+    end
   end
 
   def save
@@ -93,7 +96,9 @@ class AccountForm < ApplicationForm
       result = object.save!
       return result unless billing_enabled?
 
-      tariff_plan_subscriptions.all? { _1.save }
+      result = tariff_plan_subscriptions.all? { _1.save }
+      object.tariff_plan_subscriptions.reset
+      result
     end
   end
 

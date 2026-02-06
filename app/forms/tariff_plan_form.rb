@@ -44,7 +44,6 @@ class TariffPlanForm < ApplicationForm
     tiers.each { _1.attributes = { tariff_plan: object } }
   end
 
-
   def save
     return false if invalid?
 
