@@ -201,7 +201,8 @@ class ApplicationSeeder
         email: "johndoe@carrier.com",
         name: "John Doe",
         carrier_role: :owner
-      )
+      ),
+      rating_engine_client:
     )
   end
 
@@ -213,7 +214,7 @@ class ApplicationSeeder
     form.tariff_plan_subscriptions = tariff_package.plans.map do |plan|
       { enabled: true, plan_id: plan.id, category: plan.category }
     end
-    UpdateAccountForm.call(form)
+    UpdateAccountForm.call(form, client: rating_engine_client)
   end
 
   def create_tariff_package_for(carrier)
@@ -226,7 +227,7 @@ class ApplicationSeeder
         { enabled: true, rate: RATES.fetch(category.to_sym), category: }
       end
     )
-    CreateTariffPackageWizardForm.call(form)
+    CreateTariffPackageWizardForm.call(form, client: rating_engine_client)
   end
 
   def create_topup_for(account)
@@ -239,6 +240,6 @@ class ApplicationSeeder
       amount: "100",
       description: "Initial balance"
     )
-    UpdateAccountBalanceForm.call(form)
+    UpdateAccountBalanceForm.call(form, client: rating_engine_client)
   end
 end
