@@ -135,6 +135,7 @@ class ApplicationSeeder
   def create_account(**params, &block)
     Account.create!(
       default_tts_voice: TTSVoices::Voice.default,
+      billing_enabled: true,
       **params,
       &:build_access_token
     )
