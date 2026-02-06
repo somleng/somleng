@@ -52,7 +52,9 @@ class TariffPackageForm < ApplicationForm
 
     ApplicationRecord.transaction do
       object.save!
-      plans.all? { _1.save }
+      result = plans.all? { _1.save }
+      object.package_plans.reset
+      result
     end
   end
 

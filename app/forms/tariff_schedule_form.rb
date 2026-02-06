@@ -56,7 +56,9 @@ class TariffScheduleForm < ApplicationForm
 
       object.save!
 
-      destination_tariffs.all?(&:save)
+      result = destination_tariffs.all?(&:save)
+      object.destination_tariffs.reset
+      result
     end
   end
 

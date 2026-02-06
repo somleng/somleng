@@ -20,6 +20,9 @@
                           <i class="fa-solid fa-arrow-right"></i>
                         <% end %>
                         <%= assignment.category.direction.to_s.humanize %>
+                        <span class="text-danger" data-toggle-input-target="hint" data-bs-toggle="tooltip" title="<%= assignment.category_text %> are blocked">
+                          <i class="fa-solid fa-ban"></i>
+                        </span>
                       </div>
                       <div class="col-sm-3 d-flex justify-content-end">
                         <%= assignment_form.input(

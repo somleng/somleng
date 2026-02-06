@@ -115,6 +115,47 @@ RSpec.describe TariffScheduleForm do
         )
       )
     end
+
+    it "updates a tariff schedule" do
+      carrier = create(:carrier)
+      new_destination_group = create(:destination_group, carrier:)
+
+      tariff_schedule = create(:tariff_schedule, carrier:)
+      retained_destination_tariff = create(:destination_tariff, schedule: tariff_schedule)
+      deleted_destination_tariff = create(:destination_tariff, schedule: tariff_schedule)
+
+      form = TariffScheduleForm.initialize_with(tariff_schedule)
+      form.attributes = {
+        destination_tariffs: [
+          {
+            id: retained_destination_tariff.id,
+            destination_group_id: retained_destination_tariff.destination_group_id,
+            rate: "0.001"
+          },
+          {
+            id: deleted_destination_tariff.id,
+            _destroy: true
+          },
+          {
+            destination_group_id: new_destination_group.id,
+            rate: "0.001"
+          }
+        ]
+      }
+
+      result = form.save
+
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
+        destination_tariffs: contain_exactly(
+          retained_destination_tariff,
+          have_attributes(
+            persisted?: true,
+            destination_group: new_destination_group,
+          )
+        )
+      )
+    end
   end
 
   def build_form(**)
