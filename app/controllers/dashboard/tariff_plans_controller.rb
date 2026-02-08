@@ -23,8 +23,10 @@ module Dashboard
 
     def show
       @resource = record
-      @tariff_calculation = TariffCalculation.new(tariff_plan: record, **request.query_parameters.fetch(:tariff_calculation, {}).slice(:destination).symbolize_keys)
-      @tariff_calculation.calculate
+      @tariff_calculator_form = TariffCalculatorForm.new(
+        tariff_plan: record,
+        **request.query_parameters.fetch(:tariff_calculator, {}).slice(:destination).symbolize_keys
+      )
     end
 
     def edit

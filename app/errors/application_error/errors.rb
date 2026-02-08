@@ -15,6 +15,10 @@ module ApplicationError
         code: "S1006",
         message: "The subscription for this service is disabled"
       ),
+      destination_blocked: Error.new(
+        code: "S1007",
+        message: "This destination is blocked"
+      ),
       account_suspended: Error.new(code: "30002", message: "Account suspended"),
       messaging_service_blank: Error.new(
         code: "21701",
