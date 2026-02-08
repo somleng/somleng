@@ -216,6 +216,7 @@ class ApplicationSeeder
     return if account.tariff_plan_subscriptions.exists?
 
     tariff_package = create_tariff_package_for(account.carrier)
+    account.carrier.update!(default_tariff_package: tariff_package)
     tariff_package.plans.each do |plan|
       account.tariff_plan_subscriptions.create!(
         plan: plan,

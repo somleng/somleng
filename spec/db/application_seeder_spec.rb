@@ -7,7 +7,12 @@ describe ApplicationSeeder do
 
     seeder.seed!
 
-    expect(Carrier.count).to eq(1)
+    expect(Carrier.all).to contain_exactly(
+      have_attributes(
+        billing_currency: "USD",
+        default_tariff_package: be_present
+      )
+    )
     expect(User.count).to eq(2)
     expect(Account.carrier_managed.count).to eq(1)
     expect(Account.customer_managed.count).to eq(1)
