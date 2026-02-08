@@ -38,14 +38,7 @@ RSpec.describe AccountBillingPolicy do
   it "handles insufficient balances" do
     carrier = create(:carrier)
     account = create(:account, :billing_enabled, carrier:)
-    tariff_plan = create(:tariff_plan, :outbound_messages, carrier:)
-    tariff_schedule = create(:tariff_schedule, category: tariff_plan.category, carrier:)
-    create(:tariff_plan_tier, plan: tariff_plan, schedule: tariff_schedule)
-    create(
-      :destination_tariff,
-      schedule: tariff_schedule,
-      destination_group: create(:destination_group, carrier:, prefixes: [ "855" ])
-    )
+    tariff_plan = create(:tariff_plan, :outbound_messages, :configured, carrier:, destination_prefixes: [ "855" ])
     message = create(:message, direction: :outbound_api, account:, to: "855715100999")
     create(:tariff_plan_subscription, plan: tariff_plan, account:)
     policy = AccountBillingPolicy.new(

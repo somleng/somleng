@@ -80,7 +80,11 @@ RSpec.resource "Messages", document: :twilio_api do
       account = create(:account, :billing_enabled, carrier:)
       create(:sms_gateway, carrier: account.carrier)
       create(:incoming_phone_number, account:, number: "855716788999")
-      create(:tariff_plan_subscription, account:, plan_category: :outbound_messages)
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan: create(:tariff_plan, :outbound_messages, :configured, carrier:, destination_prefixes: [ "855" ])
+      )
       stub_rating_engine_request(result: 100)
 
       set_twilio_api_authorization_header(account)

@@ -60,7 +60,15 @@ RSpec.resource "Phone Calls", document: :twilio_api do
       account = create(:account, :billing_enabled)
       create(:incoming_phone_number, number: "12513095500", account:)
       create(:sip_trunk, carrier: account.carrier, region: :hydrogen)
-      create(:tariff_plan_subscription, account:, plan_category: :outbound_calls)
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan: create(
+          :tariff_plan, :configured, :outbound_calls,
+          carrier: account.carrier,
+          destination_prefixes: [ "299" ]
+        )
+      )
       stub_rating_engine_request(result: 100)
       stub_switch_request(region: :hydrogen)
 

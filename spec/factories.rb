@@ -487,6 +487,7 @@ FactoryBot.define do
 
   factory :message do
     account
+    outbound
     carrier { account.carrier }
     sms_gateway { association :sms_gateway, carrier: account.carrier }
     to { "85512334667" }
@@ -515,6 +516,10 @@ FactoryBot.define do
       received_at { Time.current }
       sms_url { "https://example.com/messaging.xml" }
       sms_method { "POST" }
+    end
+
+    trait :outbound do
+      direction { :outbound_api }
     end
 
     trait :internal do
@@ -615,10 +620,14 @@ FactoryBot.define do
 
   factory :tariff do
     carrier { association :carrier, billing_currency: "USD" }
-    currency { carrier.billing_currency }
     call
 
-    rate_cents { InfinitePrecisionMoney.new(10, currency).cents }
+    transient do
+      rate { InfinitePrecisionMoney.new(10, carrier.billing_currency) }
+    end
+
+    rate_cents { rate.cents }
+    currency { rate.currency }
 
     traits_for_enum :category, %w[call message]
   end
@@ -633,6 +642,25 @@ FactoryBot.define do
     carrier
     outbound_calls
     sequence(:name) { |n| "Standard#{n}" }
+
+    trait :configured do
+      transient do
+        destination_prefixes { [ "855" ] }
+        rate { InfinitePrecisionMoney.from_amount(0.05, carrier.billing_currency) }
+        tariff_schedule { build(:tariff_schedule, carrier:, category:) }
+        destination_group { build(:destination_group, carrier:, prefixes: destination_prefixes) }
+        tariff { build(:tariff, carrier:, rate:, category: tariff_schedule.category.tariff_category) }
+      end
+
+      after(:build) do |tariff_plan, evaluator|
+        tariff_plan.tiers << build(:tariff_plan_tier, plan: tariff_plan, schedule: evaluator.tariff_schedule)
+        evaluator.tariff_schedule.destination_tariffs << build(
+          :destination_tariff,
+          destination_group: evaluator.destination_group,
+          tariff: evaluator.tariff
+        )
+      end
+    end
   end
 
   factory :tariff_plan_tier do
