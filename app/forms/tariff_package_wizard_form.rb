@@ -65,6 +65,6 @@ class TariffPackageWizardForm < ApplicationForm
   end
 
   def enabled_tariffs
-    tariffs.select(&:enabled)
+    tariffs.select(&:enabled?)
   end
 end

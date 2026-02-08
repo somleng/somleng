@@ -154,6 +154,7 @@ RSpec.describe RatingEngineClient do
           { weight: 10.0, timing_id: "*any", destination_rates_id: tiers[1].schedule_id }
         ]
       )
+      expect(client).to have_received(:load_tariff_plan_from_stor_db).with(tp_id: tariff_plan.carrier_id)
     end
   end
 
@@ -169,6 +170,7 @@ RSpec.describe RatingEngineClient do
         tp_id: tariff_plan.carrier_id,
         id: tariff_plan.id,
       )
+      expect(client).to have_received(:remove_rating_plan).with(tariff_plan.id)
     end
   end
 

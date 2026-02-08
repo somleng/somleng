@@ -16,11 +16,11 @@ class CreateTariffPackageWizardForm < ApplicationWorkflow
       client.upsert_destination_group(destination_group)
 
       package.plans.each do |plan|
-        client.upsert_tariff_plan(plan)
-
         plan.schedules.each do |schedule|
           client.upsert_tariff_schedule(schedule)
         end
+
+        client.upsert_tariff_plan(plan)
       end
 
       package

@@ -36,8 +36,8 @@ RSpec.describe CreateTariffPackageWizardForm do
         )
       )
     )
-    expect(client).to have_received(:upsert_destination_group)
-    expect(client).to have_received(:upsert_tariff_plan)
-    expect(client).to have_received(:upsert_tariff_schedule)
+    expect(client).to have_received(:upsert_destination_group).ordered
+    expect(client).to have_received(:upsert_tariff_schedule).ordered
+    expect(client).to have_received(:upsert_tariff_plan).ordered
   end
 end

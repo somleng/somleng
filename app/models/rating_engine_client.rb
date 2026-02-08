@@ -133,6 +133,8 @@ class RatingEngineClient
           }
         end
       )
+
+      refresh_carrier_rates(tariff_plan.carrier)
     end
   end
 
@@ -142,6 +144,7 @@ class RatingEngineClient
         tp_id: tariff_plan.carrier_id,
         id: tariff_plan.id,
       )
+      client.remove_rating_plan(tariff_plan.id)
     end
   end
 
@@ -200,7 +203,7 @@ class RatingEngineClient
   def refresh_carrier_rates(carrier)
     handle_request do
       client.load_tariff_plan_from_stor_db(
-        tp_id: carrier.id,
+        tp_id: carrier.id
       )
     end
   end
