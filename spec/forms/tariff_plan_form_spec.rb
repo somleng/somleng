@@ -28,6 +28,13 @@ RSpec.describe TariffPlanForm do
 
   it "validates the tiers" do
     tariff_schedule = build_stubbed(:tariff_schedule)
+    plan_tier = create(:tariff_plan_tier)
+
+    form = TariffPlanForm.initialize_with(plan_tier.plan)
+    form.tiers = [ build_tier(id: plan_tier.id, _destroy: true) ]
+
+    expect(form).to be_invalid
+    expect(form.errors[:tiers]).to be_present
 
     form = build_form(tiers: 2.times.map { build_tier(tariff_schedule_id: tariff_schedule.id) })
 

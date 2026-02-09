@@ -70,6 +70,8 @@ class TariffPlanForm < ApplicationForm
   end
 
   def validate_tiers
+    return errors.add(:tiers, :invalid) if retained_tiers.empty?
+
     retained_tiers.each(&:valid?)
 
     validate_uniqueness_of(:tariff_schedule_id, within: retained_tiers.group_by(&:tariff_schedule_id))

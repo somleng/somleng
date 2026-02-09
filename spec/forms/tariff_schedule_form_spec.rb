@@ -38,6 +38,16 @@ RSpec.describe TariffScheduleForm do
   end
 
   describe "destination_groups" do
+    it "validates at least one destination group" do
+      destination_tariff = create(:destination_tariff)
+
+      form = TariffScheduleForm.initialize_with(destination_tariff.schedule)
+      form.destination_tariffs = [ build_destination_tariff_form(id: destination_tariff.id, _destroy: true) ]
+      form.valid?
+
+      expect(form.errors[:destination_tariffs]).to be_present
+    end
+
     it "validates the destination groups are unique on create" do
       carrier = create(:carrier)
       destination_group = create(:destination_group, carrier:)

@@ -10,6 +10,9 @@ module Dashboard
     end
 
     def create
+      permitted_params = params.require(:tariff_schedule).permit(
+        :name, :description, :category, destination_tariffs: [ :destination_group_id, :rate ]
+      )
       @resource = TariffScheduleForm.new(carrier: current_carrier, **permitted_params)
       UpdateTariffScheduleForm.call(@resource)
       respond_with(:dashboard, @resource, location: dashboard_tariff_schedules_path(filter_params))
@@ -25,7 +28,11 @@ module Dashboard
 
     def update
       @resource = TariffScheduleForm.initialize_with(record)
-      @resource.attributes = permitted_params.except(:category)
+      @resource.attributes = params.require(:tariff_schedule).permit(
+        :name, :description, destination_tariffs: [
+          :id, :destination_group_id, :rate, :_destroy
+        ]
+      )
       UpdateTariffScheduleForm.call(@resource)
       respond_with(:dashboard, @resource)
     end
@@ -37,17 +44,6 @@ module Dashboard
     end
 
     private
-
-    def permitted_params
-      params.require(:tariff_schedule).permit(
-        :name,
-        :category,
-        :description,
-        destination_tariffs: [
-          :id, :destination_group_id, :rate, :_destroy
-        ]
-      )
-    end
 
     def scope
       current_carrier.tariff_schedules
