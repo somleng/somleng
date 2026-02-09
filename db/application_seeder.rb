@@ -224,7 +224,7 @@ class ApplicationSeeder
   def create_tariff_package_for(carrier)
     return carrier.tariff_packages.first if carrier.tariff_packages.exists?
 
-    package = TariffPackage.create!(carrier:, name: "My Tariff Package")
+    package = TariffPackage.create!(carrier:, name: "Standard")
     TariffSchedule.category.values.each do |category|
       CreateTariffPackagePlanWithDefaults.call(package:, category:, rate: RATES.fetch(category.to_sym))
     end

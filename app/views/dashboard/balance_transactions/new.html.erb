@@ -1,2 +1,37 @@
 <%= page_title(title: "New Balance Transaction") %>
-<%= render("form", resource: @resource) %>
+<div class="card-body">
+  <%= simple_form_for([:dashboard, @resource], wrapper: :input_group) do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <%= f.input :account_id,
+          collection: f.object.account_options_for_select,
+          input_html: { data: { controller: "enhanced-select" } }
+        %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input(:type) %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <%=
+          f.input(
+            :amount,
+            as: :decimal,
+            prepend: f.object.carrier.billing_currency.symbol,
+            append: f.object.carrier.billing_currency.iso_code,
+          )
+        %>
+      </div>
+
+      <div class="col-sm-6">
+        <%= f.input :description, as: :text %>
+      </div>
+    </div>
+
+    <%= f.button :submit %>
+    <%= link_to_cancel %>
+  <% end %>
+</div>

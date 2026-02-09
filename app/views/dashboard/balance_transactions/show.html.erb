@@ -1,4 +1,8 @@
-<%= page_title(title: "Balance Transaction") %>
+<%= page_title(title: "Balance Transaction") do %>
+  <% if policy(@resource).edit? %>
+    <%= render("shared/edit_resource_page_action", path: edit_dashboard_balance_transaction_path(@resource)) %>
+  <% end %>
+<% end %>
 
 <div class="card-body">
   <%= show_for(@resource) do |f| %>

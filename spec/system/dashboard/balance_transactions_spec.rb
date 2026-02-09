@@ -89,4 +89,21 @@ RSpec.describe "Balance Transactions" do
     expect(page).to have_content("Outbound calls")
     expect(page).to have_link("Phone call", href: dashboard_phone_call_path(balance_transaction.phone_call))
   end
+
+  it "update a balance transaction" do
+    carrier = create(:carrier)
+    user = create(:user, :carrier, carrier:)
+    account = create(:account, carrier:)
+    balance_transaction = create(:balance_transaction, :topup, account:)
+
+    carrier_sign_in(user)
+    visit dashboard_balance_transaction_path(balance_transaction)
+    click_on("Edit")
+
+    fill_in("Description", with: "My description")
+    click_on("Update Balance transaction")
+
+    expect(page).to have_content("Balance transaction was successfully updated")
+    expect(page).to have_content("My description")
+  end
 end

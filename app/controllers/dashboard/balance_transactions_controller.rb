@@ -23,6 +23,18 @@ module Dashboard
       @resource = record
     end
 
+    def edit
+      @resource = BalanceTransactionForm.initialize_with(record)
+    end
+
+    def update
+      @resource = BalanceTransactionForm.initialize_with(record)
+      permitted_params = params.require(:balance_transaction).permit(:description)
+      @resource.attributes = permitted_params
+      @resource.save
+      respond_with(:dashboard, @resource)
+    end
+
     private
 
     def scope

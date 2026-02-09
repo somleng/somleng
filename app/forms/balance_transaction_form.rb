@@ -27,18 +27,37 @@ class BalanceTransactionForm < ApplicationForm
     ActiveModel::Name.new(self, nil, "BalanceTransaction")
   end
 
+  def self.initialize_with(balance_transaction)
+    new(
+      object: balance_transaction,
+      carrier: balance_transaction.carrier,
+      description: balance_transaction.description,
+      account_id: balance_transaction.account_id,
+      type: balance_transaction.type,
+      created_by: balance_transaction.created_by,
+      amount: balance_transaction.amount
+    )
+  end
+
   def save
     return false if invalid?
 
-    account = carrier.accounts.find(account_id)
 
-    object.carrier = carrier
-    object.account = account
-    object.type = type
-    object.amount_cents = InfinitePrecisionMoney.from_amount(amount, account.billing_currency).cents
-    object.currency = account.billing_currency
+    if new_record?
+      account = carrier.accounts.find(account_id)
+
+      object.attributes = {
+        carrier:,
+        account:,
+        type:,
+        amount_cents: InfinitePrecisionMoney.from_amount(amount, account.billing_currency).cents,
+        currency: account.billing_currency,
+        created_by:
+      }
+    end
+
     object.description = description
-    object.created_by = created_by
+
     object.save!
   end
 
