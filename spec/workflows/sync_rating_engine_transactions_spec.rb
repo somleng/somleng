@@ -4,14 +4,18 @@ RSpec.describe SyncRatingEngineTransactions do
   it "syncs rating engine transactions" do
     account = create(:account)
     message = create(:message, :inbound, account:)
+    internal_message = create(:message, :outbound, :internal, :sending, account:)
     phone_call = create(:phone_call, :outbound, :initiated, account:)
+    internal_phone_call = create(:phone_call, :outbound, :internal, :initiated, account:)
     existing_balance_transaction = create(:balance_transaction, :topup, account:)
     cdrs = [
       build_cdr(id: 1000, account_id: account.id, origin_id: message.id, category: message.tariff_schedule_category, cost: 100),
       build_cdr(id: 1001, account_id: account.id, origin_id: phone_call.external_id, category: phone_call.tariff_schedule_category, cost: 200),
       build_cdr(id: 1002, account_id: account.id, category: phone_call.tariff_schedule_category, cost: 300),
       build_cdr(id: 1003, account_id: account.id, balance_transaction_id: existing_balance_transaction.id),
-      build_cdr(id: 1004, account_id: account.id, success?: false)
+      build_cdr(id: 1004, account_id: account.id, success?: false),
+      build_cdr(id: 1005, account_id: account.id, origin_id: internal_message.id, category: internal_message.tariff_schedule_category),
+      build_cdr(id: 1006, account_id: account.id, origin_id: internal_phone_call.external_id, category: internal_phone_call.tariff_schedule_category)
     ]
     client = instance_double(RatingEngineClient, fetch_cdrs: cdrs)
 
@@ -52,6 +56,18 @@ RSpec.describe SyncRatingEngineTransactions do
       have_attributes(
         id: existing_balance_transaction.id,
         external_id: 1003
+      ),
+      have_attributes(
+        external_id: 1005,
+        message: have_attributes(
+          id: internal_message.id,
+        )
+      ),
+      have_attributes(
+        external_id: 1006,
+        phone_call: have_attributes(
+          id: internal_phone_call.id
+        )
       )
     )
     expect(ExecuteWorkflowJob).to have_been_enqueued.with(
