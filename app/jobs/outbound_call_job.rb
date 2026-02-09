@@ -16,7 +16,7 @@ class OutboundCallJob < ApplicationJob
 
     def perform
       queue.dequeue do |phone_call_id|
-        phone_call = account.phone_calls.find(phone_call_id)
+        phone_call = PhoneCall.find(phone_call_id)
 
         rate_limit!
         session_limit!(phone_call)

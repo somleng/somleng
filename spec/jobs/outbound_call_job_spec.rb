@@ -15,6 +15,16 @@ RSpec.describe OutboundCallJob do
     expect(account_queue.peek).to eq(other_phone_call.id)
   end
 
+  it "handles internal calls" do
+    phone_call = create(:phone_call, :internal)
+    account_queue = build_queue(phone_call.account)
+    account_queue.enqueue(phone_call.id)
+
+    OutboundCallJob.perform_now(phone_call.account, queue: account_queue)
+
+    expect(ExecuteWorkflowJob).to have_been_enqueued.exactly(1).times.with(InitiateOutboundCall.to_s, phone_call:)
+  end
+
   it "applies rate limits" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
