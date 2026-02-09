@@ -129,7 +129,7 @@
 
         <ul class="nav-group-items">
           <% if policy(:balance_transaction).index? %>
-            <%= sidebar_nav("Transactions", dashboard_balance_transactions_path, icon_class: "fa-solid fa-money-check-dollar") %>
+            <%= sidebar_nav("Balance Transactions", dashboard_balance_transactions_path, icon_class: "fa-solid fa-money-check-dollar") %>
           <% end %>
 
           <% if policy(:tariff_package).index? %>

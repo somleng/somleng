@@ -67,8 +67,8 @@ RSpec.describe "Phone Calls" do
     end
   end
 
-  it "Shows a phone call" do
-    carrier = create(:carrier)
+  it "Show a phone call" do
+    carrier = create(:carrier, billing_currency: "MXN")
     account = create(:account, name: "Rocket Rides", carrier:)
     incoming_phone_number = create(:incoming_phone_number, account:, number: "12513095500")
     sip_trunk = create(:sip_trunk, name: "SIP Trunk", carrier:)
@@ -82,6 +82,9 @@ RSpec.describe "Phone Calls" do
       account:,
       incoming_phone_number:,
       price: InfinitePrecisionMoney.from_amount(-0.001, "MXN")
+    )
+    balance_transaction = create(
+      :balance_transaction, :for_phone_call, phone_call:, amount: phone_call.price, account:
     )
     create(:recording, :completed, phone_call:)
     create(:call_data_record, bill_sec: 5, phone_call:)
@@ -100,6 +103,10 @@ RSpec.describe "Phone Calls" do
     expect(page).to have_link(
       "SIP Trunk",
       href: dashboard_sip_trunk_path(sip_trunk)
+    )
+    expect(page).to have_link(
+      balance_transaction.id,
+      href: dashboard_balance_transaction_path(balance_transaction)
     )
     expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_content("-$0.00100")

@@ -8,12 +8,25 @@
       </code>
     <% end %>
 
-    <%= f.attribute :account, value: external_link_to(f.object.account.name, dashboard_account_path(f.object.account)) %>
+    <% if policy(:account).show? %>
+      <%= f.attribute :account, value: external_link_to(f.object.account.name, dashboard_account_path(f.object.account)) %>
+    <% end %>
     <%= f.attribute :type, value: f.object.type.text %>
+    <%= f.attribute :charge_category, value: f.object.charge_category&.humanize %>
+    <%= f.attribute :charge_source do %>
+      <% case f.object.charge_source %>
+      <% when PhoneCall %>
+        <%= external_link_to(PhoneCall.model_name.human, dashboard_phone_call_path(f.object.charge_source)) %>
+      <% when Message %>
+        <%= external_link_to(Message.model_name.human, dashboard_message_path(f.object.charge_source)) %>
+      <% end %>
+    <% end %>
     <%= f.attribute :amount, value: f.object.amount.format %>
     <%= f.attribute :description %>
-    <%= f.attribute :created_by do %>
-      <%= external_link_to(f.object.created_by.name, dashboard_carrier_user_path(f.object.created_by)) if f.object.created_by.present? %>
+    <% if policy(:carrier_user).show? %>
+      <%= f.attribute :created_by do %>
+        <%= external_link_to(f.object.created_by.name, dashboard_carrier_user_path(f.object.created_by)) if f.object.created_by.present? %>
+      <% end %>
     <% end %>
 
     <%= f.attribute :created_at, value: local_time(@resource.created_at) %>

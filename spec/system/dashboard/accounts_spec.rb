@@ -108,6 +108,7 @@ RSpec.describe "Accounts" do
     within("#billing") do
       expect(page).to have_content("United States Dollar")
       expect(page).to have_content("$100.00")
+      expect(page).to have_link("View", href: dashboard_balance_transactions_path(filter: { account_id: account.id }))
       expect(page).to have_link("Manage", href: dashboard_phone_number_plans_path(filter: { account_id: account.id }))
     end
 

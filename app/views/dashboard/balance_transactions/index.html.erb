@@ -12,7 +12,20 @@
       %>
     <% end %>
 
-    <%= form.select :type, BalanceTransaction.type.values.map { [it.text, it] }, { filter_value: params.dig(:filter, :type) } %>
+    <%= form.select(
+      :type,
+      BalanceTransaction.type.values.map { [it.text, it] },
+      { filter_value: params.dig(:filter, :type) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
+
+    <%= form.select(
+      :charge_category,
+      BalanceTransaction.charge_category.values.map { [it.text, it] },
+      { filter_value: params.dig(:filter, :charge_category) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
+
     <%= form.date_range(
       title: "Created At",
       filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)],

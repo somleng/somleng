@@ -16,6 +16,7 @@ class Message < ApplicationRecord
   belongs_to :incoming_phone_number, optional: true
   belongs_to :messaging_service, optional: true
   has_one :interaction
+  has_one :balance_transaction
   has_many :events
   has_one :send_request, class_name: "MessageSendRequest"
 

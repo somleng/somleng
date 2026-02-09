@@ -53,12 +53,6 @@ class ApplicationSeeder
       Carrier User Email:       #{carrier_owner.email}
       Carrier User Password:    #{USER_PASSWORD}
       Carrier API Key:          #{carrier.api_key}
-      ---------------------------------------------
-      Outbound Calls Rate:      #{RATES.fetch(:outbound_calls)}
-      Inbound Calls Rate:       #{RATES.fetch(:inbound_calls)}
-      Outbound Messages Rate:   #{RATES.fetch(:outbound_messages)}
-      Inbound Messages Rate:    #{RATES.fetch(:inbound_messages)}
-      ---------------------------------------------
     INFO
   end
 

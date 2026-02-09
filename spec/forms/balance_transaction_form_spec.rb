@@ -35,6 +35,20 @@ RSpec.describe BalanceTransactionForm do
       form.valid?
       expect(form.errors[:amount]).to be_blank
     end
+
+    it "validates the type" do
+      form = build_form(type: :topup)
+      form.valid?
+      expect(form.errors[:type]).to be_blank
+
+      form = build_form(type: :adjustment)
+      form.valid?
+      expect(form.errors[:type]).to be_blank
+
+      form = build_form(type: :charge)
+      form.valid?
+      expect(form.errors[:type]).to be_present
+    end
   end
 
   describe "#save" do

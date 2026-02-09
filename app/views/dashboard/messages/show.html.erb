@@ -27,6 +27,14 @@
       <%= f.attribute :events, value: external_link_to("View", dashboard_events_path(filter: { message_id: message.id }), title: "View events") %>
     <% end %>
 
+    <% if policy(:balance_transaction).show? %>
+      <%= f.attribute(:balance_transaction) do %>
+        <% if f.object.balance_transaction.present? %>
+          <%= external_link_to(f.object.balance_transaction.id, dashboard_balance_transaction_path(f.object.balance_transaction)) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
     <%= f.attribute :body %>
     <%= f.attribute :from, value: message.from %>
     <%= f.attribute :to, value: message.to %>

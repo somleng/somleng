@@ -945,6 +945,13 @@ FactoryBot.define do
       charge_category { phone_call.tariff_schedule_category }
       charge_source_id { phone_call.external_id }
     end
+
+    trait :for_message do
+      charge
+      message { association(:message, account:, price: amount) }
+      charge_category { message.tariff_schedule_category }
+      charge_source_id { message.id }
+    end
   end
 
   factory :rating_engine_cdr_response, class: Hash do

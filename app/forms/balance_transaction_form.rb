@@ -7,7 +7,7 @@ class BalanceTransactionForm < ApplicationForm
   attribute :description
   attribute :created_by
 
-  enumerize :type, in: BalanceTransaction.type.values
+  enumerize :type, in: [ :topup, :adjustment ]
 
   delegate :new_record?, :persisted?, :id, to: :object
 

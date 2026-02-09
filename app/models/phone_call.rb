@@ -24,6 +24,7 @@ class PhoneCall < ApplicationRecord
 
   has_one    :call_data_record
   has_one    :interaction
+  has_one    :balance_transaction
   has_many   :events
   has_many   :phone_call_events
   has_many   :recordings

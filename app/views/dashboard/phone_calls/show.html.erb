@@ -31,6 +31,14 @@
       <%= f.attribute :tts_events, value: external_link_to("View", dashboard_tts_events_path(filter: { phone_call_id: phone_call.id }), title: "View TTS events") %>
     <% end %>
 
+    <% if policy(:balance_transaction).show? %>
+      <%= f.attribute(:balance_transaction) do %>
+        <% if f.object.balance_transaction.present? %>
+          <%= external_link_to(f.object.balance_transaction.id, dashboard_balance_transaction_path(f.object.balance_transaction)) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
     <%= f.attribute :from, value: phone_call.from_formatted %>
     <%= f.attribute :to, value: phone_call.to_formatted %>
     <%= f.attribute :status, value: phone_call.status.humanize %>
