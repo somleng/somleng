@@ -2,7 +2,7 @@ module TwilioAPI
   class DeleteMessageRequestSchema < TwilioAPIRequestSchema
     option :message
 
-    params {}
+    params { }
 
     rule do
       next if message.complete?

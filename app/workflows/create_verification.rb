@@ -37,11 +37,9 @@ class CreateVerification < ApplicationWorkflow
     if delivery_attempt.channel.sms?
       message = create_message!(delivery_attempt)
       delivery_attempt.update!(message:)
-      OutboundMessageJob.perform_later(message)
     elsif delivery_attempt.channel.call?
       phone_call = create_phone_call!(delivery_attempt)
       delivery_attempt.update!(phone_call:)
-      ScheduleOutboundCall.call(phone_call)
     end
   end
 
@@ -49,7 +47,7 @@ class CreateVerification < ApplicationWorkflow
     schema = build_message_schema(delivery_attempt)
     check_schema!(schema)
 
-    Message.create!(schema.output.merge(direction: :outbound, internal: true))
+    CreateMessage.call(schema.output.merge(direction: :outbound, internal: true))
   end
 
   def build_message_schema(delivery_attempt)
@@ -70,7 +68,7 @@ class CreateVerification < ApplicationWorkflow
     schema = build_phone_call_schema(delivery_attempt)
     check_schema!(schema)
 
-    PhoneCall.create!(schema.output.merge(internal: true))
+    CreatePhoneCall.call(schema.output.merge(internal: true))
   end
 
   def build_phone_call_schema(delivery_attempt)

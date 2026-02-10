@@ -33,7 +33,7 @@ RSpec.describe "Admin/Phone Calls" do
     visit admin_phone_calls_path
 
     expect(page).to have_content("855718224112")
-    expect(page).to have_no_content(internal_phone_call.to)
+    expect(page).to have_content(internal_phone_call.to)
 
     click_on("855718224112")
 

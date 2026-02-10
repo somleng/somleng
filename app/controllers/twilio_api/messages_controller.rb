@@ -10,9 +10,7 @@ module TwilioAPI
         schema_options: { account: current_account },
         **serializer_options
       ) do |permitted_params|
-        message = Message.create!(permitted_params.merge(direction: :outbound_api))
-        process_message(message)
-        message
+        CreateMessage.call(permitted_params.merge(direction: :outbound_api))
       end
     end
 
@@ -30,13 +28,7 @@ module TwilioAPI
         status: :ok,
         **serializer_options
       ) do |permitted_params|
-        message.update!(body: "") if permitted_params[:redact].present?
-        if permitted_params[:cancel].present?
-          UpdateMessageStatus.new(message).call do
-            message.cancel!
-          end
-        end
-        message
+        UpdateMessage.call(message, permitted_params)
       end
     end
 
@@ -65,29 +57,6 @@ module TwilioAPI
 
     def serializer_options
       { serializer_class: MessageSerializer }
-    end
-
-    def process_message(message)
-      return queue_message(message) if message.accepted?
-      return send_message(message) if message.queued?
-
-      schedule_message(message) if message.scheduled?
-    end
-
-    def queue_message(message)
-      ExecuteWorkflowJob.perform_later(QueueOutboundMessage.to_s, message)
-    end
-
-    def schedule_message(message)
-      ScheduledJob.perform_later(
-        QueueOutboundMessage.to_s,
-        message,
-        wait_until: message.send_at
-      )
-    end
-
-    def send_message(message)
-      OutboundMessageJob.perform_later(message)
     end
   end
 end

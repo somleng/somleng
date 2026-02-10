@@ -51,8 +51,8 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
   def parse_cdr(cdr)
     account = Account.find(cdr.account_id)
     category = TariffScheduleCategoryType.new.cast(cdr.category)
-    message = Message.find_by(id: cdr.origin_id, account_id: account.id) if category.tariff_category.message?
-    phone_call = PhoneCall.find_by(external_id: cdr.origin_id, account_id: account.id) if category.tariff_category.call?
+    message = account.messages.find_by(id: cdr.origin_id) if category.tariff_category.message?
+    phone_call = account.phone_calls.find_by(external_id: cdr.origin_id, account_id: account.id) if category.tariff_category.call?
 
     CDR.new(
       id: cdr.id,

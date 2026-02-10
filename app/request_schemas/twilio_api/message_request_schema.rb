@@ -134,10 +134,13 @@ module TwilioAPI
     end
 
     def message_status(context, params)
-      return :scheduled if params[:SendAt].present?
-      return :accepted if context[:messaging_service].present?
-
-      :queued
+      if params[:SendAt].present?
+        :scheduled
+      elsif context[:messaging_service].present?
+        :accepted
+      else
+        :queued
+      end
     end
   end
 end

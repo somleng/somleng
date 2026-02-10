@@ -12,11 +12,11 @@ class Carrier < ApplicationRecord
   has_many :phone_number_plans
   has_many :incoming_phone_numbers, class_name: "IncomingPhoneNumber"
   has_many :available_phone_numbers, -> { available }, class_name: "PhoneNumber"
-  has_many :messages, -> { where(internal: false) }
+  has_many :messages
   has_many :messaging_services
   has_many :verification_services
   has_many :verifications
-  has_many :phone_calls, -> { where(internal: false) }
+  has_many :phone_calls
   has_many :events
   has_many :error_logs
   has_many :interactions
