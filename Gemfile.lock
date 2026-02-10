@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/somleng/cgrates-ruby.git
-  revision: 2068b2631964a07260139a2ea9d1688658ebc54f
+  revision: a9aacc4790c1f56e00d49c107e3af64f081cfe7b
   specs:
     cgrates (0.1.0)
       faraday
