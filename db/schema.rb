@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_05_110345) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_10_074118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -192,10 +192,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_05_110345) do
     t.datetime "updated_at", null: false
     t.index ["destination_group_id"], name: "index_destination_tariffs_on_destination_group_id"
     t.index ["schedule_id", "destination_group_id"], name: "idx_on_schedule_id_destination_group_id_c184a69300", unique: true
-    t.index ["schedule_id", "tariff_id"], name: "index_destination_tariffs_on_schedule_id_and_tariff_id", unique: true
     t.index ["schedule_id"], name: "index_destination_tariffs_on_schedule_id"
     t.index ["sequence_number"], name: "index_destination_tariffs_on_sequence_number", unique: true, order: :desc
-    t.index ["tariff_id"], name: "index_destination_tariffs_on_tariff_id"
+    t.index ["tariff_id"], name: "index_destination_tariffs_on_tariff_id", unique: true
   end
 
   create_table "error_log_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

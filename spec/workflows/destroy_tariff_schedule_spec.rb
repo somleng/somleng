@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe DestroyTariffSchedule do
   it "destroys a tariff schedule" do
     tariff_schedule = create(:tariff_schedule)
+    create(:destination_tariff, schedule: tariff_schedule)
     client = instance_spy(RatingEngineClient)
 
     result = DestroyTariffSchedule.call(tariff_schedule, client:)
@@ -10,6 +11,10 @@ RSpec.describe DestroyTariffSchedule do
     expect(result).to be_truthy
     expect(tariff_schedule).to have_attributes(
       persisted?: false
+    )
+    expect(tariff_schedule.carrier).to have_attributes(
+      destination_tariffs: be_blank,
+      tariffs: be_blank
     )
     expect(client).to have_received(:destroy_tariff_schedule).with(tariff_schedule)
   end
