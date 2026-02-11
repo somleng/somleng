@@ -23,6 +23,16 @@
       </div>
     </div>
 
+    <% if @resource.billing_enabled? %>
+      <div id="billing" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Billing</h5>
+
+          <%= f.attribute :balance, value: GetAccountBalance.call(@resource).format %>
+        </div>
+      </div>
+    <% end %>
+
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title">Text to speech</h5>

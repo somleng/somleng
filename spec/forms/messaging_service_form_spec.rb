@@ -77,7 +77,7 @@ RSpec.describe MessagingServiceForm do
 
       expect(
         messaging_service.reload.incoming_phone_numbers
-      ).to match_array([ new_number ])
+      ).to contain_exactly(new_number)
     end
   end
 end

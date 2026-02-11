@@ -89,6 +89,8 @@ development: &development
   call_service_queue_url: "<%= ENV.fetch('CALL_SERVICE_QUEUE_URL', 'https://amazonaws.com/12345/call_service_queue') %>"
   admin_password: "<%= ENV.fetch('ADMIN_PASSWORD', 'password') %>"
   services_password: "<%= ENV.fetch('SERVICES_PASSWORD', 'password') %>"
+  active_job_queue_adapter: "<%= ENV.fetch('ACTIVE_JOB_QUEUE_ADAPTER', 'async') %>"
+  stub_rating_engine: <%= ENV.fetch("STUB_RATING_ENGINE", "true").to_s == "true" %>
 
 test:
   <<: *development

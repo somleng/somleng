@@ -1,4 +1,6 @@
-<h2>Resend confirmation instructions</h2>
+<% content_for(:page_title) do %>
+  Resend confirmation instructions
+<% end %>
 
 <%= simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, data: { turbo: false } }) do |f| %>
   <% if resource.errors[:confirmation_token].any? %>

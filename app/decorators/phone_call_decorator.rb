@@ -81,8 +81,8 @@ class PhoneCallDecorator < SimpleDelegator
     phone_number_formatter.format(object.from, format: :international)
   end
 
-  def price_formatted
-    price_formatter.format(price, object.price_unit)
+  def price_formatted(**)
+    price_formatter.format(object.price, **)
   end
 
   def call_data_record

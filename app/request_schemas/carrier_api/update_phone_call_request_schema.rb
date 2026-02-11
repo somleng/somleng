@@ -14,8 +14,12 @@ module CarrierAPI
       params = super
 
       result = {}
-      result[:price] = params.fetch(:price) if params.key?(:price)
-      result[:price_unit] = resource.account.billing_currency
+      if params.key?(:price)
+        amount = InfinitePrecisionMoney.from_amount(params.fetch(:price), resource.account.billing_currency)
+        result[:price_cents] = amount.cents
+        result[:price_unit] = amount.currency
+      end
+
       result
     end
   end

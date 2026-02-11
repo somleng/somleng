@@ -4,6 +4,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     account: Field::BelongsTo,
     sip_trunk: Field::BelongsTo,
+    balance_transaction: Field::HasOne,
     call_data_record: Field::BelongsTo,
     phone_call_events: Field::HasMany,
     media_streams: Field::HasMany,
@@ -63,6 +64,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     created_at
     updated_at
     sip_trunk
+    balance_transaction
     call_data_record
     events
     phone_call_events

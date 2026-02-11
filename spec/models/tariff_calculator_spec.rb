@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe TariffCalculation do
+RSpec.describe TariffCalculator do
   it "returns the correct destination tariff" do
     carrier = create(:carrier)
     standard_plan = create(:tariff_plan, :outbound_messages, carrier:)
@@ -49,45 +49,45 @@ RSpec.describe TariffCalculation do
     )
 
     expect(
-      TariffCalculation.new(
+      TariffCalculator.new.calculate(
         tariff_plan: standard_plan,
         destination: "855975100888"
-      ).calculate
+      )
     ).to eq(exception_tariff)
 
     expect(
-      TariffCalculation.new(
+      TariffCalculator.new.calculate(
         tariff_plan: promo_plan,
         destination: "855975100888"
-      ).calculate
+      )
     ).to eq(exception_tariff)
 
     expect(
-      TariffCalculation.new(
+      TariffCalculator.new.calculate(
         tariff_plan: standard_plan,
         destination: "85510510888"
-      ).calculate
+      )
     ).to eq(standard_tariff)
 
     expect(
-      TariffCalculation.new(
+      TariffCalculator.new.calculate(
         tariff_plan: promo_plan,
         destination: "85510510888"
-      ).calculate
+      )
     ).to eq(promo_tariff)
 
     expect(
-      TariffCalculation.new(
+      TariffCalculator.new.calculate(
         tariff_plan: standard_plan,
         destination: "856975100888"
-      ).calculate
+      )
     ).to eq(catch_all_tariff)
 
     expect(
-      TariffCalculation.new(
+      TariffCalculator.new.calculate(
         tariff_plan: promo_plan,
         destination: "856975100888"
-      ).calculate
+      )
     ).to eq(catch_all_tariff)
   end
 end

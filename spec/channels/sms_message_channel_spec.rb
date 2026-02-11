@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SMSMessageChannel, type: :channel do
   describe "#sent" do
-    it "handles sent delevery status" do
+    it "handles sent delivery status" do
       sms_gateway = stub_current_sms_gateway
       message = create(
         :message,
@@ -29,7 +29,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
       )
     end
 
-    it "handles delivered delevery status" do
+    it "handles delivered delivery status" do
       sms_gateway = stub_current_sms_gateway
       message = create(
         :message,
@@ -73,7 +73,17 @@ RSpec.describe SMSMessageChannel, type: :channel do
   describe "#received" do
     it "handles an inbound message" do
       sms_gateway = stub_current_sms_gateway
-      account = create(:account, carrier: sms_gateway.carrier)
+      account = create(:account, carrier: sms_gateway.carrier, billing_enabled: true)
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan_category: :inbound_messages,
+        plan: create(
+          :tariff_plan, :configured, :inbound_messages,
+          carrier: account.carrier,
+          destination_prefixes: [ "855" ]
+        )
+      )
       incoming_phone_number = create(
         :incoming_phone_number,
         account:,
@@ -82,6 +92,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
         number: "85510888888",
       )
 
+      stub_rating_engine_request(result: build_list(:rating_engine_cdr_response, 1, :success))
       stub_request(:post, "https://www.example.com/messaging.xml").to_return(body: <<~TWIML)
         <?xml version="1.0" encoding="UTF-8" ?>
         <Response></Response>
@@ -118,39 +129,18 @@ RSpec.describe SMSMessageChannel, type: :channel do
         error_message: "Phone number 85510888888 does not exist."
       )
     end
-
-    it "handles messages configured to be dropped" do
-      sms_gateway = stub_current_sms_gateway
-      account = create(:account, carrier: sms_gateway.carrier)
-      messaging_service = create(
-        :messaging_service, :drop, account:, carrier: sms_gateway.carrier
-      )
-      create(
-        :incoming_phone_number,
-        messaging_service:,
-        sms_url: "https://www.example.com/messaging.xml",
-        sms_method: "POST",
-        number: "85510888888",
-        account:
-      )
-
-      subscribe
-      perform(:received, from: "85510777777", to: "85510888888", body: "message body")
-
-      expect(sms_gateway.messages).to be_empty
-      expect(ErrorLog.count).to eq(0)
-    end
   end
 
   describe "#message_send_requested" do
     it "handles a message send request" do
       sms_gateway = stub_current_sms_gateway
       message = create(:message, :sending, sms_gateway:)
+      stub_rating_engine_request(result: build_list(:rating_engine_cdr_response, 1, :success))
 
       subscribe
       perform(:message_send_requested, id: message.id)
 
-      expect(message.send_request).to be_present
+      expect(message.send_request).to be_persisted
       expect(message.send_request).to have_attributes(
         sms_gateway:,
         message:
@@ -167,7 +157,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
       )
     end
 
-    it "handles a message send request that already has a send request" do
+    it "handles a messages that already have a send request" do
       sms_gateway = stub_current_sms_gateway
       message = create(:message, :sending, sms_gateway:)
       create(:message_send_request, message:, sms_gateway:)
@@ -176,6 +166,33 @@ RSpec.describe SMSMessageChannel, type: :channel do
       perform(:message_send_requested, id: message.id)
 
       expect(transmissions).to be_empty
+    end
+
+    it "handles insufficient balance errors" do
+      sms_gateway = stub_current_sms_gateway
+      account = create(:account, billing_enabled: true)
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan: create(
+          :tariff_plan, :configured, :outbound_messages,
+          carrier: account.carrier,
+          destination_prefixes: [ "855" ]
+        )
+      )
+      message = create(:message, :sending, sms_gateway:, account:, to: "855715100989")
+      stub_rating_engine_request(
+        result: build_list(:rating_engine_cdr_response, 1, :max_usage_exceeded)
+      )
+
+      subscribe
+      perform(:message_send_requested, id: message.id)
+
+      expect(message.reload).to have_attributes(
+        status: "failed",
+        error_code: ApplicationError::Errors.fetch(:insufficient_balance).code,
+        send_request: be_present
+      )
     end
   end
 

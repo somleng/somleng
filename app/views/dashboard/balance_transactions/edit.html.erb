@@ -1,0 +1,11 @@
+<%= page_title(title: "Edit Balance Transaction") %>
+<div class="card-body">
+  <%= simple_form_for([:dashboard, @resource], wrapper: :input_group) do |f| %>
+    <div class="col-sm-6">
+      <%= f.input(:description, as: :text) %>
+    </div>
+
+    <%= f.button :submit %>
+    <%= link_to_cancel %>
+  <% end %>
+</div>

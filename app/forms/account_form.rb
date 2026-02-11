@@ -2,7 +2,7 @@ class AccountForm < ApplicationForm
   attribute :carrier
   attribute :name
   attribute :enabled, :boolean, default: true
-  attribute :billing_enabled, :boolean, default: false
+  attribute :billing_enabled, :boolean
   attribute :billing_mode
   attribute :object, default: -> { Account.new(type: :carrier_managed, access_token: Doorkeeper::AccessToken.new) }
   attribute :sip_trunk_id
@@ -23,6 +23,8 @@ class AccountForm < ApplicationForm
   validates :default_tts_voice, presence: true
   validates :name, presence: true, unless: :customer_managed?
   validates :owner_email, email_format: true, allow_blank: true, allow_nil: true
+  validates :billing_enabled, inclusion: { in: [ true, false ] }
+  validates :billing_mode, presence: true
   validates :calls_per_second,
             presence: true,
             numericality: {
@@ -32,6 +34,7 @@ class AccountForm < ApplicationForm
             }
 
   validate :validate_owner
+  validate :validate_tariff_plan_subscriptions, if: ->(form) { form.billing_enabled? }
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "Account")
@@ -54,16 +57,20 @@ class AccountForm < ApplicationForm
     )
   end
 
-  def initialize(**)
-    super(**)
+  def initialize(**params)
+    super(**params)
     self.object.carrier = carrier
     self.tariff_package_id = carrier.default_tariff_package_id
+    self.billing_enabled = carrier.default_tariff_package_id.present? if billing_enabled.nil?
     self.tariff_plan_subscriptions = build_tariff_plan_subscriptions
   end
 
   def tariff_plan_subscriptions=(value)
     super
-    tariff_plan_subscriptions.each { _1.account = object }
+    tariff_plan_subscriptions.each do |subscription|
+      subscription.account = object
+      subscription.object = object.tariff_plan_subscriptions.find(subscription.id) if subscription.id.present?
+    end
   end
 
   def save
@@ -72,8 +79,8 @@ class AccountForm < ApplicationForm
     Account.transaction do
       object.carrier = carrier
       object.status = enabled ? "enabled" : "disabled"
-      object.billing_enabled = billing_enabled
-      object.billing_mode = billing_mode
+      object.billing_enabled = billing_enabled?
+      object.billing_mode = billing_mode if billing_enabled?
       object.calls_per_second = calls_per_second
       object.sip_trunk = sip_trunk_id.present? ? carrier.sip_trunks.find(sip_trunk_id) : nil
       if carrier_managed?
@@ -86,8 +93,12 @@ class AccountForm < ApplicationForm
         end
       end
 
-      object.save!
-      filled_tariff_plan_subscriptions.all? { _1.save }
+      result = object.save!
+      return result unless billing_enabled?
+
+      result = tariff_plan_subscriptions.all? { _1.save }
+      object.tariff_plan_subscriptions.reset
+      result
     end
   end
 
@@ -108,6 +119,10 @@ class AccountForm < ApplicationForm
     end
   end
 
+  def billing_enabled?
+    !!billing_enabled
+  end
+
   private
 
   def validate_owner
@@ -126,24 +141,27 @@ class AccountForm < ApplicationForm
     )
   end
 
-  def filled_tariff_plan_subscriptions
-    tariff_plan_subscriptions.select(&:filled?)
-  end
-
   def build_tariff_plan_subscriptions
     default_tariff_package = carrier.default_tariff_package
     default_plans = Array(new_record? ? default_tariff_package&.plans : [])
     default_subscriptions = TariffSchedule.category.values.map do |category|
+      plan_id = default_plans.find { _1.category == category }&.id
       TariffPlanSubscriptionForm.new(
         category:,
-        plan_id: default_plans.find { _1.category == category }&.id
+        plan_id:,
+        enabled: plan_id.present?
       )
     end
-    collection = default_subscriptions.each_with_object([]) do |default_plan, result|
-      existing_plan = tariff_plan_subscriptions.find { _1.category == default_plan.category }
-      result << (existing_plan || default_plan)
+    collection = default_subscriptions.each_with_object([]) do |default_subscription, result|
+      existing_subscription = tariff_plan_subscriptions.find { _1.category == default_subscription.category }
+      result << (existing_subscription || default_subscription)
     end
 
     FormCollection.new(collection, form: TariffPlanSubscriptionForm)
+  end
+
+  def validate_tariff_plan_subscriptions
+    tariff_plan_subscriptions.each(&:valid?)
+    errors.add(:tariff_plan_subscriptions, :invalid) if tariff_plan_subscriptions.any? { _1.errors.present? }
   end
 end

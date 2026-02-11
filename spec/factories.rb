@@ -68,10 +68,6 @@ FactoryBot.define do
     website { "https://at-t.com" }
     with_oauth_application
 
-    trait :billing_enabled do
-      billing_enabled { true }
-    end
-
     trait :restricted do
       restricted { true }
     end
@@ -242,6 +238,10 @@ FactoryBot.define do
 
     trait :carrier do
       admin
+    end
+
+    trait :customer do
+      carrier_role { nil }
     end
 
     trait :invited do
@@ -415,6 +415,13 @@ FactoryBot.define do
     region { "hydrogen" }
     external_id { SecureRandom.uuid }
 
+    transient do
+      price { nil }
+    end
+
+    price_cents { price.cents if price.present? }
+    price_unit { price.currency if price.present? }
+
     trait :routable do
       association :account, factory: %i[account with_sip_trunk]
     end
@@ -480,6 +487,7 @@ FactoryBot.define do
 
   factory :message do
     account
+    outbound
     carrier { account.carrier }
     sms_gateway { association :sms_gateway, carrier: account.carrier }
     to { "85512334667" }
@@ -488,6 +496,13 @@ FactoryBot.define do
     body { "Hello World" }
     segments { 1 }
     encoding { "GSM" }
+
+    transient do
+      price { nil }
+    end
+
+    price_cents { price.cents if price.present? }
+    price_unit { price.currency if price.present? }
 
     trait :robot do
       inbound
@@ -501,6 +516,10 @@ FactoryBot.define do
       received_at { Time.current }
       sms_url { "https://example.com/messaging.xml" }
       sms_method { "POST" }
+    end
+
+    trait :outbound do
+      direction { :outbound_api }
     end
 
     trait :internal do
@@ -601,10 +620,14 @@ FactoryBot.define do
 
   factory :tariff do
     carrier { association :carrier, billing_currency: "USD" }
-    currency { carrier.billing_currency }
     call
 
-    rate_cents { InfinitePrecisionMoney.new(10, currency).cents }
+    transient do
+      rate { InfinitePrecisionMoney.new(10, carrier.billing_currency) }
+    end
+
+    rate_cents { rate.cents }
+    currency { rate.currency }
 
     traits_for_enum :category, %w[call message]
   end
@@ -619,6 +642,25 @@ FactoryBot.define do
     carrier
     outbound_calls
     sequence(:name) { |n| "Standard#{n}" }
+
+    trait :configured do
+      transient do
+        destination_prefixes { [ "855" ] }
+        rate { InfinitePrecisionMoney.from_amount(0.05, carrier.billing_currency) }
+        tariff_schedule { build(:tariff_schedule, carrier:, category:) }
+        destination_group { build(:destination_group, carrier:, prefixes: destination_prefixes) }
+        tariff { build(:tariff, carrier:, rate:, category: tariff_schedule.category.tariff_category) }
+      end
+
+      after(:build) do |tariff_plan, evaluator|
+        tariff_plan.tiers << build(:tariff_plan_tier, plan: tariff_plan, schedule: evaluator.tariff_schedule)
+        evaluator.tariff_schedule.destination_tariffs << build(
+          :destination_tariff,
+          destination_group: evaluator.destination_group,
+          tariff: evaluator.tariff
+        )
+      end
+    end
   end
 
   factory :tariff_plan_tier do
@@ -649,10 +691,11 @@ FactoryBot.define do
   factory :tariff_plan_subscription do
     transient do
       carrier { build(:carrier) }
+      plan_category { :outbound_calls }
     end
 
     account { association(:account, carrier:) }
-    plan { association(:tariff_plan, carrier: account.carrier) }
+    plan { association(:tariff_plan, carrier: account.carrier, category: plan_category) }
     category { plan.category }
   end
 
@@ -870,5 +913,100 @@ FactoryBot.define do
   factory :message_send_request do
     message
     sms_gateway { message.sms_gateway }
+  end
+
+  factory :balance_transaction do
+    transient do
+      amount { Money.from_amount(100, account.billing_currency) }
+    end
+
+    carrier { account.carrier }
+    account
+    charge
+    amount_cents { amount.cents }
+    currency { amount.currency }
+
+    trait :topup do
+      type { :topup }
+      amount_cents { 10000 }
+      currency { account.billing_currency }
+    end
+
+    trait :charge do
+      type { :charge }
+      amount_cents { -10000 }
+      charge_source_id { SecureRandom.uuid }
+      currency { account.billing_currency }
+    end
+
+    trait :for_phone_call do
+      charge
+      phone_call { association(:phone_call, account:, price: amount) }
+      charge_category { phone_call.tariff_schedule_category }
+      charge_source_id { phone_call.external_id }
+    end
+
+    trait :for_message do
+      charge
+      message { association(:message, account:, price: amount) }
+      charge_category { message.tariff_schedule_category }
+      charge_source_id { message.id }
+    end
+  end
+
+  factory :rating_engine_cdr_response, class: Hash do
+    success
+
+    order_id { 123 }
+    account { SecureRandom.uuid }
+    origin_id { SecureRandom.uuid }
+    category { "outbound_calls" }
+    extra_fields { {} }
+    extra_info { "" }
+
+    trait :success do
+      cost { 100 }
+    end
+
+    trait :failed do
+      cost { -1 }
+    end
+
+    trait :max_usage_exceeded do
+      failed
+      extra_info { "MAX_USAGE_EXCEEDED" }
+    end
+
+    trait :insufficient_credit do
+      failed
+      extra_info { "INSUFFICIENT_CREDIT_BALANCE_BLOCKER" }
+    end
+
+    trait :invalid_account do
+      failed
+      extra_info { "INVALID_ACCOUNT" }
+    end
+
+    initialize_with do
+      {
+        "OrderID" => order_id,
+        "OriginID" => origin_id,
+        "Account" => account,
+        "Cost" => cost,
+        "ExtraFields" => extra_fields,
+        "ExtraInfo" => extra_info,
+        "Category" => category
+      }
+    end
+  end
+
+  factory :rating_engine_account_response, class: Hash do
+    balance { nil }
+
+    initialize_with do
+      {
+        "BalanceMap" => balance && { "*monetary" => [ { "Value" => balance } ] }
+      }
+    end
   end
 end

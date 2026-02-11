@@ -3,7 +3,6 @@ class CarrierSettingsForm
   include ActiveModel::Attributes
 
   COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
-  CURRENCIES = ISO3166::Country.all.map { |country| Money::Currency.new(country.currency_code) if Money::Currency.find(country.currency_code) }.reject(&:blank?).uniq.freeze
 
   class HostnameValidator < ActiveModel::EachValidator
     RESTRICTED_DOMAINS = [
@@ -27,8 +26,6 @@ class CarrierSettingsForm
   attribute :carrier
   attribute :name
   attribute :country
-  attribute :billing_enabled, :boolean, default: false
-  attribute :billing_currency, CurrencyType.new
   attribute :website
   attribute :subdomain, SubdomainType.new
   attribute :custom_app_host, HostnameType.new
@@ -42,7 +39,7 @@ class CarrierSettingsForm
   delegate :persisted?, :id, to: :carrier
 
   validates :name, presence: true
-  validates :country, inclusion: { in: COUNTRIES }
+  validates :country, presence: true, inclusion: { in: COUNTRIES }
   validates :website, presence: true, url_format: { allow_http: true, allow_blank: true }
   validates :webhook_url, url_format: { allow_http: true }, allow_blank: true
   validates :subdomain, presence: true,
@@ -53,7 +50,6 @@ class CarrierSettingsForm
             hostname: { scope: ->(form) { Carrier.where.not(id: form.carrier.id) } }
 
   validates :custom_api_host, comparison: { other_than: :custom_app_host, allow_blank: true }
-  validates :billing_currency, inclusion: { in: CURRENCIES }
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "CarrierSettings")
@@ -66,15 +62,13 @@ class CarrierSettingsForm
       subdomain: carrier.subdomain,
       website: carrier.website,
       country: carrier.country_code,
-      billing_enabled: carrier.billing_enabled?,
-      billing_currency: carrier.billing_currency,
       logo: carrier.logo,
       favicon: carrier.favicon,
       webhook_url: carrier.webhook_endpoint&.url,
       enable_webhooks: carrier.webhooks_enabled?,
       custom_app_host: carrier.custom_app_host,
       custom_api_host: carrier.custom_api_host,
-      default_tariff_package_id: carrier.default_tariff_package_id
+      default_tariff_package_id: carrier.default_tariff_package_id,
     )
   end
 
@@ -87,10 +81,8 @@ class CarrierSettingsForm
       subdomain:,
       custom_app_host:,
       custom_api_host:,
-      billing_enabled:,
-      billing_currency:,
       country_code: country,
-      default_tariff_package: (carrier.tariff_packages.find(default_tariff_package_id) if default_tariff_package_id.present?)
+      default_tariff_package: (carrier.tariff_packages.find(default_tariff_package_id) if default_tariff_package_id.present?),
     }
 
     webhook_endpoint.enabled = enable_webhooks
@@ -113,10 +105,6 @@ class CarrierSettingsForm
 
   def webhooks_disabled?
     webhook_configured? && !carrier.webhook_endpoint.enabled?
-  end
-
-  def available_currencies
-    CURRENCIES.sort_by(&:priority)
   end
 
   def tariff_packages_options_for_select

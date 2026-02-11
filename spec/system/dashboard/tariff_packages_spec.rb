@@ -36,15 +36,19 @@ RSpec.describe "Tariff Packages" do
     fill_in("Name", with: "My Package")
     fill_in("Description", with: "My description")
     within(".outbound-messages-line-item") do
+      check("Enabled")
       enhanced_select("Outbound messages (Standard)", from: "Plan")
     end
     within(".inbound-messages-line-item") do
+      check("Enabled")
       enhanced_select("Inbound messages (Standard)", from: "Plan")
     end
     within(".outbound-calls-line-item") do
+      check("Enabled")
       enhanced_select("Outbound calls (Standard)", from: "Plan")
     end
     within(".inbound-calls-line-item") do
+      check("Enabled")
       enhanced_select("Inbound calls (Standard)", from: "Plan")
     end
     click_on("Create Tariff package")
@@ -68,6 +72,7 @@ RSpec.describe "Tariff Packages" do
 
     fill_in("Name", with: "My Package")
     within(".outbound-calls-line-item") do
+      check("Enabled")
       enhanced_select("Outbound calls (Standard)", from: "Plan")
     end
     click_on("Create Tariff package")
@@ -167,10 +172,11 @@ RSpec.describe "Tariff Packages" do
     fill_in("Name", with: "My package name")
     fill_in("Description", with: "My package description")
     within(".outbound-messages-line-item") do
+      check("Enabled")
       enhanced_select("Outbound messages (Standard)", from: "Plan")
     end
     within(".inbound-calls-line-item") do
-      enhanced_select("", from: "Plan")
+      uncheck("Enabled")
     end
     click_on("Update Tariff package")
 

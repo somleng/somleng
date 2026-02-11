@@ -54,7 +54,7 @@ RSpec.describe "Accounts" do
     )
     user = create(:user, :carrier, carrier:)
 
-    stub_rating_engine_request
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit dashboard_accounts_path
     click_on("New")
@@ -62,7 +62,6 @@ RSpec.describe "Accounts" do
     fill_in "Name", with: "Rocket Rides"
     fill_in "Calls per second", with: 2
     enhanced_select("Basic.Slt", from: "Default TTS voice")
-    check("Billing enabled")
     enhanced_select("Prepaid", from: "Billing mode")
     click_on("Create Account")
 
@@ -99,14 +98,17 @@ RSpec.describe "Accounts" do
 
   it "Show an account" do
     carrier = create(:carrier, billing_currency: "USD")
-    account = create(:account, carrier:)
+    account = create(:account, carrier:, billing_enabled: true)
     user = create(:user, :carrier, carrier: account.carrier)
 
+    stub_rating_engine_balance_request(balance: 10000)
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
     within("#billing") do
       expect(page).to have_content("United States Dollar")
+      expect(page).to have_content("$100.00")
+      expect(page).to have_link("View", href: dashboard_balance_transactions_path(filter: { account_id: account.id }))
       expect(page).to have_link("Manage", href: dashboard_phone_number_plans_path(filter: { account_id: account.id }))
     end
 
@@ -150,7 +152,7 @@ RSpec.describe "Accounts" do
     )
     sip_trunk = create(:sip_trunk, carrier:, name: "Main SIP Trunk")
 
-    stub_rating_engine_request
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_on("Edit")
@@ -159,7 +161,9 @@ RSpec.describe "Accounts" do
     fill_in("Owner's email", with: "johndoe@example.com")
     enhanced_select("Basic.Slt", from: "Default TTS voice")
     uncheck("Billing enabled")
-    uncheck("Enabled")
+    within("#danger-zone") do
+      uncheck("Enabled")
+    end
 
     perform_enqueued_jobs do
       click_on("Update Account")
@@ -189,7 +193,7 @@ RSpec.describe "Accounts" do
       carrier: user.carrier
     )
 
-    stub_rating_engine_request
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
@@ -209,23 +213,36 @@ RSpec.describe "Accounts" do
     account = create(
       :account,
       :customer_managed,
+      :billing_enabled,
       :enabled,
       carrier:,
       default_tts_voice: "Basic.Slt",
     )
-    existing_tariff_plan_subscription = create(
-      :tariff_plan_subscription,
-      account:,
-      plan: create(
-        :tariff_plan,
-        :outbound_calls,
-        carrier:,
-        name: "Standard"
+    existing_tariff_plan_subscriptions = [
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan: create(
+          :tariff_plan,
+          :outbound_calls,
+          carrier:,
+          name: "Standard"
+        )
+      ),
+      create(
+        :tariff_plan_subscription,
+        account:,
+        plan: create(
+          :tariff_plan,
+          :inbound_calls,
+          carrier:,
+          name: "Standard"
+        )
       )
-    )
+    ]
     user = create(:user, :carrier, carrier:)
 
-    stub_rating_engine_request
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
@@ -233,8 +250,14 @@ RSpec.describe "Accounts" do
     expect(page).to have_enhanced_select("Default TTS voice", disabled: true)
 
     enhanced_select("Main SIP Trunk", from: "SIP trunk")
+
     within(".outbound-messages-line-item") do
+      check("Enabled")
       enhanced_select("Outbound messages (Standard)", from: "Plan")
+    end
+
+    within(".inbound-calls-line-item") do
+      uncheck("Enabled")
     end
 
     click_on("Update Account")
@@ -242,14 +265,16 @@ RSpec.describe "Accounts" do
     expect(page).to have_content("Account was successfully updated")
     expect(page).to have_content("Basic.Slt (Female, en-US)")
     expect(page).to have_content("Customer managed")
+
     expect(page).to have_link(
       "Outbound messages (Standard)",
       href: dashboard_tariff_plan_path(tariff_plan)
     )
     expect(page).to have_link(
       "Outbound calls (Standard)",
-      href: dashboard_tariff_plan_path(existing_tariff_plan_subscription.plan)
+      href: dashboard_tariff_plan_path(existing_tariff_plan_subscriptions[0].plan)
     )
+    expect(page).to have_no_link("Inbound calls (Standard)")
   end
 
   it "Resend invitation" do
@@ -257,6 +282,7 @@ RSpec.describe "Accounts" do
     account = create(:account, carrier: user.carrier)
     invited_user = create(:user, :invited, email: "johndoe@example.com")
     create(:account_membership, :owner, account:, user: invited_user)
+    stub_rating_engine_balance_request
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
@@ -281,12 +307,16 @@ RSpec.describe "Accounts" do
       carrier:,
     )
 
-    stub_rating_engine_request
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
     click_on "Delete"
 
     expect(page).to have_no_content("Rocket Rides")
+  end
+
+  def stub_rating_engine_balance_request(**)
+    stub_rating_engine_request(result: build(:rating_engine_account_response, **))
   end
 end

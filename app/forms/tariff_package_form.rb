@@ -9,6 +9,7 @@ class TariffPackageForm < ApplicationForm
 
   validates :name, presence: true
   validate :validate_name
+  validate :validate_plans
 
   delegate :persisted?, :new_record?, :id, to: :object
 
@@ -24,7 +25,10 @@ class TariffPackageForm < ApplicationForm
 
   def plans=(value)
     super
-    plans.each { _1.package = object }
+    plans.each do |package_plan|
+      package_plan.package = object
+      package_plan.object = object.package_plans.find(package_plan.id) if package_plan.id.present?
+    end
   end
 
   def self.initialize_with(tariff_package)
@@ -48,15 +52,13 @@ class TariffPackageForm < ApplicationForm
 
     ApplicationRecord.transaction do
       object.save!
-      filled_plans.all? { _1.save }
+      result = plans.all? { _1.save }
+      object.package_plans.reset
+      result
     end
   end
 
   private
-
-  def filled_plans
-    plans.select(&:filled?)
-  end
 
   def build_plans
     default_plans = TariffSchedule.category.values.map { |category| TariffPackagePlanForm.new(category:) }
@@ -72,5 +74,15 @@ class TariffPackageForm < ApplicationForm
     return unless carrier.tariff_packages.where.not(id: object.id).exists?(name:)
 
     errors.add(:name, :taken)
+  end
+
+  def validate_plans
+    if plans.select(&:enabled).blank?
+      plans.first.errors.add(:plan_id, :blank)
+      return errors.add(:plans, :invalid)
+    end
+
+    plans.each(&:valid?)
+    errors.add(:plans, :invalid) if plans.any? { _1.errors.present? }
   end
 end

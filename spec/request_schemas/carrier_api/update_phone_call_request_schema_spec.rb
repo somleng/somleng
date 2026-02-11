@@ -77,7 +77,7 @@ module CarrierAPI
       )
 
       expect(schema.output).to eq(
-        price: -0.01,
+        price_cents: -1,
         price_unit: "USD"
       )
     end

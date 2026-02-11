@@ -15,7 +15,7 @@ Shoryuken.configure_server do |config|
   end
 
   # `JobWrapper` is defined before initializer
-  ActiveJob::QueueAdapters::ShoryukenAdapter::JobWrapper.shoryuken_options(
+  Shoryuken::ActiveJob::JobWrapper.shoryuken_options(
     retry_intervals: ->(attempts) { ExponentialBackoff.new.delay(attempt: attempts) },
     auto_visibility_timeout: true
   )

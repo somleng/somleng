@@ -9,6 +9,7 @@ class MessageDashboard < Administrate::BaseDashboard
     incoming_phone_number: Field::BelongsTo,
     sms_gateway: Field::BelongsTo,
     messaging_service: Field::BelongsTo,
+    balance_transaction: Field::HasOne,
     channel: Field::String,
     body: Field::String,
     segments: Field::String,
@@ -59,6 +60,7 @@ class MessageDashboard < Administrate::BaseDashboard
     incoming_phone_number
     sms_gateway
     messaging_service
+    balance_transaction
     channel
     body
     segments

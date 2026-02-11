@@ -41,7 +41,7 @@ module Dashboard
     def permitted_params
       params.require(:tariff_package).permit(
         :name, :description,
-        plans: [ :id, :plan_id, :category ]
+        plans: [ :id, :plan_id, :category, :enabled ]
       )
     end
 

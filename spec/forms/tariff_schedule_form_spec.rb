@@ -38,6 +38,16 @@ RSpec.describe TariffScheduleForm do
   end
 
   describe "destination_groups" do
+    it "validates at least one destination group" do
+      destination_tariff = create(:destination_tariff)
+
+      form = TariffScheduleForm.initialize_with(destination_tariff.schedule)
+      form.destination_tariffs = [ build_destination_tariff_form(id: destination_tariff.id, _destroy: true) ]
+      form.valid?
+
+      expect(form.errors[:destination_tariffs]).to be_present
+    end
+
     it "validates the destination groups are unique on create" do
       carrier = create(:carrier)
       destination_group = create(:destination_group, carrier:)
@@ -111,6 +121,47 @@ RSpec.describe TariffScheduleForm do
             tariff: have_attributes(
               rate: InfinitePrecisionMoney.from_amount(0.005, "USD")
             )
+          )
+        )
+      )
+    end
+
+    it "updates a tariff schedule" do
+      carrier = create(:carrier)
+      new_destination_group = create(:destination_group, carrier:)
+
+      tariff_schedule = create(:tariff_schedule, carrier:)
+      retained_destination_tariff = create(:destination_tariff, schedule: tariff_schedule)
+      deleted_destination_tariff = create(:destination_tariff, schedule: tariff_schedule)
+
+      form = TariffScheduleForm.initialize_with(tariff_schedule)
+      form.attributes = {
+        destination_tariffs: [
+          {
+            id: retained_destination_tariff.id,
+            destination_group_id: retained_destination_tariff.destination_group_id,
+            rate: "0.001"
+          },
+          {
+            id: deleted_destination_tariff.id,
+            _destroy: true
+          },
+          {
+            destination_group_id: new_destination_group.id,
+            rate: "0.001"
+          }
+        ]
+      }
+
+      result = form.save
+
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
+        destination_tariffs: contain_exactly(
+          retained_destination_tariff,
+          have_attributes(
+            persisted?: true,
+            destination_group: new_destination_group,
           )
         )
       )

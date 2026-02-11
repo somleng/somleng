@@ -4,8 +4,10 @@
   <% end %>
 <% end %>
 
-<h1>Login</h1>
-<p class="text-muted">Sign In to your account</p>
+<% content_for(:page_title) do %>
+  Sign In
+<% end %>
+
 <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { turbo: false } }) do |f| %>
   <%= f.input :email, required: false, autofocus: true, input_html: { autocomplete: "email" } %>
   <%= f.input :password, required: false, input_html: { autocomplete: "current-password" } %>

@@ -31,7 +31,7 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
-  # config.active_job.queue_adapter = :async
+  config.active_job.queue_adapter = Rails.configuration.app_settings.fetch(:active_job_queue_adapter, :async)
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local

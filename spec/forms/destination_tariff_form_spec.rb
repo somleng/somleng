@@ -58,7 +58,7 @@ RSpec.describe DestinationTariffForm do
 
       form.save
 
-      expect(form.object.reload).to have_attributes(
+      expect(form.object).to have_attributes(
         persisted?: true,
         schedule:,
         destination_group: destination_tariff.destination_group,

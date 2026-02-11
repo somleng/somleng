@@ -3,8 +3,11 @@ require "rails_helper"
 module TwilioAPI
   RSpec.describe MessageRequestSchema, type: :request_schema do
     it "validates To" do
-      account = create(:account)
-      create(:sms_gateway, carrier: account.carrier)
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      billing_enabled_account = create(:account, :billing_enabled, carrier:)
+      unreachable_carrier_account = create(:account)
+      create(:sms_gateway, carrier:)
 
       expect(
         validate_request_schema(
@@ -18,8 +21,22 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            To: "855716100235"
-          }
+            To: "855716100235",
+            From: create(:incoming_phone_number, account: billing_enabled_account).number.to_s,
+            Body: "Hello World"
+          },
+          options: { account: billing_enabled_account }
+        )
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:subscription_disabled).message)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            To: "855716100235",
+            From: create(:incoming_phone_number, account: unreachable_carrier_account).number.to_s,
+            Body: "Hello World"
+          },
+          options: { account: unreachable_carrier_account }
         )
       ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:unreachable_carrier).message)
 
@@ -282,11 +299,13 @@ module TwilioAPI
           To: "85568308531",
           MessagingServiceSid: messaging_service.id,
           SendAt: send_at.iso8601,
+          ScheduleType: "fixed",
           Body: "Hello World ✽"
         },
         options: { account: }
       )
 
+      expect(schema.success?).to be(true)
       expect(schema.output).to include(
         from: nil,
         incoming_phone_number: nil,

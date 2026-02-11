@@ -19,20 +19,14 @@ class TariffPackageTariffForm < ApplicationForm
 
   def save
     return false if invalid?
-    return true unless enabled
+    return true unless enabled?
 
     ApplicationRecord.transaction do
-      plan = carrier.tariff_plans.create!(name:, category:)
-      package.package_plans.create!(package:, plan:, category:)
-      schedule = carrier.tariff_schedules.create!(name:, category:)
-      plan.tiers.create!(plan:, schedule:)
-      destination_group = carrier.destination_groups.find_or_create_by!(catch_all: true)
-      tariff = carrier.tariffs.create!(
-        rate_cents: InfinitePrecisionMoney.from_amount(rate, billing_currency).cents,
-        currency: billing_currency,
-        category: category.tariff_category
+      CreateTariffPackagePlanWithDefaults.call(
+        package:,
+        category:,
+        rate: InfinitePrecisionMoney.from_amount(rate, billing_currency)
       )
-      schedule.destination_tariffs.create!(destination_group:, tariff:)
     end
   end
 
@@ -42,6 +36,10 @@ class TariffPackageTariffForm < ApplicationForm
 
   def hint
     "Enter the rate for #{category.humanize.downcase} in #{billing_currency.name}."
+  end
+
+  def enabled?
+    !!enabled
   end
 
   private

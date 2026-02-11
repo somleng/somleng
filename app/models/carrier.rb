@@ -12,11 +12,11 @@ class Carrier < ApplicationRecord
   has_many :phone_number_plans
   has_many :incoming_phone_numbers, class_name: "IncomingPhoneNumber"
   has_many :available_phone_numbers, -> { available }, class_name: "PhoneNumber"
-  has_many :messages, -> { where(internal: false) }
+  has_many :messages
   has_many :messaging_services
   has_many :verification_services
   has_many :verifications
-  has_many :phone_calls, -> { where(internal: false) }
+  has_many :phone_calls
   has_many :events
   has_many :error_logs
   has_many :interactions
@@ -31,16 +31,13 @@ class Carrier < ApplicationRecord
   has_many :tariffs
   has_many :destination_tariffs, through: :tariff_schedules
   has_many :destination_groups
+  has_many :balance_transactions
   belongs_to :default_tariff_package, class_name: "TariffPackage", optional: true
 
   has_one_attached :logo
   has_one_attached :favicon
 
   attribute :billing_currency, CurrencyType.new
-
-  def self.billing_enabled
-    where(billing_enabled: true)
-  end
 
   def country
     ISO3166::Country.new(country_code)

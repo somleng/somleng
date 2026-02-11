@@ -16,6 +16,7 @@ class Message < ApplicationRecord
   belongs_to :incoming_phone_number, optional: true
   belongs_to :messaging_service, optional: true
   has_one :interaction
+  has_one :balance_transaction
   has_many :events
   has_one :send_request, class_name: "MessageSendRequest"
 
@@ -54,7 +55,7 @@ class Message < ApplicationRecord
     end
 
     event :mark_as_failed do
-      transitions from: %i[accepted queued sending sent], to: :failed
+      transitions from: %i[accepted queued sending sent received], to: :failed
     end
 
     event :cancel do
@@ -66,6 +67,10 @@ class Message < ApplicationRecord
     direction.in?(%w[outbound_api outbound outbound_call outbound_reply])
   end
 
+  def tariff_schedule_category
+    TariffScheduleCategoryType.new.cast(outbound? ? :outbound_messages : :inbound_messages)
+  end
+
   def complete?
     status.in?(%w[sent failed received])
   end
@@ -74,6 +79,10 @@ class Message < ApplicationRecord
     return false if validity_period.blank?
 
     (queued_at + validity_period.seconds).past?
+  end
+
+  def price
+    InfinitePrecisionMoney.new(price_cents, price_unit) if price_cents.present?
   end
 
   private

@@ -57,5 +57,9 @@ module TwilioAPI
     def collection_name
       "messages"
     end
+
+    def price
+      object.price_formatted
+    end
   end
 end

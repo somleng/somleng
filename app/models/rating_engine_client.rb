@@ -1,11 +1,71 @@
 class RatingEngineClient
   attr_reader :client
 
+  LOAD_ID = "somleng.org"
+  BALANCE_TYPE = "*monetary"
+  ROUNDING_DECIMALS = 4
+  ROUNDING_METHOD = "*up"
+  RATE_UNIT = "60s"
+  RATE_INCREMENT = "60s"
+
+  RATE_ATTRIBUTES = {
+    call: {
+      unit: "60s",
+      increment: "60s",
+      tor: "*voice"
+    },
+    message: {
+      unit: "1",
+      increment: "1",
+      tor: "*sms"
+    }
+  }
+
+  CDR = Data.define(:id, :origin_id, :category, :account_id, :cost, :balance_transaction_id, :extra_info, :success?)
+
+  ERROR_CODES = {
+    "MAX_USAGE_EXCEEDED" => :insufficient_balance,
+    "INSUFFICIENT_CREDIT_BALANCE_BLOCKER" => :insufficient_balance,
+    "RATING_PLAN_NOT_FOUND" => :subscription_disabled,
+    "UNAUTHORIZED_DESTINATION" => :destination_blocked
+  }
+
   def initialize(**options)
-    @client = options.fetch(:client) { CGRateS::Client.new }
+    @client = options.fetch(:client) { AppSettings.stub_rating_engine? ? CGRateS::FakeClient.new : CGRateS::Client.new }
   end
 
   class APIError < StandardError; end
+  class FailedCDRError < APIError
+    attr_reader :error_code
+
+    def initialize(message, error_code:)
+      super(message)
+      @error_code = error_code
+    end
+  end
+
+  def account_balance(account)
+    response = handle_request do
+      client.get_account(
+        tenant: account.carrier_id,
+        account: account.id,
+      )
+    end
+
+    value = response.result.dig("BalanceMap", BALANCE_TYPE, 0, "Value")
+    value = 0 if value.blank?
+
+    Money.new(value, account.billing_currency)
+  end
+
+  def upsert_charging_profile(carrier)
+    handle_request do
+      client.set_charger_profile(
+        tenant: carrier.id,
+        id: carrier.id
+      )
+    end
+  end
 
   def upsert_destination_group(destination_group)
     handle_request do
@@ -23,11 +83,17 @@ class RatingEngineClient
 
       destination_tariffs.each do |destination_tariff|
         tariff = destination_tariff.tariff
+        rate_attributes = RATE_ATTRIBUTES.fetch(tariff.category.to_sym)
+
         client.set_tp_rate(
           tp_id: tariff_schedule.carrier_id,
           id: tariff.id,
           rate_slots: [
-            { rate: tariff.rate.to_f, rate_unit: "60s", rate_increment: "60s" }
+            {
+              rate: tariff.rate_cents.to_f,
+              rate_unit: rate_attributes.fetch(:unit),
+              rate_increment: rate_attributes.fetch(:increment)
+            }
           ]
         )
       end
@@ -37,10 +103,10 @@ class RatingEngineClient
         id: tariff_schedule.id,
         destination_rates: destination_tariffs.map do |destination_tariff|
           {
-            rounding_decimals: 4,
+            rounding_decimals: ROUNDING_DECIMALS,
             rate_id: destination_tariff.tariff_id,
             destination_id: destination_tariff.destination_group_id,
-            rounding_method: "*up"
+            rounding_method: ROUNDING_METHOD
           }
         end
       )
@@ -69,6 +135,8 @@ class RatingEngineClient
           }
         end
       )
+
+      refresh_carrier_rates(tariff_plan.carrier)
     end
   end
 
@@ -78,50 +146,29 @@ class RatingEngineClient
         tp_id: tariff_plan.carrier_id,
         id: tariff_plan.id,
       )
+      client.remove_rating_plan(tariff_plan.id)
     end
   end
 
   def upsert_account(account)
     handle_request do
+      provision_account(account)
+
       account.tariff_plan_subscriptions.each do |subscription|
-        client.set_tp_rating_profile(
-          tp_id: account.carrier_id,
-          load_id: "somleng.org",
-          category: subscription.category,
-          tenant: "cgrates.org",
-          subject: account.id,
-          rating_plan_activations: [
-            {
-              activation_time: subscription.created_at.iso8601,
-              rating_plan_id: subscription.plan_id
-            }
-          ]
-        )
+        create_tariff_plan_subscription(subscription)
       end
 
       subscribed_categories = account.tariff_plan_subscriptions.pluck(:category)
-      all_categories = TariffPlanSubscription.category.values
-      (all_categories - subscribed_categories).each do |category|
-        client.remove_tp_rating_profile(
-          tp_id: account.carrier_id,
-          load_id: "somleng.org",
-          category:,
-          tenant: "cgrates.org",
-          subject: account.id,
-        )
+      (TariffPlanSubscription.category.values - subscribed_categories).each do |category|
+        destroy_tariff_plan_subscription(account:, category:)
       end
-
-      client.set_account(
-        tenant: "cgrates.org",
-        account: account.id,
-      )
     end
   end
 
   def destroy_account(account)
     handle_request do
       client.remove_account(
-        tenant: "cgrates.org",
+        tenant: account.carrier_id,
         account: account.id,
       )
     end
@@ -130,8 +177,94 @@ class RatingEngineClient
   def refresh_carrier_rates(carrier)
     handle_request do
       client.load_tariff_plan_from_stor_db(
-        tp_id: carrier.id,
+        tp_id: carrier.id
       )
+    end
+  end
+
+  def update_account_balance(balance_transaction)
+    handle_request do
+      params = {
+        tenant: balance_transaction.carrier_id,
+        account: balance_transaction.account_id,
+        balance_type: BALANCE_TYPE,
+        value: balance_transaction.amount_cents.abs,
+        balance: {
+          id: balance_transaction.account_id,
+          blocker: true
+        },
+        overwrite: false,
+        cdrlog: true,
+        action_extra_data: {
+          balance_transaction_id: balance_transaction.id
+        }
+      }
+
+      if balance_transaction.credit?
+        client.add_balance(**params)
+      else
+        client.debit_balance(**params)
+      end
+    end
+  end
+
+  def create_message_charge(message)
+    rate_attributes = RATE_ATTRIBUTES.fetch(message.tariff_schedule_category.tariff_category.to_sym)
+
+    handle_request do
+      client.process_external_cdr(
+        category: message.tariff_schedule_category.to_s,
+        request_type: "*#{message.account.billing_mode}",
+        tor: rate_attributes.fetch(:tor),
+        tenant: message.carrier_id,
+        account: message.account_id,
+        destination: message.to,
+        answer_time: message.created_at.iso8601,
+        setup_time: message.created_at.iso8601,
+        usage: message.segments.to_s,
+        origin_id: message.id
+      )
+
+      response = client.get_cdrs(origin_ids: [ message.id ])
+
+      cdr = build_cdr(response.result[0])
+      return if cdr.success?
+
+      raise FailedCDRError.new(cdr.extra_info, error_code: ERROR_CODES.fetch(cdr.extra_info)) if ERROR_CODES.key?(cdr.extra_info)
+      raise APIError.new(cdr.extra_info)
+    end
+  end
+
+  def fetch_cdrs(last_id:, limit:)
+    response = client.get_cdrs(
+      not_costs: [ -1 ],
+      order_by: "OrderID",
+      extra_args: { "OrderIDStart" => last_id.to_i },
+      limit:
+    )
+
+    response.result.map { |it| build_cdr(it) }
+  rescue CGRateS::Client::NotFoundError
+    []
+  rescue CGRateS::Client::APIError => e
+    raise APIError.new(e.message)
+  end
+
+  def sufficient_balance?(interaction)
+    category = interaction.tariff_schedule_category
+    rate_attributes = RATE_ATTRIBUTES.fetch(category.tariff_category.to_sym)
+
+    handle_request do
+      response = client.get_max_usage(
+        tenant: interaction.account.carrier_id,
+        account: interaction.account.id,
+        category: category.to_s,
+        destination: interaction.to.value,
+        request_type: "*#{interaction.account.billing_mode}",
+        tor: rate_attributes.fetch(:tor)
+      )
+
+      response.result.positive?
     end
   end
 
@@ -141,5 +274,67 @@ class RatingEngineClient
     yield
   rescue CGRateS::Client::APIError => e
     raise APIError.new(e.message)
+  end
+
+  def build_cdr(response)
+    cost = response.fetch("Cost")
+    CDR.new(
+      id: response.fetch("OrderID"),
+      account_id: response.fetch("Account"),
+      cost:,
+      balance_transaction_id: response.dig("ExtraFields", "balance_transaction_id"),
+      extra_info: response.fetch("ExtraInfo"),
+      origin_id: response.fetch("OriginID"),
+      category: response.fetch("Category"),
+      success?: !cost.negative?
+    )
+  end
+
+  def provision_account(account)
+    client.set_account(tenant: account.carrier_id, account: account.id)
+    client.add_balance(
+      tenant: account.carrier_id,
+      account: account.id,
+      balance_type: BALANCE_TYPE,
+      value: 0,
+      balance: {
+        id: account.id,
+        blocker: true
+      },
+      overwrite: false,
+      cdrlog: false
+    )
+  end
+
+  def create_tariff_plan_subscription(subscription)
+    params = {
+      category: subscription.category,
+      tenant: subscription.account.carrier_id,
+      subject: subscription.account_id,
+      rating_plan_activations: [
+        {
+          activation_time: Time.current.utc.iso8601,
+          rating_plan_id: subscription.plan_id
+        }
+      ]
+    }
+
+    client.set_tp_rating_profile(tp_id: subscription.account.carrier_id, load_id: LOAD_ID, **params)
+    client.set_rating_profile(overwrite: true, **params)
+  end
+
+  def destroy_tariff_plan_subscription(account:, category:)
+    params = {
+      category:,
+      tenant: account.carrier_id,
+      subject: account.id
+    }
+
+    client.remove_tp_rating_profile(
+      tp_id: account.carrier_id,
+      load_id: LOAD_ID,
+      **params
+    )
+    client.remove_rating_profile(**params)
   end
 end

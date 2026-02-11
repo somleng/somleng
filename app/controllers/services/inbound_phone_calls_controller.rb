@@ -8,7 +8,7 @@ module Services
         schema_options: { error_log_messages: },
         on_error: ->(schema) { handle_errors(schema) }
       ) do |permitted_params|
-        CreateInboundPhoneCall.call(permitted_params, logger:)
+        CreateInboundPhoneCall.call(permitted_params)
       end
     end
 

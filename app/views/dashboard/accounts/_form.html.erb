@@ -66,53 +66,64 @@
       )
     %>
 
-    <div class="card mb-3" data-controller="tariff-package-selection" data-tariff-package-selection-plans-value="<%= f.object.tariff_plans_by_category.to_json %>">
+    <div class="card mb-3" data-controller="tariff-package-selection toggle-form-section" data-tariff-package-selection-plans-value="<%= f.object.tariff_plans_by_category.to_json %>">
       <div class="card-body">
         <h5 class="card-title">Billing</h5>
 
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :billing_enabled, as: :boolean, wrapper: :custom_boolean_switch %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <%= f.input :billing_mode, include_blank: false, input_html: { data: { controller: "enhanced-select" } } %>
-          </div>
-
-          <div class="col-sm-6">
-            <% if f.object.new_record? %>
-              <%= f.input(
-                :tariff_package_id,
-                collection: f.object.tariff_packages_options_for_select,
-                include_blank: "Configure manually",
-                input_html: {
-                  data: {
-                    controller: "enhanced-select",
-                    enhanced_select_options: {
-                      removeItemButton: true
-                    },
-                    tariff_package_selection_target: "tariffPackageInput",
-                    action: "change->tariff-package-selection#changeTariffPackage"
-                  }
+            <%= f.input(
+              :billing_enabled,
+              as: :boolean,
+              wrapper: :custom_boolean_switch,
+              input_html: {
+                data: {
+                  toggle_form_section_target: "enabledInput",
+                  action: "toggle-form-section#toggleEnabled"
                 }
-              ) %>
-            <% end %>
+              }
+            ) %>
           </div>
         </div>
 
-        <%= render(
-          "shared/tariff_plan_assignment_form",
-          form: f,
-          collection: f.object.tariff_plan_subscriptions,
-          collection_method: :tariff_plan_subscriptions
-        ) %>
+        <div data-toggle-form-section-target="container">
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input :billing_mode, include_blank: false, input_html: { data: { controller: "enhanced-select" } } %>
+            </div>
 
+            <div class="col-sm-6">
+              <% if f.object.new_record? %>
+                <%= f.input(
+                  :tariff_package_id,
+                  collection: f.object.tariff_packages_options_for_select,
+                  include_blank: "Configure manually",
+                  input_html: {
+                    data: {
+                      controller: "enhanced-select",
+                      enhanced_select_options: {
+                        removeItemButton: true
+                      },
+                      tariff_package_selection_target: "tariffPackageInput",
+                      action: "change->tariff-package-selection#changeTariffPackage"
+                    }
+                  }
+                ) %>
+              <% end %>
+            </div>
+          </div>
+
+          <%= render(
+            "shared/tariff_plan_assignment_form",
+            form: f,
+            collection: f.object.tariff_plan_subscriptions,
+            collection_method: :tariff_plan_subscriptions
+          ) %>
+        </div>
       </div>
     </div>
 
-    <div class="card border-danger mb-3">
+    <div id="danger-zone" class="card border-danger mb-3">
       <div class="card-body">
         <h5 class="card-title">Danger Zone</h5>
 

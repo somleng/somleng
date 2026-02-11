@@ -14,8 +14,7 @@ RSpec.describe "Messages" do
       to: "85512234232",
       from: "1294",
       created_at: Time.utc(2021, 12, 1),
-      price: "-0.001",
-      price_unit: "MXN"
+      price: InfinitePrecisionMoney.from_amount(-0.001, "MXN"),
     )
     filtered_message = create(
       :message,
@@ -62,7 +61,7 @@ RSpec.describe "Messages" do
     expect(page).to have_no_content(filtered_message.id)
   end
 
-  it "Shows a message" do
+  it "Show a message" do
     carrier = create(:carrier)
     account = create(:account, name: "Rocket Rides", carrier:)
     incoming_phone_number = create(:incoming_phone_number, account:, number: "855715100980")
@@ -76,9 +75,11 @@ RSpec.describe "Messages" do
       sms_gateway:,
       account:,
       incoming_phone_number:,
-      price: "-0.001",
-      price_unit: "MXN",
+      price: InfinitePrecisionMoney.from_amount(-0.001, "MXN"),
       encoding: "GSM"
+    )
+    balance_transaction = create(
+      :balance_transaction, :for_message, message:, amount: message.price, account:
     )
     user = create(:user, :carrier, carrier:)
 
@@ -95,8 +96,12 @@ RSpec.describe "Messages" do
       "SMS Gateway",
       href: dashboard_sms_gateway_path(sms_gateway)
     )
+    expect(page).to have_link(
+      balance_transaction.id,
+      href: dashboard_balance_transaction_path(balance_transaction)
+    )
     expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
-    expect(page).to have_content("-$0.001000")
+    expect(page).to have_content("-$0.00100")
     expect(page).to have_content("MXN")
     expect(page).to have_content("GSM")
   end

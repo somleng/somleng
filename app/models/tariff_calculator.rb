@@ -1,15 +1,8 @@
-class TariffCalculation
-  attr_reader :tariff_plan, :destination, :result
-
-  def initialize(tariff_plan:, **options)
-    @tariff_plan = tariff_plan
-    @destination = options[:destination]
-  end
-
-  def calculate
+class TariffCalculator
+  def calculate(tariff_plan:, destination:)
     return if destination.blank?
 
-    @result = DestinationTariff
+    DestinationTariff
       .joins(:plans)
       .joins(destination_group: :prefixes)
       .where(plans: { id: tariff_plan.id })

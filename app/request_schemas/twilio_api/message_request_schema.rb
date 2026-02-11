@@ -1,6 +1,6 @@
 module TwilioAPI
   class MessageRequestSchema < TwilioAPIRequestSchema
-    option :phone_number_validator, default: proc { PhoneNumberValidator.new }
+    option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
            default: -> { PhoneNumberConfigurationRules.new }
     option :sms_encoding,
@@ -12,6 +12,7 @@ module TwilioAPI
     option :sender, optional: true
 
     option :url_validator, default: proc { URLValidator.new(allow_http: true) }
+    option :account_billing_policy, default: -> { AccountBillingPolicy.new }
 
     params do
       optional(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -23,19 +24,6 @@ module TwilioAPI
       optional(:SmartEncoded).maybe(:bool)
       optional(:SendAt).filled(:time)
       optional(:ScheduleType).filled(:string, eql?: "fixed")
-    end
-
-    rule(:To) do |context:|
-      next key.failure("is invalid") unless phone_number_validator.valid?(value)
-
-      message_destination_schema_rules.carrier = account.carrier
-      message_destination_schema_rules.destination = value
-
-      if message_destination_schema_rules.valid?
-        context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
-      else
-        base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
-      end
     end
 
     rule(:From, :MessagingServiceSid) do |context:|
@@ -93,6 +81,18 @@ module TwilioAPI
       key(:StatusCallback).failure("is invalid")
     end
 
+    rule(:To) do |context:|
+      next key.failure("is invalid") unless phone_number_validator.valid?(value)
+      next if result.errors.any?
+
+      if message_destination_schema_rules.valid?(account:, destination: value)
+        context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
+      else
+        base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
+      end
+    end
+
+
     def output
       params = super
 
@@ -134,10 +134,13 @@ module TwilioAPI
     end
 
     def message_status(context, params)
-      return :scheduled if params[:SendAt].present?
-      return :accepted if context[:messaging_service].present?
-
-      :queued
+      if params[:SendAt].present?
+        :scheduled
+      elsif context[:messaging_service].present?
+        :accepted
+      else
+        :queued
+      end
     end
   end
 end

@@ -8,6 +8,7 @@ module TwilioAPI
     attr_reader :account, :url, :http_method, :params
 
     def initialize(account:, url:, http_method:, params:)
+      super()
       @account = account
       @url = url
       @http_method = HTTP_METHODS.fetch(http_method, :post)

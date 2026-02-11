@@ -31,6 +31,7 @@ resource "Accounts", document: :carrier_api do
     example "Create an account" do
       carrier = create(:carrier)
 
+      stub_rating_engine_request
       set_carrier_api_authorization_header(carrier)
       do_request(
         data: {

@@ -3,9 +3,13 @@ require "rails_helper"
 module TwilioAPI
   RSpec.describe PhoneCallRequestSchema, type: :request_schema do
     it "validates To" do
-      account = create(:account, allowed_calling_codes: [ "855" ])
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
       account_with_no_sip_trunks = create(:account)
-      create(:sip_trunk, carrier: account.carrier)
+      account_with_blocked_list = create(:account, allowed_calling_codes: [ "855" ])
+      billing_enabled_account = create(:account, :billing_enabled, carrier:)
+      create(:sip_trunk, carrier:)
+
       expect(
         validate_request_schema(
           input_params: {
@@ -34,7 +38,14 @@ module TwilioAPI
       ).not_to have_valid_field(:To, error_message: "is invalid")
 
       expect(
-        validate_request_schema(input_params: { To: "61428234567" }, options: { account: })
+        validate_request_schema(
+          input_params: {
+            To: "61428234567",
+            From: create(:incoming_phone_number, account: account_with_blocked_list).number.to_s,
+            Url: "https://www.example.com/voice_url.xml"
+          },
+          options: { account: account_with_blocked_list }
+        )
       ).not_to have_valid_schema(
         error_message: ApplicationError::Errors.fetch(:call_blocked_by_blocked_list).message
       )
@@ -42,12 +53,27 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            To: "855716100235"
+            From: create(:incoming_phone_number, account: account_with_no_sip_trunks).number.to_s,
+            To: "855716100235",
+            Url: "https://www.example.com/voice_url.xml"
           },
           options: { account: account_with_no_sip_trunks }
         )
       ).not_to have_valid_schema(
         error_message: ApplicationError::Errors.fetch(:calling_number_unsupported_or_invalid).message
+      )
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            From: create(:incoming_phone_number, account: billing_enabled_account).number.to_s,
+            To: "855716100235",
+            Url: "https://www.example.com/voice_url.xml"
+          },
+          options: { account: billing_enabled_account }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:subscription_disabled).message
       )
     end
 
@@ -171,6 +197,7 @@ module TwilioAPI
         }
       )
 
+      expect(schema.success?).to be(true)
       expect(schema.output).to eq(
         to: "85568308531",
         from: "85568308530",
@@ -192,27 +219,31 @@ module TwilioAPI
 
     it "handles normalization of From" do
       account = create(:account)
+      create(:incoming_phone_number, type: :short_code, number: "1234", account:)
       create(:sip_trunk, carrier: account.carrier)
 
       schema = validate_request_schema(
         input_params: {
           To: "+855 68 308 531",
-          From: "068 308 532"
+          From: "12 34",
+          Url: "https://www.example.com/voice_url.xml",
         },
         options: {
           account:
         }
       )
 
+      expect(schema.success?).to be(true)
       expect(schema.output).to include(
         to: "85568308531",
-        from: "068308532",
-        caller_id: "068308532"
+        from: "1234",
+        caller_id: "1234"
       )
     end
 
     it "handles post processing when passing TwiML" do
       account = create(:account)
+      create(:incoming_phone_number, type: :short_code, number: "1234", account:)
       create(
         :sip_trunk,
         carrier: account.carrier
@@ -220,7 +251,7 @@ module TwilioAPI
       schema = validate_request_schema(
         input_params: {
           To: "+855 716 100235",
-          From: "1294",
+          From: "1234",
           Twiml: "<Response><Say>Ahoy there!</Say></Response>"
         },
         options: {

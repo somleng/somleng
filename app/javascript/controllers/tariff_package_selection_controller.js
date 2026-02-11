@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="tariff-package-selection"
 export default class extends Controller {
-  static targets = ["tariffPackageInput", "tariffPlanInput"];
+  static targets = ["tariffPackageInput", "tariffPlanInputGroup"];
   static values = {
     plans: Object,
   };
@@ -12,16 +12,23 @@ export default class extends Controller {
   }
 
   changeTariffPackage() {
+    if (!this.hasTariffPackageInputTarget) return;
+
     const selectedPackage = this.tariffPackageInputTarget.value;
     if (!selectedPackage) return;
 
     const plans = this.plansValue[selectedPackage];
 
-    this.tariffPlanInputTargets.forEach((select) => {
-      const category = select.dataset.category;
-      if (!category) return;
+    this.tariffPlanInputGroupTargets.forEach((inputGroup) => {
+      const select = inputGroup.querySelector(".plan-id-input");
+      const toggleInput = inputGroup.querySelector(".toggle-input");
 
+      const category = select.dataset.category;
       const planId = plans[category] || "";
+
+      const disabled = planId === "";
+      toggleInput.checked = !disabled;
+      select.disabled = disabled;
       select.value = planId;
 
       select.dispatchEvent(

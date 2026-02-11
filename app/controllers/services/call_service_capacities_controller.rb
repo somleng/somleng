@@ -5,7 +5,7 @@ module Services
         with: CallServiceCapacityRequestSchema,
         location: nil,
       ) do |permitted_params|
-        UpdateCallServiceCapacity.call(permitted_params, logger:)
+        UpdateCallServiceCapacity.call(permitted_params)
       end
     end
 

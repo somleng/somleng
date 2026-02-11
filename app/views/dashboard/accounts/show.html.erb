@@ -16,10 +16,10 @@
     </div>
   <% end %>
 
-  <%= show_for(@resource) do |f| %>
-    <div id="general" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+  <div id="general" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">General</h5>
+      <%= show_for(@resource) do |f| %>
         <%= f.attribute :id, label: "SID" do %>
           <code>
             <%= @resource.id %>
@@ -41,41 +41,62 @@
 
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
-      </div>
+      <% end %>
     </div>
+  </div>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Owner</h5>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Owner</h5>
 
+      <%= show_for(@resource) do |f| %>
         <%= f.attribute :name, value: @resource.owner&.name %>
         <%= f.attribute :email, value: @resource.owner&.email %>
-      </div>
+      <% end %>
     </div>
+  </div>
 
-    <div id="billing" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Billing</h5>
+  <div id="billing" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Billing</h5>
 
-        <span id="billing-enabled">
-          <%= f.attribute :billing_enabled %>
-        </span>
+      <%= show_for(@resource) do |f| %>
+        <%= f.attribute(:billing_enabled, content_html: { id: "billing-enabled" }) %>
+        <%= f.attribute :balance, value: GetAccountBalance.call(f.object).format %>
+        <%= f.attribute :billing_currency, value: f.object.billing_currency.name %>
 
-        <%= f.attribute :billing_mode, value: @resource.billing_mode.text %>
-        <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
-        <%= f.attribute :phone_number_plans, value: external_link_to("View", dashboard_phone_number_plans_path(filter: {account_id: @resource.id}), title: "Manage") %>
+        <%= f.attribute(
+          :balance_transactions,
+          value: external_link_to(
+            "View",
+            dashboard_balance_transactions_path(filter: { account_id: f.object.id }),
+            title: "View"
+          )
+        ) %>
+
+        <%= f.attribute :billing_mode, value: f.object.billing_mode.text %>
         <%= f.attribute :tariff_plans do %>
           <% if f.object.tariff_plan_subscriptions.present? %>
             <%= tariff_plans(f.object.tariff_plan_subscriptions) %>
           <% end %>
         <% end %>
-      </div>
+
+        <%= f.attribute(
+          :phone_number_plans,
+          value: external_link_to(
+            "View",
+            dashboard_phone_number_plans_path(filter: { account_id: @resource.id }),
+            title: "Manage"
+          )
+        ) %>
+      <% end %>
     </div>
+  </div>
 
-    <div id="voice" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Voice</h5>
-
+  <div id="voice" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Voice</h5>
+      <%= show_for(@resource) do |f| %>
         <%= f.attribute :sip_trunk do %>
           <% if @resource.sip_trunk.present? %>
             <%= external_link_to(@resource.sip_trunk.name, dashboard_sip_trunk_path(@resource.sip_trunk)) %>
@@ -87,13 +108,15 @@
         <% if policy(:phone_call).index? %>
           <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { account_id: @resource.id }), title: "View phone calls") %>
         <% end %>
-      </div>
+      <% end %>
     </div>
+  </div>
 
-    <div id="messaging" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Messaging</h5>
+  <div id="messaging" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Messaging</h5>
 
+      <%= show_for(@resource) do |f| %>
         <% if policy(:message).index? %>
           <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { account_id: @resource.id }), title: "View messages") %>
         <% end %>
@@ -101,19 +124,20 @@
         <% if policy(:messaging_service).index? %>
           <%= f.attribute :messaging_services, value: external_link_to("Manage", dashboard_messaging_services_path(filter: { account_id: @resource.id }), title: "Manage messaging services") %>
         <% end %>
-      </div>
+      <% end %>
     </div>
+  </div>
 
-    <div id="tts" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Text to speech</h5>
-
+  <div id="tts" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Text to speech</h5>
+      <%= show_for(@resource) do |f| %>
         <%= f.attribute :voice, value: @resource.default_tts_voice %>
 
         <% if policy(:tts_event).index? %>
-           <%= f.attribute :tts_events, value: external_link_to("View", dashboard_tts_events_path(filter: { account_id: @resource.id }), title: "View TTS events") %>
+          <%= f.attribute :tts_events, value: external_link_to("View", dashboard_tts_events_path(filter: { account_id: @resource.id }), title: "View TTS events") %>
         <% end %>
-      </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

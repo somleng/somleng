@@ -8,21 +8,23 @@ class UpdateMessageStatus < ApplicationWorkflow
     @message = message
   end
 
-  def call(&_block)
+  def call(&)
     message.transaction do
-      yield
-      enqueue_status_callback
+      yield(message)
+      RedactMessage.call(message) if redact?
+      enqueue_status_callback if enqueue_status_callback?
     end
   end
 
   private
 
-  def enqueue_status_callback
-    return unless message.status.in?(CALLBACK_STATES)
-    return if message.status_callback_url.blank?
+  def redact?
+    message.internal? && message.complete? && message.body.present?
+  end
 
+  def enqueue_status_callback
     ExecuteWorkflowJob.perform_later(
-      "TwilioAPI::NotifyWebhook",
+      TwilioAPI::NotifyWebhook.to_s,
       account: message.account,
       url: message.status_callback_url,
       http_method: "POST",
@@ -30,5 +32,9 @@ class UpdateMessageStatus < ApplicationWorkflow
         MessageDecorator.new(message)
       ).serializable_hash
     )
+  end
+
+  def enqueue_status_callback?
+    message.status.in?(CALLBACK_STATES) && message.status_callback_url.present?
   end
 end

@@ -18,8 +18,8 @@ class Account < ApplicationRecord
           foreign_key: :resource_owner_id,
           dependent: :destroy
 
-  has_many :phone_calls, -> { where(internal: false) }, dependent: :restrict_with_error
-  has_many :messages, -> { where(internal: false) }, dependent: :restrict_with_error
+  has_many :phone_calls, dependent: :restrict_with_error
+  has_many :messages, dependent: :restrict_with_error
   has_many :messaging_services
   has_many :verification_services
   has_many :verifications
@@ -32,8 +32,9 @@ class Account < ApplicationRecord
   has_many :error_logs
   has_many :interactions
   has_many :tts_events
-  has_many :tariff_plan_subscriptions
+  has_many :tariff_plan_subscriptions, inverse_of: :account
   has_many :tariff_plans, through: :tariff_plan_subscriptions, source: :plan
+  has_many :balance_transactions
 
   before_create :set_defaults
 

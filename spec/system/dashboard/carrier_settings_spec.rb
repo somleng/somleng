@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Carrier Settings" do
   it "Update carrier settings" do
-    carrier = create(:carrier, name: "My Carrier")
+    carrier = create(:carrier, name: "My Carrier", billing_currency: "USD")
     user = create(:user, :carrier, :owner, carrier:)
     create(:tariff_package, carrier:, name: "Standard Package")
 
@@ -11,15 +11,13 @@ RSpec.describe "Carrier Settings" do
 
     click_on("Edit")
     fill_in("Name", with: "T-Mobile")
-    select("United States", from: "Country")
-    enhanced_select("United States Dollar", from: "Billing currency")
+    enhanced_select("United States", from: "Country", match: :first)
     fill_in("Website", with: "https://t-mobile.example.com")
     fill_in("Webhook URL", with: "https://example.com/webhook_endpoint")
     fill_in("Dashboard host", with: "dashboard.t-mobile.example.com")
     fill_in("API host", with: "api.t-mobile.example.com")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
     attach_file("Favicon", file_fixture("favicon-32x32.png"))
-    check("Billing enabled")
     enhanced_select("Standard Package", from: "Default tariff package")
 
     click_on("Update Carrier Settings")
@@ -35,9 +33,6 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_xpath("//img[@title='Logo']")
     expect(page).to have_xpath("//img[@title='Favicon']")
     expect(page).to have_content("Standard Package")
-    within("#billing-enabled") do
-      expect(page).to have_content("Yes")
-    end
   end
 
   it "Update carrier subdomain" do

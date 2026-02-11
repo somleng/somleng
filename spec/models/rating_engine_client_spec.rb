@@ -1,6 +1,38 @@
 require "rails_helper"
 
 RSpec.describe RatingEngineClient do
+  describe "#account_balance" do
+    it "sends a request to get an account balance" do
+      account = create(:account, billing_currency: "USD")
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_account).and_return(
+        build_response(result: build(:rating_engine_account_response, balance: 10000))
+      )
+
+      balance = rating_engine_client.account_balance(account)
+
+      expect(balance).to eq(Money.from_amount(100, "USD"))
+      expect(client).to have_received(:get_account).with(
+        tenant: account.carrier_id,
+        account: account.id
+      )
+    end
+
+    it "returns a zero balance if the account has no balance" do
+      account = create(:account)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_account).and_return(
+        build_response(result: build(:rating_engine_account_response, balance: nil))
+      )
+
+      balance = rating_engine_client.account_balance(account)
+
+      expect(balance).to eq(Money.from_amount(0, account.billing_currency))
+    end
+  end
+
   describe "#upsert_destination_group" do
     it "sends a request to upsert a destination group" do
       destination_group = create(:destination_group, prefixes: [ "855" ])
@@ -38,14 +70,14 @@ RSpec.describe RatingEngineClient do
         tp_id: carrier.id,
         id: tariffs[0].id,
         rate_slots: [
-          { rate: 0.005, rate_unit: "60s", rate_increment: "60s" }
+          { rate: 0.5, rate_unit: "60s", rate_increment: "60s" }
         ]
       )
       expect(client).to have_received(:set_tp_rate).with(
         tp_id: carrier.id,
         id: tariffs[1].id,
         rate_slots: [
-          { rate: 0.001, rate_unit: "60s", rate_increment: "60s" }
+          { rate: 0.1, rate_unit: "60s", rate_increment: "60s" }
         ]
       )
       expect(client).to have_received(:set_tp_destination_rate).with(
@@ -62,6 +94,26 @@ RSpec.describe RatingEngineClient do
             rate_id: tariffs[1].id,
             destination_id: destination_tariffs[1].destination_group_id,
           )
+        ]
+      )
+    end
+
+    it "sends a request to upsert a tariff schedule with a message tariff" do
+      carrier = create(:carrier, billing_currency: "USD")
+      tariff_schedule = create(:tariff_schedule, :outbound_messages, carrier:)
+      tariff = create(:tariff, :message, carrier:, rate_cents: InfinitePrecisionMoney.from_amount(0.005, "USD").cents)
+      create(:destination_tariff, schedule: tariff_schedule, tariff:)
+
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.upsert_tariff_schedule(tariff_schedule)
+
+      expect(client).to have_received(:set_tp_rate).with(
+        tp_id: carrier.id,
+        id: tariff.id,
+        rate_slots: [
+          { rate: 0.5, rate_unit: "1", rate_increment: "1" }
         ]
       )
     end
@@ -102,6 +154,7 @@ RSpec.describe RatingEngineClient do
           { weight: 10.0, timing_id: "*any", destination_rates_id: tiers[1].schedule_id }
         ]
       )
+      expect(client).to have_received(:load_tariff_plan_from_stor_db).with(tp_id: tariff_plan.carrier_id)
     end
   end
 
@@ -117,48 +170,81 @@ RSpec.describe RatingEngineClient do
         tp_id: tariff_plan.carrier_id,
         id: tariff_plan.id,
       )
+      expect(client).to have_received(:remove_rating_plan).with(tariff_plan.id)
     end
   end
 
   describe "#upsert_account" do
     it "sends a request to upsert an account" do
-      account = create(:account)
-      subscriptions = [
-        create(:tariff_plan_subscription, :outbound_calls, account:),
-        create(:tariff_plan_subscription, :outbound_messages, account:)
-      ]
-      client = instance_spy(CGRateS::Client)
-      rating_engine_client = RatingEngineClient.new(client:)
+      travel_to(Time.current) do
+        account = create(:account)
+        subscriptions = [
+          create(:tariff_plan_subscription, plan_category: :outbound_calls, account:),
+          create(:tariff_plan_subscription, plan_category: :outbound_messages, account:)
+        ]
+        client = instance_spy(CGRateS::Client)
+        rating_engine_client = RatingEngineClient.new(client:)
 
-      rating_engine_client.upsert_account(account)
+        rating_engine_client.upsert_account(account)
 
-      expect(client).to have_received(:set_account).with(
-        tenant: "cgrates.org",
-        account: account.id
-      )
-      subscriptions.each do |subscription|
-        expect(client).to have_received(:set_tp_rating_profile).with(
-          tp_id: account.carrier_id,
-          load_id: "somleng.org",
-          category: subscription.category,
-          tenant: "cgrates.org",
-          subject: account.id,
-          rating_plan_activations: [
-            {
-              activation_time: subscription.created_at.iso8601,
-              rating_plan_id: subscription.plan_id
-            }
-          ]
+        expect(client).to have_received(:set_account).with(
+          tenant: account.carrier_id,
+          account: account.id
         )
-      end
-      [ "inbound_calls", "inbound_messages" ].each do |category|
-        expect(client).to have_received(:remove_tp_rating_profile).with(
-          tp_id: account.carrier_id,
-          load_id: "somleng.org",
-          category:,
-          tenant: "cgrates.org",
-          subject: account.id,
+        expect(client).to have_received(:add_balance).with(
+          tenant: account.carrier_id,
+          account: account.id,
+          balance_type: "*monetary",
+          cdrlog: false,
+          overwrite: false,
+          value: 0,
+          balance: {
+            id: account.id,
+            blocker: true
+          }
         )
+        subscriptions.each do |subscription|
+          expect(client).to have_received(:set_tp_rating_profile).with(
+            tp_id: account.carrier_id,
+            load_id: "somleng.org",
+            category: subscription.category,
+            tenant: account.carrier_id,
+            subject: account.id,
+            rating_plan_activations: [
+              {
+                activation_time: Time.current.utc.iso8601,
+                rating_plan_id: subscription.plan_id
+              }
+            ]
+          )
+          expect(client).to have_received(:set_rating_profile).with(
+            category: subscription.category,
+            tenant: account.carrier_id,
+            subject: account.id,
+            rating_plan_activations: [
+              {
+                activation_time: Time.current.utc.iso8601,
+                rating_plan_id: subscription.plan_id
+              }
+            ],
+            overwrite: true
+          )
+        end
+
+        [ "inbound_calls", "inbound_messages" ].each do |category|
+          expect(client).to have_received(:remove_tp_rating_profile).with(
+            tp_id: account.carrier_id,
+            load_id: "somleng.org",
+            category:,
+            tenant: account.carrier_id,
+            subject: account.id,
+          )
+          expect(client).to have_received(:remove_rating_profile).with(
+            category:,
+            tenant: account.carrier_id,
+            subject: account.id,
+          )
+        end
       end
     end
   end
@@ -172,7 +258,7 @@ RSpec.describe RatingEngineClient do
       rating_engine_client.destroy_account(account)
 
       expect(client).to have_received(:remove_account).with(
-        tenant: "cgrates.org",
+        tenant: account.carrier_id,
         account: account.id
       )
     end
@@ -192,14 +278,286 @@ RSpec.describe RatingEngineClient do
     end
   end
 
+  describe "#update_account_balance" do
+    context "credit" do
+      it "sends a request to add a balance" do
+        balance_transaction = create(:balance_transaction, type: :topup, amount: Money.from_amount(100, "USD"))
+        client = instance_spy(CGRateS::Client)
+        rating_engine_client = RatingEngineClient.new(client:)
+
+        rating_engine_client.update_account_balance(balance_transaction)
+
+        expect(client).to have_received(:add_balance).with(
+          tenant: balance_transaction.carrier_id,
+          account: balance_transaction.account_id,
+          balance_type: "*monetary",
+          value: 10000,
+          balance: {
+            id: balance_transaction.account_id,
+            blocker: true
+          },
+          cdrlog: true,
+          overwrite: false,
+          action_extra_data: {
+            balance_transaction_id: balance_transaction.id
+          }
+        )
+      end
+    end
+
+    context "debit" do
+      it "sends a request to debit a balance" do
+        balance_transaction = create(:balance_transaction, type: :adjustment, amount: Money.from_amount(-100, "USD"))
+        client = instance_spy(CGRateS::Client)
+        rating_engine_client = RatingEngineClient.new(client:)
+
+        rating_engine_client.update_account_balance(balance_transaction)
+
+        expect(client).to have_received(:debit_balance).with(
+          tenant: balance_transaction.carrier_id,
+          account: balance_transaction.account_id,
+          balance_type: "*monetary",
+          value: 10000,
+          balance: {
+            id: balance_transaction.account_id,
+            blocker: true
+          },
+          cdrlog: true,
+          overwrite: false,
+          action_extra_data: {
+            balance_transaction_id: balance_transaction.id
+          }
+        )
+      end
+    end
+  end
+
+  describe "#sync_transactions" do
+    it "sends a request to sync transactions" do
+      client = instance_spy(
+        CGRateS::Client,
+        get_cdrs: build_response(
+          result: [
+            build(
+              :rating_engine_cdr_response,
+              order_id: 123,
+              cost: 100,
+              extra_fields: { "balance_transaction_id" => 123 }
+            ),
+            build(
+              :rating_engine_cdr_response,
+              order_id: 124,
+              cost: 200,
+            )
+          ]
+        )
+      )
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
+
+      expect(client).to have_received(:get_cdrs).with(
+        order_by: "OrderID",
+        not_costs: [ -1 ],
+        extra_args: { "OrderIDStart" => 123 },
+        limit: 10
+      )
+      expect(cdrs).to contain_exactly(
+        have_attributes(
+          id: 123,
+          cost: 100,
+          balance_transaction_id: 123
+        ),
+        have_attributes(
+          id: 124,
+          cost: 200,
+          balance_transaction_id: nil
+        )
+      )
+    end
+
+    it "returns an empty array if the CDRs are not found" do
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_cdrs).and_raise(
+        build_api_error(error_class: CGRateS::Client::NotFoundError)
+      )
+
+      cdrs = rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
+
+      expect(cdrs).to be_empty
+    end
+
+    it "handles API errors" do
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+      allow(client).to receive(:get_cdrs).and_raise(build_api_error)
+
+      expect {
+        rating_engine_client.fetch_cdrs(last_id: "123", limit: 10)
+      }.to raise_error(RatingEngineClient::APIError)
+    end
+  end
+
+  describe "#upsert_charging_profile" do
+    it "sends a request to upsert a charging profile" do
+      carrier = create(:carrier)
+      client = instance_spy(CGRateS::Client)
+      rating_engine_client = RatingEngineClient.new(client:)
+
+      rating_engine_client.upsert_charging_profile(carrier)
+
+      expect(client).to have_received(:set_charger_profile).with(
+        id: carrier.id,
+        tenant: carrier.id
+      )
+    end
+  end
+
+  describe "#create_message_charge" do
+    it "sends a request to refresh carrier rates" do
+      account = create(:account, billing_mode: :prepaid)
+      message = create(:message, direction: :outbound_api, account:, segments: 2)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_cdrs: build_response(result: build_list(:rating_engine_cdr_response, 1, :success))
+        )
+      )
+
+      rating_engine_client.create_message_charge(message)
+
+      expect(rating_engine_client.client).to have_received(:process_external_cdr).with(
+        category: "outbound_messages",
+        request_type: "*prepaid",
+        tor: "*sms",
+        tenant: account.carrier_id,
+        account: message.account_id,
+        destination: message.to,
+        answer_time: message.created_at.iso8601,
+        setup_time: message.created_at.iso8601,
+        usage: "2",
+        origin_id: message.id
+      )
+      expect(rating_engine_client.client).to have_received(:get_cdrs).with(
+        hash_including(
+          origin_ids: [ message.id ]
+        )
+      )
+    end
+
+    it "handles insufficient credit errors" do
+      message = create(:message)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_cdrs: build_response(
+            result: build_list(:rating_engine_cdr_response, 1, :insufficient_credit)
+          )
+        )
+      )
+
+      expect {
+        rating_engine_client.create_message_charge(message)
+      }.to raise_error(an_instance_of(RatingEngineClient::FailedCDRError).and having_attributes(error_code: :insufficient_balance))
+    end
+
+    it "handles other invalid CDR errors" do
+      message = create(:message)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_cdrs: build_response(
+            result: build_list(:rating_engine_cdr_response, 1, :invalid_account)
+          )
+        )
+      )
+
+      expect {
+        rating_engine_client.create_message_charge(message)
+      }.to raise_error(RatingEngineClient::APIError)
+    end
+  end
+
+  describe "#sufficient_balance?" do
+    it "sends a request to get the cost of a message" do
+      account = create(:account, billing_mode: "prepaid")
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_max_usage: build_response(result: 100)
+        )
+      )
+      interaction = Message.new(account:, direction: :outbound_api, to: "855715100989")
+
+      result = rating_engine_client.sufficient_balance?(interaction)
+
+      expect(result).to be_truthy
+      expect(rating_engine_client.client).to have_received(:get_max_usage).with(
+        hash_including(
+          tenant: account.carrier_id,
+          account: account.id,
+          category: "outbound_messages",
+          destination: "855715100989",
+          tor: "*sms",
+          request_type: "*prepaid"
+        )
+      )
+    end
+
+    it "sends a request to get the cost of a call" do
+      account = create(:account)
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_max_usage: build_response(result: 100)
+        )
+      )
+      interaction = PhoneCall.new(account:, direction: :outbound_api, to: "855715100989")
+
+      rating_engine_client.sufficient_balance?(interaction)
+
+      expect(rating_engine_client.client).to have_received(:get_max_usage).with(
+        hash_including(
+          category: "outbound_calls",
+          destination: "855715100989",
+          tor: "*voice"
+        )
+      )
+    end
+
+    it "handles insufficient balances" do
+      account = create(:account)
+      interaction = Message.new(account:, direction: :outbound_api, to: "855715100989")
+      rating_engine_client = RatingEngineClient.new(
+        client: instance_spy(
+          CGRateS::Client,
+          get_max_usage: build_response(result: 0)
+        )
+      )
+
+      result = rating_engine_client.sufficient_balance?(interaction)
+
+      expect(result).to be_falsey
+    end
+  end
+
   it "handles API errors" do
     client = instance_spy(CGRateS::Client)
     rating_engine_client = RatingEngineClient.new(client:)
-    allow(client).to receive(:set_tp_destination).and_raise(CGRateS::Client::APIError.new("API error"))
+    allow(client).to receive(:set_tp_destination).and_raise(build_api_error)
     destination_group = create(:destination_group)
 
     expect {
       rating_engine_client.upsert_destination_group(destination_group)
     }.to raise_error(RatingEngineClient::APIError)
+  end
+
+  def build_api_error(error_class: CGRateS::Client::APIError, message: nil, response: {})
+    error_class.new(message, response:)
+  end
+
+  def build_response(**)
+    CGRateS::Response.new(id: SecureRandom.uuid, result: "OK", **)
   end
 end

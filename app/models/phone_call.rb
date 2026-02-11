@@ -24,6 +24,7 @@ class PhoneCall < ApplicationRecord
 
   has_one    :call_data_record
   has_one    :interaction
+  has_one    :balance_transaction
   has_many   :events
   has_many   :phone_call_events
   has_many   :recordings
@@ -107,6 +108,14 @@ class PhoneCall < ApplicationRecord
 
   def outbound?
     outbound_api? || outbound_dial?
+  end
+
+  def price
+    InfinitePrecisionMoney.new(price_cents, price_unit) if price_cents.present?
+  end
+
+  def tariff_schedule_category
+    TariffScheduleCategoryType.new.cast(outbound? ? :outbound_calls : :inbound_calls)
   end
 
   private

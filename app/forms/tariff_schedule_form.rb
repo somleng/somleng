@@ -56,7 +56,9 @@ class TariffScheduleForm < ApplicationForm
 
       object.save!
 
-      destination_tariffs.all?(&:save)
+      result = destination_tariffs.all?(&:save)
+      object.destination_tariffs.reset
+      result
     end
   end
 
@@ -71,6 +73,8 @@ class TariffScheduleForm < ApplicationForm
   end
 
   def validate_destination_tariffs
+    return errors.add(:destination_tariffs, :invalid) if retained_destination_tariffs.empty?
+
     retained_destination_tariffs.each(&:valid?)
     validate_uniqueness_of(
       :destination_group_id,

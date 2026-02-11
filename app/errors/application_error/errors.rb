@@ -10,6 +10,15 @@ module ApplicationError
         message: "Cannot update this resource before it is complete"
       ),
       carrier_standing: Error.new(code: "S1004", message: "Carrier is not in good standing"),
+      insufficient_balance: Error.new(code: "S1005", message: "Insufficient balance"),
+      subscription_disabled: Error.new(
+        code: "S1006",
+        message: "The subscription for this service is disabled"
+      ),
+      destination_blocked: Error.new(
+        code: "S1007",
+        message: "This destination is blocked"
+      ),
       account_suspended: Error.new(code: "30002", message: "Account suspended"),
       messaging_service_blank: Error.new(
         code: "21701",
@@ -24,6 +33,7 @@ module ApplicationError
         message: "The Messaging Service contains no phone numbers"
       ),
       unreachable_carrier: Error.new(code: "30006", message: "Landline or unreachable carrier"),
+      unknown_error: Error.new(code: "30008", message: "Unknown error"),
       message_incapable_phone_number: Error.new(
         code: "21606",
         message: "The 'From' phone number provided is not a valid message-capable phone number for this destination."
@@ -55,6 +65,10 @@ module ApplicationError
       calling_number_unsupported_or_invalid: Error.new(
         code: "13224",
         message: "Calling this number is unsupported or the number is invalid"
+      ),
+      messaging_disabled: Error.new(
+        code: "30037",
+        message: "Messaging is disabled"
       ),
       message_not_cancelable: Error.new(
         code: "30409",

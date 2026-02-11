@@ -80,6 +80,6 @@ module TariffHelper
   def group_collection_by(collection, &)
     collection.each_with_object(Hash.new { |h, k| h[k] = [] }) do |item, result|
       result[yield(item)] << item
-    end.sort.to_h
+    end.to_h
   end
 end

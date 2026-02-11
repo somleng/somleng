@@ -10,9 +10,7 @@ module TwilioAPI
         schema_options: { account: current_account },
         **serializer_options
       ) do |permitted_params|
-        phone_call = scope.create!(permitted_params)
-        ScheduleOutboundCall.call(phone_call)
-        phone_call
+        CreatePhoneCall.call(permitted_params)
       end
     end
 

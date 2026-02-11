@@ -1,14 +1,16 @@
 class OnboardCarrier < ApplicationWorkflow
-  attr_reader :name, :country_code, :owner_params, :restricted, :website, :subdomain, :billing_currency
+  attr_reader :name, :country_code, :owner_params, :restricted, :website, :subdomain, :billing_currency, :rating_engine_client
 
-  def initialize(params)
+  def initialize(**params)
+    super()
     @name = params.fetch(:name)
     @country_code = params.fetch(:country_code)
     @restricted = params.fetch(:restricted)
     @subdomain = params.fetch(:subdomain)
     @website = params.fetch(:website)
     @owner_params = params.fetch(:owner)
-    @billing_currency = params.fetch(:billing_currency) { ISO3166::Country.new(country_code).currency_code }
+    @billing_currency = params.fetch(:billing_currency)
+    @rating_engine_client = params.fetch(:rating_engine_client) { RatingEngineClient.new }
   end
 
   def call
@@ -16,6 +18,9 @@ class OnboardCarrier < ApplicationWorkflow
       carrier = create_carrier
       create_carrier_access_token(carrier)
       owner = onboard_carrier_owner(carrier:, **owner_params)
+
+      rating_engine_client.upsert_charging_profile(carrier)
+
       [ carrier, owner ]
     end
   end

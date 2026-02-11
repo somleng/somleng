@@ -1,24 +1,29 @@
 module TwilioAPI
   class MessageDestinationSchemaRules
-    attr_accessor :carrier, :destination
-    attr_reader :sms_gateway_resolver, :error_code
+    attr_reader :sms_gateway_resolver, :error_code, :account_billing_policy, :sms_gateway
 
-    def initialize(options = {})
-      @carrier = options[:carrier]
-      @destination = options[:destination]
+    def initialize(**options)
       @sms_gateway_resolver = options.fetch(:sms_gateway_resolver) { SMSGatewayResolver.new }
+      @account_billing_policy = options.fetch(:account_billing_policy) { AccountBillingPolicy.new }
     end
 
-    def valid?
-      @error_code = :unreachable_carrier if sms_gateway.blank?
+    def valid?(account:, destination:)
+      @sms_gateway = sms_gateway_resolver.resolve(carrier: account.carrier, destination:)
+
+      if sms_gateway.blank?
+        @error_code = :unreachable_carrier
+      elsif !account_billing_policy_valid?(account:, destination:)
+        @error_code = account_billing_policy.error_code
+      end
 
       @error_code.blank?
     end
 
-    def sms_gateway
-      @sms_gateway ||= sms_gateway_resolver.resolve(
-        carrier:,
-        destination:
+    private
+
+    def account_billing_policy_valid?(account:, destination:)
+      account_billing_policy.valid?(
+        interaction: Message.new(account:, direction: :outbound_api, to: destination)
       )
     end
   end

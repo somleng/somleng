@@ -1,6 +1,59 @@
 require "rails_helper"
 
 RSpec.describe AccountForm do
+  describe "defaults" do
+    it "sets default values" do
+      carrier = create(:carrier, :with_default_tariff_package)
+      create(
+        :tariff_package_plan,
+        package: carrier.default_tariff_package,
+        plan: create(:tariff_plan, :outbound_calls, carrier:, name: "Standard")
+      )
+
+      form = build_form(carrier:)
+
+      expect(form).to have_attributes(
+        billing_enabled: true,
+        tariff_plan_subscriptions: have_attributes(
+          to_a: contain_exactly(
+            have_attributes(
+              category: "outbound_calls",
+              plan_id: be_present,
+              enabled: true
+            ),
+            have_attributes(
+              category: "inbound_calls",
+              enabled: false
+            ),
+            have_attributes(
+              category: "outbound_messages",
+              enabled: false
+
+            ),
+            have_attributes(
+              category: "inbound_messages",
+              enabled: false
+            )
+          )
+        )
+      )
+
+      expect(
+        build_form(carrier: build_stubbed(:carrier)).billing_enabled
+      ).to be_falsey
+
+      expect(
+        AccountForm.initialize_with(
+          build_stubbed(:account, carrier:, billing_enabled: false)
+        ).billing_enabled
+      ).to be_falsey
+
+      expect(
+        AccountForm.initialize_with(build_stubbed(:account, billing_enabled: true)).billing_enabled
+      ).to be_truthy
+    end
+  end
+
   describe "validations" do
     it "validates the owner does not have a carrier role" do
       user = create(:user, :carrier, email: "johndoe@example.com")
@@ -62,9 +115,9 @@ RSpec.describe AccountForm do
         name: "Rocket Rides",
         enabled: true,
         calls_per_second: 2,
-        default_tts_voice: "Basic.Slt"
+        default_tts_voice: "Basic.Slt",
+        carrier:
       )
-      form.carrier = carrier
 
       result = form.save
 
@@ -77,6 +130,32 @@ RSpec.describe AccountForm do
         default_tts_voice: have_attributes(
           identifier: "Basic.Slt"
         )
+      )
+    end
+
+    it "handles disabled billing" do
+      carrier = create(:carrier)
+      tariff_plan = create(:tariff_plan, carrier:)
+      form = build_form(
+        name: "Rocket Rides",
+        billing_enabled: false,
+        carrier:,
+        tariff_plan_subscriptions: [
+          {
+            enabled: true,
+            plan_id: tariff_plan.id,
+            category: tariff_plan.category
+          }
+        ]
+      )
+
+      result = form.save
+
+      expect(result).to be_truthy
+      expect(form.object).to have_attributes(
+        persisted?: true,
+        billing_enabled: false,
+        tariff_plan_subscriptions: be_empty
       )
     end
 
@@ -134,25 +213,48 @@ RSpec.describe AccountForm do
     it "updates a customer managed account" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:)
-      tariff_plan = create(:tariff_plan, carrier:)
+      new_tariff_plan = create(:tariff_plan, :outbound_messages, carrier:)
       account = create(
         :account,
         :customer_managed,
         carrier:,
         sip_trunk:,
-        calls_per_second: 1,
+        calls_per_second: 1
       )
-      tariff_plan_subscription = create(:tariff_plan_subscription, account:)
+      retained_tariff_plan_subscription = create(
+        :tariff_plan_subscription,
+        account:,
+        plan_category: :outbound_calls
+      )
+      deleted_tariff_plan_subscription = create(
+        :tariff_plan_subscription,
+        account:,
+        plan_category: :inbound_messages
+      )
 
       form = AccountForm.initialize_with(account)
       form.attributes = {
         sip_trunk_id: nil,
         calls_per_second: 10,
-        tariff_plan_subscriptions: {
-          plan_id: tariff_plan.id,
-          category: tariff_plan_subscription.category,
-          id: tariff_plan_subscription.id
-        }
+        billing_enabled: true,
+        tariff_plan_subscriptions: [
+          {
+            enabled: true,
+            plan_id: retained_tariff_plan_subscription.plan_id,
+            category: retained_tariff_plan_subscription.category,
+            id: retained_tariff_plan_subscription.id
+          },
+          {
+            enabled: true,
+            plan_id: new_tariff_plan.id,
+            category: new_tariff_plan.category
+          },
+          {
+            enabled: false,
+            category: deleted_tariff_plan_subscription.category,
+            id: deleted_tariff_plan_subscription.id
+          }
+        ]
       }
 
       result = form.save
@@ -161,7 +263,16 @@ RSpec.describe AccountForm do
       expect(form.object).to have_attributes(
         sip_trunk: nil,
         calls_per_second: 10,
-        type: "customer_managed"
+        type: "customer_managed",
+        billing_enabled: true,
+        tariff_plan_subscriptions: contain_exactly(
+          retained_tariff_plan_subscription,
+          have_attributes(
+            persisted?: true,
+            plan: new_tariff_plan,
+            category: new_tariff_plan.category
+          )
+        )
       )
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_10_074118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -87,6 +87,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "balance_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.decimal "amount_cents", precision: 14, scale: 4, null: false
+    t.uuid "carrier_id", null: false
+    t.string "charge_category"
+    t.string "charge_source_id"
+    t.datetime "created_at", null: false
+    t.uuid "created_by_id"
+    t.string "currency", null: false
+    t.text "description"
+    t.bigint "external_id"
+    t.uuid "message_id"
+    t.uuid "phone_call_id"
+    t.bigserial "sequence_number", null: false
+    t.string "type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_balance_transactions_on_account_id"
+    t.index ["carrier_id"], name: "index_balance_transactions_on_carrier_id"
+    t.index ["charge_category"], name: "index_balance_transactions_on_charge_category"
+    t.index ["charge_source_id"], name: "index_balance_transactions_on_charge_source_id"
+    t.index ["created_by_id"], name: "index_balance_transactions_on_created_by_id"
+    t.index ["external_id"], name: "index_balance_transactions_on_external_id", unique: true, order: :desc
+    t.index ["message_id"], name: "index_balance_transactions_on_message_id", unique: true
+    t.index ["phone_call_id"], name: "index_balance_transactions_on_phone_call_id", unique: true
+    t.index ["sequence_number"], name: "index_balance_transactions_on_sequence_number", unique: true, order: :desc
+    t.index ["type"], name: "index_balance_transactions_on_type"
+  end
+
   create_table "call_data_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "answer_time", precision: nil
     t.integer "bill_sec", null: false
@@ -110,7 +138,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "billing_currency", null: false
-    t.boolean "billing_enabled", default: false, null: false
     t.integer "calls_per_second", default: 0, null: false
     t.string "country_code", null: false
     t.datetime "created_at", null: false
@@ -125,7 +152,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.datetime "updated_at", null: false
     t.string "website", null: false
     t.index ["billing_currency"], name: "index_carriers_on_billing_currency"
-    t.index ["billing_enabled"], name: "index_carriers_on_billing_enabled"
     t.index ["custom_api_host"], name: "index_carriers_on_custom_api_host", unique: true
     t.index ["custom_app_host"], name: "index_carriers_on_custom_app_host", unique: true
     t.index ["default_tariff_package_id"], name: "index_carriers_on_default_tariff_package_id"
@@ -166,10 +192,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.datetime "updated_at", null: false
     t.index ["destination_group_id"], name: "index_destination_tariffs_on_destination_group_id"
     t.index ["schedule_id", "destination_group_id"], name: "idx_on_schedule_id_destination_group_id_c184a69300", unique: true
-    t.index ["schedule_id", "tariff_id"], name: "index_destination_tariffs_on_schedule_id_and_tariff_id", unique: true
     t.index ["schedule_id"], name: "index_destination_tariffs_on_schedule_id"
     t.index ["sequence_number"], name: "index_destination_tariffs_on_sequence_number", unique: true, order: :desc
-    t.index ["tariff_id"], name: "index_destination_tariffs_on_tariff_id"
+    t.index ["tariff_id"], name: "index_destination_tariffs_on_tariff_id", unique: true
   end
 
   create_table "error_log_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -367,7 +392,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.boolean "internal", default: false, null: false
     t.uuid "messaging_service_id"
     t.uuid "phone_number_id"
-    t.decimal "price", precision: 10, scale: 4
+    t.decimal "price_cents", precision: 14, scale: 4
     t.string "price_unit"
     t.datetime "queued_at"
     t.datetime "received_at"
@@ -393,6 +418,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.index ["internal"], name: "index_messages_on_internal"
     t.index ["messaging_service_id"], name: "index_messages_on_messaging_service_id"
     t.index ["phone_number_id"], name: "index_messages_on_phone_number_id"
+    t.index ["price_cents"], name: "index_messages_on_price_cents"
+    t.index ["price_unit"], name: "index_messages_on_price_unit"
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
     t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
     t.index ["status", "sending_at"], name: "index_messages_on_status_and_sending_at", where: "((status)::text = 'sending'::text)"
@@ -512,7 +539,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.boolean "internal", default: false, null: false
     t.uuid "parent_call_id"
     t.uuid "phone_number_id"
-    t.decimal "price", precision: 10, scale: 4
+    t.decimal "price_cents", precision: 14, scale: 4
     t.string "price_unit"
     t.string "region"
     t.bigserial "sequence_number", null: false
@@ -546,6 +573,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.index ["internal"], name: "index_phone_calls_on_internal"
     t.index ["parent_call_id"], name: "index_phone_calls_on_parent_call_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
+    t.index ["price_cents"], name: "index_phone_calls_on_price_cents"
+    t.index ["price_unit"], name: "index_phone_calls_on_price_unit"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id", "status", "created_at"], name: "index_phone_calls_on_sip_trunk_id_and_status_and_created_at"
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
@@ -800,7 +829,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
     t.string "category", null: false
     t.datetime "created_at", null: false
     t.string "currency", null: false
-    t.decimal "rate_cents", precision: 10, scale: 4, default: "0.0", null: false
+    t.decimal "rate_cents", precision: 14, scale: 4, default: "0.0", null: false
     t.bigserial "sequence_number", null: false
     t.datetime "updated_at", null: false
     t.index ["carrier_id"], name: "index_tariffs_on_carrier_id"
@@ -990,6 +1019,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_055439) do
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "balance_transactions", "accounts"
+  add_foreign_key "balance_transactions", "carriers"
+  add_foreign_key "balance_transactions", "messages", on_delete: :nullify
+  add_foreign_key "balance_transactions", "phone_calls", on_delete: :nullify
+  add_foreign_key "balance_transactions", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "call_data_records", "phone_calls"
   add_foreign_key "carriers", "tariff_packages", column: "default_tariff_package_id", on_delete: :nullify
   add_foreign_key "destination_groups", "carriers", on_delete: :cascade

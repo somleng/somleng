@@ -39,7 +39,7 @@ RSpec.describe "Authentication" do
     fill_in("OTP Code", with: "wrong-otp")
     click_on("Login")
 
-    expect(page).to have_content("Invalid Email or password")
+    expect(page).to have_content("Invalid email or password")
   end
 
   it "Sign in without OTP" do
@@ -161,7 +161,7 @@ RSpec.describe "Authentication" do
     fill_in("Password", with: "password123")
     click_on("Login")
 
-    expect(page).to have_content("Invalid Email or password")
+    expect(page).to have_content("Invalid email or password")
   end
 
   it "Handles locking and unlocking a user" do

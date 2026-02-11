@@ -6,7 +6,7 @@ export default class extends Controller {
   connect() {
     if (this.element.tomselect) return;
 
-    const defaultPlugins = ["no_backspace_delete"];
+    const defaultPlugins = [];
 
     // Read options from data attribute, default to empty object
     const options = this.element.dataset.enhancedSelectOptions
@@ -21,6 +21,7 @@ export default class extends Controller {
 
     this.element.tomselect = new TomSelect(this.element, {
       plugins: plugins,
+      ...options,
     });
 
     this.element.addEventListener("options-changed", () => {
