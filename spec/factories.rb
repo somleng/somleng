@@ -977,6 +977,11 @@ FactoryBot.define do
       extra_info { "MAX_USAGE_EXCEEDED" }
     end
 
+    trait :insufficient_credit do
+      failed
+      extra_info { "INSUFFICIENT_CREDIT_BALANCE_BLOCKER" }
+    end
+
     trait :invalid_account do
       failed
       extra_info { "INVALID_ACCOUNT" }

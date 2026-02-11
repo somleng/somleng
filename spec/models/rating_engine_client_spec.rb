@@ -281,7 +281,8 @@ RSpec.describe RatingEngineClient do
           balance_type: "*monetary",
           value: 10000,
           balance: {
-            id: balance_transaction.account_id
+            id: balance_transaction.account_id,
+            blocker: true
           },
           cdrlog: true,
           action_extra_data: {
@@ -306,6 +307,7 @@ RSpec.describe RatingEngineClient do
           value: 10000,
           balance: {
             id: balance_transaction.account_id,
+            blocker: true
           },
           cdrlog: true,
           action_extra_data: {
@@ -430,13 +432,13 @@ RSpec.describe RatingEngineClient do
       )
     end
 
-    it "handles insufficient balance errors" do
+    it "handles insufficient credit errors" do
       message = create(:message)
       rating_engine_client = RatingEngineClient.new(
         client: instance_spy(
           CGRateS::Client,
           get_cdrs: build_response(
-            result: build_list(:rating_engine_cdr_response, 1, :max_usage_exceeded)
+            result: build_list(:rating_engine_cdr_response, 1, :insufficient_credit)
           )
         )
       )

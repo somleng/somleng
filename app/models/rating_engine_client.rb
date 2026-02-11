@@ -25,6 +25,7 @@ class RatingEngineClient
 
   ERROR_CODES = {
     "MAX_USAGE_EXCEEDED" => :insufficient_balance,
+    "INSUFFICIENT_CREDIT_BALANCE_BLOCKER" => :insufficient_balance,
     "RATING_PLAN_NOT_FOUND" => :subscription_disabled,
     "UNAUTHORIZED_DESTINATION" => :destination_blocked
   }
@@ -217,7 +218,8 @@ class RatingEngineClient
         balance_type: BALANCE_TYPE,
         value: balance_transaction.amount_cents.abs,
         balance: {
-          id: balance_transaction.account_id
+          id: balance_transaction.account_id,
+          blocker: true
         },
         cdrlog: true,
         action_extra_data: {
