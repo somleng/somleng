@@ -54,7 +54,7 @@ RSpec.describe "Accounts" do
     )
     user = create(:user, :carrier, carrier:)
 
-    stub_rating_engine_request(result: build(:rating_engine_account_response, balance: nil))
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit dashboard_accounts_path
     click_on("New")
@@ -101,7 +101,7 @@ RSpec.describe "Accounts" do
     account = create(:account, carrier:, billing_enabled: true)
     user = create(:user, :carrier, carrier: account.carrier)
 
-    stub_rating_engine_request(result: build(:rating_engine_account_response, balance: 10000))
+    stub_rating_engine_balance_request(balance: 10000)
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
@@ -152,7 +152,7 @@ RSpec.describe "Accounts" do
     )
     sip_trunk = create(:sip_trunk, carrier:, name: "Main SIP Trunk")
 
-    stub_rating_engine_request(response: { result: { "BalanceMap" => nil } })
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit dashboard_account_path(account)
     click_on("Edit")
@@ -193,7 +193,7 @@ RSpec.describe "Accounts" do
       carrier: user.carrier
     )
 
-    stub_rating_engine_request
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
@@ -242,7 +242,7 @@ RSpec.describe "Accounts" do
     ]
     user = create(:user, :carrier, carrier:)
 
-    stub_rating_engine_request(response: { result: { "BalanceMap" => nil } })
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit edit_dashboard_account_path(account)
 
@@ -282,6 +282,7 @@ RSpec.describe "Accounts" do
     account = create(:account, carrier: user.carrier)
     invited_user = create(:user, :invited, email: "johndoe@example.com")
     create(:account_membership, :owner, account:, user: invited_user)
+    stub_rating_engine_balance_request
 
     carrier_sign_in(user)
     visit dashboard_account_path(account)
@@ -306,12 +307,16 @@ RSpec.describe "Accounts" do
       carrier:,
     )
 
-    stub_rating_engine_request
+    stub_rating_engine_balance_request
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
     click_on "Delete"
 
     expect(page).to have_no_content("Rocket Rides")
+  end
+
+  def stub_rating_engine_balance_request(**)
+    stub_rating_engine_request(result: build(:rating_engine_account_response, **))
   end
 end

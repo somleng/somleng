@@ -176,7 +176,7 @@ RSpec.describe RatingEngineClient do
 
   describe "#upsert_account" do
     it "sends a request to upsert an account" do
-      travel_to Time.current do
+      travel_to(Time.current) do
         account = create(:account)
         subscriptions = [
           create(:tariff_plan_subscription, plan_category: :outbound_calls, account:),
@@ -190,6 +190,18 @@ RSpec.describe RatingEngineClient do
         expect(client).to have_received(:set_account).with(
           tenant: account.carrier_id,
           account: account.id
+        )
+        expect(client).to have_received(:add_balance).with(
+          tenant: account.carrier_id,
+          account: account.id,
+          balance_type: "*monetary",
+          cdrlog: false,
+          overwrite: false,
+          value: 0,
+          balance: {
+            id: account.id,
+            blocker: true
+          }
         )
         subscriptions.each do |subscription|
           expect(client).to have_received(:set_tp_rating_profile).with(

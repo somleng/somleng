@@ -152,44 +152,16 @@ class RatingEngineClient
 
   def upsert_account(account)
     handle_request do
-      account.tariff_plan_subscriptions.each do |subscription|
-        params = {
-          category: subscription.category,
-          tenant: account.carrier_id,
-          subject: account.id,
-          rating_plan_activations: [
-            {
-              activation_time: Time.current.utc.iso8601,
-              rating_plan_id: subscription.plan_id
-            }
-          ]
-        }
+      provision_account(account)
 
-        client.set_tp_rating_profile(tp_id: account.carrier_id, load_id: LOAD_ID, **params)
-        client.set_rating_profile(overwrite: true, **params)
+      account.tariff_plan_subscriptions.each do |subscription|
+        create_tariff_plan_subscription(subscription)
       end
 
       subscribed_categories = account.tariff_plan_subscriptions.pluck(:category)
-      all_categories = TariffPlanSubscription.category.values
-      (all_categories - subscribed_categories).each do |category|
-        params = {
-          category:,
-          tenant: account.carrier_id,
-          subject: account.id
-        }
-
-        client.remove_tp_rating_profile(
-          tp_id: account.carrier_id,
-          load_id: LOAD_ID,
-          **params
-        )
-        client.remove_rating_profile(**params)
+      (TariffPlanSubscription.category.values - subscribed_categories).each do |category|
+        destroy_tariff_plan_subscription(account:, category:)
       end
-
-      client.set_account(
-        tenant: account.carrier_id,
-        account: account.id,
-      )
     end
   end
 
@@ -315,5 +287,53 @@ class RatingEngineClient
       category: response.fetch("Category"),
       success?: !cost.negative?
     )
+  end
+
+  def provision_account(account)
+    client.set_account(tenant: account.carrier_id, account: account.id)
+    client.add_balance(
+      tenant: account.carrier_id,
+      account: account.id,
+      balance_type: BALANCE_TYPE,
+      value: 0,
+      balance: {
+        id: account.id,
+        blocker: true
+      },
+      overwrite: false,
+      cdrlog: false
+    )
+  end
+
+  def create_tariff_plan_subscription(subscription)
+    params = {
+      category: subscription.category,
+      tenant: subscription.account.carrier_id,
+      subject: subscription.account_id,
+      rating_plan_activations: [
+        {
+          activation_time: Time.current.utc.iso8601,
+          rating_plan_id: subscription.plan_id
+        }
+      ]
+    }
+
+    client.set_tp_rating_profile(tp_id: subscription.account.carrier_id, load_id: LOAD_ID, **params)
+    client.set_rating_profile(overwrite: true, **params)
+  end
+
+  def destroy_tariff_plan_subscription(account:, category:)
+    params = {
+      category:,
+      tenant: account.carrier_id,
+      subject: account.id
+    }
+
+    client.remove_tp_rating_profile(
+      tp_id: account.carrier_id,
+      load_id: LOAD_ID,
+      **params
+    )
+    client.remove_rating_profile(**params)
   end
 end

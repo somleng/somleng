@@ -61,10 +61,7 @@
       <h5 class="card-title">Billing</h5>
 
       <%= show_for(@resource) do |f| %>
-        <span id="billing-enabled">
-          <%= f.attribute :billing_enabled %>
-        </span>
-
+        <%= f.attribute(:billing_enabled, content_html: { id: "billing-enabled" }) %>
         <%= f.attribute :billing_currency, value: f.object.billing_currency.name %>
 
         <%= f.attribute(
@@ -76,13 +73,11 @@
           )
         ) %>
 
-        <% if f.object.billing_enabled? %>
-          <%= f.attribute :balance, value: GetAccountBalance.call(f.object).format %>
-          <%= f.attribute :billing_mode, value: f.object.billing_mode.text %>
-          <%= f.attribute :tariff_plans do %>
-            <% if f.object.tariff_plan_subscriptions.present? %>
-              <%= tariff_plans(f.object.tariff_plan_subscriptions) %>
-            <% end %>
+        <%= f.attribute :balance, value: GetAccountBalance.call(f.object).format %>
+        <%= f.attribute :billing_mode, value: f.object.billing_mode.text %>
+        <%= f.attribute :tariff_plans do %>
+          <% if f.object.tariff_plan_subscriptions.present? %>
+            <%= tariff_plans(f.object.tariff_plan_subscriptions) %>
           <% end %>
         <% end %>
 
