@@ -129,6 +129,10 @@ locals {
     {
       name  = "ANYCABLE_BROADCAST_ADAPTER",
       value = "redisx"
+    },
+    {
+      name  = "RAILS_LOG_LEVEL",
+      value = var.rails_log_level
     }
   ]
 }

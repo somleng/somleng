@@ -103,3 +103,7 @@ variable "ws_healthcheck_path" {
 variable "anycable_rpc_port" {
   default = 50051
 }
+
+variable "rails_log_level" {
+  default = "info"
+}

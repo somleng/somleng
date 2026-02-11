@@ -12,22 +12,6 @@ class CreatePhoneNumberConfigurations < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    reversible do |dir|
-      dir.up do
-        PhoneNumber.find_each do |phone_number|
-          if phone_number.voice_url.present? || phone_number.sip_domain.present?
-            phone_number.create_configuration!(
-              voice_url: phone_number.voice_url,
-              voice_method: phone_number.voice_method,
-              status_callback_url: phone_number.status_callback_url,
-              status_callback_method: phone_number.status_callback_method,
-              sip_domain: phone_number.sip_domain
-            )
-          end
-        end
-      end
-    end
-
     remove_column :phone_numbers, :voice_url, :string
     remove_column :phone_numbers, :voice_method, :string
     remove_column :phone_numbers, :status_callback_url, :string

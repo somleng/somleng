@@ -32,6 +32,7 @@ module "somleng" {
   db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.id
 
   call_service_queue_name = "switch-services-staging"
+  rails_log_level         = "debug"
 
   appserver_min_tasks = 0
   appserver_max_tasks = 1
