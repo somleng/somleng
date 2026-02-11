@@ -297,6 +297,7 @@ RSpec.describe RatingEngineClient do
             blocker: true
           },
           cdrlog: true,
+          overwrite: false,
           action_extra_data: {
             balance_transaction_id: balance_transaction.id
           }
@@ -322,6 +323,7 @@ RSpec.describe RatingEngineClient do
             blocker: true
           },
           cdrlog: true,
+          overwrite: false,
           action_extra_data: {
             balance_transaction_id: balance_transaction.id
           }

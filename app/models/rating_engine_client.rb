@@ -193,6 +193,7 @@ class RatingEngineClient
           id: balance_transaction.account_id,
           blocker: true
         },
+        overwrite: false,
         cdrlog: true,
         action_extra_data: {
           balance_transaction_id: balance_transaction.id

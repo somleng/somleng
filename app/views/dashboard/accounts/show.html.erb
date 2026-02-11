@@ -62,6 +62,7 @@
 
       <%= show_for(@resource) do |f| %>
         <%= f.attribute(:billing_enabled, content_html: { id: "billing-enabled" }) %>
+        <%= f.attribute :balance, value: GetAccountBalance.call(f.object).format %>
         <%= f.attribute :billing_currency, value: f.object.billing_currency.name %>
 
         <%= f.attribute(
@@ -73,7 +74,6 @@
           )
         ) %>
 
-        <%= f.attribute :balance, value: GetAccountBalance.call(f.object).format %>
         <%= f.attribute :billing_mode, value: f.object.billing_mode.text %>
         <%= f.attribute :tariff_plans do %>
           <% if f.object.tariff_plan_subscriptions.present? %>
