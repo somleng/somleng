@@ -8,7 +8,7 @@ export default class extends Controller {
   DESTROY_BUTTON_SELECTOR = ".destroy-button";
 
   connect() {
-    this.#toggleRemoveButtons();
+    this.toggleDestroyButtons();
   }
 
   remove(e) {
@@ -18,13 +18,13 @@ export default class extends Controller {
       .querySelectorAll("input:not([type='hidden']), select, textarea")
       .forEach((el) => (el.disabled = true));
 
-    this.element.style.display = "none";
+    this.element.classList.add("d-none");
     this.destroyElementTarget.value = "true";
 
-    this.#toggleRemoveButtons();
+    this.toggleDestroyButtons();
   }
 
-  #toggleRemoveButtons() {
+  toggleDestroyButtons() {
     const activeNestedForms = this.#activeNestedForms();
     const hideRemoveButton = activeNestedForms.length <= 1;
 
@@ -40,18 +40,10 @@ export default class extends Controller {
 
     const nestedForms = Array.from(
       nestedFormGroup.querySelectorAll(
-        `[data-controller~='${this.identifier}']`,
+        `[data-controller~='${this.identifier}']:not([class*='d-none'])`,
       ),
     );
 
-    const activeNestedForms = nestedForms.filter((nestedForm) => {
-      const destroyField = nestedForm.querySelector(
-        `[data-${this.identifier}-target='destroyElement']`,
-      );
-
-      return destroyField?.value !== "true" && nestedForm.style.display !== "none";
-    });
-
-    return activeNestedForms;
+    return nestedForms;
   }
 }
