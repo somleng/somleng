@@ -5,10 +5,10 @@ export default class extends Controller {
   static targets = ["destroyElement"];
 
   NESTED_FORM_GROUP_SELECTOR = ".nested-form-group";
-  DESTROY_BUTTON_SELECTOR = ".destroy-button";
+  REMOVE_BUTTON_SELECTOR = ".remove-button";
 
   connect() {
-    this.toggleDestroyButtons();
+    this.toggleRemoveButton();
   }
 
   remove(e) {
@@ -21,16 +21,16 @@ export default class extends Controller {
     this.element.classList.add("d-none");
     this.destroyElementTarget.value = "true";
 
-    this.toggleDestroyButtons();
+    this.toggleRemoveButton();
   }
 
-  toggleDestroyButtons() {
+  toggleRemoveButton() {
     const activeNestedForms = this.#activeNestedForms();
-    const hideRemoveButton = activeNestedForms.length <= 1;
+    const hideButton = activeNestedForms.length <= 1;
 
     activeNestedForms.forEach((nestedForm) => {
-      const removeButton = nestedForm.querySelector(this.DESTROY_BUTTON_SELECTOR);
-      removeButton.classList.toggle("d-none", hideRemoveButton);
+      const removeButton = nestedForm.querySelector(this.REMOVE_BUTTON_SELECTOR);
+      removeButton.classList.toggle("d-none", hideButton);
     });
   }
 
