@@ -15,16 +15,20 @@ class ProcessCDRJob < ApplicationJob
     end
 
     def perform
-      call_data_record = create_call_data_record
-      session_limit(call_data_record.phone_call)
-      CompletePhoneCallJob.perform_later(call_data_record.phone_call)
+      return if proxy_leg?
+
+      phone_call = find_phone_call
+      create_call_data_record(phone_call)
+      session_limit(phone_call)
+      CompletePhoneCallJob.perform_later(phone_call)
     end
 
     private
 
-    def create_call_data_record
+    def create_call_data_record(phone_call)
       CallDataRecord.create!(
-        phone_call: find_phone_call,
+        phone_call:,
+        external_id: cdr_variables.fetch("uuid"),
         hangup_cause: cdr_variables.fetch("hangup_cause"),
         direction: cdr_variables.fetch("direction"),
         duration_sec: cdr_variables.fetch("duration"),
@@ -76,6 +80,10 @@ class ProcessCDRJob < ApplicationJob
 
     def session_limit(phone_call)
       session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
+    end
+
+    def proxy_leg?
+      cdr_variables.fetch("direction") == "outbound"
     end
   end
 

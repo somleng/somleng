@@ -18,6 +18,6 @@ class ReconcileBalanceTransactionChargeSource < ApplicationWorkflow
   private
 
   def phone_call
-    PhoneCall.find_by!(external_id: balance_transaction.charge_source_id)
+    CallDataRecord.find_by!(external_id: balance_transaction.charge_source_id).phone_call
   end
 end

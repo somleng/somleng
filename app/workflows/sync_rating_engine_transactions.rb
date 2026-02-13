@@ -52,7 +52,7 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
     account = Account.find(cdr.account_id)
     category = TariffScheduleCategoryType.new.cast(cdr.category)
     message = account.messages.find_by(id: cdr.origin_id) if category.tariff_category.message?
-    phone_call = account.phone_calls.find_by(external_id: cdr.origin_id, account_id: account.id) if category.tariff_category.call?
+    phone_call = CallDataRecord.find_by(external_id: cdr.origin_id)&.phone_call if category.tariff_category.call?
 
     CDR.new(
       id: cdr.id,
