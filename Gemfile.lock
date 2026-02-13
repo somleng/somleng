@@ -148,7 +148,7 @@ GEM
       aws-sdk-sesv2 (~> 1, >= 1.34.0)
     aws-eventstream (1.4.0)
     aws-partitions (1.1213.0)
-    aws-sdk-cloudwatch (1.129.0)
+    aws-sdk-cloudwatch (1.130.0)
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sigv4 (~> 1.5)
     aws-sdk-core (3.242.0)
