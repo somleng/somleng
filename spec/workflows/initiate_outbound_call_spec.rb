@@ -55,6 +55,7 @@ RSpec.describe InitiateOutboundCall do
         twiml: nil,
         to: "+85516701721",
         from: "1294",
+        call_direction: "outbound",
         routing_parameters: {
           destination: "85516701721",
           dial_string_prefix: nil,

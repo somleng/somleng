@@ -69,6 +69,7 @@ class InitiateOutboundCall < ApplicationWorkflow
       to: decorated_phone_call.to,
       from: decorated_phone_call.caller_id,
       default_tts_voice: decorated_phone_call.default_tts_voice.identifier,
+      call_direction: :outbound,
       routing_parameters: RoutingParameters.new(
         sip_trunk: phone_call.sip_trunk,
         destination: phone_call.to
