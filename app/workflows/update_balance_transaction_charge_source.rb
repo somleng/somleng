@@ -7,7 +7,6 @@ class UpdateBalanceTransactionChargeSource < ApplicationWorkflow
   end
 
   def call
-    return if charge_source.blank?
     return if charge_source.price.present?
 
     charge_source.update_columns(

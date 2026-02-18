@@ -342,7 +342,7 @@ RSpec.describe RatingEngineClient do
               :rating_engine_cdr_response,
               order_id: 123,
               cost: 100,
-              extra_fields: { "balance_transaction_id" => 123 }
+              extra_fields: { "balance_transaction_id" => 123, "variable_sip_h_X-Somleng-CallSid" => 456 }
             ),
             build(
               :rating_engine_cdr_response,
@@ -366,12 +366,14 @@ RSpec.describe RatingEngineClient do
         have_attributes(
           id: 123,
           cost: 100,
-          balance_transaction_id: 123
+          balance_transaction_id: 123,
+          phone_call_id: 456
         ),
         have_attributes(
           id: 124,
           cost: 200,
-          balance_transaction_id: nil
+          balance_transaction_id: nil,
+          phone_call_id: nil
         )
       )
     end

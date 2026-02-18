@@ -83,7 +83,7 @@ class ProcessCDRJob < ApplicationJob
     end
 
     def proxy_leg?
-      cdr_variables.fetch("direction") == "outbound"
+      cdr_variables.key?("proxy_leg")
     end
   end
 

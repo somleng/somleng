@@ -30,11 +30,7 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
         cdr = parse_cdr(record)
 
         balance_transaction = create_balance_transaction(cdr)
-        if balance_transaction.charge_source.present?
-          UpdateBalanceTransactionChargeSource.call(balance_transaction)
-        else
-          handle_missing_charge_source(balance_transaction, cdr)
-        end
+        UpdateBalanceTransactionChargeSource.call(balance_transaction)
       end
 
       break if records.length < batch_size
@@ -51,8 +47,8 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
   def parse_cdr(cdr)
     account = Account.find(cdr.account_id)
     category = TariffScheduleCategoryType.new.cast(cdr.category)
-    message = account.messages.find_by(id: cdr.origin_id) if category.tariff_category.message?
-    phone_call = CallDataRecord.find_by(external_id: cdr.origin_id)&.phone_call if category.tariff_category.call?
+    message = account.messages.find(cdr.origin_id) if category.tariff_category.message?
+    phone_call = account.phone_calls.find(cdr.phone_call_id) if category.tariff_category.call?
 
     CDR.new(
       id: cdr.id,
@@ -73,24 +69,8 @@ class SyncRatingEngineTransactions < ApplicationWorkflow
       balance_transaction.amount_cents = -cdr.amount.cents
       balance_transaction.currency = cdr.amount.currency
       balance_transaction.charge_category = cdr.category.value
-      balance_transaction.charge_source_id = cdr.origin_id
       balance_transaction.message = cdr.message
       balance_transaction.phone_call = cdr.phone_call
     end
-  end
-
-  def handle_missing_charge_source(balance_transaction, cdr)
-    return unless charge_source_missing_from?(balance_transaction)
-
-    ExecuteWorkflowJob.perform_later(
-      ReconcileBalanceTransactionChargeSource.to_s,
-      balance_transaction
-    )
-  end
-
-  def charge_source_missing_from?(balance_transaction)
-    return false unless balance_transaction.charge_category.tariff_category.call?
-
-    balance_transaction.charge_source.blank?
   end
 end
