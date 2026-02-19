@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe InitiateOutboundCall do
   it "initiates an outbound call" do
     carrier = create(:carrier)
+    account = create(:account, :billing_enabled, carrier:)
     sip_trunk = create(
       :sip_trunk,
       sip_profile: "test",
@@ -17,6 +18,7 @@ RSpec.describe InitiateOutboundCall do
       :queued,
       :routable,
       carrier:,
+      account:,
       sip_trunk:,
       region: sip_trunk.region,
       to: "85516701721",
@@ -42,6 +44,7 @@ RSpec.describe InitiateOutboundCall do
     expect(WebMock).to have_requested(:post, "https://switch.helium.somleng.org/calls").with(
       body: {
         sid: phone_call.id,
+        carrier_sid: carrier.id,
         account_sid: phone_call.account.id,
         account_auth_token: phone_call.account.auth_token,
         direction: "outbound-api",
@@ -52,6 +55,7 @@ RSpec.describe InitiateOutboundCall do
         twiml: nil,
         to: "+85516701721",
         from: "1294",
+        call_direction: "outbound",
         routing_parameters: {
           destination: "85516701721",
           dial_string_prefix: nil,
@@ -60,6 +64,11 @@ RSpec.describe InitiateOutboundCall do
           host: "sip.example.com",
           username: nil,
           sip_profile: "test"
+        },
+        billing_parameters: {
+          enabled: true,
+          billing_mode: "prepaid",
+          category: "outbound_calls"
         }
       }
     )

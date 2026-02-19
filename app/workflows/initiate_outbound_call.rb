@@ -58,6 +58,7 @@ class InitiateOutboundCall < ApplicationWorkflow
     response = call_service_client.create_call(
       region: phone_call.region.alias,
       sid: decorated_phone_call.sid,
+      carrier_sid: decorated_phone_call.carrier_sid,
       account_sid: decorated_phone_call.account_sid,
       account_auth_token: decorated_phone_call.account.auth_token,
       direction: decorated_phone_call.direction,
@@ -68,10 +69,16 @@ class InitiateOutboundCall < ApplicationWorkflow
       to: decorated_phone_call.to,
       from: decorated_phone_call.caller_id,
       default_tts_voice: decorated_phone_call.default_tts_voice.identifier,
+      call_direction: :outbound,
       routing_parameters: RoutingParameters.new(
         sip_trunk: phone_call.sip_trunk,
         destination: phone_call.to
-      ).to_h
+      ).to_h,
+      billing_parameters: {
+        enabled: phone_call.account.billing_enabled?,
+        category: phone_call.tariff_schedule_category.to_s,
+        billing_mode: phone_call.account.billing_mode
+      }
     )
 
     raise Error, "Response body: #{response.body}" unless response.success?
