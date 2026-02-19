@@ -57,6 +57,7 @@ RSpec.describe InitiateOutboundCall do
         from: "1294",
         call_direction: "outbound",
         routing_parameters: {
+          address: nil,
           destination: "85516701721",
           dial_string_prefix: nil,
           plus_prefix: false,

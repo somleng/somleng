@@ -20,7 +20,7 @@ RSpec.describe "Services", :services do
         outbound_route_prefixes: [ "85571" ],
         outbound_national_dialing: false
       )
-      account = create(:account, carrier:)
+      account = create(:account, carrier:, billing_mode: :prepaid)
       parent_phone_call = create(:phone_call, :inbound, :answered, account:, sip_trunk:, to: "2442")
 
       post(
@@ -43,6 +43,11 @@ RSpec.describe "Services", :services do
           "sip_profile" => "nat_gateway",
           "host" => "27.109.112.141",
           "national_dialing" => true
+        ),
+        "billing_parameters" => include(
+          "enabled" => false,
+          "category" => "outbound_calls",
+          "billing_mode" => "prepaid"
         )
       )
       expect(phone_calls_response[1]).to include(
@@ -57,8 +62,9 @@ RSpec.describe "Services", :services do
       expect(phone_calls_response[2]).to include(
         "parent_call_sid" => parent_phone_call.id,
         "from" => "2442",
-        "routing_parameters" => nil,
-        "address" => "example.com:5080"
+        "routing_parameters" => include(
+          "address" => "example.com:5080"
+        )
       )
     end
 

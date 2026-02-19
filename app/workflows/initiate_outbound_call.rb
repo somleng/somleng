@@ -70,15 +70,8 @@ class InitiateOutboundCall < ApplicationWorkflow
       from: decorated_phone_call.caller_id,
       default_tts_voice: decorated_phone_call.default_tts_voice.identifier,
       call_direction: :outbound,
-      routing_parameters: RoutingParameters.new(
-        sip_trunk: phone_call.sip_trunk,
-        destination: phone_call.to
-      ).to_h,
-      billing_parameters: {
-        enabled: phone_call.account.billing_enabled?,
-        category: phone_call.tariff_schedule_category.to_s,
-        billing_mode: phone_call.account.billing_mode
-      }
+      routing_parameters: RoutingParameters.new(phone_call).to_h,
+      billing_parameters: BillingParameters.new(phone_call).to_h
     )
 
     raise Error, "Response body: #{response.body}" unless response.success?

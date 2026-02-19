@@ -13,6 +13,11 @@ describe ApplicationSeeder do
         default_tariff_package: be_present
       )
     )
+    expect(PhoneCall.all).to contain_exactly(
+      have_attributes(
+        region: be_present
+      )
+    )
     expect(User.count).to eq(2)
     expect(Account.carrier_managed.count).to eq(1)
     expect(Account.customer_managed.count).to eq(1)
@@ -20,7 +25,6 @@ describe ApplicationSeeder do
     expect(PhoneNumber.count).to eq(1)
     expect(IncomingPhoneNumber.count).to eq(1)
     expect(PhoneNumberPlan.count).to eq(1)
-    expect(PhoneCall.count).to eq(1)
     expect(SMSGateway.count).to eq(1)
     expect(TariffPackage.count).to eq(1)
     expect(TariffPlanSubscription.count).to eq(4)

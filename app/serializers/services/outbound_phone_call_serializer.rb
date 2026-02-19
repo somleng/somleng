@@ -8,10 +8,14 @@ module Services
     def attributes
       super.merge(
         "sid" => nil,
-        "parent_call_sid" => nil,
         "account_sid" => nil,
+        "carrier_sid" => nil,
+        "parent_call_sid" => nil,
         "from" => nil,
+        "direction" => nil,
+        "call_direction" => nil,
         "routing_parameters" => nil,
+        "billing_parameters" => nil,
         "address" => nil
       )
     end
@@ -28,14 +32,26 @@ module Services
       object.account_id
     end
 
+    def carrier_sid
+      object.carrier_id
+    end
+
     def address
-      phone_call.to.sip_address
+      # TODO: Remove after deployed
+
+      nil
     end
 
     def routing_parameters
-      return if phone_call.to.sip?
+      RoutingParameters.new(phone_call).to_h
+    end
 
-      RoutingParameters.new(sip_trunk: object.sip_trunk, destination: object.to).to_h
+    def billing_parameters
+      BillingParameters.new(phone_call).to_h
+    end
+
+    def call_direction
+      :outbound
     end
 
     private
