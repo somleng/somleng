@@ -229,7 +229,7 @@ jobs:
           mv public/docs/index.html public/docs/twilio_api/
 
       - name: Build and push application image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: .
@@ -242,7 +242,7 @@ jobs:
             ${{ secrets.GHCR_REGISTRY }}/${{ env.APP_REPOSITORY_NAME }}:${{ matrix.friendly_image_tag }}-${{ matrix.platform.arch }}
 
       - name: Build and push webserver image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: docker/nginx
