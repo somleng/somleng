@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: 4f1a6b70eaaedc2cfcdea2fd57d32775487358d8
+  revision: ebbe215655d731373e9bed99b26dfb75a6bd22fa
   specs:
     administrate (1.0.0)
       actionpack (>= 6.0, < 9.0)
@@ -346,7 +346,7 @@ GEM
     jmespath (1.6.2)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.18.1)
+    json (2.19.0)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (3.1.2)
