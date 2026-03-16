@@ -20,7 +20,7 @@ RSpec.describe "Services", :services do
         outbound_route_prefixes: [ "85571" ],
         outbound_national_dialing: false
       )
-      account = create(:account, carrier:, billing_mode: :prepaid)
+      account = create(:account, carrier:, billing_mode: :prepaid, billing_enabled: false)
       parent_phone_call = create(:phone_call, :inbound, :answered, account:, sip_trunk:, to: "2442")
 
       post(

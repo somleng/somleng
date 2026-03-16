@@ -9,6 +9,7 @@ module APIResponseSchema
           required(:parent_call_sid).filled(:str?)
           required(:from).filled(:str?)
           required(:direction).filled(:str?)
+          required(:call_direction).filled(:str?, eql?: "outbound")
           required(:routing_parameters).maybe(:hash?) do
             schema do
               required(:address).maybe(:str?)
@@ -24,7 +25,7 @@ module APIResponseSchema
           required(:billing_parameters).maybe(:hash?) do
             schema do
               required(:enabled).filled(:bool?)
-              required(:category).filled(:str?)
+              required(:category).filled(:str?, eql?: "outbound_calls")
               required(:billing_mode).filled(:str?)
             end
           end

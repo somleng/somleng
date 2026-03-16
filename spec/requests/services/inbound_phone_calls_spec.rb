@@ -4,7 +4,7 @@ RSpec.describe "Services", :services do
   describe "POST /services/inbound_phone_calls" do
     it "creates a phone call" do
       carrier = create(:carrier)
-      account = create(:account, carrier:)
+      account = create(:account, carrier:, billing_mode: :prepaid, billing_enabled: false)
       create(
         :incoming_phone_number,
         account:,
@@ -41,7 +41,13 @@ RSpec.describe "Services", :services do
         "voice_method" => "POST",
         "status_callback_url" => "https://example.com/status_callback",
         "status_callback_method" => "POST",
-        "default_tts_voice" => "Basic.Kal"
+        "default_tts_voice" => "Basic.Kal",
+        "call_direction" => "inbound",
+        "billing_parameters" => include(
+          "enabled" => false,
+          "category" => "inbound_calls",
+          "billing_mode" => "prepaid"
+        )
       )
     end
 

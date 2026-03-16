@@ -10,11 +10,14 @@ module Services
         "to" => nil,
         "from" => nil,
         "sid" => nil,
+        "carrier_sid" => nil,
         "account_sid" => nil,
         "account_auth_token" => nil,
+        "call_direction" => nil,
         "direction" => nil,
         "api_version" => nil,
-        "default_tts_voice" => nil
+        "default_tts_voice" => nil,
+        "billing_parameters" => nil
       )
     end
 
@@ -28,6 +31,14 @@ module Services
 
     def default_tts_voice
       object.default_tts_voice.identifier
+    end
+
+    def call_direction
+      :inbound
+    end
+
+    def billing_parameters
+      BillingParameters.new(object.phone_call).to_h
     end
   end
 end
