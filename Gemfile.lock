@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: 75cad435b1e43f5c0ddae04c5d7af5bce7a93ecc
+  revision: 38c6ca27455919a51433287a9619ed19d7aebbf3
   specs:
     administrate (1.0.0)
       actionpack (>= 6.0, < 9.0)
@@ -423,7 +423,7 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.5)
-    nokogiri (1.19.1)
+    nokogiri (1.19.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     okcomputer (1.19.1)
