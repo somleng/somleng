@@ -285,8 +285,8 @@ GEM
       dry-initializer (~> 3.2)
       dry-schema (~> 1.14)
       zeitwerk (~> 2.6)
-    email_spec (2.3.0)
-      htmlentities (~> 4.3.3)
+    email_spec (2.3.1)
+      htmlentities (~> 4.3)
       launchy (>= 2.1, < 4.0)
       mail (~> 2.7)
     enumerize (2.8.1)
@@ -323,7 +323,7 @@ GEM
     haikunator (1.1.1)
     hashdiff (1.2.1)
     htmlbeautifier (1.4.3)
-    htmlentities (4.3.4)
+    htmlentities (4.4.2)
     http (5.3.1)
       addressable (~> 2.8)
       http-cookie (~> 1.0)
@@ -413,7 +413,7 @@ GEM
     mustache (1.1.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.6.2)
+    net-imap (0.6.3)
       date
       net-protocol
     net-pop (0.1.2)
