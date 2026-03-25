@@ -84,7 +84,6 @@ resource "aws_ecs_service" "worker" {
     subnets = var.region.vpc.private_subnets
     security_groups = [
       aws_security_group.worker.id,
-      var.db_security_group,
       aws_security_group.redis.id
     ]
   }

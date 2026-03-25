@@ -120,7 +120,6 @@ resource "aws_ecs_service" "anycable" {
     subnets = var.region.vpc.private_subnets
     security_groups = [
       aws_security_group.anycable.id,
-      var.db_security_group,
       aws_security_group.redis.id
     ]
   }

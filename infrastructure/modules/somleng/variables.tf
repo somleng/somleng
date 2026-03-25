@@ -45,7 +45,6 @@ variable "pghero_other_databases" {
   default     = ""
 }
 
-variable "db_security_group" {}
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
 variable "appserver_max_tasks" {
