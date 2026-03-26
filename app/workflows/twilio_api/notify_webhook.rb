@@ -19,7 +19,8 @@ module TwilioAPI
       uri = HTTP::URI.parse(url)
 
       if http_method == :get
-        uri.query_values = uri.query_values(Array).to_a.concat(params.to_a)
+        query_values = URI.decode_www_form(uri.query.to_s)
+        uri.query = URI.encode_www_form(query_values.concat(params.to_a))
         http_client.get(
           uri,
           headers: {

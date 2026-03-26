@@ -10,7 +10,8 @@ class FeatureFlag
     "65da5e4f-a990-482c-b4c9-fa0849a6233f" => [ :broadcasts ],
     "986bbbc7-e38f-4780-8c99-77181085a49b" => [ :broadcasts ],
     "cb2dc3b6-c347-41d9-aaac-498b4f5bc28f" => [ :broadcasts ],
-    "fff20142-6114-4017-b346-b6c4d0fb269f" => [ :broadcasts ]
+    "fff20142-6114-4017-b346-b6c4d0fb269f" => [ :broadcasts ],
+    "9ab8732b-c08f-4a1e-a558-d47d42627148" => [ :broadcasts ]
   }
 
   class << self

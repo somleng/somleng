@@ -16,10 +16,14 @@ RSpec.describe ExecuteMessagingTwiML do
 
     ExecuteMessagingTwiML.call(message:, url: message.sms_url, http_method: message.sms_method)
 
-    expect(WebMock).to(have_requested(:post,
-                                      "https://www.example.com/messaging.xml").with do |request|
-                         request.body.include?("MessageSid=#{message.id}")
-                       end)
+    expect(WebMock).to(
+      have_requested(
+        :post,
+        "https://www.example.com/messaging.xml"
+      ).with do |request|
+        request.body.include?("MessageSid=#{message.id}")
+      end
+    )
   end
 
   context "<Message> verb" do
