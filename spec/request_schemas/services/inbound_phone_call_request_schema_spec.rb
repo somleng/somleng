@@ -89,6 +89,28 @@ module Services
       )
     end
 
+    it "validates account billing policy" do
+      carrier = create(:carrier)
+      account = create(:account, :billing_enabled, carrier:)
+      _sip_trunk = create(:sip_trunk, carrier:, inbound_source_ips: "89.0.142.86")
+      incoming_phone_number = create(:incoming_phone_number, :fully_configured, account:)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            to: incoming_phone_number.number.to_s,
+            from: "85568308531",
+            source_ip: "89.0.142.86",
+            external_id: "external-id",
+            host: "10.10.1.13",
+            region: "hydrogen"
+          }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:subscription_disabled).message
+      )
+    end
+
     it "validates carrier is in good standing" do
       carrier = create_restricted_carrier
       account = create(:account, carrier:)

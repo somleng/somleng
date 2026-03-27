@@ -5,6 +5,7 @@ module Services
     option :phone_number_configuration_rules,
            default: -> { PhoneNumberConfigurationRules.new }
     option :sip_trunk_resolver, default: -> { SIPTrunkResolver.new }
+    option :account_billing_policy, default: -> { AccountBillingPolicy.new }
 
     params do
       required(:to).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -69,6 +70,19 @@ module Services
       next if CarrierStanding.new(context[:incoming_phone_number].carrier).good_standing?
 
       error = schema_helper.fetch_error(:carrier_standing)
+      base.failure(text: error.message, code: error.code)
+      error_log_messages << error.message
+    end
+
+    rule do |context:|
+      next if context[:incoming_phone_number].blank?
+      next if result.errors.any?
+
+      account = context[:incoming_phone_number].account
+      interaction = PhoneCall.new(account:, direction: :inbound, to: context[:to])
+      next if account_billing_policy.valid?(interaction:)
+
+      error = schema_helper.fetch_error(account_billing_policy.error_code)
       base.failure(text: error.message, code: error.code)
       error_log_messages << error.message
     end
