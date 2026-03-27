@@ -283,7 +283,7 @@ class RatingEngineClient
       account_id: response.fetch("Account"),
       cost:,
       balance_transaction_id: response.dig("ExtraFields", "balance_transaction_id"),
-      phone_call_id: response.dig("ExtraFields", "variable_sip_h_X-Somleng-CallSid") || response.dig("ExtraFields", "variable_sip_rh_X-Somleng-CallSid"),
+      phone_call_id: response.dig("ExtraFields", "variable_sip_h_X-Somleng-CallSid").presence || response.dig("ExtraFields", "variable_sip_rh_X-Somleng-CallSid").presence,
       extra_info: response.fetch("ExtraInfo"),
       origin_id: response.fetch("OriginID"),
       category: response.fetch("Category"),

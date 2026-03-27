@@ -342,7 +342,11 @@ RSpec.describe RatingEngineClient do
               :rating_engine_cdr_response,
               order_id: 123,
               cost: 100,
-              extra_fields: { "balance_transaction_id" => 123, "variable_sip_h_X-Somleng-CallSid" => 456 }
+              extra_fields: {
+                "balance_transaction_id" => 123,
+                "variable_sip_h_X-Somleng-CallSid" => 456,
+                "variable_sip_rh_X-Somleng-CallSid" => ""
+              }
             ),
             build(
               :rating_engine_cdr_response,
@@ -352,8 +356,11 @@ RSpec.describe RatingEngineClient do
             build(
               :rating_engine_cdr_response,
               order_id: 125,
-              extra_fields: { "variable_sip_rh_X-Somleng-CallSid" => 123 }
-            ),
+              extra_fields: {
+                "variable_sip_h_X-Somleng-CallSid" => "",
+                "variable_sip_rh_X-Somleng-CallSid" => 123
+              }
+            )
           ]
         )
       )
