@@ -17,7 +17,7 @@ RSpec.describe "Services", :services do
       create(:sip_trunk, carrier:, inbound_source_ips: "175.100.7.240")
 
       post(
-        api_services_inbound_phone_calls_path,
+        services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
           "to" => "16189124649",
@@ -53,7 +53,7 @@ RSpec.describe "Services", :services do
 
     it "handles phone numbers which aren't assigned to an account" do
       post(
-        api_services_inbound_phone_calls_path,
+        services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
           "to" => "855716200876",
@@ -90,7 +90,7 @@ RSpec.describe "Services", :services do
       )
 
       post(
-        api_services_inbound_phone_calls_path,
+        services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
           "to" => "068308532",

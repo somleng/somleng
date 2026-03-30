@@ -7,6 +7,7 @@ module "somleng" {
   app_subdomain      = "app"
   cdn_subdomain      = "cdn"
   api_subdomain      = "api"
+  services_subdomain = "services"
   verify_subdomain   = "verify"
   anycable_subdomain = "anycable"
 

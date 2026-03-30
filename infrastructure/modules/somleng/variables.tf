@@ -20,6 +20,7 @@ variable "cdn_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}
+variable "services_subdomain" {}
 variable "verify_subdomain" {}
 variable "anycable_subdomain" {}
 

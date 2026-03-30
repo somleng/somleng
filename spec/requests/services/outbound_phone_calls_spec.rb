@@ -24,7 +24,7 @@ RSpec.describe "Services", :services do
       parent_phone_call = create(:phone_call, :inbound, :answered, account:, sip_trunk:, to: "2442")
 
       post(
-        api_services_outbound_phone_calls_path,
+        services_outbound_phone_calls_path,
         params: {
           destinations: [ "+855 16 701 721", "+855 715 100 722", " sip:example.com:5080 " ],
           parent_call_sid: parent_phone_call.id
@@ -75,7 +75,7 @@ RSpec.describe "Services", :services do
       parent_phone_call = create(:phone_call, :inbound, :answered, account:, sip_trunk:)
 
       post(
-        api_services_outbound_phone_calls_path,
+        services_outbound_phone_calls_path,
         params: {
           destinations: [ "+855 16 701 721" ],
           parent_call_sid: parent_phone_call.id

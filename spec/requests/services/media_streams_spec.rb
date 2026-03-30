@@ -6,7 +6,7 @@ RSpec.describe "Services", :services do
       phone_call = create(:phone_call)
 
       post(
-        api_services_media_streams_path,
+        services_media_streams_path,
         params: {
           phone_call_id: phone_call.id,
           tracks: "inbound",
@@ -22,7 +22,7 @@ RSpec.describe "Services", :services do
 
     it "handles invalid requests" do
       post(
-        api_services_media_streams_path,
+        services_media_streams_path,
         headers: build_authorization_headers("services", "password")
       )
 

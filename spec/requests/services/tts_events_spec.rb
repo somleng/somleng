@@ -9,7 +9,7 @@ RSpec.describe "Services", :services do
       )
 
       post(
-        api_services_tts_events_path,
+        services_tts_events_path,
         params: {
           phone_call: phone_call.id,
           tts_voice: "Basic.Kal",

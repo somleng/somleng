@@ -21,7 +21,7 @@ RSpec.describe "Services", :services do
 
       perform_enqueued_jobs do
         post(
-          api_services_call_data_records_path,
+          services_call_data_records_path,
           params: {
             cdr: Base64.encode64(freeswitch_cdr)
           },
@@ -47,7 +47,7 @@ RSpec.describe "Services", :services do
 
       perform_enqueued_jobs do
         post(
-          api_services_call_data_records_path,
+          services_call_data_records_path,
           params: {
             cdr: Base64.encode64(freeswitch_cdr)
           },

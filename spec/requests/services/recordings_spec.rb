@@ -6,7 +6,7 @@ RSpec.describe "Services", :services do
       phone_call = create(:phone_call)
 
       post(
-        api_services_recordings_path,
+        services_recordings_path,
         params: { phone_call_id: phone_call.id },
         headers: build_authorization_headers("services", "password")
       )
@@ -21,7 +21,7 @@ RSpec.describe "Services", :services do
       recording = create(:recording, :in_progress)
 
       patch(
-        api_services_recording_path(recording),
+        services_recording_path(recording),
         params: {
           raw_recording_url: "https://raw-recordings.s3.amazonaws.com/recording.wav",
           external_id: "external-id"
