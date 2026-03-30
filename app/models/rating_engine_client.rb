@@ -278,12 +278,15 @@ class RatingEngineClient
 
   def build_cdr(response)
     cost = response.fetch("Cost")
+    phone_call_id = response.dig("ExtraFields", "variable_sip_h_X-Somleng-CallSid").presence ||
+                    response.dig("ExtraFields", "variable_sip_rh_X-Somleng-CallSid").presence ||
+                    response.dig("ExtraFields", "variable_somleng_call_sid").presence
     CDR.new(
       id: response.fetch("OrderID"),
       account_id: response.fetch("Account"),
       cost:,
       balance_transaction_id: response.dig("ExtraFields", "balance_transaction_id"),
-      phone_call_id: response.dig("ExtraFields", "variable_sip_h_X-Somleng-CallSid").presence || response.dig("ExtraFields", "variable_sip_rh_X-Somleng-CallSid").presence,
+      phone_call_id:,
       extra_info: response.fetch("ExtraInfo"),
       origin_id: response.fetch("OriginID"),
       category: response.fetch("Category"),

@@ -360,6 +360,15 @@ RSpec.describe RatingEngineClient do
                 "variable_sip_h_X-Somleng-CallSid" => "",
                 "variable_sip_rh_X-Somleng-CallSid" => 123
               }
+            ),
+            build(
+              :rating_engine_cdr_response,
+              order_id: 126,
+              extra_fields: {
+                "variable_sip_h_X-Somleng-CallSid" => "",
+                "variable_sip_rh_X-Somleng-CallSid" => "",
+                "variable_somleng_call_sid" => 123
+              }
             )
           ]
         )
@@ -389,6 +398,10 @@ RSpec.describe RatingEngineClient do
         ),
         have_attributes(
           id: 125,
+          phone_call_id: 123
+        ),
+        have_attributes(
+          id: 126,
           phone_call_id: 123
         )
       )
