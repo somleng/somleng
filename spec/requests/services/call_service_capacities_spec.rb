@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/call_service_capacities" do
+  describe "POST /call_service_capacities" do
     it "updates the call service capacity" do
       post(
         services_call_service_capacities_path,

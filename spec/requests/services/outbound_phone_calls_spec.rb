@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/outbound_phone_calls" do
+  describe "POST /outbound_phone_calls" do
     it "creates a new outbound call" do
       carrier = create(:carrier)
       sip_trunk = create(

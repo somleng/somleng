@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/inbound_phone_calls" do
+  describe "POST /inbound_phone_calls" do
     it "creates a phone call" do
       carrier = create(:carrier)
       account = create(:account, carrier:, billing_mode: :prepaid, billing_enabled: false)

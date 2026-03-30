@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/recordings" do
+  describe "POST /recordings" do
     it "creates a recording" do
       phone_call = create(:phone_call)
 
@@ -16,7 +16,7 @@ RSpec.describe "Services", :services do
     end
   end
 
-  describe "PATCH /services/recordings/:id" do
+  describe "PATCH /recordings/:id" do
     it "updates a recording" do
       recording = create(:recording, :in_progress)
 

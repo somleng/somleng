@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/call_data_records" do
+  describe "POST /call_data_records" do
     it "creates a call data record" do
       freeswitch_cdr = file_fixture("freeswitch_cdr.json").read
 

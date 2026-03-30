@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/media_streams" do
+  describe "POST /media_streams" do
     it "creates a media stream" do
       phone_call = create(:phone_call)
 
