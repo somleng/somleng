@@ -142,7 +142,7 @@ GEM
     anyway_config (2.8.0)
       ruby-next-core (~> 1.0)
     ast (2.4.3)
-    aws-actionmailer-ses (1.0.0)
+    aws-actionmailer-ses (1.1.0)
       actionmailer (>= 7.1.0)
       aws-sdk-ses (~> 1, >= 1.50.0)
       aws-sdk-sesv2 (~> 1, >= 1.34.0)
