@@ -87,6 +87,17 @@ module Services
       error_log_messages << error.message
     end
 
+    rule do |context:|
+      next if context[:incoming_phone_number].blank?
+      next unless context[:incoming_phone_number].account.billing_enabled?
+      next if context[:sip_trunk].blank?
+      next if context[:sip_trunk].region.alias == "hydrogen"
+
+      error = schema_helper.fetch_error(:region_not_supported)
+      base.failure(text: error.message, code: error.code)
+      error_log_messages << error.message
+    end
+
     def output
       params = super
 

@@ -167,6 +167,23 @@ module Services
       ).to have_valid_field(:from)
     end
 
+    it "validates sip trunk region" do
+      account = create(:account, :billing_enabled)
+      create(:sip_trunk, carrier: account.carrier, region: "helium", inbound_source_ips: "175.100.7.240")
+      create(:incoming_phone_number, account:, number: "85568308530")
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            to: "+85568308530",
+            source_ip: "175.100.7.240"
+          }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:region_not_supported).message
+      )
+    end
+
     it "normalizes the output" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, :client_credentials_authentication, carrier:)

@@ -19,6 +19,10 @@ module ApplicationError
         code: "S1007",
         message: "This destination is blocked"
       ),
+      region_not_supported: Error.new(
+        code: "S1008",
+        message: "Region is not supported"
+      ),
       account_suspended: Error.new(code: "30002", message: "Account suspended"),
       messaging_service_blank: Error.new(
         code: "21701",
