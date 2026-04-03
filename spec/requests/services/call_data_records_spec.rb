@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/call_data_records" do
+  describe "POST /call_data_records" do
     it "creates a call data record" do
       freeswitch_cdr = file_fixture("freeswitch_cdr.json").read
 
@@ -21,7 +21,7 @@ RSpec.describe "Services", :services do
 
       perform_enqueued_jobs do
         post(
-          api_services_call_data_records_path,
+          services_call_data_records_path,
           params: {
             cdr: Base64.encode64(freeswitch_cdr)
           },
@@ -47,7 +47,7 @@ RSpec.describe "Services", :services do
 
       perform_enqueued_jobs do
         post(
-          api_services_call_data_records_path,
+          services_call_data_records_path,
           params: {
             cdr: Base64.encode64(freeswitch_cdr)
           },

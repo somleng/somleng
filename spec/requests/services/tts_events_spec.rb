@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/tts_events" do
+  describe "POST /tts_events" do
     it "creates a TTS event" do
       phone_call = create(
         :phone_call,
@@ -9,7 +9,7 @@ RSpec.describe "Services", :services do
       )
 
       post(
-        api_services_tts_events_path,
+        services_tts_events_path,
         params: {
           phone_call: phone_call.id,
           tts_voice: "Basic.Kal",

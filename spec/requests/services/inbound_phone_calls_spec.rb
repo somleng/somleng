@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/inbound_phone_calls" do
+  describe "POST /inbound_phone_calls" do
     it "creates a phone call" do
       carrier = create(:carrier)
-      account = create(:account, carrier:)
+      account = create(:account, carrier:, billing_mode: :prepaid, billing_enabled: false)
       create(
         :incoming_phone_number,
         account:,
@@ -17,7 +17,7 @@ RSpec.describe "Services", :services do
       create(:sip_trunk, carrier:, inbound_source_ips: "175.100.7.240")
 
       post(
-        api_services_inbound_phone_calls_path,
+        services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
           "to" => "16189124649",
@@ -41,13 +41,19 @@ RSpec.describe "Services", :services do
         "voice_method" => "POST",
         "status_callback_url" => "https://example.com/status_callback",
         "status_callback_method" => "POST",
-        "default_tts_voice" => "Basic.Kal"
+        "default_tts_voice" => "Basic.Kal",
+        "call_direction" => "inbound",
+        "billing_parameters" => include(
+          "enabled" => false,
+          "category" => "inbound_calls",
+          "billing_mode" => "prepaid"
+        )
       )
     end
 
     it "handles phone numbers which aren't assigned to an account" do
       post(
-        api_services_inbound_phone_calls_path,
+        services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
           "to" => "855716200876",
@@ -84,7 +90,7 @@ RSpec.describe "Services", :services do
       )
 
       post(
-        api_services_inbound_phone_calls_path,
+        services_inbound_phone_calls_path,
         params: {
           "source_ip" => "175.100.7.240",
           "to" => "068308532",

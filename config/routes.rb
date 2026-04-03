@@ -60,6 +60,21 @@ Rails.application.routes.draw do
   end
 
   scope(
+    module: "services", as: :services, constraints: { subdomain: AppSettings.fetch(:services_subdomain) },
+    defaults: { format: "json" }
+  ) do
+    resources :inbound_phone_calls, only: :create
+    resources :outbound_phone_calls, only: :create
+    resources :phone_call_events, only: :create
+    resources :tts_events, only: :create
+    resources :call_data_records, only: :create
+    resources :recordings, only: %i[create update]
+    resources :media_streams, only: :create
+    resources :media_stream_events, only: :create
+    resources :call_service_capacities, only: :create
+  end
+
+  scope(
     module: "twilio_api/verify", as: :api_twilio_verify, constraints: { subdomain: AppSettings.fetch(:verify_subdomain) },
     defaults: { format: "json" }
   ) do

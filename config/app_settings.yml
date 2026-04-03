@@ -2,6 +2,7 @@ default: &default
   app_subdomain: "app"
   api_subdomain: "api"
   verify_subdomain: "verify"
+  services_subdomain: "services"
   client_gateway_domain: "sip.somleng.org"
   mailer_sender: <%= ENV.fetch("MAILER_SENDER", "no-reply@somleng.org") %>
   aws_sqs_high_priority_queue_name: <%= ENV.fetch("AWS_SQS_HIGH_PRIORITY_QUEUE_NAME", "high-priority") %>
@@ -74,6 +75,7 @@ staging:
   app_subdomain: "app-staging"
   api_subdomain: "api-staging"
   verify_subdomain: "verify-staging"
+  services_subdomain: "services-staging"
   app_url_host: <%= ENV.fetch("APP_URL_HOST", "https://app-staging.somleng.org") %>
   asset_url_host: <%= ENV.fetch("ASSET_URL_HOST", "https://cdn-staging.somleng.org") %>
   rating_engine_host: <%= ENV.fetch("RATING_ENGINE_HOST", "https://rating-engine-staging.somleng.org") %>

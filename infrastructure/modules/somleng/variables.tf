@@ -20,6 +20,7 @@ variable "cdn_certificate" {}
 variable "app_subdomain" {}
 variable "cdn_subdomain" {}
 variable "api_subdomain" {}
+variable "services_subdomain" {}
 variable "verify_subdomain" {}
 variable "anycable_subdomain" {}
 
@@ -45,7 +46,6 @@ variable "pghero_other_databases" {
   default     = ""
 }
 
-variable "db_security_group" {}
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
 variable "appserver_max_tasks" {

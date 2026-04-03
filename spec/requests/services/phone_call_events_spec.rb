@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/phone_call_events" do
+  describe "POST /phone_call_events" do
     it "creates a phone call event" do
       phone_call = create(
         :phone_call,
@@ -11,7 +11,7 @@ RSpec.describe "Services", :services do
 
       perform_enqueued_jobs do
         post(
-          api_services_phone_call_events_path,
+          services_phone_call_events_path,
           params: {
             phone_call: phone_call.external_id,
             type: "answered"
@@ -28,7 +28,7 @@ RSpec.describe "Services", :services do
 
     it "handles invalid requests" do
       post(
-        api_services_phone_call_events_path,
+        services_phone_call_events_path,
         headers: build_authorization_headers("services", "password")
       )
 

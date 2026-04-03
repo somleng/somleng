@@ -93,7 +93,6 @@ resource "aws_ecs_service" "appserver" {
     subnets = var.region.vpc.private_subnets
     security_groups = [
       aws_security_group.appserver.id,
-      var.db_security_group,
       aws_security_group.redis.id
     ]
   }
@@ -207,6 +206,18 @@ resource "aws_route53_record" "internal_api" {
   }
 }
 
+resource "aws_route53_record" "services" {
+  zone_id = var.internal_route53_zone.zone_id
+  name    = var.services_subdomain
+  type    = "A"
+
+  alias {
+    name                   = var.region.internal_load_balancer.this.dns_name
+    zone_id                = var.region.internal_load_balancer.this.zone_id
+    evaluate_target_health = true
+  }
+}
+
 resource "aws_route53_record" "internal_app" {
   zone_id = var.internal_route53_zone.zone_id
   name    = var.app_subdomain
@@ -288,7 +299,8 @@ resource "aws_lb_listener_rule" "internal_webserver" {
   condition {
     host_header {
       values = [
-        aws_route53_record.internal_api.fqdn
+        aws_route53_record.internal_api.fqdn,
+        aws_route53_record.services.fqdn
       ]
     }
   }

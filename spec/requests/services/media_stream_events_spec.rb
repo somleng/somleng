@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/media_stream_events" do
+  describe "POST /media_stream_events" do
     it "creates an media stream event" do
       media_stream = create(:media_stream)
 
       post(
-        api_services_media_stream_events_path,
+        services_media_stream_events_path,
         params: {
           media_stream_id: media_stream.id,
           event: { type: "connect_failed", details: { foo: "bar" } }
@@ -28,7 +28,7 @@ RSpec.describe "Services", :services do
 
     it "handles invalid requests" do
       post(
-        api_services_media_streams_path,
+        services_media_streams_path,
         headers: build_authorization_headers("services", "password")
       )
 

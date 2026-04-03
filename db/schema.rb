@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_10_074118) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_18_095536) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -92,7 +92,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_10_074118) do
     t.decimal "amount_cents", precision: 14, scale: 4, null: false
     t.uuid "carrier_id", null: false
     t.string "charge_category"
-    t.string "charge_source_id"
     t.datetime "created_at", null: false
     t.uuid "created_by_id"
     t.string "currency", null: false
@@ -106,7 +105,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_10_074118) do
     t.index ["account_id"], name: "index_balance_transactions_on_account_id"
     t.index ["carrier_id"], name: "index_balance_transactions_on_carrier_id"
     t.index ["charge_category"], name: "index_balance_transactions_on_charge_category"
-    t.index ["charge_source_id"], name: "index_balance_transactions_on_charge_source_id"
     t.index ["created_by_id"], name: "index_balance_transactions_on_created_by_id"
     t.index ["external_id"], name: "index_balance_transactions_on_external_id", unique: true, order: :desc
     t.index ["message_id"], name: "index_balance_transactions_on_message_id", unique: true
@@ -122,6 +120,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_10_074118) do
     t.string "direction", null: false
     t.integer "duration_sec", null: false
     t.datetime "end_time", precision: nil, null: false
+    t.string "external_id"
     t.string "hangup_cause", null: false
     t.uuid "phone_call_id", null: false
     t.bigserial "sequence_number", null: false
@@ -130,6 +129,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_10_074118) do
     t.string "sip_term_status"
     t.datetime "start_time", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["external_id"], name: "index_call_data_records_on_external_id", unique: true
     t.index ["phone_call_id"], name: "index_call_data_records_on_phone_call_id", unique: true
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
     t.index ["sip_invite_failure_status"], name: "index_call_data_records_on_sip_invite_failure_status"

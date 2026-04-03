@@ -6,6 +6,7 @@ module "somleng" {
   app_subdomain      = "app-staging"
   cdn_subdomain      = "cdn-staging"
   api_subdomain      = "api-staging"
+  services_subdomain = "services-staging"
   verify_subdomain   = "verify-staging"
   anycable_subdomain = "anycable-staging"
 
@@ -28,7 +29,6 @@ module "somleng" {
   db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db_staging.master_password_parameter.arn
   db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.endpoint
   db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.port
-  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db_staging.security_group.id
   db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db_staging.this.id
 
   call_service_queue_name = "switch-services-staging"

@@ -178,6 +178,7 @@ class ApplicationSeeder
       direction: :outbound_api,
       from: phone_number.number,
       to: "855715100678",
+      region: "hydrogen",
       **params
     )
   end

@@ -13,6 +13,8 @@ module SchemaRules
         @error_code = :call_blocked_by_blocked_list
       elsif @destination_rules.sip_trunk.blank?
         @error_code = :calling_number_unsupported_or_invalid
+      elsif account.billing_enabled? && sip_trunk.region.alias != "hydrogen"
+        @error_code = :region_not_supported
       elsif !account_billing_policy_valid?(account:, destination:)
         @error_code = account_billing_policy.error_code
       end

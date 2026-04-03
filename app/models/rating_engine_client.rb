@@ -21,7 +21,7 @@ class RatingEngineClient
     }
   }
 
-  CDR = Data.define(:id, :origin_id, :category, :account_id, :cost, :balance_transaction_id, :extra_info, :success?)
+  CDR = Data.define(:id, :origin_id, :category, :account_id, :cost, :balance_transaction_id, :phone_call_id, :extra_info, :success?)
 
   ERROR_CODES = {
     "MAX_USAGE_EXCEEDED" => :insufficient_balance,
@@ -278,11 +278,15 @@ class RatingEngineClient
 
   def build_cdr(response)
     cost = response.fetch("Cost")
+    phone_call_id = response.dig("ExtraFields", "variable_sip_h_X-Somleng-CallSid").presence ||
+                    response.dig("ExtraFields", "variable_sip_rh_X-Somleng-CallSid").presence ||
+                    response.dig("ExtraFields", "variable_somleng_call_sid").presence
     CDR.new(
       id: response.fetch("OrderID"),
       account_id: response.fetch("Account"),
       cost:,
       balance_transaction_id: response.dig("ExtraFields", "balance_transaction_id"),
+      phone_call_id:,
       extra_info: response.fetch("ExtraInfo"),
       origin_id: response.fetch("OriginID"),
       category: response.fetch("Category"),

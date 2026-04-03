@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Services", :services do
-  describe "POST /services/outbound_phone_calls" do
+  describe "POST /outbound_phone_calls" do
     it "creates a new outbound call" do
       carrier = create(:carrier)
       sip_trunk = create(
@@ -20,11 +20,11 @@ RSpec.describe "Services", :services do
         outbound_route_prefixes: [ "85571" ],
         outbound_national_dialing: false
       )
-      account = create(:account, carrier:)
+      account = create(:account, carrier:, billing_mode: :prepaid, billing_enabled: false)
       parent_phone_call = create(:phone_call, :inbound, :answered, account:, sip_trunk:, to: "2442")
 
       post(
-        api_services_outbound_phone_calls_path,
+        services_outbound_phone_calls_path,
         params: {
           destinations: [ "+855 16 701 721", "+855 715 100 722", " sip:example.com:5080 " ],
           parent_call_sid: parent_phone_call.id
@@ -43,6 +43,11 @@ RSpec.describe "Services", :services do
           "sip_profile" => "nat_gateway",
           "host" => "27.109.112.141",
           "national_dialing" => true
+        ),
+        "billing_parameters" => include(
+          "enabled" => false,
+          "category" => "outbound_calls",
+          "billing_mode" => "prepaid"
         )
       )
       expect(phone_calls_response[1]).to include(
@@ -57,8 +62,9 @@ RSpec.describe "Services", :services do
       expect(phone_calls_response[2]).to include(
         "parent_call_sid" => parent_phone_call.id,
         "from" => "2442",
-        "routing_parameters" => nil,
-        "address" => "example.com:5080"
+        "routing_parameters" => include(
+          "address" => "example.com:5080"
+        )
       )
     end
 
@@ -69,7 +75,7 @@ RSpec.describe "Services", :services do
       parent_phone_call = create(:phone_call, :inbound, :answered, account:, sip_trunk:)
 
       post(
-        api_services_outbound_phone_calls_path,
+        services_outbound_phone_calls_path,
         params: {
           destinations: [ "+855 16 701 721" ],
           parent_call_sid: parent_phone_call.id

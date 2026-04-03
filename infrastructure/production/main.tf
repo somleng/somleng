@@ -7,6 +7,7 @@ module "somleng" {
   app_subdomain      = "app"
   cdn_subdomain      = "cdn"
   api_subdomain      = "api"
+  services_subdomain = "services"
   verify_subdomain   = "verify"
   anycable_subdomain = "anycable"
 
@@ -27,7 +28,6 @@ module "somleng" {
   db_password_parameter_arn = data.terraform_remote_state.core_infrastructure.outputs.db.master_password_parameter.arn
   db_host                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.endpoint
   db_port                   = data.terraform_remote_state.core_infrastructure.outputs.db.this.port
-  db_security_group         = data.terraform_remote_state.core_infrastructure.outputs.db.security_group.id
   db_instance_identifier    = data.terraform_remote_state.core_infrastructure.outputs.db.this.id
 
   call_service_queue_name = "switch-services"

@@ -172,6 +172,25 @@ module TwilioAPI
       ).not_to have_valid_field(:StatusCallbackMethod)
     end
 
+    it "validates sip trunk region" do
+      account = create(:account, :billing_enabled)
+      create(:sip_trunk, carrier: account.carrier, region: "helium")
+      create(:incoming_phone_number, account:, number: "85568308530")
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            From: "+855 68 308 530",
+            Url: "https://www.example.com/voice_url.xml",
+            To: "+85568308530"
+          },
+          options: { account: }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:region_not_supported).message
+      )
+    end
+
     it "handles post processing" do
       carrier = create(:carrier)
       account = create(:account, carrier:)

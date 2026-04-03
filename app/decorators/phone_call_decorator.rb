@@ -53,6 +53,10 @@ class PhoneCallDecorator < SimpleDelegator
     id
   end
 
+  def carrier_sid
+    carrier_id
+  end
+
   def account_sid
     account_id
   end
