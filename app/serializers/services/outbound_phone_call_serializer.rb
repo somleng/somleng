@@ -15,8 +15,7 @@ module Services
         "direction" => nil,
         "call_direction" => nil,
         "routing_parameters" => nil,
-        "billing_parameters" => nil,
-        "address" => nil
+        "billing_parameters" => nil
       )
     end
 
@@ -34,12 +33,6 @@ module Services
 
     def carrier_sid
       object.carrier_id
-    end
-
-    def address
-      # TODO: Remove after deployed
-
-      nil
     end
 
     def routing_parameters
