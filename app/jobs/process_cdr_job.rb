@@ -15,7 +15,7 @@ class ProcessCDRJob < ApplicationJob
     end
 
     def perform
-      return if proxy_leg?
+      return unless record_cdr?
 
       phone_call = find_phone_call
       create_call_data_record(phone_call)
@@ -82,8 +82,8 @@ class ProcessCDRJob < ApplicationJob
       session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
     end
 
-    def proxy_leg?
-      cdr_variables.key?("proxy_leg")
+    def record_cdr?
+      cdr_variables.key?("record_cdr")
     end
   end
 

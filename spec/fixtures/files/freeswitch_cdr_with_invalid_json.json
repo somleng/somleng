@@ -96,6 +96,7 @@
     "rtp_2833_recv_payload": "101",
     "remote_media_ip": "200.0.90.55",
     "remote_media_port": "16516",
+    "record_cdr": "true",
     "pre_transfer_caller_id_name": "525550894262",
     "pre_transfer_caller_id_number": "525550894262",
     "channel_cid_flipped": "yes",
