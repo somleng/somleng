@@ -107,3 +107,7 @@ variable "anycable_rpc_port" {
 variable "rails_log_level" {
   default = "info"
 }
+
+variable "autoscale_worker" {
+  default = true
+}
