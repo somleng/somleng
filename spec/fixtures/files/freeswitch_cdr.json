@@ -124,6 +124,7 @@
     "rtp_2833_recv_payload": "116",
     "remote_media_ip": "27.109.112.140",
     "remote_media_port": "28702",
+    "record_cdr": "true",
     "sip_rh_X-Somleng-CallSid": "ffafbad1-9861-4522-be15-c797524bc621",
     "sip_rh_X-Somleng-AccountSid": "36686827-9b14-4073-bcd0-bda9ec8d60bd",
     "rtp_local_sdp_str": "v%3D0%0D%0Ao%3DFreeSWITCH%201657075615%201657075617%20IN%20IP4%2013.250.230.15%0D%0As%3DFreeSWITCH%0D%0Ac%3DIN%20IP4%2013.250.230.15%0D%0At%3D0%200%0D%0Am%3Daudio%2021788%20RTP/AVP%208%20116%0D%0Aa%3Drtpmap%3A8%20PCMA/8000%0D%0Aa%3Drtpmap%3A116%20telephone-event/8000%0D%0Aa%3Dfmtp%3A116%200-15%0D%0Aa%3Dptime%3A20%0D%0Aa%3Dsendrecv%0D%0A",

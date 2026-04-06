@@ -19,7 +19,7 @@ resource "aws_cloudwatch_log_metric_filter" "outbound_calls_queue" {
     }
   }
 
-  depends_on = [null_resource.log_transformer]
+  depends_on = [aws_cloudwatch_log_transformer.log_transformer]
 }
 
 resource "aws_cloudwatch_log_metric_filter" "call_service_capacity" {
@@ -38,57 +38,36 @@ resource "aws_cloudwatch_log_metric_filter" "call_service_capacity" {
     }
   }
 
-  depends_on = [null_resource.log_transformer]
+  depends_on = [aws_cloudwatch_log_transformer.log_transformer]
 }
 
-# https://github.com/hashicorp/terraform-provider-aws/issues/40780
-
-resource "null_resource" "log_transformer" {
-  triggers = {
-    replace = local.log_transformer_command
+resource "aws_cloudwatch_log_transformer" "log_transformer" {
+  log_group_arn = aws_cloudwatch_log_group.app.arn
+  transformer_config {
+    parse_json {}
   }
 
-  provisioner "local-exec" {
-    when    = create
-    command = local.log_transformer_command
-  }
-}
-
-locals {
-  log_transformer_command = "aws logs put-transformer --region ${var.region.aws_region} --cli-input-json '${jsonencode(
-    {
-      logGroupIdentifier = aws_cloudwatch_log_group.app.name,
-      transformerConfig = [
-        {
-          parseJSON = {}
-        },
-        {
-          copyValue = {
-            entries = [
-              {
-                source            = "@logGroupName",
-                target            = "log-group-name",
-                overwriteIfExists = false
-              },
-              {
-                source            = "@logGroupStream",
-                target            = "log-group-stream",
-                overwriteIfExists = false
-              }
-            ]
-          }
-        },
-        {
-          splitString = {
-            entries = [
-              {
-                source    = "log-group-stream",
-                delimiter = "/"
-              }
-            ]
-          }
-        }
-      ]
+  transformer_config {
+    copy_value {
+      entry {
+        source              = "@logGroupName"
+        target              = "log-group-name"
+        overwrite_if_exists = false
+      }
+      entry {
+        source              = "@logGroupStream"
+        target              = "log-group-stream"
+        overwrite_if_exists = false
+      }
     }
-  )}'"
+  }
+
+  transformer_config {
+    split_string {
+      entry {
+        source    = "log-group-stream"
+        delimiter = "/"
+      }
+    }
+  }
 }

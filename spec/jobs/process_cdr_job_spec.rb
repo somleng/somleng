@@ -9,7 +9,7 @@ RSpec.describe ProcessCDRJob do
         start_epoch: "1474362923",
         end_epoch: "1474362924",
         hangup_cause: "NORMAL_UNSPECIFIED",
-        sip_invite_failure_phrase: "Temporary%20Unavailable"
+        sip_invite_failure_phrase: "Temporary%20Unavailable",
       }
     )
     account = create(:account)
@@ -83,6 +83,15 @@ RSpec.describe ProcessCDRJob do
       "quality_percentage" => nil,
       "mos" => nil
     )
+  end
+
+  it "ignores other cdr legs" do
+    cdr = build_cdr
+    cdr["variables"].delete("record_cdr")
+
+    ProcessCDRJob.perform_now(encode(cdr.to_json))
+
+    expect(CallDataRecord.count).to eq(0)
   end
 
   def build_cdr(from: "freeswitch_cdr.json", variables: {})

@@ -100,6 +100,7 @@ resource "aws_ecs_service" "worker" {
 # Autoscaling
 
 resource "aws_appautoscaling_policy" "worker_queue_size" {
+  count              = var.autoscale_worker == true ? 1 : 0
   name               = "${var.app_identifier}-queue-size"
   service_namespace  = aws_appautoscaling_target.worker_scale_target.service_namespace
   resource_id        = aws_appautoscaling_target.worker_scale_target.resource_id
