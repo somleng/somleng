@@ -434,6 +434,10 @@ FactoryBot.define do
       user_updated_at { Time.current }
     end
 
+    trait :with_switch_proxy_identifier do
+      switch_proxy_identifier { SecureRandom.uuid }
+    end
+
     trait :internal do
       internal { true }
     end
