@@ -7,7 +7,9 @@ RSpec.describe "Services", :services do
 
       post(
         services_call_heartbeats_path,
-        params: [ phone_calls.pluck(:switch_proxy_identifier) ].to_json,
+        params: {
+          call_ids: phone_calls.pluck(:switch_proxy_identifier)
+        },
         headers: build_authorization_headers("services", "password")
       )
 
