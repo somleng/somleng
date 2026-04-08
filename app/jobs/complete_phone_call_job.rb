@@ -2,7 +2,7 @@ class CompletePhoneCallJob < ApplicationJob
   class Handler
     class InvalidStateTransitionError < StandardError; end
 
-    NOT_ANSWERED_SIP_TERM_STATUSES = %w[ 480 487 603].freeze
+    NOT_ANSWERED_SIP_TERM_STATUSES = %w[ 480 487 603 ].freeze
     BUSY_SIP_TERM_STATUSES = [ "486" ].freeze
 
     attr_reader :phone_call
