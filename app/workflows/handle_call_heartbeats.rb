@@ -1,14 +1,14 @@
 class HandleCallHeartbeats < ApplicationWorkflow
-  attr_reader :switch_proxy_identifiers
+  attr_reader :call_ids
 
-  def initialize(switch_proxy_identifiers)
+  def initialize(call_ids)
     super()
-    @switch_proxy_identifiers = switch_proxy_identifiers
+    @call_ids = call_ids
   end
 
   def call
     PhoneCall
-      .where(switch_proxy_identifier: switch_proxy_identifiers)
+      .where(external_id: call_ids)
       .update_all(last_heartbeat_at: Time.current)
   end
 end

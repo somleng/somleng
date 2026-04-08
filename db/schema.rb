@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_06_202709) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_08_105200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -548,7 +548,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_202709) do
     t.string "status", null: false
     t.string "status_callback_method"
     t.string "status_callback_url"
-    t.string "switch_proxy_identifier"
     t.string "to", null: false
     t.text "twiml"
     t.datetime "updated_at", precision: nil, null: false
@@ -573,7 +572,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_202709) do
     t.index ["initiated_at"], name: "index_phone_calls_on_initiated_at"
     t.index ["initiating_at"], name: "index_phone_calls_on_initiating_at"
     t.index ["internal"], name: "index_phone_calls_on_internal"
-    t.index ["last_heartbeat_at"], name: "index_phone_calls_on_last_heartbeat_at"
     t.index ["parent_call_id"], name: "index_phone_calls_on_parent_call_id"
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["price_cents"], name: "index_phone_calls_on_price_cents"
@@ -586,9 +584,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_202709) do
     t.index ["status", "created_at"], name: "index_phone_calls_on_status_and_created_at"
     t.index ["status", "initiated_at"], name: "index_phone_calls_on_status_and_initiated_at"
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
+    t.index ["status", "last_heartbeat_at"], name: "index_phone_calls_on_status_and_last_heartbeat_at"
     t.index ["status", "region"], name: "index_phone_calls_on_status_and_region"
     t.index ["status"], name: "index_phone_calls_on_status"
-    t.index ["switch_proxy_identifier"], name: "index_phone_calls_on_switch_proxy_identifier", unique: true
     t.index ["to"], name: "index_phone_calls_on_to"
     t.index ["user_terminated_at"], name: "index_phone_calls_on_user_terminated_at"
     t.index ["user_updated_at"], name: "index_phone_calls_on_user_updated_at"

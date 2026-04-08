@@ -60,7 +60,6 @@ Rails.application.routes.draw do
     resources :media_streams, only: :create
     resources :media_stream_events, only: :create
     resources :call_service_capacities, only: :create
-    resources :phone_calls, only: :update
     resources :call_heartbeats, only: :create
   end
 

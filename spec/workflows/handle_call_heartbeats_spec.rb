@@ -5,21 +5,21 @@ RSpec.describe HandleCallHeartbeats do
     phone_call_already_heartbeat = create(
       :phone_call,
       :answered,
-      :with_switch_proxy_identifier,
       last_heartbeat_at: 1.minute.ago
     )
     phone_call_without_heartbeat = create(
       :phone_call,
       :answered,
-      :with_switch_proxy_identifier,
       last_heartbeat_at: nil
     )
 
     freeze_time do
-      HandleCallHeartbeats.call([
-          phone_call_already_heartbeat.switch_proxy_identifier,
-          phone_call_without_heartbeat.switch_proxy_identifier
-        ])
+      HandleCallHeartbeats.call(
+        [
+          phone_call_already_heartbeat.external_id,
+          phone_call_without_heartbeat.external_id
+        ]
+      )
 
 
       expect(phone_call_already_heartbeat.reload).to have_attributes(

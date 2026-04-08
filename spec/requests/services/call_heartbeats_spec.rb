@@ -3,12 +3,12 @@ require "rails_helper"
 RSpec.describe "Services", :services do
   describe "POST /call_heartbeats" do
     it "creates call heartbeats" do
-      phone_calls = create_list(:phone_call, 2, :outbound, :initiated, :with_switch_proxy_identifier)
+      phone_calls = create_list(:phone_call, 2, :outbound, :initiated)
 
       post(
         services_call_heartbeats_path,
         params: {
-          switch_proxy_identifiers: phone_calls.pluck(:switch_proxy_identifier)
+          call_ids: phone_calls.pluck(:external_id)
         },
         headers: build_authorization_headers("services", "password")
       )

@@ -2,7 +2,7 @@ module Services
   class CallHeartbeatsController < ServicesController
     def create
       validate_request_schema(with: CallHeartbeatsRequestSchema) do |permitted_params|
-        HandleCallHeartbeats.call(permitted_params.fetch(:switch_proxy_identifiers))
+        HandleCallHeartbeats.call(permitted_params.fetch(:call_ids))
       end
     end
 

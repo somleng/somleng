@@ -16,9 +16,9 @@ class ExpireInProgressPhoneCalls < ApplicationWorkflow
   private
 
   def expired_phone_calls
-    stale_heartbeat = PhoneCall.where(last_heartbeat_at: ..1.minute.ago)
-    no_heartbeat_too_long = PhoneCall.where(initiated_at: ..1.hours.ago, last_heartbeat_at: nil)
+    stale_heartbeat = PhoneCall.where(last_heartbeat_at: ..2.minute.ago)
+    no_heartbeat = PhoneCall.where(initiated_at: ..1.hours.ago, last_heartbeat_at: nil)
 
-    PhoneCall.in_progress.merge(stale_heartbeat.or(no_heartbeat_too_long))
+    PhoneCall.in_progress.merge(stale_heartbeat.or(no_heartbeat))
   end
 end
