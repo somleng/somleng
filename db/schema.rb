@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_18_095536) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_08_105200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -537,6 +537,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_18_095536) do
     t.datetime "initiating_at"
     t.datetime "initiation_queued_at"
     t.boolean "internal", default: false, null: false
+    t.datetime "last_heartbeat_at"
     t.uuid "parent_call_id"
     t.uuid "phone_number_id"
     t.decimal "price_cents", precision: 14, scale: 4
@@ -583,6 +584,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_18_095536) do
     t.index ["status", "created_at"], name: "index_phone_calls_on_status_and_created_at"
     t.index ["status", "initiated_at"], name: "index_phone_calls_on_status_and_initiated_at"
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
+    t.index ["status", "last_heartbeat_at"], name: "index_phone_calls_on_status_and_last_heartbeat_at"
     t.index ["status", "region"], name: "index_phone_calls_on_status_and_region"
     t.index ["status"], name: "index_phone_calls_on_status"
     t.index ["to"], name: "index_phone_calls_on_to"
