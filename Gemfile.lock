@@ -502,7 +502,7 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    recaptcha (5.21.1)
+    recaptcha (5.21.2)
     redis (5.4.1)
       redis-client (>= 0.22.0)
     redis-client (0.28.0)
