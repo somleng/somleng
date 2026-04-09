@@ -22,6 +22,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     status_callback_url: Field::String,
     status_callback_method: Field::String,
     call_service_host: Field::String,
+    last_heartbeat_at: Field::LocalTime,
     user_terminated_at: Field::LocalTime,
     user_updated_at: Field::LocalTime,
     created_at: Field::LocalTime,
@@ -59,6 +60,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     status_callback_method
     call_service_host
     region
+    last_heartbeat_at
     user_terminated_at
     user_updated_at
     created_at
