@@ -308,8 +308,16 @@ resource "aws_lb_listener_rule" "internal_webserver" {
 
 # Autoscaling
 
+resource "aws_appautoscaling_target" "appserver_scale_target" {
+  service_namespace  = "ecs"
+  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.appserver.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  max_capacity       = var.appserver_max_tasks
+  min_capacity       = var.appserver_min_tasks
+}
+
 resource "aws_appautoscaling_policy" "appserver_cpu_utilization" {
-  name               = var.app_identifier
+  name               = "${var.app_identifier}-cpu-utilization"
   service_namespace  = aws_appautoscaling_target.appserver_scale_target.service_namespace
   resource_id        = aws_appautoscaling_target.appserver_scale_target.resource_id
   scalable_dimension = aws_appautoscaling_target.appserver_scale_target.scalable_dimension
@@ -326,10 +334,20 @@ resource "aws_appautoscaling_policy" "appserver_cpu_utilization" {
   }
 }
 
-resource "aws_appautoscaling_target" "appserver_scale_target" {
-  service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.appserver.name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  max_capacity       = var.appserver_max_tasks
-  min_capacity       = var.appserver_min_tasks
+resource "aws_appautoscaling_policy" "appserver_memory_utilization" {
+  name               = "${var.app_identifier}-memory-utilization"
+  service_namespace  = aws_appautoscaling_target.appserver_scale_target.service_namespace
+  resource_id        = aws_appautoscaling_target.appserver_scale_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.appserver_scale_target.scalable_dimension
+  policy_type        = "TargetTrackingScaling"
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+    }
+
+    target_value       = 70
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 60
+  }
 }
