@@ -14,6 +14,6 @@ class AccountPolicy < ApplicationPolicy
   end
 
   def destroy?
-    super && carrier_managed? && record.messages.blank? && record.phone_calls.blank?
+    super && carrier_managed? && !record.messages.exists? && !record.phone_calls.exists?
   end
 end
