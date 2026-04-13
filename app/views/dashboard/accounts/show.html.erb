@@ -33,7 +33,9 @@
         <% end %>
         <%= f.attribute :type, value: @resource.type.text %>
         <%= f.attribute :status, value: @resource.status.text %>
-        <%= f.attribute :active_phone_numbers, value: external_link_to("Manage", dashboard_incoming_phone_numbers_path(filter: { status: :active, account_id: @resource.id}), title: "Manage") %>
+        <%= f.attribute :active_phone_numbers do %>
+          <%= external_link_to("Manage", dashboard_incoming_phone_numbers_path(filter: { status: :active, account_id: @resource.id}), title: "Manage") %>
+        <% end %>
 
         <%= f.attribute :metadata do %>
           <pre><code><%= JSON.pretty_generate(@resource.metadata) %></code></pre>
@@ -65,14 +67,13 @@
         <%= f.attribute :balance, value: GetAccountBalance.call(f.object).format %>
         <%= f.attribute :billing_currency, value: f.object.billing_currency.name %>
 
-        <%= f.attribute(
-          :balance_transactions,
-          value: external_link_to(
+        <%= f.attribute(:balance_transactions) do %>
+          <%= external_link_to(
             "View",
             dashboard_balance_transactions_path(filter: { account_id: f.object.id }),
             title: "View"
-          )
-        ) %>
+          ) %>
+        <% end %>
 
         <%= f.attribute :billing_mode, value: f.object.billing_mode.text %>
         <%= f.attribute :tariff_plans do %>
@@ -81,14 +82,13 @@
           <% end %>
         <% end %>
 
-        <%= f.attribute(
-          :phone_number_plans,
-          value: external_link_to(
+        <%= f.attribute(:phone_number_plans) do %>
+          <%= external_link_to(
             "View",
             dashboard_phone_number_plans_path(filter: { account_id: @resource.id }),
             title: "Manage"
-          )
-        ) %>
+          ) %>
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -106,7 +106,9 @@
         <%= f.attribute :calls_per_second %>
 
         <% if policy(:phone_call).index? %>
-          <%= f.attribute :phone_calls, value: external_link_to("View", dashboard_phone_calls_path(filter: { account_id: @resource.id }), title: "View phone calls") %>
+          <%= f.attribute(:phone_calls) do %>
+            <%= external_link_to("View", dashboard_phone_calls_path(filter: { account_id: @resource.id }), title: "View phone calls") %>
+          <% end %>
         <% end %>
       <% end %>
     </div>
@@ -118,11 +120,15 @@
 
       <%= show_for(@resource) do |f| %>
         <% if policy(:message).index? %>
-          <%= f.attribute :messages, value: external_link_to("View", dashboard_messages_path(filter: { account_id: @resource.id }), title: "View messages") %>
+          <%= f.attribute(:messages) do %>
+            <%= external_link_to("View", dashboard_messages_path(filter: { account_id: @resource.id }), title: "View messages") %>
+          <% end %>
         <% end %>
 
         <% if policy(:messaging_service).index? %>
-          <%= f.attribute :messaging_services, value: external_link_to("Manage", dashboard_messaging_services_path(filter: { account_id: @resource.id }), title: "Manage messaging services") %>
+          <%= f.attribute(:messaging_services) do %>
+            <%= external_link_to("Manage", dashboard_messaging_services_path(filter: { account_id: @resource.id }), title: "Manage messaging services") %>
+          <% end %>
         <% end %>
       <% end %>
     </div>
@@ -135,7 +141,9 @@
         <%= f.attribute :voice, value: @resource.default_tts_voice %>
 
         <% if policy(:tts_event).index? %>
-          <%= f.attribute :tts_events, value: external_link_to("View", dashboard_tts_events_path(filter: { account_id: @resource.id }), title: "View TTS events") %>
+          <%= f.attribute(:tts_events) do %>
+            <%= external_link_to("View", dashboard_tts_events_path(filter: { account_id: @resource.id }), title: "View TTS events") %>
+          <% end %>
         <% end %>
       <% end %>
     </div>

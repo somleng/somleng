@@ -13,7 +13,9 @@
     <% end %>
 
     <% if policy(:account).show? %>
-      <%= f.attribute :account, value: external_link_to(f.object.account.name, dashboard_account_path(f.object.account)) %>
+      <%= f.attribute(:account) do %>
+        <%= external_link_to(f.object.account.name, dashboard_account_path(f.object.account)) %>
+      <% end %>
     <% end %>
     <%= f.attribute :type, value: f.object.type.text %>
     <%= f.attribute :charge_category, value: f.object.charge_category&.humanize %>
