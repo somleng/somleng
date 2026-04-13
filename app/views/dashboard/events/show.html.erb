@@ -14,7 +14,9 @@
       </code>
     <% end %>
 
-    <%= f.attribute :webhook_logs, value: external_link_to("View", dashboard_webhook_request_logs_path(filter: {event_id: @resource.id}), title: "View webhook logs") %>
+    <%= f.attribute(:webhook_logs) do %>
+      <%= external_link_to("View", dashboard_webhook_request_logs_path(filter: {event_id: @resource.id}), title: "View webhook logs") %>
+    <% end %>
 
     <%= f.attribute :details do %>
       <pre><code><%= JSON.pretty_generate(@resource.details) %></code></pre>
