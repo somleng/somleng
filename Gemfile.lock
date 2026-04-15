@@ -386,7 +386,7 @@ GEM
       logger
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (6.0.3)
+    minitest (6.0.4)
       drb (~> 2.0)
       prism (~> 1.5)
     mock_redis (0.53.0)
@@ -430,8 +430,8 @@ GEM
     pg (1.6.3)
     pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
-    pghero (3.7.0)
-      activerecord (>= 7.1)
+    pghero (3.8.0)
+      activerecord (>= 7.2)
     phony (3.0.5)
     pp (0.6.3)
       prettyprint
