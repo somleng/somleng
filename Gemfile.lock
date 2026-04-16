@@ -599,7 +599,7 @@ GEM
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
       logger
-    shoryuken (7.0.1)
+    shoryuken (7.0.2)
       aws-sdk-sqs (>= 1.66.0)
       concurrent-ruby
       thor
