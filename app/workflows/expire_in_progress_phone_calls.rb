@@ -19,7 +19,8 @@ class ExpireInProgressPhoneCalls < ApplicationWorkflow
   def expire_phone_calls(scope)
     phone_call_ids = []
 
-    scope.find_each do |phone_call|
+    # Query optimization
+    scope.find_each(cursor: :sequence_number, order: :desc) do |phone_call|
       phone_call_ids << phone_call.id
       session_limiters.each { _1.remove_session_from(phone_call.region.alias, scope: phone_call.account_id) }
     end
