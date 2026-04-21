@@ -46,6 +46,7 @@ RUN bundle install && \
     find "${BUNDLE_PATH}" -name "*.o" -delete && find "${BUNDLE_PATH}" -name "*.c" -delete && \
     mkdir -p tmp/pids && \
     mkdir -p storage && \
+    mkdir -p log && \
     bundle exec bootsnap precompile --gemfile
 
 COPY package.json yarn.lock ./
