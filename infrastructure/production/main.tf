@@ -36,5 +36,4 @@ module "somleng" {
   worker_max_tasks = 10
 
   raw_recordings_bucket_name = "raw-recordings.somleng.org"
-  pghero_other_databases     = "opensips_public_gateway,opensips_client_gateway"
 }

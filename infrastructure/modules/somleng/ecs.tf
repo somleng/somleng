@@ -115,14 +115,6 @@ locals {
       value = data.aws_s3_bucket.raw_recordings.bucket
     },
     {
-      name  = "PGHERO_DB_INSTANCE_IDENTIFIER",
-      value = var.db_instance_identifier
-    },
-    {
-      name  = "PGHERO_OTHER_DATABASES",
-      value = var.pghero_other_databases
-    },
-    {
       name  = "ANYCABLE_REDIS_CHANNEL",
       value = "__anycable__"
     },
