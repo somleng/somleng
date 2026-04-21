@@ -35,8 +35,6 @@ default: &default
   rating_engine_host: <%= ENV.fetch("RATING_ENGINE_HOST", "http://localhost:2080") %>
   rating_engine_username: <%= ENV.fetch("RATING_ENGINE_USERNAME", "cgrates") %>
   rating_engine_password: <%= ENV.fetch("RATING_ENGINE_PASSWORD", "password") %>
-  pghero_other_databases: "<%= ENV["PGHERO_OTHER_DATABASES"] %>"
-  pghero_db_instance_identifier: "<%= ENV["PGHERO_DB_INSTANCE_IDENTIFIER"] %>"
   global_call_sessions_limit: <%= ENV.fetch("GLOBAL_CALL_SESSIONS_LIMIT", 120) %>
   account_call_sessions_limit: <%= ENV.fetch("ACCOUNT_CALL_SESSIONS_LIMIT", 80) %>
   active_record_encryption:
@@ -61,7 +59,6 @@ production: &production
   recaptcha_fallback_site_key: "<%= ENV.fetch("RECAPTCHA_FALLBACK_SITE_KEY") { Rails.application.credentials.recaptcha_fallback_site_key } %>"
   recaptcha_fallback_secret_key: "<%= ENV.fetch("RECAPTCHA_FALLBACK_SECRET_KEY") { Rails.application.credentials.recaptcha_fallback_secret_key } %>"
   admin_password: "<%= ENV.fetch("ADMIN_PASSWORD") { Rails.application.credentials.admin_password } %>"
-  skylight_authentication_token: "<%= ENV.fetch("SKYLIGHT_AUTHENTICATION_TOKEN") { Rails.application.credentials.skylight_authentication_token } %>"
   datawrapper_api_key: <%= ENV.fetch("DATAWRAPPER_API_KEY") { Rails.application.credentials.datawrapper_api_key } %>
   datawrapper_chart_id: <%= ENV.fetch("DATAWRAPPER_CHART_ID") { Rails.application.credentials.datawrapper_chart_id } %>
   stub_regions: false
