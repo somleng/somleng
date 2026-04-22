@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_08_105200) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_21_131019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -490,26 +490,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_105200) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "pghero_query_stats", force: :cascade do |t|
-    t.bigint "calls"
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "query"
-    t.bigint "query_hash"
-    t.float "total_time"
-    t.text "user"
-    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
-  end
-
-  create_table "pghero_space_stats", force: :cascade do |t|
-    t.datetime "captured_at", precision: nil
-    t.text "database"
-    t.text "relation"
-    t.text "schema"
-    t.bigint "size"
-    t.index ["database", "captured_at"], name: "index_pghero_space_stats_on_database_and_captured_at"
-  end
-
   create_table "phone_call_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.json "params", default: {}, null: false
@@ -576,12 +556,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_105200) do
     t.index ["phone_number_id"], name: "index_phone_calls_on_phone_number_id"
     t.index ["price_cents"], name: "index_phone_calls_on_price_cents"
     t.index ["price_unit"], name: "index_phone_calls_on_price_unit"
+    t.index ["region"], name: "index_phone_calls_on_region", where: "((status)::text = 'queued'::text)"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id", "status", "created_at"], name: "index_phone_calls_on_sip_trunk_id_and_status_and_created_at"
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
     t.index ["sip_trunk_id"], name: "index_phone_calls_on_sip_trunk_id"
     t.index ["status", "created_at", "initiation_queued_at"], name: "idx_on_status_created_at_initiation_queued_at_5db44fb542", where: "((status)::text = 'queued'::text)"
     t.index ["status", "created_at"], name: "index_phone_calls_on_status_and_created_at"
+    t.index ["status", "initiated_at", "sequence_number"], name: "idx_on_status_initiated_at_sequence_number_3a97cf3816", order: { sequence_number: :desc }, where: "(last_heartbeat_at IS NULL)"
     t.index ["status", "initiated_at"], name: "index_phone_calls_on_status_and_initiated_at"
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
     t.index ["status", "last_heartbeat_at"], name: "index_phone_calls_on_status_and_last_heartbeat_at"

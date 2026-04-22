@@ -1,7 +1,7 @@
 module TwilioAPI
   class PhoneCallsController < TwilioAPIController
     def index
-      respond_with(scope, serializer_options)
+      respond_with(scope.includes(:call_data_record), serializer_options)
     end
 
     def create

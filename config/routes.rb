@@ -179,8 +179,6 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      mount(PgHero::Engine, at: "pghero")
-
       resources :homes, only: %i[index]
       resources :carriers, only: %i[show index]
       resources :accounts, only: %i[show index]

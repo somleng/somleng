@@ -41,11 +41,6 @@ variable "db_instance_identifier" {
   default = ""
 }
 
-variable "pghero_other_databases" {
-  description = "A comma separated list of other databases to show in the pghero console"
-  default     = ""
-}
-
 variable "db_username" {}
 variable "db_password_parameter_arn" {}
 variable "appserver_max_tasks" {
