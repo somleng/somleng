@@ -1,3 +1,30 @@
+# ECS Infrastructure Role
+# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/infrastructure_IAM_role.html
+# https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonECSInfrastructureRolePolicyForManagedInstances.html
+
+data "aws_iam_policy_document" "ecs_infrastructure_trust_policy" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "ecs_infrastructure_role" {
+  name               = "${var.app_identifier}-ecsInfrastructureRole"
+  assume_role_policy = data.aws_iam_policy_document.ecs_infrastructure_trust_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_infrastructure_managed_instances" {
+  role       = aws_iam_role.ecs_infrastructure_role.id
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECSInfrastructureRolePolicyForManagedInstances"
+}
+
 # ECS task role
 data "aws_iam_policy_document" "ecs_task_assume_role_policy" {
   version = "2012-10-17"
