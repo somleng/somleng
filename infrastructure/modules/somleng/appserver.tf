@@ -1,3 +1,16 @@
+# Container instances
+
+module "appserver_container_instances" {
+  source = "../container_instances"
+
+  identifier       = "${var.app_identifier}-appserver"
+  vpc              = var.region.vpc
+  instance_subnets = var.region.vpc.private_subnets
+  cluster_name     = aws_ecs_cluster.this.name
+  max_capacity     = (var.appserver_max_tasks * 2)
+  instance_type    = "t4g.medium"
+}
+
 # Security Groups
 
 resource "aws_security_group" "appserver" {
@@ -80,14 +93,34 @@ resource "aws_ecs_task_definition" "appserver" {
 
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
-  memory             = module.container_instances.ec2_instance_type.memory_size - 768
+  memory             = module.appserver_container_instances.ec2_instance_type.memory_size - 768
+}
+
+# Capacity Provider
+
+resource "aws_ecs_capacity_provider" "appserver" {
+  name = "${var.app_identifier}-appserver"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = module.appserver_container_instances.autoscaling_group.arn
+    managed_termination_protection = "ENABLED"
+    managed_draining               = "ENABLED"
+
+    managed_scaling {
+      maximum_scaling_step_size = 1000
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 100
+    }
+  }
 }
 
 resource "aws_ecs_service" "appserver" {
-  name            = aws_ecs_task_definition.appserver.family
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.appserver.arn
-  desired_count   = var.appserver_min_tasks
+  name                 = aws_ecs_task_definition.appserver.family
+  cluster              = aws_ecs_cluster.this.id
+  task_definition      = aws_ecs_task_definition.appserver.arn
+  desired_count        = var.appserver_min_tasks
+  force_new_deployment = true
 
   network_configuration {
     subnets = var.region.vpc.private_subnets
@@ -103,7 +136,7 @@ resource "aws_ecs_service" "appserver" {
   }
 
   capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.this.name
+    capacity_provider = aws_ecs_capacity_provider.appserver.name
     weight            = 1
   }
 
@@ -310,7 +343,7 @@ resource "aws_lb_listener_rule" "internal_webserver" {
 
 resource "aws_appautoscaling_target" "appserver_scale_target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.appserver.name}"
+  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.appserver.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   max_capacity       = var.appserver_max_tasks
   min_capacity       = var.appserver_min_tasks

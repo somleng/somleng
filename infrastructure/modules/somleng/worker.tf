@@ -21,6 +21,18 @@ locals {
   ]
 }
 
+# Container instances
+
+module "worker_container_instances" {
+  source = "../container_instances"
+
+  identifier       = "${var.app_identifier}-worker"
+  vpc              = var.region.vpc
+  instance_subnets = var.region.vpc.private_subnets
+  cluster_name     = aws_ecs_cluster.this.name
+  max_capacity     = (var.worker_max_tasks * 2)
+}
+
 # Security Group
 
 resource "aws_security_group" "worker" {
@@ -46,7 +58,7 @@ resource "aws_ecs_task_definition" "worker" {
   container_definitions    = jsonencode(local.worker_container_definitions)
   task_role_arn            = aws_iam_role.ecs_task_role.arn
   execution_role_arn       = aws_iam_role.task_execution_role.arn
-  memory                   = module.container_instances.ec2_instance_type.memory_size - 768
+  memory                   = module.worker_container_instances.ec2_instance_type.memory_size - 768
 }
 
 resource "aws_ecs_task_definition" "worker_fargate" {
@@ -66,13 +78,14 @@ resource "aws_ecs_task_definition" "worker_fargate" {
 }
 
 resource "aws_ecs_service" "worker" {
-  name            = aws_ecs_task_definition.worker.family
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.worker.arn
-  desired_count   = var.worker_min_tasks
+  name                 = aws_ecs_task_definition.worker.family
+  cluster              = aws_ecs_cluster.this.id
+  task_definition      = aws_ecs_task_definition.worker.arn
+  desired_count        = var.worker_min_tasks
+  force_new_deployment = true
 
   capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.this.name
+    capacity_provider = aws_ecs_capacity_provider.worker.name
     weight            = 1
   }
 
@@ -97,6 +110,25 @@ resource "aws_ecs_service" "worker" {
   }
 }
 
+# Capacity Provider
+
+resource "aws_ecs_capacity_provider" "worker" {
+  name = "${var.app_identifier}-worker"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = module.worker_container_instances.autoscaling_group.arn
+    managed_termination_protection = "ENABLED"
+    managed_draining               = "ENABLED"
+
+    managed_scaling {
+      maximum_scaling_step_size = 1000
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 100
+    }
+  }
+}
+
 # Autoscaling
 
 resource "aws_appautoscaling_policy" "worker_queue_size" {
@@ -112,7 +144,7 @@ resource "aws_appautoscaling_policy" "worker_queue_size" {
       metrics {
         id          = "backlogPerWorker"
         label       = "Backlog per worker instance"
-        expression  = "totalMessages / IF((runningCapacity - 3) > 0, (runningCapacity - 3), 1)"
+        expression  = "totalMessages / IF((runningCapacity) > 0, (runningCapacity), 1)"
         return_data = true
       }
 
@@ -135,7 +167,7 @@ resource "aws_appautoscaling_policy" "worker_queue_size" {
 
             dimensions {
               name  = "AutoScalingGroupName"
-              value = module.container_instances.autoscaling_group.name
+              value = module.worker_container_instances.autoscaling_group.name
             }
           }
           stat = "Sum"
@@ -253,7 +285,7 @@ resource "aws_appautoscaling_policy" "worker_queue_size" {
 
 resource "aws_appautoscaling_target" "worker_scale_target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.worker.name}"
+  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.worker.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   max_capacity       = var.worker_max_tasks
   min_capacity       = var.worker_min_tasks
