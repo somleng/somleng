@@ -7,7 +7,7 @@ module TwilioAPI
     skip_before_action :authorize_account!, only: :show
 
     def index
-      recordings = parent_resource.recordings.page(params[:Page]).per(params[:PageSize])
+      recordings = recordings_scope.page(params[:Page]).per(params[:PageSize])
       respond_with(
         recordings,
         serializer_options.merge(
@@ -41,6 +41,10 @@ module TwilioAPI
     end
 
     private
+
+    def recordings_scope
+      parent_resource.recordings.includes(file_attachment: :blob)
+    end
 
     def respond_with_raw_recording(object_key)
       presigned_url = RawRecordingPresignedURL.new(object_key).presigned_url
