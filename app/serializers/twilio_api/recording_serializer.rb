@@ -44,8 +44,8 @@ module TwilioAPI
 
     def uri
       url_helpers.api_twilio_account_phone_call_recording_path(
-        object.account,
-        object.phone_call,
+        object.account_id,
+        object.phone_call_id,
         object,
         format: :json
       )
@@ -53,8 +53,8 @@ module TwilioAPI
 
     def media_url
       url_helpers.api_twilio_account_phone_call_recording_url(
-        object.account,
-        object.phone_call,
+        object.account_id,
+        object.phone_call_id,
         object,
         subdomain: AppSettings.fetch(:api_subdomain)
       )
