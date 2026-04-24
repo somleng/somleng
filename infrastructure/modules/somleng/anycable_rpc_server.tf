@@ -1,3 +1,15 @@
+# Container instances
+
+module "anycable_container_instances" {
+  source = "../container_instances"
+
+  identifier       = "${var.app_identifier}-anycable"
+  vpc              = var.region.vpc
+  instance_subnets = var.region.vpc.private_subnets
+  cluster_name     = aws_ecs_cluster.this.name
+  max_capacity     = (var.anycable_max_tasks * 2)
+}
+
 # Security Groups
 
 resource "aws_security_group" "anycable" {
@@ -92,17 +104,18 @@ resource "aws_ecs_task_definition" "anycable" {
 
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
-  memory             = module.container_instances.ec2_instance_type.memory_size - 768
+  memory             = module.anycable_container_instances.ec2_instance_type.memory_size - 768
 }
 
 resource "aws_ecs_service" "anycable" {
-  name            = aws_ecs_task_definition.anycable.family
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.anycable.arn
-  desired_count   = var.anycable_min_tasks
+  name                 = aws_ecs_task_definition.anycable.family
+  cluster              = aws_ecs_cluster.this.id
+  task_definition      = aws_ecs_task_definition.anycable.arn
+  desired_count        = var.anycable_min_tasks
+  force_new_deployment = true
 
   capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.this.name
+    capacity_provider = aws_ecs_capacity_provider.anycable.name
     weight            = 1
   }
 
@@ -130,6 +143,25 @@ resource "aws_ecs_service" "anycable" {
 
   lifecycle {
     ignore_changes = [task_definition]
+  }
+}
+
+# Capacity Provider
+
+resource "aws_ecs_capacity_provider" "anycable" {
+  name = "${var.app_identifier}-anycable"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = module.anycable_container_instances.autoscaling_group.arn
+    managed_termination_protection = "ENABLED"
+    managed_draining               = "ENABLED"
+
+    managed_scaling {
+      maximum_scaling_step_size = 1000
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 100
+    }
   }
 }
 
@@ -209,7 +241,7 @@ resource "aws_appautoscaling_policy" "anycable_cpu_utilization" {
 
 resource "aws_appautoscaling_target" "anycable_scale_target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.anycable.name}"
+  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.anycable.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   max_capacity       = var.anycable_max_tasks
   min_capacity       = var.anycable_min_tasks

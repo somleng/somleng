@@ -1,3 +1,15 @@
+# Container instances
+
+module "ws_container_instances" {
+  source = "../container_instances"
+
+  identifier       = "${var.app_identifier}-ws"
+  vpc              = var.region.vpc
+  instance_subnets = var.region.vpc.private_subnets
+  cluster_name     = aws_ecs_cluster.this.name
+  max_capacity     = (var.ws_max_tasks * 2)
+}
+
 # Security Group
 
 resource "aws_security_group" "ws" {
@@ -137,17 +149,18 @@ resource "aws_ecs_task_definition" "ws" {
 
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
-  memory             = module.container_instances.ec2_instance_type.memory_size - 768
+  memory             = module.ws_container_instances.ec2_instance_type.memory_size - 768
 }
 
 resource "aws_ecs_service" "ws" {
-  name            = aws_ecs_task_definition.ws.family
-  cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.ws.arn
-  desired_count   = var.ws_min_tasks
+  name                 = aws_ecs_task_definition.ws.family
+  cluster              = aws_ecs_cluster.this.id
+  task_definition      = aws_ecs_task_definition.ws.arn
+  desired_count        = var.ws_min_tasks
+  force_new_deployment = true
 
   capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.this.name
+    capacity_provider = aws_ecs_capacity_provider.ws.name
     weight            = 1
   }
 
@@ -181,6 +194,25 @@ resource "aws_ecs_service" "ws" {
 
   lifecycle {
     ignore_changes = [task_definition]
+  }
+}
+
+# Capacity Provider
+
+resource "aws_ecs_capacity_provider" "ws" {
+  name = "${var.app_identifier}-ws"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = module.ws_container_instances.autoscaling_group.arn
+    managed_termination_protection = "ENABLED"
+    managed_draining               = "ENABLED"
+
+    managed_scaling {
+      maximum_scaling_step_size = 1000
+      minimum_scaling_step_size = 1
+      status                    = "ENABLED"
+      target_capacity           = 100
+    }
   }
 }
 
@@ -296,7 +328,7 @@ resource "aws_appautoscaling_policy" "ws_cpu_utilization" {
 
 resource "aws_appautoscaling_target" "ws_scale_target" {
   service_namespace  = "ecs"
-  resource_id        = "service/${aws_ecs_cluster.cluster.name}/${aws_ecs_service.ws.name}"
+  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.ws.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   max_capacity       = var.ws_max_tasks
   min_capacity       = var.ws_min_tasks
