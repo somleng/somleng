@@ -34,7 +34,7 @@ module "somleng" {
   call_service_queue_name = "switch-services-staging"
   rails_log_level         = "debug"
 
-  appserver_min_tasks = 1
+  appserver_min_tasks = 0
   appserver_max_tasks = 1
   worker_min_tasks    = 0
   worker_max_tasks    = 1

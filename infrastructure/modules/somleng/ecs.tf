@@ -142,8 +142,8 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
   cluster_name = aws_ecs_cluster.this.name
 
   capacity_providers = [
-    aws_ecs_capacity_provider.appserver_managed.name,
-    aws_ecs_capacity_provider.appserver_asg.name,
+    # aws_ecs_capacity_provider.appserver_managed.name,
+    # aws_ecs_capacity_provider.appserver_asg.name,
     aws_ecs_capacity_provider.worker.name,
     aws_ecs_capacity_provider.anycable.name,
     aws_ecs_capacity_provider.ws.name,

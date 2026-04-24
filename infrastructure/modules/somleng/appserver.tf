@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "appserver_egress" {
 resource "aws_ecs_task_definition" "appserver" {
   family                   = "${var.app_identifier}-appserver"
   network_mode             = "awsvpc"
-  requires_compatibilities = ["EC2", "MANAGED_INSTANCES"]
+  requires_compatibilities = ["EC2"]
   container_definitions = jsonencode([
     {
       name  = "nginx"
@@ -93,13 +93,13 @@ resource "aws_ecs_task_definition" "appserver" {
 
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
-  memory             = 3072
+  memory             = module.appserver_container_instances.ec2_instance_type.memory_size - 768
 }
 
 # Capacity Provider
 
-resource "aws_ecs_capacity_provider" "appserver_asg" {
-  name = "${var.app_identifier}-appserver-asg"
+resource "aws_ecs_capacity_provider" "appserver" {
+  name = "${var.app_identifier}-appserver"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = module.appserver_container_instances.autoscaling_group.arn
@@ -112,31 +112,6 @@ resource "aws_ecs_capacity_provider" "appserver_asg" {
       status                    = "ENABLED"
       target_capacity           = 100
     }
-  }
-}
-
-resource "aws_ecs_capacity_provider" "appserver_managed" {
-  name    = "${var.app_identifier}-appserver-managed"
-  cluster = aws_ecs_cluster.this.name
-
-  managed_instances_provider {
-    infrastructure_role_arn = aws_iam_role.ecs_infrastructure_role.arn
-    propagate_tags          = "CAPACITY_PROVIDER"
-
-    instance_launch_template {
-      ec2_instance_profile_arn = aws_iam_instance_profile.ecs_container_instance_profile.arn
-      monitoring               = "BASIC"
-      capacity_option_type     = "ON_DEMAND"
-
-      network_configuration {
-        subnets         = var.region.vpc.private_subnets
-        security_groups = [aws_security_group.container_instance.id]
-      }
-    }
-  }
-
-  tags = {
-    Name = "${var.app_identifier}-appserver"
   }
 }
 
@@ -161,7 +136,7 @@ resource "aws_ecs_service" "appserver" {
   }
 
   capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.appserver_managed.name
+    capacity_provider = aws_ecs_capacity_provider.appserver.name
     weight            = 1
   }
 
