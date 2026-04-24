@@ -291,7 +291,7 @@ GEM
       mail (~> 2.7)
     enumerize (2.8.1)
       activesupport (>= 3.2)
-    erb (6.0.2)
+    erb (6.0.4)
     erubi (1.13.1)
     factory_bot (6.5.6)
       activesupport (>= 6.1.0)
