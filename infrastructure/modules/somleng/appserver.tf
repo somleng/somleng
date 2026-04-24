@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "appserver_egress" {
 resource "aws_ecs_task_definition" "appserver" {
   family                   = "${var.app_identifier}-appserver"
   network_mode             = "awsvpc"
-  requires_compatibilities = ["EC2"]
+  requires_compatibilities = ["EC2", "MANAGED_INSTANCES"]
   container_definitions = jsonencode([
     {
       name  = "nginx"
@@ -93,7 +93,7 @@ resource "aws_ecs_task_definition" "appserver" {
 
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.task_execution_role.arn
-  memory             = module.appserver_container_instances.ec2_instance_type.memory_size - 768
+  memory             = 3072
 }
 
 # Capacity Provider
@@ -133,6 +133,10 @@ resource "aws_ecs_capacity_provider" "appserver_managed" {
         security_groups = [aws_security_group.container_instance.id]
       }
     }
+  }
+
+  tags = {
+    Name = "${var.app_identifier}-appserver"
   }
 }
 

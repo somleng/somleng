@@ -20,9 +20,38 @@ resource "aws_iam_role" "ecs_infrastructure_role" {
   assume_role_policy = data.aws_iam_policy_document.ecs_infrastructure_trust_policy.json
 }
 
+data "aws_iam_policy_document" "ecs_infrastructure_passrole" {
+  statement {
+    effect = "Allow"
+
+    actions = ["iam:PassRole"]
+
+    resources = [
+      aws_iam_role.ecs_container_instance_role.arn
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values   = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "ecs_infrastructure_passrole" {
+  name = "${var.app_identifier}-ecsInfrastructurePassRole"
+
+  policy = data.aws_iam_policy_document.ecs_infrastructure_passrole.json
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_infrastructure_managed_instances" {
   role       = aws_iam_role.ecs_infrastructure_role.id
   policy_arn = "arn:aws:iam::aws:policy/AmazonECSInfrastructureRolePolicyForManagedInstances"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_infrastructure_passrole" {
+  role       = aws_iam_role.ecs_infrastructure_role.id
+  policy_arn = aws_iam_policy.ecs_infrastructure_passrole.arn
 }
 
 # ECS task role
