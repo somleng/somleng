@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_21_131019) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_141743) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -558,6 +558,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_131019) do
     t.index ["price_unit"], name: "index_phone_calls_on_price_unit"
     t.index ["region"], name: "index_phone_calls_on_region", where: "((status)::text = 'queued'::text)"
     t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number", unique: true, order: :desc
+    t.index ["sequence_number"], name: "index_phone_calls_on_sequence_number_for_stale_heartbeats", order: :desc, where: "((status)::text = ANY ((ARRAY['initiated'::character varying, 'ringing'::character varying, 'answered'::character varying])::text[]))"
     t.index ["sip_trunk_id", "status", "created_at"], name: "index_phone_calls_on_sip_trunk_id_and_status_and_created_at"
     t.index ["sip_trunk_id", "status"], name: "index_phone_calls_on_sip_trunk_id_and_status"
     t.index ["sip_trunk_id"], name: "index_phone_calls_on_sip_trunk_id"
@@ -566,7 +567,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_131019) do
     t.index ["status", "initiated_at", "sequence_number"], name: "idx_on_status_initiated_at_sequence_number_3a97cf3816", order: { sequence_number: :desc }, where: "(last_heartbeat_at IS NULL)"
     t.index ["status", "initiated_at"], name: "index_phone_calls_on_status_and_initiated_at"
     t.index ["status", "initiating_at"], name: "index_phone_calls_on_status_and_initiating_at"
-    t.index ["status", "last_heartbeat_at"], name: "index_phone_calls_on_status_and_last_heartbeat_at"
     t.index ["status", "region"], name: "index_phone_calls_on_status_and_region"
     t.index ["status"], name: "index_phone_calls_on_status"
     t.index ["to"], name: "index_phone_calls_on_to"
