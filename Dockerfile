@@ -49,8 +49,8 @@ RUN bundle install && \
     mkdir -p log && \
     bundle exec bootsnap precompile --gemfile
 
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY package.json yarn.lock .yarnrc.yml ./
+RUN yarn install
 
 # Copy application code
 COPY . .

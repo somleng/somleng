@@ -33,8 +33,18 @@ RSpec.describe "Signup" do
   it "Handles validations" do
     visit(new_user_registration_path)
 
+    fill_in("Your name", with: "John Doe")
+    fill_in("Work email", with: "johndoe@att.com")
+    fill_in("Company", with: "AT&T")
+    fill_in("Subdomain", with: "at-t")
+    enhanced_select("Indonesia", from: "Country")
+    enhanced_select("Indonesian Rupiah", from: "Billing currency")
+    fill_in("Website", with: "https://www.att.com")
+    fill_in("Password", with: "short", match: :prefer_exact)
+    fill_in("Password confirmation", with: "short")
+
     click_on("Sign up")
 
-    expect(page).to have_content("Name can't be blank")
+    expect(page).to have_content("Password is too short")
   end
 end
