@@ -33,6 +33,7 @@ class CarrierForm
   validates :website, url_format: { allow_http: true }, allow_blank: true
   validates :password, confirmation: true
   validates :subdomain, subdomain: true
+  validates :password, length: { in: Devise.password_length }, if: -> { password.present? }
 
   delegate :persisted?, to: :user
 
