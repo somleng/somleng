@@ -1,4 +1,8 @@
 class DestinationGroupPolicy < ApplicationPolicy
+  def read?
+    managing_carrier?
+  end
+
   def manage?
     carrier_admin?
   end
