@@ -1,9 +1,13 @@
 class TariffPlanPolicy < ApplicationPolicy
+  def read?
+    managing_carrier?
+  end
+
   def manage?
     carrier_admin?
   end
 
   def destroy?
-    record.subscriptions.empty?
+    manage? && record.subscriptions.empty?
   end
 end

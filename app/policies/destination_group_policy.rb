@@ -1,13 +1,17 @@
 class DestinationGroupPolicy < ApplicationPolicy
+  def read?
+    managing_carrier?
+  end
+
   def manage?
     carrier_admin?
   end
 
   def update?
-    !record.catch_all?
+    manage? && !record.catch_all?
   end
 
   def destroy?
-    record.destination_tariffs.empty?
+    manage? && record.destination_tariffs.empty?
   end
 end
