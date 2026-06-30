@@ -4,6 +4,6 @@ class TariffPlanPolicy < ApplicationPolicy
   end
 
   def destroy?
-    record.subscriptions.empty?
+    manage? && record.subscriptions.empty?
   end
 end

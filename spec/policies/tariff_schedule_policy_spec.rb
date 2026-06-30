@@ -10,4 +10,16 @@ RSpec.describe TariffSchedulePolicy, type: :policy do
 
     expect(policy).not_to be_destroy
   end
+
+  it "denies access for destroying tariff schedules other than carrier admins" do
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    user = create(:user, :customer, carrier:)
+    create(:account_membership, user:, account:)
+    tariff_schedule = create(:tariff_schedule, carrier:)
+
+    policy = TariffSchedulePolicy.new(user, tariff_schedule)
+
+    expect(policy).not_to be_destroy
+  end
 end

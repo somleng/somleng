@@ -4,10 +4,10 @@ class DestinationGroupPolicy < ApplicationPolicy
   end
 
   def update?
-    !record.catch_all?
+    manage? && !record.catch_all?
   end
 
   def destroy?
-    record.destination_tariffs.empty?
+    manage? && record.destination_tariffs.empty?
   end
 end

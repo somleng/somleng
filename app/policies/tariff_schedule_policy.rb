@@ -4,6 +4,6 @@ class TariffSchedulePolicy < ApplicationPolicy
   end
 
   def destroy?
-    record.plan_tiers.empty?
+    manage? && record.plan_tiers.empty?
   end
 end
