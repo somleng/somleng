@@ -222,8 +222,9 @@ GEM
       bigdecimal
       rexml
     crass (1.0.7)
-    css_parser (2.1.0)
+    css_parser (3.0.0)
       addressable
+      ssrf_filter (~> 1.5)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.5)
@@ -616,6 +617,7 @@ GEM
     simplecov_json_formatter (0.1.4)
     smstools (0.2.2)
     squasher (0.8.0)
+    ssrf_filter (1.5.0)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.2.0)
