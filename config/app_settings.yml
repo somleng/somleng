@@ -66,8 +66,8 @@ production: &production
     primary_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY") { Rails.application.credentials.dig(:active_record_encryption, :primary_key) } %>"
     deterministic_key: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY") { Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) } %>"
     key_derivation_salt: "<%= ENV.fetch("ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT") { Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) } %>"
-  azure_tts_region: <%= ENV.fetch("AZURE_TTS_REGION", "southeastasia") %>
-  azure_tts_key: <%= ENV.fetch("AZURE_TTS_KEY") { Rails.application.credentials.azure_tts_key } %>
+  azure_speech_region: <%= ENV.fetch("AZURE_SPEECH_REGION", "southeastasia") %>
+  azure_speech_key: <%= ENV.fetch("AZURE_SPEECH_KEY") { Rails.application.credentials.azure_speech_key } %>
 
 staging:
   <<: *production
