@@ -4,8 +4,8 @@ TTSVoices.configure do |config|
     config.voices = ["Basic", "Polly"]
   else
     config.azure_options = {
-      region: AppSettings.fetch(:azure_speech_region),
-      key: AppSettings.fetch(:azure_speech_key),
+      region: Rails.configuration.app_settings[:azure_speech_region],
+      key: Rails.configuration.app_settings[:azure_speech_key],
     }
   end
 end
