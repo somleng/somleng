@@ -4,7 +4,7 @@ module Services
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
     option :phone_number_configuration_rules,
            default: -> { PhoneNumberConfigurationRules.new }
-    option :sip_trunk_resolver, default: -> { SIPTrunkResolver.new }
+    option :sip_trunk_resolver, default: -> { InboundSIPTrunkResolver.new }
     option :account_billing_policy, default: -> { AccountBillingPolicy.new }
 
     params do

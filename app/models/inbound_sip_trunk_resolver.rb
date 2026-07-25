@@ -1,4 +1,4 @@
-class SIPTrunkResolver
+class InboundSIPTrunkResolver
   class Finder
     attr_reader :source_ip, :destination_number
 

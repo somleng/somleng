@@ -5,6 +5,7 @@ module TwilioAPI
     it "validates To" do
       carrier = create(:carrier)
       account = create(:account, carrier:)
+      account_with_blocked_list = create(:account, allowed_calling_codes: [ "855" ])
       billing_enabled_account = create(:account, :billing_enabled, carrier:)
       unreachable_carrier_account = create(:account)
       create(:sms_gateway, carrier:)
@@ -39,6 +40,19 @@ module TwilioAPI
           options: { account: unreachable_carrier_account }
         )
       ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:unreachable_carrier).message)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            To: "61428234567",
+            From: create(:incoming_phone_number, account: account_with_blocked_list).number.to_s,
+            Body: "Hello World"
+          },
+          options: { account: account_with_blocked_list }
+        )
+      ).not_to have_valid_schema(
+        error_message: ApplicationError::Errors.fetch(:call_blocked_by_blocked_list).message
+      )
 
       expect(
         validate_request_schema(
