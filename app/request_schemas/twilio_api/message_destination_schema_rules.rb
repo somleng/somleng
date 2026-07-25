@@ -10,7 +10,7 @@ module TwilioAPI
 
     def valid?(account:, destination:)
       if !destination_rules.valid?(account:, destination:)
-        @error_code = @destination_rules.error_code
+        @error_code = destination_rules.error_code
       elsif !(@sms_gateway = sms_gateway_resolver.resolve(carrier: account.carrier, destination:))
         @error_code = :unreachable_carrier
       elsif !account_billing_policy_valid?(account:, destination:)

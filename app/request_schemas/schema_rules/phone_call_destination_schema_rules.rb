@@ -10,7 +10,7 @@ module SchemaRules
 
     def valid?(account:, destination:)
       if !destination_rules.valid?(account:, destination:)
-        @error_code = @destination_rules.error_code
+        @error_code = destination_rules.error_code
       elsif !(@sip_trunk = sip_trunk_resolver.execute(account:, destination:))
         @error_code = :calling_number_unsupported_or_invalid
       elsif account.billing_enabled? && sip_trunk.region.alias != "hydrogen"
