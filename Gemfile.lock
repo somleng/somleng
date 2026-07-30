@@ -397,7 +397,7 @@ GEM
       monetize (~> 2.0)
       money (~> 7.0)
       railties (>= 7.0)
-    msgpack (1.8.1)
+    msgpack (1.8.2)
     mustache (1.1.2)
     net-http (0.9.1)
       uri (>= 0.11.1)
