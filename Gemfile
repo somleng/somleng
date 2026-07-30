@@ -10,6 +10,7 @@ gem "rails", "~> 8.1.3"
 gem "administrate", github: "thoughtbot/administrate"
 gem "administrate-field-active_storage"
 gem "image_processing"
+gem "ruby-vips"
 
 gem "aasm"
 gem "active_storage_validations"
