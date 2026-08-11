@@ -644,9 +644,8 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    with_advisory_lock (7.5.0)
+    with_advisory_lock (7.6.0)
       activerecord (>= 7.2)
-      zeitwerk (>= 2.7)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.8.3)
