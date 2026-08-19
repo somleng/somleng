@@ -36,7 +36,7 @@ FROM base AS build
 # Install packages needed to build gems
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --update --no-cache build-base git gcompat postgresql-dev nodejs yarn yaml-dev libffi-dev
+    apk add --update --no-cache build-base git gcompat postgresql-dev nodejs yarn yaml-dev vips-dev libffi-dev
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -67,7 +67,7 @@ FROM base
 # Install packages needed for deployment
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --update --no-cache build-base gcompat postgresql-dev vips-dev ffmpeg
+    apk add --update --no-cache build-base gcompat postgresql-dev vips ffmpeg
 
 # Copy built artifacts: gems, application
 # Note the trailing slashes are important here
