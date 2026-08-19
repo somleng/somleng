@@ -82,7 +82,7 @@ resource "aws_ecs_task_definition" "ws" {
           },
           {
             name  = "ANYCABLE_BROADCAST_ADAPTER",
-            value = "redisx",
+            value = "redis",
           },
           {
             name  = "ANYCABLE_BROKER",

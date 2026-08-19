@@ -7,7 +7,7 @@ class BalanceTransactionDashboard < Administrate::BaseDashboard
     created_by: Field::BelongsTo,
     id: Field::String,
     type: Field::String,
-    amount: Field::String,
+    amount: Field::String.with_options(searchable: false),
     currency: Field::String,
     description: Field::String,
     created_at: Field::LocalTime,

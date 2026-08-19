@@ -120,7 +120,7 @@ locals {
     },
     {
       name  = "ANYCABLE_BROADCAST_ADAPTER",
-      value = "redisx"
+      value = "redis"
     },
     {
       name  = "RAILS_LOG_LEVEL",
