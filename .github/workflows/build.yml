@@ -53,7 +53,7 @@ jobs:
             },
             {
               "identifier": "somleng",
-              "branch": "search_virtual_fields",
+              "branch": "master",
               "environment": "production",
               "friendly_image_tag": "latest",
               "image_tag": "prod-${{ github.sha }}",
