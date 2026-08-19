@@ -9,7 +9,7 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     region: Field::String,
     max_channels: Field::String,
     inbound_country_code: Field::String,
-    inbound_source_ips: Field::String,
+    inbound_source_ips: Field::String.with_options(searchable: false),
     outbound_host: Field::String,
     outbound_route_prefixes: Field::String,
     outbound_dial_string_prefix: Field::String,

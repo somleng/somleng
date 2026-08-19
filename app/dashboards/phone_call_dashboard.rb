@@ -17,7 +17,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     voice_url: Field::String,
     voice_method: Field::String,
     status: Field::String,
-    price: Field::String,
+    price: Field::String.with_options(searchable: false),
     price_unit: Field::String,
     status_callback_url: Field::String,
     status_callback_method: Field::String,

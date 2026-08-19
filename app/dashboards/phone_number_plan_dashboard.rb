@@ -8,7 +8,7 @@ class PhoneNumberPlanDashboard < Administrate::BaseDashboard
     account: Field::BelongsTo,
     id: Field::String,
     number: Field::String,
-    amount: Field::String,
+    amount: Field::String.with_options(searchable: false),
     status: Field::String,
     canceled_at: Field::LocalTime,
     created_at: Field::LocalTime,

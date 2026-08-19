@@ -23,7 +23,7 @@ class MessageDashboard < Administrate::BaseDashboard
     status: Field::String,
     status_callback_url: Field::String,
     beneficiary_country_code: Field::String,
-    price: Field::String,
+    price: Field::String.with_options(searchable: false),
     price_unit: Field::String,
     validity_period: Field::String,
     error_code: Field::String,
