@@ -424,7 +424,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.6.3)
-    phony (3.0.6)
+    phony (3.0.7)
     pp (0.6.4)
       prettyprint
     premailer (1.29.0)
