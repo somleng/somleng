@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: 7f1b6eda6fa1cf907cbe47576ba72818c5f4206a
+  revision: c599683905c9a975651b4c1e56cbd06e46c55a21
   specs:
     administrate (1.0.0)
       actionpack (>= 6.0, < 9.0)
