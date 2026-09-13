@@ -62,12 +62,18 @@ RSpec.describe CreatePhoneCallEventJob do
   end
 
   it "retries if the phone call is not found" do
-    CreatePhoneCallEventJob.perform_now(
-      phone_call_external_id: SecureRandom.uuid,
-      type: "answered"
-    )
+    allow(Rails.logger).to receive(:warn)
 
-    expect(CreatePhoneCallEventJob).to have_been_enqueued
+    perform_enqueued_jobs do
+      CreatePhoneCallEventJob.perform_now(
+        phone_call_external_id: SecureRandom.uuid,
+        type: "answered"
+      )
+    end
+
+    expect(Rails.logger).to have_received(:warn).with(
+      a_string_matching(/CreatePhoneCallEventJob.*giving up after 3 attempts/i)
+    )
   end
 
   it "handles invalid state transitions" do

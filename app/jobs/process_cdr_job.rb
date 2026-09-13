@@ -1,11 +1,11 @@
 class ProcessCDRJob < ApplicationJob
   queue_as(AppSettings.fetch(:aws_sqs_medium_priority_queue_name))
 
-  class Handler
-    class PhoneCallNotFoundError < StandardError; end
-    class UnknownPhoneCallError < StandardError; end
-    class CDRAlreadyExistsError < StandardError; end
+  class PhoneCallNotFoundError < StandardError; end
+  class UnknownPhoneCallError < StandardError; end
+  class CDRAlreadyExistsError < StandardError; end
 
+  class Handler
     attr_accessor :raw_payload, :cdr, :session_limiters
 
     def initialize(raw_payload, **options)
@@ -87,12 +87,10 @@ class ProcessCDRJob < ApplicationJob
     end
   end
 
-  discard_on(Handler::CDRAlreadyExistsError)
-  retry_on(
-    Handler::UnknownPhoneCallError,
-    wait: :polynomially_longer,
-    attempts: 3
-  )
+  discard_on(CDRAlreadyExistsError)
+  retry_on(UnknownPhoneCallError, wait: :polynomially_longer, attempts: 3) do |job, error|
+    Rails.logger.warn("#{job.class} giving up after 3 attempts for job #{job.job_id}: #{error.message}")
+  end
 
   def perform(...)
     Handler.new(...).perform
