@@ -1,8 +1,8 @@
 class CreatePhoneCallEventJob < ApplicationJob
-  class Handler
-    class PhoneCallNotFoundError < StandardError; end
-    class InvalidStateTransitionError < StandardError; end
+  class PhoneCallNotFoundError < StandardError; end
+  class InvalidStateTransitionError < StandardError; end
 
+  class Handler
     attr_reader :phone_call_external_id, :params
 
     def initialize(phone_call_external_id:, **params)
@@ -43,6 +43,8 @@ class CreatePhoneCallEventJob < ApplicationJob
     Handler.new(...).perform
   end
 
-  retry_on(Handler::PhoneCallNotFoundError,  wait: :polynomially_longer, attempts: 3)
-  discard_on(Handler::InvalidStateTransitionError)
+  retry_on(PhoneCallNotFoundError,  wait: :polynomially_longer, attempts: 3) do |job, error|
+    Rails.logger.warn("#{job.class} giving up after 3 attempts for job #{job.job_id}: #{error.message}")
+  end
+  discard_on(InvalidStateTransitionError)
 end

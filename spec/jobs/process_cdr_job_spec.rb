@@ -66,10 +66,15 @@ RSpec.describe ProcessCDRJob do
         "sip_h_X-Somleng-CallSid" => nil
       }
     )
+    allow(Rails.logger).to receive(:warn)
 
-    ProcessCDRJob.perform_now(encode(cdr.to_json))
+    perform_enqueued_jobs do
+      ProcessCDRJob.perform_now(encode(cdr.to_json))
+    end
 
-    expect(ProcessCDRJob).to have_been_enqueued
+    expect(Rails.logger).to have_received(:warn).with(
+      a_string_matching(/ProcessCDRJob.*giving up after 3 attempts/i)
+    )
   end
 
   it "handles invalid JSON" do
