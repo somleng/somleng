@@ -342,7 +342,7 @@ GEM
     json (2.21.2)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
-    jwt (3.2.0)
+    jwt (3.3.0)
       base64
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
