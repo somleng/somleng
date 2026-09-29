@@ -243,7 +243,7 @@ GEM
       devise (>= 4.0, < 6.0)
       railties (>= 7.2, < 8.2)
       rotp (~> 6.0)
-    devise_invitable (2.0.12)
+    devise_invitable (2.0.13)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.6.2)
