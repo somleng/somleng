@@ -2,7 +2,7 @@ class CompletePhoneCallJob < ApplicationJob
   class Handler
     class InvalidStateTransitionError < StandardError; end
 
-    NOT_ANSWERED_SIP_TERM_STATUSES = %w[ 480 487 603 ].freeze
+    NOT_ANSWERED_SIP_TERM_STATUSES = %w[ 480 486 487 603 ].freeze
     BUSY_SIP_TERM_STATUSES = [ "486" ].freeze
 
     attr_reader :phone_call
@@ -25,12 +25,12 @@ class CompletePhoneCallJob < ApplicationJob
       if call_data_record.answer_time.to_i.positive?
         phone_call.complete!
         create_interaction
-      elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(call_data_record.sip_term_status)
-        phone_call.mark_as_not_answered!
-      elsif BUSY_SIP_TERM_STATUSES.include?(call_data_record.sip_term_status)
-        phone_call.mark_as_busy!
-      elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(call_data_record.sip_invite_failure_status)
+      elsif phone_call.user_terminated?
         phone_call.cancel!
+      elsif phone_call.inbound? && BUSY_SIP_TERM_STATUSES.include?(call_data_record.sip_term_status)
+        phone_call.mark_as_busy!
+      elsif NOT_ANSWERED_SIP_TERM_STATUSES.include?(call_data_record.sip_invite_failure_status) || NOT_ANSWERED_SIP_TERM_STATUSES.include?(call_data_record.sip_term_status)
+        phone_call.mark_as_not_answered!
       else
         phone_call.fail!
       end

@@ -39,8 +39,8 @@ RSpec.describe CompletePhoneCallJob do
     )
   end
 
-  it "handles busy calls" do
-    phone_call = create(:phone_call, :outbound, :initiated)
+  it "handles busy for inbound calls" do
+    phone_call = create(:phone_call, :inbound, :initiated)
     create(:call_data_record, phone_call:, answer_time: nil, sip_term_status: "486")
 
     CompletePhoneCallJob.perform_now(phone_call)
@@ -64,8 +64,8 @@ RSpec.describe CompletePhoneCallJob do
   end
 
   it "handles canceled calls" do
-    phone_call = create(:phone_call, :outbound, :initiated)
-    create(:call_data_record, phone_call:, answer_time: nil, sip_invite_failure_status: "487")
+    phone_call = create(:phone_call, :outbound, :initiated, :user_terminated)
+    create(:call_data_record, phone_call:, answer_time: nil)
 
     CompletePhoneCallJob.perform_now(phone_call)
 
