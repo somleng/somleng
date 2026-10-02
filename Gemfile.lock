@@ -329,7 +329,7 @@ GEM
       domain_name (~> 0.5)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    image_processing (2.1.0)
+    image_processing (2.2.0)
     io-console (0.9.4)
     irb (1.18.0)
       pp (>= 0.6.0)
