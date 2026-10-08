@@ -110,10 +110,6 @@ class PhoneCall < ApplicationRecord
     outbound_api? || outbound_dial?
   end
 
-  def inbound?
-    !outbound?
-  end
-
   def price
     InfinitePrecisionMoney.new(price_cents, price_unit) if price_cents.present?
   end
