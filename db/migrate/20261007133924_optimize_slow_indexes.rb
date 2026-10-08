@@ -84,5 +84,42 @@ class OptimizeSlowIndexes < ActiveRecord::Migration[8.1]
       algorithm: :concurrently,
       if_not_exists: true
     )
+
+    remove_index(
+      :messages,
+      :account_id,
+      algorithm: :concurrently,
+      if_exists: true
+    )
+
+    remove_index(
+      :phone_calls,
+      :account_id,
+      algorithm: :concurrently,
+      if_exists: true
+    )
+
+    remove_index(
+      :phone_calls,
+      :sip_trunk_id,
+      algorithm: :concurrently,
+      if_exists: true
+    )
+
+    remove_index(
+      :phone_calls,
+      :region,
+      where: { status: :queued },
+      algorithm: :concurrently,
+      if_exists: true
+    )
+
+    remove_index(
+      :phone_calls,
+      [ :status, :created_at, :initiation_queued_at ],
+      where: { status: :queued },
+      algorithm: :concurrently,
+      if_exists: true
+    )
   end
 end
