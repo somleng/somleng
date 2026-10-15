@@ -66,7 +66,6 @@ FactoryBot.define do
     billing_currency { ISO3166::Country.new(country_code).currency_code }
     sequence(:subdomain) { |n| "at-t#{n}" }
     website { "https://at-t.com" }
-    with_oauth_application
 
     trait :restricted do
       restricted { true }
@@ -86,12 +85,10 @@ FactoryBot.define do
 
     trait :with_oauth_application do
       after(:build) do |carrier|
-        carrier.oauth_application ||= build(:oauth_application, owner: carrier)
-        carrier.oauth_application.access_tokens << build(
-          :oauth_access_token,
-          application: carrier.oauth_application,
-          scopes: :carrier_api
-        )
+        if carrier.oauth_application.blank?
+          carrier.oauth_application = build(:oauth_application, owner: carrier)
+          build(:carrier_api_key, oauth_application: carrier.oauth_application)
+        end
       end
     end
 
@@ -728,6 +725,16 @@ FactoryBot.define do
     trait :carrier do
       association :owner, factory: :carrier
       scopes { "carrier_api" }
+    end
+  end
+
+  factory :carrier_api_key do
+    association :oauth_application, factory: [ :oauth_application, :carrier ]
+    scopes { :carrier_api }
+
+
+    trait :revoked do
+      revoked_at { Time.current }
     end
   end
 

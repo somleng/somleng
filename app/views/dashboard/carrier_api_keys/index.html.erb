@@ -1,0 +1,20 @@
+<%= page_title(title: "API Keys") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:id, params.dig(:filter, :id), title: "SID") %>
+    <%= form.boolean_select(:active, { filter_value: params.dig(:filter, :active) }) %>
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if CarrierAPIKeyPolicy.new(current_user).create? %>
+    <%= render(
+      "shared/create_resource_page_action",
+      path: dashboard_carrier_settings_api_keys_path(filter_params)
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

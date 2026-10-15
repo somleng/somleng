@@ -1,0 +1,32 @@
+<%= page_title(title: "API Key") do %>
+  <% if policy(@resource).destroy? %>
+    <%= render(
+      "shared/destroy_resource_page_action",
+      path: dashboard_carrier_settings_api_key_path(@resource),
+      title: "Revoke"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource.decorated) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= @resource.id %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :token do %>
+      <code>
+        <%= mask_content(@resource.token) %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :status do %>
+      <%= status_badge(f.object.human_status, color: f.object.status_color) %>
+    <% end %>
+
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :revoked_at, value: local_time(@resource.revoked_at) %>
+  <% end %>
+</div>

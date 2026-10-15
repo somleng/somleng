@@ -18,23 +18,15 @@
 
   <% if policy(:auth_token).create? %>
     <% if filter_params.dig(:filter, :account_id).present? || !current_user.carrier_user? %>
-      <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="New">
-        <%= button_to(
-          dashboard_auth_tokens_path(filter_params),
-          params: {
-            auth_token: {
-              account_id: filter_params.dig(:filter, :account_id)
-            }
-          },
-          class: "btn btn-outline-success",
-          title: "New",
-          data: {
-            turbo_confirm: "Are you sure?"
+      <%= render(
+        "shared/create_resource_page_action",
+        path: dashboard_auth_tokens_path(filter_params),
+        params: {
+          auth_token: {
+            account_id: filter_params.dig(:filter, :account_id)
           }
-        ) do %>
-          <i class="fa-solid fa-plus"></i>
-        <% end %>
-      </span>
+        }
+      ) %>
     <% else %>
       <%= render(
         "shared/new_resource_page_action",
