@@ -9,6 +9,6 @@ RSpec.describe "Admin/SMS Gateways" do
 
     click_on("My SMS Gateway")
 
-    expect(page).to have_content("My SMS Gateway")
+    expect(page).to have_text("My SMS Gateway")
   end
 end

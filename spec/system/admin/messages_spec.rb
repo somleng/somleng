@@ -36,7 +36,7 @@ RSpec.describe "Admin/Messages" do
     page.driver.browser.authorize("admin", "password")
     visit admin_messages_path
 
-    expect(page).to have_content(internal_message.id)
+    expect(page).to have_text(internal_message.id)
     click_on("855718224112")
 
     expect(page).to have_link("Rocket Rides", href: admin_account_path(account))
@@ -44,12 +44,12 @@ RSpec.describe "Admin/Messages" do
 
     click_on("My Messaging Service")
 
-    expect(page).to have_content("https://example.com/messages.xml")
+    expect(page).to have_text("https://example.com/messages.xml")
 
     click_on(message.id)
     click_on("GoIP")
     click_on("Smart")
 
-    expect(page).to have_content("85510")
+    expect(page).to have_text("85510")
   end
 end

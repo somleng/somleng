@@ -15,26 +15,26 @@ RSpec.describe "TTS Events" do
       }
     )
 
-    expect(page).to have_content(tts_event.id)
-    expect(page).to have_no_content(other_tts_event.id)
+    expect(page).to have_text(tts_event.id)
+    expect(page).to have_no_text(other_tts_event.id)
 
     perform_enqueued_jobs do
       click_on("Export")
     end
 
     within(".alert") do
-      expect(page).to have_content("Your export is being processed")
+      expect(page).to have_text("Your export is being processed")
       click_on("Exports")
     end
 
     click_on("tts_events_")
 
-    expect(page).to have_content(tts_event.id)
-    expect(page).to have_content(tts_event.account_id)
-    expect(page).to have_content(tts_event.phone_call_id)
-    expect(page).to have_content(tts_event.tts_voice)
-    expect(page).to have_content(tts_event.num_chars)
-    expect(page).to have_no_content(other_tts_event.id)
+    expect(page).to have_text(tts_event.id)
+    expect(page).to have_text(tts_event.account_id)
+    expect(page).to have_text(tts_event.phone_call_id)
+    expect(page).to have_text(tts_event.tts_voice)
+    expect(page).to have_text(tts_event.num_chars)
+    expect(page).to have_no_text(other_tts_event.id)
   end
 
   it "Show a TTS Event" do
@@ -44,7 +44,7 @@ RSpec.describe "TTS Events" do
     carrier_sign_in(user)
     visit dashboard_tts_event_path(tts_event)
 
-    expect(page).to have_content(tts_event.id)
+    expect(page).to have_text(tts_event.id)
     expect(page).to have_link(
       tts_event.account.name, href: dashboard_account_path(tts_event.account)
     )

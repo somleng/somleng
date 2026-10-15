@@ -22,17 +22,17 @@ RSpec.describe "Carrier Settings" do
 
     click_on("Update Carrier Settings")
 
-    expect(page).to have_content("Carrier settings were successfully updated")
-    expect(page).to have_content("T-Mobile")
-    expect(page).to have_content("United States")
-    expect(page).to have_content("United States Dollar")
-    expect(page).to have_content("https://example.com/webhook_endpoint")
-    expect(page).to have_content("Webhook signing secret")
-    expect(page).to have_content("dashboard.t-mobile.example.com")
-    expect(page).to have_content("api.t-mobile.example.com")
+    expect(page).to have_text("Carrier settings were successfully updated")
+    expect(page).to have_text("T-Mobile")
+    expect(page).to have_text("United States")
+    expect(page).to have_text("United States Dollar")
+    expect(page).to have_text("https://example.com/webhook_endpoint")
+    expect(page).to have_text("Webhook signing secret")
+    expect(page).to have_text("dashboard.t-mobile.example.com")
+    expect(page).to have_text("api.t-mobile.example.com")
     expect(page).to have_xpath("//img[@title='Logo']")
     expect(page).to have_xpath("//img[@title='Favicon']")
-    expect(page).to have_content("Standard Package")
+    expect(page).to have_text("Standard Package")
   end
 
   it "Update carrier subdomain" do
@@ -64,13 +64,13 @@ RSpec.describe "Carrier Settings" do
     carrier_sign_in(user)
     visit dashboard_carrier_settings_path
 
-    expect(page).to have_content("https://www.example.com/webhooks")
+    expect(page).to have_text("https://www.example.com/webhooks")
 
     click_on("Edit")
     uncheck("Enable webhooks")
     click_on("Update Carrier Settings")
 
-    expect(page).to have_content("Carrier settings were successfully updated")
-    expect(page).to have_no_content("https://www.example.com/webhooks")
+    expect(page).to have_text("Carrier settings were successfully updated")
+    expect(page).to have_no_text("https://www.example.com/webhooks")
   end
 end

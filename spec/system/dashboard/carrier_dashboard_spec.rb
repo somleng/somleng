@@ -8,6 +8,6 @@ RSpec.describe "Carrier Dashboard" do
     carrier_sign_in(user)
     visit dashboard_root_path
 
-    expect(page).to have_content("Account (Trial)")
+    expect(page).to have_text("Account (Trial)")
   end
 end

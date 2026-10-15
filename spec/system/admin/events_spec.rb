@@ -7,6 +7,6 @@ RSpec.describe "Admin / Events" do
     page.driver.browser.authorize("admin", "password")
     visit admin_events_path
 
-    expect(page).to have_content(event.type)
+    expect(page).to have_text(event.type)
   end
 end

@@ -8,10 +8,10 @@ RSpec.describe "Admin/Imports" do
     page.driver.browser.authorize("admin", "password")
     visit admin_imports_path
 
-    expect(page).to have_content("PhoneNumber")
+    expect(page).to have_text("PhoneNumber")
     expect(page).to have_link("John Doe")
 
     click_on("John Doe")
-    expect(page).to have_content(user.id)
+    expect(page).to have_text(user.id)
   end
 end

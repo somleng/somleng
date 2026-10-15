@@ -20,16 +20,16 @@ RSpec.describe "Incoming Phone Numbers" do
     carrier_sign_in(user)
     visit dashboard_incoming_phone_numbers_path
 
-    expect(page).to have_content("+1 (251) 309-5500")
-    expect(page).to have_content("+1 (251) 309-5501")
+    expect(page).to have_text("+1 (251) 309-5500")
+    expect(page).to have_text("+1 (251) 309-5501")
     expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
     expect(page).to have_link(released_incoming_phone_number.id, href: dashboard_incoming_phone_number_path(released_incoming_phone_number))
     expect(page).to have_link("My Carrier Account", href: dashboard_account_path(account))
 
     visit dashboard_incoming_phone_numbers_path(filter: { status: :active })
 
-    expect(page).to have_content("+1 (251) 309-5500")
-    expect(page).to have_no_content("+1 (251) 309-5501")
+    expect(page).to have_text("+1 (251) 309-5500")
+    expect(page).to have_no_text("+1 (251) 309-5501")
   end
 
   it "List phone numbers as an account member" do
@@ -43,8 +43,8 @@ RSpec.describe "Incoming Phone Numbers" do
     carrier_sign_in(user)
     visit dashboard_incoming_phone_numbers_path
 
-    expect(page).to have_content("1 (251) 309-5500")
-    expect(page).to have_no_content("1 (251) 309-5501")
+    expect(page).to have_text("1 (251) 309-5500")
+    expect(page).to have_no_text("1 (251) 309-5501")
   end
 
   it "Show an incoming phone number" do
@@ -70,23 +70,23 @@ RSpec.describe "Incoming Phone Numbers" do
     visit dashboard_incoming_phone_number_path(incoming_phone_number)
 
     within("#billing") do
-      expect(page).to have_content("$5.00")
+      expect(page).to have_text("$5.00")
     end
 
     within("#properties") do
-      expect(page).to have_content("+1 (251) 309-5500")
-      expect(page).to have_content("Local")
+      expect(page).to have_text("+1 (251) 309-5500")
+      expect(page).to have_text("Local")
     end
 
     within("#voice-configuration") do
-      expect(page).to have_content("https://www.example.com/voice.xml")
-      expect(page).to have_content("POST")
+      expect(page).to have_text("https://www.example.com/voice.xml")
+      expect(page).to have_text("POST")
       expect(page).to have_link("View", href: dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }))
     end
 
     within("#messaging-configuration") do
-      expect(page).to have_content("https://www.example.com/sms.xml")
-      expect(page).to have_content("GET")
+      expect(page).to have_text("https://www.example.com/sms.xml")
+      expect(page).to have_text("GET")
       expect(page).to have_link("My Messaging Service", href: dashboard_messaging_service_path(messaging_service))
       expect(page).to have_link("View", href: dashboard_messages_path(filter: { phone_number_id: incoming_phone_number.id }))
     end
@@ -111,7 +111,7 @@ RSpec.describe "Incoming Phone Numbers" do
 
     click_on("Repurchase")
 
-    expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_text("+1 (251) 309-5500")
     expect(page).to have_link("Buy")
   end
 
@@ -137,22 +137,22 @@ RSpec.describe "Incoming Phone Numbers" do
 
     click_on("Save")
 
-    expect(page).to have_content("Phone number configuration was successfully updated.")
+    expect(page).to have_text("Phone number configuration was successfully updated.")
 
     within("#properties") do
-      expect(page).to have_content("My Awesome Phone Number")
+      expect(page).to have_text("My Awesome Phone Number")
     end
 
     within("#voice-configuration") do
-      expect(page).to have_content("https://www.example.com/voice.xml")
-      expect(page).to have_content("GET")
-      expect(page).to have_content("https://www.example.com/status_callback.xml")
-      expect(page).to have_content("POST")
+      expect(page).to have_text("https://www.example.com/voice.xml")
+      expect(page).to have_text("GET")
+      expect(page).to have_text("https://www.example.com/status_callback.xml")
+      expect(page).to have_text("POST")
     end
 
     within("#messaging-configuration") do
-      expect(page).to have_content("https://www.example.com/sms.xml")
-      expect(page).to have_content("POST")
+      expect(page).to have_text("https://www.example.com/sms.xml")
+      expect(page).to have_text("POST")
       expect(page).to have_link("My Messaging Service", href: dashboard_messaging_service_path(messaging_service))
     end
   end
@@ -169,7 +169,7 @@ RSpec.describe "Incoming Phone Numbers" do
     fill_in("Voice URL", with: "ftp://invalid-url.com")
     click_on("Save")
 
-    expect(page).to have_content("Voice URL is invalid")
+    expect(page).to have_text("Voice URL is invalid")
   end
 
   it "Release an incoming phone number" do
@@ -182,8 +182,8 @@ RSpec.describe "Incoming Phone Numbers" do
     visit dashboard_incoming_phone_number_path(incoming_phone_number)
     click_on("Release")
 
-    expect(page).to have_content("Phone number was successfully released.")
-    expect(page).to have_content("+1 (251) 309-5500")
-    expect(page).to have_content("Released")
+    expect(page).to have_text("Phone number was successfully released.")
+    expect(page).to have_text("+1 (251) 309-5500")
+    expect(page).to have_text("Released")
   end
 end

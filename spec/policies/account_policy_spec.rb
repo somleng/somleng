@@ -30,11 +30,4 @@ RSpec.describe AccountPolicy, type: :policy do
     expect(AccountPolicy.new(build_stubbed(:user, :carrier, :member))).not_to be_manage
     expect(AccountPolicy.new(build_stubbed(:user, :customer))).not_to be_manage
   end
-
-  it "handles access for showing an auth token" do
-    user = build_stubbed(:user, :carrier)
-
-    expect(AccountPolicy.new(user, build_stubbed(:account, :carrier_managed))).to be_show_auth_token
-    expect(AccountPolicy.new(user, build_stubbed(:account, :customer_managed))).not_to be_show_auth_token
-  end
 end

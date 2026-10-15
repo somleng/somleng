@@ -8,10 +8,10 @@ RSpec.describe "Admin/Exports" do
     page.driver.browser.authorize("admin", "password")
     visit admin_exports_path
 
-    expect(page).to have_content("1 of 1,000")
+    expect(page).to have_text("1 of 1,000")
     expect(page).to have_link("John Doe")
 
     click_on("John Doe")
-    expect(page).to have_content(user.id)
+    expect(page).to have_text(user.id)
   end
 end

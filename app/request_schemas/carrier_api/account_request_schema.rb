@@ -18,7 +18,6 @@ module CarrierAPI
 
     def output
       result = super
-      result[:access_token] = Doorkeeper::AccessToken.new
       result[:default_tts_voice] ||= TTSVoices::Voice.default
       result[:type] = :carrier_managed
       result

@@ -17,9 +17,9 @@ RSpec.describe "Events" do
       }
     )
 
-    expect(page).to have_content(event1.id)
-    expect(page).to have_no_content(event2.id)
-    expect(page).to have_no_content(event3.id)
+    expect(page).to have_text(event1.id)
+    expect(page).to have_no_text(event2.id)
+    expect(page).to have_no_text(event3.id)
   end
 
   it "Show an event" do
@@ -29,6 +29,6 @@ RSpec.describe "Events" do
     carrier_sign_in(user)
     visit dashboard_event_path(event)
 
-    expect(page).to have_content(event.id)
+    expect(page).to have_text(event.id)
   end
 end

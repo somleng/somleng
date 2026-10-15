@@ -24,9 +24,9 @@ RSpec.describe "Tariff Schedules" do
       )
     )
 
-    expect(page).to have_content(schedule.id)
+    expect(page).to have_text(schedule.id)
     excluded_schedules.each do |schedule|
-      expect(page).to have_no_content(schedule.id)
+      expect(page).to have_no_text(schedule.id)
     end
   end
 
@@ -58,10 +58,10 @@ RSpec.describe "Tariff Schedules" do
 
     click_on("Create Tariff schedule")
 
-    expect(page).to have_content("Tariff schedule was successfully created.")
-    expect(page).to have_content("Outbound calls")
-    expect(page).to have_content("Standard")
-    expect(page).to have_content("CALL -> Cambodia -> $0.005 / min and 1 more")
+    expect(page).to have_text("Tariff schedule was successfully created.")
+    expect(page).to have_text("Outbound calls")
+    expect(page).to have_text("Standard")
+    expect(page).to have_text("CALL -> Cambodia -> $0.005 / min and 1 more")
 
     expect(carrier.tariff_schedules.last).to have_attributes(
       description: "My description",
@@ -108,7 +108,7 @@ RSpec.describe "Tariff Schedules" do
     visit new_dashboard_tariff_schedule_path
     click_on("Create Tariff schedule")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "show a schedule" do
@@ -137,7 +137,7 @@ RSpec.describe "Tariff Schedules" do
     carrier_sign_in(user)
     visit dashboard_tariff_schedule_path(schedule)
 
-    expect(page).to have_content("MSG -> Cambodia -> $0.005")
+    expect(page).to have_text("MSG -> Cambodia -> $0.005")
     expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(plan))
     expect(page).to have_link("1 more", href: dashboard_tariff_plans_path(filter: { tariff_schedule_id: schedule.id }))
   end
@@ -155,7 +155,7 @@ RSpec.describe "Tariff Schedules" do
     visit dashboard_tariff_schedule_path(schedule)
     click_on("Edit")
 
-    expect(page).to have_content("Inbound calls")
+    expect(page).to have_text("Inbound calls")
 
     fill_in("Name", with: "New Name")
     fill_in("Description", with: "New Description")
@@ -177,9 +177,9 @@ RSpec.describe "Tariff Schedules" do
 
     click_on("Update Tariff schedule")
 
-    expect(page).to have_content("Tariff schedule was successfully updated.")
-    expect(page).to have_content("New Name")
-    expect(page).to have_content("New Description")
+    expect(page).to have_text("Tariff schedule was successfully updated.")
+    expect(page).to have_text("New Name")
+    expect(page).to have_text("New Description")
   end
 
   it "delete a schedule" do
@@ -192,8 +192,8 @@ RSpec.describe "Tariff Schedules" do
     visit dashboard_tariff_schedule_path(schedule)
     click_on("Delete")
 
-    expect(page).to have_content("Tariff schedule was successfully destroyed.")
-    expect(page).to have_no_content("Standard")
+    expect(page).to have_text("Tariff schedule was successfully destroyed.")
+    expect(page).to have_no_text("Standard")
   end
 
   def destination_tariff_forms

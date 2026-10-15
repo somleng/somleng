@@ -28,9 +28,9 @@ RSpec.describe "Balance Transactions" do
       }
     )
 
-    expect(page).to have_content(balance_transaction.id)
+    expect(page).to have_text(balance_transaction.id)
     excluded_transactions.each do |transaction|
-      expect(page).to have_no_content(transaction.id)
+      expect(page).to have_no_text(transaction.id)
     end
   end
 
@@ -49,7 +49,7 @@ RSpec.describe "Balance Transactions" do
     visit dashboard_balance_transactions_path
     click_on(balance_transaction.id)
 
-    expect(page).to have_content(balance_transaction.id)
+    expect(page).to have_text(balance_transaction.id)
     expect(page).to have_no_link(account.id)
     expect(page).to have_no_link("John Doe")
   end
@@ -69,11 +69,11 @@ RSpec.describe "Balance Transactions" do
     fill_in("Description", with: "My description")
     click_on("Create Balance transaction")
 
-    expect(page).to have_content("Balance transaction was successfully created")
+    expect(page).to have_text("Balance transaction was successfully created")
     expect(page).to have_link(account.name)
-    expect(page).to have_content("$100.00")
-    expect(page).to have_content("Topup")
-    expect(page).to have_content("My description")
+    expect(page).to have_text("$100.00")
+    expect(page).to have_text("Topup")
+    expect(page).to have_text("My description")
     expect(page).to have_link("John Doe")
   end
 
@@ -86,7 +86,7 @@ RSpec.describe "Balance Transactions" do
     carrier_sign_in(user)
     visit dashboard_balance_transaction_path(balance_transaction)
 
-    expect(page).to have_content("Outbound calls")
+    expect(page).to have_text("Outbound calls")
     expect(page).to have_link("Phone call", href: dashboard_phone_call_path(balance_transaction.phone_call))
   end
 
@@ -103,7 +103,7 @@ RSpec.describe "Balance Transactions" do
     fill_in("Description", with: "My description")
     click_on("Update Balance transaction")
 
-    expect(page).to have_content("Balance transaction was successfully updated")
-    expect(page).to have_content("My description")
+    expect(page).to have_text("Balance transaction was successfully updated")
+    expect(page).to have_text("My description")
   end
 end

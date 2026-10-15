@@ -14,9 +14,9 @@ RSpec.describe "Account Memberships" do
     carrier_sign_in(user)
     visit dashboard_account_memberships_path
 
-    expect(page).to have_content("Joe Bloggs")
-    expect(page).to have_content("John Doe")
-    expect(page).to have_no_content("Bob Chann")
+    expect(page).to have_text("Joe Bloggs")
+    expect(page).to have_text("John Doe")
+    expect(page).to have_no_text("Bob Chann")
   end
 
   it "Invite an account member" do
@@ -32,8 +32,8 @@ RSpec.describe "Account Memberships" do
     select("Admin", from: "Role")
 
     click_on("Send an Invitation")
-    expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
-    expect(page).to have_content("Admin")
+    expect(page).to have_text("An invitation email has been sent to johndoe@example.com")
+    expect(page).to have_text("Admin")
   end
 
   it "Handle validation errors" do
@@ -44,7 +44,7 @@ RSpec.describe "Account Memberships" do
     visit new_dashboard_account_membership_path
     click_on "Send an Invitation"
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Update an account membership" do
@@ -60,8 +60,8 @@ RSpec.describe "Account Memberships" do
     select("Owner", from: "Role")
     click_on("Update User")
 
-    expect(page).to have_content("Account membership was successfully updated")
-    expect(page).to have_content("Owner")
+    expect(page).to have_text("Account membership was successfully updated")
+    expect(page).to have_text("Owner")
   end
 
   it "Delete an account membership" do
@@ -77,8 +77,8 @@ RSpec.describe "Account Memberships" do
       click_on("Delete")
     end
 
-    expect(page).to have_content("Account membership was successfully destroyed")
-    expect(page).to have_no_content("Bob Chann")
+    expect(page).to have_text("Account membership was successfully destroyed")
+    expect(page).to have_no_text("Bob Chann")
   end
 
   it "Resend invitation" do
@@ -91,13 +91,13 @@ RSpec.describe "Account Memberships" do
     carrier_sign_in(user)
     visit dashboard_account_membership_path(account_membership)
 
-    expect(page).to have_content("The user has not yet accepted their invite.")
+    expect(page).to have_text("The user has not yet accepted their invite.")
 
     perform_enqueued_jobs do
       click_on("Resend")
     end
 
-    expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
+    expect(page).to have_text("An invitation email has been sent to johndoe@example.com.")
     expect(page).to have_current_path(dashboard_account_membership_path(account_membership))
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
@@ -111,7 +111,7 @@ RSpec.describe "Account Memberships" do
     visit dashboard_account_membership_path(account_membership)
     click_on("Reset 2FA")
 
-    expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
+    expect(page).to have_text("2FA was successfully reset for johndoe@example.com")
     expect(page).to have_current_path(dashboard_account_membership_path(account_membership))
   end
 

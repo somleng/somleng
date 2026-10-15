@@ -7,6 +7,6 @@ RSpec.describe "Admin/TTS Events" do
     page.driver.browser.authorize("admin", "password")
     visit admin_tts_events_path
 
-    expect(page).to have_content("Basic.Kal")
+    expect(page).to have_text("Basic.Kal")
   end
 end

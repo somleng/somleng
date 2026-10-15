@@ -7,6 +7,6 @@ RSpec.describe "Admin / Webhook Request Logs" do
     page.driver.browser.authorize("admin", "password")
     visit admin_webhook_request_logs_path
 
-    expect(page).to have_content(webhook_request_log.url)
+    expect(page).to have_text(webhook_request_log.url)
   end
 end

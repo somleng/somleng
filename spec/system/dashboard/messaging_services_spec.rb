@@ -11,8 +11,8 @@ RSpec.describe "Messaging Services" do
     carrier_sign_in(user)
     visit(dashboard_messaging_services_path(filter: { name: "Messaging" }))
 
-    expect(page).to have_content("My Messaging Service")
-    expect(page).to have_no_content("Foobar")
+    expect(page).to have_text("My Messaging Service")
+    expect(page).to have_no_text("Foobar")
   end
 
   it "Shows a messaging service" do
@@ -32,7 +32,7 @@ RSpec.describe "Messaging Services" do
       "+855 71 599 9999",
       href: dashboard_incoming_phone_number_path(incoming_phone_number)
     )
-    expect(page).to have_content("My Messaging Service")
+    expect(page).to have_text("My Messaging Service")
   end
 
   it "Create a messaging service", :js do
@@ -67,14 +67,14 @@ RSpec.describe "Messaging Services" do
 
     click_on("Save")
 
-    expect(page).to have_content("Messaging service was successfully updated")
-    expect(page).to have_content("My Messaging Service")
-    expect(page).to have_content("Rocket Rides")
+    expect(page).to have_text("Messaging service was successfully updated")
+    expect(page).to have_text("My Messaging Service")
+    expect(page).to have_text("Rocket Rides")
     expect(page).to have_link("+855 71 577 7777")
     expect(page).to have_link("+855 71 588 8888")
-    expect(page).to have_content("https://www.example.com/message.xml")
-    expect(page).to have_content("https://www.example.com/status_callback.xml")
-    expect(page).to have_content("Webhook")
+    expect(page).to have_text("https://www.example.com/message.xml")
+    expect(page).to have_text("https://www.example.com/status_callback.xml")
+    expect(page).to have_text("Webhook")
   end
 
   it "Create a messaging service as an account admin" do
@@ -89,8 +89,8 @@ RSpec.describe "Messaging Services" do
     click_on("Next")
     click_on("Save")
 
-    expect(page).to have_content("Messaging service was successfully updated")
-    expect(page).to have_content("My Messaging Service")
+    expect(page).to have_text("Messaging service was successfully updated")
+    expect(page).to have_text("My Messaging Service")
   end
 
   it "Handles validations" do
@@ -100,7 +100,7 @@ RSpec.describe "Messaging Services" do
     visit new_dashboard_messaging_service_path
     click_on "Next"
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Update a messaging service" do
@@ -132,13 +132,13 @@ RSpec.describe "Messaging Services" do
 
     click_on "Save"
 
-    expect(page).to have_content("Messaging service was successfully updated")
-    expect(page).to have_content("My Messaging Service")
+    expect(page).to have_text("Messaging service was successfully updated")
+    expect(page).to have_text("My Messaging Service")
     expect(page).to have_link("+855 71 577 7777")
     expect(page).to have_link("+855 71 588 8888")
-    expect(page).to have_content("https://www.example.com/message.xml")
-    expect(page).to have_content("https://www.example.com/status_callback.xml")
-    expect(page).to have_content("Smart encodingYes")
+    expect(page).to have_text("https://www.example.com/message.xml")
+    expect(page).to have_text("https://www.example.com/status_callback.xml")
+    expect(page).to have_text("Smart encodingYes")
   end
 
   it "Delete a messaging service" do
@@ -156,7 +156,7 @@ RSpec.describe "Messaging Services" do
 
     click_on("Delete")
 
-    expect(page).to have_content("Messaging service was successfully destroyed")
-    expect(page).to have_no_content("My Channel Group")
+    expect(page).to have_text("Messaging service was successfully destroyed")
+    expect(page).to have_no_text("My Channel Group")
   end
 end

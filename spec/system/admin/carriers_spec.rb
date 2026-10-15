@@ -8,6 +8,6 @@ RSpec.describe "Admin/Carriers" do
     visit admin_carriers_path
     click_on("My Carrier")
 
-    expect(page).to have_content("My Carrier")
+    expect(page).to have_text("My Carrier")
   end
 end

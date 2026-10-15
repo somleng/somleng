@@ -23,9 +23,9 @@ RSpec.describe "SIP Trunks" do
       filter: { from_date: "01/12/2021", to_date: "15/12/2021" }
     )
 
-    expect(page).to have_content("Main SIP Trunk")
-    expect(page).to have_content("South East Asia (Singapore)")
-    expect(page).to have_no_content("Old SIP Trunk")
+    expect(page).to have_text("Main SIP Trunk")
+    expect(page).to have_text("South East Asia (Singapore)")
+    expect(page).to have_no_text("Old SIP Trunk")
   end
 
   it "Create a SIP Trunk", :js do
@@ -35,7 +35,7 @@ RSpec.describe "SIP Trunks" do
 
     click_on("New")
 
-    expect(page).to have_content("Select the closest region. The following IP address will be used for media and signaling when connecting to your SIP trunk in the South East Asia (Singapore) region: 13.250.230.15. Please make sure it's allowed on your firewall.")
+    expect(page).to have_text("Select the closest region. The following IP address will be used for media and signaling when connecting to your SIP trunk in the South East Asia (Singapore) region: 13.250.230.15. Please make sure it's allowed on your firewall.")
 
     fill_in("Name", with: "Main SIP Trunk")
     choose("IP address")
@@ -50,16 +50,16 @@ RSpec.describe "SIP Trunks" do
 
     click_on("Create SIP trunk")
 
-    expect(page).to have_content("SIP trunk was successfully created")
-    expect(page).to have_content("South East Asia (Singapore)")
-    expect(page).to have_content("13.250.230.15")
-    expect(page).to have_content("IP address")
-    expect(page).to have_content("175.100.7.240, 175.100.7.241")
-    expect(page).to have_content("Mexico (52)")
-    expect(page).to have_content("+1234560XXXXXXXX@sip.example.com:5061")
-    expect(page).to have_content("Unlimited")
-    expect(page).to have_content("+1 (234) 234-5678")
-    expect(page).to have_content("85510, 85515, 85516")
+    expect(page).to have_text("SIP trunk was successfully created")
+    expect(page).to have_text("South East Asia (Singapore)")
+    expect(page).to have_text("13.250.230.15")
+    expect(page).to have_text("IP address")
+    expect(page).to have_text("175.100.7.240, 175.100.7.241")
+    expect(page).to have_text("Mexico (52)")
+    expect(page).to have_text("+1234560XXXXXXXX@sip.example.com:5061")
+    expect(page).to have_text("Unlimited")
+    expect(page).to have_text("+1 (234) 234-5678")
+    expect(page).to have_text("85510, 85515, 85516")
   end
 
   it "Creates a SIP trunk with client credentials", :js do
@@ -78,13 +78,13 @@ RSpec.describe "SIP Trunks" do
 
     click_on("Create SIP trunk")
 
-    expect(page).to have_content("SIP trunk was successfully created")
-    expect(page).to have_content("Username")
-    expect(page).to have_content("Password")
-    expect(page).to have_content("Lao People's Democratic Republic (856)")
-    expect(page).to have_content("sip.somleng.org")
-    expect(page).to have_content("32")
-    expect(page).to have_content("1234560XXXXXXXX@your-sip-registration-ip")
+    expect(page).to have_text("SIP trunk was successfully created")
+    expect(page).to have_text("Username")
+    expect(page).to have_text("Password")
+    expect(page).to have_text("Lao People's Democratic Republic (856)")
+    expect(page).to have_text("sip.somleng.org")
+    expect(page).to have_text("32")
+    expect(page).to have_text("1234560XXXXXXXX@your-sip-registration-ip")
   end
 
   it "Handles validations" do
@@ -94,7 +94,7 @@ RSpec.describe "SIP Trunks" do
     visit new_dashboard_sip_trunk_path
     click_on("Create SIP trunk")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Update a SIP Trunk" do
@@ -131,13 +131,13 @@ RSpec.describe "SIP Trunks" do
 
     click_on("Update SIP trunk")
 
-    expect(page).to have_content("SIP trunk was successfully updated")
-    expect(page).to have_content("Main Trunk")
-    expect(page).to have_content("South East Asia (Singapore)")
-    expect(page).to have_content("96.9.66.131, 96.9.66.132")
-    expect(page).to have_content("Cambodia")
-    expect(page).to have_content("XXXXXXXXXXX@96.9.66.132")
-    expect(page).to have_no_content("123456")
+    expect(page).to have_text("SIP trunk was successfully updated")
+    expect(page).to have_text("Main Trunk")
+    expect(page).to have_text("South East Asia (Singapore)")
+    expect(page).to have_text("96.9.66.131, 96.9.66.132")
+    expect(page).to have_text("Cambodia")
+    expect(page).to have_text("XXXXXXXXXXX@96.9.66.132")
+    expect(page).to have_no_text("123456")
   end
 
   it "Delete a SIP Trunk" do
@@ -151,7 +151,7 @@ RSpec.describe "SIP Trunks" do
 
     click_on("Delete")
 
-    expect(page).to have_content("SIP trunk was successfully destroyed")
-    expect(page).to have_no_content("My SIP Trunk")
+    expect(page).to have_text("SIP trunk was successfully destroyed")
+    expect(page).to have_no_text("My SIP Trunk")
   end
 end

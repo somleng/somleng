@@ -123,7 +123,10 @@ RSpec.describe AccountForm do
 
       expect(result).to be_truthy
       expect(form.object).to have_attributes(
-        access_token: be_present,
+        primary_auth_token: have_attributes(
+          resource_owner_id: form.object.id
+        ),
+        auth_tokens: be_present,
         name: "Rocket Rides",
         enabled?: true,
         calls_per_second: 2,

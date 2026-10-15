@@ -23,10 +23,10 @@ RSpec.describe "Verifications" do
       )
     )
 
-    expect(page).to have_content(pending_verification.id)
-    expect(page).to have_content(expired_verification.id)
-    expect(page).to have_content(approved_verification.id)
-    expect(page).to have_no_content(other_verification.id)
+    expect(page).to have_text(pending_verification.id)
+    expect(page).to have_text(expired_verification.id)
+    expect(page).to have_text(approved_verification.id)
+    expect(page).to have_no_text(other_verification.id)
   end
 
   it "shows a verification" do
@@ -45,8 +45,8 @@ RSpec.describe "Verifications" do
     carrier_sign_in(user)
     visit(dashboard_verification_path(verification))
 
-    expect(page).to have_content(verification.id)
-    expect(page).to have_content("Approved")
+    expect(page).to have_text(verification.id)
+    expect(page).to have_text("Approved")
     expect(page).to have_link(
       "Ride Service",
       href: dashboard_verification_service_path(verification.verification_service)
@@ -55,18 +55,18 @@ RSpec.describe "Verifications" do
       "Rocket Rides",
       href: dashboard_account_path(verification.account)
     )
-    expect(page).to have_content("Thailand")
+    expect(page).to have_text("Thailand")
 
     within("#delivery-attempt-1") do
-      expect(page).to have_content("SMS")
+      expect(page).to have_text("SMS")
     end
 
     within("#verification-attempt-1") do
-      expect(page).to have_content("Failed")
+      expect(page).to have_text("Failed")
     end
 
     within("#verification-attempt-2") do
-      expect(page).to have_content("Successful")
+      expect(page).to have_text("Successful")
     end
   end
 end

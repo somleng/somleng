@@ -4,7 +4,7 @@ class AccountForm < ApplicationForm
   attribute :enabled, :boolean, default: true
   attribute :billing_enabled, :boolean
   attribute :billing_mode
-  attribute :object, default: -> { Account.new(type: :carrier_managed, access_token: Doorkeeper::AccessToken.new) }
+  attribute :object, default: -> { Account.new(type: :carrier_managed) }
   attribute :sip_trunk_id
   attribute :owner_name
   attribute :owner_email

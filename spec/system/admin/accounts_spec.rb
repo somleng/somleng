@@ -16,14 +16,14 @@ RSpec.describe "Admin/Accounts" do
 
     click_on("Rocket Rides")
 
-    expect(page).to have_content("Rocket Rides")
-    expect(page).to have_content("carrier_managed")
-    expect(page).to have_content("Current call sessions")
-    expect(page).to have_content("Enqueued calls")
-    expect(page).to have_content("$100.00")
+    expect(page).to have_text("Rocket Rides")
+    expect(page).to have_text("carrier_managed")
+    expect(page).to have_text("Current call sessions")
+    expect(page).to have_text("Enqueued calls")
+    expect(page).to have_text("$100.00")
 
     click_on(subscription.id)
 
-    expect(page).to have_content(subscription.id)
+    expect(page).to have_text(subscription.id)
   end
 end

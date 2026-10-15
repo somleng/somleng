@@ -11,8 +11,8 @@ RSpec.describe "Carrier users" do
     carrier_sign_in(user)
     visit dashboard_carrier_users_path(filter: { from_date: "01/12/2021", to_date: "15/12/2021" })
 
-    expect(page).to have_content("John Doe")
-    expect(page).to have_no_content("Joe Bloggs")
+    expect(page).to have_text("John Doe")
+    expect(page).to have_no_text("Joe Bloggs")
   end
 
   it "Carrier owner invites another user" do
@@ -28,7 +28,7 @@ RSpec.describe "Carrier users" do
       click_on "Send an invitation"
     end
 
-    expect(page).to have_content("An invitation email has been sent to johndoe@example.com")
+    expect(page).to have_text("An invitation email has been sent to johndoe@example.com")
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
 
@@ -39,7 +39,7 @@ RSpec.describe "Carrier users" do
     visit new_dashboard_carrier_user_path
     click_on "Send an invitation"
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Carrier owner can update a user" do
@@ -54,8 +54,8 @@ RSpec.describe "Carrier users" do
     select("Member", from: "Role")
     click_on "Update User"
 
-    expect(page).to have_content("User was successfully updated")
-    expect(page).to have_content("Member")
+    expect(page).to have_text("User was successfully updated")
+    expect(page).to have_text("Member")
   end
 
   it "Resend invitation" do
@@ -73,13 +73,13 @@ RSpec.describe "Carrier users" do
     carrier_sign_in(user)
     visit dashboard_carrier_user_path(invited_user)
 
-    expect(page).to have_content("The user has not yet accepted their invite.")
+    expect(page).to have_text("The user has not yet accepted their invite.")
 
     perform_enqueued_jobs do
       click_on("Resend")
     end
 
-    expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
+    expect(page).to have_text("An invitation email has been sent to johndoe@example.com.")
     expect(page).to have_current_path(dashboard_carrier_user_path(invited_user))
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
@@ -101,7 +101,7 @@ RSpec.describe "Carrier users" do
 
     click_on("Reset 2FA")
 
-    expect(page).to have_content("2FA was successfully reset for johndoe@example.com")
+    expect(page).to have_text("2FA was successfully reset for johndoe@example.com")
     expect(page).to have_current_path(dashboard_carrier_user_path(other_user))
   end
 
@@ -120,6 +120,6 @@ RSpec.describe "Carrier users" do
 
     click_on "Delete"
 
-    expect(page).to have_no_content("Joe Bloggs")
+    expect(page).to have_no_text("Joe Bloggs")
   end
 end

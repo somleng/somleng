@@ -1,0 +1,56 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+
+      <th>
+        Type
+      </th>
+
+      <th>
+        Status
+      </th>
+
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |auth_token| %>
+      <% auth_token = auth_token.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(auth_token.id, polymorphic_path([:dashboard, auth_token])) %>
+        </td>
+
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(auth_token.account.name, polymorphic_path([:dashboard, auth_token.account])) %>
+          </td>
+        <% end %>
+
+        <td>
+          <%= status_badge(auth_token.human_type, color: auth_token.type_color) %>
+        </td>
+
+        <td>
+          <%= status_badge(auth_token.human_status, color: auth_token.status_color) %>
+        </td>
+
+        <td>
+          <%= local_time(auth_token.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

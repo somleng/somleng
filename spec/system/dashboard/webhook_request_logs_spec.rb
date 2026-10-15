@@ -13,10 +13,10 @@ RSpec.describe "Webhook Request Logs" do
     carrier_sign_in(user)
     visit dashboard_webhook_request_logs_path(filter: { failed: true, event_id: event.id })
 
-    expect(page).to have_content(webhook1.id)
-    expect(page).to have_no_content(webhook2.id)
-    expect(page).to have_no_content(webhook3.id)
-    expect(page).to have_no_content(webhook4.id)
+    expect(page).to have_text(webhook1.id)
+    expect(page).to have_no_text(webhook2.id)
+    expect(page).to have_no_text(webhook3.id)
+    expect(page).to have_no_text(webhook4.id)
   end
 
   it "Shows a webhook request log" do
@@ -26,6 +26,6 @@ RSpec.describe "Webhook Request Logs" do
     carrier_sign_in(user)
     visit dashboard_webhook_request_log_path(webhook_request_log)
 
-    expect(page).to have_content(webhook_request_log.id)
+    expect(page).to have_text(webhook_request_log.id)
   end
 end

@@ -40,11 +40,11 @@ RSpec.describe "Phone Calls" do
       }
     )
 
-    expect(page).to have_content(phone_call.id)
-    expect(page).to have_content("+855 12 234 232")
-    expect(page).to have_content("1294")
+    expect(page).to have_text(phone_call.id)
+    expect(page).to have_text("+855 12 234 232")
+    expect(page).to have_text("1294")
     filtered_out_phone_calls.each do |filtered_out_phone_call|
-      expect(page).to have_no_content(filtered_out_phone_call.id)
+      expect(page).to have_no_text(filtered_out_phone_call.id)
     end
 
     perform_enqueued_jobs do
@@ -52,18 +52,18 @@ RSpec.describe "Phone Calls" do
     end
 
     within(".alert") do
-      expect(page).to have_content("Your export is being processed")
+      expect(page).to have_text("Your export is being processed")
       click_on("Exports")
     end
 
     click_on("phone_calls_")
-    expect(page).to have_content(phone_call.id)
-    expect(page).to have_content("outbound-api")
-    expect(page).to have_content("-0.001")
-    expect(page).to have_content("MXN")
+    expect(page).to have_text(phone_call.id)
+    expect(page).to have_text("outbound-api")
+    expect(page).to have_text("-0.001")
+    expect(page).to have_text("MXN")
 
     filtered_out_phone_calls.each do |filtered_out_phone_call|
-      expect(page).to have_no_content(filtered_out_phone_call.id)
+      expect(page).to have_no_text(filtered_out_phone_call.id)
     end
   end
 
@@ -93,13 +93,13 @@ RSpec.describe "Phone Calls" do
     carrier_sign_in(user)
     visit dashboard_phone_call_path(phone_call)
 
-    expect(page).to have_content(phone_call.id)
-    expect(page).to have_content("+855 71 510 0980")
-    expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_text(phone_call.id)
+    expect(page).to have_text("+855 71 510 0980")
+    expect(page).to have_text("+1 (251) 309-5500")
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
-    expect(page).to have_content("5 seconds")
-    expect(page).to have_content("Inbound")
-    expect(page).to have_content("https://demo.twilio.com/docs/voice.xml")
+    expect(page).to have_text("5 seconds")
+    expect(page).to have_text("Inbound")
+    expect(page).to have_text("https://demo.twilio.com/docs/voice.xml")
     expect(page).to have_link(
       "SIP Trunk",
       href: dashboard_sip_trunk_path(sip_trunk)
@@ -109,9 +109,9 @@ RSpec.describe "Phone Calls" do
       href: dashboard_balance_transaction_path(balance_transaction)
     )
     expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
-    expect(page).to have_content("-$0.00100")
-    expect(page).to have_content("MXN")
-    expect(page).to have_content("Recordings")
+    expect(page).to have_text("-$0.00100")
+    expect(page).to have_text("MXN")
+    expect(page).to have_text("Recordings")
     expect(page).to have_link(
       "View",
       href: dashboard_events_path(filter: { phone_call_id: phone_call.id })

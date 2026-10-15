@@ -32,18 +32,18 @@ RSpec.describe "Admin/Phone Calls" do
     page.driver.browser.authorize("admin", "password")
     visit admin_phone_calls_path
 
-    expect(page).to have_content("855718224112")
-    expect(page).to have_content(internal_phone_call.to)
+    expect(page).to have_text("855718224112")
+    expect(page).to have_text(internal_phone_call.to)
 
     click_on("855718224112")
 
-    expect(page).to have_content("https://example.com/call-status-callback")
-    expect(page).to have_content("Recordings")
-    expect(page).to have_content(media_stream.id)
-    expect(page).to have_content("hydrogen")
+    expect(page).to have_text("https://example.com/call-status-callback")
+    expect(page).to have_text("Recordings")
+    expect(page).to have_text(media_stream.id)
+    expect(page).to have_text("hydrogen")
     expect(page).to have_link(balance_transaction.id)
 
     click_on(recording.id)
-    expect(page).to have_content("https://example.com/recording-status-callback")
+    expect(page).to have_text("https://example.com/recording-status-callback")
   end
 end

@@ -11,16 +11,16 @@ RSpec.describe "Admin/Tariff Schedules" do
     visit admin_tariff_schedules_path
     click_on(tariff_schedule.id)
 
-    expect(page).to have_content(tariff_schedule.id)
+    expect(page).to have_text(tariff_schedule.id)
     expect(page).to have_link(destination_tariff.tariff_id)
     expect(page).to have_link(plan_tier.id)
 
     click_on(destination_tariff.id)
 
-    expect(page).to have_content(destination_tariff.id)
+    expect(page).to have_text(destination_tariff.id)
 
     click_on(destination_tariff.tariff_id)
 
-    expect(page).to have_content(destination_tariff.tariff_id)
+    expect(page).to have_text(destination_tariff.tariff_id)
   end
 end

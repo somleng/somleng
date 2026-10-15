@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_07_133924) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_15_105304) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -47,9 +47,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_133924) do
     t.string "billing_currency", null: false
     t.boolean "billing_enabled", default: false, null: false
     t.string "billing_mode", null: false
+    t.uuid "primary_auth_token_id", null: false
     t.index ["billing_currency"], name: "index_accounts_on_billing_currency"
     t.index ["billing_enabled"], name: "index_accounts_on_billing_enabled"
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
+    t.index ["primary_auth_token_id"], name: "index_accounts_on_primary_auth_token_id", unique: true
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
     t.index ["type"], name: "index_accounts_on_type"
@@ -997,6 +999,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_133924) do
   add_foreign_key "account_memberships", "accounts", on_delete: :cascade
   add_foreign_key "account_memberships", "users", on_delete: :cascade
   add_foreign_key "accounts", "carriers"
+  add_foreign_key "accounts", "oauth_access_tokens", column: "primary_auth_token_id"
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"

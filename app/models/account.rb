@@ -12,11 +12,11 @@ class Account < ApplicationRecord
 
   belongs_to :carrier
   belongs_to :sip_trunk, optional: true
+  belongs_to :primary_auth_token, class_name: "AuthToken"
 
-  has_one :access_token,
-          class_name: "Doorkeeper::AccessToken",
-          foreign_key: :resource_owner_id,
-          dependent: :destroy
+  has_many :auth_tokens,
+           class_name: "AuthToken",
+           foreign_key: :resource_owner_id
 
   has_many :phone_calls, dependent: :restrict_with_error
   has_many :messages, dependent: :restrict_with_error
@@ -37,17 +37,18 @@ class Account < ApplicationRecord
   has_many :balance_transactions
 
   before_create :set_defaults
+  before_validation :set_primary_auth_token, on: :create
 
   def self.billing_enabled
     where(billing_enabled: true)
   end
 
-  def auth_token
-    access_token.token
-  end
-
   def owner
     account_memberships.owner.first&.user
+  end
+
+  def auth_token
+    primary_auth_token.token
   end
 
   private
@@ -56,5 +57,11 @@ class Account < ApplicationRecord
     return if carrier.blank?
 
     self.billing_currency ||= carrier.billing_currency
+  end
+
+  def set_primary_auth_token
+    return if primary_auth_token.present?
+
+    self.primary_auth_token = auth_tokens.new
   end
 end

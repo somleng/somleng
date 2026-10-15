@@ -26,14 +26,14 @@ RSpec.describe "User profile" do
       click_on("Update")
     end
 
-    expect(page).to have_content("You updated your account successfully, but we need to verify your new email address")
-    expect(page).to have_content("Currently waiting confirmation for: bobchan@example.com")
+    expect(page).to have_text("You updated your account successfully, but we need to verify your new email address")
+    expect(page).to have_text("Currently waiting confirmation for: bobchan@example.com")
     expect(page).to have_field("Name", with: "Bob Chan")
     expect(page).to have_field("Email", with: "johndoe@example.com")
 
     open_email("bobchan@example.com")
     visit_in_email("Confirm my account")
-    expect(page).to have_content("Your email address has been successfully confirmed")
+    expect(page).to have_text("Your email address has been successfully confirmed")
 
     visit(edit_user_registration_path)
     expect(page).to have_field("Email", with: "bobchan@example.com")
