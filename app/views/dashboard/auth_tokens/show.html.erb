@@ -1,10 +1,24 @@
 <%= page_title(title: "Auth Token") do %>
+  <% if policy(@resource).promote? %>
+    <%= button_to(
+      dashboard_auth_token_path(@resource),
+      params: { auth_token: { primary: true } },
+      class: "btn btn-outline-success",
+      form_class: "d-inline",
+      title: "Promote to primary",
+      data: { bs_toggle: "tooltip" },
+      method: :patch,
+      form: { data: { turbo_confirm: "⚠️ Warning: This will replace your current primary token and affect webhook signature signing." }}
+      ) do %>
+      <i class="fa-solid fa-circle-arrow-up mfe-2"></i>
+    <% end %>
+  <% end %>
+
   <% if policy(@resource).destroy? %>
     <%= render(
       "shared/destroy_resource_page_action",
       path: dashboard_auth_token_path(@resource),
-      title: "Revoke",
-      text: "Revoke"
+      title: "Revoke"
     ) %>
   <% end %>
 <% end %>
@@ -27,6 +41,10 @@
       <code>
         <%= mask_content(@resource.token) %>
       </code>
+    <% end %>
+
+    <%= f.attribute :type do %>
+      <%= status_badge(f.object.human_type, color: f.object.type_color) %>
     <% end %>
 
     <%= f.attribute :status do %>

@@ -51,7 +51,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105304) do
     t.index ["billing_currency"], name: "index_accounts_on_billing_currency"
     t.index ["billing_enabled"], name: "index_accounts_on_billing_enabled"
     t.index ["carrier_id"], name: "index_accounts_on_carrier_id"
-    t.index ["primary_auth_token_id"], name: "index_accounts_on_primary_auth_token_id"
+    t.index ["primary_auth_token_id"], name: "index_accounts_on_primary_auth_token_id", unique: true
     t.index ["sequence_number"], name: "index_accounts_on_sequence_number", unique: true, order: :desc
     t.index ["sip_trunk_id"], name: "index_accounts_on_sip_trunk_id"
     t.index ["type"], name: "index_accounts_on_type"

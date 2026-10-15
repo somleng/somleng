@@ -12,6 +12,10 @@
       <% end %>
 
       <th>
+        Type
+      </th>
+
+      <th>
         Status
       </th>
 
@@ -34,6 +38,10 @@
             <%= external_link_to(auth_token.account.name, polymorphic_path([:dashboard, auth_token.account])) %>
           </td>
         <% end %>
+
+        <td>
+          <%= status_badge(auth_token.human_type, color: auth_token.type_color) %>
+        </td>
 
         <td>
           <%= status_badge(auth_token.human_status, color: auth_token.status_color) %>

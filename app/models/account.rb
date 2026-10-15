@@ -43,10 +43,6 @@ class Account < ApplicationRecord
     where(billing_enabled: true)
   end
 
-  def self.active_access_tokens
-    joins(:access_tokens).where(doorkeeper_access_tokens: { revoked_at: nil }).or(doorkeeper_access_tokens: { revoked_at: ..Time.current })
-  end
-
   def owner
     account_memberships.owner.first&.user
   end

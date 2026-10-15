@@ -11,8 +11,21 @@ class AuthTokenFilter < ResourceFilter
     end
   end
 
+  class PrimaryFilter < ApplicationFilter
+    filter_params do
+      optional(:primary).value(:bool)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      filter_params.fetch(:primary) ? super.primary : super.secondary
+    end
+  end
+
   filter_with(
     ActiveFilter,
+    PrimaryFilter,
     :id_filter,
     :date_filter,
     {

@@ -12,6 +12,7 @@
     <% end %>
 
     <%= form.boolean_select(:active, { filter_value: params.dig(:filter, :active) }) %>
+    <%= form.boolean_select(:primary, { filter_value: params.dig(:filter, :primary) }) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
   <% end %>
 

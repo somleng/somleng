@@ -21,6 +21,12 @@ module Dashboard
       respond_with(:dashboard, @resource, location: -> { dashboard_auth_tokens_path(filter_params) })
     end
 
+    def update
+      permitted_params = params.require(:auth_token).permit(:primary)
+      record.promote! if ActiveModel::Type::Boolean.new.cast(permitted_params[:primary])
+      respond_with(:dashboard, record)
+    end
+
     private
 
     def scope

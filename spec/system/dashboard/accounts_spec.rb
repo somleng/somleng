@@ -104,7 +104,7 @@ RSpec.describe "Accounts" do
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
-    within("#general") do
+    within("#authentication") do
       expect(page).to have_link(
         "Manage",
         href: dashboard_auth_tokens_path(filter: { account_id: account.id, active: true })

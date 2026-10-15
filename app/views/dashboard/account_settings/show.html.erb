@@ -6,47 +6,57 @@
 
 <div class="card-body" id="accountSettings">
   <%= show_for(@resource) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+    <div class="d-flex flex-column gap-3">
 
-        <%= f.attribute :name, value: @resource.name %>
-        <%= f.attribute :id, label: "SID" do %>
-          <code>
-            <%= @resource.id %>
-          </code>
-        <% end %>
-        <% if policy(:auth_token).index? %>
-          <%= f.attribute :auth_tokens do %>
-            <%= external_link_to(
-              "Manage",
-              dashboard_auth_tokens_path(filter: { active: true }),
-              title: "Manage"
-            ) %>
-          <% end %>
-        <% end %>
-
-        <%= f.attribute :status, value: @resource.status.humanize %>
-        <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-        <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
-      </div>
-    </div>
-
-    <% if @resource.billing_enabled? %>
-      <div id="billing" class="card mb-3">
+      <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Billing</h5>
+          <h5 class="card-title">General</h5>
 
-          <%= f.attribute :balance, value: GetAccountBalance.call(@resource).format %>
+          <%= f.attribute :name, value: @resource.name %>
+          <%= f.attribute :id, label: "SID" do %>
+            <code>
+              <%= @resource.id %>
+            </code>
+          <% end %>
+
+          <%= f.attribute :status, value: @resource.status.humanize %>
+          <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+          <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
         </div>
       </div>
-    <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Text to speech</h5>
+      <% if policy(:auth_token).index? %>
+        <div class="card">
+          <div id="authentication" class="card-body">
+            <h5 class="card-title">Authentication</h5>
 
-        <%= f.attribute :voice, value: @resource.default_tts_voice %>
+            <%= f.attribute :auth_tokens do %>
+              <%= external_link_to(
+                "Manage",
+                dashboard_auth_tokens_path(filter: { active: true }),
+                title: "Manage"
+              ) %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @resource.billing_enabled? %>
+        <div id="billing" class="card">
+          <div class="card-body">
+            <h5 class="card-title">Billing</h5>
+
+            <%= f.attribute :balance, value: GetAccountBalance.call(@resource).format %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Text to speech</h5>
+
+          <%= f.attribute :voice, value: @resource.default_tts_voice %>
+        </div>
       </div>
     </div>
   <% end %>

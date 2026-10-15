@@ -4,6 +4,7 @@ class AddPrimaryAuthTokenToAccounts < ActiveRecord::Migration[8.1]
       :accounts,
       :primary_auth_token,
       type: :uuid,
+      index: { unique: true },
       foreign_key: {
         to_table: :oauth_access_tokens,
         on_destroy: :nullify
