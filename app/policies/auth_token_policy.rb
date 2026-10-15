@@ -7,7 +7,7 @@ class AuthTokenPolicy < ApplicationPolicy
     read?
   end
 
-  def promote?
+  def update?
     manage? && record.active? && !record.primary?
   end
 

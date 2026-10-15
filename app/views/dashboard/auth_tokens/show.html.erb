@@ -1,5 +1,5 @@
 <%= page_title(title: "Auth Token") do %>
-  <% if policy(@resource).promote? %>
+  <% if policy(@resource).update? %>
     <%= button_to(
       dashboard_auth_token_path(@resource),
       params: { auth_token: { primary: true } },

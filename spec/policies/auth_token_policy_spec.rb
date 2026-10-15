@@ -47,14 +47,14 @@ RSpec.describe AuthTokenPolicy, type: :policy do
     end
   end
 
-  describe "#promote?" do
+  describe "#update?" do
     it "denies access for primary tokens" do
       carrier = create(:carrier)
       user = build_stubbed(:user, :admin, carrier:)
       account = create(:account, carrier:)
       policy = AuthTokenPolicy.new(user, account.primary_auth_token)
 
-      expect(policy.promote?).to be(false)
+      expect(policy.update?).to be(false)
     end
 
     it "denies access for revoked tokens" do
@@ -63,7 +63,7 @@ RSpec.describe AuthTokenPolicy, type: :policy do
       auth_token = build_stubbed(:auth_token, :revoked, account: build_stubbed(:account, :carrier_managed))
       policy = AuthTokenPolicy.new(user, auth_token)
 
-      expect(policy.promote?).to be(false)
+      expect(policy.update?).to be(false)
     end
   end
 end

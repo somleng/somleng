@@ -69,7 +69,7 @@ module UserAuthorization
   end
 
   def find_record?
-    action_name.in?(%w[show edit update destroy release])
+    action_name.in?(%w[show edit update destroy])
   end
 
   def find_record
