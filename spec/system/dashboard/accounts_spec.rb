@@ -37,12 +37,12 @@ RSpec.describe "Accounts" do
     fill_in("Value", with: "RR1234")
     click_on("Done")
 
-    expect(page).to have_content("Filter 3")
-    expect(page).to have_content("Rocket Rides")
-    expect(page).to have_no_content("Garry Gas")
-    expect(page).to have_no_content("Alice Apples")
-    expect(page).to have_no_content("Disabled Account")
-    expect(page).to have_no_content("Carrier Account")
+    expect(page).to have_text("Filter 3")
+    expect(page).to have_text("Rocket Rides")
+    expect(page).to have_no_text("Garry Gas")
+    expect(page).to have_no_text("Alice Apples")
+    expect(page).to have_no_text("Disabled Account")
+    expect(page).to have_no_text("Carrier Account")
   end
 
   it "Create an account" do
@@ -65,23 +65,22 @@ RSpec.describe "Accounts" do
     enhanced_select("Prepaid", from: "Billing mode")
     click_on("Create Account")
 
-    expect(page).to have_content("Account was successfully created")
+    expect(page).to have_text("Account was successfully created")
     within("#voice") do
-      expect(page).to have_content("Calls per second")
-      expect(page).to have_content("2")
+      expect(page).to have_text("Calls per second")
+      expect(page).to have_text("2")
     end
 
-    expect(page).to have_content("Rocket Rides")
-    expect(page).to have_content("Enabled")
+    expect(page).to have_text("Rocket Rides")
+    expect(page).to have_text("Enabled")
     expect(page).to have_link("Edit")
-    expect(page).to have_content("Auth Token")
-    expect(page).to have_content("Carrier managed")
-    expect(page).to have_content("Basic.Slt (Female, en-US)")
+    expect(page).to have_text("Carrier managed")
+    expect(page).to have_text("Basic.Slt (Female, en-US)")
     within("#billing") do
       within("#billing-enabled") do
-        expect(page).to have_content("Yes")
+        expect(page).to have_text("Yes")
       end
-      expect(page).to have_content("Prepaid")
+      expect(page).to have_text("Prepaid")
       expect(page).to have_link("Outbound calls (Standard)")
     end
   end
@@ -93,7 +92,7 @@ RSpec.describe "Accounts" do
     visit new_dashboard_account_path
     click_on("Create Account")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Show an account" do
@@ -105,9 +104,16 @@ RSpec.describe "Accounts" do
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
+    within("#general") do
+      expect(page).to have_link(
+        "Manage",
+        href: dashboard_auth_tokens_path(filter: { account_id: account.id, active: true })
+      )
+    end
+
     within("#billing") do
-      expect(page).to have_content("United States Dollar")
-      expect(page).to have_content("$100.00")
+      expect(page).to have_text("United States Dollar")
+      expect(page).to have_text("$100.00")
       expect(page).to have_link("View", href: dashboard_balance_transactions_path(filter: { account_id: account.id }))
       expect(page).to have_link("Manage", href: dashboard_phone_number_plans_path(filter: { account_id: account.id }))
     end
@@ -169,17 +175,17 @@ RSpec.describe "Accounts" do
       click_on("Update Account")
     end
 
-    expect(page).to have_content("Account was successfully updated")
+    expect(page).to have_text("Account was successfully updated")
     expect(page).to have_link(
       "Main SIP Trunk", href: dashboard_sip_trunk_path(sip_trunk)
     )
-    expect(page).to have_content("Disabled")
-    expect(page).to have_content("Customer managed")
-    expect(page).to have_content("John Doe")
-    expect(page).to have_content("johndoe@example.com")
-    expect(page).to have_content("Basic.Slt (Female, en-US)")
+    expect(page).to have_text("Disabled")
+    expect(page).to have_text("Customer managed")
+    expect(page).to have_text("John Doe")
+    expect(page).to have_text("johndoe@example.com")
+    expect(page).to have_text("Basic.Slt (Female, en-US)")
     within("#billing-enabled") do
-      expect(page).to have_content("No")
+      expect(page).to have_text("No")
     end
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
@@ -200,7 +206,7 @@ RSpec.describe "Accounts" do
     enhanced_select("", from: "SIP trunk")
     click_on("Update Account")
 
-    expect(page).to have_content("Account was successfully updated")
+    expect(page).to have_text("Account was successfully updated")
     expect(page).to have_no_link(
       "Main SIP Trunk"
     )
@@ -262,9 +268,9 @@ RSpec.describe "Accounts" do
 
     click_on("Update Account")
 
-    expect(page).to have_content("Account was successfully updated")
-    expect(page).to have_content("Basic.Slt (Female, en-US)")
-    expect(page).to have_content("Customer managed")
+    expect(page).to have_text("Account was successfully updated")
+    expect(page).to have_text("Basic.Slt (Female, en-US)")
+    expect(page).to have_text("Customer managed")
 
     expect(page).to have_link(
       "Outbound messages (Standard)",
@@ -287,13 +293,13 @@ RSpec.describe "Accounts" do
     carrier_sign_in(user)
     visit dashboard_account_path(account)
 
-    expect(page).to have_content("The account owner has not yet accepted their invite.")
+    expect(page).to have_text("The account owner has not yet accepted their invite.")
 
     perform_enqueued_jobs do
       click_on("Resend")
     end
 
-    expect(page).to have_content("An invitation email has been sent to johndoe@example.com.")
+    expect(page).to have_text("An invitation email has been sent to johndoe@example.com.")
     expect(page).to have_current_path(dashboard_account_path(account))
     expect(last_email_sent).to deliver_to("johndoe@example.com")
   end
@@ -313,7 +319,7 @@ RSpec.describe "Accounts" do
 
     click_on "Delete"
 
-    expect(page).to have_no_content("Rocket Rides")
+    expect(page).to have_no_text("Rocket Rides")
   end
 
   def stub_rating_engine_balance_request(**)

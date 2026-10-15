@@ -117,6 +117,7 @@ Rails.application.routes.draw do
     scope module: :dashboard, as: :dashboard do
       resources :two_factor_authentications, only: %i[new create destroy]
       resources :accounts
+      resources :auth_tokens, only: %i[index show destroy create]
       resources :account_memberships
       resources :sip_trunks
       resources :sms_gateways

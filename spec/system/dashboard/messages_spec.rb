@@ -38,27 +38,27 @@ RSpec.describe "Messages" do
       }
     )
 
-    expect(page).to have_content(message.id)
-    expect(page).to have_content("+855 12 234 232")
-    expect(page).to have_content("1294")
-    expect(page).to have_no_content(filtered_message.id)
+    expect(page).to have_text(message.id)
+    expect(page).to have_text("+855 12 234 232")
+    expect(page).to have_text("1294")
+    expect(page).to have_no_text(filtered_message.id)
 
     perform_enqueued_jobs do
       click_on("Export")
     end
 
     within(".alert") do
-      expect(page).to have_content("Your export is being processed")
+      expect(page).to have_text("Your export is being processed")
       click_on("Exports")
     end
 
     click_on("messages_")
 
-    expect(page).to have_content(message.id)
-    expect(page).to have_content("outbound-api")
-    expect(page).to have_content("-0.001")
-    expect(page).to have_content("MXN")
-    expect(page).to have_no_content(filtered_message.id)
+    expect(page).to have_text(message.id)
+    expect(page).to have_text("outbound-api")
+    expect(page).to have_text("-0.001")
+    expect(page).to have_text("MXN")
+    expect(page).to have_no_text(filtered_message.id)
   end
 
   it "Show a message" do
@@ -86,12 +86,12 @@ RSpec.describe "Messages" do
     carrier_sign_in(user)
     visit dashboard_message_path(message)
 
-    expect(page).to have_content(message.id)
-    expect(page).to have_content("Hello World")
-    expect(page).to have_content("+855715100980")
-    expect(page).to have_content("+855715999999")
+    expect(page).to have_text(message.id)
+    expect(page).to have_text("Hello World")
+    expect(page).to have_text("+855715100980")
+    expect(page).to have_text("+855715999999")
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
-    expect(page).to have_content("Outbound-API")
+    expect(page).to have_text("Outbound-API")
     expect(page).to have_link(
       "SMS Gateway",
       href: dashboard_sms_gateway_path(sms_gateway)
@@ -101,8 +101,8 @@ RSpec.describe "Messages" do
       href: dashboard_balance_transaction_path(balance_transaction)
     )
     expect(page).to have_link(incoming_phone_number.id, href: dashboard_incoming_phone_number_path(incoming_phone_number))
-    expect(page).to have_content("-$0.00100")
-    expect(page).to have_content("MXN")
-    expect(page).to have_content("GSM")
+    expect(page).to have_text("-$0.00100")
+    expect(page).to have_text("MXN")
+    expect(page).to have_text("GSM")
   end
 end

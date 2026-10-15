@@ -7,7 +7,7 @@ module AttributeFilter
     def apply
       return super if filter_params.blank?
 
-      super.where(account_id: filter_params.fetch(:account_id))
+      super.where(options.fetch(:foreign_key, :account_id) => filter_params.fetch(:account_id))
     end
   end
 end

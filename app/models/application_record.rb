@@ -4,10 +4,6 @@ class ApplicationRecord < ActiveRecord::Base
 
   include SerializableResource
   include DecoratableResource
-
-  scope :latest_first, -> { order(sequence_number: :desc) }
-
-  def self.filter_class
-    "#{model_name}Filter".constantize
-  end
+  include FilterableResource
+  include OrderableResource
 end

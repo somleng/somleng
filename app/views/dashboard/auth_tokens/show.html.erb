@@ -1,0 +1,39 @@
+<%= page_title(title: "Auth Token") do %>
+  <% if policy(@resource).destroy? %>
+    <%= render(
+      "shared/destroy_resource_page_action",
+      path: dashboard_auth_token_path(@resource),
+      title: "Revoke",
+      text: "Revoke"
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource.decorated) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= @resource.id %>
+      </code>
+    <% end %>
+
+    <% if policy(:account).show? %>
+      <%= f.attribute :account do %>
+        <%= external_link_to(@resource.account.name, polymorphic_path([:dashboard, @resource.account])) %>
+      <% end %>
+    <% end %>
+
+    <%= f.attribute :token do %>
+      <code>
+        <%= mask_content(@resource.token) %>
+      </code>
+    <% end %>
+
+    <%= f.attribute :status do %>
+      <%= status_badge(f.object.human_status, color: f.object.status_color) %>
+    <% end %>
+
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :revoked_at, value: local_time(@resource.revoked_at) %>
+  <% end %>
+</div>

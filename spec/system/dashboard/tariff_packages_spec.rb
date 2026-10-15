@@ -15,9 +15,9 @@ RSpec.describe "Tariff Packages" do
     carrier_sign_in(user)
     visit dashboard_tariff_packages_path(filter: { name: "standard", tariff_plan_id: plan.id })
 
-    expect(page).to have_content(package.id)
+    expect(page).to have_text(package.id)
     excluded_packages.each do |package|
-      expect(page).to have_no_content(package.id)
+      expect(page).to have_no_text(package.id)
     end
   end
 
@@ -53,8 +53,8 @@ RSpec.describe "Tariff Packages" do
     end
     click_on("Create Tariff package")
 
-    expect(page).to have_content("Tariff package was successfully created.")
-    expect(page).to have_content("My Package")
+    expect(page).to have_text("Tariff package was successfully created.")
+    expect(page).to have_text("My Package")
     expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(outbound_messages_plan))
     expect(page).to have_link("Inbound messages (Standard)", href: dashboard_tariff_plan_path(inbound_messages_plan))
     expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_plan_path(outbound_calls_plan))
@@ -77,8 +77,8 @@ RSpec.describe "Tariff Packages" do
     end
     click_on("Create Tariff package")
 
-    expect(page).to have_content("Tariff package was successfully created.")
-    expect(page).to have_content("My Package")
+    expect(page).to have_text("Tariff package was successfully created.")
+    expect(page).to have_text("My Package")
   end
 
   it "create a package via the wizard" do
@@ -111,7 +111,7 @@ RSpec.describe "Tariff Packages" do
 
     click_on("Create Tariff package")
 
-    expect(page).to have_content("Tariff package was successfully created.")
+    expect(page).to have_text("Tariff package was successfully created.")
     expect(page).to have_link("Outbound messages (Standard)")
     expect(page).to have_link("Inbound messages (Standard)")
     expect(page).to have_link("Outbound calls (Standard)")
@@ -127,7 +127,7 @@ RSpec.describe "Tariff Packages" do
 
     click_on("Create Tariff package")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "handle validation errors when creating a package" do
@@ -139,7 +139,7 @@ RSpec.describe "Tariff Packages" do
 
     click_on("Create Tariff package")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "show a package" do
@@ -150,8 +150,8 @@ RSpec.describe "Tariff Packages" do
     carrier_sign_in(user)
     visit dashboard_tariff_package_path(package)
 
-    expect(page).to have_content("Standard")
-    expect(page).to have_content("My package description")
+    expect(page).to have_text("Standard")
+    expect(page).to have_text("My package description")
   end
 
   it "update a package" do
@@ -180,9 +180,9 @@ RSpec.describe "Tariff Packages" do
     end
     click_on("Update Tariff package")
 
-    expect(page).to have_content("Tariff package was successfully updated.")
-    expect(page).to have_content("My package name")
-    expect(page).to have_content("My package description")
+    expect(page).to have_text("Tariff package was successfully updated.")
+    expect(page).to have_text("My package name")
+    expect(page).to have_text("My package description")
     expect(page).to have_link("Outbound messages (Standard)", href: dashboard_tariff_plan_path(outbound_messages_plan))
     expect(page).to have_link("Outbound calls (Standard)", href: dashboard_tariff_plan_path(outbound_calls_plan))
     expect(page).to have_no_link("Inbound calls (Standard)")
@@ -200,7 +200,7 @@ RSpec.describe "Tariff Packages" do
 
     click_on("Update Tariff package")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "delete a package" do
@@ -212,7 +212,7 @@ RSpec.describe "Tariff Packages" do
     visit dashboard_tariff_package_path(package)
     click_on("Delete")
 
-    expect(page).to have_content("Tariff package was successfully destroyed.")
-    expect(page).to have_no_content(package.id)
+    expect(page).to have_text("Tariff package was successfully destroyed.")
+    expect(page).to have_no_text(package.id)
   end
 end

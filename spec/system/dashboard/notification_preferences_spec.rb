@@ -15,7 +15,7 @@ RSpec.describe "Notification settings" do
     check("Inbound call")
     click_on("Save")
 
-    expect(page).to have_content("Notification preferences were successfully updated.")
+    expect(page).to have_text("Notification preferences were successfully updated.")
 
     expect(page).to have_field("Inbound message", checked: true)
     expect(page).to have_field("Inbound call", checked: true)

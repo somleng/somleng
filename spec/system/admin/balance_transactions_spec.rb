@@ -8,7 +8,7 @@ RSpec.describe "Admin/BalanceTransactions" do
     visit admin_balance_transactions_path
     click_on(transaction.id)
 
-    expect(page).to have_content(transaction.id)
-    expect(page).to have_content("topup")
+    expect(page).to have_text(transaction.id)
+    expect(page).to have_text("topup")
   end
 end

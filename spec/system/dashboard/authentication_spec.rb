@@ -11,10 +11,10 @@ RSpec.describe "Authentication" do
     fill_in("OTP Code", with: user.current_otp)
     click_on("Login")
 
-    expect(page).to have_content("Signed in successfully")
+    expect(page).to have_text("Signed in successfully")
   end
 
-  it "Handles captcha", :js, :allow_net_connect, :captcha do
+  it "Handles captcha", :allow_net_connect, :captcha, :js do
     stub_app_settings(recaptcha_minimum_score: 1)
     carrier = create_carrier
     user = create(:user, :carrier, carrier:, password: "Super Secret")
@@ -39,7 +39,7 @@ RSpec.describe "Authentication" do
     fill_in("OTP Code", with: "wrong-otp")
     click_on("Login")
 
-    expect(page).to have_content("Invalid email or password")
+    expect(page).to have_text("Invalid email or password")
   end
 
   it "Sign in without OTP" do
@@ -51,12 +51,12 @@ RSpec.describe "Authentication" do
     fill_in("Password", with: "Super Secret")
     click_on("Login")
 
-    expect(page).to have_content("Setup Two Factor Authentication")
+    expect(page).to have_text("Setup Two Factor Authentication")
 
     fill_in("OTP Code", with: user.current_otp)
     click_on("Enable")
 
-    expect(page).to have_content("2FA was successfully enabled")
+    expect(page).to have_text("2FA was successfully enabled")
   end
 
   it "Accept an invitation from a carrier" do
@@ -77,7 +77,7 @@ RSpec.describe "Authentication" do
     fill_in("Password confirmation", with: "password123")
     click_on("Set my password")
 
-    expect(page).to have_content("Setup Two Factor Authentication")
+    expect(page).to have_text("Setup Two Factor Authentication")
   end
 
   it "Accept an invitation from an account owner" do
@@ -98,7 +98,7 @@ RSpec.describe "Authentication" do
     fill_in("Password confirmation", with: "password123")
     click_on("Set my password")
 
-    expect(page).to have_content("Setup Two Factor Authentication")
+    expect(page).to have_text("Setup Two Factor Authentication")
   end
 
   it "User can reset their password" do
@@ -118,14 +118,14 @@ RSpec.describe "Authentication" do
     fill_in("Confirm your new password", with: "Super Secret")
     click_on("Change my password")
 
-    expect(page).to have_content("Your password has been changed successfully.")
+    expect(page).to have_text("Your password has been changed successfully.")
 
     fill_in("Email", with: user.email)
     fill_in("Password", with: "Super Secret")
     fill_in("OTP Code", with: user.current_otp)
     click_on("Login")
 
-    expect(page).to have_content("Signed in successfully.")
+    expect(page).to have_text("Signed in successfully.")
   end
 
   it "Handles users with with no account memberships" do
@@ -135,7 +135,7 @@ RSpec.describe "Authentication" do
     visit(dashboard_root_path)
 
     expect(page).to have_current_path(new_user_session_path)
-    expect(page).to have_content("You are not a member of any accounts")
+    expect(page).to have_text("You are not a member of any accounts")
   end
 
   it "Handles users without a default account membership" do
@@ -148,7 +148,7 @@ RSpec.describe "Authentication" do
     visit(dashboard_root_path)
 
     expect(page).to have_current_path(dashboard_account_settings_path)
-    expect(page).to have_content("Rocket Rides")
+    expect(page).to have_text("Rocket Rides")
   end
 
   it "Blocks cross domain logins" do
@@ -161,7 +161,7 @@ RSpec.describe "Authentication" do
     fill_in("Password", with: "password123")
     click_on("Login")
 
-    expect(page).to have_content("Invalid email or password")
+    expect(page).to have_text("Invalid email or password")
   end
 
   it "Handles locking and unlocking a user" do
@@ -180,7 +180,7 @@ RSpec.describe "Authentication" do
       end
     end
 
-    expect(page).to have_content("Your account is locked.")
+    expect(page).to have_text("Your account is locked.")
     expect(last_email_sent).to deliver_to("user@example.com")
     expect(last_email_sent).to have_subject("Unlock instructions")
 
@@ -190,19 +190,19 @@ RSpec.describe "Authentication" do
       click_on("Resend unlock instructions")
     end
 
-    expect(page).to have_content("You will receive an email with instructions for how to unlock your account in a few minutes.")
+    expect(page).to have_text("You will receive an email with instructions for how to unlock your account in a few minutes.")
 
     open_last_email_for("user@example.com")
     visit_full_link_in_email("Unlock my account")
 
-    expect(page).to have_content("Your account has been unlocked successfully. Please sign in to continue.")
+    expect(page).to have_text("Your account has been unlocked successfully. Please sign in to continue.")
 
     fill_in("Email", with: "user@example.com")
     fill_in("Password", with: "password123")
     fill_in("OTP Code", with: user.current_otp)
     click_on("Login")
 
-    expect(page).to have_content("Signed in successfully.")
+    expect(page).to have_text("Signed in successfully.")
   end
 
   def create_carrier(*args)

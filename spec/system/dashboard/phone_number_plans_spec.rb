@@ -23,28 +23,28 @@ RSpec.describe "Phone Number Plans" do
     visit dashboard_phone_number_plans_path(filter: { status: :active })
 
     expect(page).to have_link("+1 (251) 309-5500")
-    expect(page).to have_content("$5.00")
-    expect(page).to have_content("Active")
+    expect(page).to have_text("$5.00")
+    expect(page).to have_text("Active")
     expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
-    expect(page).to have_no_content("+1 (251) 309-5501")
+    expect(page).to have_no_text("+1 (251) 309-5501")
 
     perform_enqueued_jobs do
       click_on("Export")
     end
 
     within(".alert") do
-      expect(page).to have_content("Your export is being processed")
+      expect(page).to have_text("Your export is being processed")
       click_on("Exports")
     end
 
     click_on("phone_number_plans_")
 
     expect(page.response_headers["Content-Type"]).to eq("text/csv")
-    expect(page).to have_content("12513095500")
-    expect(page).to have_content("5.00")
-    expect(page).to have_content("USD")
-    expect(page).to have_content("active")
-    expect(page).to have_content(account.id)
+    expect(page).to have_text("12513095500")
+    expect(page).to have_text("5.00")
+    expect(page).to have_text("USD")
+    expect(page).to have_text("active")
+    expect(page).to have_text(account.id)
   end
 
   it "Show a phone number plan" do
@@ -78,13 +78,13 @@ RSpec.describe "Phone Number Plans" do
     carrier_sign_in(user)
     visit(new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
 
-    expect(page).to have_content("Canada")
-    expect(page).to have_content("Toronto")
-    expect(page).to have_content("Ontario")
+    expect(page).to have_text("Canada")
+    expect(page).to have_text("Toronto")
+    expect(page).to have_text("Ontario")
 
     click_on("Buy +1 (647) 309-5500")
 
-    expect(page).to have_content("Phone number plan was successfully created.")
-    expect(page).to have_content("Configure +1 (647) 309-5500")
+    expect(page).to have_text("Phone number plan was successfully created.")
+    expect(page).to have_text("Configure +1 (647) 309-5500")
   end
 end

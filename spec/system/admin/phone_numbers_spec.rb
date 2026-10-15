@@ -12,9 +12,9 @@ RSpec.describe "Admin/Phone Numbers" do
     page.driver.browser.authorize("admin", "password")
     visit admin_phone_numbers_path
 
-    expect(page).to have_content("1234")
-    expect(page).to have_content("Cambodia")
-    expect(page).to have_content("short_code")
+    expect(page).to have_text("1234")
+    expect(page).to have_text("Cambodia")
+    expect(page).to have_text("short_code")
 
     click_on("1234")
 

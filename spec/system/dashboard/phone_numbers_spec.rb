@@ -44,21 +44,21 @@ RSpec.describe "Phone Numbers" do
       }
     )
 
-    expect(page).to have_content("+1 (251) 309-5500")
-    expect(page).to have_no_content("+1 (201) 309-5500")
-    expect(page).to have_no_content("+1 (251) 309-5501")
-    expect(page).to have_no_content("+1 (251) 309-5502")
-    expect(page).to have_no_content("+1 (251) 309-5503")
-    expect(page).to have_no_content("+1 (251) 309-5504")
-    expect(page).to have_no_content("+1 (251) 309-5505")
-    expect(page).to have_no_content("+1 (251) 309-5506")
-    expect(page).to have_no_content("+1 (251) 309-5507")
+    expect(page).to have_text("+1 (251) 309-5500")
+    expect(page).to have_no_text("+1 (201) 309-5500")
+    expect(page).to have_no_text("+1 (251) 309-5501")
+    expect(page).to have_no_text("+1 (251) 309-5502")
+    expect(page).to have_no_text("+1 (251) 309-5503")
+    expect(page).to have_no_text("+1 (251) 309-5504")
+    expect(page).to have_no_text("+1 (251) 309-5505")
+    expect(page).to have_no_text("+1 (251) 309-5506")
+    expect(page).to have_no_text("+1 (251) 309-5507")
 
     click_on("Delete")
 
-    expect(page).to have_content("Phone numbers were successfully destroyed")
-    expect(page).to have_no_content("+1 (251) 309-5500")
-    expect(page).not_to have_selector(:link_or_button, "Delete")
+    expect(page).to have_text("Phone numbers were successfully destroyed")
+    expect(page).to have_no_text("+1 (251) 309-5500")
+    expect(page).to have_no_selector(:link_or_button, "Delete")
   end
 
   it "Export phone numbers" do
@@ -94,27 +94,27 @@ RSpec.describe "Phone Numbers" do
     end
 
     within(".alert") do
-      expect(page).to have_content("Your export is being processed")
+      expect(page).to have_text("Your export is being processed")
       click_on("Exports")
     end
 
     click_on("phone_numbers_")
 
     expect(page.response_headers["Content-Type"]).to eq("text/csv")
-    expect(page).to have_content("+12513095500")
-    expect(page).to have_content("public")
-    expect(page).to have_content("local")
-    expect(page).to have_content("US")
-    expect(page).to have_content("1.15")
-    expect(page).to have_content("USD")
-    expect(page).to have_content("AR")
-    expect(page).to have_content("Little Rock")
-    expect(page).to have_content("528")
-    expect(page).to have_content("LITTLEROCK")
-    expect(page).to have_content("34.748463")
-    expect(page).to have_content("-92.284434")
+    expect(page).to have_text("+12513095500")
+    expect(page).to have_text("public")
+    expect(page).to have_text("local")
+    expect(page).to have_text("US")
+    expect(page).to have_text("1.15")
+    expect(page).to have_text("USD")
+    expect(page).to have_text("AR")
+    expect(page).to have_text("Little Rock")
+    expect(page).to have_text("528")
+    expect(page).to have_text("LITTLEROCK")
+    expect(page).to have_text("34.748463")
+    expect(page).to have_text("-92.284434")
 
-    expect(page).to have_no_content("+12513095501")
+    expect(page).to have_no_text("+12513095501")
   end
 
   it "Import phone numbers" do
@@ -131,12 +131,12 @@ RSpec.describe "Phone Numbers" do
     end
 
     within(".alert") do
-      expect(page).to have_content("Your import is being processed")
+      expect(page).to have_text("Your import is being processed")
       click_on("Imports")
     end
 
-    expect(page).to have_content("Completed")
-    expect(page).to have_content("phone_numbers.csv")
+    expect(page).to have_text("Completed")
+    expect(page).to have_text("phone_numbers.csv")
   end
 
   it "Fail to import phone numbers" do
@@ -149,7 +149,7 @@ RSpec.describe "Phone Numbers" do
     attach_file("File", file_fixture("recording.mp3"))
     click_on("Upload")
 
-    expect(page).to have_content("Failed to create import: File has an invalid content type (authorized content type is CSV)")
+    expect(page).to have_text("Failed to create import: File has an invalid content type (authorized content type is CSV)")
   end
 
   it "Show a phone number" do
@@ -176,16 +176,16 @@ RSpec.describe "Phone Numbers" do
     carrier_sign_in(user)
     visit dashboard_phone_number_path(phone_number)
 
-    expect(page).to have_content("+1 (251) 309-5500")
-    expect(page).to have_content("my_custom_field")
-    expect(page).to have_content("my_custom_field_value")
-    expect(page).to have_content("Local")
-    expect(page).to have_content("Public")
-    expect(page).to have_content("United States of America")
-    expect(page).to have_content("Arkansas")
-    expect(page).to have_content("Little Rock")
-    expect(page).to have_content("528")
-    expect(page).to have_content("LITTLEROCK")
+    expect(page).to have_text("+1 (251) 309-5500")
+    expect(page).to have_text("my_custom_field")
+    expect(page).to have_text("my_custom_field_value")
+    expect(page).to have_text("Local")
+    expect(page).to have_text("Public")
+    expect(page).to have_text("United States of America")
+    expect(page).to have_text("Arkansas")
+    expect(page).to have_text("Little Rock")
+    expect(page).to have_text("528")
+    expect(page).to have_text("LITTLEROCK")
 
     within("#billing") do
       expect(page).to have_link("Rocket Rides", href: dashboard_account_path(account))
@@ -206,16 +206,16 @@ RSpec.describe "Phone Numbers" do
     choose("Public")
     click_on("Create Phone number")
 
-    expect(page).to have_content("Phone number was successfully created")
+    expect(page).to have_text("Phone number was successfully created")
 
     within("#general") do
-      expect(page).to have_content("1294")
+      expect(page).to have_text("1294")
     end
 
     within("#properties") do
-      expect(page).to have_content("Cambodia")
-      expect(page).to have_content("Short code")
-      expect(page).to have_content("Public")
+      expect(page).to have_text("Cambodia")
+      expect(page).to have_text("Short code")
+      expect(page).to have_text("Public")
     end
   end
 
@@ -226,7 +226,7 @@ RSpec.describe "Phone Numbers" do
     visit new_dashboard_phone_number_path
     click_on("Create Phone number")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Update a phone number" do
@@ -260,23 +260,23 @@ RSpec.describe "Phone Numbers" do
 
     click_on("Update Phone number")
 
-    expect(page).to have_content("Phone number was successfully updated")
+    expect(page).to have_text("Phone number was successfully updated")
 
     within("#properties") do
-      expect(page).to have_content("Canada")
-      expect(page).to have_content("Ontario")
-      expect(page).to have_content("Toronto")
-      expect(page).to have_content("Mobile")
-      expect(page).to have_content("$1.15")
-      expect(page).to have_content("Private")
-      expect(page).to have_content("888")
-      expect(page).to have_content("NEWTORONTO")
-      expect(page).to have_content("43.6008")
-      expect(page).to have_content("-79.5053")
+      expect(page).to have_text("Canada")
+      expect(page).to have_text("Ontario")
+      expect(page).to have_text("Toronto")
+      expect(page).to have_text("Mobile")
+      expect(page).to have_text("$1.15")
+      expect(page).to have_text("Private")
+      expect(page).to have_text("888")
+      expect(page).to have_text("NEWTORONTO")
+      expect(page).to have_text("43.6008")
+      expect(page).to have_text("-79.5053")
     end
 
     within("#billing") do
-      expect(page).to have_content("My Carrier Account")
+      expect(page).to have_text("My Carrier Account")
     end
   end
 
@@ -293,10 +293,10 @@ RSpec.describe "Phone Numbers" do
 
     click_on("Delete")
 
-    expect(page).to have_content("Phone number was successfully destroyed")
-    expect(page).to have_no_content("1234")
+    expect(page).to have_text("Phone number was successfully destroyed")
+    expect(page).to have_no_text("1234")
 
     visit(dashboard_incoming_phone_number_path(incoming_phone_number))
-    expect(page).to have_content("1234")
+    expect(page).to have_text("1234")
   end
 end

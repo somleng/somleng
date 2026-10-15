@@ -25,6 +25,10 @@ module UserAuthorization
 
   private
 
+  def pundit_user
+    current_user
+  end
+
   def authorize_user!
     authorize(@record, policy_class:)
   end
@@ -61,7 +65,7 @@ module UserAuthorization
   end
 
   def current_account
-    current_account_membership.account
+    current_account_membership&.account
   end
 
   def parent_scope

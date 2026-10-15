@@ -10,12 +10,12 @@ RSpec.describe "Broadcasts" do
 
     click_on "Broadcasts"
 
-    expect(page).to have_content("Flood warning for Punjab.")
+    expect(page).to have_text("Flood warning for Punjab.")
 
     click_on "b827279c-486a-40a2-845a-30d38ada6ca5"
     click_on "Start"
 
-    expect(page).to have_content("Broadcast was successfully updated.")
+    expect(page).to have_text("Broadcast was successfully updated.")
   end
 
   it "List broadcasts for Nepal" do
@@ -27,6 +27,6 @@ RSpec.describe "Broadcasts" do
 
     click_on "Broadcasts"
 
-    expect(page).to have_content("Flood Warning for Sunsari District")
+    expect(page).to have_text("Flood Warning for Sunsari District")
   end
 end

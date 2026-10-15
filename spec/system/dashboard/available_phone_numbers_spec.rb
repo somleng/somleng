@@ -41,17 +41,17 @@ RSpec.describe "Available Phone Numbers" do
       }
     )
 
-    expect(page).to have_content("+1 (251) 309-5500")
+    expect(page).to have_text("+1 (251) 309-5500")
     expect(page).to have_link("Buy", href: new_dashboard_phone_number_plan_path(phone_number_id: phone_number))
-    expect(page).to have_content("$5.00")
-    expect(page).to have_no_content("+1 (202) 309-5500")
-    expect(page).to have_no_content("+1 (251) 309-5501")
-    expect(page).to have_no_content("+1 (251) 309-5502")
-    expect(page).to have_no_content("+1 (251) 309-5503")
-    expect(page).to have_no_content("+1 (251) 309-5504")
-    expect(page).to have_no_content("+1 (251) 309-5505")
-    expect(page).to have_no_content("+1 (251) 309-5506")
-    expect(page).to have_no_content("+1 (251) 309-5507")
-    expect(page).to have_no_content("+1 (251) 309-5508")
+    expect(page).to have_text("$5.00")
+    expect(page).to have_no_text("+1 (202) 309-5500")
+    expect(page).to have_no_text("+1 (251) 309-5501")
+    expect(page).to have_no_text("+1 (251) 309-5502")
+    expect(page).to have_no_text("+1 (251) 309-5503")
+    expect(page).to have_no_text("+1 (251) 309-5504")
+    expect(page).to have_no_text("+1 (251) 309-5505")
+    expect(page).to have_no_text("+1 (251) 309-5506")
+    expect(page).to have_no_text("+1 (251) 309-5507")
+    expect(page).to have_no_text("+1 (251) 309-5508")
   end
 end

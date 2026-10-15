@@ -8,7 +8,7 @@ RSpec.describe "Services", :services do
       carrier = create(:carrier)
       oauth_application = create(:oauth_application, owner: carrier)
       webhook_endpoint = create(:webhook_endpoint, oauth_application: oauth_application)
-      account = create(:account, :with_access_token, carrier: carrier)
+      account = create(:account, carrier: carrier)
       phone_call = create(
         :phone_call, :initiated, :with_status_callback_url,
         account:,

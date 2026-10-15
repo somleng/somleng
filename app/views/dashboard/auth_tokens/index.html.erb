@@ -1,0 +1,52 @@
+<%= page_title(title: "Auth Tokens") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:id, params.dig(:filter, :id), title: "SID") %>
+    <% if policy(:account).show? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.accounts.carrier_managed.map { |account| [ account.name, account.id ] },
+          { filter_value: params.dig(:filter, :account_id) },
+          { data: { controller: "enhanced-select" }}
+        )
+      %>
+    <% end %>
+
+    <%= form.boolean_select(:active, { filter_value: params.dig(:filter, :active) }) %>
+    <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>
+  <% end %>
+
+  <% if policy(:auth_token).create? %>
+    <% if filter_params.dig(:filter, :account_id).present? || !current_user.carrier_user? %>
+      <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="New">
+        <%= button_to(
+          dashboard_auth_tokens_path(filter_params),
+          params: {
+            auth_token: {
+              account_id: filter_params.dig(:filter, :account_id)
+            }
+          },
+          class: "btn btn-outline-success",
+          title: "New",
+          data: {
+            turbo_confirm: "Are you sure?"
+          }
+        ) do %>
+          <i class="fa-solid fa-plus"></i>
+        <% end %>
+      </span>
+    <% else %>
+      <%= render(
+        "shared/new_resource_page_action",
+        path: "#",
+        disabled: true,
+        disabled_title: "Filter by account to create"
+      ) %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

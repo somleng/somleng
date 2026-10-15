@@ -14,6 +14,9 @@ en:
       account_settings:
         update:
           notice: Account settings were successfully updated.
+      auth_tokens:
+        destroy:
+          notice: Auth token was successfully revoked.
       carrier_settings:
         update:
           notice: Carrier settings were successfully updated.

@@ -28,8 +28,14 @@
 
         <%= f.attribute :name, value: @resource.name %>
 
-        <% if policy(@resource).show_auth_token? %>
-          <%= f.attribute :auth_token, label: "Auth Token", value: mask_content(@resource.auth_token) %>
+        <% if policy(:auth_token).index? && @resource.carrier_managed? %>
+          <%= f.attribute :auth_tokens do %>
+            <%= external_link_to(
+              "Manage",
+              dashboard_auth_tokens_path(filter: { account_id: @resource.id, active: true }),
+              title: "Manage"
+            ) %>
+          <% end %>
         <% end %>
         <%= f.attribute :type, value: @resource.type.text %>
         <%= f.attribute :status, value: @resource.status.text %>

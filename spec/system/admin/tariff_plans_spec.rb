@@ -10,6 +10,6 @@ RSpec.describe "Admin/Tariff Plans" do
     visit admin_tariff_plans_path
     click_on(plan_tier.plan_id)
 
-    expect(page).to have_content("Standard")
+    expect(page).to have_text("Standard")
   end
 end

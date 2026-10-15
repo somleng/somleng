@@ -23,6 +23,7 @@ class ApplicationSeeder
     carrier, carrier_owner = create_carrier
     sip_trunk = create_sip_trunk(carrier:)
     carrier_managed_account = create_carrier_managed_account(carrier:, billing_enabled: true)
+
     setup_billing_for(carrier_managed_account)
     create_topup_for(carrier_managed_account)
     create_customer_managed_account(carrier:)
@@ -45,7 +46,7 @@ class ApplicationSeeder
 
     puts(<<~INFO)
       Account SID:              #{carrier_managed_account.id}
-      Auth Token:               #{carrier_managed_account.auth_token}
+      Auth Token:               #{carrier_managed_account.auth_tokens.active.first&.token}
       Phone Number:             #{phone_number.number}
       SMS Gateway Device Token: #{sms_gateway.device_token}
       ---------------------------------------------
@@ -138,7 +139,7 @@ class ApplicationSeeder
   end
 
   def create_account(**)
-    Account.create!(default_tts_voice: TTSVoices::Voice.default, **, &:build_access_token)
+    Account.create!(default_tts_voice: TTSVoices::Voice.default, **)
   end
 
   def build_user_params(**params)

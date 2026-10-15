@@ -9,7 +9,7 @@ RSpec.describe "Admin/SIP Trunks" do
 
     click_on("My SIP Trunk")
 
-    expect(page).to have_content("My SIP Trunk")
-    expect(page).to have_content("hydrogen")
+    expect(page).to have_text("My SIP Trunk")
+    expect(page).to have_text("hydrogen")
   end
 end

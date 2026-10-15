@@ -5,9 +5,9 @@ RSpec.describe "Admin/Home" do
     page.driver.browser.authorize("admin", "password")
     visit admin_homes_path
 
-    expect(page).to have_content("Current call sessions")
-    expect(page).to have_content("Call sessions limit")
-    expect(page).to have_content("Per account call sessions limit")
-    expect(page).to have_content("Switch capacity")
+    expect(page).to have_text("Current call sessions")
+    expect(page).to have_text("Call sessions limit")
+    expect(page).to have_text("Per account call sessions limit")
+    expect(page).to have_text("Switch capacity")
   end
 end

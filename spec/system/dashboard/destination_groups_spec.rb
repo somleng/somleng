@@ -11,11 +11,11 @@ RSpec.describe "Destination Groups" do
     carrier_sign_in(user)
     visit dashboard_destination_groups_path(filter: { name: "Cambodia" })
 
-    expect(page).to have_content("Smart Cambodia")
-    expect(page).to have_content("85510, 85515, and 85516")
-    expect(page).to have_content("Metfone Cambodia")
-    expect(page).to have_content("85597 and 85571")
-    expect(page).to have_no_content("Laos")
+    expect(page).to have_text("Smart Cambodia")
+    expect(page).to have_text("85510, 85515, and 85516")
+    expect(page).to have_text("Metfone Cambodia")
+    expect(page).to have_text("85597 and 85571")
+    expect(page).to have_no_text("Laos")
   end
 
   it "create a destination group" do
@@ -31,9 +31,9 @@ RSpec.describe "Destination Groups" do
     fill_in("Prefixes", with: "85510, 85515, 85516, 85516")
     click_on("Create Destination group")
 
-    expect(page).to have_content("Destination group was successfully created.")
-    expect(page).to have_content("Smart Cambodia")
-    expect(page).to have_content("85510, 85515, and 85516")
+    expect(page).to have_text("Destination group was successfully created.")
+    expect(page).to have_text("Smart Cambodia")
+    expect(page).to have_text("85510, 85515, and 85516")
   end
 
   it "create a catch all destination group", :js do
@@ -47,9 +47,9 @@ RSpec.describe "Destination Groups" do
     click_on("Create Destination group")
 
 
-    expect(page).to have_content("Destination group was successfully created.")
-    expect(page).to have_content("Catch all")
-    expect(page).to have_content("0, 1, 2, and 7 more")
+    expect(page).to have_text("Destination group was successfully created.")
+    expect(page).to have_text("Catch all")
+    expect(page).to have_text("0, 1, 2, and 7 more")
   end
 
   it "handle validation errors when creating a destination group" do
@@ -61,7 +61,7 @@ RSpec.describe "Destination Groups" do
 
     click_on("Create Destination group")
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "show a destination group" do
@@ -100,9 +100,9 @@ RSpec.describe "Destination Groups" do
     fill_in("Prefixes", with: "85510, 85515, 85516")
     click_on("Update Destination group")
 
-    expect(page).to have_content("Destination group was successfully updated.")
-    expect(page).to have_content("Smart Cambodia")
-    expect(page).to have_content("85510, 85515, and 85516")
+    expect(page).to have_text("Destination group was successfully updated.")
+    expect(page).to have_text("Smart Cambodia")
+    expect(page).to have_text("85510, 85515, and 85516")
   end
 
   it "delete a destination group" do
@@ -114,7 +114,7 @@ RSpec.describe "Destination Groups" do
     visit dashboard_destination_group_path(destination_group)
     click_on("Delete")
 
-    expect(page).to have_content("Destination group was successfully destroyed.")
-    expect(page).to have_no_content("Smart Cambodia")
+    expect(page).to have_text("Destination group was successfully destroyed.")
+    expect(page).to have_no_text("Smart Cambodia")
   end
 end

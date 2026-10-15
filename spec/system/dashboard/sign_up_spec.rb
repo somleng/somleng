@@ -20,14 +20,14 @@ RSpec.describe "Signup" do
 
     expect(page.current_host).to eq("http://at-t.app.lvh.me")
     expect(page).to have_current_path(new_user_session_path, ignore_query: true)
-    expect(page).to have_content("A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.")
+    expect(page).to have_text("A message with a confirmation link has been sent to your email address. Please follow the link to activate your account.")
 
     open_email("johndoe@att.com")
     visit_full_link_in_email("Confirm my account")
 
     expect(page.current_host).to eq("http://at-t.app.lvh.me")
     expect(page).to have_current_path(new_user_session_path)
-    expect(page).to have_content("Your email address has been successfully confirmed.")
+    expect(page).to have_text("Your email address has been successfully confirmed.")
   end
 
   it "Handles validations" do
@@ -45,6 +45,6 @@ RSpec.describe "Signup" do
 
     click_on("Sign up")
 
-    expect(page).to have_content("Password is too short")
+    expect(page).to have_text("Password is too short")
   end
 end

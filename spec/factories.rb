@@ -195,7 +195,6 @@ FactoryBot.define do
   factory :account do
     carrier
     enabled
-    with_access_token
     name { "Rocket Rides" }
     default_tts_voice { "Basic.Kal" }
     billing_currency { carrier.billing_currency }
@@ -212,12 +211,6 @@ FactoryBot.define do
 
       after(:build) do |account|
         account.account_memberships << create(:account_membership, :owner, account:, carrier: account.carrier) if account.account_memberships.empty?
-      end
-    end
-
-    trait :with_access_token do
-      after(:build) do |account|
-        account.access_token ||= build(:oauth_access_token, resource_owner_id: account.id)
       end
     end
 
@@ -707,6 +700,14 @@ FactoryBot.define do
     schedule { association :tariff_schedule, carrier: }
     tariff { association(:tariff, category: schedule.category.tariff_category, carrier: schedule.carrier) }
     destination_group { association :destination_group, carrier: schedule.carrier }
+  end
+
+  factory :auth_token do
+    account
+
+    trait :revoked do
+      revoked_at { Time.current }
+    end
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do

@@ -10,7 +10,7 @@ RSpec.describe "Admin/Error Logs" do
     page.driver.browser.authorize("admin", "password")
     visit admin_error_logs_path
 
-    expect(page).to have_content("SIP trunk does not exist for 175.100.7.240")
-    expect(page).to have_content("Phone number 1234 does not exist")
+    expect(page).to have_text("SIP trunk does not exist for 175.100.7.240")
+    expect(page).to have_text("Phone number 1234 does not exist")
   end
 end

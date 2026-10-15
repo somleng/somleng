@@ -8,6 +8,6 @@ RSpec.describe "Admin/Destination Groups" do
     visit admin_destination_groups_path
     click_on(destination_group.id)
 
-    expect(page).to have_content(destination_group.id)
+    expect(page).to have_text(destination_group.id)
   end
 end

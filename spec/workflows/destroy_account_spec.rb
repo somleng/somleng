@@ -15,7 +15,7 @@ RSpec.describe DestroyAccount do
   end
 
   it "handles validation errors" do
-    account = create(:account, :customer_managed, :with_access_token)
+    account = create(:account, :customer_managed)
     client = instance_spy(RatingEngineClient)
 
     result = DestroyAccount.call(account, client:)
@@ -23,9 +23,7 @@ RSpec.describe DestroyAccount do
     expect(result).to be_falsey
     expect(account).to have_attributes(
       persisted?: true,
-      access_token: have_attributes(
-        persisted?: true
-      )
+      auth_tokens: be_present
     )
     expect(client).not_to have_received(:destroy_account)
   end

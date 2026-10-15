@@ -21,8 +21,8 @@ RSpec.describe "SMS Gateway Channel Groups" do
       filter: { name: "metfone" }
     )
 
-    expect(page).to have_content("Metfone")
-    expect(page).to have_no_content("Smart")
+    expect(page).to have_text("Metfone")
+    expect(page).to have_no_text("Smart")
   end
 
   it "Create a new channel group", :js do
@@ -41,11 +41,11 @@ RSpec.describe "SMS Gateway Channel Groups" do
     enhanced_select("1", "2", from: "Channels")
     click_on "Create Channel group"
 
-    expect(page).to have_content("Channel group was successfully created")
-    expect(page).to have_content("Smart")
-    expect(page).to have_content("85515, 85516")
-    expect(page).to have_content("1, 2")
-    expect(page).to have_content("2 of 2")
+    expect(page).to have_text("Channel group was successfully created")
+    expect(page).to have_text("Smart")
+    expect(page).to have_text("85515, 85516")
+    expect(page).to have_text("1, 2")
+    expect(page).to have_text("2 of 2")
   end
 
   it "Handles validations" do
@@ -55,7 +55,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
     visit new_dashboard_sms_gateway_channel_group_path
     click_on "Create Channel group"
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Update a channel group" do
@@ -79,11 +79,11 @@ RSpec.describe "SMS Gateway Channel Groups" do
 
     click_on "Update Channel group"
 
-    expect(page).to have_content("Channel group was successfully updated")
-    expect(page).to have_content("Smart")
-    expect(page).to have_content("85515")
-    expect(page).to have_content("2 of 2")
-    expect(page).to have_content("1, 2")
+    expect(page).to have_text("Channel group was successfully updated")
+    expect(page).to have_text("Smart")
+    expect(page).to have_text("85515")
+    expect(page).to have_text("2 of 2")
+    expect(page).to have_text("1, 2")
   end
 
   it "Delete a channel group" do
@@ -98,7 +98,7 @@ RSpec.describe "SMS Gateway Channel Groups" do
 
     click_on("Delete")
 
-    expect(page).to have_content("Channel group was successfully destroyed")
-    expect(page).to have_no_content("My Channel Group")
+    expect(page).to have_text("Channel group was successfully destroyed")
+    expect(page).to have_no_text("My Channel Group")
   end
 end

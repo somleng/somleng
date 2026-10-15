@@ -10,10 +10,10 @@ RSpec.describe "Admin/Incoming Phone Numbers" do
     page.driver.browser.authorize("admin", "password")
     visit admin_incoming_phone_numbers_path
 
-    expect(page).to have_content("12513095500")
+    expect(page).to have_text("12513095500")
 
     click_on("12513095500")
 
-    expect(page).to have_content(incoming_phone_number.id)
+    expect(page).to have_text(incoming_phone_number.id)
   end
 end

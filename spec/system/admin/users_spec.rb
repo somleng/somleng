@@ -15,7 +15,7 @@ RSpec.describe "Admin/Users" do
     visit admin_users_path
     click_on("John Doe")
 
-    expect(page).to have_content("John Doe")
+    expect(page).to have_text("John Doe")
     expect(page).to have_link("Joe Bloggs")
     expect(page).to have_link(import.id)
     expect(page).to have_link(export.id)
@@ -24,6 +24,6 @@ RSpec.describe "Admin/Users" do
 
     expect(page).to have_link("John Doe")
     expect(page).to have_link("Rocket Rides")
-    expect(page).to have_content("admin")
+    expect(page).to have_text("admin")
   end
 end

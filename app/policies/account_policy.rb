@@ -5,10 +5,6 @@ class AccountPolicy < ApplicationPolicy
     user.carrier_user?
   end
 
-  def show_auth_token?
-    read? && carrier_managed?
-  end
-
   def manage?
     carrier_admin?
   end

@@ -20,8 +20,8 @@ RSpec.describe "SMS Gateways" do
       filter: { name: "main" }
     )
 
-    expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_no_content("Old SMS Gateway")
+    expect(page).to have_text("Main SMS Gateway")
+    expect(page).to have_no_text("Old SMS Gateway")
   end
 
   it "Create a SMS Gateway" do
@@ -35,9 +35,9 @@ RSpec.describe "SMS Gateways" do
 
     click_on "Create SMS gateway"
 
-    expect(page).to have_content("SMS gateway was successfully created")
-    expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_content("+1 (234) 234-5678")
+    expect(page).to have_text("SMS gateway was successfully created")
+    expect(page).to have_text("Main SMS Gateway")
+    expect(page).to have_text("+1 (234) 234-5678")
   end
 
   it "Handles validations" do
@@ -47,7 +47,7 @@ RSpec.describe "SMS Gateways" do
     visit new_dashboard_sms_gateway_path
     click_on "Create SMS gateway"
 
-    expect(page).to have_content("can't be blank")
+    expect(page).to have_text("can't be blank")
   end
 
   it "Show an SMS Gateway" do
@@ -63,8 +63,8 @@ RSpec.describe "SMS Gateways" do
     carrier_sign_in(user)
     visit dashboard_sms_gateway_path(sms_gateway)
 
-    expect(page).to have_content("My SMS Gateway")
-    expect(page).to have_content("Connected")
+    expect(page).to have_text("My SMS Gateway")
+    expect(page).to have_text("Connected")
   end
 
   it "Update a SMS Gateway" do
@@ -86,9 +86,9 @@ RSpec.describe "SMS Gateways" do
 
     click_on "Update SMS gateway"
 
-    expect(page).to have_content("SMS gateway was successfully updated")
-    expect(page).to have_content("Main SMS Gateway")
-    expect(page).to have_no_content("123456")
+    expect(page).to have_text("SMS gateway was successfully updated")
+    expect(page).to have_text("Main SMS Gateway")
+    expect(page).to have_no_text("123456")
   end
 
   it "Delete a SMS Gateway" do
@@ -103,7 +103,7 @@ RSpec.describe "SMS Gateways" do
 
     click_on("Delete")
 
-    expect(page).to have_content("SMS gateway was successfully destroyed")
-    expect(page).to have_no_content("My SMS Gateway")
+    expect(page).to have_text("SMS gateway was successfully destroyed")
+    expect(page).to have_no_text("My SMS Gateway")
   end
 end
