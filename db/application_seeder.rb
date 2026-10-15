@@ -46,7 +46,7 @@ class ApplicationSeeder
 
     puts(<<~INFO)
       Account SID:              #{carrier_managed_account.id}
-      Auth Token:               #{carrier_managed_account.auth_tokens.active.first&.token}
+      Auth Token:               #{carrier_managed_account.auth_token}
       Phone Number:             #{phone_number.number}
       SMS Gateway Device Token: #{sms_gateway.device_token}
       ---------------------------------------------
