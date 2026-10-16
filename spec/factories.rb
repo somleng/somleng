@@ -730,7 +730,6 @@ FactoryBot.define do
 
   factory :carrier_api_key do
     association :oauth_application, factory: [ :oauth_application, :carrier ]
-    scopes { :carrier_api }
 
     trait :revoked do
       revoked_at { Time.current }
