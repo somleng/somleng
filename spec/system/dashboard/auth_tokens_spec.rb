@@ -62,7 +62,7 @@ RSpec.describe "Auth Tokens" do
     expect(page).to have_no_text(account.name)
     expect(page).to have_no_text(other_auth_token.id)
 
-    click_on("New")
+    click_on("Create")
 
     expect(page).to have_text("Auth token was successfully created.")
 
@@ -115,7 +115,7 @@ RSpec.describe "Auth Tokens" do
 
     carrier_sign_in(user)
     visit dashboard_auth_tokens_path(filter: { account_id: account.id })
-    click_on("New")
+    click_on("Create")
 
     expect(page).to have_text("Auth token was successfully created")
   end

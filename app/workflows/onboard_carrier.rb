@@ -16,7 +16,7 @@ class OnboardCarrier < ApplicationWorkflow
   def call
     ApplicationRecord.transaction do
       carrier = create_carrier
-      create_carrier_access_token(carrier)
+      create_oauth_application(carrier)
       owner = onboard_carrier_owner(carrier:, **owner_params)
 
       rating_engine_client.upsert_charging_profile(carrier)
@@ -38,18 +38,13 @@ class OnboardCarrier < ApplicationWorkflow
     )
   end
 
-  def create_carrier_access_token(carrier)
+  def create_oauth_application(carrier)
     OAuthApplication.create!(
       name: carrier.name,
       owner: carrier,
       redirect_uri: "urn:ietf:wg:oauth:2.0:oob",
       scopes: "carrier_api"
-    ) do |app|
-      Doorkeeper::AccessToken.create!(
-        application: app,
-        scopes: app.scopes
-      )
-    end
+    )
   end
 
   def onboard_carrier_owner(**params)

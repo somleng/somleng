@@ -135,7 +135,9 @@ Rails.application.routes.draw do
       resources :imports, only: %i[index create]
       resource :account_session, only: :create
       resource :account_settings, only: %i[show edit update]
-      resource :carrier_settings, only: %i[show edit update]
+      resource :carrier_settings, only: %i[show edit update] do
+        resources :api_keys, only: %i[index show create destroy], controller: :carrier_api_keys
+      end
       resource :home, only: :show
       resources :user_invitations, only: :update
       resources :phone_numbers do

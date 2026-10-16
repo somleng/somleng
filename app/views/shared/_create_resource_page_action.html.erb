@@ -1,0 +1,22 @@
+<% title = local_assigns.fetch(:title, "Create") %>
+
+<%= tag.span(
+  class: "d-inline-block",
+  tabindex: 0,
+  data: {
+    bs_toggle: :tooltip
+  },
+  title:
+) do %>
+   <%= button_to(
+    path,
+    params: local_assigns.fetch(:params, {}),
+    class: "btn btn-outline-success",
+    title:,
+    data: {
+      turbo_confirm: "Are you sure?"
+    }
+  ) do %>
+     <i class="fa-solid fa-plus"></i>
+   <% end %>
+<% end %>

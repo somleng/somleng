@@ -18,7 +18,7 @@ module Dashboard
       permitted_params = params.require(:auth_token).permit(:account_id)
       account = current_user.carrier_user? ? current_carrier.accounts.carrier_managed.find(permitted_params[:account_id]) : current_account
       @resource = AuthToken.create!(account:)
-      respond_with(:dashboard, @resource, location: -> { dashboard_auth_tokens_path(filter_params) })
+      respond_with(@resource, location: -> { dashboard_auth_tokens_path(filter_params) })
     end
 
     def update

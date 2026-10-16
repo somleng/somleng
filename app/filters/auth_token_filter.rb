@@ -1,16 +1,4 @@
 class AuthTokenFilter < ResourceFilter
-  class ActiveFilter < ApplicationFilter
-    filter_params do
-      optional(:active).value(:bool)
-    end
-
-    def apply
-      return super if filter_params.blank?
-
-      filter_params.fetch(:active) ? super.active : super.revoked
-    end
-  end
-
   class PrimaryFilter < ApplicationFilter
     filter_params do
       optional(:primary).value(:bool)
@@ -24,8 +12,8 @@ class AuthTokenFilter < ResourceFilter
   end
 
   filter_with(
-    ActiveFilter,
     PrimaryFilter,
+    :access_token_active_filter,
     :id_filter,
     :date_filter,
     {

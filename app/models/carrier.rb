@@ -33,6 +33,8 @@ class Carrier < ApplicationRecord
   has_many :destination_groups
   has_many :balance_transactions
   has_many :auth_tokens, through: :accounts
+  has_many :api_keys, through: :oauth_application, source: :access_tokens, class_name: "CarrierAPIKey"
+
   belongs_to :default_tariff_package, class_name: "TariffPackage", optional: true
 
   has_one_attached :logo
@@ -42,10 +44,6 @@ class Carrier < ApplicationRecord
 
   def country
     ISO3166::Country.new(country_code)
-  end
-
-  def api_key
-    oauth_application.access_tokens.last.token
   end
 
   def webhooks_enabled?

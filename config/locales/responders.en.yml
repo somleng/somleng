@@ -17,6 +17,9 @@ en:
       auth_tokens:
         destroy:
           notice: Auth token was successfully revoked.
+      carrier_api_keys:
+        destroy:
+          notice: API key was successfully revoked.
       carrier_settings:
         update:
           notice: Carrier settings were successfully updated.

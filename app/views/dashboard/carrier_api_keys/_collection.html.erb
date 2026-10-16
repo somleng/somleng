@@ -1,0 +1,36 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+
+      <th>
+        Status
+      </th>
+
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |api_key| %>
+      <% api_key = api_key.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(api_key.id, dashboard_carrier_settings_api_key_path(api_key)) %>
+        </td>
+
+        <td>
+          <%= status_badge(api_key.human_status, color: api_key.status_color) %>
+        </td>
+
+        <td>
+          <%= local_time(api_key.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

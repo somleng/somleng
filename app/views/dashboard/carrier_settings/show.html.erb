@@ -5,72 +5,78 @@
 <% end %>
 
 <div class="card-body">
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title">General</h5>
+  <div class="d-flex flex-column gap-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">General</h5>
 
-      <%= show_for(@resource) do |f| %>
-        <%= f.attribute :name %>
-        <%= f.attribute :subdomain_host, label: "Subdomain" %>
-        <%= f.attribute :website do %>
-          <%= external_link_to(@resource.website, @resource.website, target: "_blank") %>
-        <% end %>
-        <%= f.attribute :logo do %>
-          <%= image_thumbnail(@resource.logo, title: "Logo") %>
-        <% end %>
-        <%= f.attribute :favicon do %>
-          <%= image_thumbnail(@resource.favicon, width: 32, title: "Favicon") %>
-        <% end %>
-        <%= f.attribute :country do %>
-          <%= @resource.country.emoji_flag %>
-          <%= @resource.country.iso_short_name %>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title">Billing</h5>
-
-      <%= show_for(@resource) do |f| %>
-        <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
-        <%= f.attribute :default_tariff_package, value: @resource.default_tariff_package&.name %>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title">Custom Domain</h5>
-
-      <%= show_for(@resource) do |f| %>
-        <%= f.attribute :custom_app_host, label: "Dashboard host" %>
-        <%= f.attribute :custom_api_host, label: "API host" %>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Developers</h5>
-      <%= show_for(@resource) do |f| %>
-        <%= f.attribute :api_key, label: "API Key" do %>
-          <%= mask_content(@resource.api_key) %>
-        <% end %>
-
-        <%= f.attribute :webhook_url, label: "Webhook URL" do %>
-          <% if @resource.webhooks_enabled? %>
-            <code>
-              <%= @resource.webhook_endpoint.url %>
-            </code>
+        <%= show_for(@resource) do |f| %>
+          <%= f.attribute :name %>
+          <%= f.attribute :subdomain_host, label: "Subdomain" %>
+          <%= f.attribute :website do %>
+            <%= external_link_to(@resource.website, @resource.website, target: "_blank") %>
+          <% end %>
+          <%= f.attribute :logo do %>
+            <%= image_thumbnail(@resource.logo, title: "Logo") %>
+          <% end %>
+          <%= f.attribute :favicon do %>
+            <%= image_thumbnail(@resource.favicon, width: 32, title: "Favicon") %>
+          <% end %>
+          <%= f.attribute :country do %>
+            <%= @resource.country.emoji_flag %>
+            <%= @resource.country.iso_short_name %>
           <% end %>
         <% end %>
+      </div>
+    </div>
 
-        <%= f.attribute :webhook_signing_secret do %>
-          <%= mask_content(@resource.webhook_endpoint.signing_secret) if @resource.webhooks_enabled? %>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Billing</h5>
+
+        <%= show_for(@resource) do |f| %>
+          <%= f.attribute :billing_currency, value: @resource.billing_currency.name %>
+          <%= f.attribute :default_tariff_package, value: @resource.default_tariff_package&.name %>
         <% end %>
-      <% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Custom Domain</h5>
+
+        <%= show_for(@resource) do |f| %>
+          <%= f.attribute :custom_app_host, label: "Dashboard host" %>
+          <%= f.attribute :custom_api_host, label: "API host" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Developers</h5>
+        <%= show_for(@resource) do |f| %>
+          <%= f.attribute(:api_keys) do %>
+            <%= external_link_to(
+              "Manage",
+              dashboard_carrier_settings_api_keys_path(filter: { active: true }),
+              title: "Manage API keys"
+            ) %>
+          <% end %>
+
+          <%= f.attribute :webhook_url, label: "Webhook URL" do %>
+            <% if @resource.webhooks_enabled? %>
+              <code>
+                <%= @resource.webhook_endpoint.url %>
+              </code>
+            <% end %>
+          <% end %>
+
+          <%= f.attribute :webhook_signing_secret do %>
+            <%= mask_content(@resource.webhook_endpoint.signing_secret) if @resource.webhooks_enabled? %>
+          <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
