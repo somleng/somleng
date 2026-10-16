@@ -2,143 +2,170 @@
 
 <div class="card-body">
   <%= simple_form_for(@resource, url: dashboard_carrier_settings_path, wrapper: :input_group) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+    <div class="d-flex flex-column gap-3">
 
-        <div class="row">
-          <div class="col-sm">
-            <%= f.input :name, maxlength: 128, hint: "Your company's name" %>
-          </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">General</h5>
 
-          <div class="col-sm">
-            <%= f.input :website, hint: "Must start with http or https" %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm">
-            <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
-          </div>
-
-          <div class="col-sm">
-            <%= f.input :favicon, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg, image/gif, image/svg+xml, image/x-icon, image/webp", direct_upload: true }, hint: "Square icon. Recommended size: 32x32px " %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-6">
-            <%= f.input :country,
-              format: :with_flag,
-              priority: ["US", "UK", "CA", "AU", "DE", "FR"],
-              sort_provided: false,
-              input_html: { data: { controller: "enhanced-select" } } %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Billing</h5>
-
-        <div class="row">
-          <div class="col-6">
-            <%= f.input(
-              :default_tariff_package_id,
-              collection: f.object.tariff_packages_options_for_select,
-              prompt: true,
-              input_html: {
-                data: {
-                  controller: "enhanced-select",
-                  enhanced_select_options: {
-                    removeItemButton: true
-                  },
-                }
-              }
-            ) %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">
-          Custom Domain
-          <%= link_to(docs_path(anchor: "custom_domains"), target: "_blank") do %>
-            <i class="fa-solid fa-question-circle fa-sm"></i>
-          <% end %>
-        </h5>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <%=
-              f.input(
-                :custom_app_host,
-                label: "Dashboard host",
-                maxlength: 128,
-                placeholder: "dashboard.example.com",
-                hint: "Optionally specify a custom host which is used to access the dashboard."
-              )
-            %>
-          </div>
-
-          <div class="col-sm-6">
-            <%=
-              f.input(
-                :custom_api_host,
-                label: "API host",
-                maxlength: 128,
-                placeholder: "api.example.com",
-                hint: "Optionally specify a custom host which is used to access the API."
-              )
-            %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Developers</h5>
-
-        <% if @resource.webhook_configured? %>
-          <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
-        <% end %>
-
-        <% unless @resource.webhooks_disabled? %>
           <div class="row">
-            <div class="col-sm-6">
-              <%= f.input :webhook_url, hint: "Must start with https" %>
+            <div class="col-sm">
+              <%= f.input :name, maxlength: 128, hint: "Your company's name" %>
+            </div>
+
+            <div class="col-sm">
+              <%= f.input :website, hint: "Must start with http or https" %>
             </div>
           </div>
-        <% end %>
-      </div>
-    </div>
 
-    <div class="card border-danger mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Danger Zone</h5>
-        <div class="row">
-          <div class="col-sm-6">
-            <%=
-              f.input(
-                :subdomain,
-                maxlength: 128,
-                hint: "Updating your subdomain will affect other signed in users. If you have a custom domain setup you'll also need to update your DNS settings.",
-                append: ".#{AppSettings.app_uri.host}"
-              )
-            %>
+          <div class="row">
+            <div class="col-sm">
+              <%= f.input :logo, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg", direct_upload: true }, hint: "Square Logo. Max size 5MB" %>
+            </div>
+
+            <div class="col-sm">
+              <%= f.input :favicon, as: :file, input_html: { accept: "image/png, image/jpeg, image/jpg, image/gif, image/svg+xml, image/x-icon, image/webp", direct_upload: true }, hint: "Square icon. Recommended size: 32x32px " %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <%= f.input :country,
+                format: :with_flag,
+                priority: ["US", "UK", "CA", "AU", "DE", "FR"],
+                sort_provided: false,
+                input_html: { data: { controller: "enhanced-select" } } %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col">
-        <%= f.button :submit %>
-        <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Billing</h5>
+
+          <div class="row">
+            <div class="col-6">
+              <%= f.input(
+                :default_tariff_package_id,
+                collection: f.object.tariff_packages_options_for_select,
+                prompt: true,
+                input_html: {
+                  data: {
+                    controller: "enhanced-select",
+                    enhanced_select_options: {
+                      removeItemButton: true
+                    },
+                  }
+                }
+              ) %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            Custom Domain
+            <%= link_to(docs_path(anchor: "custom_domains"), target: "_blank") do %>
+              <i class="fa-solid fa-question-circle fa-sm"></i>
+            <% end %>
+          </h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%=
+                f.input(
+                  :custom_app_host,
+                  label: "Dashboard host",
+                  maxlength: 128,
+                  placeholder: "dashboard.example.com",
+                  hint: "Optionally specify a custom host which is used to access the dashboard."
+                )
+              %>
+            </div>
+
+            <div class="col-sm-6">
+              <%=
+                f.input(
+                  :custom_api_host,
+                  label: "API host",
+                  maxlength: 128,
+                  placeholder: "api.example.com",
+                  hint: "Optionally specify a custom host which is used to access the API."
+                )
+              %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Webhooks</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <% if @resource.webhook_configured? %>
+                <%= f.input :enable_webhooks, as: :boolean, wrapper: :custom_boolean_switch %>
+              <% end %>
+            </div>
+
+            <div>
+              <% unless @resource.webhooks_disabled? %>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <%= f.input :webhook_url, hint: "Must start with https" %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Developers</h5>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <%= f.input(
+                :api_allowed_ip_addresses,
+                as: :text,
+                placeholder: "175.100.7.240, 175.100.7.241",
+                hint: "A comma separated list of source IP addresses.",
+                input_html: { value: CommaSeparatedListFormatter.new.format(f.object.api_allowed_ip_addresses) }
+              ) %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-danger">
+        <div class="card-body">
+          <h5 class="card-title">Danger Zone</h5>
+          <div class="row">
+            <div class="col-sm-6">
+              <%=
+                f.input(
+                  :subdomain,
+                  maxlength: 128,
+                  hint: "Updating your subdomain will affect other signed in users. If you have a custom domain setup you'll also need to update your DNS settings.",
+                  append: ".#{AppSettings.app_uri.host}"
+                )
+              %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <%= f.button :submit %>
+          <%= link_to "Cancel", :back, class: "btn btn-secondary" %>
+        </div>
       </div>
     </div>
   <% end %>

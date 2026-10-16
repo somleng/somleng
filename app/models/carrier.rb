@@ -33,7 +33,8 @@ class Carrier < ApplicationRecord
   has_many :destination_groups
   has_many :balance_transactions
   has_many :auth_tokens, through: :accounts
-  has_many :api_keys, through: :oauth_application, source: :access_tokens, class_name: "CarrierAPIKey"
+  has_many :api_keys, through: :oauth_application, class_name: "CarrierAPIKey"
+  has_many :api_allowed_ip_addresses, through: :oauth_application, class_name: "CarrierAPIAllowedIPAddress"
 
   belongs_to :default_tariff_package, class_name: "TariffPackage", optional: true
 

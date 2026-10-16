@@ -24,7 +24,6 @@ module SystemSpecHelpers
     control_wrapper = find_field(from, visible: false).find(:xpath, "..")
     control_wrapper.click
 
-
     values.each do |value|
       option = if options[:exact]
         control_wrapper.first(:xpath, "..//*[text()='#{value}']")

@@ -2,7 +2,17 @@ require "rails_helper"
 
 RSpec.describe "Carrier Settings" do
   it "Update carrier settings" do
-    carrier = create(:carrier, :with_oauth_application, name: "My Carrier", billing_currency: "USD")
+    carrier = create(
+      :carrier,
+      :with_oauth_application,
+      name: "My Carrier",
+      billing_currency: "USD"
+    )
+    create(
+      :carrier_api_allowed_ip_address,
+      oauth_application: carrier.oauth_application,
+      ip_address: "13.250.230.10/32"
+    )
     user = create(:user, :carrier, :owner, carrier:)
     create(:tariff_package, carrier:, name: "Standard Package")
 
@@ -14,6 +24,7 @@ RSpec.describe "Carrier Settings" do
     enhanced_select("United States", from: "Country", match: :first)
     fill_in("Website", with: "https://t-mobile.example.com")
     fill_in("Webhook URL", with: "https://example.com/webhook_endpoint")
+    fill_in("API allowed IP addresses", with: "13.250.230.15, 13.250.230.16")
     fill_in("Dashboard host", with: "dashboard.t-mobile.example.com")
     fill_in("API host", with: "api.t-mobile.example.com")
     attach_file("Logo", file_fixture("carrier_logo.jpeg"))
@@ -28,6 +39,7 @@ RSpec.describe "Carrier Settings" do
     expect(page).to have_text("United States Dollar")
     expect(page).to have_text("https://example.com/webhook_endpoint")
     expect(page).to have_text("Webhook signing secret")
+    expect(page).to have_text("13.250.230.15, 13.250.230.16")
     expect(page).to have_text("dashboard.t-mobile.example.com")
     expect(page).to have_text("api.t-mobile.example.com")
     expect(page).to have_xpath("//img[@title='Logo']")
@@ -36,7 +48,7 @@ RSpec.describe "Carrier Settings" do
   end
 
   it "Update carrier subdomain" do
-    carrier = create(:carrier, subdomain: "t-mobile")
+    carrier = create(:carrier, :with_oauth_application, subdomain: "t-mobile")
     user = create(:user, :carrier, :owner, carrier:)
 
     carrier_sign_in(user)

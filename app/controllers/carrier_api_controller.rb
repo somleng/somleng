@@ -2,6 +2,7 @@ class CarrierAPIController < APIController
   self.responder = JSONAPIResponder
 
   before_action -> { doorkeeper_authorize!(:carrier_api) }
+  before_action :authorize_source_ip
 
   private
 
@@ -15,6 +16,13 @@ class CarrierAPIController < APIController
       **options,
       &block
     )
+  end
+
+  def authorize_source_ip
+    return if current_carrier.api_allowed_ip_addresses.empty?
+    return if current_carrier.api_allowed_ip_addresses.exists?(ip_address: request.remote_ip)
+
+    head :unauthorized
   end
 
   def current_carrier
