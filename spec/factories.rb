@@ -736,6 +736,12 @@ FactoryBot.define do
     end
   end
 
+  factory :carrier_api_allowed_ip_address do
+    association :oauth_application, factory: [ :oauth_application, :carrier ]
+
+    ip_address { "13.250.230.15" }
+  end
+
   factory :webhook_endpoint do
     association :oauth_application, factory: %i[oauth_application carrier]
     url { "https://somleng-carrier.free.beeceptor.com" }

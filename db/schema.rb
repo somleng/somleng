@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_105304) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_092537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -136,6 +136,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105304) do
     t.index ["sequence_number"], name: "index_call_data_records_on_sequence_number", unique: true, order: :desc
     t.index ["sip_invite_failure_status"], name: "index_call_data_records_on_sip_invite_failure_status"
     t.index ["sip_term_status"], name: "index_call_data_records_on_sip_term_status"
+  end
+
+  create_table "carrier_api_allowed_ip_addresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "oauth_application_id", null: false
+    t.inet "ip_address", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["oauth_application_id", "ip_address"], name: "idx_on_oauth_application_id_ip_address_a7fbbd43ab", unique: true
+    t.index ["sequence_number"], name: "index_carrier_api_allowed_ip_addresses_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "carriers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1009,6 +1019,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_105304) do
   add_foreign_key "balance_transactions", "phone_calls", on_delete: :nullify
   add_foreign_key "balance_transactions", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "call_data_records", "phone_calls"
+  add_foreign_key "carrier_api_allowed_ip_addresses", "oauth_applications", on_delete: :cascade
   add_foreign_key "carriers", "tariff_packages", column: "default_tariff_package_id", on_delete: :nullify
   add_foreign_key "destination_groups", "carriers", on_delete: :cascade
   add_foreign_key "destination_prefixes", "destination_groups", on_delete: :cascade

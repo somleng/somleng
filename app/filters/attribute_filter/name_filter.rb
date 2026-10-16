@@ -7,8 +7,7 @@ module AttributeFilter
     def apply
       return super if filter_params.blank?
 
-      arel_table = super.arel_table
-      super.where(arel_table[:name].matches("%#{filter_params.fetch(:name)}%"))
+      FuzzySearch.new(super, column: :name).apply(filter_params.fetch(:name))
     end
   end
 end

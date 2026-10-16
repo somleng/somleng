@@ -26,7 +26,7 @@ module Dashboard
     def permitted_params
       params.require(:carrier_settings).permit(
         :name, :country, :logo, :favicon, :webhook_url, :enable_webhooks, :website, :subdomain,
-        :custom_app_host, :custom_api_host, :default_tariff_package_id
+        :custom_app_host, :custom_api_host, :default_tariff_package_id, :api_allowed_ip_addresses
       )
     end
 

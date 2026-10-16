@@ -62,5 +62,19 @@ RSpec.describe CarrierSettingsForm do
 
       expect(form.errors[:website]).to be_empty
     end
+
+    it "validates api allowed ip addresses" do
+      form = CarrierSettingsForm.new(api_allowed_ip_addresses: "96.9.66.18, 96.9.66.19")
+
+      form.valid?
+
+      expect(form.errors[:source_ip_addresses]).to be_empty
+
+      form.api_allowed_ip_addresses = "96.9.66.18, 96.9.66.19, 96.9.66.256"
+
+      form.valid?
+
+      expect(form.errors[:api_allowed_ip_addresses]).to be_present
+    end
   end
 end

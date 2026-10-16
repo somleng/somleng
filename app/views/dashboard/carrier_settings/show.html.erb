@@ -54,16 +54,8 @@
 
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Developers</h5>
+        <h5 class="card-title">Webhooks</h5>
         <%= show_for(@resource) do |f| %>
-          <%= f.attribute(:api_keys) do %>
-            <%= external_link_to(
-              "Manage",
-              dashboard_carrier_settings_api_keys_path(filter: { active: true }),
-              title: "Manage API keys"
-            ) %>
-          <% end %>
-
           <%= f.attribute :webhook_url, label: "Webhook URL" do %>
             <% if @resource.webhooks_enabled? %>
               <code>
@@ -74,6 +66,28 @@
 
           <%= f.attribute :webhook_signing_secret do %>
             <%= mask_content(@resource.webhook_endpoint.signing_secret) if @resource.webhooks_enabled? %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Developers</h5>
+
+        <%= show_for(@resource.decorated) do |f| %>
+          <% if policy(:carrier_api_key).index? %>
+            <%= f.attribute(:api_keys) do %>
+              <%= external_link_to(
+                "Manage",
+                dashboard_carrier_settings_api_keys_path(filter: { active: true }),
+                title: "Manage API keys"
+              ) %>
+            <% end %>
+          <% end %>
+
+          <%= f.attribute :api_allowed_ip_addresses do %>
+            <%= f.object.api_allowed_ip_addresses %>
           <% end %>
         <% end %>
       </div>
