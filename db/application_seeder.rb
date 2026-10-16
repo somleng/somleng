@@ -53,7 +53,6 @@ class ApplicationSeeder
       URL:                      #{url_helpers.dashboard_root_url(host: carrier.subdomain_host)}
       Carrier User Email:       #{carrier_owner.email}
       Carrier User Password:    #{USER_PASSWORD}
-      Carrier API Key:          #{carrier.api_key}
     INFO
   end
 

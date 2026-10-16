@@ -21,7 +21,6 @@ RSpec.describe OnboardCarrier do
     expect(carrier).to have_attributes(
       name: "AT&T",
       country_code: "US",
-      api_key: be_present,
       oauth_application: be_present,
       restricted: true,
       subdomain: "at-t",

@@ -86,7 +86,7 @@ FactoryBot.define do
     trait :with_oauth_application do
       after(:build) do |carrier|
         if carrier.oauth_application.blank?
-          carrier.oauth_application = build(:oauth_application, owner: carrier)
+          carrier.oauth_application = build(:oauth_application, :carrier, owner: carrier)
           build(:carrier_api_key, oauth_application: carrier.oauth_application)
         end
       end
@@ -731,7 +731,6 @@ FactoryBot.define do
   factory :carrier_api_key do
     association :oauth_application, factory: [ :oauth_application, :carrier ]
     scopes { :carrier_api }
-
 
     trait :revoked do
       revoked_at { Time.current }

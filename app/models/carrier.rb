@@ -46,10 +46,6 @@ class Carrier < ApplicationRecord
     ISO3166::Country.new(country_code)
   end
 
-  def api_key
-    oauth_application.access_tokens.last.token
-  end
-
   def webhooks_enabled?
     webhook_endpoint&.enabled?
   end

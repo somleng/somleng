@@ -5,7 +5,7 @@ RSpec.describe DeleteExpiredCarriers do
     expired_user = create_carrier_owner(created_at: 7.days.ago)
     new_user = create_carrier_owner(created_at: Time.current)
     confirmed_user = create_carrier_owner(created_at: 7.days.ago, confirmed_at: Time.current)
-    invited_owner = create_carrier_owner(created_at: 7.days.ago, invitation_created_at: 7.days.ago)
+    create_carrier_owner(created_at: 7.days.ago, invitation_created_at: 7.days.ago)
 
     carrier_with_multiple_owners = create(:carrier)
     owner_1 = create_carrier_owner(carrier: carrier_with_multiple_owners, created_at: 10.days.ago, confirmed_at: 10.days.ago)
@@ -13,10 +13,10 @@ RSpec.describe DeleteExpiredCarriers do
 
     DeleteExpiredCarriers.call
 
-    expect(User.find_by(id: expired_user.id)).to eq(nil)
-    expect(Carrier.find_by(id: expired_user.carrier_id)).to eq(nil)
-    expect(Doorkeeper::Application.find_by(id: expired_user.carrier.oauth_application.id)).to eq(nil)
-    expect(Doorkeeper::AccessToken.find_by(token: expired_user.carrier.api_key)).to eq(nil)
+    expect(User.find_by(id: expired_user.id)).to be_nil
+    expect(Carrier.find_by(id: expired_user.carrier_id)).to be_nil
+    expect(expired_user.carrier.oauth_application).to be_nil
+    expect(expired_user.carrier.api_keys).to be_blank
 
     expect(User.find_by(id: new_user.id)).to eq(new_user)
     expect(User.find_by(id: confirmed_user.id)).to eq(confirmed_user)
@@ -27,7 +27,7 @@ RSpec.describe DeleteExpiredCarriers do
   def create_carrier_owner(**user_attributes)
     created_at = user_attributes.fetch(:created_at) { 7.days.ago }
     carrier = user_attributes.fetch(:carrier) { create(:carrier, created_at:) }
-    user = create(
+    create(
       :user,
       :carrier,
       carrier:,

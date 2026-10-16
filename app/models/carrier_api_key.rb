@@ -6,6 +6,8 @@ class CarrierAPIKey < Doorkeeper::AccessToken
   belongs_to :oauth_application, foreign_key: :application_id
   delegate :active?, to: :access_token
 
+  before_create :set_defaults
+
   class << self
     delegate :active, :revoked, to: :access_token_scope
 
@@ -20,5 +22,9 @@ class CarrierAPIKey < Doorkeeper::AccessToken
 
   def access_token
     @access_token ||= AccessToken.new(self)
+  end
+
+  def set_defaults
+    self.scopes = oauth_application.scopes
   end
 end
