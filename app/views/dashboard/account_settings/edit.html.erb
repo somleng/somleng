@@ -2,21 +2,24 @@
 
 <div class="card-body">
   <%= simple_form_for(@resource, url: dashboard_account_settings_path, wrapper: :input_group) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
-
+    <%= page_sections_container do %>
+      <%= page_section("General") do %>
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :name, maxlength: 128, hint: "A friendly name for your account" %>
+            <%= f.input(:name, maxlength: 128, hint: "A friendly name for your account") %>
           </div>
         </div>
+      <% end %>
 
+      <%= page_section("Text to Speech") do %>
+        <%= render("default_tts_configuration_fields", f: f) %>
+      <% end %>
+
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
+        </div>
       </div>
-    </div>
-
-    <%= render("default_tts_configuration_fields", f: f) %>
-
-    <%= f.button :submit %>
+    <% end %>
   <% end %>
 </div>

@@ -1,73 +1,80 @@
-<% assignment_index = 0 %>
-<% group_collection_by(collection) { _1.category.type }.each do |(category_type, assignments)| %>
-  <div class="card mb-3">
-    <div class="card-body">
-      <h5 class="card-title">
-        <%= category_type.to_s.humanize %>
-      </h5>
-      <div class="row">
+<%= page_sections_container do %>
+  <% assignment_index = 0 %>
+
+  <% group_collection_by(collection) { it.category.type }.each do |(category_type, assignments)| %>
+    <%= page_section(category_type.to_s.humanize) do %>
+      <%= tag.div(class: "row") do %>
         <% assignments.each do |assignment| %>
-          <div class="col">
+          <%= tag.div(class: "col") do %>
             <%= form.simple_fields_for(collection_method, assignment, index: assignment_index) do |assignment_form| %>
-              <div class="card <%= "#{assignment.category.value.dasherize}-line-item" %>" data-controller="toggle-input" data-tariff-package-selection-target="tariffPlanInputGroup">
-                <div class="card-body">
-                  <h6 class="card-title">
-                    <div class="row">
-                      <div class="col-sm-9">
-                        <% if assignment.category.direction.inbound? %>
-                          <i class="fa-solid fa-arrow-left"></i>
-                        <% elsif assignment.category.direction.outbound? %>
-                          <i class="fa-solid fa-arrow-right"></i>
-                        <% end %>
-                        <%= assignment.category.direction.to_s.humanize %>
-                        <span class="text-danger" data-toggle-input-target="hint" data-bs-toggle="tooltip" title="<%= assignment.category_text %> are blocked">
-                          <i class="fa-solid fa-ban"></i>
-                        </span>
-                      </div>
-                      <div class="col-sm-3 d-flex justify-content-end">
-                        <%= assignment_form.input(
-                          :enabled,
-                          as: :boolean,
-                          wrapper: :custom_boolean_switch,
-                          input_html: {
-                            class: "toggle-input",
-                            data: {
-                              toggle_input_target: "enabledInput",
-                              action: "toggle-input#toggleEnabled"
-                            }
-                          }
-                        ) %>
-                      </div>
-                    </div>
-                  </h6>
-
-                  <%= assignment_form.input(
-                    :plan_id,
-                    collection: assignment.plans_options_for_select,
-                    prompt: true,
-                    required: true,
-                    include_blank: true,
-                    hint_html: { class: "text-danger", data: { change_me: "bar" } },
-                    input_html: {
-                      class: "plan-id-input",
-                      data: {
-                        controller: "enhanced-select",
-                        action: "change->tariff-package-selection#changeTariffPlan",
-                        category: assignment.category,
-                        toggle_input_target: "input"
-                      }
+              <%= page_section(
+                -> {
+                  safe_join(
+                    [
+                      if assignment.category.direction.inbound?
+                        tag.i(class: "fa-solid fa-arrow-left")
+                      elsif assignment.category.direction.outbound?
+                        tag.i(class: "fa-solid fa-arrow-right")
+                      end,
+                      assignment.category.direction.to_s.humanize,
+                      tag.span(
+                        class: "text-danger",
+                        data: {
+                          toggle_input_target: "hint",
+                          bs_toggle: "tooltip",
+                          title: "#{assignment.category_text} are blocked"
+                        }
+                      ) do
+                        tag.i(class: "fa-solid fa-ban")
+                      end
+                    ].compact
+                  )
+                },
+                actions: assignment_form.input(
+                  :enabled,
+                  as: :boolean,
+                  wrapper: :inline_boolean_switch,
+                  input_html: {
+                    class: "toggle-input",
+                    data: {
+                      toggle_input_target: "enabledInput",
+                      action: "toggle-input#toggleEnabled"
                     }
-                  ) %>
+                  }
+                ),
+                class: "#{assignment.category.value.dasherize}-line-item",
+                data: {
+                  controller: "toggle-input",
+                  tariff_package_selection_target: "tariffPlanInputGroup"
+                }
+              ) do %>
+                <%= assignment_form.input(
+                  :plan_id,
+                  collection: assignment.plans_options_for_select,
+                  prompt: true,
+                  required: true,
+                  include_blank: true,
+                  hint_html: { class: "text-danger", data: { change_me: "bar" } },
+                  input_html: {
+                    class: "plan-id-input",
+                    data: {
+                      controller: "enhanced-select",
+                      action: "change->tariff-package-selection#changeTariffPlan",
+                      category: assignment.category,
+                      toggle_input_target: "input"
+                    }
+                  }
+                ) %>
 
-                  <%= assignment_form.input(:category, as: :hidden) %>
-                  <%= assignment_form.input(:id, as: :hidden) %>
-                </div>
-              </div>
+                <%= assignment_form.input(:category, as: :hidden) %>
+                <%= assignment_form.input(:id, as: :hidden) %>
+              <% end %>
             <% end %>
-          </div>
+          <% end %>
           <% assignment_index +=1 %>
         <% end %>
-      </div>
-    </div>
-  </div>
+      <% end %>
+
+    <% end %>
+  <% end %>
 <% end %>

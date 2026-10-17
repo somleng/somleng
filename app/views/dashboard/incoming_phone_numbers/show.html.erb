@@ -18,10 +18,8 @@
 
 <div class="card-body">
   <%= show_for(incoming_phone_number) do |f| %>
-    <div id="properties" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Properties</h5>
-
+    <%= page_sections_container do %>
+      <%= page_section("Properties") do %>
         <%= f.attribute :id, label: "SID" do %>
           <code>
             <%= incoming_phone_number.id %>
@@ -53,13 +51,9 @@
             <%= external_link_to("Manage", dashboard_phone_number_path(phone_number))%>
           <% end %>
         <% end %>
-      </div>
-    </div>
+      <% end %>
 
-    <div id="billing" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Billing</h5>
-
+      <%= page_section("Billing") do %>
         <% if policy(:phone_number_plan).show? %>
           <%= f.association :phone_number_plan, label: "Plan" do |plan| %>
             <%= external_link_to("View", dashboard_phone_number_plan_path(incoming_phone_number.phone_number_plan))%>
@@ -73,13 +67,10 @@
         <%= f.association :phone_number_plan, label: "Status" do |plan| %>
           <%= status_badge(plan.status.text, color: plan.status_color) %>
         <% end %>
-      </div>
-    </div>
+      <% end %>
 
-    <% if incoming_phone_number.active? %>
-      <div id="voice-configuration" class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Voice</h5>
+      <% if incoming_phone_number.active? %>
+        <%= page_section("Voice") do %>
           <%= f.attribute :voice_url %>
           <%= f.attribute :voice_method %>
           <%= f.attribute :status_callback_url %>
@@ -90,12 +81,9 @@
               <%= external_link_to("View", dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View phone calls") %>
             <% end %>
           <% end %>
-        </div>
-      </div>
+        <% end %>
 
-      <div id="messaging-configuration" class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Messaging</h5>
+        <%= page_section("Messaging") do %>
           <%= f.attribute :sms_url %>
           <%= f.attribute :sms_method %>
           <%= f.association :messaging_service do |messaging_service| %>
@@ -107,8 +95,8 @@
               <%= external_link_to("View", dashboard_messages_path(filter: { phone_number_id: incoming_phone_number.id }), title: "View messages") %>
             <% end %>
           <% end %>
-        </div>
-      </div>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 </div>

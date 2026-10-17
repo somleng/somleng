@@ -2,9 +2,8 @@
 
 <div class="card-body">
   <%= simple_form_for([ :dashboard, @resource ]) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Properties</h5>
+    <%= page_sections_container do %>
+      <%= page_section("Properties") do %>
         <div class="row">
           <div class="col-sm-6">
             <%=
@@ -16,13 +15,9 @@
             %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Voice</h5>
-
+      <%= page_section("Voice") do %>
         <div class="row">
           <div class="col-sm-6">
             <%= f.input :voice_url, hint: "URL which returns TwiML. Must start with http or https" %>
@@ -48,22 +43,25 @@
             <%= f.input :sip_domain, hint: "Use to route the SIP traffic from the incoming calls to this endpoint" %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Messaging</h5>
-
+      <%= page_section("Messaging") do %>
         <div class="row">
           <div class="col-sm-6">
-              <%= f.input :messaging_service_id,
-                          collection: @resource.messaging_service_options_for_select,
-                          selected: @resource.messaging_service_id,
-                          prompt: "Select a messaging service",
-                          include_blank: true,
-                          hint: "Optionally select a ".html_safe + link_to("Messaging service", dashboard_messaging_services_path),
-                          input_html: { data: { controller: "enhanced-select" } } %>
+            <%= f.input(
+              :messaging_service_id,
+              collection: @resource.messaging_service_options_for_select,
+              selected: @resource.messaging_service_id,
+              prompt: "Select a messaging service",
+              include_blank: true,
+              hint: "Optionally select a ".html_safe + link_to("Messaging service", dashboard_messaging_services_path),
+              input_html: {
+                data: {
+                  controller:
+                  "enhanced-select"
+                }
+              }
+            ) %>
           </div>
         </div>
 
@@ -76,10 +74,14 @@
             <%= f.input :sms_method, collection: IncomingPhoneNumber.sms_method.values, include_blank: false %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <%= f.button :submit %>
-    <%= link_to("Cancel", :back, class: "btn btn-secondary") %>
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
+          <%= link_to("Cancel", :back, class: "btn btn-secondary") %>
+        </div>
+      </div>
+    <% end %>
   <% end %>
 </div>

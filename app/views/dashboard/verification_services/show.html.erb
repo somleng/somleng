@@ -8,12 +8,14 @@
   <% end %>
 <% end %>
 
-
-<div class="card-body" data-controller="verification-services">
-  <div class="card mb-3"">
-    <div class="card-body">
-      <h5 class="card-title">General</h5>
-
+<%= tag.div(
+  class: "card-body",
+  data: {
+    controller: "verification-services"
+  }
+) do %>
+  <%= page_sections_container do %>
+    <%= page_section("General") do %>
       <%= show_for(@resource) do |f| %>
         <%= f.attribute :id, label: "SID" do %>
           <code>
@@ -65,6 +67,6 @@
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
       <% end %>
-    </div>
-  </div>
-</div>
+    <% end %>
+  <% end %>
+<% end %>

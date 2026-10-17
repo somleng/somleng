@@ -10,12 +10,8 @@
       }
     }
   ) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">
-          General
-        </h5>
-
+    <%= page_sections_container do %>
+      <%= page_section("General") do %>
         <div class="row">
           <div class="col-sm-6">
             <%= f.input(
@@ -48,38 +44,37 @@
             <%= f.input(:description, as: :text) %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body nested-form-group">
-        <h5 class="card-title">
-          Tiers
-        </h5>
-
-        <%= turbo_frame_tag("tiers") do %>
-          <% f.object.retained_tiers.each_with_index do |plan_tier, index| %>
-            <%= f.simple_fields_for(:tiers, plan_tier, index:) do |plain_tier_form| %>
-              <%= render("dashboard/tariff_plan_tiers/fields", form: plain_tier_form) %>
+      <%= page_section("Tiers", class: "nested-form-group") do %>
+        <%= page_sections_container do %>
+          <%= turbo_frame_tag("tiers-stream", class: "d-flex flex-column gap-3") do %>
+            <% f.object.retained_tiers.each_with_index do |plan_tier, index| %>
+              <%= f.simple_fields_for(:tiers, plan_tier, index:) do |plain_tier_form| %>
+                <%= render("dashboard/tariff_plan_tiers/fields", form: plain_tier_form) %>
+              <% end %>
             <% end %>
           <% end %>
+
+          <div class="text-center">
+            <%= link_to(
+              new_dashboard_tariff_plan_tier_path,
+              class: "btn btn-outline-success",
+              title: "Add Tier",
+              data: { turbo_stream: true }) do %>
+                <i class="fa-solid fa-plus"></i>
+                Add Tier
+            <% end %>
+          </div>
         <% end %>
+      <% end %>
 
-        <div class="text-center">
-          <%= link_to(
-            new_dashboard_tariff_plan_tier_path,
-            class: "btn btn-outline-success",
-            title: "Add Tier",
-            data: { turbo_stream: true }) do %>
-              <i class="fa-solid fa-plus"></i>
-              Add Tier
-          <% end %>
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
+          <%= link_to_cancel %>
         </div>
-
       </div>
-    </div>
-
-    <%= f.button :submit %>
-    <%= link_to_cancel %>
+    <% end %>
   <% end %>
 </div>

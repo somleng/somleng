@@ -125,7 +125,7 @@ RSpec.describe "Accounts" do
       )
     end
 
-    within("#tts") do
+    within("#text-to-speech") do
       expect(page).to have_link(
         "View",
         href: dashboard_tts_events_path(filter: { account_id: account.id })

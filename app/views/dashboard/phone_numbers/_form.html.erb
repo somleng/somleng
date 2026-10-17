@@ -1,61 +1,48 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
+    <%= page_sections_container do %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
-
+      <%= page_section("General") do %>
         <div class="row">
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :number,
-                required: true,
-                disabled: resource.persisted?,
-                hint: resource.new_record? && "Phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
-              ) %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Properties</h5>
-
-        <div class="row">
-          <%=
-            f.input(
-              :visibility,
-              as: :radio_buttons,
+            <%= f.input(
+              :number,
               required: true,
-              wrapper: :vertical_collection_novalidate,
-              collection: resource.visibility_options_for_select
-            )
-          %>
+              disabled: resource.persisted?,
+              hint: resource.new_record? && "Phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
+            ) %>
+          </div>
+        </div>
+      <% end %>
+
+      <%= page_section("Properties") do %>
+        <div class="row">
+          <%= f.input(
+            :visibility,
+            as: :radio_buttons,
+            required: true,
+            wrapper: :vertical_collection_novalidate,
+            collection: resource.visibility_options_for_select
+          ) %>
         </div>
 
         <div class="row">
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :type,
-                prompt: "Please Select",
-                required: true,
-                collection: PhoneNumber.type.values.map { |t| [t.text, t] }
-              )
-            %>
+            <%= f.input(
+              :type,
+              prompt: "Please Select",
+              required: true,
+              collection: PhoneNumber.type.values.map { |t| [t.text, t] }
+            ) %>
           </div>
 
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :country,
-                only: resource.possible_countries,
-                include_blank: false,
-                prompt: "Automatically select from phone number"
-              )
-            %>
+            <%= f.input(
+              :country,
+              only: resource.possible_countries,
+              include_blank: false,
+              prompt: "Automatically select from phone number"
+            ) %>
           </div>
         </div>
 
@@ -77,15 +64,13 @@
 
         <div class="row">
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :price,
-                as: :decimal,
-                prepend: resource.new_record? ? resource.carrier.billing_currency.symbol : resource.phone_number.currency.symbol,
-                append: resource.new_record? ? resource.carrier.billing_currency.iso_code : resource.phone_number.currency.iso_code,
-                hint: "The monthly amount to charge customers for this phone number"
-              )
-            %>
+            <%= f.input(
+              :price,
+              as: :decimal,
+              prepend: resource.new_record? ? resource.carrier.billing_currency.symbol : resource.phone_number.currency.symbol,
+              append: resource.new_record? ? resource.carrier.billing_currency.iso_code : resource.phone_number.currency.iso_code,
+              hint: "The monthly amount to charge customers for this phone number"
+            ) %>
           </div>
         </div>
 
@@ -134,14 +119,10 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <% if resource.persisted? && resource.phone_number.available? %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Account</h5>
-
+      <% if resource.persisted? && resource.phone_number.available? %>
+        <%= page_section("Account") do %>
           <div class="row">
             <div class="col-sm-6">
               <%= f.input :account_id,
@@ -151,10 +132,14 @@
               %>
             </div>
           </div>
+        <% end %>
+      <% end %>
+
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
         </div>
       </div>
     <% end %>
-
-    <%= f.button :submit %>
   <% end %>
 </div>

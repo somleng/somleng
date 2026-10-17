@@ -10,10 +10,8 @@
 
 <div class="card-body">
   <%= show_for(@resource.decorated) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Tariff Calculator</h5>
-
+    <%= page_sections_container do %>
+      <%= page_section("Tariff Calculator") do %>
         <%= form_with url: url_for(action: :show), scope: :tariff_calculator, method: :get, local: true do |form| %>
           <% form_submitted = @tariff_calculator_form.destination.present? %>
           <% result = DestinationTariffDecorator.new(@tariff_calculator_form.result) if @tariff_calculator_form.result.present? %>
@@ -41,13 +39,9 @@
           <%= form.submit "Calculate Tariff", name: nil, class: "btn btn-primary float-right" %>
           <%= link_to "Clear", url_for(action: :show), class: "btn btn-secondary float-left" %>
         <% end %>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
-
+      <%= page_section("General") do %>
         <%= f.attribute :id, label: "SID" do %>
           <code>
             <%= f.object.id %>
@@ -80,7 +74,7 @@
         <% end %>
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
-      </div>
-    </div>
+      <% end %>
+    <% end %>
   <% end %>
 </div>
