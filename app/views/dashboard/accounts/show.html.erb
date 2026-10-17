@@ -51,10 +51,16 @@
       <% end %>
     <% end %>
 
-    <%= page_section("Owner", actions: (render("shared/reset_2fa_page_action", user: @resource) if @resource.owner.present?)) do %>
-      <%= show_for(@resource) do |f| %>
-        <%= f.attribute :name, value: @resource.owner&.name %>
-        <%= f.attribute :email, value: @resource.owner&.email %>
+    <% if @resource.customer_managed? && @resource.owner.present? %>
+      <%= page_section(
+        "Owner",
+        actions: (render("shared/reset_2fa_page_action", user: @resource.owner) if TwoFactorAuthenticationPolicy.new(current_user, @resource.owner).destroy?)
+      ) do %>
+        <%= show_for(@resource.owner.decorated) do |f| %>
+          <%= f.attribute(:name) %>
+          <%= f.attribute(:email) %>
+          <%= f.attribute(:otp_required_for_login, content_html: { id: "otp-required-for-login" }) %>
+        <% end %>
       <% end %>
     <% end %>
 

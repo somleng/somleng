@@ -145,6 +145,42 @@ RSpec.describe "Accounts" do
     end
   end
 
+  it "Reset 2FA for the account owner" do
+    carrier = create(:carrier)
+    account = create(
+      :account,
+      :customer_managed,
+      carrier:,
+      account_memberships: [
+        build(
+          :account_membership,
+          :owner,
+          user: create(
+            :user,
+            :otp_required_for_login,
+            email: "john.doe@example.com"
+          )
+        )
+      ]
+    )
+    user = create(:user, :admin, :carrier, carrier:)
+    stub_rating_engine_balance_request
+
+    carrier_sign_in(user)
+    visit dashboard_account_path(account)
+
+    within("#otp-required-for-login") do
+      expect(page).to have_text("Yes")
+    end
+
+    click_on("Reset 2FA")
+
+    expect(page).to have_text("2FA was successfully reset for john.doe@example.com")
+    within("#otp-required-for-login") do
+      expect(page).to have_text("No")
+    end
+  end
+
   it "Update an account" do
     carrier = create(:carrier)
     user = create(:user, :carrier, carrier:)
