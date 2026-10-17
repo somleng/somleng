@@ -1,11 +1,17 @@
 <%= button_to(
   dashboard_two_factor_authentication_path(user),
-  class: "dropdown-item",
+  class: "btn btn-outline-secondary",
   form_class: "d-inline",
-  title: "The user will be prompted to reset their 2FA next time they log in",
-  data: { toggle: "tooltip", placement: "top" },
+  title: local_assigns.fetch(:title, "Reset 2FA. The user will be prompted to reset their 2FA next time they log in"),
+  data: {
+    bs_toggle: :tooltip,
+  },
   method: :delete,
-  form: { data: { turbo_confirm: "Are you sure?" }}
+  form: {
+    data: {
+      turbo_confirm: "Are you sure?"
+    }
+  }
   ) do %>
-  <i class="fa-solid fa-lock-open mfe-2"></i> Reset 2FA
+  <i class="fa-solid fa-lock-open mfe-2"></i>
 <% end %>

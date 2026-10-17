@@ -6,7 +6,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
       user = build_stubbed(:user, otp_required_for_login: false)
       policy = TwoFactorAuthenticationPolicy.new(user, nil)
 
-      expect(policy.new?).to eq(true)
+      expect(policy.new?).to be(true)
     end
 
     it "denies access" do
@@ -14,7 +14,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(user, nil)
 
-      expect(policy.new?).to eq(false)
+      expect(policy.new?).to be(false)
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(user, user)
 
-      expect(policy.destroy?).to eq(false)
+      expect(policy.destroy?).to be(false)
     end
 
     it "denies access for carrier admins" do
@@ -33,7 +33,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(user, carrier_user)
 
-      expect(policy.destroy?).to be_falsey
+      expect(policy.destroy?).to be(false)
     end
 
     it "denies access for users outside of carrier" do
@@ -42,7 +42,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(user, carrier_user)
 
-      expect(policy.destroy?).to eq(false)
+      expect(policy.destroy?).to be(false)
     end
 
     it "denies access for users whos 2FA is already disabled" do
@@ -51,7 +51,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(user, carrier_user)
 
-      expect(policy.destroy?).to eq(false)
+      expect(policy.destroy?).to be(false)
     end
 
     it "allows access for carrier owners" do
@@ -60,7 +60,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(user, carrier_user)
 
-      expect(policy.destroy?).to eq(true)
+      expect(policy.destroy?).to be(true)
     end
 
     it "allows access access to account owners" do
@@ -69,7 +69,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(account_membership.user, other_account_membership.user)
 
-      expect(policy.destroy?).to eq(true)
+      expect(policy.destroy?).to be(true)
     end
 
     it "denies access access to account admins" do
@@ -78,7 +78,7 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(account_membership.user, other_account_membership.user)
 
-      expect(policy.destroy?).to be_falsey
+      expect(policy.destroy?).to be(false)
     end
 
     it "denies access to users outside of account" do
@@ -87,7 +87,29 @@ RSpec.describe TwoFactorAuthenticationPolicy, type: :policy do
 
       policy = TwoFactorAuthenticationPolicy.new(account_membership.user, other_account_membership.user)
 
-      expect(policy.destroy?).to eq(false)
+      expect(policy.destroy?).to be(false)
+    end
+
+    it "denies access to carrier owners resetting non account owners" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      account_membership = create(:account_membership, :admin, account:)
+      user = create(:user, :carrier, :owner, carrier:)
+
+      policy = TwoFactorAuthenticationPolicy.new(user, account_membership.user)
+
+      expect(policy.destroy?).to be(false)
+    end
+
+    it "denies access to carrier members resetting account owners" do
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      account_membership = create(:account_membership, :owner, account:)
+      user = create(:user, :carrier, :member, carrier:)
+
+      policy = TwoFactorAuthenticationPolicy.new(user, account_membership.user)
+
+      expect(policy.destroy?).to be(false)
     end
   end
 end

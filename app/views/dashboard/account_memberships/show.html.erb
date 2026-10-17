@@ -3,15 +3,8 @@
     <%= render("shared/edit_resource_page_action", path: edit_dashboard_account_membership_path(@resource)) %>
   <% end %>
 
-  <% if TwoFactorAuthenticationPolicy.new(pundit_user, @resource.user).destroy? %>
-    <div class="btn-group">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu-account-membership-actions" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa-solid fa-cog"></i>
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdown-menu-account-membership-actions">
-        <%= render("shared/reset_2fa_page_action", user: @resource.user) %>
-      </div>
-    </div>
+  <% if TwoFactorAuthenticationPolicy.new(current_user, @resource.user).destroy? %>
+    <%= render("shared/reset_2fa_page_action", user: @resource.user) %>
   <% end %>
 
   <% if policy(@resource).destroy? %>
@@ -20,7 +13,7 @@
 <% end %>
 
 <div class="card-body">
-  <% if UserInvitationPolicy.new(pundit_user, @resource.user).update? %>
+  <% if UserInvitationPolicy.new(current_user, @resource.user).update? %>
     <div class="alert alert-info" role="alert">
       <i class="fa-solid fa-info-circle"></i> The user has not yet accepted their invite.
       <%= button_to("Resend", dashboard_user_invitation_path(@resource.user), class: "btn btn-link p-0", form_class: "d-inline", method: :patch) %>

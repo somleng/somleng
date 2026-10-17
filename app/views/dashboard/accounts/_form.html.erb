@@ -1,21 +1,21 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource], wrapper: :input_group) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+    <%= page_sections_container do %>
 
+      <%= page_section("General") do %>
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :name, maxlength: 128, hint: "A friendly name for the account", disabled: policy(resource).customer_managed? %>
+            <%= f.input(
+              :name,
+              maxlength: 128,
+              hint: "A friendly name for the account",
+              disabled: policy(resource).customer_managed?
+            ) %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Owner</h5>
-
+      <%= page_section("Owner") do %>
         <div class="row">
           <div class="col-sm-6">
             <%= f.input :owner_name, hint: "Specify an owner to make the account customer managed. The owner will receive an invitation email. This cannot be undone.", disabled: policy(resource).customer_managed? %>
@@ -25,13 +25,9 @@
             <%= f.input :owner_email, disabled: policy(resource).customer_managed? %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Voice</h5>
-
+      <%= page_section("Voice") do %>
         <div class="row">
           <div class="col-sm-6">
             <%= f.input(
@@ -55,27 +51,31 @@
             <%= f.input :calls_per_second, as: :numeric, hint: "Restrict the number of calls per second for the account" %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <%=
-      render(
-        "dashboard/account_settings/default_tts_configuration_fields",
-        f: f,
-        disabled: policy(resource).customer_managed?
-      )
-    %>
+      <%= page_section("Text to Speech") do %>
+        <%=
+          render(
+            "dashboard/account_settings/default_tts_configuration_fields",
+            f: f,
+            disabled: policy(resource).customer_managed?
+          )
+        %>
+      <% end %>
 
-    <div class="card mb-3" data-controller="tariff-package-selection toggle-form-section" data-tariff-package-selection-plans-value="<%= f.object.tariff_plans_by_category.to_json %>">
-      <div class="card-body">
-        <h5 class="card-title">Billing</h5>
-
+      <%= page_section(
+        "Billing",
+        data: {
+          controller: "tariff-package-selection toggle-form-section",
+          tariff_package_selection_plans_value: f.object.tariff_plans_by_category.to_json
+        }
+      ) do %>
         <div class="row">
           <div class="col-sm-6">
             <%= f.input(
               :billing_enabled,
               as: :boolean,
-              wrapper: :custom_boolean_switch,
+              wrapper: :boolean_switch,
               input_html: {
                 data: {
                   toggle_form_section_target: "enabledInput",
@@ -86,7 +86,11 @@
           </div>
         </div>
 
-        <div data-toggle-form-section-target="container">
+        <%= tag.div(
+          data: {
+            toggle_form_section_target: "container"
+          }
+        ) do %>
           <div class="row">
             <div class="col-sm-6">
               <%= f.input :billing_mode, include_blank: false, input_html: { data: { controller: "enhanced-select" } } %>
@@ -119,22 +123,27 @@
             collection: f.object.tariff_plan_subscriptions,
             collection_method: :tariff_plan_subscriptions
           ) %>
-        </div>
-      </div>
-    </div>
+        <% end  %>
+      <% end %>
 
-    <div id="danger-zone" class="card border-danger mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Danger Zone</h5>
-
+      <%= page_section("Danger Zone", class: "border-danger") do %>
         <div class="row">
           <div class="col-sm-6">
-            <%= f.input :enabled, as: :boolean, wrapper: :custom_boolean_switch, hint: "Accounts which are disabled are blocked from accessing the API" %>
+            <%= f.input(
+              :enabled,
+              as: :boolean,
+              wrapper: :boolean_switch,
+              hint: "Accounts which are disabled are blocked from accessing the API"
+            ) %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <%= f.button :submit %>
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
+        </div>
+      </div>
+    <% end %>
   <% end %>
 </div>

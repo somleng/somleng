@@ -8,35 +8,44 @@
   <% end %>
 
   <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, data: { turbo: false } }) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+    <%= page_sections_container do %>
+      <%= page_section("General") do %>
+        <%= f.input(:name, required: false, autofocus: true) %>
+        <%= f.input(:email) %>
 
+        <%= f.input(
+          :password,
+          hint: "Leave it blank if you don't want to change it",
+          required: false,
+          input_html: {
+            autocomplete: "new-password"
+          }
+        ) %>
 
-        <%= f.input :name, required: false, autofocus: true %>
-        <%= f.input :email %>
+        <%= f.input(
+          :password_confirmation,
+          required: false,
+          input_html: {
+            autocomplete: "new-password"
+          }
+        ) %>
 
-        <%= f.input :password,
-                    hint: "Leave it blank if you don't want to change it",
-                    required: false,
-                    input_html: { autocomplete: "new-password" } %>
+        <%= f.input(
+          :current_password,
+          hint: "We need your current password to confirm your changes",
+          required: true,
+          input_html: {
+            autocomplete: "current-password"
+          }
+        ) %>
+      <% end %>
 
-        <%= f.input :password_confirmation,
-                    required: false,
-                    input_html: { autocomplete: "new-password" } %>
-
-        <%= f.input :current_password,
-                    hint: "We need your current password to confirm your changes",
-                    required: true,
-                    input_html: { autocomplete: "current-password" } %>
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit, "Update" %>
+          <%= link_to("Cancel", :back, class: "btn btn-secondary") %>
+        </div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-6">
-        <%= f.button :submit, "Update" %>
-        <%= link_to("Cancel", :back, class: "btn btn-secondary") %>
-      </div>
-    </div>
+    <% end %>
   <% end %>
 </div>

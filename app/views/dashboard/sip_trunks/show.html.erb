@@ -10,9 +10,9 @@
 <div class="card-body">
   <% sip_trunk = @resource.decorated %>
   <%= show_for(sip_trunk) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+    <%= page_sections_container do %>
+
+      <%= page_section("General") do %>
         <%= f.attribute :name %>
         <%= f.attribute :authentication_mode, value: sip_trunk.authentication_mode.humanize %>
         <%= f.attribute :max_channels do %>
@@ -22,14 +22,10 @@
         <%= f.attribute :region_ip_address, value: sip_trunk.region.nat_ip %>
         <%= f.attribute :created_at, value: local_time(sip_trunk.created_at) %>
         <%= f.attribute :updated_at, value: local_time(sip_trunk.updated_at) %>
-      </div>
-    </div>
+      <% end %>
 
-    <% if @resource.authentication_mode.client_credentials? %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Client Credentials</h5>
-
+      <% if @resource.authentication_mode.client_credentials? %>
+        <%= page_section("Client Credentials") do %>
           <%= f.attribute :username do %>
             <code>
               <%= sip_trunk.username %>
@@ -43,14 +39,10 @@
               <%= AppSettings.fetch(:client_gateway_domain) %>
             </code>
           <% end %>
-        </div>
-      </div>
-    <% end %>
+        <% end %>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Inbound Dialing</h5>
-
+      <%= page_section("Inbound Dialing") do %>
         <% if sip_trunk.authentication_mode.ip_address? %>
           <%= f.attribute :inbound_source_ips_formatted, label: "Source IP addresses" %>
         <% end %>
@@ -62,13 +54,9 @@
         <% else %>
           <%= f.attribute :default_country_code, value: nil %>
         <% end %>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Outbound Dialing</h5>
-
+      <%= page_section("Outbound Dialing") do %>
         <% if sip_trunk.outbound_host.present? %>
           <%= f.attribute :outbound_host, label: "Host" %>
         <% end %>
@@ -80,7 +68,7 @@
             <%= sip_trunk.outbound_example_dial_string %>
           </code>
         <% end %>
-      </div>
-    </div>
+      <% end %>
+    <% end %>
   <% end %>
 </div>

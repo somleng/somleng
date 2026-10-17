@@ -1,16 +1,14 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource]) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Properties</h5>
+    <%= page_sections_container do %>
 
+      <%= page_section("Properties") do %>
         <div class="row">
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :name,
-                hint: "A friendly name for the messaging service"
-              ) %>
+            <%= f.input(
+              :name,
+              hint: "A friendly name for the messaging service"
+            ) %>
           </div>
 
           <% if current_user.carrier_user? %>
@@ -26,14 +24,10 @@
             </div>
           <% end %>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <% if resource.persisted? %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Sender Pool</h5>
-
+      <% if resource.persisted? %>
+        <%= page_section("Sender Pool") do %>
           <div class="row">
             <div class="col-sm-12">
               <%= f.input(
@@ -54,13 +48,14 @@
               ) %>
             </div>
           </div>
-        </div>
-      </div>
+        <% end %>
 
-      <div class="card mb-3" data-controller="messaging-service-integration">
-        <div class="card-body">
-          <h5 class="card-title">Integration</h5>
-
+        <%= page_section(
+          "Integration",
+          data: {
+            controller: "messaging-service-integration"
+          }
+        ) do %>
           <div class="row">
             <%= f.input(
               :inbound_message_behavior,
@@ -91,27 +86,27 @@
               <%= f.input :status_callback_url, hint: "Provide a URL to call via webhook to let you know the delivery status of your message. Must start with http or https" %>
             </div>
           </div>
-        </div>
-      </div>
+        <% end %>
 
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Content Settings</h5>
-
+        <%= page_section("Content Settings") do %>
           <div class="row">
             <div class="col-sm-6">
               <%= f.input(
                 :smart_encoding,
                 as: :boolean,
-                wrapper: :custom_boolean_switch,
+                wrapper: :boolean_switch,
                 hint: "Smart encoding detects Unicode characters that are easy to miss and replaces them with similar GSM encoded characters. This substitution helps ensure that your messages are segmented properly at 160 characters"
               ) %>
             </div>
           </div>
+        <% end %>
+      <% end %>
+
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
         </div>
       </div>
     <% end %>
-
-    <%= f.button :submit %>
   <% end %>
 </div>

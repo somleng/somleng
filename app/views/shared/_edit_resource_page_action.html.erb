@@ -1,3 +1,7 @@
-<%= link_to(path, class: "btn btn-light", title: local_assigns.fetch(:title, "Edit")) do %>
+<%= link_to(
+  path,
+  class: "btn btn-light",
+  title: local_assigns.fetch(:title, "Edit")
+) do %>
   <i class="fa-solid fa-edit"></i> <%= local_assigns[:text] %>
 <% end %>

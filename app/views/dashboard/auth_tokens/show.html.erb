@@ -3,14 +3,14 @@
     <%= button_to(
       dashboard_auth_token_path(@resource),
       params: { auth_token: { primary: true } },
-      class: "btn btn-outline-success",
+      class: "btn btn-outline-primary",
       form_class: "d-inline",
       title: "Promote to primary",
       data: { bs_toggle: "tooltip" },
       method: :patch,
       form: { data: { turbo_confirm: "⚠️ Warning: This will replace your current primary token and affect webhook signature signing." }}
       ) do %>
-      <i class="fa-solid fa-circle-arrow-up mfe-2"></i>
+      <i class="fa-solid fa-rotate mfe-2"></i>
     <% end %>
   <% end %>
 

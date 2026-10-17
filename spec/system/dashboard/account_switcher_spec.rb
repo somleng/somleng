@@ -15,7 +15,7 @@ RSpec.describe "Account Switcher" do
       click_on("Bob's Bananas")
     end
 
-    within("#accountSettings") do
+    within("#account-settings") do
       expect(page).to have_text("Bob's Bananas")
     end
   end

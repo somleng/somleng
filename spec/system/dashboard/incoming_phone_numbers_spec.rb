@@ -78,13 +78,13 @@ RSpec.describe "Incoming Phone Numbers" do
       expect(page).to have_text("Local")
     end
 
-    within("#voice-configuration") do
+    within("#voice") do
       expect(page).to have_text("https://www.example.com/voice.xml")
       expect(page).to have_text("POST")
       expect(page).to have_link("View", href: dashboard_phone_calls_path(filter: { phone_number_id: incoming_phone_number.id }))
     end
 
-    within("#messaging-configuration") do
+    within("#messaging") do
       expect(page).to have_text("https://www.example.com/sms.xml")
       expect(page).to have_text("GET")
       expect(page).to have_link("My Messaging Service", href: dashboard_messaging_service_path(messaging_service))
@@ -143,14 +143,14 @@ RSpec.describe "Incoming Phone Numbers" do
       expect(page).to have_text("My Awesome Phone Number")
     end
 
-    within("#voice-configuration") do
+    within("#voice") do
       expect(page).to have_text("https://www.example.com/voice.xml")
       expect(page).to have_text("GET")
       expect(page).to have_text("https://www.example.com/status_callback.xml")
       expect(page).to have_text("POST")
     end
 
-    within("#messaging-configuration") do
+    within("#messaging") do
       expect(page).to have_text("https://www.example.com/sms.xml")
       expect(page).to have_text("POST")
       expect(page).to have_link("My Messaging Service", href: dashboard_messaging_service_path(messaging_service))

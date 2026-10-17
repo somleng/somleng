@@ -21,6 +21,33 @@ module DashboardHelper
     end
   end
 
+  def page_sections_container(&)
+    tag.div(class: "d-flex flex-column gap-3") do
+      capture(&)
+    end
+  end
+
+  def page_section(title, actions: nil, **html_options, &)
+    tag.div(class: [ "card" ].concat(Array(html_options.delete(:class))), id: (title.parameterize unless title.respond_to?(:call)), **html_options) do
+      header_html = tag.div(class: "card-header d-flex justify-content-start align-items-center gap-1") do
+        title_html = title.respond_to?(:call) ? title.call : tag.h5(title)
+
+        if actions.present?
+          actions_html = tag.div(actions, class: "card-header-actions d-flex justify-content-end ms-auto")
+          safe_join([ title_html, actions_html ])
+        else
+          title_html
+        end
+      end
+
+      body_html = tag.div(class: "card-body") do
+        capture(&)
+      end
+
+      header_html + body_html
+    end
+  end
+
   def sidebar_nav(text, path, icon_class:, link_options: {})
     content_tag(:li, class: "nav-item") do
       sidebar_nav_class = "nav-link"

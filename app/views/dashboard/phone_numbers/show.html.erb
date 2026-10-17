@@ -12,10 +12,9 @@
   <% phone_number = @resource.decorated %>
 
   <%= show_for(phone_number) do |f| %>
-    <div id="general" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
+    <%= page_sections_container do %>
 
+      <%= page_section("General") do %>
         <%= f.attribute :number, value: phone_number.number_formatted  %>
         <% if phone_number.metadata.present? %>
           <%= f.attribute :metadata do %>
@@ -26,12 +25,9 @@
         <% end %>
         <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
         <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
-      </div>
-    </div>
+      <% end %>
 
-    <div id="billing" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Billing</h5>
+      <%= page_section("Billing") do %>
         <%= f.association :account, label: "Assigned to account" do |account| %>
           <%= external_link_to(account.name, dashboard_account_path(account)) %>
         <% end %>
@@ -43,13 +39,9 @@
         <%= f.attribute(:plans, label: "All Plans") do %>
           <%= external_link_to("View", dashboard_phone_number_plans_path(filter: { number: @resource.number.to_s }), title: "View all plans") %>
         <% end %>
-      </div>
-    </div>
+      <% end %>
 
-    <div id="properties" class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Properties</h5>
-
+      <%= page_section("Properties") do %>
         <%= f.attribute :visibility, value: phone_number.visibility_formatted %>
         <%= f.attribute :type, value: phone_number.type_formatted %>
 
@@ -66,7 +58,7 @@
         <%= f.attribute :longitude %>
 
         <%= f.attribute :price, value: phone_number.price.format %>
-      </div>
-    </div>
+      <% end %>
+    <% end %>
   <% end %>
 </div>

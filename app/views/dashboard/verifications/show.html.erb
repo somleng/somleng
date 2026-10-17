@@ -4,10 +4,8 @@
   <% verification = @resource.decorated %>
 
   <%= show_for(verification) do |f| %>
-    <div class="card mb-3"">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
-
+    <%= page_sections_container do %>
+      <%= page_section("General") do %>
         <%= f.attribute :id, label: "SID" do %>
           <code>
             <%= verification.id %>
@@ -44,23 +42,15 @@
         <%= f.attribute :created_at, value: local_time(verification.created_at) %>
         <%= f.attribute :approved_at, value: local_time(verification.approved_at) %>
         <%= f.attribute :expired_at, value: local_time(verification.expired_at) %>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3"">
-      <div class="card-body">
-        <h5 class="card-title">Delivery Attempts</h5>
-
+      <%= page_section("Delivery Attempts") do %>
         <%= render("delivery_attempts", verification:) %>
-      </div>
-    </div>
+      <% end %>
 
-    <div class="card mb-3"">
-      <div class="card-body">
-        <h5 class="card-title">Verification Attempts</h5>
-
+      <%= page_section("Verification Attempts") do %>
         <%= render("verification_attempts", verification:) %>
-      </div>
-    </div>
+      <% end %>
+    <% end %>
   <% end %>
 </div>

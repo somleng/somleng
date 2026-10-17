@@ -1,40 +1,51 @@
 <div class="card-body">
-  <%= simple_form_for([:dashboard, resource]) do |f| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">General</h5>
-
+  <%= simple_form_for([ :dashboard, resource ]) do |f| %>
+    <%= page_sections_container do %>
+      <%= page_section("General") do %>
         <div class="row">
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :friendly_name,
-                hint: "Friendly name is the brand name that appears in the body of your verification messages, and helps users understand who the message is coming from. Max: #{pluralize(VerificationService::MAX_NAME_LENGTH, 'character')}.",
-                input_html: { maxlength: VerificationService::MAX_NAME_LENGTH }
-              ) %>
+            <%= f.input(
+              :friendly_name,
+              hint: "Friendly name is the brand name that appears in the body of your verification messages, and helps users understand who the message is coming from. Max: #{pluralize(VerificationService::MAX_NAME_LENGTH, 'character')}.",
+              input_html: { maxlength: VerificationService::MAX_NAME_LENGTH }
+            ) %>
           </div>
 
           <div class="col-sm-6">
-            <%= f.input(:code_length, collection: @resource.code_length_options_for_select, include_blank: false) %>
+            <%= f.input(
+              :code_length,
+              collection: @resource.code_length_options_for_select,
+              include_blank: false
+            ) %>
           </div>
 
           <div class="row">
             <% if current_user.carrier_user? %>
               <div class="col-sm-6">
-                  <%= f.input :account_id,
-                      collection: resource.account_options_for_select,
-                      selected: resource.account_id,
-                      disabled: resource.persisted?,
-                      prompt: "",
-                      input_html: { data: { controller: "enhanced-select" } }
-                    %>
+                <%= f.input(
+                  :account_id,
+                  collection: resource.account_options_for_select,
+                  selected: resource.account_id,
+                  disabled: resource.persisted?,
+                  prompt: "",
+                  input_html: {
+                    data: {
+                      controller: "enhanced-select"
+                    }
+                  }
+                ) %>
               </div>
             <% end %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
 
-    <%= f.button :submit %>
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
+          <%= link_to_cancel %>
+        </div>
+      </div>
+    <% end %>
   <% end %>
 </div>
