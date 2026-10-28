@@ -9,9 +9,9 @@ RSpec.describe PhoneNumberType do
       attribute :number, PhoneNumberType.new
     end
 
-    expect(klass.new(number: PhoneNumberType::PhoneNumber.new).number).to be_a(PhoneNumberType::PhoneNumber)
-    expect(klass.new(number: nil).number).to eq(nil)
-    expect(klass.new(number: "invalid").number).to eq(nil)
+    expect(klass.new(number: PhoneNumberType::PhoneNumber.new(value: "1234")).number).to be_a(PhoneNumberType::PhoneNumber)
+    expect(klass.new(number: nil).number).to be_nil
+    expect(klass.new(number: "invalid").number).to be_nil
     expect(klass.new(number: "1294").number).to have_attributes(
       value: "1294",
       e164?: false

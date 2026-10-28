@@ -6,7 +6,7 @@ class SMSGatewayForm
   attribute :sms_gateway, default: -> { SMSGateway.new }
   attribute :max_channels
   attribute :name
-  attribute :default_sender, PhoneNumberType.new
+  attribute :sender_id
 
   validates :name, presence: true
   validates :max_channels,
@@ -29,7 +29,7 @@ class SMSGatewayForm
       carrier: sms_gateway.carrier,
       name: sms_gateway.name,
       max_channels: sms_gateway.max_channels,
-      default_sender: sms_gateway.default_sender
+      sender_id: sms_gateway.sender_id
     )
   end
 
@@ -40,7 +40,7 @@ class SMSGatewayForm
       name:,
       max_channels:,
       carrier:,
-      default_sender:
+      sender_id:
     }
 
     sms_gateway.save!

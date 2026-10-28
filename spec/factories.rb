@@ -163,6 +163,21 @@ FactoryBot.define do
     trait :disconnected do
       after(:create, &:disconnect!)
     end
+
+    trait :passthrough do
+      sender_id { nil }
+      sender_id_behavior { :passthough }
+    end
+
+    trait :fallback do
+      sender_id { "1234" }
+      sender_id_behavior { :fallback }
+    end
+
+    trait :override do
+      sender_id { "1234" }
+      sender_id_behavior { :override }
+    end
   end
 
   factory :sms_gateway_channel_group do
