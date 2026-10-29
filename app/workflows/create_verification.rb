@@ -53,13 +53,12 @@ class CreateVerification < ApplicationWorkflow
   def build_message_schema(delivery_attempt)
     TwilioAPI::MessageRequestSchema.new(
       input_params: {
-        From: delivery_attempt.from.to_s,
         To: delivery_attempt.to.to_s,
         Body: delivery_attempt.verification.default_template.render_message
       },
       options: {
         account: delivery_attempt.verification.account,
-        sender: delivery_attempt.from
+        sender_id: delivery_attempt.from
       }
     )
   end

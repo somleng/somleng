@@ -1,9 +1,4 @@
-class SMSGatewayForm
-  include ActiveModel::Model
-  include ActiveModel::Attributes
-
-  extend Enumerize
-
+class SMSGatewayForm < ApplicationForm
   SENDER_ID_BEHAVIOR_HINTS = {
     passthrough: "Uses the client's provided sender ID without modification.",
     fallback: "Uses the gateway's default sender ID only if the client leaves it blank.",
@@ -16,6 +11,11 @@ class SMSGatewayForm
   attribute :max_channels
   attribute :name
   attribute :sender_id
+
+  enumerize :sender_id_behavior,
+            in: SMSGateway.sender_id_behavior.values,
+            default: :passthrough,
+            predicates: { prefix: true }
 
   validates :name, presence: true
   validates :max_channels,
@@ -30,9 +30,10 @@ class SMSGatewayForm
              alphanumeric_sender_id_format: {
               allow_numeric: true,
               allow_blank: true
+            },
+            originator_id_behavior: {
+              passthrough?: ->(form) { form.sender_id_behavior_passthrough? }
             }
-
-  enumerize :sender_id_behavior, in: SMSGateway.sender_id_behavior.values, default: :passthrough
 
   delegate :new_record?, :persisted?, :id, to: :sms_gateway
 

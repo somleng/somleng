@@ -8,7 +8,7 @@ class VerificationDeliveryAttempt < ApplicationRecord
   belongs_to :phone_call, optional: true
   belongs_to :phone_number, optional: true
 
-  attribute :from, PhoneNumberType.new
+  attribute :from
   attribute :to, PhoneNumberType.new
 
   def deliverable

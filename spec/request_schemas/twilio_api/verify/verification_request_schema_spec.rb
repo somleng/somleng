@@ -220,7 +220,7 @@ module TwilioAPI
           channel: "sms",
           to: "855715100987",
           delivery_attempt: {
-            from: sms_gateway.default_sender
+            from: sms_gateway.sender_id
           }
         )
       end
@@ -269,8 +269,8 @@ module TwilioAPI
 
       def create_verification_service(attributes = {})
         verification_service = create(:verification_service, attributes)
-        sms_gateway = create(:sms_gateway, carrier: verification_service.carrier, default_sender: generate(:phone_number))
-        sip_trunk = create(:sip_trunk, carrier: verification_service.carrier, default_sender: generate(:phone_number))
+        sms_gateway = create(:sms_gateway, :fallback, carrier: verification_service.carrier)
+        sip_trunk = create(:sip_trunk, :fallback, carrier: verification_service.carrier)
         channel_group = create(:sms_gateway_channel_group, sms_gateway:, route_prefixes: [])
         create(:sms_gateway_channel, slot_index: 1, channel_group:, sms_gateway:)
         [ verification_service, sms_gateway, sip_trunk ]

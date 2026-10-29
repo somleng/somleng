@@ -102,22 +102,11 @@
           </div>
 
           <div class="col-sm-6">
-            <%=
-              f.input(
-                :dial_string_prefix,
-                as: :numeric,
-                hint: "Numeric prefix applied to the beginning of the dial string"
-              ) %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6">
             <%= f.input(
-                :default_sender,
-                hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified. Must be a phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
-              )
-            %>
+              :dial_string_prefix,
+              as: :numeric,
+              hint: "Numeric prefix applied to the beginning of the dial string"
+            ) %>
           </div>
         </div>
 
@@ -137,6 +126,43 @@
               as: :boolean,
               wrapper: :boolean_switch,
               hint: "Prefixes the dial string with a plus (+)."
+            ) %>
+          </div>
+        </div>
+      <% end %>
+
+      <%= page_section(
+        "Caller ID Configuration",
+        data: {
+          controller: "conditional-field",
+          conditional_field_disable_when_value: "passthrough"
+        }
+      ) do %>
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input(
+              :caller_id_behavior,
+              label: "Behavior",
+              as: :radio_buttons,
+              required: true,
+              wrapper: :vertical_collection_novalidate,
+              collection: f.object.caller_id_behavior_options_for_select,
+              input_html: {
+                data: {
+                  conditional_field_target: "source",
+                  action: "change->conditional-field#toggle"
+                }
+              }
+            ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(
+              :caller_id,
+              hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified. Must be a phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873",
+              input_html: {
+                data: { conditional_field_target: "input" }
+              }
             ) %>
           </div>
         </div>

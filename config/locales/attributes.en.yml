@@ -3,6 +3,7 @@ en:
     voice_url: "Voice URL"
     status_callback_url: "Status callback URL"
     source_ip: "Source IP"
+    caller_id: "Caller ID"
     sender_id: "Sender ID"
     owner_name: "Owner's name"
     owner_email: "Owner's email"

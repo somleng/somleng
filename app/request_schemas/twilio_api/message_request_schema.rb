@@ -9,7 +9,7 @@ module TwilioAPI
            default: -> { SmartEncoding.new }
     option :message_destination_schema_rules,
            default: -> { MessageDestinationSchemaRules.new }
-    option :sender, optional: true
+    option :sender_id, optional: true
 
     option :url_validator, default: proc { URLValidator.new(allow_http: true) }
     option :account_billing_policy, default: -> { AccountBillingPolicy.new }
@@ -27,6 +27,8 @@ module TwilioAPI
     end
 
     rule(:From, :MessagingServiceSid) do |context:|
+      next if sender_id.present?
+
       if values[:From].blank? && values[:MessagingServiceSid].blank?
         next key(:From).failure("is required")
       end
@@ -48,8 +50,6 @@ module TwilioAPI
       else
         incoming_phone_numbers = account.incoming_phone_numbers.active
       end
-
-      next if sender.present?
 
       context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: values[:From])
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
@@ -92,7 +92,6 @@ module TwilioAPI
       end
     end
 
-
     def output
       params = super
 
@@ -103,6 +102,8 @@ module TwilioAPI
         body, smart_encoded = smart_encode(body)
       end
       encoding_result = sms_encoding.detect(body)
+
+      from = context[:incoming_phone_number]&.number
 
       {
         account:,
@@ -116,7 +117,8 @@ module TwilioAPI
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
-        from: context[:incoming_phone_number]&.number || sender,
+        from:,
+        sender_id: sender_id.present? ? sender_id : from,
         status_callback_url:,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,

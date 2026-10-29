@@ -4,6 +4,7 @@ class CreateSIPTrunk < ApplicationWorkflow
   delegate :inbound_source_ips, :region, :username, :password, to: :sip_trunk
 
   def initialize(sip_trunk, **options)
+    super()
     @sip_trunk = sip_trunk
     @call_service_client = options.fetch(:call_service_client) { CallService::Client.new }
   end

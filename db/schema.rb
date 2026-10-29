@@ -691,10 +691,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_28_142823) do
     t.string "inbound_country_code"
     t.integer "max_channels"
     t.string "region", null: false
-    t.string "default_sender"
+    t.string "caller_id"
     t.string "sip_profile", null: false
+    t.string "caller_id_behavior", null: false
+    t.index ["caller_id"], name: "index_sip_trunks_on_caller_id"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
-    t.index ["default_sender"], name: "index_sip_trunks_on_default_sender"
     t.index ["region"], name: "index_sip_trunks_on_region"
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["sip_profile"], name: "index_sip_trunks_on_sip_profile"

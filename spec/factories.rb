@@ -137,6 +137,21 @@ FactoryBot.define do
         )
       end
     end
+
+    trait :passthrough do
+      caller_id { nil }
+      caller_id_behavior { :passthrough }
+    end
+
+    trait :fallback do
+      caller_id { "1234" }
+      caller_id_behavior { :fallback }
+    end
+
+    trait :override do
+      caller_id { "1234" }
+      caller_id_behavior { :override }
+    end
   end
 
   factory :inbound_source_ip_address do

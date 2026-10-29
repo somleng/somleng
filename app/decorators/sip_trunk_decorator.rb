@@ -3,8 +3,8 @@ class SIPTrunkDecorator < SimpleDelegator
     delegate :model_name, :human_attribute_name, to: :SIPTrunk
   end
 
-  def default_sender_formatted
-    phone_number_formatter.format(object.default_sender, format: :international)
+  def caller_id_formatted
+    phone_number_formatter.format(object.caller_id, format: :international)
   end
 
   def inbound_source_ips_formatted

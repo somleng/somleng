@@ -7,12 +7,7 @@ class SMSGateway < ApplicationRecord
   has_many :channels, class_name: "SMSGatewayChannel"
 
   encrypts :device_token, deterministic: true, downcase: true
-  enumerize :sender_id_behavior, in: [ :passthrough, :fallback, :override ], default: :passthrough, predicates: { prefix: true }
-
-  validates :sender_id,
-            originator_id_behavior: {
-              passthrough?: ->(record) { record.sender_id_behavior_passthrough? }
-            }
+  enumerize :sender_id_behavior, in: [ :passthrough, :fallback, :override ], default: :passthrough
 
   before_create :create_device_token
 
