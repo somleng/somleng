@@ -61,7 +61,12 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_text("Mexico (52)")
     expect(page).to have_text("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_text("Unlimited")
-    expect(page).to have_text("+1 (234) 234-5678")
+    within("#caller-id") do
+      expect(page).to have_text("+1 (234) 234-5678")
+    end
+    within("#caller-id-behavior") do
+      expect(page).to have_text("Fallback")
+    end
     expect(page).to have_text("85510, 85515, 85516")
   end
 
@@ -144,6 +149,12 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_text("Cambodia")
     expect(page).to have_text("XXXXXXXXXXX@96.9.66.132")
     expect(page).to have_no_text("123456")
+    within("#caller-id") do
+      expect(page).to have_text("Not specified")
+    end
+    within("#caller-id-behavior") do
+      expect(page).to have_text("Passthrough")
+    end
   end
 
   it "Delete a SIP Trunk" do

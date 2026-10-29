@@ -61,12 +61,30 @@
         <% end %>
 
         <%= f.attribute :outbound_route_prefixes, label: "Route prefixes", value: f.object.outbound_route_prefixes_formatted %>
-        <%= f.attribute :default_sender, value: f.object.caller_id_formatted %>
         <%= f.attribute :outbound_example_dial_string, label: "Dial string format" do %>
           <code>
             <%= f.object.outbound_example_dial_string %>
           </code>
         <% end %>
+      <% end %>
+
+      <%= page_section("Caller ID Configuration") do %>
+        <%= f.attribute(
+          :caller_id_behavior,
+          label: "Behavior",
+          value: f.object.caller_id_behavior.text,
+          content_html: {
+            id: "caller-id-behavior"
+          }
+        ) %>
+
+        <%= f.attribute(
+          :caller_id,
+          value: f.object.caller_id_formatted,
+          content_html: {
+            id: "caller-id"
+          }
+        ) %>
       <% end %>
     <% end %>
   <% end %>
