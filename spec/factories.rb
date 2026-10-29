@@ -166,7 +166,7 @@ FactoryBot.define do
 
     trait :passthrough do
       sender_id { nil }
-      sender_id_behavior { :passthough }
+      sender_id_behavior { :passthrough }
     end
 
     trait :fallback do

@@ -36,8 +36,21 @@
       <% end %>
 
       <%= page_section("Sender Configuration") do %>
-        <%= f.attribute :sender_id %>
-        <%= f.attribute :sender_id_behavior, label: "Behavior", value: @resource.sender_id_behavior.text  %>
+        <%= f.attribute(
+          :sender_id,
+          content_html: {
+            id: "sender-id"
+          }
+        ) %>
+
+        <%= f.attribute(
+          :sender_id_behavior,
+          label: "Behavior",
+          value: @resource.sender_id_behavior.text,
+          content_html: {
+            id: "sender-id-behavior"
+          }
+        ) %>
       <% end %>
     <% end %>
   <% end %>

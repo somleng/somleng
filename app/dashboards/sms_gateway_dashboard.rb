@@ -5,6 +5,11 @@ class SMSGatewayDashboard < Administrate::BaseDashboard
     id: Field::String,
     carrier: Field::BelongsTo,
     sender_id: Field::String,
+    sender_id_behavior: Field::String.with_options(
+      getter: ->(field) {
+        field.resource.sender_id_behavior.text
+      }
+    ),
     channel_groups: Field::HasMany,
     name: Field::String,
     max_channels: Field::String,
@@ -19,7 +24,8 @@ class SMSGatewayDashboard < Administrate::BaseDashboard
     name
     max_channels
     last_connected_at
-    default_sender
+    sender_id
+    sender_id_behavior
     created_at
     updated_at
     channel_groups

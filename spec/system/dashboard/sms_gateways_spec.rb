@@ -31,13 +31,19 @@ RSpec.describe "SMS Gateways" do
     visit dashboard_sms_gateways_path
     click_on("New")
     fill_in("Name", with: "Main SMS Gateway")
-    fill_in("Sender ID", with: "12342345678")
 
+    within("#sender-configuration") do
+      choose("Override")
+      fill_in("Sender ID", with: "MyCompany")
+    end
     click_on "Create SMS gateway"
 
     expect(page).to have_text("SMS gateway was successfully created")
     expect(page).to have_text("Main SMS Gateway")
-    expect(page).to have_text("+1 (234) 234-5678")
+    expect(page).to have_text("MyCompany")
+    within("#sender-id-behavior") do
+      expect(page).to have_text("Override")
+    end
   end
 
   it "Handles validations" do
@@ -45,9 +51,11 @@ RSpec.describe "SMS Gateways" do
 
     carrier_sign_in(user)
     visit new_dashboard_sms_gateway_path
+
+    fill_in("Sender ID", with: "Invalid Sender ID ***")
     click_on "Create SMS gateway"
 
-    expect(page).to have_text("can't be blank")
+    expect(page).to have_text("is invalid")
   end
 
   it "Show an SMS Gateway" do
@@ -67,14 +75,15 @@ RSpec.describe "SMS Gateways" do
     expect(page).to have_text("Connected")
   end
 
-  it "Update a SMS Gateway" do
+  it "Update a SMS Gateway", :js do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
     sms_gateway = create(
       :sms_gateway,
+      :override,
       carrier:,
       name: "My SMS Gateway",
-      default_sender: "123456"
+      sender_id: "123456",
     )
 
     carrier_sign_in(user)
@@ -82,13 +91,21 @@ RSpec.describe "SMS Gateways" do
 
     click_on("Edit")
     fill_in("Name", with: "Main SMS Gateway")
-    fill_in("Default sender", with: "")
+    within("#sender-configuration") do
+      choose("Passthrough")
+    end
 
     click_on "Update SMS gateway"
 
     expect(page).to have_text("SMS gateway was successfully updated")
     expect(page).to have_text("Main SMS Gateway")
     expect(page).to have_no_text("123456")
+    within("#sender-id") do
+      expect(page).to have_text("Not specified")
+    end
+    within("#sender-id-behavior") do
+      expect(page).to have_text("Passthrough")
+    end
   end
 
   it "Delete a SMS Gateway" do
