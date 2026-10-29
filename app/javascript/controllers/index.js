@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import ConditionalFieldController from "./conditional_field_controller"
+application.register("conditional-field", ConditionalFieldController)
+
 import DashboardController from "./dashboard_controller"
 application.register("dashboard", DashboardController)
 

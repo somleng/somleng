@@ -31,7 +31,7 @@ RSpec.describe "SMS Gateways" do
     visit dashboard_sms_gateways_path
     click_on("New")
     fill_in("Name", with: "Main SMS Gateway")
-    fill_in("Sender ID", with: "+1 (234) 234-5678")
+    fill_in("Sender ID", with: "12342345678")
 
     click_on "Create SMS gateway"
 
