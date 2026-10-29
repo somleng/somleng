@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SMSGatewayForm do
   describe "validations" do
-    it "validates the sender_id" do
+    it "validates the sender id" do
       form = SMSGatewayForm.new(sender_id_behavior: :passthrough, sender_id: "Foobar")
       form.valid?
       expect(form.errors[:sender_id]).to be_present
