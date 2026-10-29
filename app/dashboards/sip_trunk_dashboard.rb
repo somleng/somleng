@@ -2,9 +2,14 @@ require "administrate/base_dashboard"
 
 class SIPTrunkDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
-    carrier: Field::BelongsTo,
-    default_sender: Field::String,
     id: Field::String,
+    carrier: Field::BelongsTo,
+    caller_id: Field::String,
+    caller_id_behavior: Field::String.with_options(
+      getter: ->(field) {
+        field.resource.caller_id_behavior.text
+      }
+    ),
     name: Field::String,
     region: Field::String,
     max_channels: Field::String,
@@ -38,7 +43,8 @@ class SIPTrunkDashboard < Administrate::BaseDashboard
     outbound_dial_string_prefix
     outbound_national_dialing
     outbound_plus_prefix
-    default_sender
+    caller_id
+    caller_id_behavior
     created_at
     updated_at
   ].freeze
