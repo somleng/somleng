@@ -5,7 +5,7 @@ module TwilioAPI
     option :twiml_validator, default: -> { TwiMLValidator.new }
     option :phone_call_destination_schema_rules, default: -> { SchemaRules::PhoneCallDestinationSchemaRules.new }
     option :phone_number_configuration_rules, default: -> { PhoneNumberConfigurationRules.new }
-    option :sender, optional: true
+    option :validate_from, default: -> { true }
 
     params do
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -26,7 +26,7 @@ module TwilioAPI
     end
 
     rule(:From) do |context:|
-      next if sender.present?
+      next unless validate_from
 
       context[:incoming_phone_number] = account.incoming_phone_numbers.active.find_by(number: values[:From])
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])

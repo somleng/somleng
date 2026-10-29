@@ -79,7 +79,7 @@ class CreateVerification < ApplicationWorkflow
       },
       options: {
         account: delivery_attempt.verification.account,
-        sender: delivery_attempt.from
+        validate_from: false
       }
     )
   end

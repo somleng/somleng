@@ -25,13 +25,13 @@ module TwilioAPI
         if values[:Channel] == "sms"
           if message_destination_schema_rules.valid?(account:, destination: values[:To])
             sms_gateway, = message_destination_schema_rules.sms_gateway
-            context[:sender_id] = sms_gateway.sender_id
+            context[:originator_id] = sms_gateway.sender_id
           else
             base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
           end
         elsif values[:Channel] == "call"
           if phone_call_destination_schema_rules.valid?(account:, destination: values[:To])
-            context[:sender_id] = phone_call_destination_schema_rules.sip_trunk.caller_id
+            context[:originator_id] = phone_call_destination_schema_rules.sip_trunk.caller_id
           else
             base.failure(schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code))
           end
@@ -47,7 +47,7 @@ module TwilioAPI
       end
 
       rule do |context:|
-        next if context[:sender_id].present?
+        next if context[:originator_id].present?
 
         base.failure(schema_helper.build_schema_error(:verify_could_not_find_valid_phone_number))
       end
@@ -64,7 +64,7 @@ module TwilioAPI
           to: params.fetch(:To),
           locale: params[:Locale],
           delivery_attempt: {
-            from: context.fetch(:sender_id)
+            from: context.fetch(:originator_id)
           }
         }.compact
       end
