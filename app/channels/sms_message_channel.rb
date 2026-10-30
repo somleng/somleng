@@ -55,7 +55,7 @@ class SMSMessageChannel < ApplicationCable::Channel
         id: message.id,
         body: message.body,
         to: message.to.to_s,
-        from: message.from.to_s,
+        from: message.sender_id.to_s,
         channel: message.channel
       }
     })

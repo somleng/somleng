@@ -512,6 +512,7 @@ FactoryBot.define do
     sms_gateway { association :sms_gateway, carrier: account.carrier }
     to { "85512334667" }
     from { "2442" }
+    sender_id { from }
     direction { :outbound_api }
     body { "Hello World" }
     segments { 1 }
