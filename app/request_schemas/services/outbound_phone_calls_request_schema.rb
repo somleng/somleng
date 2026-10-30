@@ -37,7 +37,8 @@ module Services
 
       context[:destinations], error = validate_destinations(
         destinations: values.fetch(:destinations),
-        parent_call: context[:parent_call]
+        parent_call: context[:parent_call],
+        from: context.fetch(:from)
       )
 
       base.failure(error) if error.present?
@@ -54,10 +55,17 @@ module Services
 
     private
 
-    def validate_destinations(parent_call:, destinations:)
+    def validate_destinations(parent_call:, destinations:, from:)
       valid_destinations = destinations.each_with_object([]) do |destination, result|
         if DialString.new(number: destination).number.sip?
-          result << { destination:, sip_trunk: parent_call.sip_trunk }
+          sip_trunk = parent_call.sip_trunk
+
+          result << {
+            destination:,
+            sip_trunk:,
+            caller_id: resolve_caller_id(sip_trunk:, from:)
+          }
+
           next
         end
 
@@ -67,7 +75,13 @@ module Services
         ] unless phone_number_validator.valid?(destination)
 
         if phone_call_destination_schema_rules.valid?(account: parent_call.account, destination:)
-          result << { destination:, sip_trunk: phone_call_destination_schema_rules.sip_trunk }
+          sip_trunk = phone_call_destination_schema_rules.sip_trunk
+
+          result << {
+            destination:,
+            sip_trunk:,
+            caller_id: resolve_caller_id(sip_trunk:, from:)
+          }
         else
           error = schema_helper.build_schema_error(phone_call_destination_schema_rules.error_code)
           return [ nil, error ]
@@ -82,6 +96,15 @@ module Services
 
       incoming_phone_number = parent_call.account.incoming_phone_numbers.active.find_by(number: from)
       phone_number_configuration_rules.valid?(incoming_phone_number) ? [ from, incoming_phone_number ] : [ nil, nil, schema_helper.build_schema_error(:unverified_source_number) ]
+    end
+
+    def resolve_caller_id(sip_trunk:, from:)
+      OriginatorIDBehavior.new(
+        sip_trunk.caller_id_behavior
+      ).resolve(
+        client_id: from,
+        managed_id: sip_trunk.caller_id
+      ).to_s
     end
   end
 end

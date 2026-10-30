@@ -11,14 +11,14 @@ RSpec.describe OriginatorIDBehavior do
         delegate :passthrough?, :fallback?, :override?, to: :behavior
       end
 
-      behavior = OriginatorIDBehavior.new(behavior_definition.new(behavior: :passthrough))
+      behavior = OriginatorIDBehavior.new(behavior_definition.new(:passthrough))
       expect(behavior.resolve(client_id: "1111", managed_id: "2222")).to eq("1111")
 
-      behavior = OriginatorIDBehavior.new(behavior_definition.new(behavior: :fallback))
+      behavior = OriginatorIDBehavior.new(behavior_definition.new(:fallback))
       expect(behavior.resolve(client_id: "1111", managed_id: "2222")).to eq("1111")
       expect(behavior.resolve(client_id: nil, managed_id: "2222")).to eq("2222")
 
-      behavior = OriginatorIDBehavior.new(behavior_definition.new(behavior: :override))
+      behavior = OriginatorIDBehavior.new(behavior_definition.new(:override))
       expect(behavior.resolve(client_id: "1111", managed_id: "2222")).to eq("2222")
     end
   end

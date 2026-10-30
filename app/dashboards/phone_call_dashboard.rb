@@ -14,6 +14,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     id: Field::String,
     to: Field::String,
     from: Field::String,
+    caller_id: Field::String,
     voice_url: Field::String,
     voice_method: Field::String,
     status: Field::String,
@@ -47,6 +48,7 @@ class PhoneCallDashboard < Administrate::BaseDashboard
     account
     id
     from
+    caller_id
     to
     direction
     status

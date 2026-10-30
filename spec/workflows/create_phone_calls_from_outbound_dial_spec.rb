@@ -14,8 +14,8 @@ RSpec.describe CreatePhoneCallsFromOutboundDial do
         from: "855715100210",
         incoming_phone_number: nil,
         destinations: [
-          { destination: "855715100230", sip_trunk: },
-          { destination: "855715100231", sip_trunk: }
+          { destination: "855715100230", sip_trunk:, caller_id: "1111" },
+          { destination: "855715100231", sip_trunk:, caller_id: "855715100231" }
         ]
       },
       session_limiters: [ account_session_limiter, global_session_limiter ]
@@ -27,6 +27,7 @@ RSpec.describe CreatePhoneCallsFromOutboundDial do
       sip_trunk:,
       to: have_attributes(value: "855715100230"),
       from: have_attributes(value: "855715100210"),
+      caller_id: "1111",
       direction: "outbound_dial",
       status: "initiated"
     )

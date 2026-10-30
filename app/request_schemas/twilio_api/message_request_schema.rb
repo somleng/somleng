@@ -107,7 +107,7 @@ module TwilioAPI
       from = context[:incoming_phone_number]&.number
       sms_gateway = context.fetch(:sms_gateway)
       originator_id_behavior = OriginatorIDBehavior.new(sms_gateway.sender_id_behavior)
-      resolved_sender_id = originator_id_behavior.resolve(client_id: from, managed_id: sms_gateway.sender_id) if sender_id.blank? && from.present?
+      originator_id = originator_id_behavior.resolve(client_id: from, managed_id: sms_gateway.sender_id) if sender_id.blank? && from.present?
 
       {
         account:,
@@ -122,7 +122,7 @@ module TwilioAPI
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
         from:,
-        sender_id: sender_id.present? ? sender_id : resolved_sender_id,
+        sender_id: sender_id.present? ? sender_id : originator_id,
         status_callback_url:,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,

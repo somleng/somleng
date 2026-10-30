@@ -23,6 +23,10 @@ module Services
       object.id
     end
 
+    def from
+      object.caller_id
+    end
+
     def parent_call_sid
       object.parent_call_id
     end

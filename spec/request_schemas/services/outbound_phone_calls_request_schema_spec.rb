@@ -83,7 +83,7 @@ module Services
     it "normalizes the output" do
       carrier = create(:carrier)
       sip_trunk = create(:sip_trunk, carrier:, outbound_route_prefixes: [ "855" ])
-      other_sip_trunk = create(:sip_trunk, carrier:, outbound_route_prefixes: [ "856" ])
+      other_sip_trunk = create(:sip_trunk, :override, caller_id: "1111", carrier:, outbound_route_prefixes: [ "856" ])
       account = create(:account, carrier:)
       parent_call = create(
         :phone_call,
@@ -112,12 +112,14 @@ module Services
         destinations: eq(
           [
             {
+              sip_trunk:,
               destination: "855715100230",
-              sip_trunk:
+              caller_id: "855715100210"
             },
             {
+              sip_trunk: other_sip_trunk,
               destination: "8562092960310",
-              sip_trunk: other_sip_trunk
+              caller_id: "1111"
             }
           ]
         )
