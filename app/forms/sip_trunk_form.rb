@@ -4,9 +4,9 @@ class SIPTrunkForm < ApplicationForm
   DIAL_STRING_PREFIX_FORMAT = /\A\d+\z/
   COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
   CALLER_ID_BEHAVIOR_HINTS = {
-    passthrough: "Uses the client's provided caller ID without modification.",
-    fallback: "Uses the SIP Trunk's caller ID only if the client leaves it blank.",
-    override: "Always replaces the client's caller ID with the SIP trunk's caller ID."
+    passthrough: "Uses the caller ID provided in the incoming request.",
+    fallback: "Uses the SIP Trunk's caller ID if none is provided (e.g., calls originating from the Verify API).",
+    override: "Always replaces the incoming caller ID with the SIP Trunk's caller ID, ignoring any provided value."
   }.freeze
 
   attribute :carrier

@@ -1,8 +1,8 @@
 class SMSGatewayForm < ApplicationForm
   SENDER_ID_BEHAVIOR_HINTS = {
-    passthrough: "Uses the client's provided sender ID without modification.",
-    fallback: "Uses the gateway's default sender ID only if the client leaves it blank.",
-    override: "Always replaces the client's sender ID with the gateway's default sender ID."
+    passthrough: "Uses the sender ID provided in the incoming request.",
+    fallback: "Uses the SMS Gateway's caller ID if none is provided (e.g., calls originating from the Verify API).",
+    override: "Always replaces the incoming sender ID with the SMS Gateway's sender ID, ignoring any provided value."
   }.freeze
 
   attribute :carrier
