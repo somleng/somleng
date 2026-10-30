@@ -43,9 +43,10 @@ module TwilioAPI
         end
 
         incoming_phone_numbers = context[:messaging_service].incoming_phone_numbers.active
-        if incoming_phone_numbers.empty?
+        if incoming_phone_numbers.none?
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
+
         next if values[:From].blank?
       else
         incoming_phone_numbers = account.incoming_phone_numbers.active
