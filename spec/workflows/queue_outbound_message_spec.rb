@@ -15,6 +15,22 @@ RSpec.describe QueueOutboundMessage do
     )
   end
 
+  it "handles sms gateway sender id behavior" do
+    sms_gateway = create(:sms_gateway, :override, sender_id: "1111")
+    account = create(:account, carrier: sms_gateway.carrier)
+    messaging_service = create(:messaging_service, account:)
+    incoming_phone_number = create(:incoming_phone_number, account:, messaging_service:)
+    message = create(:message, :accepted, from: "1234", account:, messaging_service:, sms_gateway:)
+
+    QueueOutboundMessage.call(message)
+
+    expect(message).to have_attributes(
+      queued?: true,
+      from: incoming_phone_number.number,
+      sender_id: "1111"
+    )
+  end
+
   it "handles scheduled messages" do
     message = create(:message, :scheduled)
     create(:incoming_phone_number, account: message.account, messaging_service: message.messaging_service)
