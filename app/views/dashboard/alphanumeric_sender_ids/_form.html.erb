@@ -2,15 +2,17 @@
   <%= simple_form_for([:dashboard, resource]) do |f| %>
     <%= page_sections_container do %>
       <div class="row">
-        <div class="col-sm-6">
-          <%= f.input(
-            :account_id,
-            required: true,
-            selected: filter_params.dig(:filter, :account_id),
-            collection: resource.account_options_for_select,
-            input_html: { data: { controller: "enhanced-select" } }
-          ) %>
-        </div>
+        <% if policy(:account).show? %>
+          <div class="col-sm-6">
+            <%= f.input(
+              :account_id,
+              required: true,
+              selected: filter_params.dig(:filter, :account_id),
+              collection: resource.account_options_for_select,
+              input_html: { data: { controller: "enhanced-select" } }
+            ) %>
+          </div>
+        <% end %>
 
         <div class="col-sm-6">
           <%= f.input(

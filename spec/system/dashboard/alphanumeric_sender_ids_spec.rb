@@ -66,6 +66,21 @@ RSpec.describe "Alphanumeric Sender IDs" do
     expect(page).to have_link(account.name, href: dashboard_account_path(account))
   end
 
+  it "Handles validation errors" do
+    carrier = create(:carrier)
+    account = create(:account, :carrier_managed, carrier:)
+    create(:alphanumeric_sender_id, :approved, account:, sender_id: "MyCompany")
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit new_dashboard_alphanumeric_sender_id_path
+    fill_in("Sender ID", with: "MyCompany")
+    click_on("Request")
+
+    expect(page).to have_text("Account can't be blank")
+    expect(page).to have_text("Sender ID has already been taken")
+  end
+
   it "Delete an alphanumeric sender id" do
     carrier = create(:carrier)
     account = create(:account, :carrier_managed, carrier:)
@@ -93,6 +108,9 @@ RSpec.describe "Alphanumeric Sender IDs" do
     expect(page).to have_no_text(other_alphanumeric_sender_id.id)
 
     click_on("New")
+
+    expect(page).to have_no_field("Account")
+
     fill_in("Sender ID", with: "MySender1")
     click_on("Request")
 
