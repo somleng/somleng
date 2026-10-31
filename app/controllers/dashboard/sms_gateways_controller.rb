@@ -46,7 +46,7 @@ module Dashboard
     end
 
     def permitted_params
-      params.require(:sms_gateway).permit(:name, :max_channels, :default_sender)
+      params.require(:sms_gateway).permit(:name, :max_channels, :sender_id, :sender_id_behavior)
     end
 
     def sms_gateways_scope

@@ -1,7 +1,11 @@
 class PhoneNumberType < ActiveRecord::Type::String
   AREA_CODE_COUNTRY_PREFIXES = [ "1" ].freeze
 
-  PhoneNumber = Struct.new(:value, :country_code, :area_code, :e164, :sip, :sip_address, keyword_init: true) do
+  PhoneNumber = Data.define(:value, :country_code, :area_code, :e164, :sip, :sip_address) do
+    def initialize(value:, **)
+      super(value:, country_code: nil, area_code: nil, e164: false, sip: false, sip_address: nil, **)
+    end
+
     def to_s
       value
     end
@@ -23,7 +27,7 @@ class PhoneNumberType < ActiveRecord::Type::String
     end
 
     def possible_countries
-      @possible_countries ||= e164? ? ISO3166::Country.find_all_country_by_country_code(country_code) : ISO3166::Country.all
+      e164? ? ISO3166::Country.find_all_country_by_country_code(country_code) : ISO3166::Country.all
     end
 
     def country
@@ -31,12 +35,13 @@ class PhoneNumberType < ActiveRecord::Type::String
     end
   end
 
-  attr_reader :validator, :splitter
+  attr_reader :validator, :splitter, :preserve_plus_prefix
 
   def initialize(**options)
-    super
+    super()
     @validator = options.fetch(:validator) { PhoneNumberValidator.new }
     @splitter = options.fetch(:splitter) { Phony }
+    @preserve_plus_prefix = options.fetch(:preserve_plus_prefix, false)
   end
 
   def cast(value)
@@ -50,22 +55,24 @@ class PhoneNumberType < ActiveRecord::Type::String
       )
     end
 
+    plus_prefix = value.strip.start_with?("+")
     value = value.gsub(/\D/, "")
 
     return if value.blank?
 
-    result = PhoneNumber.new(value:)
-
     if validator.valid?(value)
-      result.e164 = true
       country_code, area_code, = splitter.split(value)
-      result.country_code = country_code
-      result.area_code = area_code if country_code.in?(AREA_CODE_COUNTRY_PREFIXES)
-    else
-      result.e164 = false
-    end
+      value = "+#{value}" if plus_prefix && preserve_plus_prefix
 
-    result
+      PhoneNumber.new(
+        value:,
+        e164: true,
+        country_code:,
+        area_code: (area_code if country_code.in?(AREA_CODE_COUNTRY_PREFIXES))
+      )
+    else
+      PhoneNumber.new(value:, e164: false)
+    end
   end
 
   def serialize(value)

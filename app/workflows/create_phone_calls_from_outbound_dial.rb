@@ -14,7 +14,8 @@ class CreatePhoneCallsFromOutboundDial < ApplicationWorkflow
     destinations.map do |destination|
       phone_call = create_phone_call(
         to: destination.fetch(:destination),
-        sip_trunk: destination.fetch(:sip_trunk)
+        sip_trunk: destination.fetch(:sip_trunk),
+        caller_id: destination.fetch(:caller_id)
       )
       session_limit(phone_call)
       phone_call
@@ -23,19 +24,18 @@ class CreatePhoneCallsFromOutboundDial < ApplicationWorkflow
 
   private
 
-  def create_phone_call(to:, sip_trunk:)
+  def create_phone_call(**)
     PhoneCall.create!(
       account: parent_call.account,
       carrier: parent_call.carrier,
       region: parent_call.region,
       parent_call:,
-      sip_trunk:,
       incoming_phone_number:,
-      to:,
       from:,
       phone_number: incoming_phone_number&.phone_number,
       direction: :outbound_dial,
-      status: :initiated
+      status: :initiated,
+      **
     )
   end
 

@@ -1,26 +1,62 @@
 <div class="card-body">
   <%= simple_form_for([:dashboard, resource]) do |f| %>
+    <%= page_sections_container do %>
+      <%= page_section("General") do %>
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.input :name, maxlength: 128, hint: "A friendly name for the SMS Gateway" %>
+          </div>
 
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input :name, maxlength: 128, hint: "A friendly name for the SMS Gateway" %>
+          <div class="col-sm-6">
+            <%= f.input :max_channels, as: :integer,  hint: "The maximum number of channels your SMS gateway supports. Leave it blank for unlimited channels." %>
+          </div>
+        </div>
+      <% end %>
+
+      <%= page_section(
+        "Sender Configuration",
+        data: {
+          controller: "conditional-field",
+          conditional_field_disable_when_value: "passthrough"
+        }
+      ) do %>
+        <div class="row">
+          <div class="col-sm-6">
+
+            <%= f.input(
+              :sender_id_behavior,
+              label: "Behavior",
+              as: :radio_buttons,
+              required: true,
+              wrapper: :vertical_collection_novalidate,
+              collection: f.object.sender_id_behavior_options_for_select,
+              input_html: {
+                data: {
+                  conditional_field_target: "source",
+                  action: "change->conditional-field#toggle"
+                }
+              }
+            ) %>
+          </div>
+
+          <div class="col-sm-6">
+            <%= f.input(
+              :sender_id,
+              hint: "Enter a phone number (digits only) or a 3-11 character alphanumeric ID (containing at least one letter).",
+              input_html: {
+                data: { conditional_field_target: "input" }
+              }
+            ) %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
+          <%= link_to_cancel %>
+        </div>
       </div>
-
-      <div class="col-sm-6">
-        <%= f.input :max_channels, as: :integer,  hint: "The maximum number of channels your SMS gateway supports. Leave it blank for unlimited channels." %>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6">
-        <%= f.input(
-            :default_sender,
-            hint: "The caller ID shown for outbound calls when there is otherwise no caller ID specified. Must be a phone number in E.164 format or shortcode. e.g. +1 (234) 234-5678 or 732873"
-          )
-        %>
-      </div>
-    </div>
-
-    <%= f.button :submit %>
+    <% end %>
   <% end %>
 </div>

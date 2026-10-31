@@ -1,13 +1,13 @@
 require "resolv"
 
-class SIPTrunkForm
-  include ActiveModel::Model
-  include ActiveModel::Attributes
-
-  extend Enumerize
-
+class SIPTrunkForm < ApplicationForm
   DIAL_STRING_PREFIX_FORMAT = /\A\d+\z/
   COUNTRIES = ISO3166::Country.all.map(&:alpha2).freeze
+  CALLER_ID_BEHAVIOR_HINTS = {
+    passthrough: "Uses the caller ID provided in the incoming request.",
+    fallback: "Uses the SIP Trunk's caller ID if none is provided (e.g., calls originating from the Verify API).",
+    override: "Always replaces the incoming caller ID with the SIP Trunk's caller ID, ignoring any provided value."
+  }.freeze
 
   attribute :carrier
   attribute :sip_trunk, default: -> { SIPTrunk.new }
@@ -16,7 +16,7 @@ class SIPTrunkForm
   attribute :authentication_mode
   attribute :route_prefixes, RoutePrefixesType.new, default: []
   attribute :region, RegionType.new
-  attribute :default_sender, PhoneNumberType.new
+  attribute :caller_id, PhoneNumberType.new(preserve_plus_prefix: true)
 
   attribute :country
   attribute :source_ip_addresses, CommaSeparatedListType.new, default: []
@@ -27,12 +27,19 @@ class SIPTrunkForm
   attribute :plus_prefix, :boolean, default: false
 
   enumerize :authentication_mode, in: SIPTrunk.authentication_mode.values
+  enumerize :caller_id_behavior,
+            in: SIPTrunk.caller_id_behavior.values,
+            default: :passthrough,
+            predicates: { prefix: true }
 
   validates :name, :region, presence: true
   validates :max_channels, numericality: { greater_than: 0 }, allow_blank: true
   validates :authentication_mode, presence: true
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
+  validates :caller_id,
+            presence: { unless: :caller_id_behavior_passthrough? },
+            absence: { if: :caller_id_behavior_passthrough? }
 
   validate :validate_source_ip_addresses
 
@@ -57,7 +64,8 @@ class SIPTrunkForm
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
-      default_sender: sip_trunk.default_sender,
+      caller_id: sip_trunk.caller_id.presence,
+      caller_id_behavior: sip_trunk.caller_id_behavior
     )
   end
 
@@ -82,7 +90,8 @@ class SIPTrunkForm
       outbound_national_dialing: national_dialing,
       outbound_plus_prefix: plus_prefix,
       outbound_route_prefixes: route_prefixes,
-      default_sender:
+      caller_id:,
+      caller_id_behavior:
     }
 
     sip_trunk.save!
@@ -91,6 +100,15 @@ class SIPTrunkForm
   def region_options_for_select
     SomlengRegion::Region.all.map do |region|
       [ region.human_name, region.alias, { data: { ip_address: region.nat_ip } } ]
+    end
+  end
+
+  def caller_id_behavior_options_for_select
+    self.class.caller_id_behavior.values.map do
+      [
+        "#{it.text} <div class='form-text'>#{CALLER_ID_BEHAVIOR_HINTS.fetch(it.value.to_sym)}</div>".html_safe,
+        it.value
+      ]
     end
   end
 

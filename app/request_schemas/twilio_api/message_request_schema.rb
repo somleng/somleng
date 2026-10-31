@@ -9,7 +9,7 @@ module TwilioAPI
            default: -> { SmartEncoding.new }
     option :message_destination_schema_rules,
            default: -> { MessageDestinationSchemaRules.new }
-    option :sender, optional: true
+    option :sender_id, optional: true
 
     option :url_validator, default: proc { URLValidator.new(allow_http: true) }
     option :account_billing_policy, default: -> { AccountBillingPolicy.new }
@@ -27,6 +27,8 @@ module TwilioAPI
     end
 
     rule(:From, :MessagingServiceSid) do |context:|
+      next if sender_id.present?
+
       if values[:From].blank? && values[:MessagingServiceSid].blank?
         next key(:From).failure("is required")
       end
@@ -41,15 +43,14 @@ module TwilioAPI
         end
 
         incoming_phone_numbers = context[:messaging_service].incoming_phone_numbers.active
-        if incoming_phone_numbers.empty?
+        if incoming_phone_numbers.none?
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
+
         next if values[:From].blank?
       else
         incoming_phone_numbers = account.incoming_phone_numbers.active
       end
-
-      next if sender.present?
 
       context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: values[:From])
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
@@ -92,7 +93,6 @@ module TwilioAPI
       end
     end
 
-
     def output
       params = super
 
@@ -104,19 +104,25 @@ module TwilioAPI
       end
       encoding_result = sms_encoding.detect(body)
 
+      from = context[:incoming_phone_number]&.number
+      sms_gateway = context.fetch(:sms_gateway)
+      originator_id_behavior = OriginatorIDBehavior.new(sms_gateway.sender_id_behavior)
+      originator_id = originator_id_behavior.resolve(client_id: from, managed_id: sms_gateway.sender_id) if sender_id.blank? && from.present?
+
       {
         account:,
         carrier: account.carrier,
         incoming_phone_number: context[:incoming_phone_number],
         phone_number: context[:incoming_phone_number]&.phone_number,
         messaging_service:,
-        sms_gateway: context.fetch(:sms_gateway),
+        sms_gateway:,
         channel: context.fetch(:channel),
         body:,
         segments: encoding_result.segments,
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
-        from: context[:incoming_phone_number]&.number || sender,
+        from:,
+        sender_id: sender_id.present? ? sender_id : originator_id,
         status_callback_url:,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,

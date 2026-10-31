@@ -23,6 +23,11 @@ class CarrierDashboard < Administrate::BaseDashboard
     custom_app_host: Field::String,
     custom_api_host: Field::String,
     billing_currency: Field::String,
+    carrier_api_allowed_ip_addresses: Field::String.with_options(
+      getter: ->(field) {
+        CommaSeparatedListFormatter.new.format(field.resource.api_allowed_ip_addresses.pluck(:ip_address).map(&:to_s))
+      }
+    )
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -52,6 +57,7 @@ class CarrierDashboard < Administrate::BaseDashboard
     carrier_users
     account_users
     billing_currency
+    carrier_api_allowed_ip_addresses
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze

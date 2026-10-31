@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_092537) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_28_142823) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -423,6 +423,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_092537) do
     t.datetime "delivered_at"
     t.boolean "internal", default: false, null: false
     t.uuid "incoming_phone_number_id"
+    t.string "sender_id"
     t.index ["account_id", "sequence_number"], name: "index_messages_on_account_id_and_sequence_number", order: { sequence_number: :desc }
     t.index ["carrier_id"], name: "index_messages_on_carrier_id"
     t.index ["created_at"], name: "index_messages_on_created_at"
@@ -690,10 +691,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_092537) do
     t.string "inbound_country_code"
     t.integer "max_channels"
     t.string "region", null: false
-    t.string "default_sender"
+    t.string "caller_id"
     t.string "sip_profile", null: false
+    t.string "caller_id_behavior", null: false
+    t.index ["caller_id"], name: "index_sip_trunks_on_caller_id"
     t.index ["carrier_id"], name: "index_sip_trunks_on_carrier_id"
-    t.index ["default_sender"], name: "index_sip_trunks_on_default_sender"
     t.index ["region"], name: "index_sip_trunks_on_region"
     t.index ["sequence_number"], name: "index_sip_trunks_on_sequence_number", unique: true, order: :desc
     t.index ["sip_profile"], name: "index_sip_trunks_on_sip_profile"
@@ -733,11 +735,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_092537) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_connected_at"
-    t.string "default_sender"
+    t.string "sender_id"
+    t.string "sender_id_behavior", null: false
     t.index ["carrier_id"], name: "index_sms_gateways_on_carrier_id"
-    t.index ["default_sender"], name: "index_sms_gateways_on_default_sender"
     t.index ["device_token"], name: "index_sms_gateways_on_device_token", unique: true
     t.index ["last_connected_at"], name: "index_sms_gateways_on_last_connected_at"
+    t.index ["sender_id"], name: "index_sms_gateways_on_sender_id"
     t.index ["sequence_number"], name: "index_sms_gateways_on_sequence_number", unique: true, order: :desc
   end
 

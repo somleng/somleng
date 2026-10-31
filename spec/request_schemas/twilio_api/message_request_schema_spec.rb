@@ -277,6 +277,7 @@ module TwilioAPI
       expect(schema.output).to include(
         to: "85568308531",
         from: have_attributes(value: "855716100234"),
+        sender_id: have_attributes(value: "855716100234"),
         body: "Hello World *",
         channel: nil,
         segments: 1,
@@ -305,7 +306,7 @@ module TwilioAPI
         status_callback_url: "https://example.com/status-callback"
       )
       create(:incoming_phone_number, messaging_service:, account:)
-      create(:sms_gateway, carrier: account.carrier)
+      create(:sms_gateway, :fallback, carrier: account.carrier)
       send_at = Time.parse(5.days.from_now.iso8601)
 
       schema = validate_request_schema(
@@ -322,6 +323,7 @@ module TwilioAPI
       expect(schema.success?).to be(true)
       expect(schema.output).to include(
         from: nil,
+        sender_id: nil,
         incoming_phone_number: nil,
         phone_number: nil,
         body: "Hello World *",
@@ -331,6 +333,44 @@ module TwilioAPI
         messaging_service:,
         send_at:,
         status: :scheduled
+      )
+    end
+
+    it "handles sender ids" do
+      account = create(:account)
+      create(:incoming_phone_number, account:, number: "855715100999")
+      create(:sms_gateway, :override, sender_id: "1111", carrier: account.carrier)
+
+      schema = validate_request_schema(
+        input_params: {
+          To: "85568308531",
+          From: "855715100999",
+          Body: "Hello World"
+        },
+        options: { account: }
+      )
+
+      expect(schema.success?).to be(true)
+      expect(schema.output).to include(
+        from: have_attributes(value: "855715100999"),
+        sender_id: "1111"
+      )
+
+      schema = validate_request_schema(
+        input_params: {
+          To: "85568308531",
+          Body: "Hello World"
+        },
+        options: {
+          account:,
+          sender_id: "2222"
+        }
+      )
+
+      expect(schema.success?).to be(true)
+      expect(schema.output).to include(
+        from: nil,
+        sender_id: "2222"
       )
     end
 

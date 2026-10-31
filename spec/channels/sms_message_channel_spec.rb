@@ -134,14 +134,14 @@ RSpec.describe SMSMessageChannel, type: :channel do
   describe "#message_send_requested" do
     it "handles a message send request" do
       sms_gateway = stub_current_sms_gateway
-      message = create(:message, :sending, sms_gateway:)
+      message = create(:message, :sending, sms_gateway:, from: "2442", sender_id: "VERIFY")
       stub_rating_engine_request(result: build_list(:rating_engine_cdr_response, 1, :success))
 
       subscribe
       perform(:message_send_requested, id: message.id)
 
-      expect(message.send_request).to be_persisted
       expect(message.send_request).to have_attributes(
+        persisted?: true,
         sms_gateway:,
         message:
       )
@@ -151,7 +151,7 @@ RSpec.describe SMSMessageChannel, type: :channel do
           "id" => message.id,
           "body" => message.body,
           "to" => message.to.to_s,
-          "from" => message.from.to_s,
+          "from" => "VERIFY",
           "channel" => message.channel
         }
       )
@@ -196,8 +196,8 @@ RSpec.describe SMSMessageChannel, type: :channel do
     end
   end
 
-  def stub_current_sms_gateway(attributes = {})
-    sms_gateway = create(:sms_gateway, attributes)
+  def stub_current_sms_gateway(**)
+    sms_gateway = create(:sms_gateway, **)
     stub_connection(current_sms_gateway: sms_gateway)
     sms_gateway
   end

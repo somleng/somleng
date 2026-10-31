@@ -104,6 +104,17 @@ module TwilioAPI
           }
         )
       ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:unverified_source_number).message)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            From: "1234"
+          },
+          options: {
+            validate_from: false
+          }
+        )
+      ).to have_valid_schema
     end
 
     it "validates Url" do
@@ -257,6 +268,32 @@ module TwilioAPI
         to: "85568308531",
         from: "1234",
         caller_id: "1234"
+      )
+    end
+
+    it "handles caller ids" do
+      account = create(:account)
+      create(:incoming_phone_number, type: :short_code, number: "1234", account:)
+      create(:sip_trunk, :override, caller_id: "1111", carrier: account.carrier)
+
+      schema = validate_request_schema(
+        input_params: {
+          To: "+855 68 308 531",
+          From: "1234",
+          Url: "https://www.example.com/voice_url.xml"
+        },
+        options: {
+          account:
+        }
+      )
+
+      expect(schema.success?).to be(true)
+      expect(schema.output).to include(
+        to: "85568308531",
+        from: "1234",
+        caller_id: have_attributes(
+          value: "1111"
+        )
       )
     end
 

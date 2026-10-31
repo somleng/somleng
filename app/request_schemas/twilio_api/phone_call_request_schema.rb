@@ -5,7 +5,7 @@ module TwilioAPI
     option :twiml_validator, default: -> { TwiMLValidator.new }
     option :phone_call_destination_schema_rules, default: -> { SchemaRules::PhoneCallDestinationSchemaRules.new }
     option :phone_number_configuration_rules, default: -> { PhoneNumberConfigurationRules.new }
-    option :sender, optional: true
+    option :validate_from, default: -> { true }
 
     params do
       required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
@@ -26,7 +26,7 @@ module TwilioAPI
     end
 
     rule(:From) do |context:|
-      next if sender.present?
+      next unless validate_from
 
       context[:incoming_phone_number] = account.incoming_phone_numbers.active.find_by(number: values[:From])
       next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
@@ -71,19 +71,22 @@ module TwilioAPI
     def output
       params = super
 
-      caller_id = params.fetch(:From)
-      caller_id = "+#{caller_id}" if input_params.fetch(:From).starts_with?("+")
+      sip_trunk = context.fetch(:sip_trunk)
+      originator_id_behavior = OriginatorIDBehavior.new(sip_trunk.caller_id_behavior)
+      from = params.fetch(:From)
+      originator_id = originator_id_behavior.resolve(client_id: from, managed_id: sip_trunk.caller_id)
+      originator_id = "+#{originator_id}" if originator_id == from && input_params.fetch(:From).starts_with?("+")
 
       {
         account:,
         carrier: account.carrier,
-        sip_trunk: context.fetch(:sip_trunk),
-        region: context.fetch(:sip_trunk).region,
+        sip_trunk:,
+        region: sip_trunk.region,
         to: params.fetch(:To),
-        from: params.fetch(:From),
+        from:,
         incoming_phone_number: context[:incoming_phone_number],
         phone_number: context[:incoming_phone_number]&.phone_number,
-        caller_id:,
+        caller_id: originator_id,
         voice_url: params[:Url],
         voice_method: params.fetch(:Method) { "POST" if params.key?(:Url) },
         status_callback_url: params[:StatusCallback],

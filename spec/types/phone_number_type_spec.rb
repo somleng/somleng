@@ -7,11 +7,12 @@ RSpec.describe PhoneNumberType do
       include ActiveModel::Attributes
 
       attribute :number, PhoneNumberType.new
+      attribute :caller_id, PhoneNumberType.new(preserve_plus_prefix: true)
     end
 
-    expect(klass.new(number: PhoneNumberType::PhoneNumber.new).number).to be_a(PhoneNumberType::PhoneNumber)
-    expect(klass.new(number: nil).number).to eq(nil)
-    expect(klass.new(number: "invalid").number).to eq(nil)
+    expect(klass.new(number: PhoneNumberType::PhoneNumber.new(value: "1234")).number).to be_a(PhoneNumberType::PhoneNumber)
+    expect(klass.new(number: nil).number).to be_nil
+    expect(klass.new(number: "invalid").number).to be_nil
     expect(klass.new(number: "1294").number).to have_attributes(
       value: "1294",
       e164?: false
@@ -20,6 +21,10 @@ RSpec.describe PhoneNumberType do
       value: "sip:example.com:5080",
       sip?: true,
       sip_address: "example.com:5080"
+    )
+    expect(klass.new(caller_id: "+855 97 222 2222").caller_id).to have_attributes(
+      value: "+855972222222",
+      e164?: true
     )
 
     cambodian_number = klass.new(number: "+855 97 222 2222").number
@@ -31,9 +36,11 @@ RSpec.describe PhoneNumberType do
       country: have_attributes(
         alpha2: "KH",
         iso_short_name: "Cambodia"
+      ),
+      possible_countries: contain_exactly(
+        ISO3166::Country.new("KH")
       )
     )
-    expect(cambodian_number.possible_countries).to contain_exactly(ISO3166::Country.new("KH"))
 
     north_american_number = klass.new(number: "+1 (236) 613-9238").number
     expect(north_american_number).to have_attributes(

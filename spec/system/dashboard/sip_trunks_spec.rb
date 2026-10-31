@@ -43,10 +43,13 @@ RSpec.describe "SIP Trunks" do
     select("Mexico", from: "Default country code")
     fill_in("Host", with: "sip.example.com:5061")
     fill_in("Dial string prefix", with: "123456")
-    fill_in("Default sender", with: "+1 (234) 234-5678")
     check("National dialing")
     check("Plus prefix")
     fill_in("Route prefixes", with: "85510, 85515, 85516, 85516")
+    within("#caller-id-configuration") do
+      choose("Fallback")
+      fill_in("Caller ID", with: "+1 (234) 234-5678")
+    end
 
     click_on("Create SIP trunk")
 
@@ -58,7 +61,12 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_text("Mexico (52)")
     expect(page).to have_text("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_text("Unlimited")
-    expect(page).to have_text("+1 (234) 234-5678")
+    within("#caller-id") do
+      expect(page).to have_text("+12342345678")
+    end
+    within("#caller-id-behavior") do
+      expect(page).to have_text("Fallback")
+    end
     expect(page).to have_text("85510, 85515, 85516")
   end
 
@@ -97,11 +105,12 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_text("can't be blank")
   end
 
-  it "Update a SIP Trunk" do
+  it "Update a SIP Trunk", :js do
     carrier = create(:carrier)
     user = create(:user, :carrier, :admin, carrier:)
     sip_trunk = create(
       :sip_trunk,
+      :fallback,
       carrier:,
       name: "My Trunk",
       inbound_source_ips: "175.100.7.111",
@@ -109,7 +118,6 @@ RSpec.describe "SIP Trunks" do
       outbound_dial_string_prefix: "1234",
       outbound_national_dialing: true,
       outbound_plus_prefix: true,
-      default_sender: "123456",
       region: :helium
     )
 
@@ -119,15 +127,18 @@ RSpec.describe "SIP Trunks" do
     click_on("Edit")
 
     expect(page).to have_select("Region", selected: "North America (N. Virginia, USA)")
+
     fill_in("Name", with: "Main Trunk")
     select("South East Asia (Singapore)", from: "Region")
     fill_in("Source IP addresses", with: "96.9.66.131, 96.9.66.132")
     select("Cambodia", from: "Default country code")
     fill_in("Host", with: "96.9.66.132")
     fill_in("Dial string prefix", with: "")
-    fill_in("Default sender", with: "")
     uncheck("National dialing")
     uncheck("Plus prefix")
+    within("#caller-id-configuration") do
+      choose("Passthrough")
+    end
 
     click_on("Update SIP trunk")
 
@@ -138,6 +149,12 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_text("Cambodia")
     expect(page).to have_text("XXXXXXXXXXX@96.9.66.132")
     expect(page).to have_no_text("123456")
+    within("#caller-id") do
+      expect(page).to have_text("Not specified")
+    end
+    within("#caller-id-behavior") do
+      expect(page).to have_text("Passthrough")
+    end
   end
 
   it "Delete a SIP Trunk" do

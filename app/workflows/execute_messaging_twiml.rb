@@ -6,6 +6,7 @@ class ExecuteMessagingTwiML < ApplicationWorkflow
   attr_reader :message, :url, :http_method, :twiml_parser, :error_message
 
   def initialize(options)
+    super()
     @message = options.fetch(:message)
     @url = options.fetch(:url)
     @http_method = options.fetch(:http_method)

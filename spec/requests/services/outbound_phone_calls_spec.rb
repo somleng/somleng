@@ -14,6 +14,8 @@ RSpec.describe "Services", :services do
       )
       create(
         :sip_trunk,
+        :override,
+        caller_id: "1111",
         carrier:,
         sip_profile: "test",
         outbound_host: "175.100.7.240",
@@ -52,7 +54,7 @@ RSpec.describe "Services", :services do
       )
       expect(phone_calls_response[1]).to include(
         "parent_call_sid" => parent_phone_call.id,
-        "from" => "2442",
+        "from" => "1111",
         "routing_parameters" => include(
           "sip_profile" => "test",
           "host" => "175.100.7.240",

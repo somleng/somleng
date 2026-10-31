@@ -1,12 +1,13 @@
 class SMSGateway < ApplicationRecord
+  extend Enumerize
+
   belongs_to :carrier
   has_many :messages
   has_many :channel_groups, class_name: "SMSGatewayChannelGroup"
   has_many :channels, class_name: "SMSGatewayChannel"
 
   encrypts :device_token, deterministic: true, downcase: true
-
-  attribute :default_sender, PhoneNumberType.new
+  enumerize :sender_id_behavior, in: [ :passthrough, :fallback, :override ], default: :passthrough
 
   before_create :create_device_token
 
