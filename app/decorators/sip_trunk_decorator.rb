@@ -13,10 +13,6 @@ class SIPTrunkDecorator < SimpleDelegator
 
   private
 
-  def phone_number_formatter
-    @phone_number_formatter ||= PhoneNumberFormatter.new
-  end
-
   def comma_separated_list_formatter
     @comma_separated_list_formatter ||= CommaSeparatedListFormatter.new
   end
