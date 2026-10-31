@@ -1,5 +1,5 @@
 class AlphanumericSenderIDFormatValidator < ActiveModel::EachValidator
-  ALLOW_NUMERIC_REGEXP = /\A(?:\d+|(?=.*[A-Za-z])[A-Za-z0-9 +_&\.-]{3,11})\z/
+  ALLOW_NUMERIC_REGEXP = /\A(?:\+?\d+|(?=.*[A-Za-z])[A-Za-z0-9 +_&\.-]{3,11})\z/
   ALPHA_ONLY_REGEXP = /\A(?=.*[A-Za-z])[A-Za-z0-9 +_&\.-]{3,11}\z/
 
   def validate_each(record, attribute, value)

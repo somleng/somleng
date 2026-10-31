@@ -62,7 +62,7 @@ RSpec.describe "SIP Trunks" do
     expect(page).to have_text("+1234560XXXXXXXX@sip.example.com:5061")
     expect(page).to have_text("Unlimited")
     within("#caller-id") do
-      expect(page).to have_text("+1 (234) 234-5678")
+      expect(page).to have_text("+12342345678")
     end
     within("#caller-id-behavior") do
       expect(page).to have_text("Fallback")

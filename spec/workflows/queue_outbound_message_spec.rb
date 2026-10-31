@@ -20,7 +20,7 @@ RSpec.describe QueueOutboundMessage do
     account = create(:account, carrier: sms_gateway.carrier)
     messaging_service = create(:messaging_service, account:)
     incoming_phone_number = create(:incoming_phone_number, account:, messaging_service:)
-    message = create(:message, :accepted, from: "1234", account:, messaging_service:, sms_gateway:)
+    message = create(:message, :accepted, from: nil, account:, messaging_service:, sms_gateway:)
 
     QueueOutboundMessage.call(message)
 

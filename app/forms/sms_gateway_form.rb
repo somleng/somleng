@@ -31,9 +31,8 @@ class SMSGatewayForm < ApplicationForm
               allow_numeric: true,
               allow_blank: true
             },
-            originator_id_behavior: {
-              passthrough?: ->(form) { form.sender_id_behavior_passthrough? }
-            }
+            presence: { unless: :sender_id_behavior_passthrough? },
+            absence: { if: :sender_id_behavior_passthrough? }
 
   delegate :new_record?, :persisted?, :id, to: :sms_gateway
 

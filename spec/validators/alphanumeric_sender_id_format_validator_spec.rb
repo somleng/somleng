@@ -44,7 +44,8 @@ RSpec.describe AlphanumericSenderIDFormatValidator do
     end
 
     expect(validatable_klass.new.valid?).to be(true)
-    expect(validatable_klass.new(alphanumeric_sender_id: "123423456782").valid?).to be(true)
-    expect(validatable_klass.new(alphanumeric_sender_id: "+123423456782").valid?).to be(false)
+    expect(validatable_klass.new(alphanumeric_sender_id: "855972222222").valid?).to be(true)
+    expect(validatable_klass.new(alphanumeric_sender_id: "+855972222222").valid?).to be(true)
+    expect(validatable_klass.new(alphanumeric_sender_id: "855-9722-22222").valid?).to be(false)
   end
 end

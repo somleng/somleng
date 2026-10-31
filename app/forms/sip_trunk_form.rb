@@ -16,7 +16,7 @@ class SIPTrunkForm < ApplicationForm
   attribute :authentication_mode
   attribute :route_prefixes, RoutePrefixesType.new, default: []
   attribute :region, RegionType.new
-  attribute :caller_id, PhoneNumberType.new
+  attribute :caller_id, PhoneNumberType.new(preserve_plus_prefix: true)
 
   attribute :country
   attribute :source_ip_addresses, CommaSeparatedListType.new, default: []
@@ -38,9 +38,8 @@ class SIPTrunkForm < ApplicationForm
   validates :country, inclusion: { in: COUNTRIES }, allow_blank: true
   validates :dial_string_prefix, format: DIAL_STRING_PREFIX_FORMAT, allow_blank: true
   validates :caller_id,
-            originator_id_behavior: {
-              passthrough?: ->(form) { form.caller_id_behavior_passthrough? }
-            }
+            presence: { unless: :caller_id_behavior_passthrough? },
+            absence: { if: :caller_id_behavior_passthrough? }
 
   validate :validate_source_ip_addresses
 
@@ -65,7 +64,7 @@ class SIPTrunkForm < ApplicationForm
       national_dialing: sip_trunk.outbound_national_dialing,
       plus_prefix: sip_trunk.outbound_plus_prefix,
       route_prefixes: sip_trunk.outbound_route_prefixes,
-      caller_id: sip_trunk.caller_id,
+      caller_id: sip_trunk.caller_id.presence,
       caller_id_behavior: sip_trunk.caller_id_behavior
     )
   end

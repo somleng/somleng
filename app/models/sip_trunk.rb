@@ -14,7 +14,7 @@ class SIPTrunk < ApplicationRecord
 
   attribute :username_generator, default: UsernameGenerator.new
   attribute :region, RegionType.new
-  attribute :caller_id, PhoneNumberType.new
+  attribute :caller_id, PhoneNumberType.new(preserve_plus_prefix: true)
   attribute :inbound_source_ips, IPAddressArrayType.new
 
   before_validation :find_or_initialize_inbound_source_ip_addresses

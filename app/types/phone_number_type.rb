@@ -35,12 +35,13 @@ class PhoneNumberType < ActiveRecord::Type::String
     end
   end
 
-  attr_reader :validator, :splitter
+  attr_reader :validator, :splitter, :preserve_plus_prefix
 
   def initialize(**options)
-    super
+    super()
     @validator = options.fetch(:validator) { PhoneNumberValidator.new }
     @splitter = options.fetch(:splitter) { Phony }
+    @preserve_plus_prefix = options.fetch(:preserve_plus_prefix, false)
   end
 
   def cast(value)
@@ -54,13 +55,21 @@ class PhoneNumberType < ActiveRecord::Type::String
       )
     end
 
+    plus_prefix = value.strip.start_with?("+")
     value = value.gsub(/\D/, "")
 
     return if value.blank?
 
     if validator.valid?(value)
       country_code, area_code, = splitter.split(value)
-      PhoneNumber.new(value:, e164: true, country_code:, area_code: (area_code if country_code.in?(AREA_CODE_COUNTRY_PREFIXES)))
+      value = "+#{value}" if plus_prefix && preserve_plus_prefix
+
+      PhoneNumber.new(
+        value:,
+        e164: true,
+        country_code:,
+        area_code: (area_code if country_code.in?(AREA_CODE_COUNTRY_PREFIXES))
+      )
     else
       PhoneNumber.new(value:, e164: false)
     end

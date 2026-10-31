@@ -1,6 +1,11 @@
 require "rails_helper"
 
 RSpec.describe SIPTrunkForm do
+  it "handles normalization of the caller id" do
+    form = SIPTrunkForm.new(caller_id: "+855 97 222 2222")
+    expect(form.caller_id).to have_attributes(value: "+855972222222")
+  end
+
   describe "validations" do
     it "validates inbound source addresses" do
       form = SIPTrunkForm.new(source_ip_addresses: "96.9.66.18, 96.9.66.19")
