@@ -12,20 +12,10 @@ class AlphanumericSenderIDForm < ApplicationForm
             unless: -> { account.present? }
 
   validates :sender_id, alphanumeric_sender_id_format: true
-
   validate :validate_sender_id_uniqueness
 
   def self.model_name
     ActiveModel::Name.new(self, nil, "AlphanumericSenderID")
-  end
-
-  def self.initialize_with(resource)
-    new(
-      resource:,
-      carrier: resource.carrier,
-      account: resource.account,
-      sender_id: resource.sender_id
-    )
   end
 
   def save
