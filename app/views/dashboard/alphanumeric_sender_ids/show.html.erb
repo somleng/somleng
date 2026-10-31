@@ -1,0 +1,33 @@
+<%= page_title(title: "Alphanumeric Sender ID") do %>
+  <% if policy(@resource).destroy? %>
+    <%= render(
+      "shared/destroy_resource_page_action",
+      path: dashboard_alphanumeric_sender_id_path(@resource)
+    ) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= show_for(@resource.decorated) do |f| %>
+    <%= f.attribute :id, label: "SID" do %>
+      <code>
+        <%= @resource.id %>
+      </code>
+    <% end %>
+
+    <% if policy(:account).show? %>
+      <%= f.attribute :account do %>
+        <%= external_link_to(@resource.account.name, polymorphic_path([:dashboard, @resource.account])) %>
+      <% end %>
+    <% end %>
+
+    <%= f.attribute :sender_id %>
+
+    <%= f.attribute :approval_status do %>
+      <%= status_badge(f.object.approval_status.text, color: f.object.approval_status_color) %>
+    <% end %>
+
+    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
+    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+  <% end %>
+</div>

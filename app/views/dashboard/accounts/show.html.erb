@@ -100,6 +100,10 @@
         <%= f.attribute :active_phone_numbers do %>
           <%= external_link_to("Manage", dashboard_incoming_phone_numbers_path(filter: { status: :active, account_id: @resource.id}), title: "Manage") %>
         <% end %>
+
+        <%= f.attribute :alphanumeric_sender_ids do %>
+          <%= external_link_to("Manage", dashboard_alphanumeric_sender_ids_path(filter: { account_id: @resource.id}), title: "Manage") %>
+        <% end %>
       <% end %>
     <% end %>
 

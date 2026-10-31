@@ -35,6 +35,7 @@ class Account < ApplicationRecord
   has_many :tariff_plan_subscriptions, inverse_of: :account
   has_many :tariff_plans, through: :tariff_plan_subscriptions, source: :plan
   has_many :balance_transactions
+  has_many :alphanumeric_sender_ids
 
   before_create :set_defaults
   before_validation :set_primary_auth_token, on: :create

@@ -1,0 +1,56 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr role="row">
+      <th>
+        SID
+      </th>
+
+      <th>
+        Sender ID
+      </th>
+
+      <th>
+        Status
+      </th>
+
+      <% if policy(:account).show? %>
+        <th>
+          Account
+        </th>
+      <% end %>
+
+      <th>
+        Created At
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% resources.each do |alphanumeric_sender_id| %>
+      <% alphanumeric_sender_id = alphanumeric_sender_id.decorated %>
+      <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
+        <td>
+          <%= link_to(alphanumeric_sender_id.id, polymorphic_path([:dashboard, alphanumeric_sender_id])) %>
+        </td>
+
+        <td>
+          <%= alphanumeric_sender_id.sender_id %>
+        </td>
+
+        <td>
+          <%= status_badge(alphanumeric_sender_id.approval_status.text, color: alphanumeric_sender_id.approval_status_color) %>
+        </td>
+
+        <% if policy(:account).show? %>
+          <td>
+            <%= external_link_to(alphanumeric_sender_id.account.name, polymorphic_path([:dashboard, alphanumeric_sender_id.account])) %>
+          </td>
+        <% end %>
+
+        <td>
+          <%= local_time(alphanumeric_sender_id.created_at) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
