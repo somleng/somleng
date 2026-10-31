@@ -1,0 +1,26 @@
+<%= page_title(title: "Alphanumeric Sender IDs") do %>
+  <%= render("shared/filters") do |form| %>
+    <%= form.text_field_tag(:id, params.dig(:filter, :id), title: "SID") %>
+    <% if policy(:account).show? %>
+      <%= form.select(
+          :account_id,
+          current_carrier.accounts.pluck(:name, :id),
+          { filter_value: params.dig(:filter, :account_id) },
+          { data: { controller: "enhanced-select" }}
+        )
+      %>
+    <% end %>
+    <%= form.text_field_tag(:sender_id, params.dig(:filter, :sender_id), title: "Sender ID") %>
+    <%= form.date_range title: "Created At", filter_value: [ params.dig(:filter, :from_date), params.dig(:filter, :to_date) ] %>
+  <% end %>
+
+  <% if policy(:alphanumeric_sender_id).new? %>
+    <%= render("shared/new_resource_page_action", path: new_dashboard_alphanumeric_sender_id_path(filter_params)) %>
+  <% end %>
+<% end %>
+
+<div class="card-body">
+  <%= render "collection", resources: @resources %>
+
+  <%= render "shared/pagination", resources: @resources %>
+</div>

@@ -115,6 +115,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :dashboard, as: :dashboard do
+      resources :alphanumeric_sender_ids, only: [ :index, :show, :new, :create, :destroy ]
       resources :two_factor_authentications, only: %i[new create destroy]
       resources :accounts
       resources :auth_tokens, only: %i[index show destroy create update]

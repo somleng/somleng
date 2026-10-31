@@ -99,6 +99,13 @@ FactoryBot.define do
     end
   end
 
+  factory :alphanumeric_sender_id do
+    account
+    carrier { account.carrier }
+    traits_for_enum :approval_status, %i[pending_approval rejected approved]
+    sender_id { "MyCompany" }
+  end
+
   factory :interaction do
     transient do
       interactable { association :phone_call, to: generate(:phone_number) }

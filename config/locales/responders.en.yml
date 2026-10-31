@@ -42,6 +42,11 @@ en:
         destroy:
           notice: Channel group was successfully destroyed.
           alert: Channel group could not be destroyed.
+      alphanumeric_sender_ids:
+        create:
+          notice: Alphanumeric Sender ID was successfully requested.
+        destroy:
+          notice: Alphanumeric Sender ID was successfully destroyed.
       phone_numbers:
         bulk_destroy:
           notice: Phone numbers were successfully destroyed.

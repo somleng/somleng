@@ -24,3 +24,5 @@ en:
         create: "Buy Number"
       tariff_calculation:
         create: "Calculate Tariff"
+      alphanumeric_sender_id:
+        create: "Request"
