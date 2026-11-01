@@ -38,7 +38,7 @@
         </td>
 
         <td>
-          <%= status_badge(alphanumeric_sender_id.approval_status.text, color: alphanumeric_sender_id.approval_status_color) %>
+          <%= status_badge(alphanumeric_sender_id.status.text, color: alphanumeric_sender_id.status_color) %>
         </td>
 
         <% if policy(:account).show? %>

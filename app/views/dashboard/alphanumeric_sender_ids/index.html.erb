@@ -10,6 +10,13 @@
         )
       %>
     <% end %>
+    <%= form.select(
+        :status,
+         AlphanumericSenderID.status.values.map { |t| [t.text, t] },
+        { filter_value: params.dig(:filter, :status) },
+        { data: { controller: "enhanced-select" }}
+      )
+    %>
     <%= form.text_field_tag(:sender_id, params.dig(:filter, :sender_id), title: "Sender ID") %>
     <%= form.date_range title: "Created At", filter_value: [ params.dig(:filter, :from_date), params.dig(:filter, :to_date) ] %>
   <% end %>

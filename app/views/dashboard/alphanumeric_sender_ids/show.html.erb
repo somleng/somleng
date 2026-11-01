@@ -5,6 +5,41 @@
       path: dashboard_alphanumeric_sender_id_path(@resource)
     ) %>
   <% end %>
+
+  <% if policy(@resource).update? %>
+    <% if @resource.may_transition_to?(:approved) %>
+      <%= render(
+        "update_status_page_action",
+        resource: @resource,
+        title: "Approve",
+        desired_status: :approved,
+        button_class: "btn btn-outline-success",
+        icon_class: "fas fa-circle-check"
+      ) %>
+    <% end %>
+
+    <% if @resource.may_transition_to?(:rejected) %>
+      <%= render(
+        "update_status_page_action",
+        resource: @resource,
+        title: "Reject",
+        desired_status: :rejected,
+        button_class: "btn btn-outline-danger",
+        icon_class: "fas fa-circle-xmark"
+      ) %>
+    <% end %>
+
+    <% if @resource.may_transition_to?(:revoked) %>
+      <%= render(
+        "update_status_page_action",
+        resource: @resource,
+        title: "Revoke",
+        desired_status: :revoked,
+        button_class: "btn btn-outline-danger",
+        icon_class: "fas fa-circle-xmark"
+      ) %>
+    <% end %>
+  <% end %>
 <% end %>
 
 <div class="card-body">
@@ -23,11 +58,32 @@
 
     <%= f.attribute :sender_id %>
 
-    <%= f.attribute :approval_status do %>
-      <%= status_badge(f.object.approval_status.text, color: f.object.approval_status_color) %>
+    <%= f.attribute(:status, content_html: { id: "status" }) do %>
+      <%= status_badge(f.object.status.text, color: f.object.status_color) %>
     <% end %>
 
-    <%= f.attribute :created_at, value: local_time(@resource.created_at) %>
-    <%= f.attribute :updated_at, value: local_time(@resource.updated_at) %>
+    <%= f.attribute(:created_at, value: local_time(@resource.created_at)) %>
+    <%= f.attribute(:updated_at, value: local_time(@resource.updated_at)) %>
+    <%= f.attribute(
+      :approved_at,
+      value: local_time(@resource.approved_at),
+      content_html: {
+        id: "approved-at"
+      }
+    ) %>
+    <%= f.attribute(
+      :rejected_at,
+      value: local_time(@resource.rejected_at),
+      content_html: {
+        id: "rejected-at"
+      }
+    ) %>
+    <%= f.attribute(
+      :revoked_at,
+      value: local_time(@resource.revoked_at),
+      content_html: {
+        id: "revoked-at"
+      }
+    ) %>
   <% end %>
 </div>

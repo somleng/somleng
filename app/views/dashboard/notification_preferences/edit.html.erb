@@ -8,7 +8,7 @@
         wrapper: :vertical_collection_inline,
         label: category.humanize,
         collection: notification_topics.map { |topic| [ topic.name.humanize, topic.identifier ] },
-        hint: "Select the #{category.humanize} topics to receive notifications for."
+        hint: "Select which #{category.humanize.downcase} you'd like to receive by email."
       ) %>
     <% end  %>
 

@@ -21,19 +21,12 @@ class AlphanumericSenderIDForm < ApplicationForm
   def save
     return false if invalid?
 
-    resource.attributes = {
-      carrier:,
-      sender_id:
-    }
-
-    if carrier_managed?
-      resource.account = accounts_scope.find(account_id)
-      resource.approval_status = :approved
-    else
-      resource.account = account
-    end
-
-    resource.save!
+    self.resource = CreateAlphanumericSenderID.call(
+      {
+        sender_id:,
+        account: account.blank? ? accounts_scope.find(account_id) : account
+      }
+    )
   end
 
   def account_options_for_select
@@ -41,10 +34,6 @@ class AlphanumericSenderIDForm < ApplicationForm
   end
 
   private
-
-  def carrier_managed?
-    account.blank?
-  end
 
   def accounts_scope
     carrier.accounts.carrier_managed

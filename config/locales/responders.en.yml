@@ -47,6 +47,8 @@ en:
           notice: Alphanumeric Sender ID was successfully requested.
         destroy:
           notice: Alphanumeric Sender ID was successfully destroyed.
+        update:
+          notice: Alphanumeric Sender ID was successfully updated.
       phone_numbers:
         bulk_destroy:
           notice: Phone numbers were successfully destroyed.

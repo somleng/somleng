@@ -102,8 +102,33 @@ FactoryBot.define do
   factory :alphanumeric_sender_id do
     account
     carrier { account.carrier }
-    traits_for_enum :approval_status, %i[pending_approval rejected approved]
     sender_id { "MyCompany" }
+
+    trait :pending_approval do
+      status { :pending_approval }
+    end
+
+    trait :approved do
+      status { :approved }
+      approved_at { Time.current }
+    end
+
+    trait :rejected do
+      status { :rejected }
+      rejected_at { Time.current }
+    end
+
+    trait :revoked do
+      status { :revoked }
+      approved_at { Time.current }
+      revoked_at { Time.current }
+    end
+  end
+
+  factory :admin_notification do
+    topic { :alphanumeric_sender_ids_approvals }
+    user
+    email { user.email }
   end
 
   factory :interaction do

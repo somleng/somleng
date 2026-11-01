@@ -37,4 +37,30 @@ RSpec.describe AlphanumericSenderIDPolicy, type: :policy do
       expect(policy.destroy?).to be(false)
     end
   end
+
+  describe "#update?" do
+    it "denies access to carrier members" do
+      carrier = build_stubbed(:carrier)
+      user = build_stubbed(:user, :member, carrier:)
+      policy = AlphanumericSenderIDPolicy.new(user)
+
+      expect(policy.update?).to be(false)
+    end
+
+    it "denies access to account owners" do
+      account_membership = build_stubbed(:account_membership, :owner)
+      policy = AlphanumericSenderIDPolicy.new(account_membership.user)
+
+      expect(policy.update?).to be(false)
+    end
+
+    it "denies access to carrier users managing carrier managed resources" do
+      carrier = build_stubbed(:carrier)
+      alphanumeric_sender_id = build_stubbed(:alphanumeric_sender_id, account: build_stubbed(:account, :carrier_managed, carrier:))
+      user = build_stubbed(:user, :carrier, :admin, carrier:)
+      policy = AlphanumericSenderIDPolicy.new(user, alphanumeric_sender_id)
+
+      expect(policy.update?).to be(false)
+    end
+  end
 end

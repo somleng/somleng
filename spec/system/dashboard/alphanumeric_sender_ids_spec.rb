@@ -28,8 +28,9 @@ RSpec.describe "Alphanumeric Sender IDs" do
     account = create(:account, carrier:)
     alphanumeric_sender_id = create(
       :alphanumeric_sender_id,
+      :approved,
       account:,
-      sender_id: "FooCompany"
+      sender_id: "FooCompany",
     )
     other_alphanumeric_sender_id = create(
       :alphanumeric_sender_id,
@@ -41,7 +42,8 @@ RSpec.describe "Alphanumeric Sender IDs" do
     visit dashboard_alphanumeric_sender_ids_path(
       filter: {
         account_id: alphanumeric_sender_id.account_id,
-        sender_id: "Foo"
+        sender_id: "Foo",
+        status: "approved"
       }
     )
 
@@ -92,6 +94,63 @@ RSpec.describe "Alphanumeric Sender IDs" do
     click_on("Delete")
 
     expect(page).to have_text("Alphanumeric Sender ID was successfully destroyed")
+  end
+
+  it "Approve an alphanumeric sender id" do
+    carrier = create(:carrier)
+    account = create(:account, :customer_managed, carrier:)
+    alphanumeric_sender_id = create(:alphanumeric_sender_id, :pending_approval, account:)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_alphanumeric_sender_id_path(alphanumeric_sender_id)
+    click_on("Approve")
+
+    expect(page).to have_text("Alphanumeric Sender ID was successfully updated")
+    within("#status") do
+      expect(page).to have_text("Approved")
+    end
+    within("#approved-at") do
+      expect(page).to have_css("time")
+    end
+  end
+
+  it "Reject an alphanumeric sender id" do
+    carrier = create(:carrier)
+    account = create(:account, :customer_managed, carrier:)
+    alphanumeric_sender_id = create(:alphanumeric_sender_id, :pending_approval, account:)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_alphanumeric_sender_id_path(alphanumeric_sender_id)
+    click_on("Reject")
+
+    expect(page).to have_text("Alphanumeric Sender ID was successfully updated")
+    within("#status") do
+      expect(page).to have_text("Rejected")
+    end
+    within("#rejected-at") do
+      expect(page).to have_css("time")
+    end
+  end
+
+  it "Revoke an alphanumeric sender id" do
+    carrier = create(:carrier)
+    account = create(:account, :customer_managed, carrier:)
+    alphanumeric_sender_id = create(:alphanumeric_sender_id, :approved, account:)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_alphanumeric_sender_id_path(alphanumeric_sender_id)
+    click_on("Revoke")
+
+    expect(page).to have_text("Alphanumeric Sender ID was successfully updated")
+    within("#status") do
+      expect(page).to have_text("Revoked")
+    end
+    within("#revoked-at") do
+      expect(page).to have_css("time")
+    end
   end
 
   it "Manage alphanumeric sender ids as an account owner" do

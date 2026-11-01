@@ -1,0 +1,21 @@
+<%= button_to(
+  dashboard_alphanumeric_sender_id_path(resource),
+  params: {
+    alphanumeric_sender_id: {
+      status: desired_status
+    }
+  },
+  class: button_class,
+  form_class: "d-inline",
+  title:,
+  data: { bs_toggle: :tooltip },
+  method: :patch,
+  form: {
+    data: {
+      turbo_confirm: "This action cannot be undone. Are you sure you want to continue?"
+    }
+  }
+) do %>
+  <%= tag.i(class: icon_class) %>
+  <%= title %>
+<% end %>

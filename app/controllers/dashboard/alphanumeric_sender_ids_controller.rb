@@ -25,6 +25,12 @@ module Dashboard
       respond_with(:dashboard, record)
     end
 
+    def update
+      permitted_params = required_params.permit(:status)
+      record.transition_to(permitted_params[:status])
+      respond_with(:dashboard, record)
+    end
+
     private
 
     def required_params

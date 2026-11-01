@@ -5,6 +5,7 @@ class User < ApplicationRecord
   enumerize :carrier_role, in: %i[owner admin member], predicates: true
   enumerize :subscribed_notification_topics,
             in: [
+              "admin_notifications.alphanumeric_sender_ids_approvals",
               "error_logs.inbound_message",
               "error_logs.inbound_call",
               "error_logs.sms_gateway_disconnect"
@@ -21,6 +22,7 @@ class User < ApplicationRecord
   has_many :account_memberships
   has_many :accounts, through: :account_memberships
   has_many :error_log_notifications
+  has_many :admin_notifications
 
   devise :invitable, :registerable, :confirmable,
          :recoverable, :trackable, :rememberable,
@@ -62,7 +64,7 @@ class User < ApplicationRecord
   end
 
   def self.subscribed_to_notifications_for(topic)
-    where(":topic = ANY (\"#{table_name}\".\"subscribed_notification_topics\")", topic:)
+    where.not(confirmed_at: nil).where(":topic = ANY (\"#{table_name}\".\"subscribed_notification_topics\")", topic:)
   end
 
   def send_devise_notification(notification, *args)

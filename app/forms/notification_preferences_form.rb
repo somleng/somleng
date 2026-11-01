@@ -1,5 +1,5 @@
 class NotificationPreferencesForm
-  NotificationTopic = Struct.new(:name, :category, keyword_init: true) do
+  NotificationTopic = Data.define(:name, :category) do
     def self.parse(value)
       category, name = value.split(".", 2)
       new(category:, name:)

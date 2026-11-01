@@ -3,10 +3,14 @@ class AlphanumericSenderIDPolicy < ApplicationPolicy
     true
   end
 
+  def update?
+    carrier_admin? && record.account.customer_managed?
+  end
+
   def destroy?
     return false unless super
-
     return false if managing_carrier? && record.account.customer_managed?
+
     true
   end
 

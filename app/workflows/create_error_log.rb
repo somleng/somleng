@@ -2,6 +2,7 @@ class CreateErrorLog < ApplicationWorkflow
   attr_reader :params
 
   def initialize(params)
+    super()
     @params = params
   end
 
@@ -45,7 +46,6 @@ class CreateErrorLog < ApplicationWorkflow
       error_log.carrier.carrier_users
     end
 
-    users.where.not(confirmed_at: nil)
-         .subscribed_to_notifications_for("error_logs.#{error_log.type}")
+    users.subscribed_to_notifications_for("error_logs.#{error_log.type}")
   end
 end
