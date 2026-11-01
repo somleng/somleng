@@ -8,7 +8,7 @@ class AlphanumericSenderID < ApplicationRecord
 
   class StateMachine < ::StateMachine::ActiveRecord
     state :pending_approval, initial: true, transitions_to: [ :approved, :rejected ]
-    state :approved, transitions_to: :revoked
+    state :approved, transitions_to: :revoked, guard: ->(record) { }
     state :rejected
     state :revoked
   end
@@ -19,7 +19,14 @@ class AlphanumericSenderID < ApplicationRecord
             predicates: true,
             scope: :shallow
 
-  delegate :may_transition_to?, :transition_to, :transition_to!, to: :state_machine
+  delegate :transition_to, :transition_to!, to: :state_machine
+
+  def may_transition_to?(new_state)
+    result = super
+    return result if new_state.to_sym != :approved
+
+    result && self.class.approved.where(sender_id:, carrier:).none?
+  end
 
   def state_machine
     @state_machine ||= StateMachine.new(self)

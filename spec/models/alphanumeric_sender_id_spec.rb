@@ -3,14 +3,16 @@ require "rails_helper"
 RSpec.describe AlphanumericSenderID do
   describe "state machine" do
     it "handles state transitions" do
-      expect(AlphanumericSenderID.new.status).to eq(:pending_approval)
+      carrier = create(:carrier)
+      create(:alphanumeric_sender_id, :approved, account: create(:account, carrier:), sender_id: "VERIFY")
 
+      expect(AlphanumericSenderID.new.status).to eq(:pending_approval)
       assert_transition_of(
         create(:alphanumeric_sender_id, :pending_approval),
         to: :approved,
         touch: :approved_at
       )
-
+      assert_no_transition_of(create(:alphanumeric_sender_id, :pending_approval, sender_id: "VERIFY"), to: :approved)
       assert_no_transition_of(create(:alphanumeric_sender_id, :pending_approval), to: :revoked)
       assert_no_transition_of(create(:alphanumeric_sender_id, :approved), to: :rejected)
       assert_no_transition_of(create(:alphanumeric_sender_id, :revoked), to: :approved)

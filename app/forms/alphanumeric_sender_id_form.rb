@@ -24,7 +24,7 @@ class AlphanumericSenderIDForm < ApplicationForm
     self.resource = CreateAlphanumericSenderID.call(
       {
         sender_id:,
-        account: account.blank? ? accounts_scope.find(account_id) : account
+        account: scoped_account
       }
     )
   end
@@ -39,7 +39,15 @@ class AlphanumericSenderIDForm < ApplicationForm
     carrier.accounts.carrier_managed
   end
 
+  def scoped_account
+    account.present? ? account : accounts_scope.find(account_id)
+  end
+
   def validate_sender_id_uniqueness
-    errors.add(:sender_id, :taken) if carrier.alphanumeric_sender_ids.approved.exists?(sender_id:)
+    return if errors.any?
+
+    if carrier.alphanumeric_sender_ids.approved.exists?(sender_id:) || scoped_account.alphanumeric_sender_ids.exists?(sender_id:)
+      errors.add(:sender_id, :taken)
+    end
   end
 end
