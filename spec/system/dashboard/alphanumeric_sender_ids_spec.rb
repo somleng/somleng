@@ -76,10 +76,10 @@ RSpec.describe "Alphanumeric Sender IDs" do
 
     carrier_sign_in(user)
     visit new_dashboard_alphanumeric_sender_id_path
+    select(account.name, from: "Account")
     fill_in("Sender ID", with: "MyCompany")
     click_on("Request")
 
-    expect(page).to have_text("Account can't be blank")
     expect(page).to have_text("Sender ID has already been taken")
   end
 

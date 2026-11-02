@@ -7,26 +7,37 @@ module StateMachine
       super(record.status)
     end
 
-    def transition_to(new_state, **options)
-      record.status = super(new_state).name
-      persist!(record.status, **options) if record.status_changed?
+    def may_transition_to?(new_state)
+      self.class.new(record.dup).transition_to(new_state, persist: false)
+    end
+
+    def transition_to(new_state, persist: true, **options)
+      return unless super(new_state)
+
+      record.status = current_state.name
+      persist ? persist!(record.status, **options) { record.save } : record.valid?
+      record.errors.empty?
     end
 
     def transition_to!(new_state, **options)
-      record.status = super(new_state).name
-      persist!(record.status, **options)
+      super(new_state)
+      record.status = current_state.name
+      persist!(record.status, **options) { record.save! }
     end
 
     private
 
     def persist!(new_state, **options)
       record.transaction do
-        record.save!
+        return unless yield
+
         timestamp_attribute = options.fetch(:touch) if options.key?(:touch)
         raise(ArgumentError, "Unknown timestamp attribute #{timestamp_attribute}") if timestamp_attribute.present? && !record.has_attribute?(timestamp_attribute)
         timestamp_attribute ||= "#{new_state}_at"
         record.touch(timestamp_attribute) if record.has_attribute?(timestamp_attribute)
       end
+
+      true
     end
   end
 end

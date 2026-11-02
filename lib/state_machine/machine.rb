@@ -37,7 +37,7 @@ module StateMachine
     end
 
     def transition_to!(new_state)
-      may_transition_to?(new_state) ? perform_transition(new_state) : raise(InvalidStateTransitionError, "Cannot transition from #{current_state.name} to #{new_state}")
+      raise(InvalidStateTransitionError, "Cannot transition from #{current_state.name} to #{new_state}") unless perform_transition(new_state)
     end
 
     def may_transition_to?(new_state)
@@ -51,11 +51,12 @@ module StateMachine
     end
 
     def perform_transition(new_state)
-      @current_state = if may_transition_to?(new_state)
+      if find_transition(new_state).present?
         transition = find_transition(new_state)
-        self.class.find(transition.as || transition.name)
+        @current_state = self.class.find(transition.as || transition.name)
+        true
       else
-        current_state
+        false
       end
     end
   end

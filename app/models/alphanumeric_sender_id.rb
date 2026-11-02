@@ -4,7 +4,14 @@ class AlphanumericSenderID < ApplicationRecord
   belongs_to :carrier
   belongs_to :account
 
-  validates :sender_id, presence: true, alphanumeric_sender_id_format: true
+  validates :sender_id, presence: true,
+            alphanumeric_sender_id_format: true,
+            uniqueness: {
+              scope: :carrier_id,
+              case_sensitive: false,
+              conditions: -> { approved },
+              if: :approved?
+            }
 
   class StateMachine < ::StateMachine::ActiveRecord
     state :pending_approval, initial: true, transitions_to: [ :approved, :rejected ]
@@ -19,14 +26,7 @@ class AlphanumericSenderID < ApplicationRecord
             predicates: true,
             scope: :shallow
 
-  delegate :transition_to, :transition_to!, to: :state_machine
-
-  def may_transition_to?(new_state)
-    result = super
-    return result if new_state.to_sym != :approved
-
-    result && self.class.approved.where(sender_id:, carrier:).none?
-  end
+  delegate :may_transition_to?, :transition_to, :transition_to!, to: :state_machine
 
   def state_machine
     @state_machine ||= StateMachine.new(self)
