@@ -42,38 +42,44 @@ RSpec.describe CreateAlphanumericSenderID do
   it "notifies subscribed recipients" do
     carrier = create(:carrier)
     account = create(:account, :customer_managed, carrier:)
-    subscribed_recipient = create(
+    subscribed_user = create(
       :user,
       :carrier,
       carrier:,
-      subscribed_notification_topics: [ "admin_notifications.alphanumeric_sender_ids_approvals" ]
+      subscribed_notification_topics: [ "admin_notifications.alphanumeric_sender_id_updates" ]
     )
-    unsubscribed_recipient = create(
+    unsubscribed_user = create(
       :user, :carrier, carrier:
     )
-    recently_notified_recipient = create(
+    recently_notified_user = create(
       :user,
       :carrier,
       carrier:,
-      subscribed_notification_topics: [ "admin_notifications.alphanumeric_sender_ids_approvals" ]
+      subscribed_notification_topics: [ "admin_notifications.alphanumeric_sender_id_updates" ]
     )
-    create(:admin_notification, topic: :alphanumeric_sender_ids_approvals, user: recently_notified_recipient)
+    create(:admin_notification, topic: :alphanumeric_sender_id_updates, user: recently_notified_user)
 
-    result = CreateAlphanumericSenderID.call(
-      {
-        account:,
-        sender_id: "MyCompany"
-      },
-      notify: true
-    )
+    perform_enqueued_jobs do
+      result = CreateAlphanumericSenderID.call(
+        {
+          account:,
+          sender_id: "MyCompany"
+        },
+        notify: true
+      )
 
-    expect(result).to be_persisted
-    expect(subscribed_recipient.admin_notifications).to contain_exactly(
+      expect(result).to be_persisted
+    end
+
+    expect(subscribed_user.admin_notifications).to contain_exactly(
       have_attributes(
-        topic: "alphanumeric_sender_ids_approvals"
+        topic: "alphanumeric_sender_id_updates"
       )
     )
-    expect(unsubscribed_recipient.admin_notifications).to be_empty
-    expect(recently_notified_recipient.admin_notifications.count).to eq(1)
+    expect(unsubscribed_user.admin_notifications).to be_empty
+    expect(account.owner.admin_notifications).to be_empty
+    expect(recently_notified_user.admin_notifications.count).to eq(1)
+    expect(last_email_sent).to deliver_to(subscribed_user.email)
+    expect(last_email_sent).to have_subject("New Alphanumeric Sender IDs pending approval")
   end
 end

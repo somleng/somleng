@@ -1,7 +1,7 @@
 <%= page_title(title: "Notification Preferences") %>
 <div class="card-body">
   <%= simple_form_for(@resource, url: dashboard_notification_preferences_path) do |f| %>
-    <% @resource.notification_topics.group_by(&:category).each do |category, notification_topics| %>
+    <% User::NOTIFICATION_TOPICS.group_by(&:category).each do |category, notification_topics| %>
       <%= f.input(
         :subscribed_notification_topics,
         as: :check_boxes,

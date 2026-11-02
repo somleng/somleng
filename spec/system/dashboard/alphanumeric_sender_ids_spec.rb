@@ -158,6 +158,7 @@ RSpec.describe "Alphanumeric Sender IDs" do
     account = create(:account, :customer_managed, carrier:)
     alphanumeric_sender_id = create(:alphanumeric_sender_id, account:)
     other_alphanumeric_sender_id = create(:alphanumeric_sender_id, account: create(:account, carrier:))
+    carrier_admin = create(:user, :carrier, :admin, carrier:, subscribed_notification_topics: [ "admin_notifications.alphanumeric_sender_id_updates" ])
     user = create(:user, :with_account_membership, account_role: :owner, account:)
 
     carrier_sign_in(user)
@@ -171,11 +172,15 @@ RSpec.describe "Alphanumeric Sender IDs" do
     expect(page).to have_no_field("Account")
 
     fill_in("Sender ID", with: "MySender1")
-    click_on("Request")
+    perform_enqueued_jobs do
+      click_on("Request")
+    end
 
     expect(page).to have_text("Alphanumeric Sender ID was successfully requested")
     expect(page).to have_text("MySender1")
     expect(page).to have_text("Pending approval")
+    expect(last_email_sent).to deliver_to(carrier_admin.email)
+    expect(last_email_sent).to have_subject("New Alphanumeric Sender IDs pending approval")
 
     click_on("Delete")
 

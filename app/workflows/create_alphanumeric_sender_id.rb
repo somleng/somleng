@@ -1,15 +1,12 @@
 class CreateAlphanumericSenderID < ApplicationWorkflow
-  attr_reader :params, :notify, :notify_options
+  attr_reader :params, :notify, :notification_topic
 
   def initialize(params, **options)
     super()
     @params = params
     @notify = options.fetch(:notify, false)
-    @notify_options = options.fetch(:notify_options) {
-      {
-        topic_namespace: :admin_notifications,
-        topic: :alphanumeric_sender_ids_approvals
-      }
+    @notification_topic = options.fetch(:notification_topic) {
+      User::NOTIFICATION_TOPICS.find { it.identifier == "admin_notifications.alphanumeric_sender_id_updates" }
     }
   end
 
@@ -34,22 +31,32 @@ class CreateAlphanumericSenderID < ApplicationWorkflow
   end
 
   def notify_subscribed_recipients(carrier)
-    potential_recipients = carrier.carrier_users.subscribed_to_notifications_for(fully_qualified_notification_topic)
-    recent_notifications = AdminNotification.recent_notifications_for(notify_options.fetch(:topic))
+    potential_recipients = carrier.carrier_users.subscribed_to_notifications_for(notification_topic.identifier)
+    recent_notifications = AdminNotification.recent_notifications_for(notification_topic.name)
     recipients_to_notify = potential_recipients.where.not(id: recent_notifications.select(:user_id))
 
+    return if recipients_to_notify.none?
+
+    notifications = create_notifications_for(recipients: recipients_to_notify)
+    deliver_notifications(notifications:, carrier:)
+  end
+
+  def create_notifications_for(recipients:)
     AdminNotification.insert_all!(
-      recipients_to_notify.pluck(:email, :id).map do |email, id|
+      recipients.pluck(:email, :id).map do |email, id|
         {
           email:,
           user_id: id,
-          topic: notify_options.fetch(:topic)
+          topic: notification_topic.name
         }
-      end
+      end,
+      returning: [ :email ]
     )
   end
 
-  def fully_qualified_notification_topic
-    [ notify_options.fetch(:topic_namespace), notify_options.fetch(:topic) ].join(".")
+  def deliver_notifications(notifications:, carrier:)
+    AdminNotificationMailer.alphanumeric_sender_ids_pending_approval(
+      recipients: notifications.pluck("email"), carrier:
+    ).deliver_later
   end
 end

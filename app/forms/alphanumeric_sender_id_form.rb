@@ -25,7 +25,8 @@ class AlphanumericSenderIDForm < ApplicationForm
       {
         sender_id:,
         account: scoped_account
-      }
+      },
+      notify: true
     )
   end
 
