@@ -387,8 +387,8 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
-    mock_redis (0.55.0)
-      redis (~> 5)
+    mock_redis (0.56.0)
+      redis (>= 5, < 7)
     monetize (2.0.0)
       money (~> 7.0)
     money (7.0.2)
@@ -500,9 +500,9 @@ GEM
       rbs (>= 4.0.0)
       tsort
     recaptcha (5.21.2)
-    redis (5.4.1)
-      redis-client (>= 0.22.0)
-    redis-client (0.29.0)
+    redis (6.0.0)
+      redis-client (= 0.30.1)
+    redis-client (0.30.1)
       connection_pool
     regexp_parser (2.12.0)
     reline (0.7.0)
