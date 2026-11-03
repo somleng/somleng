@@ -126,7 +126,7 @@ FactoryBot.define do
   end
 
   factory :admin_notification do
-    topic { :alphanumeric_sender_ids_approvals }
+    topic { :alphanumeric_sender_id_updates }
     user
     email { user.email }
   end
