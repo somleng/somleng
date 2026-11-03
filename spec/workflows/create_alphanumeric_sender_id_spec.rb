@@ -39,7 +39,7 @@ RSpec.describe CreateAlphanumericSenderID do
     )
   end
 
-  it "notifies subscribed recipients" do
+  it "notifies subscribed users" do
     carrier = create(:carrier)
     account = create(:account, :customer_managed, carrier:)
     subscribed_user = create(

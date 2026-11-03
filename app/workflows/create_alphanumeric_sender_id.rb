@@ -33,30 +33,13 @@ class CreateAlphanumericSenderID < ApplicationWorkflow
   def notify_subscribed_recipients(carrier)
     potential_recipients = carrier.carrier_users.subscribed_to_notifications_for(notification_topic.identifier)
     recent_notifications = AdminNotification.recent_notifications_for(notification_topic.name)
-    recipients_to_notify = potential_recipients.where.not(id: recent_notifications.select(:user_id))
+    recipients = potential_recipients.where.not(id: recent_notifications.select(:user_id))
 
-    return if recipients_to_notify.none?
+    return if recipients.none?
 
-    notifications = create_notifications_for(recipients: recipients_to_notify)
-    deliver_notifications(notifications:, carrier:)
-  end
-
-  def create_notifications_for(recipients:)
-    AdminNotification.insert_all!(
-      recipients.pluck(:email, :id).map do |email, id|
-        {
-          email:,
-          user_id: id,
-          topic: notification_topic.name
-        }
-      end,
-      returning: [ :email ]
-    )
-  end
-
-  def deliver_notifications(notifications:, carrier:)
     AdminNotificationMailer.alphanumeric_sender_ids_pending_approval(
-      recipients: notifications.pluck("email"), carrier:
+      recipients: AdminNotification.create_for!(users: recipients, topic: notification_topic.name),
+      carrier:
     ).deliver_later
   end
 end

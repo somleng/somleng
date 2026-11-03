@@ -97,14 +97,33 @@ RSpec.describe "Alphanumeric Sender IDs" do
   end
 
   it "Approve an alphanumeric sender id" do
-    carrier = create(:carrier)
-    account = create(:account, :customer_managed, carrier:)
+    carrier = create(:carrier, name: "Rocket Communications")
+    account = create(
+      :account,
+      :customer_managed,
+      carrier:,
+      account_memberships: [
+        build(
+          :account_membership,
+          :owner,
+          user: create(
+            :user,
+            carrier:,
+            subscribed_notification_topics: [
+              "admin_notifications.alphanumeric_sender_id_updates"
+            ]
+          )
+        )
+      ]
+    )
     alphanumeric_sender_id = create(:alphanumeric_sender_id, :pending_approval, account:)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
     visit dashboard_alphanumeric_sender_id_path(alphanumeric_sender_id)
-    click_on("Approve")
+    perform_enqueued_jobs do
+      click_on("Approve")
+    end
 
     expect(page).to have_text("Alphanumeric Sender ID was successfully updated")
     within("#status") do
@@ -113,6 +132,8 @@ RSpec.describe "Alphanumeric Sender IDs" do
     within("#approved-at") do
       expect(page).to have_css("time")
     end
+    expect(last_email_sent).to deliver_to(account.owner.email)
+    expect(last_email_sent).to have_subject("Rocket Communications - Your Alphanumeric Sender ID request has been approved.")
   end
 
   it "Reject an alphanumeric sender id" do

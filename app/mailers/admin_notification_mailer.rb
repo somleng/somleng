@@ -11,4 +11,15 @@ class AdminNotificationMailer < ApplicationMailer
       subject: "New Alphanumeric Sender IDs pending approval"
     )
   end
+
+  def alphanumeric_sender_id_request_updated(recipients:, alphanumeric_sender_id:)
+    @alphanumeric_sender_id = alphanumeric_sender_id
+    @carrier = alphanumeric_sender_id.carrier
+    @host = @alphanumeric_sender_id.carrier.account_host
+
+    bootstrap_mail(
+      to: recipients,
+      subject: "#{@carrier.name} - Your Alphanumeric Sender ID request has been #{@alphanumeric_sender_id.status.text.downcase}."
+    )
+  end
 end

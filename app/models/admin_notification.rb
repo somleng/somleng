@@ -8,4 +8,17 @@ class AdminNotification < ApplicationRecord
   def self.recent_notifications_for(topic, since: 24.hours.ago)
     where(topic:).where(created_at: since..)
   end
+
+  def self.create_for!(users:, topic:, returning: :email)
+    insert_all!(
+      users.pluck(:email, :id).map do |email, id|
+        {
+          email:,
+          user_id: id,
+          topic:
+        }
+      end,
+      returning: [ returning ]
+    ).pluck(returning.to_s)
+  end
 end

@@ -27,7 +27,7 @@ module Dashboard
 
     def update
       permitted_params = required_params.permit(:status)
-      record.transition_to(permitted_params[:status])
+      UpdateAlphanumericSenderIDStatus.call(record, status: permitted_params[:status], notify: true)
       respond_with(:dashboard, record)
     end
 
