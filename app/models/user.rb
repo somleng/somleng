@@ -103,10 +103,6 @@ class User < ApplicationRecord
     carrier_role.present?
   end
 
-  def notification_topics
-    self.notification_topics = subscribed_notification_topics
-  end
-
   private
 
   def password_required?
