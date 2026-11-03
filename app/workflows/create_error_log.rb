@@ -23,17 +23,9 @@ class CreateErrorLog < ApplicationWorkflow
   def notify_subscribed_recipients(error_log)
     recipients = find_potential_recipients(error_log)
 
-    notifications = recipients.map do |recipient|
-      ErrorLogNotification.create!(
-        error_log:,
-        user: recipient,
-        email: recipient.email,
-        message_digest: error_log.error_message
-      )
-    end
+    return if recipients.none?
 
-    return if notifications.blank?
-
+    ErrorLogNotification.create_for!(users: recipients, error_log:)
     ErrorLogMailer.notify(error_log:).deliver_later
   end
 
