@@ -1,14 +1,41 @@
 class User < ApplicationRecord
-  extend Enumerize
   EMAIL_FORMAT = /\A[^@\s]+@[^@\s]+\z/
 
+  extend Enumerize
+
+  NotificationTopic = Data.define(:name, :category) do
+    def initialize(name:, category:)
+      super(name: name.inquiry, category: category.inquiry)
+    end
+
+    def identifier
+      "#{category}.#{name}"
+    end
+  end
+
+  NOTIFICATION_TOPICS = [
+    NotificationTopic.new(
+      name: "alphanumeric_sender_id_updates",
+      category: "admin_notifications"
+    ),
+    NotificationTopic.new(
+      name: "inbound_message",
+      category: "error_logs"
+    ),
+    NotificationTopic.new(
+      name: "inbound_call",
+      category: "error_logs"
+    ),
+    NotificationTopic.new(
+      name: "sms_gateway_disconnect",
+      category: "error_logs"
+    )
+  ]
+
   enumerize :carrier_role, in: %i[owner admin member], predicates: true
+
   enumerize :subscribed_notification_topics,
-            in: [
-              "error_logs.inbound_message",
-              "error_logs.inbound_call",
-              "error_logs.sms_gateway_disconnect"
-            ],
+            in: NOTIFICATION_TOPICS.map(&:identifier),
             multiple: true
 
   belongs_to :carrier
@@ -21,6 +48,7 @@ class User < ApplicationRecord
   has_many :account_memberships
   has_many :accounts, through: :account_memberships
   has_many :error_log_notifications
+  has_many :admin_notifications
 
   devise :invitable, :registerable, :confirmable,
          :recoverable, :trackable, :rememberable,
@@ -49,20 +77,22 @@ class User < ApplicationRecord
     CarrierUserPolicy
   end
 
-  def self.find_for_authentication(warden_conditions)
-    app_request = AppRequest.new(warden_conditions.fetch(:itself))
-    joins(:carrier).where(
-      email: warden_conditions[:email],
-      carriers: { subdomain: app_request.carrier_subdomain }
-    ).first
-  end
+  class << self
+    def find_for_authentication(warden_conditions)
+      app_request = AppRequest.new(warden_conditions.fetch(:itself))
+      joins(:carrier).where(
+        email: warden_conditions[:email],
+        carriers: { subdomain: app_request.carrier_subdomain }
+      ).first
+    end
 
-  def self.carrier
-    where.not(carrier_role: nil)
-  end
+    def carrier
+      where.not(carrier_role: nil)
+    end
 
-  def self.subscribed_to_notifications_for(topic)
-    where(":topic = ANY (\"#{table_name}\".\"subscribed_notification_topics\")", topic:)
+    def subscribed_to_notifications_for(topic)
+      where.not(confirmed_at: nil).where(":topic = ANY (\"#{table_name}\".\"subscribed_notification_topics\")", topic:)
+    end
   end
 
   def send_devise_notification(notification, *args)

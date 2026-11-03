@@ -1,3 +1,7 @@
 .wrapper {
   padding-left: var(--cui-sidebar-occupy-start, 0);
 }
+
+.sidebar-nav .nav-link {
+  white-space: normal !important;
+}

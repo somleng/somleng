@@ -18,7 +18,8 @@ class UserDashboard < Administrate::BaseDashboard
     account_memberships: Field::HasMany,
     imports: Field::HasMany,
     exports: Field::HasMany,
-    error_log_notifications: Field::HasMany
+    error_log_notifications: Field::HasMany,
+    admin_notifications: Field::HasMany
   }.freeze
 
   COLLECTION_ATTRIBUTES = %i[
@@ -45,6 +46,7 @@ class UserDashboard < Administrate::BaseDashboard
     imports
     exports
     error_log_notifications
+    admin_notifications
   ].freeze
 
   COLLECTION_FILTERS = {}.freeze

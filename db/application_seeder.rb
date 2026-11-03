@@ -26,7 +26,8 @@ class ApplicationSeeder
 
     setup_billing_for(carrier_managed_account)
     create_topup_for(carrier_managed_account)
-    create_customer_managed_account(carrier:)
+    customer_managed_account, _customer = create_customer_managed_account(carrier:)
+    create_alphanumeric_sender_id(account: customer_managed_account)
     create_error_log_notification(
       carrier:,
       user: carrier_owner,
@@ -95,7 +96,7 @@ class ApplicationSeeder
     end
 
     carrier = params.fetch(:carrier)
-    account = create_account(name: "Customer Account", type: :customer_managed, **params)
+    account = create_account(name: "Rocket Rides", type: :customer_managed, **params)
 
     customer = User.create!(
       build_user_params(
@@ -107,6 +108,18 @@ class ApplicationSeeder
     AccountMembership.create!(account:, user: customer, role: :owner)
 
     [ account, customer ]
+  end
+
+  def create_alphanumeric_sender_id(account:, **)
+    return if account.alphanumeric_sender_ids.exists?
+
+    CreateAlphanumericSenderID.call(
+      {
+        account:,
+        sender_id: "R-Rides",
+        **
+      }
+    )
   end
 
   def create_phone_number(params)

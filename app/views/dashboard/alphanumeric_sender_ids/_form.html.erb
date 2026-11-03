@@ -1,0 +1,34 @@
+<div class="card-body">
+  <%= simple_form_for([:dashboard, resource]) do |f| %>
+    <%= page_sections_container do %>
+      <div class="row">
+        <% if policy(:account).show? %>
+          <div class="col-sm-6">
+            <%= f.input(
+              :account_id,
+              required: true,
+              selected: filter_params.dig(:filter, :account_id),
+              collection: resource.account_options_for_select,
+              input_html: { data: { controller: "enhanced-select" } }
+            ) %>
+          </div>
+        <% end %>
+
+        <div class="col-sm-6">
+          <%= f.input(
+            :sender_id,
+            required: true,
+            hint: "3-11 character alphanumeric ID (containing at least one letter)."
+          ) %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <%= f.button :submit %>
+          <%= link_to_cancel %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

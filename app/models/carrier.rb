@@ -1,5 +1,6 @@
 class Carrier < ApplicationRecord
   has_many :accounts
+  has_many :alphanumeric_sender_ids
   has_many :managed_accounts, -> { carrier_managed }, class_name: "Account"
   has_many :account_memberships, through: :accounts
   has_many :account_users, through: :accounts, source: :users, class_name: "User"

@@ -132,6 +132,13 @@ RSpec.describe "Accounts" do
       )
     end
 
+    within("#phone-numbers") do
+      expect(page).to have_link(
+        "Manage",
+        href: dashboard_alphanumeric_sender_ids_path(filter: { account_id: account.id })
+      )
+    end
+
     within("#messaging") do
       expect(page).to have_link(
         "View",

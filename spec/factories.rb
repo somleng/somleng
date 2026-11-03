@@ -99,6 +99,38 @@ FactoryBot.define do
     end
   end
 
+  factory :alphanumeric_sender_id do
+    account
+    carrier { account.carrier }
+    sender_id { "MyCompany" }
+
+    trait :pending_approval do
+      status { :pending_approval }
+    end
+
+    trait :approved do
+      status { :approved }
+      approved_at { Time.current }
+    end
+
+    trait :rejected do
+      status { :rejected }
+      rejected_at { Time.current }
+    end
+
+    trait :revoked do
+      status { :revoked }
+      approved_at { Time.current }
+      revoked_at { Time.current }
+    end
+  end
+
+  factory :admin_notification do
+    topic { :alphanumeric_sender_id_updates }
+    user
+    email { user.email }
+  end
+
   factory :interaction do
     transient do
       interactable { association :phone_call, to: generate(:phone_number) }

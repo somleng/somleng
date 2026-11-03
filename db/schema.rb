@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_28_142823) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_01_024732) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -87,6 +87,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_28_142823) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "admin_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "email", null: false
+    t.string "topic", null: false
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sequence_number"], name: "index_admin_notifications_on_sequence_number", unique: true, order: :desc
+    t.index ["user_id", "topic", "created_at"], name: "index_admin_notifications_on_user_id_and_topic_and_created_at"
+  end
+
+  create_table "alphanumeric_sender_ids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "carrier_id", null: false
+    t.uuid "account_id", null: false
+    t.citext "sender_id", null: false
+    t.string "status", null: false
+    t.datetime "approved_at"
+    t.datetime "rejected_at"
+    t.datetime "revoked_at"
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "sender_id"], name: "index_alphanumeric_sender_ids_on_account_id_and_sender_id", unique: true
+    t.index ["carrier_id", "account_id", "status"], name: "idx_on_carrier_id_account_id_status_8c3dd89593"
+    t.index ["carrier_id", "sender_id"], name: "index_alphanumeric_sender_ids_on_carrier_id_and_sender_id", unique: true, where: "((status)::text = 'approved'::text)"
+    t.index ["sequence_number"], name: "index_alphanumeric_sender_ids_on_sequence_number", unique: true, order: :desc
   end
 
   create_table "balance_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1016,6 +1044,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_28_142823) do
   add_foreign_key "accounts", "sip_trunks", on_delete: :nullify
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "admin_notifications", "users", on_delete: :cascade
+  add_foreign_key "alphanumeric_sender_ids", "accounts", on_delete: :cascade
+  add_foreign_key "alphanumeric_sender_ids", "carriers", on_delete: :cascade
   add_foreign_key "balance_transactions", "accounts"
   add_foreign_key "balance_transactions", "carriers"
   add_foreign_key "balance_transactions", "messages", on_delete: :nullify

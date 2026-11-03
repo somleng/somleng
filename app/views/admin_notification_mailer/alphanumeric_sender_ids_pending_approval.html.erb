@@ -1,0 +1,24 @@
+<%= content_for(:title) do %>
+  Alphanumeric Sender IDs Pending Approval
+<% end %>
+
+<preview>
+  There are Alphanumeric Sender IDs waiting for your review.
+</preview>
+
+<p class="fw-500">
+  There are Alphanumeric Sender IDs waiting for your review.
+</p>
+
+<%= link_to(
+  "Review on Dashboard",
+  dashboard_alphanumeric_sender_ids_url(filter: { status: :pending_approval }, host: @host),
+  class: "btn btn-primary p-3 fw-700 ax-center"
+) %>
+
+<p class="text-muted text-sm mt-3">
+  You received this notification because you are subscribed to <strong>alphanumeric sender ID update</strong> notifications.
+  You can manage your preference in your <%= link_to(
+    "notification preferences", edit_dashboard_notification_preferences_url(host: @host)
+  ) %>.
+</p>

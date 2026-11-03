@@ -25,7 +25,9 @@ RSpec.describe "Admin/Messages" do
     )
     message = create(
       :message,
+      :outbound,
       to: "855718224112",
+      sender_id: "1111",
       account:,
       sms_gateway:,
       messaging_service:,
@@ -41,6 +43,7 @@ RSpec.describe "Admin/Messages" do
 
     expect(page).to have_link("Rocket Rides", href: admin_account_path(account))
     expect(page).to have_link("855718224112", href: admin_incoming_phone_number_path(incoming_phone_number))
+    expect(page).to have_text("1111")
 
     click_on("My Messaging Service")
 

@@ -17,6 +17,7 @@ class MessageDashboard < Administrate::BaseDashboard
     smart_encoded: Field::String,
     to: Field::String,
     from: Field::String,
+    sender_id: Field::String,
     direction: Field::String,
     sms_url: Field::String,
     sms_method: Field::String,
@@ -68,6 +69,7 @@ class MessageDashboard < Administrate::BaseDashboard
     smart_encoded
     to
     from
+    sender_id
     direction
     sms_url
     sms_method

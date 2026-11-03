@@ -43,6 +43,10 @@
         <% if policy(:available_phone_number).index? %>
           <%= sidebar_nav("Available Numbers", dashboard_available_phone_numbers_path, icon_class: "fa-solid fa-tag") %>
         <% end %>
+
+        <% if policy(:alphanumeric_sender_id).index? %>
+          <%= sidebar_nav("Alphanumeric Sender IDs", dashboard_alphanumeric_sender_ids_path, icon_class: "fa-solid fa-spell-check") %>
+        <% end %>
       </ul>
     </li>
 

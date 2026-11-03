@@ -1,0 +1,20 @@
+<%= content_for(:title) do %>
+  Alphanumeric Sender ID Request <%= @alphanumeric_sender_id.status.text %>
+<% end %>
+
+<preview>
+  Your Alphanumeric Sender ID request for "<%= @alphanumeric_sender_id.sender_id %>" has been <%= @alphanumeric_sender_id.status.text.downcase %>.
+</preview>
+
+<p class="fw-500">
+  Your Alphanumeric Sender ID request for <strong><%= @alphanumeric_sender_id.sender_id %></strong> has been <%= @alphanumeric_sender_id.status.text.downcase %>.
+</p>
+
+<div class="my-4 text-center">
+  <%= link_to "View on Dashboard", dashboard_alphanumeric_sender_ids_url(host: @host, filter: { id: @alphanumeric_sender_id.id }), class: "btn btn-primary p-3 fw-700" %>
+</div>
+
+<p class="text-muted text-sm">
+  You received this notification regarding your Alphanumeric Sender ID request on <%= @carrier.name %>.
+  You can manage your notification preferences in your <%= link_to("notification preferences", edit_dashboard_notification_preferences_url(host: @host)) %>.
+</p>

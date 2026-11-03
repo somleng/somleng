@@ -16,13 +16,4 @@ class ErrorLogNotificationDashboard < Administrate::BaseDashboard
     email
     created_at
   ].freeze
-
-  SHOW_PAGE_ATTRIBUTES = %i[
-    id
-    error_log
-    user
-    email
-    created_at
-    updated_at
-  ].freeze
 end
