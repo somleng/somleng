@@ -3,6 +3,7 @@ class AlphanumericSenderID < ApplicationRecord
 
   belongs_to :carrier
   belongs_to :account
+  has_many :messages
 
   validates :sender_id, presence: true,
             alphanumeric_sender_id_format: true,

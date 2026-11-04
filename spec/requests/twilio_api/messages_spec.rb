@@ -10,13 +10,13 @@ RSpec.resource "Messages", document: :twilio_api do
     )
     parameter(
       "From",
-      "*Request Body Parameter*: A phone number in E.164 format. Required if MessagingServiceSid is not passed",
+      "*Request Body Parameter*: The sender's phone number (in [E.164](https://en.wikipedia.org/wiki/E.164) format), alphanumeric sender ID or short code. The value of the `from` parameter must be a sender that belongs to the Account creating the Message. If you are using `messaging_service_sid`, this parameter can be empty (A `from` value will be assigned from the Messaging Service's Sender Pool) or you can provide a specific sender from your Sender Pool.",
       required: false,
       example: "+855716788999"
     )
     parameter(
       "MessagingServiceSid",
-      "*Request Body Parameter*: The SID of the Messaging Service you want to associate with the Message. Set this parameter to use the Messaging Service Settings you have configured and leave the `From` parameter empty. When only this parameter is set, we will select the `From` phone number for delivery.",
+      "*Request Body Parameter*: The SID of the Messaging Service you want to associate with the Message. When this parameter is provided and the `from` parameter is omitted, the optimal sender from the Messaging Service's Sender Pool will be selected. You may also provide a `from` parameter if you want to use a specific Sender from the Sender Pool.",
       required: false,
       example: SecureRandom.uuid
     )

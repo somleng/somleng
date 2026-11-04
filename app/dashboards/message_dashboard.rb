@@ -7,6 +7,7 @@ class MessageDashboard < Administrate::BaseDashboard
     account: Field::BelongsTo,
     phone_number: Field::BelongsTo,
     incoming_phone_number: Field::BelongsTo,
+    alphanumeric_sender_id: Field::BelongsTo,
     sms_gateway: Field::BelongsTo,
     messaging_service: Field::BelongsTo,
     balance_transaction: Field::HasOne,
@@ -59,6 +60,7 @@ class MessageDashboard < Administrate::BaseDashboard
     account
     phone_number
     incoming_phone_number
+    alphanumeric_sender_id
     sms_gateway
     messaging_service
     balance_transaction

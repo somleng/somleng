@@ -23,6 +23,11 @@ RSpec.describe "Admin/Messages" do
       messaging_service:,
       account:
     )
+    alphanumeric_sender_id = create(
+      :alphanumeric_sender_id,
+      sender_id: "MyBrand",
+      account:
+    )
     message = create(
       :message,
       :outbound,
@@ -31,7 +36,8 @@ RSpec.describe "Admin/Messages" do
       account:,
       sms_gateway:,
       messaging_service:,
-      incoming_phone_number:
+      incoming_phone_number:,
+      alphanumeric_sender_id:
     )
     internal_message = create(:message, :internal)
 
