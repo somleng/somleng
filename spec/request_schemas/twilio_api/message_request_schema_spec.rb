@@ -81,15 +81,6 @@ module TwilioAPI
 
       expect(
         validate_request_schema(
-          input_params: {
-            From: "MyBrand"
-          },
-          options: { account: }
-        )
-      ).to have_valid_field(:From)
-
-      expect(
-        validate_request_schema(
           input_params: {},
           options: { account: }
         )

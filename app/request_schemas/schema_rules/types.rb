@@ -15,7 +15,7 @@ module SchemaRules
     end
 
     SenderID = String.constructor do |value|
-      Types.alphanumeric_sender_id?(value) ? value.strip : Number.call(value)
+      Types.alphanumeric_sender_id?(value) ? value : Number.call(value)
     end
   end
 end
