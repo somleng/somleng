@@ -5,17 +5,7 @@ class ApplicationRequestSchema < Dry::Validation::Contract
 
   delegate :success?, :errors, :context, to: :result
 
-  module Types
-    include Dry.Types()
-
-    Number = String.constructor do |string|
-      string.gsub(/\D/, "") if string.present?
-    end
-
-    UppercaseString = String.constructor do |string|
-      string.upcase if string.present?
-    end
-  end
+  Types = SchemaRules::Types
 
   register_macro(:date_range) do
     next unless key?

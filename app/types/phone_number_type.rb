@@ -1,9 +1,9 @@
 class PhoneNumberType < ActiveRecord::Type::String
   AREA_CODE_COUNTRY_PREFIXES = [ "1" ].freeze
 
-  PhoneNumber = Data.define(:value, :country_code, :area_code, :e164, :sip, :sip_address) do
+  PhoneNumber = Data.define(:value, :country_code, :area_code, :e164, :sip, :sip_address, :alphanumeric) do
     def initialize(value:, **)
-      super(value:, country_code: nil, area_code: nil, e164: false, sip: false, sip_address: nil, **)
+      super(value:, country_code: nil, area_code: nil, e164: false, sip: false, alphanumeric: false, sip_address: nil, **)
     end
 
     def to_s
@@ -12,6 +12,10 @@ class PhoneNumberType < ActiveRecord::Type::String
 
     def e164?
       e164
+    end
+
+    def alphanumeric?
+      alphanumeric
     end
 
     def sip?
@@ -52,6 +56,11 @@ class PhoneNumberType < ActiveRecord::Type::String
         value: value.strip,
         sip_address: value.strip.delete_prefix("sip:"),
         sip: true
+      )
+    elsif AlphanumericSenderIDFormatValidator::ALPHA_ONLY_REGEXP.match?(value)
+      return PhoneNumber.new(
+        value: value.strip,
+        alphanumeric: true
       )
     end
 

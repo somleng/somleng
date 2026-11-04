@@ -36,6 +36,10 @@ module ApplicationError
         code: "21704",
         message: "The Messaging Service contains no phone numbers"
       ),
+      unauthorized_alphanumeric_sender_id: Error.new(
+        code: "30042",
+        message: "Alphanumeric Sender ID is generic or unauthorized for this account"
+      ),
       unreachable_carrier: Error.new(code: "30006", message: "Landline or unreachable carrier"),
       unknown_error: Error.new(code: "30008", message: "Unknown error"),
       message_incapable_phone_number: Error.new(

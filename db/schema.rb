@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_024732) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_04_080139) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -452,7 +452,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_024732) do
     t.boolean "internal", default: false, null: false
     t.uuid "incoming_phone_number_id"
     t.string "sender_id"
+    t.uuid "alphanumeric_sender_id_id"
     t.index ["account_id", "sequence_number"], name: "index_messages_on_account_id_and_sequence_number", order: { sequence_number: :desc }
+    t.index ["alphanumeric_sender_id_id"], name: "index_messages_on_alphanumeric_sender_id_id"
     t.index ["carrier_id"], name: "index_messages_on_carrier_id"
     t.index ["created_at"], name: "index_messages_on_created_at"
     t.index ["incoming_phone_number_id"], name: "index_messages_on_incoming_phone_number_id"
@@ -1086,6 +1088,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_024732) do
   add_foreign_key "message_send_requests", "messages", on_delete: :nullify
   add_foreign_key "message_send_requests", "sms_gateways", on_delete: :cascade
   add_foreign_key "messages", "accounts"
+  add_foreign_key "messages", "alphanumeric_sender_ids", on_delete: :nullify
   add_foreign_key "messages", "carriers"
   add_foreign_key "messages", "incoming_phone_numbers"
   add_foreign_key "messages", "messaging_services", on_delete: :nullify

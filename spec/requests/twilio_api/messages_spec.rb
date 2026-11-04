@@ -69,8 +69,8 @@ RSpec.resource "Messages", document: :twilio_api do
       example: 5.days.from_now.iso8601
     )
 
-    # https://www.twilio.com/docs/messaging/api/message-resource#send-an-sms-message-1
-    example "01. Send an SMS Message" do
+    # https://www.twilio.com/docs/messaging/api/message-resource#send-an-sms-message
+    example "Send an SMS Message" do
       explanation <<~HEREDOC
         The example below shows how to create a Message resource with an SMS recipient.
         Sending this `POST` request creates text message from `+855716788999` (a phone number belonging to the Account sending the request) to `+855716788123`. The content of the text message is `Hello World`.
@@ -108,8 +108,40 @@ RSpec.resource "Messages", document: :twilio_api do
       )
     end
 
+    example "Send an SMS Message from an Alphanumeric Sender ID" do
+      explanation <<~HEREDOC
+        The example below shows how to create a Message resource using an alphanumeric Sender ID.
+        Sending this `POST` request creates a text message from `MyBrand` to `+855716788123`. The content of the text message is `Hello World`.
+      HEREDOC
+
+      carrier = create(:carrier)
+      account = create(:account, carrier:)
+      create(:alphanumeric_sender_id, :approved, account:, sender_id: "MyBrand")
+      create(:sms_gateway, carrier:)
+
+      set_twilio_api_authorization_header(account)
+
+      perform_enqueued_jobs do
+        do_request(
+          AccountSid: account.id,
+          "To" => "+855716788123",
+          "From" => "MyBrand",
+          "Body" => "Hello World"
+        )
+      end
+
+      expect(response_status).to eq(201)
+      expect(response_body).to match_api_response_schema("twilio_api/message")
+      expect(json_response).to include(
+        "status" => "queued",
+        "to" => "+855716788123",
+        "from" => "MyBrand",
+        "body" => "Hello World"
+      )
+    end
+
     # https://www.twilio.com/docs/messaging/api/message-resource#send-a-message-with-a-messaging-service
-    example "02. Send a message with a Messaging Service" do
+    example "Send a message with a Messaging Service" do
       explanation <<~HEREDOC
         When sending a message with a Messaging Service, you must provide a **recipient** via the `To` parameter and **content** via the `Body` parameter. In addition, you must provide the `MessagingServiceSid`.
 
@@ -154,7 +186,7 @@ RSpec.resource "Messages", document: :twilio_api do
       )
     end
 
-    example "03. Schedule a Message" do
+    example "Schedule a Message" do
       explanation <<~HEREDOC
         The example below shows how to schedule a Message to be sent in the future.
       HEREDOC
@@ -227,7 +259,7 @@ RSpec.resource "Messages", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/sms/api/message-resource#fetch-a-message-resource
-    example "04. Fetch a Message" do
+    example "Fetch a Message" do
       explanation <<~HEREDOC
         Returns a single Message resource specified by the provided Message `SID`.
       HEREDOC
@@ -250,7 +282,7 @@ RSpec.resource "Messages", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/messaging/api/message-resource#read-multiple-message-resources
-    example "05. List all messages" do
+    example "List all messages" do
       explanation <<~HEREDOC
         Returns a list of all Message resources associated with your Account
       HEREDOC
@@ -291,7 +323,7 @@ RSpec.resource "Messages", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/messaging/api/message-resource#redact-the-body-of-a-message-resource
-    example "06. Redact a message" do
+    example "Redact a message" do
       explanation <<~HEREDOC
         This action can be used to redact messages: to do so, POST to the above URI and set the
         `Body` parameter as an empty string: "". This will allow you to effectively redact the text of a message
@@ -313,7 +345,7 @@ RSpec.resource "Messages", document: :twilio_api do
       expect(json_response.fetch("body")).to eq("")
     end
 
-    example "07. Cancel a scheduled message" do
+    example "Cancel a scheduled message" do
       explanation <<~HEREDOC
         Before you use this functionality:
 
@@ -370,7 +402,7 @@ RSpec.resource "Messages", document: :twilio_api do
     )
 
     # https://www.twilio.com/docs/sms/api/message-resource#update-a-message-resource
-    example "08. Delete a Message" do
+    example "Delete a Message" do
       explanation <<~HEREDOC
         To delete a Message resource, send a `DELETE` request to the Message resource's URI.
 
