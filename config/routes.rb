@@ -188,6 +188,7 @@ Rails.application.routes.draw do
       resources :accounts, only: %i[show index]
       resources :phone_numbers, only: %i[show index]
       resources :incoming_phone_numbers, only: %i[show index]
+      resources :alphanumeric_sender_ids, only: %i[show index]
       resources :phone_number_plans, only: %i[show index]
       resources :phone_calls, only: %i[show index]
       resources :messages, only: %i[show index]
