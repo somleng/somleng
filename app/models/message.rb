@@ -14,6 +14,7 @@ class Message < ApplicationRecord
   belongs_to :incoming_phone_number, optional: true
   belongs_to :phone_number, optional: true
   belongs_to :incoming_phone_number, optional: true
+  belongs_to :alphanumeric_sender_id, optional: true
   belongs_to :messaging_service, optional: true
   has_one :interaction
   has_one :balance_transaction

@@ -12,7 +12,12 @@ RSpec.describe PhoneNumberType do
 
     expect(klass.new(number: PhoneNumberType::PhoneNumber.new(value: "1234")).number).to be_a(PhoneNumberType::PhoneNumber)
     expect(klass.new(number: nil).number).to be_nil
-    expect(klass.new(number: "invalid").number).to be_nil
+    expect(klass.new(number: "invalid-number").number).to be_nil
+    expect(klass.new(number: "MySenderID").number).to have_attributes(
+      value: "MySenderID",
+      alphanumeric?: true,
+      e164?: false
+    )
     expect(klass.new(number: "1294").number).to have_attributes(
       value: "1294",
       e164?: false

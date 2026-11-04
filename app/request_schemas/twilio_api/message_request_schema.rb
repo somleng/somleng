@@ -15,9 +15,9 @@ module TwilioAPI
     option :account_billing_policy, default: -> { AccountBillingPolicy.new }
 
     params do
-      optional(:From).value(ApplicationRequestSchema::Types::Number, :filled?)
+      optional(:From).value(Types::SenderID, :filled?)
       optional(:MessagingServiceSid).filled(:string)
-      required(:To).value(ApplicationRequestSchema::Types::Number, :filled?)
+      required(:To).value(Types::Number, :filled?)
       required(:Body).filled(:string, max_size?: 1600)
       optional(:StatusCallback).maybe(:string)
       optional(:ValidityPeriod).maybe(:integer, gteq?: 1, lteq?: 14_400)
@@ -48,6 +48,14 @@ module TwilioAPI
         end
 
         next if values[:From].blank?
+      elsif Types.alphanumeric_sender_id?(values[:From])
+        context[:alphanumeric_sender_id] = account.alphanumeric_sender_ids.approved.find_by(sender_id: values.fetch(:From))
+
+        if context[:alphanumeric_sender_id].blank?
+          base.failure(schema_helper.build_schema_error(:unauthorized_alphanumeric_sender_id))
+        end
+
+        next
       else
         incoming_phone_numbers = account.incoming_phone_numbers.active
       end
@@ -104,7 +112,10 @@ module TwilioAPI
       end
       encoding_result = sms_encoding.detect(body)
 
-      from = context[:incoming_phone_number]&.number
+      incoming_phone_number = context[:incoming_phone_number]
+      alphanumeric_sender_id = context[:alphanumeric_sender_id]
+
+      from = incoming_phone_number.present? ? incoming_phone_number.number : (alphanumeric_sender_id.sender_id if alphanumeric_sender_id.present?)
       sms_gateway = context.fetch(:sms_gateway)
       originator_id_behavior = OriginatorIDBehavior.new(sms_gateway.sender_id_behavior)
       originator_id = originator_id_behavior.resolve(client_id: from, managed_id: sms_gateway.sender_id) if sender_id.blank? && from.present?
@@ -112,8 +123,9 @@ module TwilioAPI
       {
         account:,
         carrier: account.carrier,
-        incoming_phone_number: context[:incoming_phone_number],
-        phone_number: context[:incoming_phone_number]&.phone_number,
+        incoming_phone_number:,
+        alphanumeric_sender_id:,
+        phone_number: (incoming_phone_number.phone_number if incoming_phone_number.present?),
         messaging_service:,
         sms_gateway:,
         channel: context.fetch(:channel),
