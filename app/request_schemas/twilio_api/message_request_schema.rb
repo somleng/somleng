@@ -48,7 +48,7 @@ module TwilioAPI
         end
 
         next if values[:From].blank?
-      elsif Types.alphanumeric_sender_id?(values[:From])
+      elsif Types::PhoneNumber.new(number: values[:From]).alphanumeric?
         context[:alphanumeric_sender_id] = account.alphanumeric_sender_ids.approved.find_by(sender_id: values.fetch(:From))
 
         if context[:alphanumeric_sender_id].blank?

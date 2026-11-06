@@ -2,8 +2,13 @@ module SchemaRules
   module Types
     include Dry.Types()
 
-    def self.alphanumeric_sender_id?(value)
-      AlphanumericSenderIDFormatValidator::ALPHA_ONLY_REGEXP.match?(value.to_s)
+    class PhoneNumber
+      include ActiveModel::Model
+      include ActiveModel::Attributes
+
+      attribute :number, PhoneNumberType.new
+
+      delegate :alphanumeric?, to: :number
     end
 
     Number = String.constructor do |string|
@@ -15,7 +20,7 @@ module SchemaRules
     end
 
     SenderID = String.constructor do |value|
-      Types.alphanumeric_sender_id?(value) ? value : Number.call(value)
+      PhoneNumber.new(number: value).alphanumeric? ? value : Number.call(value)
     end
   end
 end
