@@ -48,14 +48,17 @@ module DashboardHelper
     end
   end
 
-  def sidebar_nav(text, path, icon_class:, link_options: {})
+  def sidebar_nav(text, path, active_when: [], icon_class:, link_options: {})
     content_tag(:li, class: "nav-item") do
-      sidebar_nav_class = "nav-link"
-      sidebar_nav_class += " active" if request.path.start_with?(path)
-      link_to(path, class: sidebar_nav_class, **link_options) do
+      sidebar_nav_classes = [ "nav-link" ]
+      if request.path.start_with?(URI(path).path) || Array(active_when).any? { request.path.start_with?(URI(it).path) }
+        sidebar_nav_classes << "active"
+      end
+
+      link_to(path, class: sidebar_nav_classes, **link_options) do
         content = "".html_safe
-        content += content_tag(:i, nil, class: "nav-icon #{icon_class}")
-        content + " " + text
+        content += tag.i(class: "nav-icon #{icon_class}")
+        content + text
       end
     end
   end
