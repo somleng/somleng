@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_04_080139) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_141916) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -466,6 +466,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_04_080139) do
     t.index ["sequence_number"], name: "index_messages_on_sequence_number", unique: true, order: :desc
     t.index ["sms_gateway_id"], name: "index_messages_on_sms_gateway_id"
     t.index ["status", "sending_at"], name: "index_messages_on_status_and_sending_at", where: "((status)::text = 'sending'::text)"
+  end
+
+  create_table "messaging_service_alphanumeric_sender_ids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "sender_id_id", null: false
+    t.uuid "messaging_service_id", null: false
+    t.string "destination_country_code", limit: 3
+    t.bigserial "sequence_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["messaging_service_id", "destination_country_code"], name: "idx_on_messaging_service_id_destination_country_cod_2aedcdeec1", unique: true, nulls_not_distinct: true
+    t.index ["sender_id_id"], name: "idx_on_sender_id_id_d4ded7b8e5"
+    t.index ["sequence_number"], name: "idx_on_sequence_number_511e1c3de1", unique: true, order: :desc
   end
 
   create_table "messaging_services", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1094,6 +1106,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_04_080139) do
   add_foreign_key "messages", "messaging_services", on_delete: :nullify
   add_foreign_key "messages", "phone_numbers", on_delete: :nullify
   add_foreign_key "messages", "sms_gateways", on_delete: :nullify
+  add_foreign_key "messaging_service_alphanumeric_sender_ids", "alphanumeric_sender_ids", column: "sender_id_id", on_delete: :cascade
+  add_foreign_key "messaging_service_alphanumeric_sender_ids", "messaging_services", on_delete: :cascade
   add_foreign_key "messaging_services", "accounts", on_delete: :cascade
   add_foreign_key "messaging_services", "carriers", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id", on_delete: :cascade
