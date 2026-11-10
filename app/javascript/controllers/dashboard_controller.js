@@ -23,6 +23,10 @@ export default class extends Controller {
   }
 
   initializeCoreUI() {
+    document.querySelectorAll(".nav-group .nav-link.active").forEach((link) => {
+      link.closest(".nav-group")?.classList.add("show");
+    });
+
     [].slice
       .call(document.querySelectorAll('[data-coreui="navigation"]'))
       .map((el) => coreui.Navigation.getOrCreateInstance(el));

@@ -137,7 +137,12 @@
           <% end %>
 
           <% if policy(:tariff_package).index? %>
-            <%= sidebar_nav("Packages", dashboard_tariff_packages_path, icon_class: "fa-solid fa-boxes-packing") %>
+            <%= sidebar_nav(
+              "Packages",
+              dashboard_tariff_packages_path,
+              active_when: [ new_dashboard_tariff_package_wizard_path ],
+              icon_class: "fa-solid fa-boxes-packing"
+            ) %>
           <% end %>
 
           <% if policy(:tariff_plan).index? %>
