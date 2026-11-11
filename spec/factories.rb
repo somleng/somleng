@@ -647,6 +647,11 @@ FactoryBot.define do
     end
   end
 
+  factory :messaging_service_alphanumeric_sender_id do
+    messaging_service
+    sender_id { association(:alphanumeric_sender_id, :approved, account: messaging_service.account) }
+  end
+
   factory :destination_group do
     transient do
       prefixes { [] }

@@ -4,12 +4,26 @@ RSpec.describe "Messaging Services" do
   it "List and filter messaging services" do
     carrier = create(:carrier)
     account = create(:account, carrier:)
-    create(:messaging_service, account:, carrier:, name: "My Messaging Service")
+    messaging_service = create(
+      :messaging_service,
+      account:,
+      carrier:,
+      name: "My Messaging Service"
+    )
+    alphanumeric_sender_id = create(:alphanumeric_sender_id, account:)
+    create(:messaging_service_alphanumeric_sender_id, messaging_service:, sender_id: alphanumeric_sender_id)
     create(:messaging_service, account:, carrier:, name: "Foobar")
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
-    visit(dashboard_messaging_services_path(filter: { name: "Messaging" }))
+    visit(
+      dashboard_messaging_services_path(
+        filter: {
+          name: "Messaging",
+          alphanumeric_sender_id_id: alphanumeric_sender_id.id
+        }
+      )
+    )
 
     expect(page).to have_text("My Messaging Service")
     expect(page).to have_no_text("Foobar")
@@ -38,15 +52,23 @@ RSpec.describe "Messaging Services" do
   it "Create a messaging service", :js do
     carrier = create(:carrier)
     account = create(:account, carrier:, name: "Rocket Rides")
-    create(
-      :incoming_phone_number,
+    incoming_phone_numbers = [
+        create(
+        :incoming_phone_number,
+        account:,
+        number: "855715777777"
+      ),
+      create(
+        :incoming_phone_number,
+        account:,
+        number: "855715888888"
+      )
+    ]
+    alphanumeric_sender_id = create(
+      :alphanumeric_sender_id,
+      :approved,
       account:,
-      number: "855715777777"
-    )
-    create(
-      :incoming_phone_number,
-      account:,
-      number: "855715888888"
+      sender_id: "RocketRides"
     )
 
     user = create(:user, :carrier, :admin, carrier:)
@@ -59,6 +81,7 @@ RSpec.describe "Messaging Services" do
     click_on("Next")
 
     enhanced_select("+855 71 577 7777", "+855 71 588 8888", from: "Phone numbers")
+    enhanced_select("RocketRides", from: "Alphanumeric sender ID")
     choose("Send a webhook")
     fill_in("Inbound request URL", with: "https://www.example.com/message.xml")
     enhanced_select("POST", from: "Inbound request method")
@@ -70,8 +93,9 @@ RSpec.describe "Messaging Services" do
     expect(page).to have_text("Messaging service was successfully updated")
     expect(page).to have_text("My Messaging Service")
     expect(page).to have_text("Rocket Rides")
-    expect(page).to have_link("+855 71 577 7777")
-    expect(page).to have_link("+855 71 588 8888")
+    expect(page).to have_link("+855 71 577 7777", href: dashboard_incoming_phone_number_path(incoming_phone_numbers[0]))
+    expect(page).to have_link("+855 71 588 8888", href: dashboard_incoming_phone_number_path(incoming_phone_numbers[1]))
+    expect(page).to have_link("RocketRides", href: dashboard_alphanumeric_sender_id_path(alphanumeric_sender_id))
     expect(page).to have_text("https://www.example.com/message.xml")
     expect(page).to have_text("https://www.example.com/status_callback.xml")
     expect(page).to have_text("Webhook")
@@ -105,6 +129,13 @@ RSpec.describe "Messaging Services" do
 
   it "Update a messaging service" do
     messaging_service = create(:messaging_service, name: "Default")
+    alphanumeric_sender_id = create(
+      :alphanumeric_sender_id,
+      :approved,
+      account: messaging_service.account,
+      sender_id: "RocketRides"
+    )
+    create(:messaging_service_alphanumeric_sender_id, messaging_service:, sender_id: alphanumeric_sender_id)
     create(
       :incoming_phone_number,
       messaging_service:,
@@ -121,13 +152,14 @@ RSpec.describe "Messaging Services" do
 
     visit dashboard_messaging_service_path(messaging_service)
     click_on("Edit")
+    expect(page).to have_enhanced_select("Alphanumeric sender ID", selected: "RocketRides")
     fill_in("Name", with: "My Messaging Service")
     enhanced_select("+855 71 577 7777", from: "Phone numbers")
     enhanced_select("+855 71 588 8888", from: "Phone numbers")
+    enhanced_select("", from: "Alphanumeric sender ID")
     fill_in("Inbound request URL", with: "https://www.example.com/message.xml")
     select("POST", from: "Inbound request method")
     fill_in("Status callback URL", with: "https://www.example.com/status_callback.xml")
-
     check("Smart encoding")
 
     click_on "Save"
@@ -138,7 +170,12 @@ RSpec.describe "Messaging Services" do
     expect(page).to have_link("+855 71 588 8888")
     expect(page).to have_text("https://www.example.com/message.xml")
     expect(page).to have_text("https://www.example.com/status_callback.xml")
-    expect(page).to have_text("Smart encodingYes")
+    within("#smart-encoding") do
+      expect(page).to have_text("Yes")
+    end
+    within("#alphanumeric-sender-ids") do
+      expect(page).to have_text("Not specified")
+    end
   end
 
   it "Delete a messaging service" do

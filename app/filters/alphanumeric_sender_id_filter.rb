@@ -23,9 +23,28 @@ class AlphanumericSenderIDFilter < ResourceFilter
     end
   end
 
+  class MessagingServiceIDFilter < ApplicationFilter
+    filter_params do
+      optional(:messaging_service_id).value(:string)
+    end
+
+    def apply
+      return super if filter_params.blank?
+
+      super.joins(
+        :messaging_service_alphanumeric_sender_ids
+      ).where(
+        messaging_service_alphanumeric_sender_ids: {
+          messaging_service_id: filter_params.fetch(:messaging_service_id)
+        }
+      )
+    end
+  end
+
   filter_with(
     SenderIDFilter,
     StatusFilter,
+    MessagingServiceIDFilter,
     :id_filter,
     :date_filter,
     :account_id_filter
