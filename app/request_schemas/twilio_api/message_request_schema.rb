@@ -26,44 +26,66 @@ module TwilioAPI
       optional(:ScheduleType).filled(:string, eql?: "fixed")
     end
 
+    rule(:To) do |context:|
+      next key.failure("is invalid") unless phone_number_validator.valid?(value)
+      next if result.errors.any?
+
+      if message_destination_schema_rules.valid?(account:, destination: value)
+        context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
+      else
+        base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
+      end
+    end
+
     rule(:From, :MessagingServiceSid) do |context:|
       next if sender_id.present?
+      next if schema_error?(:To)
 
       if values[:From].blank? && values[:MessagingServiceSid].blank?
         next key(:From).failure("is required")
       end
 
+      is_alphanumeric = Types::PhoneNumber.new(number: values[:From]).alphanumeric?
+
       if values[:MessagingServiceSid].present?
-        context[:messaging_service] = account.messaging_services.find_by(
+        messaging_service = account.messaging_services.find_by(
           id: values.fetch(:MessagingServiceSid)
         )
 
-        if context[:messaging_service].blank?
+        if messaging_service.blank?
           next base.failure(schema_helper.build_schema_error(:messaging_service_blank))
-        end
-
-        incoming_phone_numbers = context[:messaging_service].incoming_phone_numbers.active
-        if incoming_phone_numbers.none?
+        elsif !messaging_service.sender_pool.any_for?(destination: values.fetch(:To))
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
 
+        context[:messaging_service] = messaging_service
+
         next if values[:From].blank?
-      elsif Types::PhoneNumber.new(number: values[:From]).alphanumeric?
+
+        if is_alphanumeric
+          context[:alphanumeric_sender_id] = messaging_service.sender_pool.alphanumeric_sender_ids_for(
+            destination: values.fetch(:To)
+          ).find_by(sender_id: values.fetch(:From))
+        else
+          context[:incoming_phone_number] = messaging_service.sender_pool.incoming_phone_numbers.find_by(number: values.fetch(:From))
+        end
+
+        if context[:incoming_phone_number].blank? && context[:alphanumeric_sender_id].blank?
+          base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
+        end
+      elsif is_alphanumeric
         context[:alphanumeric_sender_id] = account.alphanumeric_sender_ids.approved.find_by(sender_id: values.fetch(:From))
 
         if context[:alphanumeric_sender_id].blank?
           base.failure(schema_helper.build_schema_error(:unauthorized_alphanumeric_sender_id))
         end
-
-        next
       else
-        incoming_phone_numbers = account.incoming_phone_numbers.active
+        context[:incoming_phone_number] = account.incoming_phone_numbers.active.find_by(number: values.fetch(:From))
+
+        if context[:incoming_phone_number].blank?
+          base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
+        end
       end
-
-      context[:incoming_phone_number] = incoming_phone_numbers.find_by(number: values[:From])
-      next if phone_number_configuration_rules.valid?(context[:incoming_phone_number])
-
-      base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
     end
 
     rule(:SendAt) do
@@ -88,17 +110,6 @@ module TwilioAPI
       next if url_validator.valid?(value)
 
       key(:StatusCallback).failure("is invalid")
-    end
-
-    rule(:To) do |context:|
-      next key.failure("is invalid") unless phone_number_validator.valid?(value)
-      next if result.errors.any?
-
-      if message_destination_schema_rules.valid?(account:, destination: value)
-        context[:sms_gateway], context[:channel] = message_destination_schema_rules.sms_gateway
-      else
-        base.failure(schema_helper.build_schema_error(message_destination_schema_rules.error_code))
-      end
     end
 
     def output

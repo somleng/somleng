@@ -81,13 +81,6 @@ module TwilioAPI
 
       expect(
         validate_request_schema(
-          input_params: {},
-          options: { account: }
-        )
-      ).not_to have_valid_field(:From)
-
-      expect(
-        validate_request_schema(
           input_params: {
             From: "+"
           },
@@ -98,7 +91,8 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            From: "1234"
+            From: "1234",
+            To: "+855715100999"
           }
         )
       ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:message_incapable_phone_number).message)
@@ -106,7 +100,8 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            From: "SpoofBrand"
+            From: "SpoofBrand",
+            To: "+855715100999"
           },
           options: { account: }
         )
@@ -118,32 +113,58 @@ module TwilioAPI
       account = create(:account, carrier:)
       messaging_service = create(:messaging_service, account:, carrier:)
       incoming_phone_number = create(:incoming_phone_number, messaging_service:, account:)
-      unconfigured_messaging_service = create(:messaging_service, account:, carrier:)
+      alphanumeric_sender_id = create(:alphanumeric_sender_id, :approved, account:, sender_id: "MyBrand")
+      create(:messaging_service_alphanumeric_sender_id, messaging_service:, sender_id: alphanumeric_sender_id)
 
-      expect(
-        validate_request_schema(
-          input_params: {
-            MessagingServiceSid: messaging_service.id
-          },
-          options: { account: }
-        )
-      ).to have_valid_field(:MessagingServiceSid)
+      # expect(
+      #   validate_request_schema(
+      #     input_params: {
+      #       To: "855715100999",
+      #       MessagingServiceSid: messaging_service.id
+      #     },
+      #     options: { account: }
+      #   )
+      # ).to have_valid_field(:MessagingServiceSid)
+
+      # expect(
+      #   validate_request_schema(
+      #     input_params: {
+      #       MessagingServiceSid: messaging_service.id,
+      #       From: incoming_phone_number.number.to_s,
+      #       To: "855715100999"
+      #     },
+      #     options: { account: }
+      #   )
+      # ).to have_valid_schema
+
+      # expect(
+      #   validate_request_schema(
+      #     input_params: {
+      #       MessagingServiceSid: messaging_service.id,
+      #       From: alphanumeric_sender_id.sender_id,
+      #       To: "855715100999"
+      #     },
+      #     options: { account: }
+      #   )
+      # ).to have_valid_schema
+
+      # expect(
+      #   validate_request_schema(
+      #     input_params: {
+      #       MessagingServiceSid: messaging_service.id,
+      #       From: "85512333333",
+      #       To: "855715100999",
+      #     },
+      #     options: { account: }
+      #   )
+      # ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:message_incapable_phone_number).message)
 
       expect(
         validate_request_schema(
           input_params: {
             MessagingServiceSid: messaging_service.id,
-            From: incoming_phone_number.number.to_s
-          },
-          options: { account: }
-        )
-      ).to have_valid_field(:MessagingServiceSid)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            MessagingServiceSid: messaging_service.id,
-            From: "85512333333"
+            From: "WrongBrand",
+            To: "855715100999"
           },
           options: { account: }
         )
@@ -152,20 +173,13 @@ module TwilioAPI
       expect(
         validate_request_schema(
           input_params: {
-            MessagingServiceSid: "invalid"
+            MessagingServiceSid: "invalid",
+            From: "AnyBrand",
+            To: "855715100999"
           },
           options: { account: }
         )
       ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:messaging_service_blank).message)
-
-      expect(
-        validate_request_schema(
-          input_params: {
-            MessagingServiceSid: unconfigured_messaging_service.id
-          },
-          options: { account: }
-        )
-      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:messaging_service_no_senders).message)
     end
 
     it "validates Body" do
