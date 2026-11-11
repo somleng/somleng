@@ -54,7 +54,7 @@ module TwilioAPI
 
         if messaging_service.blank?
           next base.failure(schema_helper.build_schema_error(:messaging_service_blank))
-        elsif !messaging_service.sender_pool.any_for?(destination: values.fetch(:To))
+        elsif !messaging_service.sender_pool.any_for?(country_code: phone_number_validator.country_code_for(values.fetch(:To)))
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
 
@@ -64,7 +64,7 @@ module TwilioAPI
 
         if is_alphanumeric
           context[:alphanumeric_sender_id] = messaging_service.sender_pool.alphanumeric_sender_ids_for(
-            destination: values.fetch(:To)
+            country_code: phone_number_validator.country_code_for(values.fetch(:To))
           ).find_by(sender_id: values.fetch(:From))
         else
           context[:incoming_phone_number] = messaging_service.sender_pool.incoming_phone_numbers.find_by(number: values.fetch(:From))

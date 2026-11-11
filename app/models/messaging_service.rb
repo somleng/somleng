@@ -2,31 +2,22 @@ class MessagingService < ApplicationRecord
   class SenderPool
     attr_reader :messaging_service, :phone_number_parser
 
-    def initialize(messaging_service, phone_number_parser: Phony)
+    def initialize(messaging_service)
       @messaging_service = messaging_service
-      @phone_number_parser = phone_number_parser
     end
 
-    def incoming_phone_numbers
-      messaging_service.incoming_phone_numbers.active
-    end
-
-    def alphanumeric_sender_ids
-      messaging_service.alphanumeric_sender_ids.approved
-    end
-
-    def any_for?(destination:)
+    def any_for?(country_code:)
       return true if incoming_phone_numbers.any?
 
       alphanumeric_sender_ids.joins(
         :messaging_service_alphanumeric_sender_ids
-      ).merge(alphanumeric_sender_ids_for(destination:)).exists?
+      ).merge(alphanumeric_sender_ids_for(country_code:)).exists?
     end
 
-    def alphanumeric_sender_ids_for(destination:)
+    def alphanumeric_sender_ids_for(country_code:)
       alphanumeric_sender_ids.where(
         messaging_service_alphanumeric_sender_ids: {
-          destination_country_code: [ country_code(destination), nil ]
+          destination_country_code: [ country_code, nil ]
         }
       )
     end
@@ -37,12 +28,16 @@ class MessagingService < ApplicationRecord
 
     private
 
-    def pool
-      @pool ||= [ incoming_phone_numbers, alphanumeric_sender_ids ]
+    def incoming_phone_numbers
+      messaging_service.incoming_phone_numbers.active
     end
 
-    def country_code(number)
-      phone_number_parser.split(number).first
+    def alphanumeric_sender_ids
+      messaging_service.alphanumeric_sender_ids.approved
+    end
+
+    def pool
+      @pool ||= [ incoming_phone_numbers, alphanumeric_sender_ids ]
     end
   end
 

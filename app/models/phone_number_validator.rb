@@ -10,4 +10,8 @@ class PhoneNumberValidator
 
     validator.plausible?(value)
   end
+
+  def country_code_for(value)
+    validator.split(value).first
+  end
 end
