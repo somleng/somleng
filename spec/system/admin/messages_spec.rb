@@ -25,9 +25,11 @@ RSpec.describe "Admin/Messages" do
     )
     alphanumeric_sender_id = create(
       :alphanumeric_sender_id,
+      :approved,
       sender_id: "MyBrand",
       account:
     )
+    create(:messaging_service_alphanumeric_sender_id, messaging_service:, sender_id: alphanumeric_sender_id)
     message = create(
       :message,
       :outbound,

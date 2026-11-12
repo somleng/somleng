@@ -21,7 +21,7 @@ class MessagingService < ApplicationRecord
     end
 
     def any_for?(country_code:)
-      return true if incoming_phone_numbers.any?
+      return true if incoming_phone_numbers.exists?
 
       alphanumeric_sender_ids.joins(
         :messaging_service_alphanumeric_sender_ids

@@ -5,13 +5,18 @@ RSpec.describe MessagingService do
     describe "#choose_sender" do
       it "prefers an alphanumeric sender id" do
         messaging_service = create(:messaging_service)
-        create_alphanumeric_sender_id(messaging_service:, destination_country_code: nil)
-        kh_alphanumeric_sender_id = create_alphanumeric_sender_id(messaging_service:, destination_country_code: "KH", sender_id: "KHRides")
+        global_alphanumeric_sender_id = create_alphanumeric_sender_id(messaging_service:, destination_country_code: nil, sender_id: "GlobalRides")
+        kh_alphanumeric_sender_id = create_alphanumeric_sender_id(messaging_service:, destination_country_code: "855", sender_id: "KHRides")
         create(:incoming_phone_number, :active, messaging_service:, account: messaging_service.account)
 
-        expect(messaging_service.sender_pool.choose_sender(country_code: "KH")).to have_attributes(
+        expect(messaging_service.sender_pool.choose_sender(country_code: "855")).to have_attributes(
           alphanumeric_sender_id: kh_alphanumeric_sender_id,
           sender_id: "KHRides"
+        )
+
+        expect(messaging_service.sender_pool.choose_sender(country_code: "61")).to have_attributes(
+          alphanumeric_sender_id: global_alphanumeric_sender_id,
+          sender_id: "GlobalRides"
         )
       end
 
