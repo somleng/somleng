@@ -114,6 +114,7 @@ module TwilioAPI
       messaging_service = create(:messaging_service, account:, carrier:)
       incoming_phone_number = create(:incoming_phone_number, messaging_service:, account:)
       alphanumeric_sender_id = create(:alphanumeric_sender_id, :approved, account:, sender_id: "MyBrand")
+      messaging_service_no_senders = create(:messaging_service, account:, carrier:)
       create(:messaging_service_alphanumeric_sender_id, messaging_service:, sender_id: alphanumeric_sender_id)
 
       expect(
@@ -125,6 +126,16 @@ module TwilioAPI
           options: { account: }
         )
       ).to have_valid_field(:MessagingServiceSid)
+
+      expect(
+        validate_request_schema(
+          input_params: {
+            MessagingServiceSid: messaging_service_no_senders.id,
+            To: "855715100999"
+          },
+          options: { account: }
+        )
+      ).not_to have_valid_schema(error_message: ApplicationError::Errors.fetch(:messaging_service_no_senders).message)
 
       expect(
         validate_request_schema(
