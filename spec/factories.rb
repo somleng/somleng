@@ -102,7 +102,7 @@ FactoryBot.define do
   factory :alphanumeric_sender_id do
     account
     carrier { account.carrier }
-    sender_id { "MyCompany" }
+    sequence(:sender_id) { |n| "MyCompany#{n}" }
 
     trait :pending_approval do
       status { :pending_approval }

@@ -186,6 +186,40 @@ RSpec.resource "Messages", document: :twilio_api do
       )
     end
 
+    example "Send a message with a Messaging Service with an alphanumeric sender id", document: false do
+      account = create(:account)
+      create(:sms_gateway, carrier: account.carrier)
+      messaging_service = create(
+        :messaging_service,
+        account:,
+        carrier: account.carrier
+      )
+      create(
+        :messaging_service_alphanumeric_sender_id,
+        messaging_service:,
+        sender_id: create(:alphanumeric_sender_id, :approved, account:, sender_id: "RocketRides")
+      )
+
+      set_twilio_api_authorization_header(account)
+
+      perform_enqueued_jobs do
+        do_request(
+          AccountSid: account.id,
+          "To" => "+855716788123",
+          "From" => "RocketRides",
+          "MessagingServiceSid" => messaging_service.id,
+          "Body" => "Hello World"
+        )
+      end
+
+      expect(response_status).to eq(201)
+      expect(response_body).to match_api_response_schema("twilio_api/message")
+      expect(json_response).to include(
+        "status" => "queued",
+        "from" => "RocketRides"
+      )
+    end
+
     example "Schedule a Message" do
       explanation <<~HEREDOC
         The example below shows how to schedule a Message to be sent in the future.

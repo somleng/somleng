@@ -1,8 +1,6 @@
 module TwilioAPI
   class MessageRequestSchema < TwilioAPIRequestSchema
     option :phone_number_validator, default: -> { PhoneNumberValidator.new }
-    option :phone_number_configuration_rules,
-           default: -> { PhoneNumberConfigurationRules.new }
     option :sms_encoding,
            default: -> { SMSEncoding.new }
     option :smart_encoding,
@@ -45,7 +43,8 @@ module TwilioAPI
         next key(:From).failure("is required")
       end
 
-      is_alphanumeric = Types::PhoneNumber.new(number: values[:From]).alphanumeric?
+      from = context[:from] = Types::PhoneNumber.new(number: values[:From]).number
+      to = Types::PhoneNumber.new(number: values[:To]).number
 
       if values[:MessagingServiceSid].present?
         messaging_service = account.messaging_services.find_by(
@@ -54,33 +53,33 @@ module TwilioAPI
 
         if messaging_service.blank?
           next base.failure(schema_helper.build_schema_error(:messaging_service_blank))
-        elsif !messaging_service.sender_pool.any_for?(country_code: phone_number_validator.country_code_for(values.fetch(:To)))
+        elsif !messaging_service.sender_pool.any_for?(country_code: to.country_code)
           next base.failure(schema_helper.build_schema_error(:messaging_service_no_senders))
         end
 
         context[:messaging_service] = messaging_service
 
-        next if values[:From].blank?
+        next if from.blank?
 
-        if is_alphanumeric
+        if from.alphanumeric?
           context[:alphanumeric_sender_id] = messaging_service.sender_pool.alphanumeric_sender_ids_for(
-            country_code: phone_number_validator.country_code_for(values.fetch(:To))
-          ).find_by(sender_id: values.fetch(:From))
+            country_code: to.country_code
+          ).find_by(sender_id: from.value)
         else
-          context[:incoming_phone_number] = messaging_service.sender_pool.incoming_phone_numbers.find_by(number: values.fetch(:From))
+          context[:incoming_phone_number] = messaging_service.sender_pool.incoming_phone_numbers.find_by(number: from.value)
         end
 
         if context[:incoming_phone_number].blank? && context[:alphanumeric_sender_id].blank?
           base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
         end
-      elsif is_alphanumeric
-        context[:alphanumeric_sender_id] = account.alphanumeric_sender_ids.approved.find_by(sender_id: values.fetch(:From))
+      elsif from.alphanumeric?
+        context[:alphanumeric_sender_id] = account.alphanumeric_sender_ids.approved.find_by(sender_id: from.value)
 
         if context[:alphanumeric_sender_id].blank?
           base.failure(schema_helper.build_schema_error(:unauthorized_alphanumeric_sender_id))
         end
       else
-        context[:incoming_phone_number] = account.incoming_phone_numbers.active.find_by(number: values.fetch(:From))
+        context[:incoming_phone_number] = account.incoming_phone_numbers.active.find_by(number: from.value)
 
         if context[:incoming_phone_number].blank?
           base.failure(schema_helper.build_schema_error(:message_incapable_phone_number))
@@ -119,17 +118,28 @@ module TwilioAPI
       messaging_service = context[:messaging_service]
       status_callback_url = params.fetch(:StatusCallback) { messaging_service&.status_callback_url }
       if params.fetch(:SmartEncoded) { messaging_service&.smart_encoding? }
-        body, smart_encoded = smart_encode(body)
+        smart_encoding_result = smart_encoding.encode(body)
+        body = smart_encoding_result.to_s
+        smart_encoded = smart_encoding_result.smart_encoded?
       end
       encoding_result = sms_encoding.detect(body)
 
       incoming_phone_number = context[:incoming_phone_number]
       alphanumeric_sender_id = context[:alphanumeric_sender_id]
+      from = context[:from]
 
-      from = incoming_phone_number.present? ? incoming_phone_number.number : (alphanumeric_sender_id.sender_id if alphanumeric_sender_id.present?)
       sms_gateway = context.fetch(:sms_gateway)
       originator_id_behavior = OriginatorIDBehavior.new(sms_gateway.sender_id_behavior)
-      originator_id = originator_id_behavior.resolve(client_id: from, managed_id: sms_gateway.sender_id) if sender_id.blank? && from.present?
+      originator_id = originator_id_behavior.resolve(client_id: from.value, managed_id: sms_gateway.sender_id) if sender_id.blank? && from.present?
+      resolved_sender_id = sender_id.present? ? sender_id : originator_id
+
+      status = if params[:SendAt].present?
+        :scheduled
+      elsif resolved_sender_id.blank?
+        :accepted
+      else
+        :queued
+      end
 
       {
         account:,
@@ -145,31 +155,13 @@ module TwilioAPI
         encoding: encoding_result.encoding,
         to: params.fetch(:To),
         from:,
-        sender_id: sender_id.present? ? sender_id : originator_id,
+        sender_id: resolved_sender_id,
         status_callback_url:,
         validity_period: params[:ValidityPeriod],
         smart_encoded: smart_encoded.present?,
         send_at: params[:SendAt],
-        status: message_status(context, params)
+        status:
       }
-    end
-
-    private
-
-    def smart_encode(body)
-      smart_encoding_result = smart_encoding.encode(body)
-
-      [ smart_encoding_result.to_s, smart_encoding_result.smart_encoded? ]
-    end
-
-    def message_status(context, params)
-      if params[:SendAt].present?
-        :scheduled
-      elsif context[:messaging_service].present?
-        :accepted
-      else
-        :queued
-      end
     end
   end
 end

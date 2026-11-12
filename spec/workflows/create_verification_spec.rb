@@ -37,6 +37,7 @@ RSpec.describe CreateVerification do
             to: have_attributes(value: "85512334667"),
             internal: true,
             sms_gateway:,
+            status: "queued",
             direction: "outbound"
           )
         )
