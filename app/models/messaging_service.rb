@@ -2,11 +2,7 @@ class MessagingService < ApplicationRecord
   class SenderPool
     Sender = Data.define(:alphanumeric_sender_id, :incoming_phone_number, :sender_id) do
       def initialize(**)
-        super(alphanumeric_sender_id: nil, incoming_phone_number: nil, sender_id: nil, **)
-      end
-
-      def present?
-        sender_id.present?
+        super(alphanumeric_sender_id: nil, incoming_phone_number: nil, **)
       end
     end
 
@@ -21,8 +17,6 @@ class MessagingService < ApplicationRecord
         Sender.new(alphanumeric_sender_id:, sender_id: alphanumeric_sender_id.sender_id)
       elsif (incoming_phone_number = incoming_phone_numbers.order("RANDOM()").first).present?
         Sender.new(incoming_phone_number:, sender_id: incoming_phone_number.number)
-      else
-        Sender.new
       end
     end
 

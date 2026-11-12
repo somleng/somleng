@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe MessagingService do
   describe "#sender_pool" do
     describe "#choose_sender" do
-      it "prefers an alphanumeric sender" do
+      it "prefers an alphanumeric sender id" do
         messaging_service = create(:messaging_service)
         create_alphanumeric_sender_id(messaging_service:, destination_country_code: nil)
         kh_alphanumeric_sender_id = create_alphanumeric_sender_id(messaging_service:, destination_country_code: "KH", sender_id: "KHRides")
