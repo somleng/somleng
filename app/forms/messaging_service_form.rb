@@ -20,6 +20,7 @@ class MessagingServiceForm
   attribute :messaging_service, default: -> { MessagingService.new }
   attribute :smart_encoding, :boolean, default: true
   attribute :inbound_message_behavior, default: :defer_to_sender
+  attribute :alphanumeric_sender_id_id
 
   enumerize :inbound_message_behavior,
             in: MessagingService.inbound_message_behavior.values
@@ -58,7 +59,8 @@ class MessagingServiceForm
       inbound_request_url: messaging_service.inbound_request_url,
       inbound_request_method: messaging_service.inbound_request_method,
       status_callback_url: messaging_service.status_callback_url,
-      smart_encoding: messaging_service.smart_encoding
+      smart_encoding: messaging_service.smart_encoding,
+      alphanumeric_sender_id_id: messaging_service.messaging_service_alphanumeric_sender_ids.where(destination_country_code: nil).pick(:sender_id_id)
     )
   end
 
@@ -74,6 +76,7 @@ class MessagingServiceForm
     messaging_service.smart_encoding = smart_encoding
     messaging_service.incoming_phone_number_ids = incoming_phone_number_ids
     messaging_service.inbound_message_behavior = inbound_message_behavior
+    messaging_service.alphanumeric_sender_ids = alphanumeric_sender_id_id.present? ? [ alphanumeric_sender_ids_scope.find(alphanumeric_sender_id_id) ] : []
 
     messaging_service.save!
   end
@@ -92,6 +95,10 @@ class MessagingServiceForm
     INBOUND_MESSAGE_BEHAVIORS.map { |k, v| [ v.html_safe, k ] }
   end
 
+  def alphanumeric_sender_ids_options_for_select
+    alphanumeric_sender_ids_scope.pluck(:sender_id, :id)
+  end
+
   private
 
   def find_account
@@ -102,6 +109,10 @@ class MessagingServiceForm
 
   def accounts_scope
     carrier.accounts.carrier_managed
+  end
+
+  def alphanumeric_sender_ids_scope
+    account.alphanumeric_sender_ids.approved
   end
 
   def validate_account_id?

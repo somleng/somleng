@@ -5,6 +5,7 @@ RSpec.describe "Incoming Phone Numbers" do
     carrier = create(:carrier)
     account = create(:account, :carrier_managed, carrier:, name: "My Carrier Account")
     customer_managed_account = create(:account, :customer_managed, carrier:)
+    messaging_service = create(:messaging_service, account:)
     incoming_phone_number = create(
       :incoming_phone_number,
       number: "12513095500",
@@ -12,7 +13,8 @@ RSpec.describe "Incoming Phone Numbers" do
       voice_method: "POST",
       sms_url: "https://www.example.com/sms.xml",
       sms_method: "GET",
-      account:
+      account:,
+      messaging_service:
     )
     released_incoming_phone_number = create(:incoming_phone_number, :released, account: customer_managed_account, number: "12513095501")
     user = create(:user, :carrier, carrier:)
@@ -26,7 +28,12 @@ RSpec.describe "Incoming Phone Numbers" do
     expect(page).to have_link(released_incoming_phone_number.id, href: dashboard_incoming_phone_number_path(released_incoming_phone_number))
     expect(page).to have_link("My Carrier Account", href: dashboard_account_path(account))
 
-    visit dashboard_incoming_phone_numbers_path(filter: { status: :active })
+    visit dashboard_incoming_phone_numbers_path(
+      filter: {
+        status: :active,
+        messaging_service_id: messaging_service.id
+      }
+    )
 
     expect(page).to have_text("+1 (251) 309-5500")
     expect(page).to have_no_text("+1 (251) 309-5501")

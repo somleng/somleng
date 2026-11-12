@@ -23,14 +23,14 @@
       <%= summarize_list(
         DecoratedCollection.new(
           f.object.plans,
-        ).map { link_to(_1.name, dashboard_tariff_plan_path(_1)) },
+        ).map { link_to(it.name, dashboard_tariff_plan_path(it)) },
         max: 1,
         link_to_remaining: dashboard_tariff_plans_path(filter: { tariff_schedule_id: f.object.id })
       ) %>
     <% end %>
     <%= f.attribute :destination_tariffs do %>
       <%= summarize_list(
-        DecoratedCollection.new(f.object.destination_tariffs).map { destination_tariff_diagram(_1) },
+        DecoratedCollection.new(f.object.destination_tariffs).map { destination_tariff_diagram(it) },
         max: 1,
       ).html_safe %>
     <% end %>

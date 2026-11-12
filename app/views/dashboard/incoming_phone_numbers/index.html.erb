@@ -1,21 +1,33 @@
 <%= page_title(title: "Phone Numbers") do %>
   <%= render("shared/filters") do |form| %>
     <%= form.select(
-        :status,
-        IncomingPhoneNumber.status.values.map { |t| [t.text, t] },
-        { filter_value: params.dig(:filter, :status) }
-      )
-    %>
+      :status,
+      IncomingPhoneNumber.status.values.map { |t| [t.text, t] },
+      { filter_value: params.dig(:filter, :status) }
+    ) %>
 
     <% if policy(:account).show? %>
       <%= form.select(
           :account_id,
-          current_carrier.accounts.map { |account| [account.name, account.id] },
+          current_carrier.accounts.pluck(:name, :id),
           { filter_value: params.dig(:filter, :account_id) },
           { data: { controller: "enhanced-select" }}
         )
       %>
     <% end %>
+
+    <%= form.select(
+      :messaging_service_id,
+      parent_scope.messaging_services.pluck(:name, :id),
+      {
+        filter_value: params.dig(:filter, :messaging_service_id)
+      },
+      {
+        data: {
+          controller: "enhanced-select"
+        }
+      }
+    ) %>
 
     <%= form.text_field_tag(:number, params.dig(:filter, :number)) %>
     <%= form.date_range title: "Created At", filter_value: [params.dig(:filter, :from_date), params.dig(:filter, :to_date)] %>

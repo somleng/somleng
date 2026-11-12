@@ -4,6 +4,8 @@ class AlphanumericSenderID < ApplicationRecord
   belongs_to :carrier
   belongs_to :account
   has_many :messages
+  has_many :messaging_service_alphanumeric_sender_ids, foreign_key: :sender_id_id
+  has_many :messaging_services, through: :messaging_service_alphanumeric_sender_ids
 
   validates :sender_id, presence: true,
             alphanumeric_sender_id_format: true,

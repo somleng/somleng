@@ -102,7 +102,7 @@ FactoryBot.define do
   factory :alphanumeric_sender_id do
     account
     carrier { account.carrier }
-    sender_id { "MyCompany" }
+    sequence(:sender_id) { |n| "MyCompany#{n}" }
 
     trait :pending_approval do
       status { :pending_approval }
@@ -645,6 +645,11 @@ FactoryBot.define do
       inbound_request_url { "https://www.example.com/incoming_request.xml" }
       inbound_request_method { "POST" }
     end
+  end
+
+  factory :messaging_service_alphanumeric_sender_id do
+    messaging_service
+    sender_id { association(:alphanumeric_sender_id, :approved, account: messaging_service.account) }
   end
 
   factory :destination_group do

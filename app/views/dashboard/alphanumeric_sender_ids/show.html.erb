@@ -43,47 +43,64 @@
 <% end %>
 
 <div class="card-body">
-  <%= show_for(@resource.decorated) do |f| %>
-    <%= f.attribute :id, label: "SID" do %>
-      <code>
-        <%= @resource.id %>
-      </code>
-    <% end %>
+  <%= page_sections_container do %>
+    <%= page_section("General") do %>
+      <%= show_for(@resource.decorated) do |f| %>
 
-    <% if policy(:account).show? %>
-      <%= f.attribute :account do %>
-        <%= external_link_to(@resource.account.name, polymorphic_path([:dashboard, @resource.account])) %>
+        <%= f.attribute :id, label: "SID" do %>
+          <code>
+            <%= @resource.id %>
+          </code>
+        <% end %>
+
+        <% if policy(:account).show? %>
+          <%= f.attribute :account do %>
+            <%= external_link_to(@resource.account.name, polymorphic_path([:dashboard, @resource.account])) %>
+          <% end %>
+        <% end %>
+
+        <%= f.attribute :sender_id %>
+
+        <%= f.attribute(:status, content_html: { id: "status" }) do %>
+          <%= status_badge(f.object.status.text, color: f.object.status_color) %>
+        <% end %>
+
+        <%= f.attribute(:created_at, value: local_time(@resource.created_at)) %>
+        <%= f.attribute(:updated_at, value: local_time(@resource.updated_at)) %>
+        <%= f.attribute(
+          :approved_at,
+          value: local_time(@resource.approved_at),
+          content_html: {
+            id: "approved-at"
+          }
+        ) %>
+        <%= f.attribute(
+          :rejected_at,
+          value: local_time(@resource.rejected_at),
+          content_html: {
+            id: "rejected-at"
+          }
+        ) %>
+        <%= f.attribute(
+          :revoked_at,
+          value: local_time(@resource.revoked_at),
+          content_html: {
+            id: "revoked-at"
+          }
+        ) %>
       <% end %>
     <% end %>
 
-    <%= f.attribute :sender_id %>
-
-    <%= f.attribute(:status, content_html: { id: "status" }) do %>
-      <%= status_badge(f.object.status.text, color: f.object.status_color) %>
+    <%= page_section("Messaging") do %>
+      <%= show_for(@resource.decorated) do |f| %>
+        <%= f.attribute :messaging_services do %>
+          <%= summarize_list(
+            DecoratedCollection.new(f.object.messaging_services).map { external_link_to(it.name, dashboard_messaging_service_path(it)) },
+            max: 3,
+            link_to_remaining: dashboard_messaging_services_path(filter: { alphanumeric_sender_id_id: f.object.id })
+          ).html_safe %>
+        <% end %>
+      <% end %>
     <% end %>
-
-    <%= f.attribute(:created_at, value: local_time(@resource.created_at)) %>
-    <%= f.attribute(:updated_at, value: local_time(@resource.updated_at)) %>
-    <%= f.attribute(
-      :approved_at,
-      value: local_time(@resource.approved_at),
-      content_html: {
-        id: "approved-at"
-      }
-    ) %>
-    <%= f.attribute(
-      :rejected_at,
-      value: local_time(@resource.rejected_at),
-      content_html: {
-        id: "rejected-at"
-      }
-    ) %>
-    <%= f.attribute(
-      :revoked_at,
-      value: local_time(@resource.revoked_at),
-      content_html: {
-        id: "revoked-at"
-      }
-    ) %>
   <% end %>
 </div>

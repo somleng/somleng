@@ -36,6 +36,8 @@ RSpec.describe "Alphanumeric Sender IDs" do
       :alphanumeric_sender_id,
       account: create(:account, carrier:)
     )
+    messaging_service = create(:messaging_service, account:)
+    create(:messaging_service_alphanumeric_sender_id, messaging_service:, sender_id: alphanumeric_sender_id)
     user = create(:user, :carrier, carrier:)
 
     carrier_sign_in(user)
@@ -43,12 +45,27 @@ RSpec.describe "Alphanumeric Sender IDs" do
       filter: {
         account_id: alphanumeric_sender_id.account_id,
         sender_id: "Foo",
-        status: "approved"
+        status: "approved",
+        messaging_service_id: messaging_service.id
       }
     )
 
     expect(page).to have_text(alphanumeric_sender_id.id)
     expect(page).to have_no_text(other_alphanumeric_sender_id.id)
+  end
+
+  it "Show an alphanumeric sender id" do
+    carrier = create(:carrier)
+    account = create(:account, carrier:)
+    alphanumeric_sender_id = create(:alphanumeric_sender_id, account:)
+    messaging_service = create(:messaging_service, account:, name: "My Messaging Service")
+    create(:messaging_service_alphanumeric_sender_id, messaging_service:, sender_id: alphanumeric_sender_id)
+    user = create(:user, :carrier, carrier:)
+
+    carrier_sign_in(user)
+    visit dashboard_alphanumeric_sender_id_path(alphanumeric_sender_id)
+
+    expect(page).to have_link("My Messaging Service", href: dashboard_messaging_service_path(messaging_service))
   end
 
   it "Create an alphanumeric sender id" do

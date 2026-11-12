@@ -22,7 +22,7 @@
   </thead>
 
   <tbody>
-    <% resources.each do |messaging_service| %>
+    <% DecoratedCollection.new(resources).each do |messaging_service| %>
       <tr role="row" class="<%= cycle("odd", "even", name: "row_class") -%>">
         <td>
           <%= link_to(messaging_service.id, dashboard_messaging_service_path(messaging_service)) %>
@@ -39,7 +39,7 @@
         <% end %>
 
         <td>
-          <%= messaging_service.incoming_phone_numbers.size %>
+          <%= messaging_service.sender_pool.size %>
         </td>
 
         <td>

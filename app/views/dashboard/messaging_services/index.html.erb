@@ -4,13 +4,19 @@
 
     <% if policy(:account).show? %>
       <%= form.select(
-          :account_id,
-          current_carrier.accounts.map { |account| [account.name, account.id] },
-          { filter_value: params.dig(:filter, :account_id) },
-          { data: { controller: "enhanced-select" }}
-        )
-      %>
+        :account_id,
+        current_carrier.accounts.pluck(:name, :id),
+        { filter_value: params.dig(:filter, :account_id) },
+        { data: { controller: "enhanced-select" }}
+      ) %>
     <% end %>
+
+    <%= form.select(
+      :alphanumeric_sender_id_id,
+      parent_scope.alphanumeric_sender_ids.pluck(:sender_id, :id),
+      { filter_value: params.dig(:filter, :account_id) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
   <% end %>
 
   <% if policy(:messaging_service).new? %>

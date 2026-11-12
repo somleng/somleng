@@ -1,7 +1,7 @@
 module Dashboard
   class MessagingServicesController < DashboardController
     def index
-      @resources = apply_filters(scope.includes(:account, :incoming_phone_numbers))
+      @resources = apply_filters(scope.includes(:account, :incoming_phone_numbers, :alphanumeric_sender_ids))
       @resources = paginate_resources(@resources)
     end
 
@@ -21,6 +21,7 @@ module Dashboard
         :status_callback_url,
         :smart_encoding,
         :inbound_message_behavior,
+        :alphanumeric_sender_id_id,
         incoming_phone_number_ids: []
       )
       @resource = initialize_form(permitted_params)

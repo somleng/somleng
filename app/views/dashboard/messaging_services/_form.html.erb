@@ -13,14 +13,14 @@
 
           <% if current_user.carrier_user? %>
             <div class="col-sm-6">
-                <%= f.input(
-                  :account_id,
-                  collection: resource.account_options_for_select,
-                  selected: resource.account_id,
-                  disabled: resource.persisted?,
-                  prompt: "",
-                  input_html: { data: { controller: "enhanced-select" } }
-                ) %>
+              <%= f.input(
+                :account_id,
+                collection: resource.account_options_for_select,
+                selected: resource.account_id,
+                disabled: resource.persisted?,
+                prompt: "",
+                input_html: { data: { controller: "enhanced-select" } }
+              ) %>
             </div>
           <% end %>
         </div>
@@ -29,7 +29,7 @@
       <% if resource.persisted? %>
         <%= page_section("Sender Pool") do %>
           <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
               <%= f.input(
                 :incoming_phone_number_ids,
                 label: "Phone numbers",
@@ -45,6 +45,22 @@
                   }
                 },
                 hint: "A list of phone numbers to add to your messaging service"
+              ) %>
+            </div>
+
+            <div class="col-sm-6">
+              <%= f.input(
+                :alphanumeric_sender_id_id,
+                collection: resource.alphanumeric_sender_ids_options_for_select,
+                input_html: {
+                  data: {
+                    controller: "enhanced-select",
+                    enhanced_select_options: {
+                      removeItemButton: true
+                    }
+                  }
+                },
+                hint: "Select a pre-approved Sender ID. When selected, this name will take priority over your specified phone numbers for supported destinations."
               ) %>
             </div>
           </div>

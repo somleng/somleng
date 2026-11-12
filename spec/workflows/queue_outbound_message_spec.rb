@@ -15,6 +15,21 @@ RSpec.describe QueueOutboundMessage do
     )
   end
 
+  it "handles alphanumeric sender ids" do
+    message = create(:message, :accepted)
+    alphanumeric_sender_id = create(:alphanumeric_sender_id, :approved, account: message.account, sender_id: "RocketRides")
+    create(:messaging_service_alphanumeric_sender_id, messaging_service: message.messaging_service, sender_id: alphanumeric_sender_id)
+
+    QueueOutboundMessage.call(message)
+
+    expect(message).to have_attributes(
+      queued?: true,
+      from: have_attributes(value: "RocketRides"),
+      sender_id: "RocketRides",
+      alphanumeric_sender_id:
+    )
+  end
+
   it "handles sms gateway sender id behavior" do
     sms_gateway = create(:sms_gateway, :override, sender_id: "1111")
     account = create(:account, carrier: sms_gateway.carrier)

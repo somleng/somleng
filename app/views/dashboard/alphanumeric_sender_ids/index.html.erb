@@ -3,20 +3,26 @@
     <%= form.text_field_tag(:id, params.dig(:filter, :id), title: "SID") %>
     <% if policy(:account).show? %>
       <%= form.select(
-          :account_id,
-          current_carrier.accounts.pluck(:name, :id),
-          { filter_value: params.dig(:filter, :account_id) },
-          { data: { controller: "enhanced-select" }}
-        )
-      %>
-    <% end %>
-    <%= form.select(
-        :status,
-         AlphanumericSenderID.status.values.map { |t| [t.text, t] },
-        { filter_value: params.dig(:filter, :status) },
+        :account_id,
+        current_carrier.accounts.pluck(:name, :id),
+        { filter_value: params.dig(:filter, :account_id) },
         { data: { controller: "enhanced-select" }}
-      )
-    %>
+      ) %>
+    <% end %>
+
+    <%= form.select(
+      :messaging_service_id,
+      parent_scope.messaging_services.pluck(:name, :id),
+      { filter_value: params.dig(:filter, :messaging_service_id) },
+      { data: { controller: "enhanced-select" } }
+    ) %>
+
+    <%= form.select(
+      :status,
+        AlphanumericSenderID.status.values.map { |t| [t.text, t] },
+      { filter_value: params.dig(:filter, :status) },
+      { data: { controller: "enhanced-select" }}
+    ) %>
     <%= form.text_field_tag(:sender_id, params.dig(:filter, :sender_id), title: "Sender ID") %>
     <%= form.date_range title: "Created At", filter_value: [ params.dig(:filter, :from_date), params.dig(:filter, :to_date) ] %>
   <% end %>

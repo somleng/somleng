@@ -7,8 +7,6 @@ module SchemaRules
       include ActiveModel::Attributes
 
       attribute :number, PhoneNumberType.new
-
-      delegate :alphanumeric?, to: :number, allow_nil: true
     end
 
     Number = String.constructor do |string|
@@ -20,7 +18,7 @@ module SchemaRules
     end
 
     SenderID = String.constructor do |value|
-      PhoneNumber.new(number: value).alphanumeric? ? value.to_s : Number.call(value)
+      PhoneNumber.new(number: value).number&.alphanumeric? ? value.to_s : Number.call(value)
     end
   end
 end
