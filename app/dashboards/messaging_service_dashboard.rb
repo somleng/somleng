@@ -6,6 +6,7 @@ class MessagingServiceDashboard < Administrate::BaseDashboard
     carrier: Field::BelongsTo,
     account: Field::BelongsTo,
     incoming_phone_numbers: Field::HasMany,
+    alphanumeric_sender_ids: Field::HasMany,
     messages: Field::HasMany,
     name: Field::String,
     inbound_message_behavior: Field::String,
@@ -35,6 +36,7 @@ class MessagingServiceDashboard < Administrate::BaseDashboard
     created_at
     updated_at
     incoming_phone_numbers
+    alphanumeric_sender_ids
     messages
   ].freeze
 

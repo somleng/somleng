@@ -6,6 +6,7 @@ class AlphanumericSenderIDDashboard < Administrate::BaseDashboard
     account: Field::BelongsTo,
     carrier: Field::BelongsTo,
     sender_id: Field::String,
+    messaging_services: Field::HasMany,
     status: Field::String.with_options(
       getter: ->(field) {
         field.resource.status.text
@@ -29,6 +30,7 @@ class AlphanumericSenderIDDashboard < Administrate::BaseDashboard
     account
     carrier
     sender_id
+    messaging_services
     status
     messages
     created_at
