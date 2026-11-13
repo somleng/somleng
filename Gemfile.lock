@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: 344ae2121fa917956a488bb1a507ee0bd90177c3
+  revision: 403ae3d9ae263dce2e5099aaf595aae86892196a
   specs:
     administrate (1.0.0)
       actionpack (>= 6.0, < 9.0)
@@ -148,8 +148,8 @@ GEM
       aws-sdk-sesv2 (~> 1, >= 1.34.0)
     aws-eventstream (1.4.1)
     aws-partitions (1.1305.0)
-    aws-sdk-cloudwatch (1.156.0)
-      aws-sdk-core (~> 3, >= 3.265.0)
+    aws-sdk-cloudwatch (1.157.0)
+      aws-sdk-core (~> 3, >= 3.266.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-core (3.268.0)
       aws-eventstream (~> 1, >= 1.4.1)
@@ -166,8 +166,8 @@ GEM
     aws-sdk-kms (1.143.0)
       aws-sdk-core (~> 3, >= 3.268.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-polly (1.136.0)
-      aws-sdk-core (~> 3, >= 3.265.0)
+    aws-sdk-polly (1.137.0)
+      aws-sdk-core (~> 3, >= 3.266.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-rails (5.2.0)
       aws-sdk-core (~> 3)
@@ -399,7 +399,7 @@ GEM
       monetize (~> 2.0)
       money (~> 7.0)
       railties (>= 7.0)
-    msgpack (1.8.6)
+    msgpack (1.8.7)
     mustache (1.1.2)
     net-http (0.10.0)
       net-protocol (>= 0.3.0)
