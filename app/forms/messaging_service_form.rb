@@ -27,7 +27,7 @@ class MessagingServiceForm
 
   validates :name, presence: true
   validates :account_id, presence: true, if: :validate_account_id?
-  validate :validate_phone_numbers, if: :persisted?
+  validate :validate_incoming_phone_numbers, if: :persisted?
 
   validates :inbound_request_url,
             url_format: { allow_http: true, allow_blank: true },
@@ -86,7 +86,7 @@ class MessagingServiceForm
   end
 
   def incoming_phone_numbers_options_for_select
-    IncomingPhoneNumber.where(id: sender_pool_select.all_values).map do |incoming_phone_number|
+    IncomingPhoneNumber.where(id: incoming_phone_numbers_select.all_values).map do |incoming_phone_number|
       [ incoming_phone_number.decorated.number_formatted, incoming_phone_number.id ]
     end
   end
@@ -119,15 +119,15 @@ class MessagingServiceForm
     account.blank? && new_record?
   end
 
-  def validate_phone_numbers
+  def validate_incoming_phone_numbers
     return if errors.any?
-    return if sender_pool_select.valid?
+    return if incoming_phone_numbers_select.valid?
 
     errors.add(:incoming_phone_number_ids, :invalid)
   end
 
-  def sender_pool_select
-    @sender_pool_select ||= MultiSelectFormComponent.new(
+  def incoming_phone_numbers_select
+    @incoming_phone_numbers_select ||= MultiSelectFormComponent.new(
       selected_values: incoming_phone_number_ids,
       available_values: account.incoming_phone_numbers.active.where(messaging_service_id: nil).pluck(:id),
       existing_values: messaging_service.incoming_phone_numbers.pluck(:id)

@@ -29,13 +29,35 @@ RSpec.describe "Messaging Services" do
     expect(page).to have_no_text("Foobar")
   end
 
-  it "Shows a messaging service" do
+  it "Show a messaging service" do
     messaging_service = create(:messaging_service, name: "My Messaging Service")
     incoming_phone_number = create(
       :incoming_phone_number,
       messaging_service:,
       number: "855715999999",
       account: messaging_service.account
+    )
+    alphanumeric_sender_id = create(
+      :alphanumeric_sender_id,
+      :approved,
+      account: messaging_service.account,
+      sender_id: "MyBrand"
+    )
+    create(
+      :messaging_service_alphanumeric_sender_id,
+      messaging_service:,
+      sender_id: alphanumeric_sender_id
+    )
+    create(
+      :messaging_service_alphanumeric_sender_id,
+      messaging_service:,
+      sender_id: create(
+        :alphanumeric_sender_id,
+        :rejected,
+        account: messaging_service.account,
+        sender_id: "RejBrand"
+      ),
+      destination_country_code: "855"
     )
     user = create(:user, :carrier, carrier: messaging_service.carrier)
 
@@ -46,6 +68,11 @@ RSpec.describe "Messaging Services" do
       "+855 71 599 9999",
       href: dashboard_incoming_phone_number_path(incoming_phone_number)
     )
+    expect(page).to have_link(
+      "MyBrand",
+      href: dashboard_alphanumeric_sender_id_path(alphanumeric_sender_id)
+    )
+    expect(page).to have_no_text("RejBrand")
     expect(page).to have_text("My Messaging Service")
   end
 
