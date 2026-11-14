@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe MessageFilter do
   it "filters by status" do
-    sending_message = create(:message, :sending)
-    _sent_messaage = create(:message, :sent)
+    message = create(:message, :sending)
+    create(:message, :sent)
 
     filter = MessageFilter.new(
       resources_scope: Message,
@@ -16,7 +16,7 @@ RSpec.describe MessageFilter do
 
     result = filter.apply
 
-    expect(result).to eq([ sending_message ])
+    expect(result).to contain_exactly(message)
   end
 
   it "filters by to" do

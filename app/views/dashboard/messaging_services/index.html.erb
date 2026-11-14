@@ -13,7 +13,7 @@
 
     <%= form.select(
       :alphanumeric_sender_id_id,
-      parent_scope.alphanumeric_sender_ids.pluck(:sender_id, :id),
+      parent_scope.alphanumeric_sender_ids.approved.pluck(:sender_id, :id),
       { filter_value: params.dig(:filter, :account_id) },
       { data: { controller: "enhanced-select" }}
     ) %>
