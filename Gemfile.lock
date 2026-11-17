@@ -160,8 +160,8 @@ GEM
       jmespath (~> 1, >= 1.6.1)
       logger
       rexml (~> 3.4, >= 3.4.2)
-    aws-sdk-ec2 (1.667.0)
-      aws-sdk-core (~> 3, >= 3.267.0)
+    aws-sdk-ec2 (1.670.0)
+      aws-sdk-core (~> 3, >= 3.268.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-kms (1.144.0)
       aws-sdk-core (~> 3, >= 3.269.0)
