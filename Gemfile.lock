@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/thoughtbot/administrate.git
-  revision: 403ae3d9ae263dce2e5099aaf595aae86892196a
+  revision: 7bec5f58c4c42b7f9da46b67cbecd885efbad83e
   specs:
     administrate (1.0.0)
       actionpack (>= 6.0, < 9.0)
@@ -450,7 +450,7 @@ GEM
     pundit (2.5.2)
       activesupport (>= 3.0.0)
     racc (1.8.1)
-    rack (3.2.8)
+    rack (3.2.9)
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
